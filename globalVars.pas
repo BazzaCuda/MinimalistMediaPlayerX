@@ -20,20 +20,31 @@ unit globalVars;
 
 interface
 
-uses ALProgressBar;
+uses  winAPI.windows, system.classes;
 
 type
   TGlobalVars = class(TObject)
   strict private
-    FPB: TALProgressBar;
+    FMainWnd: HWND;
+  private
+    FMainTop: integer;
+    FMainLeft: integer;
+    FMainWidth: integer;
+    function getMainTopRightPt: TPoint;
   public
-    property PB: TALProgressBar read FPB write FPB;
+    property mainWnd: HWND read FMainWnd write FMainWnd;
+    property mainLeft: integer read FMainLeft write FMainLeft;
+    property mainTopRightPt: TPoint read getMainTopRightPt;
+    property mainTop: integer read FMainTop write FMainTop;
+    property mainWidth: integer read FMainWidth write FMainWidth;
   end;
 
 function GV: TGlobalVars;
-function PB: TALProgressBar;
 
 implementation
+
+uses
+  vcl.controls, forms;
 
 var
   gGV: TGlobalVars;
@@ -44,9 +55,14 @@ begin
   result := gGV;
 end;
 
-function PB: TALProgressBar;
+{ TGlobalVars }
+
+function TGlobalVars.getMainTopRightPt: TPoint;
 begin
-  result := GV.PB;
+  with TForm.create(NIL) do begin
+  result := ClientToScreen(point(FMainLeft + FMainWidth - 17, FMainTop + 1)); // screen position of the top right corner of the application window, roughly.
+  free;
+  end;
 end;
 
 initialization

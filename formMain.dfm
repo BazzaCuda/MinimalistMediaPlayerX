@@ -3039,7 +3039,7 @@ object MMPUI: TMMPUI
   OldCreateOrder = False
   Position = poDefault
   OnCreate = FormCreate
-  OnKeyPress = FormKeyPress
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
 end

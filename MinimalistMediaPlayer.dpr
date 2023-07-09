@@ -27,13 +27,21 @@ uses
   ALProgressBar in 'ALProgressBar.pas',
   Vcl.Themes,
   Vcl.Styles,
-  globalVars in 'globalVars.pas';
+  globalVars in 'globalVars.pas',
+  progressBar in 'progressBar.pas',
+  keyboard in 'keyboard.pas',
+  appEvents in 'appEvents.pas',
+  sysCommands in 'sysCommands.pas',
+  utils in 'utils.pas',
+  _debugWindow in '..\DebugWindow\_debugWindow.pas',
+  formHelp in 'formHelp.pas' {HelpForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('Charcoal Dark Slate');
   Application.CreateForm(TMMPUI, MMPUI);
   Application.Run;
 end.

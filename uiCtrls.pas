@@ -23,33 +23,16 @@ interface
 uses
   Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, ALProgressBar, globalVars;
 
-function initProgressBar(aForm: TForm): boolean;
 function initUI(aForm: TForm): boolean;
 
 implementation
-
-function initProgressBar(aForm: TForm): boolean;
-begin
-  GV.PB := TALProgressBar.create(aForm);
-  PB.parent          := aForm;
-  PB.align           := alBottom;
-  PB.height          := 10;
-  PB.backgroundColor := clBlack;
-  PB.borderColor1    := clBlack;
-  PB.borderColor2    := clBlack;
-  PB.showBorder      := FALSE;
-  PB.showPosText     := FALSE;
-  PB.barColor1       := $202020;
-  PB.barColorStyle   := cs1Color;
-  PB.max      := 100;
-  PB.Position := 50;
-end;
 
 function addMenuItems(aForm: TForm): boolean;
 begin
   var vSysMenu := getSystemMenu(aForm.handle, FALSE);
   AppendMenu(vSysMenu, MF_SEPARATOR, 0, '');
   AppendMenu(vSysMenu, MF_STRING, MENU_ABOUT_ID, '&About Minimalist Media Player…');
+  AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
 function setCustomTitleBar(aForm: TForm): boolean;
@@ -78,7 +61,7 @@ function initUI(aForm: TForm): boolean;
 begin
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
-  aForm.styleElements := [seFont, seClient];
+  aForm.styleElements := [seFont]; //, seClient];
   setGlassFrame(aForm);
   setCustomTitleBar(aForm);
   setWindowStyle(aForm);

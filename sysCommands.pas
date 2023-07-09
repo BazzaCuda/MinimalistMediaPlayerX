@@ -16,54 +16,26 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formMain;
+unit sysCommands;
 
 interface
 
-uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+uses winAPI.messages, consts, formAbout, utils, winAPI.windows, formHelp, globalVars;
 
-type
-  TMMPUI = class(TForm)
-    procedure WMSysCommand(var message : TWMSysCommand); message WM_SYSCOMMAND;
-    procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-  private
-  public
-  end;
-
-var
-  MMPUI: TMMPUI;
+function doSysCommand(var Message: TWMSysCommand): boolean;
+function sendSysCommandClose(aHWND: HWND): boolean;
 
 implementation
 
-uses
-  consts, formAbout, uiCtrls, globalVars, progressBar, sysCommands;
-
-{$R *.dfm}
-
-{ TMMPUI }
-
-procedure TMMPUI.FormCreate(Sender: TObject);
+function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
-  initUI(SELF);
-  initProgressBar(SELF);
-  GV.mainWnd := SELF.handle;
+  case Message.CmdType of MENU_ABOUT_ID:  showAboutBox(getFileVersionFmt('', '%d.%d'), getFileVersionFmt); end;
+  case Message.CmdType of MENU_HELP_ID:   showHelp(GV.MainTopRightPt); end;
 end;
 
-procedure TMMPUI.FormResize(Sender: TObject);
+function sendSysCommandClose(aHWND: HWND): boolean;
 begin
-  GV.mainTop   := top;
-  GV.mainLeft  := left;
-  GV.mainWidth := width;
-end;
-
-procedure TMMPUI.WMSysCommand(var message: TWMSysCommand);
-// respond to the WM_SYSCOMMAND messages this app sends to itself
-begin
-  inherited;
-  doSysCommand(message);
+  sendMessage(aHWND, WM_CLOSE, 0, 0);
 end;
 
 end.

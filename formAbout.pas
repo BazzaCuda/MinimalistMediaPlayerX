@@ -48,17 +48,20 @@ type
     function setReleaseVersion(aRelease: string): boolean;
   end;
 
-function showAboutBox: boolean;
+function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
 
 implementation
 
 uses ShellAPI;
 
 {$R *.dfm}
-function showAboutBox: boolean;
+
+function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
 begin
   with TAboutForm.create(NIL) do
   try
+    setReleaseVersion(releaseVersion);
+    setBuildVersion(buildVersion);
     showModal;
   finally
     free;
