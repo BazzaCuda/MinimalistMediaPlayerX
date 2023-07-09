@@ -34,7 +34,8 @@ uses
   sysCommands in 'sysCommands.pas',
   utils in 'utils.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
-  formHelp in 'formHelp.pas' {HelpForm};
+  formHelp in 'formHelp.pas' {HelpForm},
+  playlist in 'playlist.pas';
 
 {$R *.res}
 

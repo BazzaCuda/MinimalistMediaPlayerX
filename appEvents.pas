@@ -49,20 +49,21 @@ procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
 var
   key: word;
   shiftState: TShiftState;
+  keyDnHandled: boolean;
 begin
+  keyDnHandled := FALSE;
   case msg.message = WM_KEYDOWN of TRUE:  begin
-                                            shiftState  := KeyboardStateToShiftState;
-                                            key         := msg.WParam;
-                                            KB.processKeyStroke(key, shiftState, kdDown);
-                                            handled     := TRUE;
+                                            shiftState   := KeyboardStateToShiftState;
+                                            key          := msg.WParam;
+                                            handled      := KB.processKeyStroke(key, shiftState, kdDown);
+                                            keyDnHandled := handled;
                                           end;end;
 
   case msg.message = WM_KEYUP of TRUE:    begin
-                                            case key = 0 of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
+                                            case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
                                             shiftState  := KeyboardStateToShiftState;
                                             key         := msg.WParam;
-                                            KB.processKeyStroke(key, shiftState, kdUp);
-                                            handled     := TRUE;
+                                            handled     := KB.processKeyStroke(key, shiftState, kdUp);
                                           end;end;
 end;
 

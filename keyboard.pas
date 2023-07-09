@@ -29,15 +29,28 @@ type
 
   TKeyboard = class(TObject)
   strict private
-    FUpDn: TKeyDirection;
+    FKey:         word;
+    FShiftState:  TShiftState;
+    FUpDn:        TKeyDirection;
   private
-    function getKeyOp(var Key: word; shiftState: TShiftState): TKeyOp;
+    function keyIs(aChar: char): boolean; overload;
+    function keyIs(aKeyCode: word): boolean; overload;
+    function getKeyOp: TKeyOp;
     function getKeyUp: boolean;
     function getKeyDn: boolean;
+    function getCtrl: boolean;
+    function getShift: boolean;
+    function getAlt: boolean;
   public
-    function processKeyStroke(var Key: word; shiftState: TShiftState; upDn: TKeyDirection): boolean;
-    property keyDn: boolean read getKeyDn;
-    property keyUp: boolean read getKeyUp;
+    function processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+
+    property alt:         boolean     read getAlt;
+    property ctrl:        boolean     read getCtrl;
+    property key:         word        read FKey         write FKey;
+    property shift:       boolean     read getShift;
+    property shiftState:  TShiftState read FShiftState  write FShiftState;
+    property keyDn:       boolean     read getKeyDn;
+    property keyUp:       boolean     read getKeyUp;
   end;
 
 function KB: TKeyboard;
@@ -58,10 +71,20 @@ end;
 
 { TKeyboard }
 
-function TKeyboard.getKeyOp(var key: word; shiftState: TShiftState): TKeyOp;
+function TKeyboard.getKeyOp: TKeyOp;
 begin
   result := koNone;
-  case keyUp and (key = ord('X')) of TRUE: result := koCloseApp; end;
+  case keyUp and keyIs('X') of TRUE: result := koCloseApp; end;
+end;
+
+function TKeyboard.getAlt: boolean;
+begin
+  result := ssAlt in shiftState;
+end;
+
+function TKeyboard.getCtrl: boolean;
+begin
+  result := ssCtrl in shiftState;
 end;
 
 function TKeyboard.getKeyDn: boolean;
@@ -74,14 +97,35 @@ begin
   result := FUpDn = kdUp;
 end;
 
-function TKeyboard.processKeyStroke(var key: word; shiftState: TShiftState; upDn: TKeyDirection): boolean;
+function TKeyboard.getShift: boolean;
 begin
-  FUpDn := upDn;
-  case getKeyOp(key, shiftState) of
-    koNone: EXIT;
+  result := ssShift in shiftState;
+end;
+
+function TKeyboard.keyIs(aChar: char): boolean;
+begin
+  result := key = ord(aChar);
+end;
+
+function TKeyboard.keyIs(aKeyCode: word): boolean;
+begin
+  result := key = aKeyCode;
+end;
+
+function TKeyboard.processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+begin
+  result      := FALSE;
+
+  FKey        := aKey;
+  FShiftState := aShiftState;
+  FUpDn       := upDn;
+
+  case getKeyOp of
+    koNone: EXIT; // key not processed. bypass setting result to TRUE
     koCloseApp: sendSysCommandClose(GV.mainWnd);
   end;
-  key := 0;
+
+  result := TRUE;
 end;
 
 initialization
