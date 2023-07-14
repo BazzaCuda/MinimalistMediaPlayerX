@@ -20,6 +20,152 @@ unit playlist;
 
 interface
 
+uses system.generics.collections;
+
+type
+  TPlaylist = class(TObject)
+  strict private
+    FPlayIx: integer;
+    FPlaylist: TList<string>;
+  private
+    constructor create;
+    destructor  Destroy; override;
+  public
+    function add(anItem: string): boolean;
+    function clear: boolean;
+    function count: integer;
+    function currentItem: string;
+    function currentIx: integer;
+    function delete: boolean;
+    function displayItem: string;
+    function find(anItem: string): boolean;
+    function first: boolean;
+    function hasItems: boolean;
+    function isFirst: boolean;
+    function isLast: boolean;
+    function last: boolean;
+    function next: boolean;
+    function prev: boolean;
+  end;
+
+function PL: TPlaylist;
+
+var
+  gPL: TPlaylist;
+
 implementation
+
+uses
+  system.sysUtils;
+
+function PL: TPlaylist;
+begin
+  case gPL = NIL of TRUE: gPL := TPlaylist.create; end;
+  result := gPL;
+end;
+
+{ TPlaylist }
+
+function TPlaylist.add(anItem: string): boolean;
+begin
+  FPlayList.add(anItem);
+  FPlayIx := FPlayList.count - 1;
+end;
+
+function TPlaylist.clear: boolean;
+begin
+  FPlaylist.clear;
+  FPlayIx := -1;
+end;
+
+function TPlaylist.count: integer;
+begin
+  result := FPlaylist.count;
+end;
+
+constructor TPlaylist.create;
+begin
+  inherited;
+  FPlaylist := TList<string>.create;
+  FPLaylist.sort;
+end;
+
+function TPlaylist.currentItem: string;
+begin
+  result := '';
+  case FPlayIx = -1 of TRUE: EXIT; end;
+  result := FPlaylist[FPlayIx];
+end;
+
+function TPlaylist.currentIx: integer;
+begin
+  result := FPlayIx;
+end;
+
+function TPlaylist.delete: boolean;
+begin
+  FPlayList.delete(FPlayIx);
+  dec(FPlayIx);
+end;
+
+destructor TPlaylist.Destroy;
+begin
+  case FPlaylist <> NIL of TRUE: FPlaylist.free; end;
+  inherited;
+end;
+
+function TPlaylist.displayItem: string;
+begin
+  result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
+end;
+
+function TPlaylist.find(anItem: string): boolean;
+begin
+  FPlayIx := FPlaylist.indexOf(anItem);
+  result  := FPlayIx <> -1;
+end;
+
+function TPlaylist.first: boolean;
+begin
+  case hasItems of TRUE: FPlayIx := 0; end;
+end;
+
+function TPlaylist.hasItems: boolean;
+begin
+  result := FPlaylist.count > 0;
+end;
+
+function TPlaylist.isFirst: boolean;
+begin
+  result := FPlayIx = 0;
+end;
+
+function TPlaylist.isLast: boolean;
+begin
+  result := FPlayIx = FPlaylist.count - 1;
+end;
+
+function TPlaylist.last: boolean;
+begin
+  case hasItems of TRUE: FPlayIx := FPlaylist.count - 1; end;
+end;
+
+function TPlaylist.next: boolean;
+begin
+  case isLast of TRUE: EXIT; end;
+  inc(FPlayIx);
+end;
+
+function TPlaylist.prev: boolean;
+begin
+  case isFirst of TRUE: EXIT; end;
+  dec(FPlayIx);
+end;
+
+initialization
+  gPL := NIL;
+
+finalization
+  case gPL <> NIL of TRUE: gPL.free; end;
 
 end.

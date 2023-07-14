@@ -30,44 +30,33 @@ type
   private
     procedure progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    function getPosition: integer;
+    procedure setPosition(const Value: integer);
+    function getMax: integer;
+    procedure setMax(const Value: integer);
   protected
     constructor create;
+  public
     destructor  Destroy; override;
-    property PB: TALProgressBar read FPB write FPB;
+    function initProgressBar(aForm: TForm): boolean;
+    property max: integer read getMax write setMax;
+    property position: integer read getPosition write setPosition;
   end;
 
-function PB: TALProgressBar;
-function initProgressBar(aForm: TForm): boolean;
+function PB: TProgressBar;
 
 implementation
 
 uses
-  vcl.graphics;
+  vcl.graphics, _debugWindow;
 
 var
   gPB: TProgressBar;
 
-function PB: TALProgressBar;
+function PB: TProgressBar;
 begin
   case gPB = NIL of TRUE: gPB := TProgressBar.create; end;
-  result := gPB.PB;
-end;
-
-function initProgressBar(aForm: TForm): boolean;
-begin
-  PB.parent           := aForm; // this first reference to PB causes the singleton to be created
-  PB.align            := alBottom;
-  PB.height           := 10;
-  PB.backgroundColor  := clBlack;
-  PB.borderColor1     := clBlack;
-  PB.borderColor2     := clBlack;
-  PB.showBorder       := FALSE;
-  PB.showPosText      := FALSE;
-  PB.barColor1        := $202020;
-  PB.barColorStyle    := cs1Color;
-
-  PB.max      := 100;
-  PB.Position := 50;
+  result := gPB;
 end;
 
 { TProgressBar }
@@ -80,10 +69,39 @@ begin
   FPB.onMouseUp   := progressBarMouseUp;
 end;
 
-destructor TProgressBar.destroy;
+destructor TProgressBar.Destroy;
 begin
-  case FPB <> NIL of TRUE: FPB.free; end;
+  debug('TProgressBar.Destroy');
+//  FPB.parent := NIL;
+//  case FPB <> NIL of TRUE: FPB.free; end;
   inherited;
+end;
+
+function TProgressBar.getMax: integer;
+begin
+  result := FPB.max;
+end;
+
+function TProgressBar.getPosition: integer;
+begin
+  result := FPB.position;
+end;
+
+function TProgressBar.initProgressBar(aForm: TForm): boolean;
+begin
+  FPB.parent           := aForm;
+  FPB.align            := alBottom;
+  FPB.height           := 10;
+  FPB.backgroundColor  := clBlack;
+  FPB.borderColor1     := clBlack;
+  FPB.borderColor2     := clBlack;
+  FPB.showBorder       := FALSE;
+  FPB.showPosText      := FALSE;
+  FPB.barColor1        := $202020;
+  FPB.barColorStyle    := cs1Color;
+
+  FPB.max      := 100;
+  FPB.Position := 50;
 end;
 
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -94,7 +112,17 @@ end;
 procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // calculate a new video position based on where the progress bar is clicked
 begin
-  PB.position := 75; // TEMPORARY TEST
+  FPB.position := 75; // TEMPORARY TEST
+end;
+
+procedure TProgressBar.setMax(const Value: integer);
+begin
+  FPB.max := Value;
+end;
+
+procedure TProgressBar.setPosition(const Value: integer);
+begin
+  FPB.Position := Value;
 end;
 
 initialization

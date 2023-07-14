@@ -20,18 +20,20 @@ unit globalVars;
 
 interface
 
-uses  winAPI.windows, system.classes;
+uses  winAPI.windows, system.classes, vcl.forms;
 
 type
   TGlobalVars = class(TObject)
   strict private
     FMainWnd: HWND;
   private
-    FMainTop: integer;
+    FMainForm: TForm;
     FMainLeft: integer;
+    FMainTop: integer;
     FMainWidth: integer;
     function getMainTopRightPt: TPoint;
   public
+    property mainForm: TForm read FMainForm write FMainForm;
     property mainWnd: HWND read FMainWnd write FMainWnd;
     property mainLeft: integer read FMainLeft write FMainLeft;
     property mainTopRightPt: TPoint read getMainTopRightPt;
@@ -44,7 +46,7 @@ function GV: TGlobalVars;
 implementation
 
 uses
-  vcl.controls, forms;
+  vcl.controls;
 
 var
   gGV: TGlobalVars;
@@ -61,6 +63,7 @@ function TGlobalVars.getMainTopRightPt: TPoint;
 begin
   with TForm.create(NIL) do begin
   result := ClientToScreen(point(FMainLeft + FMainWidth - 17, FMainTop + 1)); // screen position of the top right corner of the application window, roughly.
+  result := ClientToScreen(point(FMainLeft, FMainTop)); // screen position of the top right corner of the application window, roughly.
   free;
   end;
 end;

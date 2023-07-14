@@ -38,7 +38,7 @@ type
 implementation
 
 uses
-  system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, _debugWindow;
+  system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -65,6 +65,10 @@ begin
                                             key         := msg.WParam;
                                             handled     := KB.processKeyStroke(key, shiftState, kdUp);
                                           end;end;
+
+  case msg.message = WM_TIMERUPDATE of
+      TRUE: MP.setProgressBar; end;
+
 end;
 
 constructor TAppEvents.create;

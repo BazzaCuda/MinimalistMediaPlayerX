@@ -22,11 +22,12 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, consts;
 
 type
   TMMPUI = class(TForm)
     procedure WMSysCommand(var message : TWMSysCommand); message WM_SYSCOMMAND;
+    procedure WMTimerUpdate(var message: TMessage); message WM_TIMERUPDATE;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
@@ -39,7 +40,7 @@ var
 implementation
 
 uses
-  consts, formAbout, uiCtrls, globalVars, progressBar, sysCommands;
+  {consts, }formAbout, uiCtrls, globalVars, progressBar, sysCommands, mediaPlayer, playlist, _debugWindow;
 
 {$R *.dfm}
 
@@ -48,8 +49,24 @@ uses
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
   initUI(SELF);
-  initProgressBar(SELF);
-  GV.mainWnd := SELF.handle;
+  PB.initProgressBar(SELF);
+  GV.mainWnd        := SELF.handle;
+  MP.initMediaPlayer(SELF);
+
+  GV.mainForm := SELF;
+
+  PL.add('B:\Movies\Blazing Saddles (1974).mp4');
+  PL.add('B:\Movies\Nobody (2021).mp4');
+  PL.add('B:\Movies\Leon The Professional (1994) extended.mp4');
+  PL.add('B:\Movies\LOTR 1 - The Fellowship of the Ring (2001) extended.mp4');
+  PL.add('B:\Movies\Blazing Saddles (1974).mp4');
+
+  PL.first;
+
+  case MP.openURL(PL.currentItem) of FALSE: EXIT; end;
+
+  MP.play;
+  MP.volume := 100;
 end;
 
 procedure TMMPUI.FormResize(Sender: TObject);
@@ -64,6 +81,11 @@ procedure TMMPUI.WMSysCommand(var message: TWMSysCommand);
 begin
   inherited;
   doSysCommand(message);
+end;
+
+procedure TMMPUI.WMTimerUpdate(var message: TMessage);
+begin
+  MP.setProgressBar;
 end;
 
 end.

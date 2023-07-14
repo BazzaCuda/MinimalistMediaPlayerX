@@ -35,11 +35,17 @@ uses
   utils in 'utils.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
-  playlist in 'playlist.pas';
+  playlist in 'playlist.pas',
+  mediaPlayer in 'mediaPlayer.pas',
+  MMFMediaEngineClass in 'MMFMediaEngineClass.pas',
+  MMFTimedTextNotifyClass in 'MMFTimedTextNotifyClass.pas',
+  formSubtitles in 'formSubtitles.pas' {subtitlesForm};
 
 {$R *.res}
 
 begin
+  ReportMemoryLeaksOnShutdown := TRUE;
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');

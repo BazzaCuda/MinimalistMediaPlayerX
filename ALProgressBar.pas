@@ -115,6 +115,9 @@ procedure Register;
 
 implementation
 
+uses
+  _debugWindow;
+
 procedure Register;
 begin
   RegisterComponents('ALComps', [TALProgressBar]);
@@ -155,6 +158,7 @@ end;
 
 destructor TALProgressBar.Destroy;
 begin
+  debug('TALProgressBar.Destroy');
   MainBitmap.Free;
   fBarBitmap.Free;
   TiledBarBitmap.Free;

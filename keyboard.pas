@@ -24,7 +24,7 @@ uses
   system.classes;
 
 type
-  TKeyOp = (koNone, koCloseApp);
+  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -58,7 +58,11 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, globalVars, _debugWindow;
+  sysCommands, globalVars, winApi.windows, mediaPlayer, _debugWindow;
+
+const
+A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
+N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
 
 var
   gKB: TKeyboard;
@@ -74,7 +78,9 @@ end;
 function TKeyboard.getKeyOp: TKeyOp;
 begin
   result := koNone;
-  case keyUp and keyIs('X') of TRUE: result := koCloseApp; end;
+  case keyUp and keyIs(X) of TRUE: result := koCloseApp; end;
+  case keyDn and keyIs(VK_DOWN) of TRUE: result := koVolDown; end;
+  case keyDn and keyIs(VK_UP) of TRUE: result := koVolUp; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -123,6 +129,8 @@ begin
   case getKeyOp of
     koNone: EXIT; // key not processed. bypass setting result to TRUE
     koCloseApp: sendSysCommandClose(GV.mainWnd);
+    koVolUp:    MP.volUp;
+    koVolDown:  MP.volDown;
   end;
 
   result := TRUE;

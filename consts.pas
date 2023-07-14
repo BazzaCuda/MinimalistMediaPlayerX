@@ -20,17 +20,23 @@ unit consts;
 
 interface
 
+uses
+  winApi.messages;
+
 const
-  MENU_ABOUT_ID   = 1001;
-  MENU_HELP_ID    = 1002;
-  WIN_CLOSEAPP    = 1103;
-  WIN_RESIZE      = 1004;
-  WIN_POSITION    = 1005;
-  WIN_CONTROLS    = 1006;
-  WIN_RESTART     = 1007;
-  WIN_TAB         = 1008;
-  WIN_CAPTION     = 1009;
-  WIN_PAUSE_PLAY  = 1010;
+  MENU_ABOUT_ID   = WM_USER + 2001;
+  MENU_HELP_ID    = WM_USER + 2002;
+  WIN_CLOSEAPP    = WM_USER + 2003;
+  WIN_RESIZE      = WM_USER + 2004;
+  WIN_POSITION    = WM_USER + 2005;
+  WIN_CONTROLS    = WM_USER + 2006;
+  WIN_RESTART     = WM_USER + 2007;
+  WIN_TAB         = WM_USER + 2008;
+  WIN_CAPTION     = WM_USER + 2009;
+  WIN_PAUSE_PLAY  = WM_USER + 2010;
+
+  WM_PARENTCHANGED = WM_USER + 1023;
+  WM_TIMERUPDATE   = WM_USER + 1024;
 
 
 implementation
