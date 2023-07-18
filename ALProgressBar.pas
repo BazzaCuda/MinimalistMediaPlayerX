@@ -158,7 +158,6 @@ end;
 
 destructor TALProgressBar.Destroy;
 begin
-  debug('TALProgressBar.Destroy');
   MainBitmap.Free;
   fBarBitmap.Free;
   TiledBarBitmap.Free;

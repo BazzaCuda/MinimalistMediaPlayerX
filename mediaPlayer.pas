@@ -21,20 +21,21 @@ unit mediaPlayer;
 interface
 
 uses
-  MMFMediaEngineClass, forms, vcl.extCtrls;
+  MMFMediaEngineClass, forms, vcl.extCtrls, types, system.classes;
 
 type
-  TMPEngine = (mpeNone, mpeMMF, mpeWMP);
+  TMPEngine   = (mpeNone, mpeMMF, mpeWMP);
+  TPlayState  = (psPaused, psPlaying);
 
   TMediaPlayer = class(TObject)
   strict private
    FMPEngine: TMPEngine;
    MMFMediaEngine: TcMediaEngine;
+   FPlayState: TPlayState;
    FVideoPanel: TPanel;
    FVolume: integer;
   private
     constructor create;
-    destructor  Destroy; override;
     function createSubTitleLayer: boolean;
     function releaseMMFEngine: HRESULT;
     function getVolume: integer;
@@ -42,19 +43,34 @@ type
     {property setters}
     procedure setMPEngine(const Value: TMPengine);
     procedure setVolume(const Value: integer);
-    function getSubTitle: string;
+    function  getDuration: integer;
+    function  getPosition: integer;
+    function  getSubTitle: string;
+    procedure setPosition(const Value: integer);
+    function getFormattedDuration: string;
+    function getFormattedTime: string;
   public
+    destructor  Destroy; override;
+    function frameBackwards: boolean;
+    function frameForwards: boolean;
     function initMediaPlayer(aForm: TForm): boolean;
     function openURL(aURL: string): boolean;
+    function pause: boolean;
+    function pausePlay: boolean;
     function play: boolean;
     function release: boolean;
     function setProgressBar: boolean;
     function stop: boolean;
+    function tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
     function volDown: boolean;
     function volUp: boolean;
-    property MPEngine: TMPengine read FMPEngine write setMPEngine;
-    property subTitle: string    read getSubTitle;
-    property volume: integer     read getVolume write setVolume;
+    property duration:            integer   read getDuration;
+    property formattedDuration:   string    read getFormattedDuration;
+    property formattedTime:       string    read getFormattedTime;
+    property MPEngine:            TMPengine read FMPEngine    write setMPEngine;
+    property position:            integer   read getPosition  write setPosition;
+    property subTitle:            string    read getSubTitle;
+    property volume:              integer   read getVolume    write setVolume;
   end;
 
 function MP: TMediaPlayer;
@@ -62,7 +78,7 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, _debugWindow;
+  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -91,6 +107,36 @@ begin
   ReleaseMMFEngine;
   case MMFMediaEngine <> NIL of TRUE: MMFMediaEngine.free; end;
   inherited;
+end;
+
+function TMediaPlayer.frameBackwards: boolean;
+begin
+  MMFMediaEngine.FrameStep(FALSE);
+end;
+
+function TMediaPlayer.frameForwards: boolean;
+begin
+  MMFMediaEngine.FrameStep(TRUE);
+end;
+
+function TMediaPlayer.getDuration: integer;
+begin
+  result := trunc(MMFMediaEngine.pu_Duration);
+end;
+
+function TMediaPlayer.getFormattedDuration: string;
+begin
+  result := MMFMediaEngine.getFormattedSeconds(duration);
+end;
+
+function TMediaPlayer.getFormattedTime: string;
+begin
+  result := MMFMediaEngine.getFormattedSeconds(position);
+end;
+
+function TMediaPlayer.getPosition: integer;
+begin
+  result := trunc(MMFMediaEngine.pu_CurrPosition);
 end;
 
 function TMediaPlayer.getSubTitle: string;
@@ -125,11 +171,27 @@ begin
   result := SUCCEEDED(hr);
 end;
 
+function TMediaPlayer.pause: boolean;
+begin
+  MMFMediaEngine.Pause;
+  FPlayState := psPaused;
+end;
+
+function TMediaPlayer.pausePlay: boolean;
+begin
+  case MMFMediaEngine.pu_RenderingState of
+    rsPlaying: MMFMediaEngine.Pause();
+    rsStopped, rsPaused: MMFMediaEngine.Play;
+    rsInitialised: MMFMediaEngine.Play;
+  end;
+end;
+
 function TMediaPlayer.play: boolean;
 begin
   result := FALSE;
   case assigned(MMFMediaEngine) of FALSE: EXIT; end;
   result := SUCCEEDED(MMFMediaEngine.Play);
+  case result of TRUE: FPlayState := psPlaying; end;
 end;
 
 function TMediaPlayer.release: boolean;
@@ -152,6 +214,11 @@ begin
   case FMPEngine = mpeNone of TRUE: FMPEngine := Value; end;
 end;
 
+procedure TMediaPlayer.setPosition(const Value: integer);
+begin
+  MMFMediaEngine.pr_MediaEngine.SetCurrentTime(value);
+end;
+
 function TMediaPlayer.setProgressBar: boolean;
 begin
   case assigned(MMFMediaEngine) of FALSE: EXIT; end;
@@ -170,6 +237,25 @@ end;
 function TMediaPlayer.stop: boolean;
 begin
   MMFMediaEngine.Stop;
+end;
+
+function TMediaPlayer.tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
+var
+  vFactor: integer;
+  vTab: integer;
+begin
+  case aFactor <> 0 of  TRUE: vFactor := aFactor;
+                       FALSE: vFactor := 100; end;
+
+  case capsLock               of TRUE: vFactor := 10; end;
+  case ssShift in aShiftState of TRUE: vFactor := 20; end;
+  case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
+  vTab := trunc(duration / vFactor);
+
+  pause; delay(100);
+  case ssCtrl  in aShiftState of  TRUE: position := position - vTab;
+                                 FALSE: position := position + vTab; end;
+  delay(100); play;
 end;
 
 function TMediaPlayer.volDown: boolean;

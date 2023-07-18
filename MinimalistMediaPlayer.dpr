@@ -32,19 +32,22 @@ uses
   keyboard in 'keyboard.pas',
   appEvents in 'appEvents.pas',
   sysCommands in 'sysCommands.pas',
-  utils in 'utils.pas',
+  commonUtils in 'commonUtils.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
   playlist in 'playlist.pas',
   mediaPlayer in 'mediaPlayer.pas',
   MMFMediaEngineClass in 'MMFMediaEngineClass.pas',
   MMFTimedTextNotifyClass in 'MMFTimedTextNotifyClass.pas',
-  formSubtitles in 'formSubtitles.pas' {subtitlesForm};
+  formSubtitles in 'formSubtitles.pas' {subtitlesForm},
+  types in 'types.pas',
+  tickTimer in 'tickTimer.pas';
 
 {$R *.res}
 
 begin
   ReportMemoryLeaksOnShutdown := TRUE;
+  debugClear;
 
   Application.Initialize;
   Application.MainFormOnTaskbar := True;

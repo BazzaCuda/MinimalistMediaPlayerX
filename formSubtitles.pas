@@ -1,3 +1,21 @@
+{   Minimalist Media Player
+    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+    https://github.com/BazzaCuda/MinimalistMediaPlayer
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+}
 unit formSubtitles;
 
 interface
@@ -11,18 +29,26 @@ type
   private
     FSubtitle: TLabel;
     FVideoPanel: TPanel;
+    FInfoPanelL: TPanel;
+    FInfoPanelR: TPanel;
+    FSubtitlePanel: TPanel;
+
+    FTimeLabel: TLabel;
 
     ParentRect: TRect;        // rect of the parent window
     ParentPosition: TPoint;   // parent window position
 
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
-    procedure WMTimedTextNotify(var message: TMessage); message WM_TIMEDTEXTNOTIFY;
-    function getHWND: HWND;
+    function  getHWND: HWND;
+    procedure setSubtitle(const Value: string);
+    procedure setDisplayTime(const Value: string);
   public
     destructor Destroy; override;
     function initSubtitles(aVideoPanel: TPanel): boolean;
+    property displayTime: string write setDisplayTime;
     property HWND: HWND read getHWND;
+    property subTitle: string write setSubtitle;
   end;
 
 function ST: TSubtitlesForm;
@@ -30,7 +56,7 @@ function ST: TSubtitlesForm;
 implementation
 
 uses
-  mediaPlayer;
+  mediaPlayer, commonUtils;
 
 var
   gST: TSubtitlesForm;
@@ -49,11 +75,40 @@ constructor TSubtitlesForm.create;
 begin
   inherited create(NIL);
   FSubtitle := TLabel.create(NIL);
+  FSubtitle.margins.bottom := 6;
+
+  FSubtitlePanel := TPanel.create(NIL);
+  FSubtitlePanel.parent := SELF;
+  FSubtitle.parent := FSubtitlePanel; // the other labels don't show without this!
+
+  FInfoPanelL := TPanel.create(NIL);
+  FInfoPanelL.parent := SELF;
+  FInfoPanelL.align  := alLeft;
+  FInfoPanelL.bevelOuter := bvNone;
+
+  FInfoPanelR := TPanel.create(NIL);
+  FInfoPanelR.parent := SELF;
+  FInfoPanelR.align  := alRight;
+  FInfoPanelR.bevelOuter := bvNone;
+
+  FTimeLabel := TLabel.create(FInfoPanelR);
+  FTimeLabel.parent := FInfoPanelR;
+  initTransparentLabel(FTimeLabel);
+  FTimeLabel.align := alBottom;
+  FTimeLabel.alignment := taRightJustify;
+  FTimeLabel.font.color := clGray;
+  FTimeLabel.font.size := 8;
+  FTimeLabel.font.style := [];
+  FTimeLabel.margins.bottom := 0;
+  FTimeLabel.caption := '00:00:00 / 99:99:99';
 end;
 
 destructor TSubtitlesForm.Destroy;
 begin
-  case FSubtitle <> NIL of TRUE: FSubtitle.free; end;
+  case FSubtitle      <> NIL of TRUE: FSubtitle.free; end;
+  case FSubtitlePanel <> NIL of TRUE: FSubtitlePanel.free; end;
+  case FInfoPanelL    <> NIL of TRUE: FInfoPanelL.free; end;
+  case FInfoPanelR    <> NIL of TRUE: FInfoPanelR.free; end;
   inherited;
 end;
 
@@ -67,43 +122,22 @@ begin
   FVideoPanel := aVideoPanel;
 
   SELF.parent                 := aVideoPanel;
-  SELF.align                  := alBottom;
-  SELF.height := 200;
-  SELF.styleElements          := []; // don't allow any theme alterations
-  SELF.borderStyle            := bsNone;
-  SELF.color                  := clBlack;
-  SELF.ctl3D                  := FALSE;
-  SELF.doubleBuffered         := TRUE;
-  SELF.margins.bottom         := 6;
-  SELF.oldCreateOrder         := TRUE;
-  SELF.formStyle              := fsStayOnTop; // Keep the form always on top
-  SELF.borderIcons            := [];
-  SELF.alphaBlend             := True;
-  SELF.alphaBlendValue        := 255;
-  SELF.transparentColorValue  := clBlack;
-  SELF.transparentColor       := TRUE;
+  initTransparentForm(SELF);
 
   FSubtitle.parent            := SELF;
-  FSubtitle.align             := alClient;
-  FSubtitle.alignment         := taCenter;
-  FSubtitle.alignWithMargins  := TRUE;
-  FSubtitle.color             := clBlack;
-  FSubtitle.font.color        := clWhite;
-  FSubtitle.font.size         := 14;
-  FSubtitle.font.style        := [fsBold];
-  FSubtitle.layout            := tlBottom;
-  FSubtitle.margins.Bottom    := 6;
-  FSubtitle.parentColor       := FALSE;
-  FSubtitle.parentCustomHint  := FALSE;
-  FSubtitle.parentFont        := FALSE;
-  FSubtitle.ParentShowHint    := FALSE;
-  FSubtitle.showAccelChar     := FALSE;
-  FSubtitle.showHint          := FALSE;
-  FSubtitle.transparent       := TRUE;
-  FSubtitle.wordWrap          := TRUE;
-  FSubtitle.caption           := '';
+  initTransparentLabel(FSubtitle);
 
   SELF.show;
+end;
+
+procedure TSubtitlesForm.setDisplayTime(const Value: string);
+begin
+  FTimeLabel.caption := Value;
+end;
+
+procedure TSubtitlesForm.setSubtitle(const Value: string);
+begin
+  FSubtitle.caption := Value;
 end;
 
 procedure TSubtitlesForm.WMSize(var message: TWMSize);
@@ -111,11 +145,6 @@ begin
 //  case FSubtitle = NIL of TRUE: EXIT; end;
 //  FSubtitle.caption := '';
 //  FSubtitle.caption := format('w: %d, h: %d', [FSubtitle.width, FSubtitle.height]);
-end;
-
-procedure TSubtitlesForm.WMTimedTextNotify(var message: TMessage);
-begin
-  FSubtitle.caption := MP.subTitle;
 end;
 
 initialization

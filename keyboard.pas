@@ -24,7 +24,7 @@ uses
   system.classes;
 
 type
-  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown);
+  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -41,10 +41,12 @@ type
     function getCtrl: boolean;
     function getShift: boolean;
     function getAlt: boolean;
+    function getCapsLock: boolean;
   public
     function processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
 
     property alt:         boolean     read getAlt;
+    property capsLock:    boolean     read getCapsLock;
     property ctrl:        boolean     read getCtrl;
     property key:         word        read FKey         write FKey;
     property shift:       boolean     read getShift;
@@ -78,14 +80,24 @@ end;
 function TKeyboard.getKeyOp: TKeyOp;
 begin
   result := koNone;
-  case keyUp and keyIs(X) of TRUE: result := koCloseApp; end;
-  case keyDn and keyIs(VK_DOWN) of TRUE: result := koVolDown; end;
-  case keyDn and keyIs(VK_UP) of TRUE: result := koVolUp; end;
+  case keyUp and keyIs(X)         of TRUE: result := koCloseApp; end;
+  case keyDn and keyIs(VK_DOWN)   of TRUE: result := koVolDown; end;
+  case keyDn and keyIs(VK_UP)     of TRUE: result := koVolUp; end;
+  case keyUp and keyIs(T)         of TRUE: result := koTab; end;
+  case keyUp and keyIs(VK_SPACE)  of TRUE: result := koPausePlay; end;
+  case keyDn and keyIs(VK_RIGHT)  of TRUE: result := koFrameForwards; end;
+  case keyDn and keyIs(VK_LEFT)   of TRUE: result := koFrameBackwards; end;
+  case keyUp and keyIs(VK_TAB)    of TRUE: result := koTabTab; end;
 end;
 
 function TKeyboard.getAlt: boolean;
 begin
   result := ssAlt in shiftState;
+end;
+
+function TKeyboard.getCapsLock: boolean;
+begin
+  result := GetKeyState(VK_CAPITAL) <> 0;
 end;
 
 function TKeyboard.getCtrl: boolean;
@@ -127,10 +139,16 @@ begin
   FUpDn       := upDn;
 
   case getKeyOp of
-    koNone: EXIT; // key not processed. bypass setting result to TRUE
-    koCloseApp: sendSysCommandClose(GV.mainWnd);
-    koVolUp:    MP.volUp;
-    koVolDown:  MP.volDown;
+    koNone:       EXIT; // key not processed. bypass setting result to TRUE
+
+    koCloseApp:   sendSysCommandClose(GV.mainWnd);
+    koVolUp:      MP.volUp;
+    koVolDown:    MP.volDown;
+    koTab:        MP.tab(aShiftState, KB.capsLock);
+    koTabTab:     MP.tab(aShiftState, KB.capsLock, 200);
+    koPausePlay:  MP.pausePlay;
+    koFrameForwards: MP.frameForwards;
+    koFrameBackwards: MP.frameBackwards;
   end;
 
   result := TRUE;

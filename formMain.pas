@@ -22,15 +22,14 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, consts;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 
 type
   TMMPUI = class(TForm)
-    procedure WMSysCommand(var message : TWMSysCommand); message WM_SYSCOMMAND;
-    procedure WMTimerUpdate(var message: TMessage); message WM_TIMERUPDATE;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
   private
+  protected
   public
   end;
 
@@ -40,7 +39,7 @@ var
 implementation
 
 uses
-  {consts, }formAbout, uiCtrls, globalVars, progressBar, sysCommands, mediaPlayer, playlist, _debugWindow;
+  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar;
 
 {$R *.dfm}
 
@@ -50,42 +49,36 @@ procedure TMMPUI.FormCreate(Sender: TObject);
 begin
   initUI(SELF);
   PB.initProgressBar(SELF);
-  GV.mainWnd        := SELF.handle;
+  GV.mainWnd := APPLICATION.HANDLE; // or SELF.HANDLE ?  hmmm.
   MP.initMediaPlayer(SELF);
 
   GV.mainForm := SELF;
+  GV.UIWnd    := SELF.HANDLE;
 
   PL.add('B:\Movies\Blazing Saddles (1974).mp4');
   PL.add('B:\Movies\Nobody (2021).mp4');
   PL.add('B:\Movies\Leon The Professional (1994) extended.mp4');
   PL.add('B:\Movies\LOTR 1 - The Fellowship of the Ring (2001) extended.mp4');
   PL.add('B:\Movies\Blazing Saddles (1974).mp4');
+  PL.add('B:\Movies\Let The Right One In (2008).mp4');
+  PL.add('B:\Videos\Airplane 2 - The Sequel (6_10) Movie CLIP - It''s Very Likely That We''re All Going to Die (1982) HD [edited].mp4');
+//  PL.add('B:\Videos\ManorSolomon.mp4');
 
-  PL.first;
+//  PL.first;
 
   case MP.openURL(PL.currentItem) of FALSE: EXIT; end;
 
   MP.play;
-  MP.volume := 100;
+  MP.volume := 100; // there seems to be a problem with setting this before .play, which is concerning
+//  MP.position := MP.duration div 2; // TEMPORARY
 end;
+
 
 procedure TMMPUI.FormResize(Sender: TObject);
 begin
   GV.mainTop   := top;
   GV.mainLeft  := left;
   GV.mainWidth := width;
-end;
-
-procedure TMMPUI.WMSysCommand(var message: TWMSysCommand);
-// respond to the WM_SYSCOMMAND messages this app sends to itself
-begin
-  inherited;
-  doSysCommand(message);
-end;
-
-procedure TMMPUI.WMTimerUpdate(var message: TMessage);
-begin
-  MP.setProgressBar;
 end;
 
 end.

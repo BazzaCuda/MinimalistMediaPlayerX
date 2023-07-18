@@ -82,7 +82,7 @@ uses
   WinApi.MediaFoundationApi.MfObjects;
 
 const
-  WM_TIMEDTEXTNOTIFY = WM_USER + 2002;
+  WM_TIMEDTEXTNOTIFY = WM_USER + 2012;
 
   // SubtitleFileExtensions
    EXTSUBRIP    = '.srt';
@@ -369,7 +369,7 @@ procedure TcTimedTextNotify.NotifyUpdate();
 begin
 
   // Send a message to the caller a text event occured
-  SendMessage(gv_Handle,
+  postMessage(gv_Handle, // was sendMessage
               WM_TIMEDTEXTNOTIFY,
               WPARAM(1),
               0);

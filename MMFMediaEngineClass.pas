@@ -174,7 +174,6 @@ type
     pr_Balance: Double;
 
     // Enables an application to play audio or video files.
-    pr_MediaEngine: IMFMEdiaEngineEx;
 
     // Creates an instance of the Media Engine.
     // Note: Before using this interface, CoInitializeEx and MFStartup should be initialized.
@@ -187,6 +186,7 @@ type
 
 
   public
+    pr_MediaEngine: IMFMediaEngineEx;
     {public fields}   //IMFMediaEngineClassFactoryEx
 
     pu_Duration: Double;        // Duration of the mediasource
@@ -257,6 +257,8 @@ type
     //       To get information about the streamcontent use function GetMediaDescription in unit WinApi.MediaFoundationApi.MfMetLib.pas.
     function CanPlayStream(RFC4281Tag: PWideChar;
                            out Answer: MF_MEDIA_ENGINE_CANPLAY): HResult;
+
+    function getFormattedSeconds(seconds: integer): string;
 
   end;
 
@@ -599,7 +601,7 @@ begin
 
   pu_CurrPosition := pr_MediaEngine.GetCurrentTime;
   // Send message to the caller, for instance to update a progressbar
-  SendMessage(pt_hwndEvent, // was hwndCaller
+  postMessage(pt_hwndEvent, // was hwndCaller and sendmessage
               WM_TIMERUPDATE,
               0,
               0);
@@ -1263,6 +1265,11 @@ begin
   Result := pr_MediaEngine.FrameStep(goForward);
 end;
 
+
+function TcMediaEngine.getFormattedSeconds(seconds: integer): string;
+begin
+  result := MfSecToStr(seconds, FALSE);
+end;
 
 procedure TcMediaEngine.SetRedraw();
 begin

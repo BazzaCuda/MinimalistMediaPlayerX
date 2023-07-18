@@ -27,18 +27,24 @@ type
   strict private
     FMainWnd: HWND;
   private
+    FDragging: boolean;
     FMainForm: TForm;
     FMainLeft: integer;
     FMainTop: integer;
     FMainWidth: integer;
+    FUIWnd: HWND;
+    FMouseDown: boolean;
     function getMainTopRightPt: TPoint;
   public
+    property dragging: boolean read FDragging write FDragging;
     property mainForm: TForm read FMainForm write FMainForm;
     property mainWnd: HWND read FMainWnd write FMainWnd;
     property mainLeft: integer read FMainLeft write FMainLeft;
     property mainTopRightPt: TPoint read getMainTopRightPt;
     property mainTop: integer read FMainTop write FMainTop;
     property mainWidth: integer read FMainWidth write FMainWidth;
+    property mouseDown: boolean read FMouseDown write FMouseDown;
+    property UIWnd: HWND read FUIWnd write FUIWnd;
   end;
 
 function GV: TGlobalVars;

@@ -27,12 +27,14 @@ type
   TAppEvents = class(TObject)
   strict private
     FAppEvents: TApplicationEvents;
+    FDragging: boolean;
   private
     procedure appEventsMessage(var msg: tagMSG; var handled: boolean);
   protected
+    property appEvents: TApplicationEvents read FAppEvents write FAppEvents;
+  public
     constructor create;
     destructor  Destroy; override;
-    property appEvents: TApplicationEvents read FAppEvents write FAppEvents;
   end;
 
 implementation
@@ -44,12 +46,36 @@ var gAE: TAppEvents;
 
 { TAppEvents }
 
+var lastLocation: TPoint;
+
+procedure setLastLocation;
+var
+  vRect: TRect;
+begin
+  getCursorPos(lastLocation);
+  getWindowRect(GV.UIWnd, vRect);
+  lastLocation.x := lastLocation.x - vRect.left;
+  lastLocation.y := lastLocation.y - vRect.top;
+end;
+
+procedure dragUI;
+var
+  currentPos: TPoint;
+  x, y: integer;
+begin
+  getCursorPos(currentPos);
+  x := currentpos.x - lastLocation.x;
+  y := currentpos.y - lastLocation.y;
+  MoveWindow(GV.UIWnd, x, y, GV.mainForm.width, GV.mainForm.height, FALSE);
+end;
+
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
 // main event handler for capturing keystrokes
 var
   key: word;
   shiftState: TShiftState;
   keyDnHandled: boolean;
+  sysCommand: TWMSysCommand;
 begin
   keyDnHandled := FALSE;
   case msg.message = WM_KEYDOWN of TRUE:  begin
@@ -66,9 +92,21 @@ begin
                                             handled     := KB.processKeyStroke(key, shiftState, kdUp);
                                           end;end;
 
-  case msg.message = WM_TIMERUPDATE of
-      TRUE: MP.setProgressBar; end;
+  case msg.message = WM_TIMERUPDATE of TRUE: MP.setProgressBar; end;
 
+  case msg.message = WM_SYSCOMMAND of TRUE: begin
+                                              sysCommand.CmdType := msg.wParam;
+                                              doSysCommand(sysCommand); end;end;
+
+  case msg.message = WM_PROGRESSBAR_CLICK of TRUE: MP.position := PB.position; end;
+
+  case msg.message = WM_TIMEDTEXTNOTIFY of TRUE: ST.subTitle := MP.subTitle; end;
+
+  case msg.message = WM_TICK of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
+
+  case msg.message = WM_LBUTTONDOWN of TRUE: begin GV.mouseDown := TRUE; setLastLocation;  end;end;
+  case msg.message = WM_LBUTTONUP   of TRUE: GV.mouseDown := FALSE; end;
+  case GV.mouseDown and (msg.message = WM_MOUSEMOVE) of TRUE: dragUI; end;
 end;
 
 constructor TAppEvents.create;

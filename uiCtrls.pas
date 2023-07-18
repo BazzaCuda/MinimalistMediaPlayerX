@@ -21,7 +21,7 @@ unit uiCtrls;
 interface
 
 uses
-  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, ALProgressBar, globalVars;
+  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars;
 
 function initUI(aForm: TForm): boolean;
 

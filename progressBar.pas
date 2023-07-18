@@ -21,21 +21,25 @@ unit progressBar;
 interface
 
 uses
-  ALProgressBar, vcl.forms, vcl.controls, system.classes;
+  ALProgressBar, vcl.forms, vcl.controls, system.classes, vcl.extCtrls;
 
 type
   TProgressBar = class(TObject)
   strict private
     FPB: TALProgressBar;
+    FMoving: boolean;
+    FTimer: TTimer;
   private
     procedure progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    function getPosition: integer;
+    function  getPosition: integer;
     procedure setPosition(const Value: integer);
-    function getMax: integer;
+    function  getMax: integer;
     procedure setMax(const Value: integer);
+    procedure timerEvent(Sender: TObject);
   protected
     constructor create;
+    function  setNewPosition(x: integer): integer;
   public
     destructor  Destroy; override;
     function initProgressBar(aForm: TForm): boolean;
@@ -48,7 +52,7 @@ function PB: TProgressBar;
 implementation
 
 uses
-  vcl.graphics, _debugWindow;
+  vcl.graphics, consts, globalVars, winApi.windows, _debugWindow;
 
 var
   gPB: TProgressBar;
@@ -67,13 +71,17 @@ begin
   FPB := TALProgressBar.create(NIL);
   FPB.onMouseMove := progressBarMouseMove;
   FPB.onMouseUp   := progressBarMouseUp;
+  FTimer          := TTimer.create(NIL);
+  FTimer.enabled  := FALSE;
+  FTimer.interval := 100;
+  FTimer.OnTimer  := timerEvent;
 end;
 
 destructor TProgressBar.Destroy;
 begin
-  debug('TProgressBar.Destroy');
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
+  case FTimer <> NIL of TRUE: FTimer.free; end;
   inherited;
 end;
 
@@ -106,13 +114,20 @@ end;
 
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-//
+  case not (ssCtrl in shift) of TRUE: EXIT; end;
+  case FMoving               of TRUE: EXIT; end; // only allow one drag operation every 100ms otherwise MMF gets upset
+  setNewPosition(x);
+  postMessage(GV.mainWnd, WM_PROGRESSBAR_CLICK, 0, 0);
+  FMoving         := TRUE;
+  FTimer.enabled  := TRUE;
 end;
 
 procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // calculate a new video position based on where the progress bar is clicked
 begin
-  FPB.position := 75; // TEMPORARY TEST
+  setNewPosition(x);
+  postMessage(GV.mainWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
+  postMessage(GV.mainWnd, WM_TICK, 0, 0); // update the time display immediately
 end;
 
 procedure TProgressBar.setMax(const Value: integer);
@@ -120,9 +135,21 @@ begin
   FPB.max := Value;
 end;
 
+function TProgressBar.setNewPosition(x: integer): integer;
+begin
+  FPB.Position := round(x * FPB.max / FPB.clientWidth);
+end;
+
 procedure TProgressBar.setPosition(const Value: integer);
 begin
   FPB.Position := Value;
+end;
+
+procedure TProgressBar.timerEvent(Sender: TObject);
+// limit dragging operations to one every 100ms otherwise MMF gets upset and crashes the video
+begin
+  FTimer.enabled := FALSE;
+  FMoving        := FALSE;
 end;
 
 initialization
