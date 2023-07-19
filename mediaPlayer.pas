@@ -78,7 +78,8 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils, _debugWindow;
+  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
+  formCaption, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -100,6 +101,7 @@ end;
 function TMediaPlayer.createSubTitleLayer: boolean;
 begin
   ST.initSubtitles(FVideoPanel);
+  MC.initCaption(FVideoPanel);
 end;
 
 destructor TMediaPlayer.Destroy;
@@ -216,8 +218,11 @@ begin
 end;
 
 procedure TMediaPlayer.setPosition(const Value: integer);
+var
+  hr: HRESULT;
 begin
-  MMFMediaEngine.pr_MediaEngine.SetCurrentTime(value);
+  hr := MMFMediaEngine.pr_MediaEngine.SetCurrentTime(value);
+  case FAILED(hr) of TRUE: debug('no setPosition'); end;
 end;
 
 function TMediaPlayer.setProgressBar: boolean;

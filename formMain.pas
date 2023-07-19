@@ -47,8 +47,6 @@ uses
 
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
-  styleElements := [];
-  color := clBlack;
   initUI(SELF);
   PB.initProgressBar(SELF);
   GV.mainWnd := APPLICATION.HANDLE; // or SELF.HANDLE ?  hmmm.
@@ -56,7 +54,6 @@ begin
 
   GV.mainForm := SELF;
   GV.UIWnd    := SELF.HANDLE;
-
 
   PL.add('B:\Movies\Blazing Saddles (1974).mp4');
   PL.add('B:\Movies\Nobody (2021).mp4');
@@ -68,7 +65,7 @@ begin
 //  PL.add('B:\Videos\ManorSolomon.mp4');
   PL.add('B:\AudioLibrary\Harry Potter\01 - Harry Potter and The Philosopher''s Stone\Harry Potter and the Philosopher''s Stone 1.mp3');
 
-  PL.first; PL.next; PL.next;
+  PL.first; //PL.next; PL.next;
 
   case MP.openURL(PL.currentItem) of FALSE: EXIT; end;
 

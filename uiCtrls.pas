@@ -61,7 +61,7 @@ function initUI(aForm: TForm): boolean;
 begin
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
-  aForm.styleElements := [seFont]; //, seClient];
+  aForm.styleElements := []; // [seFont]; //, seClient];
   setGlassFrame(aForm);
   setCustomTitleBar(aForm);
   setWindowStyle(aForm);

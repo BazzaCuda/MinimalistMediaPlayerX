@@ -1,10 +1,10 @@
-object subtitlesForm: TsubtitlesForm
+object CaptionForm: TCaptionForm
   Left = 0
   Top = 0
   BorderIcons = []
-  Caption = 'SubtitlesForm'
-  ClientHeight = 411
-  ClientWidth = 1150
+  Caption = 'captionForm'
+  ClientHeight = 407
+  ClientWidth = 1148
   Color = clGray
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

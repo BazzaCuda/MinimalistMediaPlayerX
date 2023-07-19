@@ -3,17 +3,38 @@ unit mediaInfo;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  Winapi.mediaFoundationApi.MFApi, {Winapi.mediaFoundationApi.MFMediaEngine,} Winapi.mediaFoundationApi.MFPlay, Winapi.mediaFoundationApi.MFIdl, Winapi.mediaFoundationApi.MFObjects,
-  Winapi.mediaFoundationApi.MFReadWrite, system.win.comObj, winApi.ActiveX.objBase, winApi.comBaseApi;
+  vcl.stdCtrls;
 
 type
   TMediaInfo = class(TObject)
   private
-    procedure GetVideoBitrate(pSourceReader: IMFSourceReader);
+    FAudioBitRate: integer;
+    FFileSize: integer;
+    FHeight: integer;
+    FStereoMono: string;
+    FWidth: integer;
+    FOverallFrameRate: string;
+    FOverallBitRate: integer;
+    FVideoBitRate: integer;
+    function getAudioBitRate: string;
+    function getFileSize: string;
+    function getOverallFrameRate: string;
+    function getOverallBitRate: string;
+    function getVideoBitRate: string;
+    function getXY: string;
+    function getStereoMono: string;
   public
-    function initMediaInfo(aURL: string): string;
+    function getData(aMemo: TMemo): boolean;
+    function initMediaInfo(aURL: string): boolean;
+    property audioBitRate:      string  read getAudioBitRate;
+    property fileSize:          string  read getFileSize;
+    property height:            integer read FHeight;
+    property overallBitRate:    string  read getOverallBitRate;
+    property overallFrameRate:  string  read getOverallFrameRate;
+    property stereoMono:        string  read getStereoMono;
+    property videoBitRate:      string  read getVideoBitRate;
+    property width:             integer read FWidth;
+    property XY:                string  read getXY;
   end;
 
 function MI: TMediaInfo;
@@ -21,7 +42,7 @@ function MI: TMediaInfo;
 implementation
 
 uses
-  _debugWindow;
+  mediaInfoDLL, system.sysUtils, commonUtils, _debugWindow;
 
 var
   gMI: TMediaInfo;
@@ -34,115 +55,77 @@ end;
 
 { TMediaInfo }
 
-procedure TMediaInfo.GetVideoBitrate(pSourceReader: IMFSourceReader);
-//var
-//  dwMediaTypeIndex: DWORD;
-//  pMediaType: IMFMediaType;
-//  majorType: TGUID;
-//  videoBitrate: UINT32;
-//begin
-//  dwMediaTypeIndex := 0;
-//  pMediaType := nil;
-
-//  // Get the current media type
-//  if Succeeded(pSourceReader.GetNativeMediaType(dwMediaTypeIndex, 0, pMediaType)) then
-//  begin
-////    if Succeeded(pMediaType.GetGUID(MF_MT_MAJOR_TYPE, majorType)) and (majorType = MFMediaType_Video) then
-////    begin
-//      if Succeeded(pMediaType.GetUINT32(MF_MT_AVG_BITRATE, videoBitrate)) then
-//      begin
-//        debugInteger('Video Bitrate (bps): ', videoBitrate);
-//      end;
-////    end;
-//  end;
-var
-  dwMediaTypeIndex: DWORD;
-  MediaType: IMFMediaType;
-  hr: HResult;
-  VideoBitrate: UINT32;
-  framesize: UINT64;
-  width, height: cardinal;
+function TMediaInfo.getAudioBitRate: string;
 begin
-//  if succeeded(pSourceReader.GetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, MediaType));
-//  if Succeeded(hr) then
-//  if Succeeded(pSourceReader.GetNativeMediaType(dwMediaTypeIndex, 0, MediaType)) then // this worked
-  if succeeded(pSourceReader.GetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, MediaType)) then
-   begin
-//    MediaType.GetUINT32(MF_MT_FRAME_RATE_RANGE_MAX, VideoBitrate);
-
-// Retrieve the average time per frame
-  var AvgTimePerFrame: Int64;
-  MediaType.GetUINT64(MF_MT_FRAME_SIZE, frameSize);
-  width := int64Rec(frameSize).hi;
-  height := int64Rec(frameSize).lo;
-  debugInteger('width', width);
-  debugInteger('height', height);
-//  debugString('lo', intToStr(lo(frameSize)));
-
-  // Retrieve the time scale
-//  var TimeScale: UINT32;
-//  MediaType.GetUINT32(MF_MT_FRAME_RATE_RANGE_MAX, TimeScale);
-//
-//  // Calculate the frame rate
-//  var FrameRate: Double := 10000000.0 / AvgTimePerFrame;
-//  FrameRate := Round(FrameRate * TimeScale) / TimeScale;
-
-
-
-//    debugInteger('Video Bitrate: ', VideoBitrate);
-  end;
+  result := format('AR:  %d Kb/s', [round(FAudioBitRate / 1000)]);
 end;
 
-
-function TMediaInfo.initMediaInfo(aURL: string): string;
-var
-  pSourceReader: IMFSourceReader;
-  hr: HRESULT;
+function TMediaInfo.getData(aMemo: TMemo): boolean;
 begin
-  // Initialize COM
-  if Failed(CoInitializeEx(nil, COINIT_APARTMENTTHREADED or COINIT_DISABLE_OLE1DDE)) then
-    Exit;
+  aMemo.clear;
+  aMemo.lines.add(XY);
+  aMemo.lines.add(overallFrameRate);
+  aMemo.lines.add(overallBitRate);
+  aMemo.lines.add(audioBitRate);
+  aMemo.lines.add(videoBitRate);
+  aMemo.lines.add(stereoMono);
+  aMemo.lines.add(fileSize);
+end;
 
-  // Initialize Media Foundation
-  if Failed(MFStartup(MF_VERSION)) then
-  begin
-    CoUninitialize;
-    Exit;
-  end;
+function TMediaInfo.getFileSize: string;
+begin
+  result := formatFileSize(FFileSize);
+end;
 
-  pSourceReader := nil;
+function TMediaInfo.getOverallBitRate: string;
+begin
+  result := format('BR:  %d Kb/s', [round(FOverallBitRate / 1000)]);
+end;
 
+function TMediaInfo.getOverallFrameRate: string;
+begin
+  result := format('FR:  %s fps', [FOverallFrameRate]);
+end;
+
+function TMediaInfo.getStereoMono: string;
+begin
+  result := 'SM: ' + copy(FStereoMono, 1, pos(' ', FStereoMono) - 1); // "Stereo / Stereo" -> "Stereo"
+end;
+
+function TMediaInfo.getVideoBitRate: string;
+begin
+  result := format('VR:  %d Kb/s', [round(FVideoBitRate / 1000)]);
+end;
+
+function TMediaInfo.getXY: string;
+begin
+  result := format('XY:  %d x %d', [width, height]);
+end;
+
+function TMediaInfo.initMediaInfo(aURL: string): boolean;
+var
+  handle: THandle;
+begin
+  result := FALSE;
+  case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
+  mediaInfo_Option(0, 'Internet', 'No');
+  handle := MediaInfo_New();
+  case handle = 0 of TRUE: EXIT; end;
   try
-    // Create the media source reader
-    hr := MFCreateSourceReaderFromURL('B:\Movies\Blazing Saddles (1974).mp4', nil, pSourceReader);
-    if Succeeded(hr) then
-    begin
-      // Configure the source reader
-      hr := pSourceReader.SetStreamSelection(MF_SOURCE_READER_ALL_STREAMS, FALSE);
-      if Succeeded(hr) then
-      begin
-        hr := pSourceReader.SetStreamSelection(MF_SOURCE_READER_FIRST_VIDEO_STREAM, TRUE);
-        if Succeeded(hr) then
-        begin
-          // Get video bitrate
-          GetVideoBitrate(pSourceReader);
-        end;
-      end;
-    end;
+    mediaInfo_Open(handle, PWideChar(aURL));
+    FOverallFrameRate := mediaInfo_Get(handle, Stream_General,  0, 'FrameRate',   Info_Text, Info_Name);
+    case tryStrToInt(mediaInfo_Get(handle, Stream_General,  0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_General,  0, 'FileSize',        Info_Text, Info_Name), FFileSize)          of FALSE: FFileSize         := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Audio,    0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Video,    0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Video,    0, 'Width',           Info_Text, Info_Name), FWidth)             of FALSE: FWidth            := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Video,    0, 'BitRate',         Info_Text, Info_Name), FVideoBitRate)      of FALSE: FVideoBitRate     := 0; end;
+
+    FStereoMono := mediaInfo_Get(handle, Stream_Audio,  0, 'Title',         Info_Text, Info_Name);
+
   finally
-    // Clean up
-//    if Assigned(pSourceReader) then
-//      pSourceReader._Release;
-
-    // Shut down Media Foundation
-//    MFLockPlatform;
-//    MFShutdown;
-//    MFUnlockPlatform;
-
-    // Uninitialize COM
-//    CoUninitialize;
+    mediaInfo_close(handle);
   end;
-
 end;
 
 initialization

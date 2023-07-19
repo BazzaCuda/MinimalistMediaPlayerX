@@ -25,6 +25,7 @@ uses
 
 function delay(dwMilliseconds: DWORD): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
+function formatFileSize(aSize: int64): string;
 function formatSeconds(seconds: integer): string;
 function getExePath: string;
 function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
@@ -34,7 +35,7 @@ function initTransparentLabel(aLabel: TLabel): boolean;
 implementation
 
 uses
-  system.sysUtils, vcl.controls, vcl.graphics;
+  system.sysUtils, vcl.controls, vcl.graphics, _debugWindow;
 
 function delay(dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
@@ -70,6 +71,12 @@ begin
 
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
+end;
+
+function formatFileSize(aSize: int64): string;
+begin
+ case aSize >= 1052266987 of  TRUE:   try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
+                             FALSE:   try result := format('FS:  %d MB', [trunc(aSize / 1024 / 1024)]); except end;end;
 end;
 
 function formatSeconds(seconds: integer): string;
@@ -135,7 +142,7 @@ begin
   aForm.ctl3D                  := FALSE;
   aForm.doubleBuffered         := TRUE;
   aForm.margins.bottom         := 0;
-  aForm.oldCreateOrder         := TRUE;
+//  aForm.oldCreateOrder         := TRUE; // Delphi11 doesn't like this
   aForm.formStyle              := fsStayOnTop; // Keep the form always on top - hmmm. How does this impact infoPanel?
   aForm.borderIcons            := [];
   aForm.alphaBlend             := True;

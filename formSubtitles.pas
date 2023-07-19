@@ -27,6 +27,7 @@ uses
 type
   TSubtitlesForm = class(TForm)
   private
+    FDataMemo: TMemo;
     FSubtitle: TLabel;
     FVideoPanel: TPanel;
     FInfoPanelL: TPanel;
@@ -38,8 +39,8 @@ type
     FOpInfo: TLabel;
     FOpInfoTimer: TTimer;
 
-    ParentRect: TRect;        // rect of the parent window
-    ParentPosition: TPoint;   // parent window position
+//    ParentRect: TRect;        // rect of the parent window
+//    ParentPosition: TPoint;   // parent window position
 
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
@@ -48,13 +49,16 @@ type
     procedure setDisplayTime(const Value: string);
     procedure setOpInfo(const Value: string);
     procedure timerEvent(sender: TObject);
+    procedure setCaption(const Value: string);
   public
     destructor Destroy; override;
     function initSubtitles(aVideoPanel: TPanel): boolean;
-    property displayTime: string write setDisplayTime;
-    property HWND: HWND read getHWND;
-    property opInfo: string write setOpInfo;
-    property subTitle: string write setSubtitle;
+    property caption:       string                  write setCaption;
+    property dataMemo:      TMemo  read FDataMemo;
+    property displayTime:   string                  write setDisplayTime;
+    property HWND:          HWND   read getHWND;
+    property opInfo:        string                  write setOpInfo;
+    property subTitle:      string                  write setSubtitle;
   end;
 
 function ST: TSubtitlesForm;
@@ -62,7 +66,7 @@ function ST: TSubtitlesForm;
 implementation
 
 uses
-  mediaPlayer, commonUtils;
+  mediaPlayer, commonUtils, _debugWindow;
 
 var
   gST: TSubtitlesForm;
@@ -127,6 +131,22 @@ begin
   FOpInfo.top       := FTimeLabel.top - FTimeLabel.height;
   FOpInfo.left      := FTimeLabel.left;
 
+  FDataMemo := TMemo.create(FInfoPanelL);
+  FDataMemo.parent      := FInfoPanelL;
+  FDataMemo.align       := alBottom;
+  FDataMemo.bevelInner  := bvNone;
+  FDataMemo.bevelOuter  := bvNone;
+  FDataMemo.borderStyle := bsNone;
+  FDataMemo.color       := clBlack;
+  FDataMemo.height      := 110;
+  FDataMemo.margins.bottom := 20; // otherwise the bottom line displays below the progressBar
+  FDataMemo.readOnly    := TRUE;
+  FDataMemo.tabStop     := FALSE;
+  FDataMemo.font.color  := clGray;
+  FDataMemo.font.height := -13;
+  FDataMemo.styleElements := [];
+  FDataMemo.clear;
+
   FOpInfoTimer := TTimer.create(NIL);
   FOpInfoTimer.interval := 1000;
   FOpInfoTimer.enabled  := FALSE;
@@ -168,8 +188,8 @@ end;
 
 procedure TSubtitlesForm.setOpInfo(const Value: string);
 begin
-  FOpInfo.caption := Value;
-  FOpInfoTimer.enabled := TRUE;
+  FOpInfo.caption       := Value;
+  FOpInfoTimer.enabled  := TRUE;
 end;
 
 procedure TSubtitlesForm.setSubtitle(const Value: string);
