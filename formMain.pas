@@ -39,7 +39,7 @@ var
 implementation
 
 uses
-  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar;
+  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo;
 
 {$R *.dfm}
 
@@ -47,6 +47,8 @@ uses
 
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
+  styleElements := [];
+  color := clBlack;
   initUI(SELF);
   PB.initProgressBar(SELF);
   GV.mainWnd := APPLICATION.HANDLE; // or SELF.HANDLE ?  hmmm.
@@ -55,22 +57,26 @@ begin
   GV.mainForm := SELF;
   GV.UIWnd    := SELF.HANDLE;
 
+
   PL.add('B:\Movies\Blazing Saddles (1974).mp4');
   PL.add('B:\Movies\Nobody (2021).mp4');
   PL.add('B:\Movies\Leon The Professional (1994) extended.mp4');
   PL.add('B:\Movies\LOTR 1 - The Fellowship of the Ring (2001) extended.mp4');
   PL.add('B:\Movies\Blazing Saddles (1974).mp4');
   PL.add('B:\Movies\Let The Right One In (2008).mp4');
-  PL.add('B:\Videos\Airplane 2 - The Sequel (6_10) Movie CLIP - It''s Very Likely That We''re All Going to Die (1982) HD [edited].mp4');
+//  PL.add('B:\Videos\Airplane 2 - The Sequel (6_10) Movie CLIP - It''s Very Likely That We''re All Going to Die (1982) HD [edited].mp4');
 //  PL.add('B:\Videos\ManorSolomon.mp4');
+  PL.add('B:\AudioLibrary\Harry Potter\01 - Harry Potter and The Philosopher''s Stone\Harry Potter and the Philosopher''s Stone 1.mp3');
 
-//  PL.first;
+  PL.first; PL.next; PL.next;
 
   case MP.openURL(PL.currentItem) of FALSE: EXIT; end;
 
   MP.play;
   MP.volume := 100; // there seems to be a problem with setting this before .play, which is concerning
 //  MP.position := MP.duration div 2; // TEMPORARY
+  delay(100);
+  MI.initMediaInfo('B:\Movies\Blazing Saddles (1974).mp4');
 end;
 
 

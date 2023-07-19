@@ -35,6 +35,9 @@ type
 
     FTimeLabel: TLabel;
 
+    FOpInfo: TLabel;
+    FOpInfoTimer: TTimer;
+
     ParentRect: TRect;        // rect of the parent window
     ParentPosition: TPoint;   // parent window position
 
@@ -43,11 +46,14 @@ type
     function  getHWND: HWND;
     procedure setSubtitle(const Value: string);
     procedure setDisplayTime(const Value: string);
+    procedure setOpInfo(const Value: string);
+    procedure timerEvent(sender: TObject);
   public
     destructor Destroy; override;
     function initSubtitles(aVideoPanel: TPanel): boolean;
     property displayTime: string write setDisplayTime;
     property HWND: HWND read getHWND;
+    property opInfo: string write setOpInfo;
     property subTitle: string write setSubtitle;
   end;
 
@@ -72,6 +78,17 @@ end;
 { TSubtitlesForm }
 
 constructor TSubtitlesForm.create;
+  function defaultFontEtc(aLabel: TLabel): boolean;
+  begin
+    aLabel.font.color     := clGray;
+    aLabel.font.size      := 8;
+    aLabel.font.style     := [];
+    aLabel.margins.top    := 0;
+    aLabel.margins.bottom := 0;
+    aLabel.margins.left   := 0;
+    aLabel.margins.right  := 0;
+    aLabel.caption        := '';
+  end;
 begin
   inherited create(NIL);
   FSubtitle := TLabel.create(NIL);
@@ -94,13 +111,26 @@ begin
   FTimeLabel := TLabel.create(FInfoPanelR);
   FTimeLabel.parent := FInfoPanelR;
   initTransparentLabel(FTimeLabel);
+  defaultFontEtc(FTimeLabel);
   FTimeLabel.align := alBottom;
   FTimeLabel.alignment := taRightJustify;
-  FTimeLabel.font.color := clGray;
-  FTimeLabel.font.size := 8;
-  FTimeLabel.font.style := [];
   FTimeLabel.margins.bottom := 0;
-  FTimeLabel.caption := '00:00:00 / 99:99:99';
+  FTimeLabel.caption := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
+
+  FOpInfo := TLabel.create(FInfoPanelR);
+  FOpInfo.parent := FInfoPanelR;
+  initTransparentLabel(FOpInfo);
+  defaultFontEtc(FOpInfo);
+  FOpInfo.alignment := taRightJustify;
+  FOpInfo.autoSize  := FALSE;
+  FOpInfo.width     := FTimeLabel.width;
+  FOpInfo.top       := FTimeLabel.top - FTimeLabel.height;
+  FOpInfo.left      := FTimeLabel.left;
+
+  FOpInfoTimer := TTimer.create(NIL);
+  FOpInfoTimer.interval := 1000;
+  FOpInfoTimer.enabled  := FALSE;
+  FOpInfoTimer.onTimer  := timerEvent;
 end;
 
 destructor TSubtitlesForm.Destroy;
@@ -109,6 +139,7 @@ begin
   case FSubtitlePanel <> NIL of TRUE: FSubtitlePanel.free; end;
   case FInfoPanelL    <> NIL of TRUE: FInfoPanelL.free; end;
   case FInfoPanelR    <> NIL of TRUE: FInfoPanelR.free; end;
+  case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
 end;
 
@@ -135,9 +166,21 @@ begin
   FTimeLabel.caption := Value;
 end;
 
+procedure TSubtitlesForm.setOpInfo(const Value: string);
+begin
+  FOpInfo.caption := Value;
+  FOpInfoTimer.enabled := TRUE;
+end;
+
 procedure TSubtitlesForm.setSubtitle(const Value: string);
 begin
   FSubtitle.caption := Value;
+end;
+
+procedure TSubtitlesForm.timerEvent(sender: TObject);
+begin
+  FOpInfoTimer.enabled := FALSE;
+  FOpInfo.caption := '';
 end;
 
 procedure TSubtitlesForm.WMSize(var message: TWMSize);

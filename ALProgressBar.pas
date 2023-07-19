@@ -154,6 +154,8 @@ begin
 
   MainBitmap := TBitmap.Create;
   TiledBarBitmap := TBitmap.Create;
+
+  cursor := crHandPoint; // BAZ
 end;
 
 destructor TALProgressBar.Destroy;

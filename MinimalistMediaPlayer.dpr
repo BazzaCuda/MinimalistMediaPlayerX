@@ -41,7 +41,10 @@ uses
   MMFTimedTextNotifyClass in 'MMFTimedTextNotifyClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   types in 'types.pas',
-  tickTimer in 'tickTimer.pas';
+  tickTimer in 'tickTimer.pas',
+  mediaInfo in 'mediaInfo.pas',
+  WinApi.MediaFoundationApi.MfMetLib in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfMetLib.pas',
+  WinApi.MediaFoundationApi.MfReadWrite in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas';
 
 {$R *.res}
 

@@ -21,7 +21,7 @@ unit progressBar;
 interface
 
 uses
-  ALProgressBar, vcl.forms, vcl.controls, system.classes, vcl.extCtrls;
+  ALProgressBar, vcl.forms, vcl.controls, system.classes, vcl.extCtrls, winApi.windows;
 
 type
   TProgressBar = class(TObject)
@@ -37,11 +37,13 @@ type
     function  getMax: integer;
     procedure setMax(const Value: integer);
     procedure timerEvent(Sender: TObject);
+    function getTop: integer;
   protected
     constructor create;
     function  setNewPosition(x: integer): integer;
   public
     destructor  Destroy; override;
+    function inClientArea(y: integer): boolean;
     function initProgressBar(aForm: TForm): boolean;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -52,7 +54,7 @@ function PB: TProgressBar;
 implementation
 
 uses
-  vcl.graphics, consts, globalVars, winApi.windows, _debugWindow;
+  vcl.graphics, consts, globalVars, _debugWindow;
 
 var
   gPB: TProgressBar;
@@ -93,6 +95,16 @@ end;
 function TProgressBar.getPosition: integer;
 begin
   result := FPB.position;
+end;
+
+function TProgressBar.getTop: integer;
+begin
+  result := FPB.Top;
+end;
+
+function TProgressBar.inClientArea(y: integer): boolean;
+begin
+  result := y >= FPB.top;
 end;
 
 function TProgressBar.initProgressBar(aForm: TForm): boolean;

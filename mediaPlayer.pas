@@ -78,7 +78,7 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, _debugWindow;
+  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -155,6 +155,7 @@ begin
   FVideoPanel.parent := aForm;
   FVideoPanel.align  := alClient;
   FVideoPanel.color  := clBlack;
+  FVideoPanel.BevelOuter := bvNone;
 end;
 
 function TMediaPlayer.openURL(aURL: string): boolean;
@@ -256,6 +257,12 @@ begin
   case ssCtrl  in aShiftState of  TRUE: position := position - vTab;
                                  FALSE: position := position + vTab; end;
   delay(100); play;
+
+  var newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]);
+  case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
+                                FALSE: newInfo := '>> ' + newInfo;
+  end;
+  ST.opInfo := newInfo;
 end;
 
 function TMediaPlayer.volDown: boolean;

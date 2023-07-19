@@ -25,6 +25,7 @@ uses
 
 function delay(dwMilliseconds: DWORD): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
+function formatSeconds(seconds: integer): string;
 function getExePath: string;
 function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
 function initTransparentForm(aForm: TForm): TForm;
@@ -69,6 +70,13 @@ begin
 
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
+end;
+
+function formatSeconds(seconds: integer): string;
+begin
+  case seconds < 60 of  TRUE: result := format('%ds', [seconds]);
+                       FALSE: result := format('%d:%.2d', [seconds div 60, seconds mod 60]);
+  end;
 end;
 
 function getExePath: string;

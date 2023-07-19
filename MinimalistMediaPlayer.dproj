@@ -166,6 +166,9 @@
         </DCCReference>
         <DCCReference Include="types.pas"/>
         <DCCReference Include="tickTimer.pas"/>
+        <DCCReference Include="mediaInfo.pas"/>
+        <DCCReference Include="..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfMetLib.pas"/>
+        <DCCReference Include="..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
