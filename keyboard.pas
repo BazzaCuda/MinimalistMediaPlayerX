@@ -24,7 +24,7 @@ uses
   system.classes;
 
 type
-  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards);
+  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -63,8 +63,8 @@ uses
   sysCommands, globalVars, winApi.windows, mediaPlayer, _debugWindow;
 
 const
-A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
-N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
+  A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
+  N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
 
 var
   gKB: TKeyboard;
@@ -88,6 +88,7 @@ begin
   case keyDn and keyIs(VK_RIGHT)  of TRUE: result := koFrameForwards; end;
   case keyDn and keyIs(VK_LEFT)   of TRUE: result := koFrameBackwards; end;
   case keyUp and keyIs(VK_TAB)    of TRUE: result := koTabTab; end;
+  case keyUp and keyIs(J)         of TRUE: result := koAdjustAspectRatio; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -142,13 +143,14 @@ begin
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
     koCloseApp:   sendSysCommandClose(GV.mainWnd);
-    koVolUp:      MP.volUp;
-    koVolDown:    MP.volDown;
-    koTab:        MP.tab(aShiftState, KB.capsLock);
-    koTabTab:     MP.tab(aShiftState, KB.capsLock, 200);
-    koPausePlay:  MP.pausePlay;
-    koFrameForwards: MP.frameForwards;
-    koFrameBackwards: MP.frameBackwards;
+    koVolUp:             MP.volUp;
+    koVolDown:           MP.volDown;
+    koTab:               MP.tab(aShiftState, KB.capsLock);
+    koTabTab:            MP.tab(aShiftState, KB.capsLock, 200);
+    koPausePlay:         MP.pausePlay;
+    koFrameForwards:     MP.frameForwards;
+    koFrameBackwards:    MP.frameBackwards;
+    koAdjustAspectRatio: MP.adjustAspectRatio(GV.mainForm);
   end;
 
   result := TRUE;

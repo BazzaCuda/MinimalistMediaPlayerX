@@ -39,9 +39,6 @@ type
     FOpInfo: TLabel;
     FOpInfoTimer: TTimer;
 
-//    ParentRect: TRect;        // rect of the parent window
-//    ParentPosition: TPoint;   // parent window position
-
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
     function  getHWND: HWND;
@@ -49,11 +46,9 @@ type
     procedure setDisplayTime(const Value: string);
     procedure setOpInfo(const Value: string);
     procedure timerEvent(sender: TObject);
-    procedure setCaption(const Value: string);
   public
     destructor Destroy; override;
     function initSubtitles(aVideoPanel: TPanel): boolean;
-    property caption:       string                  write setCaption;
     property dataMemo:      TMemo  read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND   read getHWND;

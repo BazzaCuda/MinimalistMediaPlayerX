@@ -39,7 +39,7 @@ var
 implementation
 
 uses
-  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo;
+  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo, formSubtitles, formCaption;
 
 {$R *.dfm}
 
@@ -59,13 +59,12 @@ begin
   PL.add('B:\Movies\Nobody (2021).mp4');
   PL.add('B:\Movies\Leon The Professional (1994) extended.mp4');
   PL.add('B:\Movies\LOTR 1 - The Fellowship of the Ring (2001) extended.mp4');
-  PL.add('B:\Movies\Blazing Saddles (1974).mp4');
   PL.add('B:\Movies\Let The Right One In (2008).mp4');
-//  PL.add('B:\Videos\Airplane 2 - The Sequel (6_10) Movie CLIP - It''s Very Likely That We''re All Going to Die (1982) HD [edited].mp4');
-//  PL.add('B:\Videos\ManorSolomon.mp4');
+  PL.add('B:\Videos\Airplane 2 - The Sequel (6_10) Movie CLIP - It''s Very Likely That We''re All Going to Die (1982) HD [edited].mp4');
+  PL.add('B:\Videos\ManorSolomon.mp4');
   PL.add('B:\AudioLibrary\Harry Potter\01 - Harry Potter and The Philosopher''s Stone\Harry Potter and the Philosopher''s Stone 1.mp3');
 
-  PL.first; //PL.next; PL.next;
+  PL.first; PL.next; // PL.next; PL.next; PL.next;
 
   case MP.openURL(PL.currentItem) of FALSE: EXIT; end;
 
@@ -73,7 +72,9 @@ begin
   MP.volume := 100; // there seems to be a problem with setting this before .play, which is concerning
 //  MP.position := MP.duration div 2; // TEMPORARY
   delay(100);
-  MI.initMediaInfo('B:\Movies\Blazing Saddles (1974).mp4');
+  MI.initMediaInfo(PL.currentItem);
+  MI.getData(ST.dataMemo);
+  MC.caption := PL.formatItem;
 end;
 
 

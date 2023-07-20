@@ -70,3 +70,6 @@ modules/
 
 # build folders
 win64/
+
+# developer's privilege
+*.lnk

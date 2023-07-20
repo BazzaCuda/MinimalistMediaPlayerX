@@ -44,7 +44,9 @@ uses
   tickTimer in 'tickTimer.pas',
   mediaInfo in 'mediaInfo.pas',
   WinApi.MediaFoundationApi.MfMetLib in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfMetLib.pas',
-  WinApi.MediaFoundationApi.MfReadWrite in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas';
+  WinApi.MediaFoundationApi.MfReadWrite in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas',
+  MediaInfoDLL in 'MediaInfoDLL.pas',
+  formCaption in 'formCaption.pas' {CaptionForm};
 
 {$R *.res}
 

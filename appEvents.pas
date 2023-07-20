@@ -83,25 +83,23 @@ var
   end;
 begin
   keyDnHandled := FALSE;
-  case msgIs(WM_KEYDOWN) of TRUE:  begin
-                                            shiftState   := KeyboardStateToShiftState;
-                                            key          := msg.WParam;
-                                            handled      := KB.processKeyStroke(key, shiftState, kdDown);
-                                            keyDnHandled := handled;
-                                          end;end;
+  case msgIs(WM_KEYDOWN) of TRUE: begin
+                                    shiftState   := KeyboardStateToShiftState;
+                                    key          := msg.WParam;
+                                    handled      := KB.processKeyStroke(key, shiftState, kdDown);
+                                    keyDnHandled := handled; end;end;
 
-  case msgIs(WM_KEYUP) of TRUE:    begin
-                                            case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-                                            shiftState  := KeyboardStateToShiftState;
-                                            key         := msg.WParam;
-                                            handled     := KB.processKeyStroke(key, shiftState, kdUp);
-                                          end;end;
+  case msgIs(WM_KEYUP) of TRUE: begin
+                                  case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
+                                  shiftState  := KeyboardStateToShiftState;
+                                  key         := msg.WParam;
+                                  handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
 
   case msgIs(WM_TIMERUPDATE) of TRUE: MP.setProgressBar; end;
 
-  case msgIs(WM_SYSCOMMAND) of TRUE: begin
-                                              sysCommand.CmdType := msg.wParam;
-                                              doSysCommand(sysCommand); end;end;
+  case msgIs(WM_SYSCOMMAND) of TRUE:  begin
+                                        sysCommand.CmdType := msg.wParam;
+                                        doSysCommand(sysCommand); end;end;
 
   case msgIs(WM_PROGRESSBAR_CLICK) of TRUE: MP.position := PB.position; end;
 

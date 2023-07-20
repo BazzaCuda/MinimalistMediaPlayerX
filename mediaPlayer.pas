@@ -21,7 +21,7 @@ unit mediaPlayer;
 interface
 
 uses
-  MMFMediaEngineClass, forms, vcl.extCtrls, types, system.classes;
+  MMFMediaEngineClass, forms, vcl.extCtrls, system.classes;
 
 type
   TMPEngine   = (mpeNone, mpeMMF, mpeWMP);
@@ -51,6 +51,7 @@ type
     function getFormattedTime: string;
   public
     destructor  Destroy; override;
+    function adjustAspectRatio(aForm: TForm): boolean;
     function frameBackwards: boolean;
     function frameForwards: boolean;
     function initMediaPlayer(aForm: TForm): boolean;
@@ -79,7 +80,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, _debugWindow;
+  formCaption, mediaInfo, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -91,6 +92,22 @@ begin
 end;
 
 { TMediaPlayer }
+
+function TMediaPlayer.adjustAspectRatio(aForm: TForm): boolean;
+var
+  vRatio: double;
+begin
+  debugInteger('X', MI.X); debugInteger('Y', Mi.Y);
+  case (MI.X = 0) OR (MI.Y = 0) of TRUE: EXIT; end;
+
+  vRatio := MI.Y / MI.X;
+
+  aForm.height := trunc(aForm.width * vRatio);
+
+  debugFormat('vRatio: %f', [vRatio]);
+
+  // checkScreenLimits
+end;
 
 constructor TMediaPlayer.create;
 begin

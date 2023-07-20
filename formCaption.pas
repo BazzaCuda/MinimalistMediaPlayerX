@@ -67,7 +67,7 @@ begin
   FCaption := TLabel.create(NIL);
 
   FOpInfoTimer := TTimer.create(NIL);
-  FOpInfoTimer.interval := 3000;
+  FOpInfoTimer.interval := 5000;
   FOpInfoTimer.enabled  := FALSE;
   FOpInfoTimer.onTimer  := timerEvent;
 end;

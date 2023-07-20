@@ -26,8 +26,9 @@ uses
 type
   TTickTimer = class(TTimer)
   private
-    constructor create;
     procedure timerEvent(aSender: TObject);
+  public
+    constructor create;
   end;
 
 implementation

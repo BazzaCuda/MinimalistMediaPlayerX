@@ -40,6 +40,7 @@ type
     function displayItem: string;
     function find(anItem: string): boolean;
     function first: boolean;
+    function formatItem: string;
     function hasItems: boolean;
     function isFirst: boolean;
     function isLast: boolean;
@@ -128,6 +129,11 @@ end;
 function TPlaylist.first: boolean;
 begin
   case hasItems of TRUE: FPlayIx := 0; end;
+end;
+
+function TPlaylist.formatItem: string;
+begin
+  result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, ExtractFileName(currentItem)]);
 end;
 
 function TPlaylist.hasItems: boolean;
