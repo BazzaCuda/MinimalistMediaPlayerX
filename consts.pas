@@ -40,7 +40,6 @@ const
   WM_TICK               = WM_USER + 2013;
 
   WM_PARENTCHANGED = WM_USER + 1023;
-  WM_TIMERUPDATE   = WM_USER + 1024;
 
   SC_DRAGMOVE = $F012;
 

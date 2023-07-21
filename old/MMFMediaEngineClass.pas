@@ -1105,6 +1105,7 @@ var
 begin
   hr:= E_NOINTERFACE;
 try
+  EXIT; // BAZ
   pt_CritSec.Enter;
   if Assigned(pr_MediaEngine) then
     begin

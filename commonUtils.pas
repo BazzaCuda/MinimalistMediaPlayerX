@@ -27,6 +27,7 @@ function delay(dwMilliseconds: DWORD): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
 function formatFileSize(aSize: int64): string;
 function formatSeconds(seconds: integer): string;
+function formatTime(seconds: integer): string;
 function getExePath: string;
 function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
 function initTransparentForm(aForm: TForm): TForm;
@@ -84,6 +85,13 @@ begin
   case seconds < 60 of  TRUE: result := format('%ds', [seconds]);
                        FALSE: result := format('%d:%.2d', [seconds div 60, seconds mod 60]);
   end;
+end;
+
+function formatTime(seconds: integer): string;
+begin
+  case seconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, seconds]);
+                       FALSE: case seconds < 3600 of  TRUE: result := format('%.2d:%.2d', [seconds div 60, seconds mod 60]);
+                                                     FALSE: result := format('%.2d:%.2d:%.2d', [seconds div 3600, (seconds mod 3600) div 60, seconds mod 3600 mod 60]); end;end;
 end;
 
 function getExePath: string;
@@ -158,7 +166,7 @@ begin
   aLabel.alignment         := taCenter;
   aLabel.alignWithMargins  := TRUE;
   aLabel.color             := clBlack;
-  aLabel.font.color        := clWhite;
+  aLabel.font.color        := clGray;
   aLabel.font.size         := 14;
   aLabel.font.style        := [fsBold];
   aLabel.layout            := tlBottom;

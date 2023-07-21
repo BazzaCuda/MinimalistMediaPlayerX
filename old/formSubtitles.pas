@@ -22,7 +22,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls, MMFTimedTextNotifyClass;
 
 type
   TSubtitlesForm = class(TForm)
@@ -32,7 +32,6 @@ type
     FVideoPanel: TPanel;
     FInfoPanelL: TPanel;
     FInfoPanelR: TPanel;
-    FInitialized: boolean;
     FSubtitlePanel: TPanel;
 
     FTimeLabel: TLabel;
@@ -80,7 +79,6 @@ end;
 constructor TSubtitlesForm.create;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
-    aLabel.font.name      := 'Segoe UI';
     aLabel.font.color     := clGray;
     aLabel.font.size      := 8;
     aLabel.font.style     := [];
@@ -167,16 +165,14 @@ end;
 
 function TSubtitlesForm.initSubtitles(aVideoPanel: TPanel): boolean;
 begin
-  case FInitialized of TRUE: EXIT; end;
   FVideoPanel := aVideoPanel;
 
-  SELF.parent := aVideoPanel;
+  SELF.parent                 := aVideoPanel;
   initTransparentForm(SELF);
 
-  FSubtitle.parent := SELF;
+  FSubtitle.parent            := SELF;
   initTransparentLabel(FSubtitle);
 
-  FInitialized := TRUE;
   SELF.show;
 end;
 

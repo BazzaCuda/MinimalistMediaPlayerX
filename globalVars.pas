@@ -20,12 +20,13 @@ unit globalVars;
 
 interface
 
-uses  winAPI.windows, system.classes, vcl.forms;
+uses  winAPI.windows, system.classes, vcl.forms, vcl.extCtrls;
 
 type
   TGlobalVars = class(TObject)
   strict private
     FMainWnd: HWND;
+    FCloseTimer: TTimer;
   private
     FDragging: boolean;
     FMainForm: TForm;
@@ -35,7 +36,12 @@ type
     FUIWnd: HWND;
     FMouseDown: boolean;
     function getMainTopRightPt: TPoint;
+    procedure onCloseTimerEvent(sender: TObject);
+    procedure setCloseApp(const Value: boolean);
   public
+    constructor create;
+    destructor  destroy;
+    property closeApp: boolean write setCloseApp;
     property dragging: boolean read FDragging write FDragging;
     property mainForm: TForm read FMainForm write FMainForm;
     property mainWnd: HWND read FMainWnd write FMainWnd;
@@ -52,7 +58,7 @@ function GV: TGlobalVars;
 implementation
 
 uses
-  vcl.controls;
+  vcl.controls, sysCommands;
 
 var
   gGV: TGlobalVars;
@@ -65,13 +71,38 @@ end;
 
 { TGlobalVars }
 
+constructor TGlobalVars.create;
+begin
+  inherited;
+  FCloseTimer := TTimer.create(NIL);
+  FCloseTimer.enabled := FALSE;
+  FCloseTimer.interval := 100;
+  FCloseTimer.OnTimer := onCloseTimerEvent;
+end;
+
+destructor TGlobalVars.destroy;
+begin
+  case FCloseTimer <> NIL of TRUE: FCloseTimer.free; end;
+end;
+
 function TGlobalVars.getMainTopRightPt: TPoint;
 begin
-  with TForm.create(NIL) do begin
-  result := ClientToScreen(point(FMainLeft + FMainWidth - 17, FMainTop + 1)); // screen position of the top right corner of the application window, roughly.
-  result := ClientToScreen(point(FMainLeft, FMainTop)); // screen position of the top right corner of the application window, roughly.
-  free;
+  with TForm.create(NIL) do begin  // WHAT!!???
+    result := ClientToScreen(point(FMainLeft + FMainWidth - 17, FMainTop + 1)); // screen position of the top right corner of the application window, roughly.
+    result := ClientToScreen(point(FMainLeft, FMainTop)); // screen position of the top right corner of the application window, roughly.
+    free;
   end;
+end;
+
+procedure TGlobalVars.onCloseTimerEvent(sender: TObject);
+begin
+  FCloseTimer.enabled := FALSE;
+  sendSysCommandClose(UIWnd);
+end;
+
+procedure TGlobalVars.setCloseApp(const Value: boolean);
+begin
+  FCloseTimer.enabled := value;
 end;
 
 initialization

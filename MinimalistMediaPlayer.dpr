@@ -37,21 +37,25 @@ uses
   formHelp in 'formHelp.pas' {HelpForm},
   playlist in 'playlist.pas',
   mediaPlayer in 'mediaPlayer.pas',
-  MMFMediaEngineClass in 'MMFMediaEngineClass.pas',
-  MMFTimedTextNotifyClass in 'MMFTimedTextNotifyClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   types in 'types.pas',
   tickTimer in 'tickTimer.pas',
   mediaInfo in 'mediaInfo.pas',
-  WinApi.MediaFoundationApi.MfMetLib in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfMetLib.pas',
-  WinApi.MediaFoundationApi.MfReadWrite in '..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
-  formCaption in 'formCaption.pas' {CaptionForm};
+  formCaption in 'formCaption.pas' {CaptionForm},
+  MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
+  MPVClient in 'libMPVDelphi\MPVClient.pas',
+  MPVConst in 'libMPVDelphi\MPVConst.pas',
+  MPVNode in 'libMPVDelphi\MPVNode.pas',
+  MPVRender in 'libMPVDelphi\MPVRender.pas',
+  MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
+  MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
+  MPVTrack in 'libMPVDelphi\MPVTrack.pas';
 
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := TRUE;
+//  ReportMemoryLeaksOnShutdown := TRUE;
   debugClear;
 
   Application.Initialize;

@@ -35,7 +35,7 @@ end;
 
 function sendSysCommandClose(aHWND: HWND): boolean;
 begin
-  MP.release;
+  MP.releasePlayer;
   sendMessage(aHWND, WM_CLOSE, 0, 0);
 end;
 

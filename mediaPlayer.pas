@@ -21,56 +21,74 @@ unit mediaPlayer;
 interface
 
 uses
-  MMFMediaEngineClass, forms, vcl.extCtrls, system.classes;
+  forms, vcl.extCtrls, system.classes, MPVBasePlayer;
 
 type
-  TMPEngine   = (mpeNone, mpeMMF, mpeWMP);
   TPlayState  = (psPaused, psPlaying);
 
   TMediaPlayer = class(TObject)
   strict private
-   FMPEngine: TMPEngine;
-   MMFMediaEngine: TcMediaEngine;
-   FPlayState: TPlayState;
-   FVideoPanel: TPanel;
-   FVolume: integer;
+    mpv: TMPVBasePlayer;
+    FPlayState: TPlayState;
+    FVideoPanel: TPanel;
+    FPlayTimer: TTimer;
   private
     constructor create;
     function createSubTitleLayer: boolean;
-    function releaseMMFEngine: HRESULT;
-    function getVolume: integer;
+    procedure onPlayTimerEvent(sender: TObject);
+    procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
     {property setters}
-    procedure setMPEngine(const Value: TMPengine);
-    procedure setVolume(const Value: integer);
     function  getDuration: integer;
     function  getPosition: integer;
     function  getSubTitle: string;
     procedure setPosition(const Value: integer);
-    function getFormattedDuration: string;
-    function getFormattedTime: string;
+    function  getFormattedDuration: string;
+    function  getFormattedTime: string;
+    function  getVideoHeight: int64;
+    function  getVideoWidth: int64;
+    function  getVolume: integer;
+    procedure setVolume(const Value: integer);
+    function  getFormattedVol: string;
   public
     destructor  Destroy; override;
-    function adjustAspectRatio(aForm: TForm): boolean;
+    function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
+    function brightnessUp: boolean;
+    function brightnessDn: boolean;
     function frameBackwards: boolean;
     function frameForwards: boolean;
     function initMediaPlayer(aForm: TForm): boolean;
+    function muteUnmute: boolean;
     function openURL(aURL: string): boolean;
+    function panDn: boolean;
+    function panLeft: boolean;
+    function panRight: boolean;
+    function panUp: boolean;
     function pause: boolean;
     function pausePlay: boolean;
     function play: boolean;
-    function release: boolean;
+    function playNext: boolean;
+    function playPrev: boolean;
+    function releasePlayer: boolean;
+    function rotateLeft: boolean;
+    function rotateRight: boolean;
     function setProgressBar: boolean;
+    function startOver: boolean;
     function stop: boolean;
     function tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
+    function toggleFullscreen: boolean;
     function volDown: boolean;
     function volUp: boolean;
+    function zoomIn: boolean;
+    function zoomOut: boolean;
     property duration:            integer   read getDuration;
     property formattedDuration:   string    read getFormattedDuration;
     property formattedTime:       string    read getFormattedTime;
-    property MPEngine:            TMPengine read FMPEngine    write setMPEngine;
+    property formattedVol:        string    read getFormattedVol;
     property position:            integer   read getPosition  write setPosition;
     property subTitle:            string    read getSubTitle;
+    property videoHeight:         int64     read getVideoHeight;
+    property videoWidth:          int64     read getVideoWidth;
     property volume:              integer   read getVolume    write setVolume;
   end;
 
@@ -79,8 +97,8 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, globalVars, MMFTimedTextNotifyClass, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, _debugWindow;
+  vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
+  formCaption, mediaInfo, mpvConst, consts, playlist, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -93,14 +111,15 @@ end;
 
 { TMediaPlayer }
 
-function TMediaPlayer.adjustAspectRatio(aForm: TForm): boolean;
+function TMediaPlayer.adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
 var
   vRatio: double;
 begin
-  debugInteger('X', MI.X); debugInteger('Y', Mi.Y);
-  case (MI.X = 0) OR (MI.Y = 0) of TRUE: EXIT; end;
+  debugFormat('x:%d y:%d', [X, Y]);
+  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
 
-  vRatio := MI.Y / MI.X;
+//  vRatio := MI.Y / MI.X;
+  vRatio := Y / X;
 
   aForm.height := trunc(aForm.width * vRatio);
 
@@ -109,10 +128,29 @@ begin
   // checkScreenLimits
 end;
 
+function TMediaPlayer.brightnessDn: boolean;
+var
+  brightness: int64;
+begin
+  mpv.GetPropertyInt64('brightness', brightness);
+  mpv.SetPropertyInt64('brightness', brightness - 1);
+end;
+
+function TMediaPlayer.brightnessUp: boolean;
+var
+  brightness: int64;
+begin
+  mpv.GetPropertyInt64('brightness', brightness);
+  mpv.SetPropertyInt64('brightness', brightness + 1);
+end;
+
 constructor TMediaPlayer.create;
 begin
   inherited;
-  FMPEngine := mpeNone;
+  FPlayTimer := TTimer.create(NIL);
+  FPlayTimer.enabled := FALSE;
+  FPlayTimer.interval := 100;
+  FPlayTimer.OnTimer := onPlayTimerEvent;
 end;
 
 function TMediaPlayer.createSubTitleLayer: boolean;
@@ -123,49 +161,64 @@ end;
 
 destructor TMediaPlayer.Destroy;
 begin
-  ReleaseMMFEngine;
-  case MMFMediaEngine <> NIL of TRUE: MMFMediaEngine.free; end;
+  case FPlayTimer <> NIL of TRUE: FPlayTimer.free; end;
+  releasePlayer;
   inherited;
 end;
 
 function TMediaPlayer.frameBackwards: boolean;
 begin
-  MMFMediaEngine.FrameStep(FALSE);
+  mpv.commandStr(CMD_BACK_STEP);
 end;
 
 function TMediaPlayer.frameForwards: boolean;
 begin
-  MMFMediaEngine.FrameStep(TRUE);
+  mpv.commandStr(CMD_STEP);
 end;
 
 function TMediaPlayer.getDuration: integer;
 begin
-  result := trunc(MMFMediaEngine.pu_Duration);
+  result := trunc(mpv.TotalSeconds);
 end;
 
 function TMediaPlayer.getFormattedDuration: string;
 begin
-  result := MMFMediaEngine.getFormattedSeconds(duration);
+  result := formatTime(trunc(mpv.totalSeconds));
 end;
 
 function TMediaPlayer.getFormattedTime: string;
 begin
-  result := MMFMediaEngine.getFormattedSeconds(position);
+  result := formatTime(trunc(mpv.CurrentSeconds));
+end;
+
+function TMediaPlayer.getFormattedVol: string;
+begin
+  result := format('Volume: %d', [trunc(mpv.volume)]);
 end;
 
 function TMediaPlayer.getPosition: integer;
 begin
-  result := trunc(MMFMediaEngine.pu_CurrPosition);
+  result := trunc(mpv.CurrentSeconds);
 end;
 
 function TMediaPlayer.getSubTitle: string;
 begin
-  result := MMFMediaEngine.pr_TimedTextNotify.SubTitle;
+//  result := MMFMediaEngine.pr_TimedTextNotify.SubTitle;
+end;
+
+function TMediaPlayer.getVideoHeight: int64;
+begin
+  result := mpv.videoHeight;
+end;
+
+function TMediaPlayer.getVideoWidth: int64;
+begin
+  result := mpv.videoWidth;
 end;
 
 function TMediaPlayer.getVolume: integer;
 begin
-  result := FVolume;
+  result := trunc(mpv.volume);
 end;
 
 function TMediaPlayer.initMediaPlayer(aForm: TForm): boolean;
@@ -177,89 +230,155 @@ begin
   FVideoPanel.BevelOuter := bvNone;
 end;
 
+function TMediaPlayer.muteUnmute: boolean;
+begin
+  mpv.mute := not mpv.mute;
+  case mpv.mute of  TRUE: ST.opInfo := 'muted';
+                   FALSE: ST.opInfo := 'unmuted'; end;
+end;
+
+procedure TMediaPlayer.onPlayTimerEvent(sender: TObject);
+begin
+  FPlayTimer.enabled := FALSE;
+  openURL(PL.currentItem);
+end;
+
+procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
+begin
+  case eState of mpsEnd: playNext; end;
+end;
+
 function TMediaPlayer.openURL(aURL: string): boolean;
 var
   hr: HRESULT;
 begin
   result := FALSE;
-  releaseMMFEngine;
+  releasePlayer;
   createSubTitleLayer; // the third param needs the subtitle form handle
-  MMFMediaEngine := TcMediaEngine.Create(FVideoPanel.handle, GV.mainWnd, ST.HWND, hr); // does this really need windowHandle rather than handle?
-  case SUCCEEDED(hr) of FALSE: EXIT; end;
+  case mpv = NIL of TRUE: begin
+    mpv := TMPVBasePlayer.Create;
+    mpv.OnStateChged := onStateChange;
+    mpv.initPlayer(intToStr(FVideoPanel.Handle), '', '', '');
+    mpv.SetPropertyString('sub-font', 'Segoe UI');
+    mpv.SetPropertyString('sub-color', '#008000');
+//    mpv.SetPropertyBool(STR_AUTOFIT, TRUE);
+  end;end;
+  mpv.openFile(aURL);
+  MC.caption := PL.formattedItem;
+  result := TRUE;
+end;
 
-  hr := MMFMediaEngine.OpenURL(PWideChar(aURL), EXTSUBRIP);
-  result := SUCCEEDED(hr);
+function TMediaPlayer.panDn: boolean;
+var
+  panY: double;
+begin
+  mpv.getPropertyDouble('video-pan-y', panY);
+  mpv.setPropertyDouble('video-pan-y', panY + 0.001);
+end;
+
+function TMediaPlayer.panLeft: boolean;
+var
+  panX: double;
+begin
+  mpv.getPropertyDouble('video-pan-x', panX);
+  mpv.setPropertyDouble('video-pan-x', panX - 0.001);
+end;
+
+function TMediaPlayer.panRight: boolean;
+var
+  panX: double;
+begin
+  mpv.getPropertyDouble('video-pan-x', panX);
+  mpv.setPropertyDouble('video-pan-x', panX + 0.001);
+end;
+
+function TMediaPlayer.panUp: boolean;
+var
+  panY: double;
+begin
+  mpv.getPropertyDouble('video-pan-y', panY);
+  mpv.setPropertyDouble('video-pan-y', panY - 0.001);
 end;
 
 function TMediaPlayer.pause: boolean;
 begin
-  MMFMediaEngine.Pause;
-  FPlayState := psPaused;
+  mpv.Pause;
 end;
 
 function TMediaPlayer.pausePlay: boolean;
 begin
-  case MMFMediaEngine.pu_RenderingState of
-    rsPlaying: MMFMediaEngine.Pause();
-    rsStopped, rsPaused: MMFMediaEngine.Play;
-    rsInitialised: MMFMediaEngine.Play;
+  case mpv.GetState of
+    mpsPlay: mpv.pause;
+    mpsPause: mpv.Resume;
   end;
 end;
 
 function TMediaPlayer.play: boolean;
 begin
-  result := FALSE;
-  case assigned(MMFMediaEngine) of FALSE: EXIT; end;
-  result := SUCCEEDED(MMFMediaEngine.Play);
+  result := TRUE;
   case result of TRUE: FPlayState := psPlaying; end;
 end;
 
-function TMediaPlayer.release: boolean;
+function TMediaPlayer.playNext: boolean;
 begin
-  releaseMMFEngine;
+  case PL.next of TRUE: FPlayTimer.enabled := TRUE; end;
 end;
 
-function TMediaPlayer.releaseMMFEngine(): HRESULT;
+function TMediaPlayer.playPrev: boolean;
 begin
-  case assigned(MMFMediaEngine) of   TRUE:  begin
-                                              MMFMediaEngine.FlushPlayer(); // To safely release all resources from the IMFMEdiaEngineEx, you need to call this function first!
-                                              MMFMediaEngine.Free;
-                                              MMFMediaEngine := NIL;
-                                              result := S_OK; end;
-                                    FALSE:  result := E_POINTER; end;
+  case PL.prev of TRUE: FPlayTimer.enabled := TRUE; end;
 end;
 
-procedure TMediaPlayer.setMPEngine(const Value: TMPengine);
+function TMediaPlayer.rotateLeft: boolean;
+var
+  rot: int64;
 begin
-  case FMPEngine = mpeNone of TRUE: FMPEngine := Value; end;
+  mpv.getPropertyInt64('video-rotate', rot);
+  mpv.setPropertyInt64('video-rotate', rot - 45);
+end;
+
+function TMediaPlayer.rotateRight: boolean;
+var
+  rot: int64;
+begin
+  mpv.getPropertyInt64('video-rotate', rot);
+  mpv.setPropertyInt64('video-rotate', rot + 45);
+end;
+
+function TMediaPlayer.releasePlayer: boolean;
+begin
+  freeAndNIL(mpv);
 end;
 
 procedure TMediaPlayer.setPosition(const Value: integer);
 var
   hr: HRESULT;
 begin
-  hr := MMFMediaEngine.pr_MediaEngine.SetCurrentTime(value);
-  case FAILED(hr) of TRUE: debug('no setPosition'); end;
+  mpv.Seek(value, FALSE);
+  postMessage(GV.mainWnd, WM_TICK, 0, 0); // immediately update the time
 end;
 
 function TMediaPlayer.setProgressBar: boolean;
 begin
-  case assigned(MMFMediaEngine) of FALSE: EXIT; end;
-  PB.max := trunc(MMFMediaEngine.pu_Duration);
-  case MMFMediaEngine.pu_Duration > 0 of TRUE: PB.position := trunc(MMFMediaEngine.pu_CurrPosition); end;
+  case assigned(mpv) of FALSE: EXIT; end;
+  PB.max := trunc(mpv.TotalSeconds);
+  case mpv.TotalSeconds > 0 of TRUE: PB.position := trunc(mpv.CurrentSeconds); end;
 end;
 
 procedure TMediaPlayer.setVolume(const Value: integer);
 begin
-  FVolume := value;
-  case FVolume > 100 of TRUE: FVolume := 100; end;
-  case FVolume < 0   of TRUE: FVolume := 0; end;
-  MMFMediaEngine.setVolume(FVolume * 0.01);
+  mpv.volume := value;
+  ST.opInfo := formattedVol;
+end;
+
+function TMediaPlayer.startOver: boolean;
+begin
+  mpv.CommandStr(CMD_VIDEO_RELOAD);
 end;
 
 function TMediaPlayer.stop: boolean;
 begin
-  MMFMediaEngine.Stop;
+  mpv.Stop;
 end;
 
 function TMediaPlayer.tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
@@ -275,26 +394,55 @@ begin
   case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
 
-  pause; delay(100);
+//  pause; delay(100);
   case ssCtrl  in aShiftState of  TRUE: position := position - vTab;
                                  FALSE: position := position + vTab; end;
-  delay(100); play;
+//  delay(100); play;
 
   var newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]);
   case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
                                 FALSE: newInfo := '>> ' + newInfo;
   end;
   ST.opInfo := newInfo;
+//  mpv.Resume;
+end;
+
+function TMediaPlayer.toggleFullscreen: boolean;  // don't think this should be here, should be calling a function in mainForm ?
+begin
+  case GV.mainForm.WindowState <> wsMaximized of  TRUE: GV.mainForm.windowState := wsMaximized;
+                                                 FALSE: GV.mainForm.windowState := TWindowState.wsNormal; end;
 end;
 
 function TMediaPlayer.volDown: boolean;
 begin
-  volume := volume - 1;
+  mpv.volume := mpv.volume - 1;
+  ST.opInfo := formattedVol;
 end;
 
 function TMediaPlayer.volUp: boolean;
 begin
-  volume := volume + 1;
+  mpv.volume := mpv.volume + 1;
+  ST.opInfo := formattedVol;
+end;
+
+function TMediaPlayer.zoomIn: boolean;
+var
+  zoomX, zoomY: double;
+begin
+  mpv.getPropertyDouble('video-scale-x', zoomX);
+  mpv.setPropertyDouble('video-scale-x', zoomX + 0.01);
+  mpv.getPropertyDouble('video-scale-y', zoomY);
+  mpv.setPropertyDouble('video-scale-y', zoomY + 0.01);
+end;
+
+function TMediaPlayer.zoomOut: boolean;
+var
+  zoomX, zoomY: double;
+begin
+  mpv.getPropertyDouble('video-scale-x', zoomX);
+  mpv.setPropertyDouble('video-scale-x', zoomX - 0.01);
+  mpv.getPropertyDouble('video-scale-y', zoomY);
+  mpv.setPropertyDouble('video-scale-y', zoomY - 0.01);
 end;
 
 initialization

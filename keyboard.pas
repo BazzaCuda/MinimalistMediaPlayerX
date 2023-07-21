@@ -24,7 +24,9 @@ uses
   system.classes;
 
 type
-  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDown, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio);
+  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio,
+            koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayNext, koPlayPrev,
+            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -60,11 +62,13 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, globalVars, winApi.windows, mediaPlayer, _debugWindow;
+  sysCommands, globalVars, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
+  _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
+  _SLASH = '/'; _BACKSLASH = '\';
 
 var
   gKB: TKeyboard;
@@ -81,7 +85,7 @@ function TKeyboard.getKeyOp: TKeyOp;
 begin
   result := koNone;
   case keyUp and keyIs(X)         of TRUE: result := koCloseApp; end;
-  case keyDn and keyIs(VK_DOWN)   of TRUE: result := koVolDown; end;
+  case keyDn and keyIs(VK_DOWN)   of TRUE: result := koVolDn; end;
   case keyDn and keyIs(VK_UP)     of TRUE: result := koVolUp; end;
   case keyUp and keyIs(T)         of TRUE: result := koTab; end;
   case keyUp and keyIs(VK_SPACE)  of TRUE: result := koPausePlay; end;
@@ -89,6 +93,22 @@ begin
   case keyDn and keyIs(VK_LEFT)   of TRUE: result := koFrameBackwards; end;
   case keyUp and keyIs(VK_TAB)    of TRUE: result := koTabTab; end;
   case keyUp and keyIs(J)         of TRUE: result := koAdjustAspectRatio; end;
+  case keyDn and ctrl and keyIs(_4)        of TRUE: result := koBrightnessUp; end;
+  case keyDn and ctrl and keyIs(_3)        of TRUE: result := koBrightnessDn; end;
+  case keyDn and keyIs(I)         of TRUE: result := koZoomIn; end;
+  case keyDn and keyIs(O)         of TRUE: result := koZoomOut; end;
+  case keyUp and keyIs(S)         of TRUE: result := koStartOver; end;
+  case keyUp and keyIs(_0)        of TRUE: result := koShowCaption; end;
+  case keyUp and keyIs(E)         of TRUE: result := koMuteUnmute; end;
+  case keyUp and keyIs(W)         of TRUE: result := koPlayNext; end;
+  case keyUp and keyIs(Q)         of TRUE: result := koPlayPrev; end;
+  case keyDn and ctrl and keyIs(VK_LEFT)  of TRUE: result := koPanLeft; end;
+  case keyDn and ctrl and keyIs(VK_RIGHT) of TRUE: result := koPanRight; end;
+  case keyDn and ctrl and keyIs(VK_UP)    of TRUE: result := koPanUp; end;
+  case keyDn and ctrl and keyIs(VK_DOWN)  of TRUE: result := koPanDn; end;
+  case keyUp and keyIs(VK_ADD)            of TRUE: result := koRotateR; end;
+  case keyUp and keyIs(VK_SUBTRACT)       of TRUE: result := koRotateL; end;
+  case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -144,13 +164,29 @@ begin
 
     koCloseApp:   sendSysCommandClose(GV.mainWnd);
     koVolUp:             MP.volUp;
-    koVolDown:           MP.volDown;
+    koVolDn:             MP.volDown;
     koTab:               MP.tab(aShiftState, KB.capsLock);
     koTabTab:            MP.tab(aShiftState, KB.capsLock, 200);
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
-    koAdjustAspectRatio: MP.adjustAspectRatio(GV.mainForm);
+    koAdjustAspectRatio: MP.adjustAspectRatio(GV.mainForm, MP.videoWidth, MP.videoHeight);
+    koBrightnessUp:      MP.brightnessUp;
+    koBrightnessDn:      MP.brightnessDn;
+    koZoomIn:            MP.zoomIn;
+    koZoomOut:           MP.zoomOut;
+    koStartOver:         MP.startOver;
+    koShowCaption:       MC.caption := PL.formattedItem;
+    koMuteUnmute:        MP.muteUnmute;
+    koPlayNext:          MP.playNext;
+    koPlayPrev:          MP.playPrev;
+    koPanLeft:           MP.panLeft;
+    koPanRight:          MP.panRight;
+    koPanUp:             MP.panUp;
+    koPanDn:             MP.panDn;
+    koRotateR:           MP.rotateRight;
+    koRotateL:           MP.rotateLeft;
+    koFullscreen:        MP.toggleFullscreen;
   end;
 
   result := TRUE;

@@ -158,8 +158,6 @@
         </DCCReference>
         <DCCReference Include="playlist.pas"/>
         <DCCReference Include="mediaPlayer.pas"/>
-        <DCCReference Include="MMFMediaEngineClass.pas"/>
-        <DCCReference Include="MMFTimedTextNotifyClass.pas"/>
         <DCCReference Include="formSubtitles.pas">
             <Form>subtitlesForm</Form>
             <FormType>dfm</FormType>
@@ -167,13 +165,19 @@
         <DCCReference Include="types.pas"/>
         <DCCReference Include="tickTimer.pas"/>
         <DCCReference Include="mediaInfo.pas"/>
-        <DCCReference Include="..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfMetLib.pas"/>
-        <DCCReference Include="..\..\3P\MfPack-Master\MfPack\src\WinApi.MediaFoundationApi.MfReadWrite.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
         <DCCReference Include="formCaption.pas">
             <Form>CaptionForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVNode.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVRender.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVRenderGL.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

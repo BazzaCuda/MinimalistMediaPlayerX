@@ -29,6 +29,7 @@ type
   private
     FVideoPanel: TPanel;
     FCaption: TLabel;
+    FInitialized: boolean;
     FOpInfoTimer: TTimer;
 
     constructor create;
@@ -82,9 +83,10 @@ end;
 function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
+    aLabel.font.name      := 'Segoe UI';
     aLabel.font.color     := clGray;
     aLabel.font.size      := 10;
-    aLabel.font.style     := [];
+    aLabel.font.style     := [fsBold];
     aLabel.margins.top    := 0;
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
@@ -93,21 +95,26 @@ function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
     aLabel.caption        := '';
   end;
 begin
+  case FInitialized of TRUE: EXIT; end;
   FVideoPanel := aVideoPanel;
 
-  SELF.parent                 := aVideoPanel;
+  SELF.parent := aVideoPanel;
   initTransparentForm(SELF);
   SELF.align := alTop;
 
-  FCaption.parent            := SELF;
+  FCaption.parent := SELF;
   initTransparentLabel(FCaption);
   defaultFontEtc(FCaption);
+  FCaption.align := alTop;
+  FCaption.alignment := taLeftJustify;
 
+  FInitialized := TRUE;
   SELF.show;
 end;
 
 procedure TCaptionForm.setCaption(const Value: string);
 begin
+  FOpInfoTimer.enabled  := FALSE; // cancel any currently running timer
   FCaption.caption      := Value;
   FOpInfoTimer.enabled  := TRUE;
 end;

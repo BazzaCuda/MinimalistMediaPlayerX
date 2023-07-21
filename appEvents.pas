@@ -46,27 +46,35 @@ var gAE: TAppEvents;
 
 { TAppEvents }
 
-var lastLocation: TPoint;
-
-procedure setLastLocation;
+// Mouse Drag Control
 var
-  vRect: TRect;
+  mouseDown: Boolean;
+  mouseStart: TPoint;
+  topLeft: TPoint;
+
+procedure setStartPoint;
+var
+  wndRect: TRect;
 begin
-  getCursorPos(lastLocation);
-  getWindowRect(GV.UIWnd, vRect);
-  lastLocation.x := lastLocation.x - vRect.left;
-  lastLocation.y := lastLocation.y - vRect.top;
+  GetCursorPos(mouseStart);
+  getWindowRect(GV.UIWnd, wndRect);
+  mouseStart.X := mouseStart.X - wndRect.left;
+  mouseStart.Y := mouseStart.Y - wndRect.top;
 end;
 
 procedure dragUI;
 var
-  currentPos: TPoint;
-  x, y: integer;
+  newMouse: TPoint;
+  wndRect: TRect;
+  dx, dy: integer;
 begin
-  getCursorPos(currentPos);
-  x := currentpos.x - lastLocation.x;
-  y := currentpos.y - lastLocation.y;
-  MoveWindow(GV.UIWnd, x, y, GV.mainForm.width, GV.mainForm.height, FALSE);
+  getCursorPos(newMouse);
+  dx := newMouse.X - mouseStart.X;
+  dy := newMouse.Y - mouseStart.Y;
+
+  getWindowRect(GV.UIWnd, wndRect);
+
+  MoveWindow(GV.UIWnd, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
@@ -95,8 +103,6 @@ begin
                                   key         := msg.WParam;
                                   handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
 
-  case msgIs(WM_TIMERUPDATE) of TRUE: MP.setProgressBar; end;
-
   case msgIs(WM_SYSCOMMAND) of TRUE:  begin
                                         sysCommand.CmdType := msg.wParam;
                                         doSysCommand(sysCommand); end;end;
@@ -105,11 +111,12 @@ begin
 
   case msgIs(WM_TIMEDTEXTNOTIFY) of TRUE: ST.subTitle := MP.subTitle; end;
 
+  case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
 
-  case msgIs(WM_LBUTTONDOWN) of TRUE: begin GV.mouseDown := TRUE; setLastLocation;  end;end;
-  case msgIs(WM_LBUTTONUP)   of TRUE: GV.mouseDown := FALSE; end;
-  case GV.mouseDown and msgIs(WM_MOUSEMOVE) and NOT PB.inClientArea(msg.pt.y) of TRUE: dragUI; end;
+  case msgIs(WM_LBUTTONDOWN) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+  case msgIs(WM_LBUTTONUP)   of TRUE: mouseDown := FALSE; end;
+  case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
 end;
 
 constructor TAppEvents.create;

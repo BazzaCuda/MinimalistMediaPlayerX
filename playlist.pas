@@ -40,7 +40,7 @@ type
     function displayItem: string;
     function find(anItem: string): boolean;
     function first: boolean;
-    function formatItem: string;
+    function formattedItem: string;
     function hasItems: boolean;
     function isFirst: boolean;
     function isLast: boolean;
@@ -57,7 +57,7 @@ var
 implementation
 
 uses
-  system.sysUtils;
+  system.sysUtils, sysCommands, globalVars;
 
 function PL: TPlaylist;
 begin
@@ -131,7 +131,7 @@ begin
   case hasItems of TRUE: FPlayIx := 0; end;
 end;
 
-function TPlaylist.formatItem: string;
+function TPlaylist.formattedItem: string;
 begin
   result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, ExtractFileName(currentItem)]);
 end;
@@ -158,14 +158,18 @@ end;
 
 function TPlaylist.next: boolean;
 begin
-  case isLast of TRUE: EXIT; end;
+  result := FALSE;
+  case isLast of TRUE: GV.closeApp := TRUE; end;
   inc(FPlayIx);
+  result := TRUE;
 end;
 
 function TPlaylist.prev: boolean;
 begin
+  result := FALSE;
   case isFirst of TRUE: EXIT; end;
   dec(FPlayIx);
+  result := TRUE;
 end;
 
 initialization
