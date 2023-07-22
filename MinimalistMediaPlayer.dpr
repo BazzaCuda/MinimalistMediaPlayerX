@@ -50,7 +50,8 @@ uses
   MPVRender in 'libMPVDelphi\MPVRender.pas',
   MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
-  MPVTrack in 'libMPVDelphi\MPVTrack.pas';
+  MPVTrack in 'libMPVDelphi\MPVTrack.pas',
+  params in 'params.pas';
 
 {$R *.res}
 

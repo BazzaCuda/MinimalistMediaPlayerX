@@ -25,31 +25,18 @@ uses  winAPI.windows, system.classes, vcl.forms, vcl.extCtrls;
 type
   TGlobalVars = class(TObject)
   strict private
-    FMainWnd: HWND;
+    FAppWnd: HWND;
     FCloseTimer: TTimer;
   private
     FDragging: boolean;
-    FMainForm: TForm;
-    FMainLeft: integer;
-    FMainTop: integer;
-    FMainWidth: integer;
     FUIWnd: HWND;
-    FMouseDown: boolean;
-    function getMainTopRightPt: TPoint;
     procedure onCloseTimerEvent(sender: TObject);
     procedure setCloseApp(const Value: boolean);
   public
     constructor create;
     destructor  destroy;
     property closeApp: boolean write setCloseApp;
-    property dragging: boolean read FDragging write FDragging;
-    property mainForm: TForm read FMainForm write FMainForm;
-    property mainWnd: HWND read FMainWnd write FMainWnd;
-    property mainLeft: integer read FMainLeft write FMainLeft;
-    property mainTopRightPt: TPoint read getMainTopRightPt;
-    property mainTop: integer read FMainTop write FMainTop;
-    property mainWidth: integer read FMainWidth write FMainWidth;
-    property mouseDown: boolean read FMouseDown write FMouseDown;
+    property appWnd: HWND read FAppWnd write FAppWnd;
     property UIWnd: HWND read FUIWnd write FUIWnd;
   end;
 
@@ -83,15 +70,6 @@ end;
 destructor TGlobalVars.destroy;
 begin
   case FCloseTimer <> NIL of TRUE: FCloseTimer.free; end;
-end;
-
-function TGlobalVars.getMainTopRightPt: TPoint;
-begin
-  with TForm.create(NIL) do begin  // WHAT!!???
-    result := ClientToScreen(point(FMainLeft + FMainWidth - 17, FMainTop + 1)); // screen position of the top right corner of the application window, roughly.
-    result := ClientToScreen(point(FMainLeft, FMainTop)); // screen position of the top right corner of the application window, roughly.
-    free;
-  end;
 end;
 
 procedure TGlobalVars.onCloseTimerEvent(sender: TObject);

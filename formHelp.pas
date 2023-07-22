@@ -50,7 +50,7 @@ function shutHelp: boolean;
 
 implementation
 
-uses ShellAPI, globalVars;
+uses ShellAPI, UICtrls;
 
 const
   COL_GAP1 = 24;
@@ -66,8 +66,8 @@ begin
 
   helpForm.show;
   WinAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-  EnableWindow(helpForm.handle, FALSE);  // this window won't get any keyboard or mouse messages, etc.
-  setForegroundWindow(GV.mainWnd);       // so the UI keyboard functions can still be used when this form is open.
+  EnableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
+  setForegroundWindow(UI.mainForm.handle); // so the UI keyboard functions can still be used when this form is open.
 end;
 
 function shutHelp: boolean;

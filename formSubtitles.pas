@@ -38,6 +38,8 @@ type
 
     FOpInfo: TLabel;
     FOpInfoTimer: TTimer;
+    FShowTime: boolean;
+    FShowData: boolean;
 
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
@@ -46,13 +48,17 @@ type
     procedure setDisplayTime(const Value: string);
     procedure setOpInfo(const Value: string);
     procedure timerEvent(sender: TObject);
+    procedure setShowData(const Value: boolean);
+    procedure setShowTime(const Value: boolean);
   public
     destructor Destroy; override;
     function initSubtitles(aVideoPanel: TPanel): boolean;
-    property dataMemo:      TMemo  read FDataMemo;
+    property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
-    property HWND:          HWND   read getHWND;
+    property HWND:          HWND    read getHWND;
     property opInfo:        string                  write setOpInfo;
+    property showData:      boolean read FShowData  write setShowData;
+    property showTime:      boolean read FShowTime  write setShowTime;
     property subTitle:      string                  write setSubtitle;
   end;
 
@@ -101,6 +107,8 @@ begin
 
   SELF.height := 150;
   // we must use align otherwise sibling controls don't get drawn over the video!
+
+  FShowTime := TRUE;
 
   FInfoPanel := TPanel.create(NIL);
   FInfoPanel.parent := SELF;
@@ -183,6 +191,7 @@ end;
 
 procedure TSubtitlesForm.setDisplayTime(const Value: string);
 begin
+  case FShowTime of FALSE: EXIT; end;
   FTimeLabel.caption := Value;
 end;
 
@@ -190,6 +199,18 @@ procedure TSubtitlesForm.setOpInfo(const Value: string);
 begin
   FOpInfo.caption       := Value;
   FOpInfoTimer.enabled  := TRUE;
+end;
+
+procedure TSubtitlesForm.setShowData(const Value: boolean);
+begin
+  FShowData := Value;
+  case FShowData of FALSE: FDataMemo.clear; end;
+end;
+
+procedure TSubtitlesForm.setShowTime(const Value: boolean);
+begin
+  FShowTime := Value;
+  case FShowTime of FALSE: FTimeLabel.caption := ''; end;
 end;
 
 procedure TSubtitlesForm.setSubtitle(const Value: string);

@@ -21,7 +21,8 @@ unit uiCtrls;
 interface
 
 uses
-  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars, vcl.extCtrls;
+  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars, vcl.extCtrls,
+  system.classes;
 
 type
   TUI = class(TObject)
@@ -35,7 +36,14 @@ type
     function setWindowStyle(aForm: TForm): boolean;
     function createVideoPanel(aForm: TForm): boolean;
   public
+    function centreWindow: boolean;
+    function greaterWindow(shift: TShiftState): boolean;
     function initUI(aForm: TForm): boolean;
+    function minimizeWindow: boolean;
+    function openExternalApp(anApp: string; aParams: string): boolean;
+    function toggleBlackout: boolean;
+    function toggleControls(shift: TShiftState): boolean;
+    function toggleMaximised: boolean;
     property mainForm: TForm read FMainForm;
     property videoPanel: TPanel read FVideoPanel;
   end;
@@ -43,6 +51,9 @@ type
 function UI: TUI;
 
 implementation
+
+uses
+  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, _debugWindow;
 
 var
   gUI: TUI;
@@ -63,6 +74,16 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
+function TUI.centreWindow: boolean;
+var
+  vR: TRect;
+begin
+  getWindowRect(FMainForm.handle, vR);
+
+  SetWindowPos(FMainForm.handle, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
+                                    (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+end;
+
 function TUI.createVideoPanel(aForm: TForm): boolean;
 begin
   FVideoPanel        := TPanel.create(aForm);
@@ -71,6 +92,15 @@ begin
   FVideoPanel.color  := clBlack;
   FVideoPanel.BevelOuter := bvNone;
 end;
+
+function TUI.greaterWindow(shift: TShiftState): boolean;
+// [G]reater  = increase size of window
+// Ctrl-G     = decrease size of window
+begin
+  case ssCtrl in Shift of
+     TRUE: SetWindowPos(FMainForm.handle, 0, 0, 0, FMainForm.Width - 100, FMainForm.Height - 60, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW);
+    FALSE: SetWindowPos(FMainForm.handle, 0, 0, 0, FMainForm.Width + 100, FMainForm.Height + 60, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW);
+  end;end;
 
 function TUI.initUI(aForm: TForm): boolean;
 begin
@@ -85,6 +115,18 @@ begin
   addMenuItems(aForm);
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
+end;
+
+function TUI.minimizeWindow: boolean;
+begin
+   application.Minimize;
+end;
+
+function TUI.openExternalApp(anApp, aParams: string): boolean;
+begin
+  debugFormat('%s %s', [anApp, aParams]);
+  MP.pause;
+  shellExec(anApp, aParams);
 end;
 
 function TUI.setCustomTitleBar(aForm: TForm): boolean;
@@ -107,6 +149,29 @@ end;
 function TUI.setWindowStyle(aForm: TForm): boolean;
 begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+end;
+
+function TUI.toggleBlackout: boolean;
+begin
+  PB.showProgressBar := NOT PB.showProgressBar;
+end;
+
+function TUI.toggleControls(shift: TShiftState): boolean;
+// we call them "controls" but they're actually the media info and the time display at the bottom of the window
+// a left-over from this app's pre-minimalist days
+begin
+ case (ssCtrl in shift) and ST.showTime and (not ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
+
+ ST.showTime := NOT ST.showTime;
+
+ case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
+                                           FALSE: ST.showData := FALSE; end;
+end;
+
+function TUI.toggleMaximised: boolean;
+begin
+  case FMainForm.WindowState <> wsMaximized of  TRUE: FMainForm.windowState := wsMaximized;
+                                               FALSE: FMainForm.windowState := wsNormal; end;
 end;
 
 initialization

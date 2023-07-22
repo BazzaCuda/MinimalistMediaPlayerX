@@ -30,6 +30,7 @@ type
     FMoving: boolean;
     FTimer: TTimer;
   private
+    FShowProgressBar: boolean;
     procedure progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function  getPosition: integer;
@@ -38,6 +39,7 @@ type
     procedure setMax(const Value: integer);
     procedure timerEvent(Sender: TObject);
     function getTop: integer;
+    procedure setShowProgressBar(const Value: boolean);
   protected
     constructor create;
     function  setNewPosition(x: integer): integer;
@@ -46,6 +48,7 @@ type
     function initProgressBar(aForm: TForm): boolean;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
+    property showProgressBar: boolean read FShowProgressBar write setShowProgressBar;
   end;
 
 function PB: TProgressBar;
@@ -77,6 +80,8 @@ begin
   FTimer.enabled  := FALSE;
   FTimer.interval := 100;
   FTimer.OnTimer  := timerEvent;
+
+  FShowProgressBar := TRUE;
 end;
 
 destructor TProgressBar.Destroy;
@@ -116,7 +121,7 @@ begin
   FPB.barColorStyle    := cs1Color;
 
   FPB.max      := 100;
-  FPB.Position := 50;
+  FPB.Position := 0;
 end;
 
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -124,7 +129,7 @@ begin
   case not (ssCtrl in shift) of TRUE: EXIT; end;
   case FMoving               of TRUE: EXIT; end; // only allow one drag operation every 100ms otherwise MMF gets upset
   setNewPosition(x);
-  postMessage(GV.mainWnd, WM_PROGRESSBAR_CLICK, 0, 0);
+  postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0);
   FMoving         := TRUE;
   FTimer.enabled  := TRUE;
 end;
@@ -133,8 +138,8 @@ procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton;
 // calculate a new video position based on where the progress bar is clicked
 begin
   setNewPosition(x);
-  postMessage(GV.mainWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
-  postMessage(GV.mainWnd, WM_TICK, 0, 0); // update the time display immediately
+  postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
+  postMessage(GV.appWnd, WM_TICK, 0, 0); // update the time display immediately
 end;
 
 procedure TProgressBar.setMax(const Value: integer);
@@ -150,6 +155,12 @@ end;
 procedure TProgressBar.setPosition(const Value: integer);
 begin
   FPB.Position := Value;
+end;
+
+procedure TProgressBar.setShowProgressBar(const Value: boolean);
+begin
+  FShowProgressBar := Value;
+  FPB.Visible := FShowProgressBar;
 end;
 
 procedure TProgressBar.timerEvent(Sender: TObject);

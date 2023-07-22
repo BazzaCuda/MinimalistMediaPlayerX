@@ -58,7 +58,7 @@ var
   wndRect: TRect;
 begin
   GetCursorPos(mouseStart);
-  getWindowRect(GV.UIWnd, wndRect);
+  getWindowRect(UI.mainForm.handle, wndRect);
   mouseStart.X := mouseStart.X - wndRect.left;
   mouseStart.Y := mouseStart.Y - wndRect.top;
 end;
@@ -73,9 +73,9 @@ begin
   dx := newMouse.X - mouseStart.X;
   dy := newMouse.Y - mouseStart.Y;
 
-  getWindowRect(GV.UIWnd, wndRect);
+  getWindowRect(UI.mainForm.handle, wndRect);
 
-  MoveWindow(GV.UIWnd, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
+  MoveWindow(UI.mainForm.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);

@@ -47,6 +47,7 @@ type
     function last: boolean;
     function next: boolean;
     function prev: boolean;
+    function sort: boolean;
   end;
 
 function PL: TPlaylist;
@@ -128,7 +129,9 @@ end;
 
 function TPlaylist.first: boolean;
 begin
+  result := FALSE;
   case hasItems of TRUE: FPlayIx := 0; end;
+  result := TRUE;
 end;
 
 function TPlaylist.formattedItem: string;
@@ -153,13 +156,15 @@ end;
 
 function TPlaylist.last: boolean;
 begin
+  result := FALSE;
   case hasItems of TRUE: FPlayIx := FPlaylist.count - 1; end;
+  result := TRUE;
 end;
 
 function TPlaylist.next: boolean;
 begin
   result := FALSE;
-  case isLast of TRUE: GV.closeApp := TRUE; end;
+  case isLast of TRUE: EXIT; end;
   inc(FPlayIx);
   result := TRUE;
 end;
@@ -170,6 +175,11 @@ begin
   case isFirst of TRUE: EXIT; end;
   dec(FPlayIx);
   result := TRUE;
+end;
+
+function TPlaylist.sort: boolean;
+begin
+  FPlaylist.sort;
 end;
 
 initialization

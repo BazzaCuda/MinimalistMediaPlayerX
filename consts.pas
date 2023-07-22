@@ -42,7 +42,9 @@ const
 
   WM_PARENTCHANGED = WM_USER + 1023;
 
-  SC_DRAGMOVE = $F012;
+  POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
+  LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
+  SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
 implementation
 

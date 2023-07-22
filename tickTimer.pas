@@ -50,7 +50,7 @@ end;
 
 procedure TTickTimer.timerEvent(aSender: TObject);
 begin
-  postMessage(GV.mainWnd, WM_TICK, 0, 0);
+  postMessage(GV.appWnd, WM_TICK, 0, 0);
 end;
 
 initialization

@@ -30,7 +30,7 @@ implementation
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
   case Message.CmdType of MENU_ABOUT_ID:  showAboutBox(getFileVersionFmt('', '%d.%d'), getFileVersionFmt); end;
-  case Message.CmdType of MENU_HELP_ID:   showHelp(GV.MainTopRightPt); end;
+//  case Message.CmdType of MENU_HELP_ID:   showHelp(GV.MainTopRightPt); end;
 end;
 
 function sendSysCommandClose(aHWND: HWND): boolean;

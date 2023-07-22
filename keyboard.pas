@@ -25,8 +25,9 @@ uses
 
 type
   TKeyOp = (koNone, koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio,
-            koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayNext, koPlayPrev,
-            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen);
+            koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
+            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
+            koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -62,7 +63,7 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, globalVars, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, _debugWindow;
+  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -109,6 +110,19 @@ begin
   case keyUp and keyIs(VK_ADD)            of TRUE: result := koRotateR; end;
   case keyUp and keyIs(VK_SUBTRACT)       of TRUE: result := koRotateL; end;
   case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
+  case keyUp and keyIs(U)                 of TRUE: result := koZoomEnd; end;
+  case keyUp and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
+  case keyUp and keyIs(A)                 of TRUE: result := koPlayFirst; end;
+  case keyUp and keyIs(Z)                 of TRUE: result := koPlayLast; end;
+  case keyUp and keyIs(C)                 of TRUE: result := koToggleControls; end;
+  case keyUp and keyIs(VK_F10)            of TRUE: result := koRunPot; end;
+  case keyUp and keyIs(VK_F11)            of TRUE: result := koRunCut; end;
+  case keyUp and keyIs(VK_F12)            of TRUE: result := koRunShot; end;
+  case keyUp and keyIs(B)                 of TRUE: result := koToggleBlackout; end;
+  case keyUp and keyIs(H)                 of TRUE: result := koCentreWindow; end;
+  case keyUp and keyIs(N)                 of TRUE: result := koMinimizeWindow; end;
+
+//  debugInteger('keyOp', integer(result));
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -162,7 +176,7 @@ begin
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:   sendSysCommandClose(GV.mainWnd);
+    koCloseApp:          sendSysCommandClose(UI.mainForm.handle);
     koVolUp:             MP.volUp;
     koVolDn:             MP.volDown;
     koTab:               MP.tab(aShiftState, KB.capsLock);
@@ -170,7 +184,7 @@ begin
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
-    koAdjustAspectRatio: MP.adjustAspectRatio(GV.mainForm, MP.videoWidth, MP.videoHeight);
+    koAdjustAspectRatio: MP.adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight);
     koBrightnessUp:      MP.brightnessUp;
     koBrightnessDn:      MP.brightnessDn;
     koZoomIn:            MP.zoomIn;
@@ -187,6 +201,17 @@ begin
     koRotateR:           MP.rotateRight;
     koRotateL:           MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
+    koZoomEnd:           MP.zoomEnd;
+    koGreaterWindow:     UI.greaterWindow(aShiftState);
+    koPlayFirst:         MP.playFirst;
+    koPlayLast:          MP.playLast;
+    koToggleControls:    UI.toggleControls(aShiftState);
+    koRunPot:            UI.openExternalApp(POT_PLAYER, PL.currentItem);
+    koRunCut:            UI.openExternalApp(LOSSLESS_CUT, PL.currentItem);
+    koRunShot:           UI.openExternalApp(SHOTCUT, PL.currentItem);
+    koToggleBlackout:    UI.toggleBlackout;
+    koCentreWindow:      UI.centreWindow;
+    koMinimizeWindow:    UI.minimizeWindow;
   end;
 
   result := TRUE;

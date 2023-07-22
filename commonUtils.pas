@@ -21,22 +21,31 @@ unit commonUtils;
 interface
 
 uses
-  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows;
+  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls;
 
 function delay(dwMilliseconds: DWORD): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
+function fillPlaylist(aPL: TPlaylist; aFolder: string): boolean;
 function formatFileSize(aSize: int64): string;
 function formatSeconds(seconds: integer): string;
 function formatTime(seconds: integer): string;
 function getExePath: string;
 function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
+function getScreenHeight: integer;
+function getScreenWidth: integer;
 function initTransparentForm(aForm: TForm): TForm;
 function initTransparentLabel(aLabel: TLabel): boolean;
+function shellExec(anExePath, aParams: string): boolean;
+function showOKCancelMsgDlg(aMsg: string;
+                                msgDlgType: TMsgDlgType = mtConfirmation;
+                                msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
+                                defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+
 
 implementation
 
 uses
-  system.sysUtils, vcl.controls, vcl.graphics, _debugWindow;
+  system.sysUtils, vcl.graphics, winApi.shellApi, _debugWindow;
 
 function delay(dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
@@ -72,6 +81,26 @@ begin
 
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
+end;
+
+function fillPlaylist(aPL: TPlaylist; aFolder: string): boolean;
+const
+  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
+var
+  vSR: TSearchRec;
+begin
+  result := FALSE;
+  aPL.clear;
+  case directoryExists(aFolder) of FALSE: EXIT; end;
+
+  case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
+    repeat
+      case (vSR.attr AND faDirectory) = faDirectory of FALSE: aPL.Add(aFolder + vSR.Name); end;
+    until FindNext(vSR) <> 0;
+  end;
+
+  FindClose(vSR);
+  result := TRUE;
 end;
 
 function formatFileSize(aSize: int64): string;
@@ -140,6 +169,17 @@ begin
                                   end;end;
 end;
 
+function getScreenHeight: integer;
+begin
+  var rect := screen.WorkAreaRect; // the screen minus the taskbar
+  result := rect.Bottom - rect.Top;
+end;
+
+function getScreenWidth: integer;
+begin
+  result := GetSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
+end;
+
 function initTransparentForm(aForm: TForm): TForm;
 begin
   aForm.align                  := alBottom;
@@ -180,5 +220,43 @@ begin
   aLabel.transparent       := TRUE;
   aLabel.wordWrap          := TRUE;
 end;
+
+function shellExec(anExePath, aParams: string): boolean;
+begin
+  shellExecute(0, 'open', pchar(anExePath), pchar('"' + aParams + '"'), '', SW_SHOW);
+end;
+
+function showOKCancelMsgDlg(aMsg: string;
+                                msgDlgType: TMsgDlgType = mtConfirmation;
+                                msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
+                                defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+// used for displaying the delete file/folder confirmation dialog
+// We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
+// The standard dialog would unhelpfully truncate them.
+begin
+  with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
+  try
+    font.name := 'Segoe UI';
+    font.size := 12;
+    height    := height + 50;
+    width     := width + 200;
+    for var i := 0 to controlCount - 1 do begin
+      case controls[i] is TLabel  of   TRUE: with Controls[i] as TLabel do Width := Width + 200; end;
+      case controls[i] is TButton of   TRUE: with Controls[i] as TButton do begin
+                                                                                top  := top + 60;
+                                                                                left := left + 100;
+                                                                            end;end;
+    end;
+    result := ShowModal;
+  finally
+    Free;
+  end;
+end;
+
+
+
+
+
+
 
 end.
