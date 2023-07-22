@@ -30,11 +30,9 @@ type
   strict private
     mpv: TMPVBasePlayer;
     FPlayState: TPlayState;
-    FVideoPanel: TPanel;
     FPlayTimer: TTimer;
   private
     constructor create;
-    function createSubTitleLayer: boolean;
     procedure onPlayTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
@@ -98,7 +96,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -121,9 +119,9 @@ begin
 //  vRatio := MI.Y / MI.X;
   vRatio := Y / X;
 
-  aForm.height := trunc(aForm.width * vRatio);
+  aForm.height := trunc(aForm.width * vRatio) + 2;
 
-  debugFormat('vRatio: %f', [vRatio]);
+//  debugFormat('vRatio: %f', [vRatio]);
 
   // checkScreenLimits
 end;
@@ -151,12 +149,6 @@ begin
   FPlayTimer.enabled := FALSE;
   FPlayTimer.interval := 100;
   FPlayTimer.OnTimer := onPlayTimerEvent;
-end;
-
-function TMediaPlayer.createSubTitleLayer: boolean;
-begin
-  ST.initSubtitles(FVideoPanel);
-  MC.initCaption(FVideoPanel);
 end;
 
 destructor TMediaPlayer.Destroy;
@@ -223,11 +215,6 @@ end;
 
 function TMediaPlayer.initMediaPlayer(aForm: TForm): boolean;
 begin
-  FVideoPanel        := TPanel.create(aForm);
-  FVideoPanel.parent := aForm;
-  FVideoPanel.align  := alClient;
-  FVideoPanel.color  := clBlack;
-  FVideoPanel.BevelOuter := bvNone;
 end;
 
 function TMediaPlayer.muteUnmute: boolean;
@@ -245,7 +232,9 @@ end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
-  case eState of mpsEnd: playNext; end;
+  case eState of
+    mpsEnd: playNext;
+  end;
 end;
 
 function TMediaPlayer.openURL(aURL: string): boolean;
@@ -254,17 +243,21 @@ var
 begin
   result := FALSE;
   releasePlayer;
-  createSubTitleLayer; // the third param needs the subtitle form handle
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
-    mpv.initPlayer(intToStr(FVideoPanel.Handle), '', '', '');
-    mpv.SetPropertyString('sub-font', 'Segoe UI');
-    mpv.SetPropertyString('sub-color', '#008000');
+//    mpv.initPlayer(intToStr(FVideoPanel.Handle), '', '', '');
+    mpv.initPlayer(intToStr(GV.mainForm.handle), '', '', '');
+    mpv.setPropertyString('sub-font', 'Segoe UI');
+    mpv.setPropertyString('sub-color', '#008000');
+//    mpv.setPropertyString('autofit', format('W%dxH%d', [GV.mainForm.width, GV.mainForm.height]));
 //    mpv.SetPropertyBool(STR_AUTOFIT, TRUE);
   end;end;
+//  mpv.setPropertyString('--drm-draw-surface-size', format('%dx%d', [UI.mainForm.width, UI.mainForm.height - 50]));
+//  mpv.setPropertyString('--geometry', format('100%:100-100-100%', [UI.mainForm.width, UI.mainForm.height - 50]));
   mpv.openFile(aURL);
   MC.caption := PL.formattedItem;
+  postMessage(GV.mainWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   result := TRUE;
 end;
 

@@ -30,8 +30,7 @@ type
     FDataMemo: TMemo;
     FSubtitle: TLabel;
     FVideoPanel: TPanel;
-    FInfoPanelL: TPanel;
-    FInfoPanelR: TPanel;
+    FInfoPanel: TPanel;
     FInitialized: boolean;
     FSubtitlePanel: TPanel;
 
@@ -92,34 +91,34 @@ constructor TSubtitlesForm.create;
   end;
 begin
   inherited create(NIL);
-  FSubtitle := TLabel.create(NIL);
-  FSubtitle.margins.bottom := 6;
+//  FSubtitle := TLabel.create(NIL);
+//  FSubtitle.margins.bottom := 6;
 
-  FSubtitlePanel := TPanel.create(NIL);
-  FSubtitlePanel.parent := SELF;
-  FSubtitle.parent := FSubtitlePanel; // the other labels don't show without this!
+//  FSubtitlePanel := TPanel.create(NIL);
+//  FSubtitlePanel.parent := SELF;
+//  FSubtitle.parent := FSubtitlePanel; // the other labels don't show without this!
+//  FSubtitlePanel.color := clGreen;
 
-  FInfoPanelL := TPanel.create(NIL);
-  FInfoPanelL.parent := SELF;
-  FInfoPanelL.align  := alLeft;
-  FInfoPanelL.bevelOuter := bvNone;
+  SELF.height := 150;
+  // we must use align otherwise sibling controls don't get drawn over the video!
 
-  FInfoPanelR := TPanel.create(NIL);
-  FInfoPanelR.parent := SELF;
-  FInfoPanelR.align  := alRight;
-  FInfoPanelR.bevelOuter := bvNone;
+  FInfoPanel := TPanel.create(NIL);
+  FInfoPanel.parent := SELF;
+  FInfoPanel.align  := alClient;
+  FInfoPanel.bevelOuter := bvNone;
 
-  FTimeLabel := TLabel.create(FInfoPanelR);
-  FTimeLabel.parent := FInfoPanelR;
+  FTimeLabel := TLabel.create(FInfoPanel);
+  FTimeLabel.parent := FInfoPanel;
   initTransparentLabel(FTimeLabel);
   defaultFontEtc(FTimeLabel);
   FTimeLabel.align := alBottom;
   FTimeLabel.alignment := taRightJustify;
   FTimeLabel.margins.bottom := 0;
+  FTimeLabel.margins.right  := 3;
   FTimeLabel.caption := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
 
-  FOpInfo := TLabel.create(FInfoPanelR);
-  FOpInfo.parent := FInfoPanelR;
+  FOpInfo := TLabel.create(FInfoPanel);
+  FOpInfo.parent := FInfoPanel;
   initTransparentLabel(FOpInfo);
   defaultFontEtc(FOpInfo);
   FOpInfo.alignment := taRightJustify;
@@ -128,9 +127,11 @@ begin
   FOpInfo.top       := FTimeLabel.top - FTimeLabel.height;
   FOpInfo.left      := FTimeLabel.left;
 
-  FDataMemo := TMemo.create(FInfoPanelL);
-  FDataMemo.parent      := FInfoPanelL;
-  FDataMemo.align       := alBottom;
+  FDataMemo := TMemo.create(FInfoPanel);
+  FDataMemo.parent      := FInfoPanel;
+  FDataMemo.align       := alLeft;
+  FDataMemo.top := FTimeLabel.top - FDataMemo.height;
+  FDataMemo.left := 0;
   FDataMemo.bevelInner  := bvNone;
   FDataMemo.bevelOuter  := bvNone;
   FDataMemo.borderStyle := bsNone;
@@ -142,6 +143,7 @@ begin
   FDataMemo.font.color  := clGray;
   FDataMemo.font.height := -13;
   FDataMemo.styleElements := [];
+  FDataMemo.lines.add('Hello');
   FDataMemo.clear;
 
   FOpInfoTimer := TTimer.create(NIL);
@@ -154,8 +156,7 @@ destructor TSubtitlesForm.Destroy;
 begin
   case FSubtitle      <> NIL of TRUE: FSubtitle.free; end;
   case FSubtitlePanel <> NIL of TRUE: FSubtitlePanel.free; end;
-  case FInfoPanelL    <> NIL of TRUE: FInfoPanelL.free; end;
-  case FInfoPanelR    <> NIL of TRUE: FInfoPanelR.free; end;
+  case FInfoPanel     <> NIL of TRUE: FInfoPanel.free; end;
   case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
 end;
@@ -173,8 +174,8 @@ begin
   SELF.parent := aVideoPanel;
   initTransparentForm(SELF);
 
-  FSubtitle.parent := SELF;
-  initTransparentLabel(FSubtitle);
+//  FSubtitle.parent := SELF;
+//  initTransparentLabel(FSubtitle);
 
   FInitialized := TRUE;
   SELF.show;
@@ -193,6 +194,7 @@ end;
 
 procedure TSubtitlesForm.setSubtitle(const Value: string);
 begin
+  EXIT;
   FSubtitle.caption := Value;
 end;
 

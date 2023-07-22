@@ -3,7 +3,7 @@ object subtitlesForm: TsubtitlesForm
   Top = 0
   BorderIcons = []
   Caption = 'SubtitlesForm'
-  ClientHeight = 411
+  ClientHeight = 112
   ClientWidth = 1150
   Color = clGray
   Font.Charset = DEFAULT_CHARSET

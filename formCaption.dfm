@@ -3,7 +3,7 @@ object CaptionForm: TCaptionForm
   Top = 0
   BorderIcons = []
   Caption = 'captionForm'
-  ClientHeight = 407
+  ClientHeight = 99
   ClientWidth = 1148
   Color = clGray
   Font.Charset = DEFAULT_CHARSET

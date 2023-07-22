@@ -21,13 +21,41 @@ unit uiCtrls;
 interface
 
 uses
-  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars;
+  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars, vcl.extCtrls;
 
-function initUI(aForm: TForm): boolean;
+type
+  TUI = class(TObject)
+  strict private
+    FMainForm: TForm;
+    FVideoPanel: TPanel;
+  private
+    function addMenuItems(aForm: TForm): boolean;
+    function setCustomTitleBar(aForm: TForm): boolean;
+    function setGlassFrame(aForm: TForm): boolean;
+    function setWindowStyle(aForm: TForm): boolean;
+    function createVideoPanel(aForm: TForm): boolean;
+  public
+    function initUI(aForm: TForm): boolean;
+    property mainForm: TForm read FMainForm;
+    property videoPanel: TPanel read FVideoPanel;
+  end;
+
+function UI: TUI;
 
 implementation
 
-function addMenuItems(aForm: TForm): boolean;
+var
+  gUI: TUI;
+
+function UI: TUI;
+begin
+  case gUI = NIL of TRUE: gUI := TUI.create; end;
+  result := gUI;
+end;
+
+{ TUI }
+
+function TUI.addMenuItems(aForm: TForm): boolean;
 begin
   var vSysMenu := getSystemMenu(aForm.handle, FALSE);
   AppendMenu(vSysMenu, MF_SEPARATOR, 0, '');
@@ -35,7 +63,31 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function setCustomTitleBar(aForm: TForm): boolean;
+function TUI.createVideoPanel(aForm: TForm): boolean;
+begin
+  FVideoPanel        := TPanel.create(aForm);
+  FVideoPanel.parent := aForm;
+  FVideoPanel.align  := alClient;
+  FVideoPanel.color  := clBlack;
+  FVideoPanel.BevelOuter := bvNone;
+end;
+
+function TUI.initUI(aForm: TForm): boolean;
+begin
+  FMainForm := aForm;
+  aForm.position      := poScreenCenter;
+  aForm.borderIcons   := [biSystemMenu];
+  aForm.styleElements := []; // [seFont]; //, seClient];
+  setGlassFrame(aForm);
+  setCustomTitleBar(aForm);
+  setWindowStyle(aForm);
+  DragAcceptFiles(aForm.handle, TRUE);
+  addMenuItems(aForm);
+  aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
+  createVideoPanel(aForm);
+end;
+
+function TUI.setCustomTitleBar(aForm: TForm): boolean;
 begin
   aForm.customTitleBar.enabled        := TRUE;
   aForm.customTitleBar.showCaption    := FALSE;
@@ -46,28 +98,21 @@ begin
   aForm.customTitleBar.height         := 1; // systemHeight=FALSE must be set before this
 end;
 
-function setGlassFrame(aForm: TForm): boolean;
+function TUI.setGlassFrame(aForm: TForm): boolean;
 begin
   aForm.glassFrame.enabled  := TRUE;
   aForm.glassFrame.top      := 1;
 end;
 
-function setWindowStyle(aForm: TForm): boolean;
+function TUI.setWindowStyle(aForm: TForm): boolean;
 begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
 end;
 
-function initUI(aForm: TForm): boolean;
-begin
-  aForm.position      := poScreenCenter;
-  aForm.borderIcons   := [biSystemMenu];
-  aForm.styleElements := []; // [seFont]; //, seClient];
-  setGlassFrame(aForm);
-  setCustomTitleBar(aForm);
-  setWindowStyle(aForm);
-  DragAcceptFiles(aForm.handle, TRUE);
-  addMenuItems(aForm);
-  aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
-end;
+initialization
+  gUI := NIL;
+
+finalization
+  case gUI <> NIL of TRUE: gUI.free; end;
 
 end.

@@ -65,6 +65,7 @@ end;
 constructor TCaptionForm.create;
 begin
   inherited create(NIL);
+  height := 80;
   FCaption := TLabel.create(NIL);
 
   FOpInfoTimer := TTimer.create(NIL);

@@ -63,6 +63,7 @@ end;
 function TMediaInfo.getData(aMemo: TMemo): boolean;
 begin
   aMemo.clear;
+  aMemo.lines.add('');
   aMemo.lines.add(XY);
   aMemo.lines.add(overallFrameRate);
   aMemo.lines.add(overallBitRate);

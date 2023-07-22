@@ -1,0 +1,66 @@
+Protocols:
+
+ rtmp://
+ rtsp://
+ rtsps://
+ http://
+ https://
+ mms://
+ mmst://
+ mmsh://
+ mmshttp://
+ rtp://
+ httpproxy://
+ rtmpe://
+ rtmps://
+ rtmpt://
+ rtmpte://
+ rtmpts://
+ srt://
+ rist://
+ srtp://
+ gopher://
+ gophers://
+ data://
+ ipfs://
+ ipns://
+ webdav://
+ webdavs://
+ lavf://
+ ffmpeg://
+ udp://
+ ftp://
+ tcp://
+ tls://
+ unix://
+ sftp://
+ md5://
+ concat://
+ smb://
+ avdevice://
+ av://
+ file://
+ dvd://
+ dvdnav://
+ file://
+ bd://
+ br://
+ bluray://
+ bdnav://
+ brnav://
+ bluraynav://
+ archive://
+ memory://
+ hex://
+ null://
+ mf://
+ edl://
+ file://
+ appending://
+ slice://
+ fd://
+ fdclose://
+
+Total: 60 protocols
+
+e.g. mpv --fullscreen=help

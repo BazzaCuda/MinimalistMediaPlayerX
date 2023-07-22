@@ -40,7 +40,8 @@ type
 implementation
 
 uses
-  system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer, _debugWindow;
+  system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
+  UICtrls, commonUtils, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -117,6 +118,8 @@ begin
   case msgIs(WM_LBUTTONDOWN) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
   case msgIs(WM_LBUTTONUP)   of TRUE: mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
+
+  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); MP.adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end;
 end;
 
 constructor TAppEvents.create;

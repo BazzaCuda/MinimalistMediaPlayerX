@@ -58,10 +58,12 @@ begin
   url := url + 'Csource%2Crequiressl%2Cpcm2%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAIVd';
   url := url + 'pIdaWrwRdpr-8HBRULOr3e9uPqx3rmx-nctNJwHkAiBu4FoCbOri9W1WxT4WL3t7T_bPM5Po3IuXzgj0leeSQw%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2';
   url := url + 'Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAKu0daOCiSE7I6gBosqnX7nTuzOF6anRrWgl5mti_a2QAiBGbLZsZYHvs_SaCrxzuKV7IhnI0dTY_msRc1UKI7UzDA%3D%3D';
-  initUI(SELF);
-  PB.initProgressBar(SELF);
-  GV.mainWnd := APPLICATION.HANDLE; // or SELF.HANDLE ?  hmmm.
+  UI.initUI(SELF);
   MP.initMediaPlayer(SELF);
+  ST.initSubtitles(UI.videoPanel);
+  MC.initCaption(UI.videoPanel);
+  PB.initProgressBar(ST);
+  GV.mainWnd := APPLICATION.HANDLE; // or SELF.HANDLE ?  hmmm.
 
   GV.mainForm := SELF;
   GV.UIWnd    := SELF.HANDLE;

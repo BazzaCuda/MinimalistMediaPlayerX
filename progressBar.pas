@@ -43,7 +43,6 @@ type
     function  setNewPosition(x: integer): integer;
   public
     destructor  Destroy; override;
-    function inClientArea(y: integer): boolean;
     function initProgressBar(aForm: TForm): boolean;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -73,6 +72,7 @@ begin
   FPB := TALProgressBar.create(NIL);
   FPB.onMouseMove := progressBarMouseMove;
   FPB.onMouseUp   := progressBarMouseUp;
+
   FTimer          := TTimer.create(NIL);
   FTimer.enabled  := FALSE;
   FTimer.interval := 100;
@@ -102,19 +102,14 @@ begin
   result := FPB.Top;
 end;
 
-function TProgressBar.inClientArea(y: integer): boolean;
-begin
-  result := y >= FPB.top;
-end;
-
 function TProgressBar.initProgressBar(aForm: TForm): boolean;
 begin
   FPB.parent           := aForm;
   FPB.align            := alBottom;
   FPB.height           := 10;
-  FPB.backgroundColor  := clBlack;
-  FPB.borderColor1     := clBlack;
-  FPB.borderColor2     := clBlack;
+  FPB.backgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
+  FPB.borderColor1     := clBlack + 1;
+  FPB.borderColor2     := clBlack + 1;
   FPB.showBorder       := FALSE;
   FPB.showPosText      := FALSE;
   FPB.barColor1        := $202020;

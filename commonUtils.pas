@@ -143,7 +143,7 @@ end;
 function initTransparentForm(aForm: TForm): TForm;
 begin
   aForm.align                  := alBottom;
-  aForm.height                 := 200;
+//  aForm.height                 := 200;
   aForm.styleElements          := []; // don't allow any theme alterations
   aForm.borderStyle            := bsNone;
   aForm.color                  := clBlack;
