@@ -36,7 +36,7 @@ type
     function count: integer;
     function currentItem: string;
     function currentIx: integer;
-    function delete: boolean;
+    function delete(anIx: integer = -1): boolean;
     function displayItem: string;
     function find(anItem: string): boolean;
     function first: boolean;
@@ -47,7 +47,9 @@ type
     function last: boolean;
     function next: boolean;
     function prev: boolean;
+    function replaceCurrentItem(aNewItem: string): boolean;
     function sort: boolean;
+    function thisItem(anIx: integer): string;
   end;
 
 function PL: TPlaylist;
@@ -104,10 +106,16 @@ begin
   result := FPlayIx;
 end;
 
-function TPlaylist.delete: boolean;
+function TPlaylist.delete(anIx: integer = -1): boolean;
 begin
-  FPlayList.delete(FPlayIx);
-  dec(FPlayIx);
+  case hasItems of FALSE: EXIT; end;
+  case anIx = -1 of  TRUE:  begin
+                              FPlaylist.delete(FPlayIx);
+                              dec(FPlayIx); end;
+                    FALSE:  begin
+                              case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
+                              FPlaylist.delete(anIx);
+                              dec(FPlayIx); end;end;
 end;
 
 destructor TPlaylist.Destroy;
@@ -136,6 +144,7 @@ end;
 
 function TPlaylist.formattedItem: string;
 begin
+  case hasItems of FALSE: EXIT; end;
   result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, ExtractFileName(currentItem)]);
 end;
 
@@ -164,6 +173,7 @@ end;
 function TPlaylist.next: boolean;
 begin
   result := FALSE;
+  case hasItems of FALSE: EXIT; end;
   case isLast of TRUE: EXIT; end;
   inc(FPlayIx);
   result := TRUE;
@@ -172,14 +182,31 @@ end;
 function TPlaylist.prev: boolean;
 begin
   result := FALSE;
+  case hasItems of FALSE: EXIT; end;
   case isFirst of TRUE: EXIT; end;
   dec(FPlayIx);
+  result := TRUE;
+end;
+
+function TPlaylist.replaceCurrentItem(aNewItem: string): boolean;
+begin
+  result := FALSE;
+  case hasItems of FALSE: EXIT; end;
+  FPlaylist[FPlayIx] := aNewItem;
   result := TRUE;
 end;
 
 function TPlaylist.sort: boolean;
 begin
   FPlaylist.sort;
+end;
+
+function TPlaylist.thisItem(anIx: integer): string;
+begin
+  result := '';
+  case hasItems of FALSE: EXIT; end;
+  case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
+  result := FPlaylist[anIx];
 end;
 
 initialization

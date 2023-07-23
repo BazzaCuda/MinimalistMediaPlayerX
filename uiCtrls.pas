@@ -36,11 +36,12 @@ type
     function setWindowStyle(aForm: TForm): boolean;
     function createVideoPanel(aForm: TForm): boolean;
   public
-    function centreWindow: boolean;
+    function deleteCurrentItem(shift: TShiftState): boolean;
     function greaterWindow(shift: TShiftState): boolean;
     function initUI(aForm: TForm): boolean;
     function minimizeWindow: boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
+    function renameFile(aFilePath: string): boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
     function toggleMaximised: boolean;
@@ -53,7 +54,7 @@ function UI: TUI;
 implementation
 
 uses
-  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, _debugWindow;
+  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, _debugWindow;
 
 var
   gUI: TUI;
@@ -74,16 +75,6 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.centreWindow: boolean;
-var
-  vR: TRect;
-begin
-  getWindowRect(FMainForm.handle, vR);
-
-  SetWindowPos(FMainForm.handle, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
-                                    (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
-end;
-
 function TUI.createVideoPanel(aForm: TForm): boolean;
 begin
   FVideoPanel        := TPanel.create(aForm);
@@ -91,6 +82,22 @@ begin
   FVideoPanel.align  := alClient;
   FVideoPanel.color  := clBlack;
   FVideoPanel.BevelOuter := bvNone;
+end;
+
+function TUI.deleteCurrentItem(shift: TShiftState): boolean;
+begin
+  case PL.hasItems of FALSE: EXIT; end;
+  MP.pause;
+
+  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(PL.currentItem);
+  case ssCtrl in Shift of  TRUE: vMsg := vMsg + '*.*';
+                          FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
+
+  case showOkCancelMsgDlg(vMsg) = IDOK of TRUE: begin
+                                                  var vIx := PL.currentIx;  // make a note of this ix because...
+                                                  MP.stop;                  // this will automatically do MP.playNext
+                                                  deleteThisFile(PL.thisItem(vIx), shift);
+                                                  PL.delete(vIx); end;end;
 end;
 
 function TUI.greaterWindow(shift: TShiftState): boolean;
@@ -127,6 +134,18 @@ begin
   debugFormat('%s %s', [anApp, aParams]);
   MP.pause;
   shellExec(anApp, aParams);
+end;
+
+function TUI.renameFile(aFilePath: string): boolean;
+var
+  vNewName: string;
+begin
+  case PL.hasItems of FALSE: EXIT; end;
+  MP.pause;
+  vNewName := commonUtils.renameFile(aFilePath);
+  case vNewName <> aFilePath of TRUE: PL.replaceCurrentItem(vNewName); end;
+  MC.caption := PL.formattedItem;
+  MP.resume;
 end;
 
 function TUI.setCustomTitleBar(aForm: TForm): boolean;

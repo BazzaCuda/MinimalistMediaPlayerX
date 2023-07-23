@@ -36,15 +36,16 @@ const
   WIN_PAUSE_PLAY  = WM_USER + 2010;
 
   WM_PROGRESSBAR_CLICK   = WM_USER + 2011;
-  WM_TIMEDTEXTNOTIFY     = WM_USER + 2012;
-  WM_TICK                = WM_USER + 2013;
-  WM_ADJUST_ASPECT_RATIO = WM_USER + 2014;
-
-  WM_PARENTCHANGED = WM_USER + 1023;
+  WM_TICK                = WM_USER + 2012;
+  WM_ADJUST_ASPECT_RATIO = WM_USER + 2013;
+  WM_ADJUST_WINDOW_WIDTH = WM_USER + 2014;
+  WM_CENTRE_WINDOW       = WM_USER + 2015;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
+
+  const EXTS_FILTER = '.txt.ini.jpg.jpeg.bmp.url.srt.sub.sami.ssa.xml';
 
 implementation
 

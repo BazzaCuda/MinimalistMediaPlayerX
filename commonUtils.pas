@@ -23,7 +23,11 @@ interface
 uses
   vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls;
 
+function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
+function adjustWindowWidth: boolean;
+function centreWindow: boolean;
 function delay(dwMilliseconds: DWORD): boolean;
+function deleteThisFile(aFilePath: string; shift: TShiftState): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
 function fillPlaylist(aPL: TPlaylist; aFolder: string): boolean;
 function formatFileSize(aSize: int64): string;
@@ -35,17 +39,56 @@ function getScreenHeight: integer;
 function getScreenWidth: integer;
 function initTransparentForm(aForm: TForm): TForm;
 function initTransparentLabel(aLabel: TLabel): boolean;
+function offScreen(aHWND: HWND): boolean;
+function renameFile(aFilePath: string): string;
 function shellExec(anExePath, aParams: string): boolean;
 function showOKCancelMsgDlg(aMsg: string;
                                 msgDlgType: TMsgDlgType = mtConfirmation;
                                 msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                 defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+function withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
 
 
 implementation
 
 uses
-  system.sysUtils, vcl.graphics, winApi.shellApi, _debugWindow;
+  system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, _debugWindow;
+
+
+function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
+var
+  vRatio: double;
+begin
+  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
+
+  vRatio := Y / X;
+
+  aForm.height := trunc(aForm.width * vRatio) + 2;
+
+  postMessage(UI.mainForm.handle, WM_CENTRE_WINDOW, 0, 0);
+  delay(100);
+  case offScreen(UI.mainForm.handle) of TRUE: postMessage(GV.appWnd, WM_ADJUST_WINDOW_WIDTH, 0, 0); end;
+end;
+
+
+function adjustWindowWidth: boolean;
+var
+  vR: TRect;
+begin
+  getWindowRect(UI.mainForm.handle, vR);
+  setWindowPos(UI.mainForm.handle, 0, 0, 0, trunc((vR.right - vR.left) * 0.80), vR.bottom - vR.top, SWP_NOZORDER + SWP_NOMOVE);
+  delay(100);
+  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+end;
+
+function centreWindow: boolean;
+var
+  vR: TRect;
+begin
+  getWindowRect(UI.mainForm.handle, vR);
+  SetWindowPos(UI.mainForm.handle, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
+                                      (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+end;
 
 function delay(dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
@@ -59,6 +102,12 @@ begin
   until (iStop  -  iStart) >= dwMilliseconds;
 end;
 
+function deleteThisFile(aFilePath: string; shift: TShiftState): boolean;
+// performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
+begin
+  case ssCtrl in Shift of  TRUE: doCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
+                          FALSE: doCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
+end;
 
 function doCommandLine(aCommandLIne: string): boolean;
 // Create a cmd.exe process to execute any command line
@@ -88,6 +137,13 @@ const
   faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
 var
   vSR: TSearchRec;
+
+  function fileExtOK: boolean;
+  // Filter out all but the explicity-supported file types
+  begin
+    result := NOT EXTS_FILTER.contains(lowerCase(extractFileExt(vSR.name)));
+  end;
+
 begin
   result := FALSE;
   aPL.clear;
@@ -95,7 +151,7 @@ begin
 
   case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
-      case (vSR.attr AND faDirectory) = faDirectory of FALSE: aPL.Add(aFolder + vSR.Name); end;
+      case fileExtOK {AND ((vSR.attr AND faDirectory) <> faDirectory)} of TRUE: aPL.Add(aFolder + vSR.Name); end;
     until FindNext(vSR) <> 0;
   end;
 
@@ -218,7 +274,44 @@ begin
   aLabel.showAccelChar     := FALSE;
   aLabel.showHint          := FALSE;
   aLabel.transparent       := TRUE;
-  aLabel.wordWrap          := TRUE;
+  aLabel.wordWrap          := FALSE;
+end;
+
+function offScreen(aHWND: HWND): boolean;
+var
+  vR: TRect;
+begin
+  getWindowRect(aHWND, vR);
+  result := (vR.bottom > getScreenHeight) or (vR.right > getScreenWidth) or (vR.left < 0) or (vR.top < 0);
+end;
+
+function renameFile(aFilePath: string): string;
+var
+  vOldFileName: string;
+  vExt:         string;
+  s:            string;
+  vNewFilePath: string;
+begin
+  result := aFilePath; // indicates failure
+  try
+    vOldFileName  := extractFileName(aFilePath);
+    vExt          := extractFileExt(vOldFileName);
+    vOldFileName  := copy(vOldFileName, 1, pos(vExt, vOldFileName) - 1); // strip the file extension; the user can edit the main part of the filename
+
+    GV.inputBox   := TRUE; // ignore keystrokes. Let the InputBoxForm handle them
+    try
+      s           := InputBoxForm(vOldFileName); // the form returns the edited filename or the original if the user pressed cancel
+    finally
+      GV.inputBox := FALSE;
+    end;
+  except
+    s := '';   // any funny business, force the rename to be abandoned
+  end;
+  case (s = '') OR (s = vOldFileName) of TRUE: EXIT; end; // nothing to do
+
+  vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
+  case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
+                                                              FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
 function shellExec(anExePath, aParams: string): boolean;
@@ -253,7 +346,11 @@ begin
   end;
 end;
 
-
+function withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
+begin
+  var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
+  result := (aWidth > vR.right - vR.left) OR (aHeight > vR.bottom - vR.top);
+end;
 
 
 

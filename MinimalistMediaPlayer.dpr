@@ -51,7 +51,8 @@ uses
   MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
-  params in 'params.pas';
+  params in 'params.pas',
+  formInputBox in 'formInputBox.pas' {InputBoxForm};
 
 {$R *.res}
 

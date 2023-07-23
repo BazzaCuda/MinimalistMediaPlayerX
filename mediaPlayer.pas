@@ -52,9 +52,10 @@ type
     function  getVolume: integer;
     procedure setVolume(const Value: integer);
     function  getFormattedVol: string;
+    function  getFormattedSpeed: string;
   public
     destructor  Destroy; override;
-    function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
+//    function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
     function adjustAspectRatioDelayed(aForm: TForm; X: int64; Y: int64): boolean;
     function brightnessUp: boolean;
     function brightnessDn: boolean;
@@ -75,9 +76,13 @@ type
     function playNext: boolean;
     function playPrev: boolean;
     function releasePlayer: boolean;
+    function resume: boolean;
     function rotateLeft: boolean;
     function rotateRight: boolean;
     function setProgressBar: boolean;
+    function speedDn: boolean;
+    function speedReset: boolean;
+    function speedUp: boolean;
     function startOver: boolean;
     function stop: boolean;
     function tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
@@ -89,6 +94,7 @@ type
     function zoomOut: boolean;
     property duration:            integer   read getDuration;
     property formattedDuration:   string    read getFormattedDuration;
+    property formattedSpeed:      string    read getFormattedSpeed;
     property formattedTime:       string    read getFormattedTime;
     property formattedVol:        string    read getFormattedVol;
     property position:            integer   read getPosition  write setPosition;
@@ -117,27 +123,13 @@ end;
 
 { TMediaPlayer }
 
-function TMediaPlayer.adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
-var
-  vRatio: double;
-begin
-//  debugFormat('x:%d y:%d', [X, Y]);
-  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
-
-  vRatio := Y / X;
-
-  aForm.height := trunc(aForm.width * vRatio) + 2;
-//  aForm.width  := aForm.width - 1; // EXPERIMENTAL
-
-  // checkScreenLimits
-end;
 
 function TMediaPlayer.adjustAspectRatioDelayed(aForm: TForm; X, Y: int64): boolean;
 begin
   FForm := aForm; FX := X; FY := Y;
 
   FTimerEvent := teAspectRatio;
-  FTimer.interval := 1000;
+  FTimer.interval := 500;
   FTimer.enabled := TRUE;
 end;
 
@@ -198,6 +190,12 @@ begin
   result := formatTime(trunc(mpv.totalSeconds));
 end;
 
+function TMediaPlayer.getFormattedSpeed: string;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  result := format('Speed: %.2f', [mpv.PlaybackSpeed]);
+end;
+
 function TMediaPlayer.getFormattedTime: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
@@ -256,7 +254,7 @@ begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
     tePlay: play(PL.currentItem);
-    teAspectRatio: adjustAspectRatio(FForm, FX, FY);
+    teAspectRatio: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); //        adjustAspectRatio(FForm, FX, FY);
   end;
 end;
 
@@ -276,9 +274,22 @@ begin
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
-    mpv.initPlayer(intToStr(UI.mainForm.handle), '', '', '');
+//    mpv.initPlayer(intToStr(UI.videoPanel.handle), '', '', '');
     mpv.setPropertyString('sub-font', 'Segoe UI');
     mpv.setPropertyString('sub-color', '#008000');
+//    mpv.setPropertyString('osd-bar', 'yes');
+//    mpv.setPropertyString('osd-level', '0');
+//    mpv.setPropertyString('hr-seek', 'yes');
+//    mpv.setPropertyString('osd-duration', '86400000');
+//    mpv.setPropertyString('osc', 'yes'); // On Screen Control
+//    mpv.setPropertyString('osc-layout', 'bottombar');
+//    mpv.setPropertyString('osc-seekbarstyle', 'bar');
+//    mpv.setPropertyInt64('osc-deadzonesize', 0);
+//    mpv.setPropertyInt64('osc-minmousemove', 3);
+//    mpv.setPropertyInt64('osc-hidetimeout', 1000);
+//    mpv.setPropertyString('osc-vidscale', 'no');
+//    mpv.setPropertyString('--no-osd-bar', '');
+    mpv.initPlayer(intToStr(UI.mainForm.handle), ''{getExePath}, ''{getExePath}, '');
   end;end;
   mpv.openFile(aURL);
   result := TRUE;
@@ -323,7 +334,7 @@ end;
 function TMediaPlayer.pause: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.Pause;
+  mpv.pause;
 end;
 
 function TMediaPlayer.pausePlay: boolean;
@@ -342,8 +353,12 @@ begin
   MI.initMediaInfo(PL.currentItem);
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
-  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+  postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
+//  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   result := TRUE;
+//  delay(1300);
+//  mpv.command([CMD_OSD_OVERLAY, '0', '0', 'top-left', 'text', 'Hello, Delphi!']);
+//  mpv.CommandStr('show-text "${osd-width}x${osd-height}"');
 end;
 
 function TMediaPlayer.playFirst: boolean;
@@ -373,6 +388,12 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;
+end;
+
+function TMediaPlayer.resume: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.resume;
 end;
 
 function TMediaPlayer.rotateLeft: boolean;
@@ -422,6 +443,34 @@ begin
   ST.opInfo := formattedVol;
 end;
 
+function TMediaPlayer.speedDn: boolean;
+var
+  speed: double;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyDouble('speed', speed);
+  mpv.setPropertyDouble('speed', speed - 0.01);
+  ST.opInfo := formattedSpeed;
+end;
+
+function TMediaPlayer.speedReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyDouble('speed', 1.00);
+  delay(100);
+  ST.opInfo := formattedSpeed;
+end;
+
+function TMediaPlayer.speedUp: boolean;
+var
+  speed: double;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyDouble('speed', speed);
+  mpv.setPropertyDouble('speed', speed + 0.01);
+  ST.opInfo := formattedSpeed;
+end;
+
 function TMediaPlayer.startOver: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
@@ -440,9 +489,9 @@ var
   vTab: integer;
 begin
   case aFactor <> 0 of  TRUE: vFactor := aFactor;
-                       FALSE: vFactor := 100; end;
+                       FALSE: vFactor := 100; end;  // default
 
-  case capsLock               of TRUE: vFactor := 10; end;
+//  case capsLock               of TRUE: vFactor := 10; end;
   case ssShift in aShiftState of TRUE: vFactor := 20; end;
   case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);

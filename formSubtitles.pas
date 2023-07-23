@@ -44,6 +44,7 @@ type
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
     function  getHWND: HWND;
+    function  startOpInfoTimer: boolean;
     procedure setSubtitle(const Value: string);
     procedure setDisplayTime(const Value: string);
     procedure setOpInfo(const Value: string);
@@ -52,7 +53,7 @@ type
     procedure setShowTime(const Value: boolean);
   public
     destructor Destroy; override;
-    function initSubtitles(aVideoPanel: TPanel): boolean;
+    function initSubtitles(aVideoPanel: TControl): boolean;
     property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND    read getHWND;
@@ -92,7 +93,7 @@ constructor TSubtitlesForm.create;
     aLabel.margins.top    := 0;
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
-    aLabel.margins.right  := 0;
+    aLabel.margins.right  := 3;
     aLabel.caption        := '';
   end;
 begin
@@ -122,8 +123,8 @@ begin
   FTimeLabel.align := alBottom;
   FTimeLabel.alignment := taRightJustify;
   FTimeLabel.margins.bottom := 0;
-  FTimeLabel.margins.right  := 3;
   FTimeLabel.caption := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
+  FTimeLabel.autoSize := FALSE;
 
   FOpInfo := TLabel.create(FInfoPanel);
   FOpInfo.parent := FInfoPanel;
@@ -135,8 +136,8 @@ begin
   FOpInfo.top       := FTimeLabel.top - FTimeLabel.height;
   FOpInfo.left      := FTimeLabel.left;
 
-  FDataMemo := TMemo.create(FInfoPanel);
-  FDataMemo.parent      := FInfoPanel;
+  FDataMemo := TMemo.create(SELF);
+  FDataMemo.parent      := SELF;
   FDataMemo.align       := alLeft;
   FDataMemo.top := FTimeLabel.top - FDataMemo.height;
   FDataMemo.left := 0;
@@ -153,11 +154,6 @@ begin
   FDataMemo.styleElements := [];
   FDataMemo.lines.add('Hello');
   FDataMemo.clear;
-
-  FOpInfoTimer := TTimer.create(NIL);
-  FOpInfoTimer.interval := 1000;
-  FOpInfoTimer.enabled  := FALSE;
-  FOpInfoTimer.onTimer  := timerEvent;
 end;
 
 destructor TSubtitlesForm.Destroy;
@@ -174,12 +170,13 @@ begin
   result := SELF.HANDLE;
 end;
 
-function TSubtitlesForm.initSubtitles(aVideoPanel: TPanel): boolean;
+function TSubtitlesForm.initSubtitles(aVideoPanel: TControl): boolean;
 begin
   case FInitialized of TRUE: EXIT; end;
-  FVideoPanel := aVideoPanel;
+//  FVideoPanel := aVideoPanel;
 
-  SELF.parent := aVideoPanel;
+  (SELF as TWinControl).parent := TWinControl(aVideoPanel);
+  SELF.align  := alBottom;
   initTransparentForm(SELF);
 
 //  FSubtitle.parent := SELF;
@@ -198,7 +195,8 @@ end;
 procedure TSubtitlesForm.setOpInfo(const Value: string);
 begin
   FOpInfo.caption       := Value;
-  FOpInfoTimer.enabled  := TRUE;
+  FOpInfo.top := FTimeLabel.top - FOpInfo.height;
+  startOpInfoTimer;
 end;
 
 procedure TSubtitlesForm.setShowData(const Value: boolean);
@@ -219,10 +217,21 @@ begin
   FSubtitle.caption := Value;
 end;
 
+function TSubtitlesForm.startOpInfoTimer: boolean;
+begin
+  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(NIL); end;
+  FOpInfoTimer.enabled  := FALSE;
+  FOpInfoTimer.interval := 1000;
+  FOpInfoTimer.onTimer  := timerEvent;
+  FOpInfoTimer.enabled  := TRUE;
+end;
+
 procedure TSubtitlesForm.timerEvent(sender: TObject);
 begin
-  FOpInfoTimer.enabled := FALSE;
-  FOpInfo.caption := '';
+  FOpInfoTimer.enabled  := FALSE;
+  FOpInfo.caption       := '';
+  FOpInfoTimer.free;
+  FOpInfoTimer := NIL;
 end;
 
 procedure TSubtitlesForm.WMSize(var message: TWMSize);

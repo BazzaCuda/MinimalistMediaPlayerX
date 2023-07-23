@@ -41,7 +41,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -93,12 +93,14 @@ var
 begin
   keyDnHandled := FALSE;
   case msgIs(WM_KEYDOWN) of TRUE: begin
+                                    case GV.inputBox of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     shiftState   := KeyboardStateToShiftState;
                                     key          := msg.WParam;
                                     handled      := KB.processKeyStroke(key, shiftState, kdDown);
                                     keyDnHandled := handled; end;end;
 
   case msgIs(WM_KEYUP) of TRUE: begin
+                                  case GV.inputBox of TRUE: EXIT; end;  // don't trap keystrokes when the inputBoxForm is being displayed
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
                                   shiftState  := KeyboardStateToShiftState;
                                   key         := msg.WParam;
@@ -110,16 +112,22 @@ begin
 
   case msgIs(WM_PROGRESSBAR_CLICK) of TRUE: MP.position := PB.position; end;
 
-  case msgIs(WM_TIMEDTEXTNOTIFY) of TRUE: ST.subTitle := MP.subTitle; end;
+//  case msgIs(WM_TIMEDTEXTNOTIFY) of TRUE: ST.subTitle := MP.subTitle; end;
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
+  case msgIs(WM_TICK) of TRUE: case screen <> NIL of TRUE: screen.cursor := crNone; end;end;
 
   case msgIs(WM_LBUTTONDOWN) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
   case msgIs(WM_LBUTTONUP)   of TRUE: mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
+  case msgIs(WM_MOUSEMOVE)   of TRUE: case screen <> NIL of TRUE: screen.cursor := crDefault; end;end;
 
-  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); MP.adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end;
+  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end;
+
+  case msgIs(WM_CENTRE_WINDOW)       of TRUE: centreWindow; end;
+  case msgIs(WM_ADJUST_WINDOW_WIDTH) of TRUE: adjustWindowWidth; end;
+
 end;
 
 constructor TAppEvents.create;

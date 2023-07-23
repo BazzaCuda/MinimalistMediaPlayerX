@@ -29,7 +29,7 @@ type
     FCloseTimer: TTimer;
   private
     FDragging: boolean;
-    FUIWnd: HWND;
+    FInputBox: boolean;
     procedure onCloseTimerEvent(sender: TObject);
     procedure setCloseApp(const Value: boolean);
   public
@@ -37,7 +37,7 @@ type
     destructor  destroy;
     property closeApp: boolean write setCloseApp;
     property appWnd: HWND read FAppWnd write FAppWnd;
-    property UIWnd: HWND read FUIWnd write FUIWnd;
+    property inputBox: boolean read FInputBox write FInputBox;
   end;
 
 function GV: TGlobalVars;
@@ -45,7 +45,7 @@ function GV: TGlobalVars;
 implementation
 
 uses
-  vcl.controls, sysCommands;
+  vcl.controls, sysCommands, uiCtrls;
 
 var
   gGV: TGlobalVars;
@@ -75,7 +75,7 @@ end;
 procedure TGlobalVars.onCloseTimerEvent(sender: TObject);
 begin
   FCloseTimer.enabled := FALSE;
-  sendSysCommandClose(UIWnd);
+  sendSysCommandClose(UI.mainForm.handle);
 end;
 
 procedure TGlobalVars.setCloseApp(const Value: boolean);

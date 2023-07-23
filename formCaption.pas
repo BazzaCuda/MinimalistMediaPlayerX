@@ -88,7 +88,7 @@ function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
     aLabel.font.color     := clGray;
     aLabel.font.size      := 10;
     aLabel.font.style     := [fsBold];
-    aLabel.margins.top    := 0;
+    aLabel.margins.top    := 3;
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
     aLabel.margins.right  := 0;

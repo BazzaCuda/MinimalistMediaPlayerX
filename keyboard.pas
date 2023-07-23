@@ -24,10 +24,12 @@ uses
   system.classes;
 
 type
-  TKeyOp = (koNone, koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio,
-            koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
+  TKeyOp = (koNone,
+            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio, koBrightnessUp,
+            koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
             koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
-            koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow);
+            koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
+            koSpeedDn, koSpeedReset);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -45,6 +47,7 @@ type
     function getShift: boolean;
     function getAlt: boolean;
     function getCapsLock: boolean;
+    function getNumLock: boolean;
   public
     function processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
 
@@ -56,6 +59,7 @@ type
     property shiftState:  TShiftState read FShiftState  write FShiftState;
     property keyDn:       boolean     read getKeyDn;
     property keyUp:       boolean     read getKeyUp;
+    property numLock:     boolean     read getNumLock;
   end;
 
 function KB: TKeyboard;
@@ -63,13 +67,13 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, _debugWindow;
+  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
-  _SLASH = '/'; _BACKSLASH = '\';
+  _SLASH = '/'; _BACKSLASH = '\'; _OPEN_BRACKET = '['; _CLOSE_BRACKET = ']';
 
 var
   gKB: TKeyboard;
@@ -94,8 +98,8 @@ begin
   case keyDn and keyIs(VK_LEFT)   of TRUE: result := koFrameBackwards; end;
   case keyUp and keyIs(VK_TAB)    of TRUE: result := koTabTab; end;
   case keyUp and keyIs(J)         of TRUE: result := koAdjustAspectRatio; end;
-  case keyDn and ctrl and keyIs(_4)        of TRUE: result := koBrightnessUp; end;
-  case keyDn and ctrl and keyIs(_3)        of TRUE: result := koBrightnessDn; end;
+  case keyDn and keyIs(_4)        of TRUE: result := koBrightnessUp; end;
+  case keyDn and keyIs(_3)        of TRUE: result := koBrightnessDn; end;
   case keyDn and keyIs(I)         of TRUE: result := koZoomIn; end;
   case keyDn and keyIs(O)         of TRUE: result := koZoomOut; end;
   case keyUp and keyIs(S)         of TRUE: result := koStartOver; end;
@@ -107,8 +111,8 @@ begin
   case keyDn and ctrl and keyIs(VK_RIGHT) of TRUE: result := koPanRight; end;
   case keyDn and ctrl and keyIs(VK_UP)    of TRUE: result := koPanUp; end;
   case keyDn and ctrl and keyIs(VK_DOWN)  of TRUE: result := koPanDn; end;
-  case keyUp and keyIs(VK_ADD)            of TRUE: result := koRotateR; end;
-  case keyUp and keyIs(VK_SUBTRACT)       of TRUE: result := koRotateL; end;
+  case keyUp and keyIs(_9)                of TRUE: result := koRotateR; end;
+  case keyUp and keyIs(_8)                of TRUE: result := koRotateL; end;
   case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
   case keyUp and keyIs(U)                 of TRUE: result := koZoomEnd; end;
   case keyUp and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
@@ -121,6 +125,12 @@ begin
   case keyUp and keyIs(B)                 of TRUE: result := koToggleBlackout; end;
   case keyUp and keyIs(H)                 of TRUE: result := koCentreWindow; end;
   case keyUp and keyIs(N)                 of TRUE: result := koMinimizeWindow; end;
+  case keyUp and keyIs(D)                 of TRUE: result := koDeleteCurrentItem; end;
+  case keyUp and keyIs(VK_DELETE)         of TRUE: result := koDeleteCurrentItem; end;
+  case keyUp and keyIs(R)                 of TRUE: result := koRenameFile; end;
+  case keyDn and keyIs(VK_ADD)            of TRUE: result := koSpeedUp; end;
+  case keyDn and keyIs(VK_SUBTRACT)       of TRUE: result := koSpeedDn; end;
+  case keyUp and keyIs(_1)                of TRUE: result := koSpeedReset; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -148,6 +158,11 @@ end;
 function TKeyboard.getKeyUp: boolean;
 begin
   result := FUpDn = kdUp;
+end;
+
+function TKeyboard.getNumLock: boolean;
+begin
+  result := GetKeyState(VK_NUMLOCK) <> 0;
 end;
 
 function TKeyboard.getShift: boolean;
@@ -184,7 +199,7 @@ begin
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
-    koAdjustAspectRatio: MP.adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight);
+    koAdjustAspectRatio: adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight);
     koBrightnessUp:      MP.brightnessUp;
     koBrightnessDn:      MP.brightnessDn;
     koZoomIn:            MP.zoomIn;
@@ -210,8 +225,13 @@ begin
     koRunCut:            UI.openExternalApp(LOSSLESS_CUT, PL.currentItem);
     koRunShot:           UI.openExternalApp(SHOTCUT, PL.currentItem);
     koToggleBlackout:    UI.toggleBlackout;
-    koCentreWindow:      UI.centreWindow;
+    koCentreWindow:      postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
     koMinimizeWindow:    UI.minimizeWindow;
+    koDeleteCurrentItem: UI.deleteCurrentItem(aShiftState);
+    koRenameFile:        UI.renameFile(PL.currentItem);
+    koSpeedUp:           MP.speedUp;
+    koSpeedDn:           MP.speedDn;
+    koSpeedReset:        MP.speedReset;
   end;
 
   result := TRUE;
