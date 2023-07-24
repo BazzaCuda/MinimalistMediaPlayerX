@@ -95,11 +95,11 @@ begin
   case keyDn and keyIs(VK_VOLUME_DOWN)    of TRUE: result := koVolDn; end;
   case keyDn and keyIs(VK_UP)             of TRUE: result := koVolUp; end;
   case keyDn and keyIs(VK_VOLUME_UP)      of TRUE: result := koVolUp; end;
-  case keyUp and keyIs(T)                 of TRUE: result := koTab; end;
+  case keyDn and keyIs(T)                 of TRUE: result := koTab; end;
   case keyUp and keyIs(VK_SPACE)          of TRUE: result := koPausePlay; end;
   case keyDn and keyIs(VK_RIGHT)          of TRUE: result := koFrameForwards; end;
   case keyDn and keyIs(VK_LEFT)           of TRUE: result := koFrameBackwards; end;
-  case keyUp and keyIs(VK_TAB)            of TRUE: result := koTabTab; end;
+  case keyDn and keyIs(VK_TAB)            of TRUE: result := koTabTab; end;
   case keyUp and keyIs(J)                 of TRUE: result := koAdjustAspectRatio; end;
   case keyDn and keyIs(_4)                of TRUE: result := koBrightnessUp; end;
   case keyDn and keyIs(_3)                of TRUE: result := koBrightnessDn; end;
@@ -122,7 +122,7 @@ begin
   case keyUp and keyIs(OPEN_BRACKET)      of TRUE: result := koRotateL; end;
   case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
   case keyUp and keyIs(U)                 of TRUE: result := koZoomEnd; end;
-  case keyUp and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
+  case keyDn and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
   case keyUp and keyIs(A)                 of TRUE: result := koPlayFirst; end;
   case keyUp and keyIs(VK_HOME)           of TRUE: result := koPlayFirst; end;
   case keyUp and keyIs(Z)                 of TRUE: result := koPlayLast; end;
@@ -214,7 +214,7 @@ begin
     koVolUp:             MP.volUp;
     koVolDn:             MP.volDown;
     koTab:               MP.tab(aShiftState, KB.capsLock);
-    koTabTab:            MP.tab(aShiftState, KB.capsLock, 200);
+    koTabTab:            MP.tab(aShiftState, KB.capsLock, -1);
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;

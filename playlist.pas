@@ -20,7 +20,7 @@ unit playlist;
 
 interface
 
-uses system.generics.collections;
+uses system.generics.collections, system.generics.defaults;
 
 type
   TPlaylist = class(TObject)
@@ -198,7 +198,16 @@ end;
 
 function TPlaylist.sort: boolean;
 begin
-  FPlaylist.sort;
+//  FPlaylist.sort;
+
+  FPlaylist.Sort(
+                 TComparer<string>.construct(
+                                              function(const a, b: string): integer
+                                              begin
+                                                result := compareStr(a, b, loUserLocale);
+                                              end
+                                            )
+                );
 end;
 
 function TPlaylist.thisItem(anIx: integer): string;

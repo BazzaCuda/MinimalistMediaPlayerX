@@ -1137,7 +1137,8 @@ begin
 //  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF
   SetPropertyBool('keep-open', TRUE);
   SetPropertyBool('keep-open-pause', False);
-  SetPropertyString('video-unscaled', 'no');
+  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');
+//  SetPropertyString('video-unscaled', 'downscale-big'); // this option disables pan-scan
 
 //  setOption('no-keepaspect'); // how to set this?
 

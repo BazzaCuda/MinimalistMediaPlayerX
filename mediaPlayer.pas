@@ -362,12 +362,10 @@ begin
   MI.initMediaInfo(PL.currentItem);
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
-  postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
-//  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+//  postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
+  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+  application.processMessages;
   result := TRUE;
-//  delay(1300);
-//  mpv.command([CMD_OSD_OVERLAY, '0', '0', 'top-left', 'text', 'Hello, Delphi!']);
-//  mpv.CommandStr('show-text "${osd-width}x${osd-height}"');
 end;
 
 function TMediaPlayer.playFirst: boolean;
@@ -388,8 +386,8 @@ function TMediaPlayer.playNext: boolean;
 begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
-  FTimer.enabled   := PL.next;
-  case PL.isLast of TRUE: sendSysCommandClose(UI.mainForm.handle); end;
+  FTimer.enabled  := PL.next;
+  case FTimer.enabled of FALSE: sendSysCommandClose(UI.mainForm.handle); end;
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -499,19 +497,22 @@ function TMediaPlayer.tab(aShiftState: TShiftState; capsLock: boolean; aFactor: 
 var
   vFactor: integer;
   vTab: integer;
+  newInfo: string;
 begin
-  case aFactor <> 0 of  TRUE: vFactor := aFactor;
-                       FALSE: vFactor := 100; end;  // default
+  vFactor := 100;
 
   case capsLock               of TRUE: vFactor := 10; end;
   case ssShift in aShiftState of TRUE: vFactor := 20; end;
   case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
+  case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
 
   case ssCtrl  in aShiftState of  TRUE: position := position - vTab;
                                  FALSE: position := position + vTab; end;
 
-  var newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]);
+  case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
+                       FALSE: newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]); end;
+
   case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
                                 FALSE: newInfo := '>> ' + newInfo;
   end;

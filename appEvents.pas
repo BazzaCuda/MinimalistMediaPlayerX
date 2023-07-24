@@ -102,9 +102,8 @@ begin
 
 
   case msgIs(WM_KEY_UP)  of TRUE: begin
-                                    debugInteger('key up', msg.wparam);
                                     shiftState  := KeyboardStateToShiftState;
-                                    key         := msg.WParam; // VK_F10;
+                                    key         := msg.WParam; // e.g. VK_F10;
                                     handled     := KB.processKeyStroke(key, shiftState, kdUp);
                                     EXIT;       end;end;
 
@@ -132,11 +131,12 @@ begin
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
   case msgIs(WM_MOUSEMOVE)   of TRUE: case screen <> NIL of TRUE: screen.cursor := crDefault; end;end;
 
-  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end;
+  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
 
-  case msgIs(WM_CENTRE_WINDOW)       of TRUE: centreWindow; end;
-  case msgIs(WM_ADJUST_WINDOW_WIDTH) of TRUE: adjustWindowWidth; end;
-
+  case msgIs(WM_CENTRE_WINDOW)        of TRUE: centreWindow; end;
+  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.mainForm, getScreenWidth, getScreenHeight); end;
+  case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow; end;
+//  case msgIs(WM_ADJUST_WINDOW_WIDTH) of TRUE: adjustWindowWidth; end;
 end;
 
 constructor TAppEvents.create;

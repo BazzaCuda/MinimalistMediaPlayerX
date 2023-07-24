@@ -65,8 +65,11 @@ begin
 
   aForm.height := trunc(aForm.width * vRatio) + 2;
 
-  postMessage(UI.mainForm.handle, WM_CENTRE_WINDOW, 0, 0);
+  centreWindow;
+//  postMessage(UI.mainForm.handle, WM_CENTRE_WINDOW, 0, 0);
 //  delay(100);
+//  application.processMessages;
+
 //  case offScreen(UI.mainForm.handle) of TRUE: postMessage(GV.appWnd, WM_ADJUST_WINDOW_WIDTH, 0, 0); end;
 end;
 
@@ -77,7 +80,7 @@ var
 begin
   getWindowRect(UI.mainForm.handle, vR);
   setWindowPos(UI.mainForm.handle, 0, 0, 0, trunc((vR.right - vR.left) * 0.80), vR.bottom - vR.top, SWP_NOZORDER + SWP_NOMOVE);
-  delay(100);
+//  delay(100);
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
 end;
 
@@ -88,6 +91,9 @@ begin
   getWindowRect(UI.mainForm.handle, vR);
   SetWindowPos(UI.mainForm.handle, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
                                       (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+//  delay(100);
+  postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
+  application.processMessages;
 end;
 
 function delay(dwMilliseconds: DWORD): boolean;
@@ -156,6 +162,7 @@ begin
   end;
 
   FindClose(vSR);
+  PL.sort;
   result := TRUE;
 end;
 
@@ -347,11 +354,13 @@ end;
 function withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
-  result := (aWidth > vR.right - vR.left) OR (aHeight > vR.bottom - vR.top);
+  result := (aWidth <= vR.right - vR.left) AND (aHeight <= vR.bottom - vR.top);
+//  debugInteger('screenWidth', vR.width);
+//  debugInteger('screenHeight', vR.height);
+//  debugInteger('newW', aWidth);
+//  debugInteger('newH', aHeight);
+//  debugBoolean('withinScreenLimits', result);
+//  debug('');
 end;
-
-
-
-
 
 end.

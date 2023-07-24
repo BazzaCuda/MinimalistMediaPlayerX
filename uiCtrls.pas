@@ -37,12 +37,14 @@ type
     function createVideoPanel(aForm: TForm): boolean;
   public
     procedure formResize(sender: TObject);
+    function checkScreenLimits(aForm: TForm; aWidth: integer; aHeight: integer): boolean;
     function deleteCurrentItem(shift: TShiftState): boolean;
     function greaterWindow(shift: TShiftState): boolean;
     function initUI(aForm: TForm): boolean;
     function minimizeWindow: boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
+    function smallerWindow: boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
     function toggleMaximised: boolean;
@@ -74,6 +76,12 @@ begin
   AppendMenu(vSysMenu, MF_SEPARATOR, 0, '');
   AppendMenu(vSysMenu, MF_STRING, MENU_ABOUT_ID, '&About Minimalist Media Player…');
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
+end;
+
+function TUI.checkScreenLimits(aForm: TForm; aWidth: integer; aHeight: integer): boolean;
+begin
+  case (aForm.width > aWidth) or (aForm.height > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
+  application.processMessages;
 end;
 
 function TUI.createVideoPanel(aForm: TForm): boolean;
@@ -109,12 +117,53 @@ begin
   PB.formResize;
 end;
 
-function TUI.greaterWindow(shift: TShiftState): boolean;
+function TUI.smallerWindow: boolean;
 begin
-  case ssCtrl in Shift of
-     TRUE: SetWindowPos(FMainForm.handle, 0, 0, 0, FMainForm.Width - 100, FMainForm.Height - 60, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW);
-    FALSE: SetWindowPos(FMainForm.handle, 0, 0, 0, FMainForm.Width + 100, FMainForm.Height + 60, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW);
-  end;end;
+  greaterWindow([ssCtrl]);
+end;
+
+function TUI.greaterWindow(shift: TShiftState): boolean;
+const
+  dx = 50;
+  dy = 30;
+var
+  newW: integer;
+  newH: integer;
+  vR:   TRect;
+
+  function calcDimensions(shift: TShiftState): boolean;
+  begin
+    case ssCtrl in shift of
+      TRUE: begin
+              newW := newW - dx;
+              newH := newH - dy;
+            end;
+     FALSE: begin
+              newW := newW + dx;
+              newH := newH + dy;
+            end;
+    end;
+  end;
+begin
+  getWindowRect(FMainForm.handle, vR);
+  newW := vR.Width;
+  newH := vR.height;
+//  debugInteger('startWidth', newW);
+//  debugInteger('startHeight', newH);
+//  debug('');
+  calcDimensions(shift); // do what the user requested
+//  debugInteger('calcWidth', newW);
+//  debugInteger('calcHeight', newH);
+//  debug('');
+
+  while NOT withinScreenLimits(newW, newH) do calcDimensions([ssCtrl]); // then make the window fit the screen
+
+  SetWindowPos(FMainForm.handle, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
+
+//  delay(100);
+  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+  application.processMessages;
+end;
 
 function TUI.initUI(aForm: TForm): boolean;
 begin
