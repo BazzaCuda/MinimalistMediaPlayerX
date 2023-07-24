@@ -61,10 +61,6 @@ end;
 constructor TGlobalVars.create;
 begin
   inherited;
-  FCloseTimer := TTimer.create(NIL);
-  FCloseTimer.enabled := FALSE;
-  FCloseTimer.interval := 100;
-  FCloseTimer.OnTimer := onCloseTimerEvent;
 end;
 
 destructor TGlobalVars.destroy;
@@ -80,6 +76,10 @@ end;
 
 procedure TGlobalVars.setCloseApp(const Value: boolean);
 begin
+  FCloseTimer := TTimer.create(NIL);
+  FCloseTimer.enabled := FALSE;
+  FCloseTimer.interval := 100;
+  FCloseTimer.OnTimer := onCloseTimerEvent;
   FCloseTimer.enabled := value;
 end;
 

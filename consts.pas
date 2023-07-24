@@ -40,12 +40,17 @@ const
   WM_ADJUST_ASPECT_RATIO = WM_USER + 2013;
   WM_ADJUST_WINDOW_WIDTH = WM_USER + 2014;
   WM_CENTRE_WINDOW       = WM_USER + 2015;
+  WM_F10_KEY_UP          = WM_USER + 2016;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
-  const EXTS_FILTER = '.txt.ini.jpg.jpeg.bmp.url.srt.sub.sami.ssa.xml';
+  EXTS_1 = '.txt.ini.jpg.jpeg.bmp.ico.png.url.srt.sub.sami.ssa.xml.exe.html.mthml.htm.snz.jfif.gif.dll.pdf.doc.docx.xls.xlsx.jp2.ods.djvu.epub.zip.rar.7z.dic';
+  EXTS_2 = '.rtf.md.bz2.arj.cab.gz.iso.jar.lz.lzh.tar.uue.xz.z.zipx.zst.cbr.cbz.pl.py.pas.dfm.scpt.dmg.plist.css.body.offsets.index.data.css.dist.bom.slip.msg.bat.go';
+  EXTS_3 = '.conf.sh.dpk.res.dfm.identcache.local.dcu.yml.csv.sub';
+  EXTS_FILTER = EXTS_1 + EXTS_2 + EXTS_3 + '.';
+
 
 implementation
 

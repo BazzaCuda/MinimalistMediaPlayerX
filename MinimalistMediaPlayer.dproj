@@ -108,7 +108,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
-        <Debugger_RunParams>&quot;B:\Videos\ManorSolomon.mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Movies\Blazing Saddles (1974).mp4&quot;</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -126,7 +126,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
         <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-        <Debugger_RunParams>&quot;B:\Videos\ManorSolomon.mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Movies\Blazing Saddles (1974).mp4&quot;</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

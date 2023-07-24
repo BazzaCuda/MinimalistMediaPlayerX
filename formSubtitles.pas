@@ -44,6 +44,7 @@ type
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
     function  getHWND: HWND;
+    function  moveOpInfo: boolean;
     function  startOpInfoTimer: boolean;
     procedure setSubtitle(const Value: string);
     procedure setDisplayTime(const Value: string);
@@ -53,10 +54,12 @@ type
     procedure setShowTime(const Value: boolean);
   public
     destructor Destroy; override;
-    function initSubtitles(aVideoPanel: TControl): boolean;
+    procedure formResize;
+    function initSubtitles(aVideoPanel: TPanel): boolean;
     property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND    read getHWND;
+    property initialized:   boolean read FInitialized;
     property opInfo:        string                  write setOpInfo;
     property showData:      boolean read FShowData  write setShowData;
     property showTime:      boolean read FShowTime  write setShowTime;
@@ -69,6 +72,9 @@ implementation
 
 uses
   mediaPlayer, commonUtils, _debugWindow;
+
+const
+  DEFAULT_WINDOW_HEIGHT = 150;
 
 var
   gST: TSubtitlesForm;
@@ -86,18 +92,19 @@ end;
 constructor TSubtitlesForm.create;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
-    aLabel.font.name      := 'Segoe UI';
+    aLabel.font.name      := 'Tahoma';
     aLabel.font.color     := clGray;
-    aLabel.font.size      := 8;
-    aLabel.font.style     := [];
+    aLabel.font.size      := 10;
     aLabel.margins.top    := 0;
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
     aLabel.margins.right  := 3;
     aLabel.caption        := '';
+    aLabel.wordWrap       := FALSE;
   end;
 begin
   inherited create(NIL);
+
 //  FSubtitle := TLabel.create(NIL);
 //  FSubtitle.margins.bottom := 6;
 
@@ -106,35 +113,36 @@ begin
 //  FSubtitle.parent := FSubtitlePanel; // the other labels don't show without this!
 //  FSubtitlePanel.color := clGreen;
 
-  SELF.height := 150;
-  // we must use align otherwise sibling controls don't get drawn over the video!
+  SELF.height := DEFAULT_WINDOW_HEIGHT;
 
   FShowTime := TRUE;
 
   FInfoPanel := TPanel.create(NIL);
   FInfoPanel.parent := SELF;
-  FInfoPanel.align  := alClient;
+  FInfoPanel.align  := alClient;   // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   FInfoPanel.bevelOuter := bvNone;
 
   FTimeLabel := TLabel.create(FInfoPanel);
   FTimeLabel.parent := FInfoPanel;
   initTransparentLabel(FTimeLabel);
+  FTimeLabel.align := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   defaultFontEtc(FTimeLabel);
-  FTimeLabel.align := alBottom;
   FTimeLabel.alignment := taRightJustify;
   FTimeLabel.margins.bottom := 0;
   FTimeLabel.caption := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
   FTimeLabel.autoSize := FALSE;
+  FTimeLabel.top     := FInfoPanel.height - FTimeLabel.height;
 
   FOpInfo := TLabel.create(FInfoPanel);
   FOpInfo.parent := FInfoPanel;
   initTransparentLabel(FOpInfo);
+  FOpInfo.align := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   defaultFontEtc(FOpInfo);
   FOpInfo.alignment := taRightJustify;
   FOpInfo.autoSize  := FALSE;
   FOpInfo.width     := FTimeLabel.width;
-  FOpInfo.top       := FTimeLabel.top - FTimeLabel.height;
-  FOpInfo.left      := FTimeLabel.left;
+  FOpInfo.top       := FTimeLabel.top - FOpInfo.height;
+  formResize;
 
   FDataMemo := TMemo.create(SELF);
   FDataMemo.parent      := SELF;
@@ -149,8 +157,10 @@ begin
   FDataMemo.margins.bottom := 20; // otherwise the bottom line displays below the progressBar
   FDataMemo.readOnly    := TRUE;
   FDataMemo.tabStop     := FALSE;
+  FDataMemo.font.name   := 'Tahoma';
   FDataMemo.font.color  := clGray;
-  FDataMemo.font.height := -13;
+  FDataMemo.font.size   := 10;
+  FDataMemo.font.style  := [fsBold];
   FDataMemo.styleElements := [];
   FDataMemo.lines.add('Hello');
   FDataMemo.clear;
@@ -165,25 +175,56 @@ begin
   inherited;
 end;
 
+procedure TSubTitlesForm.formResize;
+begin
+  SELF.height     := DEFAULT_WINDOW_HEIGHT;
+  FTimeLabel.left := SELF.width - FTimeLabel.width;    // don't rely on the dimensions of FInfoPanel!
+  FTimeLabel.top  := SELF.height - FTimeLabel.height;
+  FOpInfo.left    := FTimeLabel.left;                  // needs to be set even though align = alBottom!
+  FOpInfo.top     := FTimeLabel.top - FOpInfo.height;
+//  moveOpInfo;
+end;
+
 function TSubtitlesForm.getHWND: HWND;
 begin
   result := SELF.HANDLE;
 end;
 
-function TSubtitlesForm.initSubtitles(aVideoPanel: TControl): boolean;
+function TSubtitlesForm.initSubtitles(aVideoPanel: TPanel): boolean;
 begin
   case FInitialized of TRUE: EXIT; end;
-//  FVideoPanel := aVideoPanel;
+  FVideoPanel := aVideoPanel;
 
-  (SELF as TWinControl).parent := TWinControl(aVideoPanel);
+  SELF.parent := aVideoPanel;
   SELF.align  := alBottom;
   initTransparentForm(SELF);
 
 //  FSubtitle.parent := SELF;
 //  initTransparentLabel(FSubtitle);
 
+
+//  handy for debugging
+//  SetWindowLong(SELF.handle, GWL_STYLE, GetWindowLong(SELF.handle, GWL_STYLE) OR WS_CHILD OR WS_CLIPSIBLINGS {OR WS_CLIPCHILDREN} OR WS_CAPTION AND (NOT (WS_BORDER)));
+
+
   FInitialized := TRUE;
   SELF.show;
+end;
+
+function TSubtitlesForm.moveOpInfo: boolean;
+begin
+  debugClear;
+  debugInteger('Window     height:', SELF.height);
+  debugInteger('FInfoPanel height:', FInfoPanel.height);
+  debugInteger('FTimeLabel height:', FTimeLabel.height);
+  debugInteger('FOpInfo    height:', FOpInfo.height);
+  debugInteger('Window      width:', SELF.width);
+  debugInteger('FInfoPanel  width:', FInfoPanel.width);
+  debugInteger('FTimeLabel  width:', FTimeLabel.width);
+  debugInteger('FOpInfo     width:', FOpInfo.width);
+  debugInteger('FInfoPanel    top:', FInfoPanel.top);
+  debugInteger('FTimeLabel    top:', FTimeLabel.top);
+  debugInteger('FOpInfo       top:', FOpInfo.top);
 end;
 
 procedure TSubtitlesForm.setDisplayTime(const Value: string);
@@ -194,8 +235,7 @@ end;
 
 procedure TSubtitlesForm.setOpInfo(const Value: string);
 begin
-  FOpInfo.caption       := Value;
-  FOpInfo.top := FTimeLabel.top - FOpInfo.height;
+  FOpInfo.caption := Value;
   startOpInfoTimer;
 end;
 

@@ -38,6 +38,7 @@ type
     procedure setCaption(const Value: string);
   public
     destructor Destroy; override;
+    procedure formResize(Sender: TObject);
     function initCaption(aVideoPanel: TPanel): boolean;
     property caption: string write setCaption;
   end;
@@ -67,6 +68,8 @@ begin
   inherited create(NIL);
   height := 80;
   FCaption := TLabel.create(NIL);
+//  SELF.OnResize := formResize;
+
 
   FOpInfoTimer := TTimer.create(NIL);
   FOpInfoTimer.interval := 5000;
@@ -79,6 +82,14 @@ begin
   case FCaption       <> NIL of TRUE: FCaption.free; end;
   case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
+end;
+
+procedure TCaptionForm.formResize(Sender: TObject);
+begin
+  SELF.HEIGHT := 80;
+  FCaption.caption := 'resize';
+  FCaption.left := SELF.width - FCaption.width;
+  FCaption.top  := SELF.height - FCaption.height;
 end;
 
 function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
@@ -108,6 +119,9 @@ begin
   defaultFontEtc(FCaption);
   FCaption.align := alTop;
   FCaption.alignment := taLeftJustify;
+
+//  handy for debugging
+//  SetWindowLong(SELF.handle, GWL_STYLE, GetWindowLong(SELF.handle, GWL_STYLE) OR WS_CHILD OR WS_CLIPSIBLINGS {OR WS_CLIPCHILDREN} OR WS_CAPTION AND (NOT (WS_BORDER)));
 
   FInitialized := TRUE;
   SELF.show;

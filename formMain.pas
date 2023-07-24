@@ -27,11 +27,8 @@ uses
 type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
-    procedure FormShow(Sender: TObject);
   private
-    FShowing: boolean;
   protected
   public
   end;
@@ -97,19 +94,6 @@ begin
     dragFinish(hDrop);
   end;
   msg.result := 0;
-end;
-
-
-procedure TMMPUI.FormResize(Sender: TObject);
-begin
-  case FShowing of FALSE: EXIT; end;
-//  adjustAspectRatio(SELF, MP.videoWidth, MP.videoHeight);
-  ST.opInfo := '.';
-end;
-
-procedure TMMPUI.FormShow(Sender: TObject);
-begin
-  FShowing := TRUE;
 end;
 
 end.

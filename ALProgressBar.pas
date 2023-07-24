@@ -129,7 +129,7 @@ constructor TALProgressBar.Create(AOwner: TComponent);
 begin
   inherited;
 
-  Width := 200;
+//  Width := 200;
   Height := 20;
 
   fBorderColor1 := clBtnShadow;

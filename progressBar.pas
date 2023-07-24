@@ -30,6 +30,7 @@ type
     FMoving: boolean;
 //    FTimer: TTimer;
   private
+    FInitialized: boolean;
     FShowProgressBar: boolean;
     procedure progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -45,7 +46,9 @@ type
     function  setNewPosition(x: integer): integer;
   public
     destructor  Destroy; override;
+    function formResize: boolean;
     function initProgressBar(aForm: TForm): boolean;
+    property initialized: boolean read FInitialized;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
     property showProgressBar: boolean read FShowProgressBar write setShowProgressBar;
@@ -92,6 +95,11 @@ begin
   inherited;
 end;
 
+function TProgressBar.formResize: boolean;
+begin
+  FPB.Repaint;
+end;
+
 function TProgressBar.getMax: integer;
 begin
   result := FPB.max;
@@ -122,6 +130,7 @@ begin
 
   FPB.max      := 100;
   FPB.Position := 0;
+  FInitialized := TRUE;
 end;
 
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);

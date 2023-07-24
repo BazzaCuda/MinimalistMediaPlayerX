@@ -141,7 +141,7 @@ var
   function fileExtOK: boolean;
   // Filter out all but the explicity-supported file types
   begin
-    result := NOT EXTS_FILTER.contains(lowerCase(extractFileExt(vSR.name)));
+    result := (extractFileExt(vSR.name) <> '') AND (NOT EXTS_FILTER.contains(lowerCase(extractFileExt(vSR.name))));
   end;
 
 begin
@@ -239,14 +239,12 @@ end;
 function initTransparentForm(aForm: TForm): TForm;
 begin
   aForm.align                  := alBottom;
-//  aForm.height                 := 200;
   aForm.styleElements          := []; // don't allow any theme alterations
   aForm.borderStyle            := bsNone;
   aForm.color                  := clBlack;
   aForm.ctl3D                  := FALSE;
   aForm.doubleBuffered         := TRUE;
   aForm.margins.bottom         := 0;
-//  aForm.oldCreateOrder         := TRUE; // Delphi11 doesn't like this
   aForm.formStyle              := fsStayOnTop; // Keep the form always on top - hmmm. How does this impact infoPanel?
   aForm.borderIcons            := [];
   aForm.alphaBlend             := True;

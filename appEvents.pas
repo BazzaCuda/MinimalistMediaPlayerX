@@ -92,12 +92,20 @@ var
   end;
 begin
   keyDnHandled := FALSE;
+
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.inputBox of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     shiftState   := KeyboardStateToShiftState;
                                     key          := msg.WParam;
                                     handled      := KB.processKeyStroke(key, shiftState, kdDown);
                                     keyDnHandled := handled; end;end;
+
+
+  case msgIs(WM_F10_KEY_UP) of TRUE: begin
+                                  shiftState  := KeyboardStateToShiftState;
+                                  key         := VK_F10;
+                                  handled     := KB.processKeyStroke(key, shiftState, kdUp);
+                                  EXIT;       end;end;
 
   case msgIs(WM_KEYUP) of TRUE: begin
                                   case GV.inputBox of TRUE: EXIT; end;  // don't trap keystrokes when the inputBoxForm is being displayed

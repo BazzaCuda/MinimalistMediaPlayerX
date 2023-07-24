@@ -36,6 +36,8 @@ type
     function setWindowStyle(aForm: TForm): boolean;
     function createVideoPanel(aForm: TForm): boolean;
   public
+    procedure formResize(sender: TObject);
+    procedure KeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     function deleteCurrentItem(shift: TShiftState): boolean;
     function greaterWindow(shift: TShiftState): boolean;
     function initUI(aForm: TForm): boolean;
@@ -100,9 +102,15 @@ begin
                                                   PL.delete(vIx); end;end;
 end;
 
+procedure TUI.formResize(sender: TObject);
+begin
+  case ST.initialized and PB.initialized of FALSE: EXIT; end;
+//  adjustAspectRatio(SELF, MP.videoWidth, MP.videoHeight);
+  ST.formResize;
+  PB.formResize;
+end;
+
 function TUI.greaterWindow(shift: TShiftState): boolean;
-// [G]reater  = increase size of window
-// Ctrl-G     = decrease size of window
 begin
   case ssCtrl in Shift of
      TRUE: SetWindowPos(FMainForm.handle, 0, 0, 0, FMainForm.Width - 100, FMainForm.Height - 60, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW);
@@ -112,6 +120,8 @@ begin
 function TUI.initUI(aForm: TForm): boolean;
 begin
   FMainForm := aForm;
+  aForm.OnKeyUp       := keyUp;
+  aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
   aForm.styleElements := []; // [seFont]; //, seClient];
@@ -124,6 +134,14 @@ begin
   createVideoPanel(aForm);
 end;
 
+procedure TUI.KeyUp(sender: TObject; var key: WORD; shift: TShiftState);
+begin
+//  debugInteger('form key', key);
+  case key = VK_F10 of TRUE: begin
+                               postMessage(GV.appWnd, WM_F10_KEY_UP, 0, 0);
+                               application.processMessages; end;end;
+end;
+
 function TUI.minimizeWindow: boolean;
 begin
    application.Minimize;
@@ -131,7 +149,6 @@ end;
 
 function TUI.openExternalApp(anApp, aParams: string): boolean;
 begin
-  debugFormat('%s %s', [anApp, aParams]);
   MP.pause;
   shellExec(anApp, aParams);
 end;
