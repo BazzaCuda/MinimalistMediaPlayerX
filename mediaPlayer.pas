@@ -261,6 +261,7 @@ end;
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case eState of
+    mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
     mpsEnd: playNext;
   end;
 end;
@@ -274,9 +275,8 @@ begin
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
+    mpv.initPlayer(intToStr(UI.mainForm.handle), ''{getExePath}, ''{getExePath}, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
 //    mpv.initPlayer(intToStr(UI.videoPanel.handle), '', '', '');
-    mpv.setPropertyString('sub-font', 'Segoe UI');
-    mpv.setPropertyString('sub-color', '#008000');
 //    mpv.setPropertyString('osd-bar', 'yes');
 //    mpv.setPropertyString('osd-level', '0');
 //    mpv.setPropertyString('hr-seek', 'yes');
@@ -289,7 +289,12 @@ begin
 //    mpv.setPropertyInt64('osc-hidetimeout', 1000);
 //    mpv.setPropertyString('osc-vidscale', 'no');
 //    mpv.setPropertyString('--no-osd-bar', '');
-    mpv.initPlayer(intToStr(UI.mainForm.handle), ''{getExePath}, ''{getExePath}, '');
+//    mpv.setPropertyString('video-unscaled', 'downscale-big');
+//    mpv.setPropertyString('config-dir', getExePath); // mpv.conf location   DISABLE USER ACCESS TO MPV.CONF
+//    mpv.setPropertyString('config', 'yes');
+//    mpv.setPropertyBool('no-keepaspect', FALSE);
+    mpv.setPropertyString('sub-font', 'Segoe UI');
+    mpv.setPropertyString('sub-color', '#808080');
   end;end;
   mpv.openFile(aURL);
   result := TRUE;
@@ -302,6 +307,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY + 0.001);
+  ST.opInfo := 'Pan down';
 end;
 
 function TMediaPlayer.panLeft: boolean;
@@ -311,6 +317,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX - 0.001);
+  ST.opInfo := 'Pan left';
 end;
 
 function TMediaPlayer.panRight: boolean;
@@ -320,6 +327,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX + 0.001);
+  ST.opInfo := 'Pan right';
 end;
 
 function TMediaPlayer.panUp: boolean;
@@ -329,6 +337,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY - 0.001);
+  ST.opInfo := 'Pan up';
 end;
 
 function TMediaPlayer.pause: boolean;
@@ -403,6 +412,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot - 45);
+  ST.opInfo := 'Rotate left';
 end;
 
 function TMediaPlayer.rotateRight: boolean;
@@ -412,6 +422,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot + 45);
+  ST.opInfo := 'Rotate right';
 end;
 
 function TMediaPlayer.releasePlayer: boolean;
@@ -475,6 +486,7 @@ function TMediaPlayer.startOver: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.Seek(0, FALSE);
+  ST.opInfo := 'Start over';
 end;
 
 function TMediaPlayer.stop: boolean;
@@ -544,6 +556,7 @@ begin
   mpv.setPropertyDouble('video-scale-x', zoomX + 0.01);
   mpv.getPropertyDouble('video-scale-y', zoomY);
   mpv.setPropertyDouble('video-scale-y', zoomY + 0.01);
+  ST.opInfo := 'Zoom in';
 end;
 
 function TMediaPlayer.zoomOut: boolean;
@@ -555,6 +568,7 @@ begin
   mpv.setPropertyDouble('video-scale-x', zoomX - 0.01);
   mpv.getPropertyDouble('video-scale-y', zoomY);
   mpv.setPropertyDouble('video-scale-y', zoomY - 0.01);
+  ST.opInfo := 'Zoom out';
 end;
 
 initialization

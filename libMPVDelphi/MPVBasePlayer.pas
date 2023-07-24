@@ -158,6 +158,9 @@ type
     function CommandList(cCmds: TStrings; nID: MPVUInt64 = 0): TMPVErrorCode;
     function Command(const yCmds: array of string; nID: MPVUInt64 = 0): TMPVErrorCode;
 
+    // set option
+    function SetOption(const sName: string; nID: MPVUInt64 = 0): TMPVErrorCode;
+
     // Get property from MPV
     function GetPropertyBool(const sName: string; var Value: Boolean; bLogError: Boolean = True): TMPVErrorCode;
     function SetPropertyBool(const sName: string; Value: Boolean; nID: MPVUInt64 = 0): TMPVErrorCode;
@@ -1131,11 +1134,15 @@ begin
   SetPropertyString('osc', 'yes'); // On Screen Control
   SetPropertyString('force-window', 'yes');
   SetPropertyString('config-dir', sConfigDir); // mpv.conf location
-  SetPropertyString('config', 'yes');
-  SetPropertyBool('keep-open', True);
+//  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF
+  SetPropertyBool('keep-open', TRUE);
   SetPropertyBool('keep-open-pause', False);
-  SetPropertyBool('input-default-bindings', True);
-  SetPropertyBool('input-builtin-bindings', False);
+  SetPropertyString('video-unscaled', 'no');
+
+//  setOption('no-keepaspect'); // how to set this?
+
+//  SetPropertyBool('input-default-bindings', True);
+//  SetPropertyBool('input-builtin-bindings', False);
   SetPropertyString('reset-on-next-file', 'speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
 
   ProcessCmdLine(True);
@@ -1361,6 +1368,28 @@ begin
   m_cLock.Enter;
   m_eOnStateChged := Value;
   m_cLock.Leave;
+end;
+
+function TMPVBasePlayer.SetOption(const sName: string; nID: MPVUInt64): TMPVErrorCode; // BAZ
+var
+  sNm, sVal: UTF8String;
+  p: Pointer;
+begin
+  if m_hMPV=nil then
+  begin
+    Result := MPV_ERROR_UNINITIALIZED;
+    Exit;
+  end;
+  sNm := UTF8Encode(sName);
+  sVal := '1';
+  p := Pointer(sVal); // address of PAnsiChar
+
+  if nID>0 then
+    Result := HandleError(mpv_set_option(m_hMPV, PMPVChar(sNm),
+      MPV_FORMAT_NONE, @p), 'mpv_set_option(str)')
+ else
+    Result := HandleError(mpv_set_option(m_hMPV, PMPVChar(sNm),
+      MPV_FORMAT_NONE, @p), 'mpv_set_option(str)');
 end;
 
 function TMPVBasePlayer.SetPropertyBool(const sName: string;

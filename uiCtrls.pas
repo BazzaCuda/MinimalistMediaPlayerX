@@ -37,7 +37,6 @@ type
     function createVideoPanel(aForm: TForm): boolean;
   public
     procedure formResize(sender: TObject);
-    procedure KeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     function deleteCurrentItem(shift: TShiftState): boolean;
     function greaterWindow(shift: TShiftState): boolean;
     function initUI(aForm: TForm): boolean;
@@ -56,7 +55,7 @@ function UI: TUI;
 implementation
 
 uses
-  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, _debugWindow;
+  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, _debugWindow;
 
 var
   gUI: TUI;
@@ -120,7 +119,7 @@ begin
 function TUI.initUI(aForm: TForm): boolean;
 begin
   FMainForm := aForm;
-  aForm.OnKeyUp       := keyUp;
+  aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
@@ -132,14 +131,6 @@ begin
   addMenuItems(aForm);
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
-end;
-
-procedure TUI.KeyUp(sender: TObject; var key: WORD; shift: TShiftState);
-begin
-//  debugInteger('form key', key);
-  case key = VK_F10 of TRUE: begin
-                               postMessage(GV.appWnd, WM_F10_KEY_UP, 0, 0);
-                               application.processMessages; end;end;
 end;
 
 function TUI.minimizeWindow: boolean;

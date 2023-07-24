@@ -44,7 +44,6 @@ type
     constructor create;
     procedure WMSize(var message: TWMSize); message WM_SIZE;
     function  getHWND: HWND;
-    function  moveOpInfo: boolean;
     function  startOpInfoTimer: boolean;
     procedure setSubtitle(const Value: string);
     procedure setDisplayTime(const Value: string);
@@ -54,8 +53,8 @@ type
     procedure setShowTime(const Value: boolean);
   public
     destructor Destroy; override;
-    procedure formResize;
-    function initSubtitles(aVideoPanel: TPanel): boolean;
+    procedure  formResize;
+    function   initSubtitles(aVideoPanel: TPanel): boolean;
     property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND    read getHWND;
@@ -209,22 +208,6 @@ begin
 
   FInitialized := TRUE;
   SELF.show;
-end;
-
-function TSubtitlesForm.moveOpInfo: boolean;
-begin
-  debugClear;
-  debugInteger('Window     height:', SELF.height);
-  debugInteger('FInfoPanel height:', FInfoPanel.height);
-  debugInteger('FTimeLabel height:', FTimeLabel.height);
-  debugInteger('FOpInfo    height:', FOpInfo.height);
-  debugInteger('Window      width:', SELF.width);
-  debugInteger('FInfoPanel  width:', FInfoPanel.width);
-  debugInteger('FTimeLabel  width:', FTimeLabel.width);
-  debugInteger('FOpInfo     width:', FOpInfo.width);
-  debugInteger('FInfoPanel    top:', FInfoPanel.top);
-  debugInteger('FTimeLabel    top:', FTimeLabel.top);
-  debugInteger('FOpInfo       top:', FOpInfo.top);
 end;
 
 procedure TSubtitlesForm.setDisplayTime(const Value: string);

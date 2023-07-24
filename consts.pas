@@ -40,7 +40,7 @@ const
   WM_ADJUST_ASPECT_RATIO = WM_USER + 2013;
   WM_ADJUST_WINDOW_WIDTH = WM_USER + 2014;
   WM_CENTRE_WINDOW       = WM_USER + 2015;
-  WM_F10_KEY_UP          = WM_USER + 2016;
+  WM_KEY_UP              = WM_USER + 2016;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';

@@ -49,8 +49,8 @@ type
     function getCapsLock: boolean;
     function getNumLock: boolean;
   public
-    function processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
-
+    function  processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+    procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     property alt:         boolean     read getAlt;
     property capsLock:    boolean     read getCapsLock;
     property ctrl:        boolean     read getCtrl;
@@ -67,13 +67,13 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, _debugWindow;
+  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, vcl.forms, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
-  _SLASH = '/'; _BACKSLASH = '\'; _OPEN_BRACKET = '['; _CLOSE_BRACKET = ']';
+  SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221;
 
 var
   gKB: TKeyboard;
@@ -117,7 +117,9 @@ begin
   case keyDn and ctrl and keyIs(VK_UP)    of TRUE: result := koPanUp; end;
   case keyDn and ctrl and keyIs(VK_DOWN)  of TRUE: result := koPanDn; end;
   case keyUp and keyIs(VK_NEXT)           of TRUE: result := koRotateR; end;
+  case keyUp and keyIs(CLOSE_BRACKET)     of TRUE: result := koRotateR; end;
   case keyUp and keyIs(VK_PRIOR)          of TRUE: result := koRotateL; end;
+  case keyUp and keyIs(OPEN_BRACKET)      of TRUE: result := koRotateL; end;
   case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
   case keyUp and keyIs(U)                 of TRUE: result := koZoomEnd; end;
   case keyUp and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
@@ -136,7 +138,9 @@ begin
   case keyUp and keyIs(VK_DELETE)         of TRUE: result := koDeleteCurrentItem; end;
   case keyUp and keyIs(R)                 of TRUE: result := koRenameFile; end;
   case keyDn and keyIs(VK_ADD)            of TRUE: result := koSpeedUp; end;
+  case keyDn and keyIs(SLASH)             of TRUE: result := koSpeedUp; end;
   case keyDn and keyIs(VK_SUBTRACT)       of TRUE: result := koSpeedDn; end;
+  case keyDn and keyIs(BACKSLASH)         of TRUE: result := koSpeedDn; end;
   case keyUp and keyIs(_1)                of TRUE: result := koSpeedReset; end;
 
 //  debugInteger('keyOp', integer(result));
@@ -187,6 +191,14 @@ begin
   result := key = aKeyCode;
 end;
 
+procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  case key in [VK_F10] of TRUE: begin
+                               postMessage(GV.appWnd, WM_KEY_UP, key, 0);
+                               application.processMessages; end;end;
+end;
+
 function TKeyboard.processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
 begin
   result      := FALSE;
@@ -194,8 +206,6 @@ begin
   FKey        := aKey;
   FShiftState := aShiftState;
   FUpDn       := upDn;
-
-//  case upDn = kdUp of TRUE: debugInteger('aKey', aKey); end;
 
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE

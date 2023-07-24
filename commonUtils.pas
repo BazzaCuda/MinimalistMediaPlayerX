@@ -66,8 +66,8 @@ begin
   aForm.height := trunc(aForm.width * vRatio) + 2;
 
   postMessage(UI.mainForm.handle, WM_CENTRE_WINDOW, 0, 0);
-  delay(100);
-  case offScreen(UI.mainForm.handle) of TRUE: postMessage(GV.appWnd, WM_ADJUST_WINDOW_WIDTH, 0, 0); end;
+//  delay(100);
+//  case offScreen(UI.mainForm.handle) of TRUE: postMessage(GV.appWnd, WM_ADJUST_WINDOW_WIDTH, 0, 0); end;
 end;
 
 
