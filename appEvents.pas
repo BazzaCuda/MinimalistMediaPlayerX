@@ -100,6 +100,7 @@ begin
 
 
   case msgIs(WM_KEY_UP)  of TRUE: begin
+                                    case GV.inputBox of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     shiftState  := KeyboardStateToShiftState;
                                     key         := msg.WParam; // e.g. VK_F10;
                                     handled     := KB.processKeyStroke(key, shiftState, kdUp);
@@ -131,9 +132,9 @@ begin
   case msgIs(WM_LBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
   case msgIs(WM_RBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
 
-  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
+  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
   case msgIs(WM_CENTRE_WINDOW)        of TRUE: UI.centreWindow(UI.handle); end;
-  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.handle, getScreenWidth, getScreenHeight); end;
+  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;
   case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow(UI.handle); end;
 end;
 

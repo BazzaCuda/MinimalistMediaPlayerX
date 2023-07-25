@@ -76,7 +76,7 @@ end;
 
 function TMediaInfo.getFileSize: string;
 begin
-  result := formatFileSize(FFileSize);
+  result := CU.formatFileSize(FFileSize);
 end;
 
 function TMediaInfo.getOverallBitRate: string;

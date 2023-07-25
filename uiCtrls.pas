@@ -37,7 +37,7 @@ type
     function createVideoPanel(aForm: TForm): boolean;
   public
     procedure formResize(sender: TObject);
-    function adjustAspectRatio(aWnd: HWND; X, Y: int64): boolean;
+    function adjustAspectRatio(aWnd: HWND; X, Y: int64; centreWindow: boolean = TRUE): boolean;
     function centreWindow(aWnd: HWND): boolean;
     function checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
     function deleteCurrentItem(shift: TShiftState): boolean;
@@ -45,6 +45,7 @@ type
     function greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
     function handle: HWND;
     function initUI(aForm: TForm): boolean;
+    function keepFile(aFilePath: string): boolean;
     function minimizeWindow: boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
@@ -82,7 +83,7 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64): boolean;
+function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64; centreWindow: boolean = TRUE): boolean;
 var
   vRatio: double;
   vWidth, vHeight: integer;
@@ -91,12 +92,12 @@ begin
 
   vRatio := Y / X;
 
-  getWndWidthHeight(aWnd, vWidth, vHeight);
+  CU.getWndWidthHeight(aWnd, vWidth, vHeight);
   vHeight := trunc(vWidth * vRatio) + 2;
 
   setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER);
 
-  UI.centreWindow(UI.handle);
+  case centreWindow of TRUE: UI.centreWindow(UI.handle); end;
 end;
 
 function TUI.centreWindow(aWnd: HWND): boolean;
@@ -104,8 +105,8 @@ var
   vR: TRect;
 begin
   getWindowRect(aWnd, vR);
-  SetWindowPos(aWnd, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
-                        (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+  SetWindowPos(aWnd, 0, (CU.getScreenWidth - (vR.Right - vR.Left)) div 2,
+                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
 
   postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
   application.processMessages;
@@ -142,10 +143,10 @@ begin
   case ssCtrl in Shift of  TRUE: vMsg := vMsg + '*.*';
                           FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
 
-  case showOkCancelMsgDlg(vMsg) = IDOK of TRUE: begin
+  case CU.showOkCancelMsgDlg(vMsg) = IDOK of TRUE: begin
                                                   var vIx := PL.currentIx;  // make a note of this ix because...
                                                   MP.stop;                  // this will automatically do MP.playNext
-                                                  deleteThisFile(PL.thisItem(vIx), shift);
+                                                  CU.deleteThisFile(PL.thisItem(vIx), shift);
                                                   PL.delete(vIx); end;end;
 end;
 
@@ -158,7 +159,7 @@ end;
 procedure TUI.formResize(sender: TObject);
 begin
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
-  adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight); // TESTING. TESTING.
+  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight, FALSE); // TESTING. TESTING.
   ST.formResize;
   PB.formResize;
 end;
@@ -198,9 +199,9 @@ begin
 
   calcDimensions; // do what the user requested
 
-  case NOT withinScreenLimits(newW, newH) of  TRUE: begin
-                                                      newH := getScreenHeight;
-                                                      newW := trunc(newH / getAspectRatio(MP.videoWidth, MP.videoHeight)); end;end;
+  case NOT CU.withinScreenLimits(newW, newH) of  TRUE: begin
+                                                      newH := CU.getScreenHeight;
+                                                      newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); end;end;
 
   SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
 
@@ -230,6 +231,21 @@ begin
   createVideoPanel(aForm);
 end;
 
+function TUI.keepFile(aFilePath: string): boolean;
+var
+  vNewName: string;
+begin
+  case PL.hasItems of FALSE: EXIT; end;
+  MP.pause;
+  vNewName := CU.renameFile(aFilePath, '_' + CU.getFileNameWithoutExtension(aFilePath));
+  case vNewName <> aFilePath of TRUE: begin
+                                        PL.replaceCurrentItem(vNewName);
+                                        ST.opInfo := 'Kept';
+                                      end;end;
+  MC.caption := PL.formattedItem;
+  MP.resume;
+end;
+
 function TUI.minimizeWindow: boolean;
 begin
    application.Minimize;
@@ -238,7 +254,7 @@ end;
 function TUI.openExternalApp(anApp, aParams: string): boolean;
 begin
   MP.pause;
-  shellExec(anApp, aParams);
+  CU.shellExec(anApp, aParams);
 end;
 
 function TUI.renameFile(aFilePath: string): boolean;
@@ -247,7 +263,7 @@ var
 begin
   case PL.hasItems of FALSE: EXIT; end;
   MP.pause;
-  vNewName := commonUtils.renameFile(aFilePath);
+  vNewName := CU.renameFile(aFilePath);
   case vNewName <> aFilePath of TRUE: PL.replaceCurrentItem(vNewName); end;
   MC.caption := PL.formattedItem;
   MP.resume;

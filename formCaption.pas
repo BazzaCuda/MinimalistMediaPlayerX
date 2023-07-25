@@ -32,11 +32,10 @@ type
     FInitialized: boolean;
     FOpInfoTimer: TTimer;
 
-    constructor create;
-    procedure WMSize(var message: TWMSize); message WM_SIZE;
     procedure timerEvent(sender: TObject);
     procedure setCaption(const Value: string);
   public
+    constructor create;
     destructor Destroy; override;
     procedure formResize(Sender: TObject);
     function initCaption(aVideoPanel: TPanel): boolean;
@@ -48,7 +47,7 @@ function MC: TCaptionForm; // Media Caption
 implementation
 
 uses
-  mediaPlayer, commonUtils, _debugWindow;
+  mediaPlayer, commonUtils, uiCtrls, _debugWindow;
 
 var
   gMC: TCaptionForm;
@@ -95,7 +94,7 @@ end;
 function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
-    aLabel.font.name      := 'Segoe UI';
+    aLabel.font.name      := 'Tahoma';
     aLabel.font.color     := clGray;
     aLabel.font.size      := 10;
     aLabel.font.style     := [fsBold];
@@ -111,11 +110,11 @@ begin
   FVideoPanel := aVideoPanel;
 
   SELF.parent := aVideoPanel;
-  initTransparentForm(SELF);
+  CU.initTransparentForm(SELF);
   SELF.align := alTop;
 
   FCaption.parent := SELF;
-  initTransparentLabel(FCaption);
+  CU.initTransparentLabel(FCaption);
   defaultFontEtc(FCaption);
   FCaption.align := alTop;
   FCaption.alignment := taLeftJustify;
@@ -140,12 +139,6 @@ begin
   FCaption.caption := '';
 end;
 
-procedure TCaptionForm.WMSize(var message: TWMSize);
-begin
-//  case FSubtitle = NIL of TRUE: EXIT; end;
-//  FSubtitle.caption := '';
-//  FSubtitle.caption := format('w: %d, h: %d', [FSubtitle.width, FSubtitle.height]);
-end;
 
 initialization
   gMC := NIL;

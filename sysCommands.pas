@@ -29,7 +29,7 @@ implementation
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
-  case Message.CmdType of MENU_ABOUT_ID:  showAboutBox(getFileVersionFmt('', '%d.%d'), getFileVersionFmt); end;
+  case Message.CmdType of MENU_ABOUT_ID:  showAboutBox(CU.getFileVersionFmt('', '%d.%d'), CU.getFileVersionFmt); end;
 //  case Message.CmdType of MENU_HELP_ID:   showHelp(GV.MainTopRightPt); end;
 end;
 

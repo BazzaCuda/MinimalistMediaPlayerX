@@ -28,7 +28,7 @@ type
     FAppWnd: HWND;
     FCloseTimer: TTimer;
   private
-    FDragging: boolean;
+    FAlwaysPot: boolean;
     FInputBox: boolean;
     procedure onCloseTimerEvent(sender: TObject);
     procedure setCloseApp(const Value: boolean);
@@ -36,6 +36,7 @@ type
     constructor create;
     destructor  destroy;
     property closeApp: boolean write setCloseApp;
+    property alwaysPot: boolean read FAlwaysPot write FAlwaysPot;
     property appWnd: HWND read FAppWnd write FAppWnd;
     property inputBox: boolean read FInputBox write FInputBox;
   end;

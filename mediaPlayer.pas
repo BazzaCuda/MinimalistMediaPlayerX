@@ -40,6 +40,8 @@ type
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
+    function  checkPot(aAlwaysPot: boolean): boolean;
+
     {property setters}
     function  getDuration: integer;
     function  getPosition: integer;
@@ -55,9 +57,9 @@ type
     function  getFormattedSpeed: string;
   public
     destructor  Destroy; override;
-//    function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
-    function brightnessUp: boolean;
     function brightnessDn: boolean;
+    function brightnessReset: boolean;
+    function brightnessUp: boolean;
     function frameBackwards: boolean;
     function frameForwards: boolean;
     function initMediaPlayer(aForm: TForm): boolean;
@@ -65,6 +67,7 @@ type
     function openURL(aURL: string): boolean;
     function panDn: boolean;
     function panLeft: boolean;
+    function panReset: boolean;
     function panRight: boolean;
     function panUp: boolean;
     function pause: boolean;
@@ -131,6 +134,13 @@ begin
   mpv.SetPropertyInt64('brightness', brightness - 1);
 end;
 
+function TMediaPlayer.brightnessReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.SetPropertyInt64('brightness', 0);
+  ST.opInfo := 'Brightness reset';
+end;
+
 function TMediaPlayer.brightnessUp: boolean;
 var
   brightness: int64;
@@ -138,6 +148,11 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.GetPropertyInt64('brightness', brightness);
   mpv.SetPropertyInt64('brightness', brightness + 1);
+end;
+
+function TMediaPlayer.checkPot(aAlwaysPot: boolean): boolean;
+begin
+  case aAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
 end;
 
 constructor TMediaPlayer.create;
@@ -176,7 +191,7 @@ end;
 function TMediaPlayer.getFormattedDuration: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := formatTime(trunc(mpv.totalSeconds));
+  result := CU.formatTime(trunc(mpv.totalSeconds));
 end;
 
 function TMediaPlayer.getFormattedSpeed: string;
@@ -188,7 +203,7 @@ end;
 function TMediaPlayer.getFormattedTime: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := formatTime(trunc(mpv.CurrentSeconds));
+  result := CU.formatTime(trunc(mpv.CurrentSeconds));
 end;
 
 function TMediaPlayer.getFormattedVol: string;
@@ -263,7 +278,7 @@ begin
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
-    mpv.initPlayer(intToStr(UI.handle), getExePath, getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
+    mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
 //    mpv.setPropertyString('osd-bar', 'yes');
 //    mpv.setPropertyString('osd-level', '0');
 //    mpv.setPropertyString('hr-seek', 'yes');
@@ -305,6 +320,14 @@ begin
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX - 0.001);
   ST.opInfo := 'Pan left';
+end;
+
+function TMediaPlayer.panReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyDouble('video-pan-x', 0.0);
+  mpv.setPropertyDouble('video-pan-y', 0.0);
+  ST.opInfo := 'Pan reset';
 end;
 
 function TMediaPlayer.panRight: boolean;
@@ -351,6 +374,7 @@ begin
   MC.caption := PL.formattedItem;
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
+  checkPot(GV.alwaysPot);
   result := TRUE;
 end;
 
@@ -359,6 +383,7 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.first;
+  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.playLast: boolean;
@@ -366,6 +391,7 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.last;
+  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.playNext: boolean;
@@ -373,7 +399,8 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
-  case FTimer.enabled of FALSE: sendSysCommandClose(UI.handle); end;
+  case FTimer.enabled of  TRUE: checkPot(GV.alwaysPot);
+                         FALSE: sendSysCommandClose(UI.handle); end;
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -381,6 +408,7 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;
+  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.resume: boolean;
@@ -452,7 +480,7 @@ function TMediaPlayer.speedReset: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('speed', 1.00);
-  delay(100);
+  CU.delay(100);
   ST.opInfo := formattedSpeed;
 end;
 
@@ -488,7 +516,7 @@ begin
   vFactor := 100;
 
   case capsLock               of TRUE: vFactor := 10; end;
-  case ssShift in aShiftState of TRUE: vFactor := 20; end;
+  case ssShift in aShiftState of TRUE: vFactor := 20; end; // might remove shift-t in favor of the help window
   case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
@@ -497,7 +525,7 @@ begin
                                  FALSE: position := position + vTab; end;
 
   case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
-                       FALSE: newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]); end;
+                       FALSE: newInfo := format('%dth = %s', [vFactor, CU.formatSeconds(round(duration / vFactor))]); end;
 
   case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
                                 FALSE: newInfo := '>> ' + newInfo;

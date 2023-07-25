@@ -29,7 +29,7 @@ type
             koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
             koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
-            koSpeedDn, koSpeedReset, koEscape, koClipboard);
+            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -67,7 +67,8 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, vcl.forms, _debugWindow;
+  sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, vcl.forms,
+  system.sysUtils, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -101,8 +102,8 @@ begin
   case keyDn and keyIs(VK_LEFT)           of TRUE: result := koFrameBackwards; end;
   case keyDn and keyIs(VK_TAB)            of TRUE: result := koTabTab; end;
   case keyUp and keyIs(J)                 of TRUE: result := koAdjustAspectRatio; end;
-  case keyDn and keyIs(_4)                of TRUE: result := koBrightnessUp; end;
-  case keyDn and keyIs(_3)                of TRUE: result := koBrightnessDn; end;
+  case keyDn and keyIs(_9)                of TRUE: result := koBrightnessUp; end;
+  case keyDn and keyIs(_8)                of TRUE: result := koBrightnessDn; end;
   case keyDn and keyIs(I)                 of TRUE: result := koZoomIn; end;
   case keyDn and keyIs(O)                 of TRUE: result := koZoomOut; end;
   case keyUp and keyIs(S)                 of TRUE: result := koStartOver; end;
@@ -129,6 +130,7 @@ begin
   case keyUp and keyIs(VK_END)            of TRUE: result := koPlayLast; end;
   case keyUp and keyIs(C)                 of TRUE: result := koToggleControls; end;
   case keyUp and keyIs(VK_F10)            of TRUE: result := koRunPot; end;
+  case keyUp and keyIs(P)                 of TRUE: result := koRunPot; end;
   case keyUp and keyIs(VK_F11)            of TRUE: result := koRunCut; end;
   case keyUp and keyIs(VK_F12)            of TRUE: result := koRunShot; end;
   case keyUp and keyIs(B)                 of TRUE: result := koToggleBlackout; end;
@@ -144,6 +146,11 @@ begin
   case keyUp and keyIs(_1)                of TRUE: result := koSpeedReset; end;
   case keyUp and keyIs(VK_ESCAPE)         of TRUE: result := koEscape; end;
   case keyUp and keyIs(_EQUALS)           of TRUE: result := koClipboard; end;
+  case keyUp and keyIs(K)                 of TRUE: result := koKeep; end;
+  case keyUp and keyIs(L)                 of TRUE: result := koReloadPlaylist; end;
+  case keyUp and ctrl and keyIs(P)        of TRUE: result := koAlwaysPot; end;
+  case keyUp and keyIs(_2)                of TRUE: result := koPanReset; end;
+  case keyUp and keyIs(_3)                of TRUE: result := koBrightnessReset; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -257,6 +264,11 @@ begin
     koSpeedReset:        MP.speedReset;
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
+    koKeep:              UI.keepFile(PL.currentItem);
+    koReloadPlaylist:    CU.reloadPlaylist(extractFilePath(PL.currentItem));
+    koAlwaysPot:         GV.alwaysPot := NOT GV.alwaysPot;
+    koPanReset:          MP.panReset;
+    koBrightnessReset:   MP.brightnessReset;
   end;
 
   result := TRUE;

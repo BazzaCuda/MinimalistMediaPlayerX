@@ -112,7 +112,7 @@ begin
 
   FTimeLabel := TLabel.create(FInfoPanel);
   FTimeLabel.parent := FInfoPanel;
-  initTransparentLabel(FTimeLabel);
+  CU.initTransparentLabel(FTimeLabel);
   defaultFontEtc(FTimeLabel);
   FTimeLabel.caption  := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
   FTimeLabel.autoSize := FALSE;
@@ -120,7 +120,7 @@ begin
 
   FOpInfo := TLabel.create(FInfoPanel);
   FOpInfo.parent := FInfoPanel;
-  initTransparentLabel(FOpInfo);
+  CU.initTransparentLabel(FOpInfo);
   defaultFontEtc(FOpInfo);
   FOpInfo.autoSize  := FALSE;
   FOpInfo.width     := FTimeLabel.width;
@@ -178,7 +178,7 @@ begin
 
   SELF.parent := aVideoPanel;
   SELF.align  := alBottom;
-  initTransparentForm(SELF);
+  CU.initTransparentForm(SELF);
 
 //  handy for debugging
 //  SetWindowLong(SELF.handle, GWL_STYLE, GetWindowLong(SELF.handle, GWL_STYLE) OR WS_CHILD OR WS_CLIPSIBLINGS {OR WS_CLIPCHILDREN} OR WS_CAPTION AND (NOT (WS_BORDER)));

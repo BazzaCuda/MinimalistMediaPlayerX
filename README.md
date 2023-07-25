@@ -11,27 +11,16 @@ Although there are a lot of controls to remember, I have tried to use each alpha
 
 Control | Action
 ------- | ------
-`ALT-SPACEBAR`			| Activate the system menu to get to the About Box
-`ESCape`				| exit Fullscreen mode, or exit the app if in window mode
-`SPACEBAR` 				| pause/resume playback (all media windows)
-`LEFT Click`            | pause/resume playback
-`LEFT Double-Click`     | toggle fullscreen 
-`RIGHT Double-Click`    | toggle fullscreen 
-`Numpad +` 	  	        | increase playback speed. Can be held down for rapid increase.
-`/`						| increase playback speed. Can be held down for rapid increase.
-`Numpad -`		        | decrease playback speed. Can be held down for rapid decrease.
-`\`						| decrease playback speed. Can be held down for rapid decrease.
-`Pg Dn`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
-`Pg Up`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
-`F10`                   | open media file in PotPlayer (assumes default installation folder)
-`F11`                   | open media file in LossLess Cut (assumes default installation folder)            
-`F12`					| open media file in ShotCut editor (assumes default installation folder)
+`SHIFT key (either)`    | show or hide the Help window listing all the keyboard functions
+`ALT-SPACEBAR`			| activate the system menu to get to the About Box
+`ESCape`				| exit Fullscreen mode, or exit the app if not in fullscreen mode
+`SPACEBAR` 				| pause/resume playback
 `=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12.
 `A`						| play the first media file in the playlist (Z plays last)
 `B`						| [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B] more prominent. Gets lost in some lighting conditions or very bright videos.
-`C`						| show/Hide on-screen [C]ontrols and media file timestamp (all media windows)
-`Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata (all media windows)
+`Ctrl-B`                | Make the progress [B] more prominent.
+`C`						| show/Hide on-screen [C]ontrols and media file timestamp
+`Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`			| [D]elete current media file (after confirmation)
 `Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected.
 `E`						| [E]ars - Mute/Unmute sound
@@ -40,7 +29,7 @@ Control | Action
 `Ctrl-G`				| reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
 `H`						| position the window [H]orizontally (and Vertically) in the center of the screen
 `I`						| zoom [I]n. Can be held down for rapid zooming.
-`J`						| ad[J]ust the window's aspect ratio to match the video's aspect ratio
+`J`						| ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders.
 `K`						| mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`						| re[L]oad the list of supported media files from the current folder
 `M`						| [M]aximize / restore window
@@ -49,91 +38,108 @@ Control | Action
 `P` 					| pause the media file and play it instead with [P]otplayer, if installed
 `Q`						| play the previous media file in the [Q]ueue/playlist
 `R`						| [R]ename the current media file
-`S`						| re[S]tart the current media file from the beginning, aka [S]tartover (all media windows)
-`T`						| [T]ab through the media file a 200th, 100th (default), 50th, 20th or 10th of its duration (use SHIFT-ALT, ALT, SHIFT, CAPS LOCK to modify) (all media windows)
-`Ctrl-T`				| [T]ab back through the media file a 100th (default), 50th, 20th or 10th of its duration (use ALT, SHIFT, CAPS LOCK to modify) (all media windows)
-`TAB`					| tab forwards 1/200th the duration of the media file (only the selected media window)
-`Ctrl-TAB`				| tab backwards 1/200th the duration of the media file (only the selected media window)
+`S`						| re[S]tart the current media file from the beginning, aka [S]tartover
+`T`                     | Tabbing. See below.
 `U`						| [U]nzoom, i.e. re-fit the video to the window
 `V`						| maximize / restore [V]iew, same as [M]
 `W`						| [W]atch the next video in the list (or play the next audio)
 `X`						| e[X]it the application
-`Y`						| tr[Y]out the media file by sampling it at various stages
+`Y`						| 
 `Z`						| play the last media file in the playlist (A plays the first)
-`Up Arrow`				| increase the volume by 1%
-`Down Arrow`			| decrease the volume by 1%
-`Ctrl-Up Arrow`			| increase the playback speed by 10%
-`Ctrl-Down Arrow`		| decrease the playback speed by 10%
-`0`						| briefly show media caption (all media windows)
+`0`						| briefly show media caption (the filename and its position in the playlist)
 `1`						| reset the playback speed to normal, i.e. [1]00%
-`2`						| resize the window so that 2 instances of the application can be placed side-by-side
-`4`						| resize to a mini-window in the top-right corner of the screen
-`Ctrl-4`				| move to top-right corner of the screen but maintain current window size
+`2`						| reset panning to normal
+`3`						| reset brightness to normal
+`4`						| 
 `5`						| save/bookmark the current media file timestamp to an INI file
 `6`						| retrieve a saved/bookmarked media file timestamp from an INI file and continue playback from that point
-`7`						| delete any previously saved/bookmarked media file timestamp
-`8`						| set the video to 1-pixel larger than the window on all four sides
-`9`						| resize the window to the width of the video
-`RIGHT ARROW`			| step forwards one frame
-`LEFT ARROW`			| step backwards one frame
-Zoom|
-`Ctrl-RIGHT ARROW`		| when zoomed in/out, move video RIGHT inside the window
-`Ctrl-LEFT ARROW`		| when zoomed in/out, move video LEFT inside the window
-`Ctrl-UP ARROW`			| when zoomed in/out, move video UP inside the window
-`Ctrl-DOWN ARROW`		| when zoomed in/out, move video DOWN inside the window
+`7`						| delete any previously saved/bookmarked media file timestamp for the current media file
+`8`                     | Decrease brightness. Can be held down for rapid decrease.
+`9`						| Increase brightness. Can be held down for rapid increase.
+Rotating |
+`Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
+`[`                     | rotate video left/anti-clockwise (you must have first rotated right at least once)
+`Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
+`]`                     | rotate video right/clockwise (you must do this at least once before you can rotate left)
+Speed |
+`Numpad +` 	  	        | increase playback speed. Can be held down for rapid increase.
+`/`						| increase playback speed. Can be held down for rapid increase.
+`Numpad -`		        | decrease playback speed. Can be held down for rapid decrease.
+`\`						| decrease playback speed. Can be held down for rapid decrease.
+`1`						| reset the playback speed to normal, i.e. [1]00%
+Tabbing |
+`T`						| [T]ab through the media file a 100th (default), 50th, 20th or 10th of its duration (use SHIFT-ALT, ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
+`Ctrl-T`				| [T]ab back through the media file a 100th (default), 50th, 20th or 10th of its duration (use ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
+`TAB`					| tab forwards 1 second. Can be held down to do a "fast forward" through the media file
+`Ctrl-TAB`				| tab backwards 1 second. Can be held down to do a reverse "fast forward" through the media file
+Freeze Frame |
+`RIGHT ARROW`			| pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+`LEFT ARROW`			| pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
+Panning |
+`Ctrl-Up Arrow`			| pan up. Can be held down for continuous panning.
+`Ctrl-Down Arrow`		| pan down. Can be held down for continuous panning.
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning.
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning.
+`2`						| reset panning to normal.
+Mouse |
+`Left Click on the window and hold`	| the window can be dragged/repositioned
+`Left double-click video` | toggle fullscreen mode
+`Right double-click video` | toggle fullscreen mode
+`Right single-click video` | Pause/resume playback
+Volume |
+`Up Arrow`				| increase the volume. Can be held down for rapid increase.
+`Down Arrow`			| decrease the volume. Can be held down for rapid decrease.
+Zoom |
+`I`						| zoom [I]n. Can be held down for rapid zooming.
+`O`						| zoom [O]ut. Can be held down for rapid zooming.
 Additional |
-`Left Click on the window background and hold`	| the window can be dragged/repositioned without a window caption title bar
-`Left double-click video` | pause / resume playback
-`Right single-click video` | pause / resume playback
-`SHIFT key (either)` | show or hide the Help window listing all the keyboard functions
-`Ctrl-9` | auto-arrange up to 12 instances of ``Minimalist Media Player`` in a 4x3 grid (all media windows)
-`Ctrl-0` | close all running instances of ``Minimalist Media Player`` (all media windows)
+`F10`                   | open media file in PotPlayer (assumes default installation folder)
+`F11`                   | open media file in LossLess Cut (assumes default installation folder)            
+`F12`					| open media file in ShotCut editor (assumes default installation folder)
 
 Media File Formats
 ------------------
+``Minimalist Media Player`` uses MVP for its media playback and manipulation functions. WVP supports more media file formats than you can shake a stick at. As such, it's a fairly safe bet that you can associate all your media files with ``Minimalist Media Player`` and they will play. If you're unsure, just run the executable and drop a media file onto the window to check it plays before permanently associating the file extension with ``Minimalist Media Player`` using "Open with..." in Windows File Explorer or whichever 3rd party file manager software you are (/should be!) using, like Directory Opus.
 
-Rather than simply taking Microsoft's word that the Windows Media Player ActiveX control supports their published list of media file formats, I have tested many file formats, and ``Minimalist Media Player`` explicitly supports the following formats and file extensions:
+Dependencies
+------------
+1/ ``Minimalist Media Player`` requires libmvp-2.dll to be in the same folder as the executable. If you have an mvp.conf file in the same folder, mvp will take it into account when initializing, for example to specify your audio output preferences but as with all these things, some experimentation may be required.
 
-`.wmv` `.mp4` `.avi` `.flv` `.mpg` `.mpeg` `.mkv` `.3gp` `.mov` `.m4v` `.vob` `.ts` `.webm` `.divx` `.m4a` `.mp3` `.wav` `.aac` `.m2ts` `.flac` `.mts` `.rm` `.asf`
+2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process and I find that doing this there's less chance of Windows complaining that the file is in use (by MPV). You can check rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure :D
 
-More formats and file extensions can be easily added when they're confirmed to work.
-WMP has problems playing some FLV files which, bizarrely, go away if you rename the file to another format, e.g. MP4
-
-WMPLib_TLB.pas
---------------
-In order for you to be able to open the project and display the main form containing the Windows Media Player ActiveX component, from the menu in RAD Studio/Delphi you will first need to do "Component / Import Component... / Import ActiveX Control", and select the Windows Media Player from the list; RAD Studio will then generate this unit automatically and install the component to the ActiveX palette.
 
 Notes concerning the code - a warning for the overly sensitive :D
 -------------------------
-Rather than following the herd, I like to experiment with different ways to layout my code and make it more readable and more easily understood by those looking at it for the first time, and for myself when returning to it months or even years later.
+Rather than following the herd, I like to experiment with different ways to layout my code and make it more readable and more easily understood by those looking at it for the first time, and for myself when returning to it months or even years later. I also enjoy exploring different programming paradigms.
 
 1. I use a Delphi IDE with a 180-character-wide code editor. It strikes me as daft that we seem not to make full use of our high-resolution widescreen monitors when editing code (Delphi still automatically wraps event handler procedure signatures at column 56, regardless of how I have defined the margins!), and we all seem loathe to exceed column 80, which dates back to Fortran coding sheets and punched cards!! :D 
 So, firstly, I make full use of all 180 columns of my editor.
 
-2. I don't like nested IF statements. I think they're ugly, difficult to follow and very prone to human error when modifying/extending them. Consequently, I don't use IF statements at all and always use CASE statements instead. I consider them much neater and more elegant-looking, significantly easier to follow and amend, and altogether far superior to their nested-IF equivalents. I have no doubt many will disagree.
+2. I don't like nested IF statements. I think they're ugly, difficult to follow and very prone to human error when modifying/extending them. Consequently, I don't use IF statements at all and always use a particular form of Delphi's CASE statement instead. I consider them much neater and more elegant-looking, significantly easier to follow and amend, and altogether far superior to their nested-IF equivalents. I have no doubt many will disagree.
 
-3. I like to experiment with different ways of separating out the User Interface definition from the general program logic and how application-wide variables should be handled. For this project, all three are still located in main.pas, but on a much larger project with multiple units, the way I've separated them out could be adopted, placing them all in separate units. My only criticism of Delphi, going all the way back to v1, is the way it (and all the many books) encourages all code to be contained within the form's unit and event handler procedures. It's taken us too long to finally break away from that paradigm, in my opinion. My view is that you should write so that an entirely new UI can be created and then just hooked up to the back-end program logic.
+3. I like to experiment with different ways of separating out the User Interface definition from the general program logic and how application-wide variables should be handled. My only criticism of Delphi, going all the way back to v1, is the way it (and all the many books) encourages all code to be contained within the form's unit and event handler procedures. It's taken us too long to finally break away from that paradigm, in my opinion. My view is that you should write so that an entirely new UI can be created and then just hooked up to the back-end program logic.
 
 4. Despite falling in love with Delphi since the moment I unboxed v1, I loathe and detest BEGIN...END with a passion {I definitely have Curly Brace Envy}. As such, I try to find ways to make my code look much neater, which includes not having every END on a separate line, as you will see :D
 
-5. All methods that I write (as opposed to IDE-created event handler procedures, etc.) are defined as functions with a default boolean return value.
+5. All methods that I write (as opposed to IDE-created event handler procedures, etc.) are defined as functions with a default boolean return value. This makes the code easier to expand on when method requirements change.
+
+6. All form and component settings are done in-code so that everything is obvious to the reader. Almost nothing is set in the RAD Studio/Delphi Object Inspector.
 
 I present all this merely as food for thought; I'm not expecting the industry to suddenly adopt my bizarre coding strategies. You may find some little inspiration to do things slightly differently, though, to how you've traditionally written code. And if not, as least you've been forewarned! 
 
 Why did I write ``Minimalist Media Player``?
 --------------------------------------------
-A good question, considering how many other perfectly good Windows media players there are, including my absolute favorite, PotPlayer (VLC has been usurped!). This pet project grew out of a single requirement: I had 100s of small, mostly funny, video clips that I had accumulated over the years, downloaded from social media platforms. I needed a way to quickly go through my entire collection of clips and decide whether to keep or delete each clip. This was proving to be very laborious using a standard media player as most of them don't give you the ability to delete the video being played. I was having to play the clip, close it, delete it in Explorer, then return to the media player to continue with the next clip. With ``Minimalist Media Player`` I was able to go through my collection very quickly, skimming through each video, deciding whether to keep it or not, and then move on to the next clip. When looking through the code and seeing some of the operations that are possible, please bear in mind that this application started life allowing an entire collection of video clips to be very quickly examined and kept or deleted, without having to repeatedly leave and restart the app.
+1. A good question, considering how many other perfectly good Windows media players there are, including my absolute favorite, PotPlayer (VLC has been usurped!). This pet project grew out of a single requirement: I had 100s of small, mostly funny, video clips that I had accumulated over the years, downloaded from social media platforms. I needed a way to quickly go through my entire collection of clips and decide whether to keep or delete each clip. This was proving to be very laborious using a standard media player as most of them don't give you the ability to delete the video being played. I was having to play the clip, close it, delete it in Explorer, then return to the media player to continue with the next clip. With ``Minimalist Media Player`` I was able to go through my collection very quickly, skimming through each video, deciding whether to keep it or not, and then move on to the next clip. When looking through the code and seeing some of the operations that are possible, please bear in mind that this application started life allowing an entire collection of video clips to be very quickly examined and kept or deleted, without having to repeatedly leave and restart the app.
+
+2. I like to immerse myself in a movie. I find the usual visual clutter that comes with most media players annoying. With a couple of keystrokes in ``Minimalist Media Player`` you can have nothing but the moving images. If, like me, you also have a black desktop with no icons on it, it's even better.
 
 Pull Requests
 -------------
 If you find ``Minimalist Media Player`` useful and you have suggestions for improvements, I am willing to consider implementing them myself or via pull requests. I would be very grateful if you would follow my coding etiquette though and have CASE statements rather than IF statements; they're really easy to adopt when you get used to using them exclusively over IFs.
 
-MPlayer vs Microsoft Media Foundation vs Windows Media Player
---------------
-Ultimately, I would like to replace Windows Media Player as the video renderer and make ``Minimalist Media Player`` a front-end for MPlayer with its superior video-handling capabilities, or possibly Microsoft Media Foundation / MfPack (I would appreciate some advice on which would be the most up-to-date approach). For instance, WMP really doesn't do Frame Backwards properly (it goes back 1 second not 1 frame!), and I also had to comment out the video scrubbing facility (dragging the mouse along the progress bar to quickly scan through a video - WMP gets in a right pickle!). If you would like to implement MPlayer or MMF/MfPack (whichever would provide the richest functionality going forward) to replace WMP, please be my guest!!
 
 And finally, Esther...
 ------------------
-This is my first ever attempt at releasing a source code project as Open Source. Please be gentle :P If this goes well, I have many more projects that I may be willing to release into the wild.
+I am gradually working through my many Delphi projects and making them suitable for sharing publicly.
 
-I am eternally grateful to all the many developers who have inspired me to start releasing my code.
+I am eternally grateful to all the many developers who have inspired me to release my code as open source.

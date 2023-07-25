@@ -58,14 +58,14 @@ begin
   PB.initProgressBar(ST);
 
   case PS.noFile of TRUE:  begin
-                                ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
+                                CU.ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                                     + 'or to permanently associate media file types with this application.'#13#10#13#10
                                                     + 'Alternatively, you can drag and drop a media file onto the window background',
                                                       mtInformation, [MBOK]);
                               end;end;
 
 
-  fillPlaylist(PL, PS.fileFolder);
+  CU.fillPlaylist(PS.fileFolder);
   PL.find(PS.fileFolderAndName);
   case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
 end;
@@ -84,7 +84,7 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      fillPlaylist(PL, extractFilePath(vFilePath));
+      CU.fillPlaylist(extractFilePath(vFilePath));
       PL.find(vFilePath);
       case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
 

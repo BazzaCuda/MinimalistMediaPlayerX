@@ -51,6 +51,7 @@ type
     function replaceCurrentItem(aNewItem: string): boolean;
     function sort: boolean;
     function thisItem(anIx: integer): string;
+    function validIx(anIx: integer): boolean;
   end;
 
 function PL: TPlaylist;
@@ -61,7 +62,7 @@ var
 implementation
 
 uses
-  system.sysUtils, sysCommands, globalVars, clipbrd, IOUtils, formSubtitles;
+  system.sysUtils, sysCommands, globalVars, clipbrd, formSubtitles, commonUtils;
 
 function PL: TPlaylist;
 begin
@@ -74,7 +75,7 @@ end;
 function TPlaylist.add(anItem: string): boolean;
 begin
   FPlayList.add(anItem);
-  FPlayIx := FPlayList.count - 1;
+//  FPlayIx := FPlayList.count - 1; // NO!
 end;
 
 function TPlaylist.clear: boolean;
@@ -86,7 +87,7 @@ end;
 function TPlaylist.copyToClipboard: boolean;
 begin
   result := FALSE;
-  clipboard.AsText := TPath.GetFileNameWithoutExtension(currentItem);
+  clipboard.AsText := CU.getFileNameWithoutExtension(currentItem);
   ST.opInfo := 'Copied to clipboard';
   result := TRUE;
 end;
@@ -117,6 +118,7 @@ end;
 
 function TPlaylist.delete(anIx: integer = -1): boolean;
 begin
+  result := FALSE;
   case hasItems of FALSE: EXIT; end;
   case anIx = -1 of  TRUE:  begin
                               FPlaylist.delete(FPlayIx);
@@ -125,6 +127,7 @@ begin
                               case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
                               FPlaylist.delete(anIx);
                               dec(FPlayIx); end;end;
+  result := TRUE;
 end;
 
 destructor TPlaylist.Destroy;
@@ -207,16 +210,17 @@ end;
 
 function TPlaylist.sort: boolean;
 begin
-//  FPlaylist.sort;
+  result := FALSE;
 
   FPlaylist.Sort(
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
                                               begin
-                                                result := compareStr(a, b, loUserLocale);
+                                                result := compareStr(CU.getFileNameWithoutExtension(a), CU.getFileNameWithoutExtension(b), loUserLocale);
                                               end
                                             )
                 );
+  result := TRUE;
 end;
 
 function TPlaylist.thisItem(anIx: integer): string;
@@ -225,6 +229,14 @@ begin
   case hasItems of FALSE: EXIT; end;
   case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
   result := FPlaylist[anIx];
+end;
+
+function TPlaylist.validIx(anIx: integer): boolean;
+begin
+  result := FALSE;
+  case hasItems of FALSE: EXIT; end;
+  case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
+  result := TRUE;
 end;
 
 initialization

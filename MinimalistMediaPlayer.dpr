@@ -32,7 +32,6 @@ uses
   keyboard in 'keyboard.pas',
   appEvents in 'appEvents.pas',
   sysCommands in 'sysCommands.pas',
-  commonUtils in 'commonUtils.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
   playlist in 'playlist.pas',
@@ -52,7 +51,9 @@ uses
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
   params in 'params.pas',
-  formInputBox in 'formInputBox.pas' {InputBoxForm};
+  formInputBox in 'formInputBox.pas' {InputBoxForm},
+  commonUtils in 'commonUtils.pas',
+  bookmarks in 'bookmarks.pas';
 
 {$R *.res}
 
