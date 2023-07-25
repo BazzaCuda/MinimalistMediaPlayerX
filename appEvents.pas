@@ -27,7 +27,6 @@ type
   TAppEvents = class(TObject)
   strict private
     FAppEvents: TApplicationEvents;
-    FDragging: boolean;
   private
     procedure appEventsMessage(var msg: tagMSG; var handled: boolean);
   protected
@@ -51,14 +50,13 @@ var gAE: TAppEvents;
 var
   mouseDown: Boolean;
   mouseStart: TPoint;
-  topLeft: TPoint;
 
 procedure setStartPoint;
 var
   wndRect: TRect;
 begin
   GetCursorPos(mouseStart);
-  getWindowRect(UI.mainForm.handle, wndRect);
+  getWindowRect(UI.handle, wndRect);
   mouseStart.X := mouseStart.X - wndRect.left;
   mouseStart.Y := mouseStart.Y - wndRect.top;
 end;
@@ -73,9 +71,9 @@ begin
   dx := newMouse.X - mouseStart.X;
   dy := newMouse.Y - mouseStart.Y;
 
-  getWindowRect(UI.mainForm.handle, wndRect);
+  getWindowRect(UI.handle, wndRect);
 
-  MoveWindow(UI.mainForm.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
+  MoveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
@@ -108,7 +106,7 @@ begin
                                     EXIT;       end;end;
 
   case msgIs(WM_KEYUP) of TRUE: begin
-                                  case GV.inputBox of TRUE: EXIT; end;  // don't trap keystrokes when the inputBoxForm is being displayed
+                                  case GV.inputBox  of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
                                   shiftState  := KeyboardStateToShiftState;
                                   key         := msg.WParam;
@@ -120,23 +118,23 @@ begin
 
   case msgIs(WM_PROGRESSBAR_CLICK) of TRUE: MP.position := PB.position; end;
 
-//  case msgIs(WM_TIMEDTEXTNOTIFY) of TRUE: ST.subTitle := MP.subTitle; end;
-
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
   case msgIs(WM_TICK) of TRUE: case screen <> NIL of TRUE: screen.cursor := crNone; end;end;
 
-  case msgIs(WM_LBUTTONDOWN) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
-  case msgIs(WM_LBUTTONUP)   of TRUE: mouseDown := FALSE; end;
+  case msgIs(WM_LBUTTONDOWN)             of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+  case msgIs(WM_LBUTTONUP)               of TRUE: mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
-  case msgIs(WM_MOUSEMOVE)   of TRUE: case screen <> NIL of TRUE: screen.cursor := crDefault; end;end;
+  case msgIs(WM_MOUSEMOVE)               of TRUE: case screen <> NIL of TRUE: screen.cursor := crDefault; end;end;
 
-  case msgIs(WM_ADJUST_ASPECT_RATIO) of TRUE: begin delay(1000); adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
+  case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
+  case msgIs(WM_LBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
+  case msgIs(WM_RBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
 
-  case msgIs(WM_CENTRE_WINDOW)        of TRUE: centreWindow; end;
-  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.mainForm, getScreenWidth, getScreenHeight); end;
-  case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow; end;
-//  case msgIs(WM_ADJUST_WINDOW_WIDTH) of TRUE: adjustWindowWidth; end;
+  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
+  case msgIs(WM_CENTRE_WINDOW)        of TRUE: UI.centreWindow(UI.handle); end;
+  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.handle, getScreenWidth, getScreenHeight); end;
+  case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow(UI.handle); end;
 end;
 
 constructor TAppEvents.create;

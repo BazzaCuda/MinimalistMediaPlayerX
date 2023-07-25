@@ -23,9 +23,6 @@ interface
 uses
   vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls;
 
-function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
-function adjustWindowWidth: boolean;
-function centreWindow: boolean;
 function delay(dwMilliseconds: DWORD): boolean;
 function deleteThisFile(aFilePath: string; shift: TShiftState): boolean;
 function doCommandLine(aCommandLIne: string): boolean;
@@ -33,10 +30,12 @@ function fillPlaylist(aPL: TPlaylist; aFolder: string): boolean;
 function formatFileSize(aSize: int64): string;
 function formatSeconds(seconds: integer): string;
 function formatTime(seconds: integer): string;
+function getAspectRatio(X: int64; Y: int64): double;
 function getExePath: string;
 function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
 function getScreenHeight: integer;
 function getScreenWidth: integer;
+function getWndWidthHeight(aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 function initTransparentForm(aForm: TForm): TForm;
 function initTransparentLabel(aLabel: TLabel): boolean;
 function offScreen(aHWND: HWND): boolean;
@@ -53,48 +52,6 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, _debugWindow;
-
-
-function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
-var
-  vRatio: double;
-begin
-  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
-
-  vRatio := Y / X;
-
-  aForm.height := trunc(aForm.width * vRatio) + 2;
-
-  centreWindow;
-//  postMessage(UI.mainForm.handle, WM_CENTRE_WINDOW, 0, 0);
-//  delay(100);
-//  application.processMessages;
-
-//  case offScreen(UI.mainForm.handle) of TRUE: postMessage(GV.appWnd, WM_ADJUST_WINDOW_WIDTH, 0, 0); end;
-end;
-
-
-function adjustWindowWidth: boolean;
-var
-  vR: TRect;
-begin
-  getWindowRect(UI.mainForm.handle, vR);
-  setWindowPos(UI.mainForm.handle, 0, 0, 0, trunc((vR.right - vR.left) * 0.80), vR.bottom - vR.top, SWP_NOZORDER + SWP_NOMOVE);
-//  delay(100);
-  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-end;
-
-function centreWindow: boolean;
-var
-  vR: TRect;
-begin
-  getWindowRect(UI.mainForm.handle, vR);
-  SetWindowPos(UI.mainForm.handle, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
-                                      (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
-//  delay(100);
-  postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
-  application.processMessages;
-end;
 
 function delay(dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
@@ -184,6 +141,13 @@ begin
   case seconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, seconds]);
                        FALSE: case seconds < 3600 of  TRUE: result := format('%.2d:%.2d', [seconds div 60, seconds mod 60]);
                                                      FALSE: result := format('%.2d:%.2d:%.2d', [seconds div 3600, (seconds mod 3600) div 60, seconds mod 3600 mod 60]); end;end;
+end;
+
+function getAspectRatio(X: int64; Y: int64): double;
+begin
+  result := 0;
+  case (X = 0) or (Y = 0) of TRUE: EXIT; end;
+  result := Y / X;
 end;
 
 function getExePath: string;
@@ -355,12 +319,14 @@ function withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
   result := (aWidth <= vR.right - vR.left) AND (aHeight <= vR.bottom - vR.top);
-//  debugInteger('screenWidth', vR.width);
-//  debugInteger('screenHeight', vR.height);
-//  debugInteger('newW', aWidth);
-//  debugInteger('newH', aHeight);
-//  debugBoolean('withinScreenLimits', result);
-//  debug('');
 end;
 
+function getWndWidthHeight(aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
+var
+  vR: TRect;
+begin
+  GetWindowRect(aWnd, vR);
+  aWidth  := vR.right - vR.left;
+  aHeight := vR.bottom - vR.top;
+end;
 end.

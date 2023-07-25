@@ -71,7 +71,7 @@ end;
 procedure TGlobalVars.onCloseTimerEvent(sender: TObject);
 begin
   FCloseTimer.enabled := FALSE;
-  sendSysCommandClose(UI.mainForm.handle);
+  sendSysCommandClose(UI.handle);
 end;
 
 procedure TGlobalVars.setCloseApp(const Value: boolean);

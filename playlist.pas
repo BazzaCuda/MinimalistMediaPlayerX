@@ -34,6 +34,7 @@ type
     function add(anItem: string): boolean;
     function clear: boolean;
     function count: integer;
+    function copyToClipboard: boolean;
     function currentItem: string;
     function currentIx: integer;
     function delete(anIx: integer = -1): boolean;
@@ -60,7 +61,7 @@ var
 implementation
 
 uses
-  system.sysUtils, sysCommands, globalVars;
+  system.sysUtils, sysCommands, globalVars, clipbrd, IOUtils, formSubtitles;
 
 function PL: TPlaylist;
 begin
@@ -80,6 +81,14 @@ function TPlaylist.clear: boolean;
 begin
   FPlaylist.clear;
   FPlayIx := -1;
+end;
+
+function TPlaylist.copyToClipboard: boolean;
+begin
+  result := FALSE;
+  clipboard.AsText := TPath.GetFileNameWithoutExtension(currentItem);
+  ST.opInfo := 'Copied to clipboard';
+  result := TRUE;
 end;
 
 function TPlaylist.count: integer;

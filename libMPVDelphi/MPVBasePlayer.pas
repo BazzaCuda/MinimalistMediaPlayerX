@@ -1134,7 +1134,7 @@ begin
   SetPropertyString('osc', 'yes'); // On Screen Control
   SetPropertyString('force-window', 'yes');
   SetPropertyString('config-dir', sConfigDir); // mpv.conf location
-//  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF
+  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF
   SetPropertyBool('keep-open', TRUE);
   SetPropertyBool('keep-open-pause', False);
   setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');

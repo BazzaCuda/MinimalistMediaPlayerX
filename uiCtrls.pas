@@ -37,18 +37,21 @@ type
     function createVideoPanel(aForm: TForm): boolean;
   public
     procedure formResize(sender: TObject);
-    function checkScreenLimits(aForm: TForm; aWidth: integer; aHeight: integer): boolean;
+    function adjustAspectRatio(aWnd: HWND; X, Y: int64): boolean;
+    function centreWindow(aWnd: HWND): boolean;
+    function checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
     function deleteCurrentItem(shift: TShiftState): boolean;
-    function greaterWindow(shift: TShiftState): boolean;
+    function doEscapeKey: boolean;
+    function greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
+    function handle: HWND;
     function initUI(aForm: TForm): boolean;
     function minimizeWindow: boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
-    function smallerWindow: boolean;
+    function smallerWindow(aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
-    function toggleMaximised: boolean;
-    property mainForm: TForm read FMainForm;
+    function toggleMaximized: boolean;
     property videoPanel: TPanel read FVideoPanel;
   end;
 
@@ -57,7 +60,8 @@ function UI: TUI;
 implementation
 
 uses
-  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, _debugWindow;
+  formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
+  _debugWindow;
 
 var
   gUI: TUI;
@@ -78,9 +82,45 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.checkScreenLimits(aForm: TForm; aWidth: integer; aHeight: integer): boolean;
+function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64): boolean;
+var
+  vRatio: double;
+  vWidth, vHeight: integer;
 begin
-  case (aForm.width > aWidth) or (aForm.height > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
+  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
+
+  vRatio := Y / X;
+
+  getWndWidthHeight(aWnd, vWidth, vHeight);
+  vHeight := trunc(vWidth * vRatio) + 2;
+
+  setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER);
+
+  UI.centreWindow(UI.handle);
+end;
+
+function TUI.centreWindow(aWnd: HWND): boolean;
+var
+  vR: TRect;
+begin
+  getWindowRect(aWnd, vR);
+  SetWindowPos(aWnd, 0, (getScreenWidth - (vR.Right - vR.Left)) div 2,
+                        (getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+
+  postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
+  application.processMessages;
+end;
+
+function TUI.checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
+var
+  vR: TRect;
+  vWidth: integer;
+  vHeight: integer;
+begin
+  getWindowRect(aWnd, vR);
+  vWidth := vR.right - vR.left;
+  vHeight := vR.bottom - vR.top;
+  case (vWidth > aWidth) or (vHeight > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
   application.processMessages;
 end;
 
@@ -109,20 +149,26 @@ begin
                                                   PL.delete(vIx); end;end;
 end;
 
+function TUI.doEscapeKey: boolean;
+begin
+  case FMainForm.WindowState = wsMaximized of  TRUE: toggleMaximized;
+                                              FALSE: sendSysCommandClose(FMainForm.handle); end;
+end;
+
 procedure TUI.formResize(sender: TObject);
 begin
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
-//  adjustAspectRatio(SELF, MP.videoWidth, MP.videoHeight);
+  adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight); // TESTING. TESTING.
   ST.formResize;
   PB.formResize;
 end;
 
-function TUI.smallerWindow: boolean;
+function TUI.smallerWindow(aWnd: HWND): boolean;
 begin
-  greaterWindow([ssCtrl]);
+  greaterWindow(aWnd, [ssCtrl]);
 end;
 
-function TUI.greaterWindow(shift: TShiftState): boolean;
+function TUI.greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
 const
   dx = 50;
   dy = 30;
@@ -131,7 +177,7 @@ var
   newH: integer;
   vR:   TRect;
 
-  function calcDimensions(shift: TShiftState): boolean;
+  function calcDimensions: boolean;
   begin
     case ssCtrl in shift of
       TRUE: begin
@@ -144,25 +190,27 @@ var
             end;
     end;
   end;
+
 begin
-  getWindowRect(FMainForm.handle, vR);
+  getWindowRect(aWnd, vR);
   newW := vR.Width;
   newH := vR.height;
-//  debugInteger('startWidth', newW);
-//  debugInteger('startHeight', newH);
-//  debug('');
-  calcDimensions(shift); // do what the user requested
-//  debugInteger('calcWidth', newW);
-//  debugInteger('calcHeight', newH);
-//  debug('');
 
-  while NOT withinScreenLimits(newW, newH) do calcDimensions([ssCtrl]); // then make the window fit the screen
+  calcDimensions; // do what the user requested
 
-  SetWindowPos(FMainForm.handle, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
+  case NOT withinScreenLimits(newW, newH) of  TRUE: begin
+                                                      newH := getScreenHeight;
+                                                      newW := trunc(newH / getAspectRatio(MP.videoWidth, MP.videoHeight)); end;end;
 
-//  delay(100);
+  SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
+
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
+end;
+
+function TUI.handle: HWND;
+begin
+  result := FMainForm.handle;
 end;
 
 function TUI.initUI(aForm: TForm): boolean;
@@ -244,7 +292,7 @@ begin
                                            FALSE: ST.showData := FALSE; end;
 end;
 
-function TUI.toggleMaximised: boolean;
+function TUI.toggleMaximized: boolean;
 begin
   case FMainForm.WindowState <> wsMaximized of  TRUE: FMainForm.windowState := wsMaximized;
                                                FALSE: FMainForm.windowState := wsNormal; end;

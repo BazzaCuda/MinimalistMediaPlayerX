@@ -13,31 +13,39 @@ Control | Action
 ------- | ------
 `ALT-SPACEBAR`			| Activate the system menu to get to the About Box
 `ESCape`				| exit Fullscreen mode, or exit the app if in window mode
-`SPACEBAR` 				| pause/resume playback (also left mouse double-click on the video, or right mouse single-click) (all media windows, spacebar only)
-`Ctrl-Up Arrow` 		| increase playback speed 10%
-`/`						| increase playback speed 10%
-`Ctrl-Down Arrow`		| decrease playback speed 10%
-`\`						| decrease playback speed 10%
-`F12`					| open media file in third party video editor (currently ShotCut)
-`=`						| copy media file name to clipboard
+`SPACEBAR` 				| pause/resume playback (all media windows)
+`LEFT Click`            | pause/resume playback
+`LEFT Double-Click`     | toggle fullscreen 
+`RIGHT Double-Click`    | toggle fullscreen 
+`Numpad +` 	  	        | increase playback speed. Can be held down for rapid increase.
+`/`						| increase playback speed. Can be held down for rapid increase.
+`Numpad -`		        | decrease playback speed. Can be held down for rapid decrease.
+`\`						| decrease playback speed. Can be held down for rapid decrease.
+`Pg Dn`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
+`Pg Up`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
+`F10`                   | open media file in PotPlayer (assumes default installation folder)
+`F11`                   | open media file in LossLess Cut (assumes default installation folder)            
+`F12`					| open media file in ShotCut editor (assumes default installation folder)
+`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12.
 `A`						| play the first media file in the playlist (Z plays last)
 `B`						| [B]lackout/restore progress [B]ar
+`Ctrl-B`                | Make the progress [B] more prominent. Gets lost in some lighting conditions or very bright videos.
 `C`						| show/Hide on-screen [C]ontrols and media file timestamp (all media windows)
 `Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata (all media windows)
 `D` and `DEL`			| [D]elete current media file (after confirmation)
-`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation)
+`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected.
 `E`						| [E]ars - Mute/Unmute sound
 `F`						| show/cancel [F]ullScreen mode
-`G`						| [G]reater window size
-`Ctrl-G`				| reduce, i.e. un[G]reater, the window size
+`G`						| [G]reater window size. Can be held down for rapid increase.
+`Ctrl-G`				| reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
 `H`						| position the window [H]orizontally (and Vertically) in the center of the screen
-`I`						| zoom [I]n by 10% of the video's height and width
+`I`						| zoom [I]n. Can be held down for rapid zooming.
 `J`						| ad[J]ust the window's aspect ratio to match the video's aspect ratio
-`K`						| mark this media file as [K]eep
+`K`						| mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`						| re[L]oad the list of supported media files from the current folder
 `M`						| [M]aximize / restore window
 `N`						| mi[N]imize window to the Windows taskbar
-`O`						| zoom [O]ut by 10% of the video's height and width
+`O`						| zoom [O]ut. Can be held down for rapid zooming.
 `P` 					| pause the media file and play it instead with [P]otplayer, if installed
 `Q`						| play the previous media file in the [Q]ueue/playlist
 `R`						| [R]ename the current media file

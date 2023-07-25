@@ -63,7 +63,6 @@ end;
 
 function TMediaInfo.getData(aMemo: TMemo): boolean;
 begin
-//  initMediaInfo(FURL);
   aMemo.clear;
   aMemo.lines.add('');
   aMemo.lines.add(XY);
@@ -123,8 +122,8 @@ begin
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
     case TryStrToInt64(mediaInfo_Get(handle, Stream_General,    0, 'FileSize',        Info_Text, Info_Name), FFileSize)          of FALSE: FFileSize         := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
-    case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FWidth)             of FALSE: FWidth            := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'BitRate',         Info_Text, Info_Name), FVideoBitRate)      of FALSE: FVideoBitRate     := 0; end;
 
     FStereoMono := mediaInfo_Get(handle, Stream_Audio,  0, 'Title',         Info_Text, Info_Name);

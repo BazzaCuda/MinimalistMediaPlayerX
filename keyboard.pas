@@ -29,7 +29,7 @@ type
             koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
             koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
-            koSpeedDn, koSpeedReset);
+            koSpeedDn, koSpeedReset, koEscape, koClipboard);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -73,7 +73,7 @@ const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
-  SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221;
+  _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221;
 
 var
   gKB: TKeyboard;
@@ -142,6 +142,8 @@ begin
   case keyDn and keyIs(VK_SUBTRACT)       of TRUE: result := koSpeedDn; end;
   case keyDn and keyIs(BACKSLASH)         of TRUE: result := koSpeedDn; end;
   case keyUp and keyIs(_1)                of TRUE: result := koSpeedReset; end;
+  case keyUp and keyIs(VK_ESCAPE)         of TRUE: result := koEscape; end;
+  case keyUp and keyIs(_EQUALS)           of TRUE: result := koClipboard; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -207,10 +209,12 @@ begin
   FShiftState := aShiftState;
   FUpDn       := upDn;
 
+//  debugInteger('aKey', aKey);
+
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:          sendSysCommandClose(UI.mainForm.handle);
+    koCloseApp:          sendSysCommandClose(UI.handle);
     koVolUp:             MP.volUp;
     koVolDn:             MP.volDown;
     koTab:               MP.tab(aShiftState, KB.capsLock);
@@ -218,7 +222,7 @@ begin
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
-    koAdjustAspectRatio: adjustAspectRatio(UI.mainForm, MP.videoWidth, MP.videoHeight);
+    koAdjustAspectRatio: UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight);
     koBrightnessUp:      MP.brightnessUp;
     koBrightnessDn:      MP.brightnessDn;
     koZoomIn:            MP.zoomIn;
@@ -236,7 +240,7 @@ begin
     koRotateL:           MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
     koZoomEnd:           MP.zoomEnd;
-    koGreaterWindow:     UI.greaterWindow(aShiftState);
+    koGreaterWindow:     UI.greaterWindow(UI.handle, aShiftState);
     koPlayFirst:         MP.playFirst;
     koPlayLast:          MP.playLast;
     koToggleControls:    UI.toggleControls(aShiftState);
@@ -251,6 +255,8 @@ begin
     koSpeedUp:           MP.speedUp;
     koSpeedDn:           MP.speedDn;
     koSpeedReset:        MP.speedReset;
+    koEscape:            UI.doEscapeKey;
+    koClipboard:         PL.copyToClipboard;
   end;
 
   result := TRUE;

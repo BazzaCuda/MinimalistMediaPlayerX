@@ -28,11 +28,9 @@ type
   TSubtitlesForm = class(TForm)
   private
     FDataMemo: TMemo;
-    FSubtitle: TLabel;
     FVideoPanel: TPanel;
     FInfoPanel: TPanel;
     FInitialized: boolean;
-    FSubtitlePanel: TPanel;
 
     FTimeLabel: TLabel;
 
@@ -42,10 +40,8 @@ type
     FShowData: boolean;
 
     constructor create;
-    procedure WMSize(var message: TWMSize); message WM_SIZE;
     function  getHWND: HWND;
     function  startOpInfoTimer: boolean;
-    procedure setSubtitle(const Value: string);
     procedure setDisplayTime(const Value: string);
     procedure setOpInfo(const Value: string);
     procedure timerEvent(sender: TObject);
@@ -62,7 +58,6 @@ type
     property opInfo:        string                  write setOpInfo;
     property showData:      boolean read FShowData  write setShowData;
     property showTime:      boolean read FShowTime  write setShowTime;
-    property subTitle:      string                  write setSubtitle;
   end;
 
 function ST: TSubtitlesForm;
@@ -94,6 +89,8 @@ constructor TSubtitlesForm.create;
     aLabel.font.name      := 'Tahoma';
     aLabel.font.color     := clGray;
     aLabel.font.size      := 10;
+    aLabel.align          := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
+    aLabel.alignment      := taRightJustify;
     aLabel.margins.top    := 0;
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
@@ -103,14 +100,6 @@ constructor TSubtitlesForm.create;
   end;
 begin
   inherited create(NIL);
-
-//  FSubtitle := TLabel.create(NIL);
-//  FSubtitle.margins.bottom := 6;
-
-//  FSubtitlePanel := TPanel.create(NIL);
-//  FSubtitlePanel.parent := SELF;
-//  FSubtitle.parent := FSubtitlePanel; // the other labels don't show without this!
-//  FSubtitlePanel.color := clGreen;
 
   SELF.height := DEFAULT_WINDOW_HEIGHT;
 
@@ -124,20 +113,15 @@ begin
   FTimeLabel := TLabel.create(FInfoPanel);
   FTimeLabel.parent := FInfoPanel;
   initTransparentLabel(FTimeLabel);
-  FTimeLabel.align := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   defaultFontEtc(FTimeLabel);
-  FTimeLabel.alignment := taRightJustify;
-  FTimeLabel.margins.bottom := 0;
-  FTimeLabel.caption := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
+  FTimeLabel.caption  := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
   FTimeLabel.autoSize := FALSE;
-  FTimeLabel.top     := FInfoPanel.height - FTimeLabel.height;
+  FTimeLabel.top      := FInfoPanel.height - FTimeLabel.height;
 
   FOpInfo := TLabel.create(FInfoPanel);
   FOpInfo.parent := FInfoPanel;
   initTransparentLabel(FOpInfo);
-  FOpInfo.align := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   defaultFontEtc(FOpInfo);
-  FOpInfo.alignment := taRightJustify;
   FOpInfo.autoSize  := FALSE;
   FOpInfo.width     := FTimeLabel.width;
   FOpInfo.top       := FTimeLabel.top - FOpInfo.height;
@@ -153,7 +137,7 @@ begin
   FDataMemo.borderStyle := bsNone;
   FDataMemo.color       := clBlack;
   FDataMemo.height      := 110;
-  FDataMemo.margins.bottom := 20; // otherwise the bottom line displays below the progressBar
+  FDataMemo.margins.bottom := 20; // otherwise the bottom line displays behind the progressBar
   FDataMemo.readOnly    := TRUE;
   FDataMemo.tabStop     := FALSE;
   FDataMemo.font.name   := 'Tahoma';
@@ -167,21 +151,19 @@ end;
 
 destructor TSubtitlesForm.Destroy;
 begin
-  case FSubtitle      <> NIL of TRUE: FSubtitle.free; end;
-  case FSubtitlePanel <> NIL of TRUE: FSubtitlePanel.free; end;
   case FInfoPanel     <> NIL of TRUE: FInfoPanel.free; end;
   case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
 end;
 
 procedure TSubTitlesForm.formResize;
+// align := alBottom draws the labels but not in the correct position!
 begin
   SELF.height     := DEFAULT_WINDOW_HEIGHT;
   FTimeLabel.left := SELF.width - FTimeLabel.width;    // don't rely on the dimensions of FInfoPanel!
   FTimeLabel.top  := SELF.height - FTimeLabel.height;
   FOpInfo.left    := FTimeLabel.left;                  // needs to be set even though align = alBottom!
   FOpInfo.top     := FTimeLabel.top - FOpInfo.height;
-//  moveOpInfo;
 end;
 
 function TSubtitlesForm.getHWND: HWND;
@@ -198,13 +180,8 @@ begin
   SELF.align  := alBottom;
   initTransparentForm(SELF);
 
-//  FSubtitle.parent := SELF;
-//  initTransparentLabel(FSubtitle);
-
-
 //  handy for debugging
 //  SetWindowLong(SELF.handle, GWL_STYLE, GetWindowLong(SELF.handle, GWL_STYLE) OR WS_CHILD OR WS_CLIPSIBLINGS {OR WS_CLIPCHILDREN} OR WS_CAPTION AND (NOT (WS_BORDER)));
-
 
   FInitialized := TRUE;
   SELF.show;
@@ -234,12 +211,6 @@ begin
   case FShowTime of FALSE: FTimeLabel.caption := ''; end;
 end;
 
-procedure TSubtitlesForm.setSubtitle(const Value: string);
-begin
-  EXIT;
-  FSubtitle.caption := Value;
-end;
-
 function TSubtitlesForm.startOpInfoTimer: boolean;
 begin
   case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(NIL); end;
@@ -255,13 +226,6 @@ begin
   FOpInfo.caption       := '';
   FOpInfoTimer.free;
   FOpInfoTimer := NIL;
-end;
-
-procedure TSubtitlesForm.WMSize(var message: TWMSize);
-begin
-//  case FSubtitle = NIL of TRUE: EXIT; end;
-//  FSubtitle.caption := '';
-//  FSubtitle.caption := format('w: %d, h: %d', [FSubtitle.width, FSubtitle.height]);
 end;
 
 initialization

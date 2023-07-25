@@ -24,7 +24,7 @@ uses
   forms, vcl.extCtrls, system.classes, MPVBasePlayer;
 
 type
-  TTimerEvent = (tePlay, teAspectRatio);
+  TTimerEvent = (tePlay);
 
   TMediaPlayer = class(TObject)
   strict private
@@ -56,7 +56,6 @@ type
   public
     destructor  Destroy; override;
 //    function adjustAspectRatio(aForm: TForm; X: int64; Y: int64): boolean;
-    function adjustAspectRatioDelayed(aForm: TForm; X: int64; Y: int64): boolean;
     function brightnessUp: boolean;
     function brightnessDn: boolean;
     function frameBackwards: boolean;
@@ -122,16 +121,6 @@ begin
 end;
 
 { TMediaPlayer }
-
-
-function TMediaPlayer.adjustAspectRatioDelayed(aForm: TForm; X, Y: int64): boolean;
-begin
-  FForm := aForm; FX := X; FY := Y;
-
-  FTimerEvent := teAspectRatio;
-  FTimer.interval := 500;
-  FTimer.enabled := TRUE;
-end;
 
 function TMediaPlayer.brightnessDn: boolean;
 var
@@ -254,7 +243,6 @@ begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
     tePlay: play(PL.currentItem);
-    teAspectRatio: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); //        adjustAspectRatio(FForm, FX, FY);
   end;
 end;
 
@@ -275,8 +263,7 @@ begin
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
-    mpv.initPlayer(intToStr(UI.mainForm.handle), ''{getExePath}, ''{getExePath}, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
-//    mpv.initPlayer(intToStr(UI.videoPanel.handle), '', '', '');
+    mpv.initPlayer(intToStr(UI.handle), getExePath, getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
 //    mpv.setPropertyString('osd-bar', 'yes');
 //    mpv.setPropertyString('osd-level', '0');
 //    mpv.setPropertyString('hr-seek', 'yes');
@@ -362,7 +349,6 @@ begin
   MI.initMediaInfo(PL.currentItem);
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
-//  postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
   result := TRUE;
@@ -387,7 +373,7 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
-  case FTimer.enabled of FALSE: sendSysCommandClose(UI.mainForm.handle); end;
+  case FTimer.enabled of FALSE: sendSysCommandClose(UI.handle); end;
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -521,7 +507,7 @@ end;
 
 function TMediaPlayer.toggleFullscreen: boolean;
 begin
-  UI.toggleMaximised;
+  UI.toggleMaximized;
   postMessage(GV.appWnd, WM_TICK, 0, 0);
 end;
 
