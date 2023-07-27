@@ -3,7 +3,7 @@ Minimalist Media Player
 
 A simple but very effective media player built around MVP's API, libMPV-2.dll
 
-``Minimalist Media Player`` provides both a minimalist/keyboard-operated user interface (so that on-screen controls don't detract from the video) and the controls with which to view the video in a minimalist window with the option to have no borders, window title bar/caption, progress bar, video timestamp, etc, and with the window resized to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen.
+``Minimalist Media Player`` provides both a minimalist/keyboard- and mouse-operated user interface (so that on-screen controls don't detract from the video) and the controls with which to view the video in a minimalist window with the option to have no borders, window title bar/caption, progress bar, video timestamp, etc, and with the window resized to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen.
 
 ### Keyboard Controls
 ---------------------
@@ -25,7 +25,7 @@ Control | Action
 `C`						| show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`			| [D]elete current media file (after confirmation)
-`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected
+`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not affected
 `E`						| [E]ars - Mute/Unmute sound
 `F`						| show/cancel [F]ullScreen mode
 `G`						| [G]reater window size. Can be held down for rapid increase.
@@ -61,6 +61,45 @@ Control | Action
 `7`						| delete any previously saved/bookmarked media file timestamp for the current media file
 `8`                     | Decrease brightness. Can be held down for rapid decrease.
 `9`						| Increase brightness. Can be held down for rapid increase.
+By Category |
+Brightness |
+`8`                     | Decrease brightness. Can be held down for rapid decrease.
+`9`						| Increase brightness. Can be held down for rapid increase.
+`3`						| reset brightness to normal
+File Control |
+`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12
+`D` and `DEL`			| [D]elete current media file (after confirmation)
+`K`						| mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`R`						| [R]ename the current media file
+Freeze Frame |
+`RIGHT ARROW`			| pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+`LEFT ARROW`			| pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
+Mouse |
+`Left Click on the window and hold`	| the window can be dragged/repositioned
+`Left double-click video` | toggle fullscreen mode
+`Right double-click video` | toggle fullscreen mode
+`Right single-click video` | Pause/resume playback
+On-Screen Display |
+`0`						| briefly show media caption (the filename and its position in the playlist)
+`B`						| [B]lackout/restore progress [B]ar
+`Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
+`C`						| show/Hide on-screen [C]ontrols (media info) and media file timestamp
+`Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata
+Panning |
+`Ctrl-Up Arrow`			| pan up. Can be held down for continuous panning.
+`Ctrl-Down Arrow`		| pan down. Can be held down for continuous panning.
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning.
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning.
+`2`						| reset panning to normal.
+Playlist |
+`A`						| play the first media file in the playlist (Z/END plays last)
+`HOME`					| play the first media file in the playlist (Z/END plays last)
+`Z`						| play the last media file in the playlist (A/HOME plays the first)
+`END`    				| play the last media file in the playlist (A/HOME plays the first)
+`W`						| [W]atch the next video in the list (or play the next audio)
+`Numpad ENTER`			| [W]atch the next video in the list (or play the next audio)
+`Q`						| play the previous media file in the [Q]ueue/playlist
+`L`						| re[L]oad the list of supported media files from the current folder
 Rotating |
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `[`                     | rotate video left/anti-clockwise (you must have first rotated right at least once)
@@ -78,29 +117,27 @@ Tabbing |
 `Ctrl-T`				| [T]ab back through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
 `TAB`					| tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`				| tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
-Freeze Frame |
-`RIGHT ARROW`			| pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
-`LEFT ARROW`			| pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
-Panning |
-`Ctrl-Up Arrow`			| pan up. Can be held down for continuous panning.
-`Ctrl-Down Arrow`		| pan down. Can be held down for continuous panning.
-`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning.
-`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning.
-`2`						| reset panning to normal.
-Mouse |
-`Left Click on the window and hold`	| the window can be dragged/repositioned
-`Left double-click video` | toggle fullscreen mode
-`Right double-click video` | toggle fullscreen mode
-`Right single-click video` | Pause/resume playback
 Volume |
 `Up Arrow`				| increase the volume. Can be held down for rapid increase.
 `Down Arrow`			| decrease the volume. Can be held down for rapid decrease.
 `Vol+ media key`        | increase the volume. Can be held down for rapid increase.
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease.
 `Vol-mute media key`    | Mute/Unmute sound
+`E`						| [E]ars - Mute/Unmute sound
+Window Control |
+`ESCape`				| exit Fullscreen mode, or exit the app if not in fullscreen mode
+`F`						| show/cancel [F]ullScreen mode
+`G`						| [G]reater window size. Can be held down for rapid increase.
+`Ctrl-G`				| reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
+`H`						| position the window [H]orizontally (and Vertically) in the center of the screen
+`J`						| ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
+`M`						| [M]aximize / restore window
+`N`						| mi[N]imize window to the Windows taskbar
+`V`						| maximize / restore [V]iew, same as [M]
 Zoom |
 `I`						| zoom [I]n. Can be held down for rapid zooming in.
 `O`						| zoom [O]ut. Can be held down for rapid zooming out.
+`U`						| [U]nzoom, i.e. re-fit the video to the window
 Additional |
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
