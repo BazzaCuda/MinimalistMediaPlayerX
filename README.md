@@ -61,7 +61,8 @@ Control | Action
 `7`						| delete any previously saved/bookmarked media file timestamp for the current media file
 `8`                     | Decrease brightness. Can be held down for rapid decrease.
 `9`						| Increase brightness. Can be held down for rapid increase.
-By Category |
+### By Category
+---------------
 Brightness |
 `8`                     | Decrease brightness. Can be held down for rapid decrease.
 `9`						| Increase brightness. Can be held down for rapid increase.
