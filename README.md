@@ -63,6 +63,8 @@ Control | Action
 `9`						| Increase brightness. Can be held down for rapid increase.
 ### By Category
 ---------------
+Control | Action
+------- | ------
 Brightness |
 `8`                     | Decrease brightness. Can be held down for rapid decrease.
 `9`						| Increase brightness. Can be held down for rapid increase.
