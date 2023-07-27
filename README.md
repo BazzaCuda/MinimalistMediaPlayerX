@@ -15,14 +15,17 @@ Control | Action
 `ALT-SPACEBAR`			| activate the system menu to get to the About Box
 `ESCape`				| exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR` 				| pause/resume playback
-`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12.
-`A`						| play the first media file in the playlist (Z plays last)
+`Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
+`Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
+`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12
+`A`						| play the first media file in the playlist (Z/END plays last)
+`HOME`					| play the first media file in the playlist (Z/END plays last)
 `B`						| [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B] more prominent.
+`Ctrl-B`                | Make the progress [B]ar more prominent.
 `C`						| show/Hide on-screen [C]ontrols and media file timestamp
 `Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`			| [D]elete current media file (after confirmation)
-`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected.
+`Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected
 `E`						| [E]ars - Mute/Unmute sound
 `F`						| show/cancel [F]ullScreen mode
 `G`						| [G]reater window size. Can be held down for rapid increase.
@@ -43,14 +46,16 @@ Control | Action
 `U`						| [U]nzoom, i.e. re-fit the video to the window
 `V`						| maximize / restore [V]iew, same as [M]
 `W`						| [W]atch the next video in the list (or play the next audio)
+`Numpad ENTER`			| [W]atch the next video in the list (or play the next audio)
 `X`						| e[X]it the application
 `Y`						| 
-`Z`						| play the last media file in the playlist (A plays the first)
+`Z`						| play the last media file in the playlist (A/HOME plays the first)
+`END`    				| play the last media file in the playlist (A/HOME plays the first)
 `0`						| briefly show media caption (the filename and its position in the playlist)
 `1`						| reset the playback speed to normal, i.e. [1]00%
 `2`						| reset panning to normal
 `3`						| reset brightness to normal
-`4`						| 
+`4`						| reset rotation to normal/not rotated
 `5`						| save/bookmark the current media file timestamp to an INI file
 `6`						| retrieve a saved/bookmarked media file timestamp from an INI file and continue playback from that point
 `7`						| delete any previously saved/bookmarked media file timestamp for the current media file
@@ -61,6 +66,7 @@ Rotating |
 `[`                     | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `]`                     | rotate video right/clockwise (you must do this at least once before you can rotate left)
+`4`						| reset rotation to normal/not rotated
 Speed |
 `Numpad +` 	  	        | increase playback speed. Can be held down for rapid increase.
 `/`						| increase playback speed. Can be held down for rapid increase.
@@ -71,7 +77,7 @@ Tabbing |
 `T`						| [T]ab through the media file a 100th (default), 50th, 20th or 10th of its duration (use SHIFT-ALT, ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
 `Ctrl-T`				| [T]ab back through the media file a 100th (default), 50th, 20th or 10th of its duration (use ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
 `TAB`					| tab forwards 1 second. Can be held down to do a "fast forward" through the media file
-`Ctrl-TAB`				| tab backwards 1 second. Can be held down to do a reverse "fast forward" through the media file
+`Ctrl-TAB`				| tab backwards 1 second. Can be held down to do a "fast reserve" through the media file
 Freeze Frame |
 `RIGHT ARROW`			| pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `LEFT ARROW`			| pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
@@ -89,9 +95,12 @@ Mouse |
 Volume |
 `Up Arrow`				| increase the volume. Can be held down for rapid increase.
 `Down Arrow`			| decrease the volume. Can be held down for rapid decrease.
+`Vol+ media key'        | increase the volume. Can be held down for rapid increase.
+`Vol- media key`        | decrease the volume. Can be held down for rapid decrease.
+`Vol-mute media key`    | Mute/Unmute sound
 Zoom |
-`I`						| zoom [I]n. Can be held down for rapid zooming.
-`O`						| zoom [O]ut. Can be held down for rapid zooming.
+`I`						| zoom [I]n. Can be held down for rapid zooming in.
+`O`						| zoom [O]ut. Can be held down for rapid zooming out.
 Additional |
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
@@ -119,7 +128,7 @@ So, firstly, I make full use of all 180 columns of my editor.
 
 3. I like to experiment with different ways of separating out the User Interface definition from the general program logic and how application-wide variables should be handled. My only criticism of Delphi, going all the way back to v1, is the way it (and all the many books) encourages all code to be contained within the form's unit and event handler procedures. It's taken us too long to finally break away from that paradigm, in my opinion. My view is that you should write so that an entirely new UI can be created and then just hooked up to the back-end program logic.
 
-4. Despite falling in love with Delphi since the moment I unboxed v1, I loathe and detest BEGIN...END with a passion {I definitely have Curly Brace Envy}. As such, I try to find ways to make my code look much neater, which includes not having every END on a separate line, as you will see :D
+4. Despite falling in love with Delphi since the moment I unboxed v1 (and immediately reboxed VB v3!), I loathe and detest BEGIN...END with a passion {I definitely have Curly Brace Envy}. As such, I try to find ways to make my code look much neater, which includes not having every END on a separate line, as you will see :D
 
 5. All methods that I write (as opposed to IDE-created event handler procedures, etc.) are defined as functions with a default boolean return value. This makes the code easier to expand on when method requirements change.
 

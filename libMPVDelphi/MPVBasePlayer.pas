@@ -1131,20 +1131,22 @@ begin
 //  SetPropertyString('osd-playing-msg', '${filename}');
   if sLogFile<>'' then SetPropertyString(STR_LOG_FILE, sLogFile);
   SetPropertyString(STR_WID, sWinHandle);
-  SetPropertyString('osc', 'yes'); // On Screen Control
+  SetPropertyString('osc', 'no'); // On Screen Control
   SetPropertyString('force-window', 'yes');
   SetPropertyString('config-dir', sConfigDir); // mpv.conf location
-  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF
+  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF - NO!
   SetPropertyBool('keep-open', TRUE);
   SetPropertyBool('keep-open-pause', False);
-  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');
+//  SetPropertyBool('idle-screen', FALSE);
+//  setPropertyString('osc-visibility', 'never');
+//  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');
 //  SetPropertyString('video-unscaled', 'downscale-big'); // this option disables pan-scan
 
 //  setOption('no-keepaspect'); // how to set this?
 
 //  SetPropertyBool('input-default-bindings', True);
 //  SetPropertyBool('input-builtin-bindings', False);
-  SetPropertyString('reset-on-next-file', 'speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
+  SetPropertyString('reset-on-next-file', 'brightness,speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
 
   ProcessCmdLine(True);
   Result := HandleError(mpv_initialize(m_hMPV), 'mpv_initialize');

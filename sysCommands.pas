@@ -20,7 +20,7 @@ unit sysCommands;
 
 interface
 
-uses winAPI.messages, consts, formAbout, commonUtils, winAPI.windows, formHelp, globalVars, mediaPlayer;
+uses winAPI.messages, consts, formAbout, commonUtils, winAPI.windows, formHelp, globalVars, mediaPlayer, forms;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 function sendSysCommandClose(aHWND: HWND): boolean;
@@ -35,8 +35,7 @@ end;
 
 function sendSysCommandClose(aHWND: HWND): boolean;
 begin
-  MP.releasePlayer;
-  sendMessage(aHWND, WM_CLOSE, 0, 0);
+  postMessage(aHWND, WM_CLOSE, 0, 0);
 end;
 
 end.

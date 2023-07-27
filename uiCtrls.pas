@@ -217,6 +217,8 @@ end;
 function TUI.initUI(aForm: TForm): boolean;
 begin
   FMainForm := aForm;
+  aForm.width         := 1700;
+  aForm.height        := 1275;
   aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;

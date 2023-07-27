@@ -28,6 +28,7 @@ type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
   protected
   public
@@ -45,6 +46,13 @@ uses
 {$R *.dfm}
 
 { TMMPUI }
+
+procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  debug('closing');
+  MP.releasePlayer;
+  action := TCloseAction.caFree;
+end;
 
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin

@@ -38,18 +38,18 @@ const
   WM_PROGRESSBAR_CLICK   = WM_USER + 2011;
   WM_TICK                = WM_USER + 2012;
   WM_ADJUST_ASPECT_RATIO = WM_USER + 2013;
-  WM_CENTRE_WINDOW       = WM_USER + 2015;
-  WM_KEY_UP              = WM_USER + 2016;
-  WM_CHECK_SCREEN_LIMITS = WM_USER + 2017;
-  WM_SMALLER_WINDOW      = WM_USER + 2018;
+  WM_CENTRE_WINDOW       = WM_USER + 2014;
+  WM_KEY_UP              = WM_USER + 2015;
+  WM_CHECK_SCREEN_LIMITS = WM_USER + 2016;
+  WM_SMALLER_WINDOW      = WM_USER + 2017;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
-  EXTS_1 = '.txt.ini.jpg.jpeg.bmp.ico.png.url.srt.sub.sami.ssa.xml.exe.html.mthml.htm.snz.jfif.gif.dll.pdf.doc.docx.xls.xlsx.jp2.ods.djvu.epub.zip.rar.7z.dic';
+  EXTS_1 = '.txt.ini.jpg.jpeg.bmp.ico.png.url.srt.sub.sami.ssa.xml.exe.html.mhtml.htm.snz.jfif.gif.dll.pdf.doc.docx.xls.xlsx.jp2.ods.djvu.epub.zip.rar.7z.dic';
   EXTS_2 = '.rtf.md.bz2.arj.cab.gz.iso.jar.lz.lzh.tar.uue.xz.z.zipx.zst.cbr.cbz.pl.py.pas.dfm.scpt.dmg.plist.css.body.offsets.index.data.css.dist.bom.slip.msg.bat.go';
-  EXTS_3 = '.conf.sh.dpk.res.dfm.identcache.local.dcu.yml.csv.sub';
+  EXTS_3 = '.conf.sh.dpk.res.dfm.identcache.local.dcu.yml.csv.sub.queued.par.par2.nfo.bup.ifo';
   EXTS_FILTER = EXTS_1 + EXTS_2 + EXTS_3 + '.';
 
 

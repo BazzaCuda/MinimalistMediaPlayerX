@@ -3037,6 +3037,7 @@ object MMPUI: TMMPUI
     00800100000000000000000000000000000000000000000000C0030000E00700
     00E0070000F00F0000}
   Position = poDefault
+  OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 13
 end

@@ -24,7 +24,7 @@ uses
   forms, vcl.extCtrls, system.classes, MPVBasePlayer;
 
 type
-  TTimerEvent = (tePlay);
+  TTimerEvent = (tePlay, teClose);
 
   TMediaPlayer = class(TObject)
   strict private
@@ -80,6 +80,7 @@ type
     function releasePlayer: boolean;
     function resume: boolean;
     function rotateLeft: boolean;
+    function rotateReset: boolean;
     function rotateRight: boolean;
     function setProgressBar: boolean;
     function speedDn: boolean;
@@ -257,7 +258,8 @@ procedure TMediaPlayer.onTimerEvent(sender: TObject);
 begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
-    tePlay: play(PL.currentItem);
+    tePlay:  play(PL.currentItem);
+    teClose: sendSysCommandClose(UI.handle);
   end;
 end;
 
@@ -400,7 +402,9 @@ begin
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
   case FTimer.enabled of  TRUE: checkPot(GV.alwaysPot);
-                         FALSE: sendSysCommandClose(UI.handle); end;
+                         FALSE: begin
+                                  FTimerEvent    := teClose;
+                                  FTimer.enabled := TRUE; end;end;
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -425,6 +429,13 @@ begin
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot - 45);
   ST.opInfo := 'Rotate left';
+end;
+
+function TMediaPlayer.rotateReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyInt64('video-rotate', 0);
+  ST.opInfo := 'Rotate reset';
 end;
 
 function TMediaPlayer.rotateRight: boolean;
@@ -515,7 +526,7 @@ var
 begin
   vFactor := 100;
 
-  case capsLock               of TRUE: vFactor := 10; end;
+  case capsLock               of TRUE: vFactor := 200; end;
   case ssShift in aShiftState of TRUE: vFactor := 20; end; // might remove shift-t in favor of the help window
   case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
