@@ -1,7 +1,7 @@
 Minimalist Media Player
 =====================
 
-A simple but very effective media player built around the Windows Media Player ActiveX control.
+A simple but very effective media player built around MVP's API, libMPV-2.dll
 
 ``Minimalist Media Player`` provides both a minimalist/keyboard-operated user interface (so that on-screen controls don't detract from the video) and the controls with which to view the video in a minimalist window with the option to have no borders, window title bar/caption, progress bar, video timestamp, etc, and with the window resized to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen.
 
