@@ -199,7 +199,7 @@ var
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.GetPropertyInt64('brightness', vBrightness);
-  result := format('Brightness: %.2f', [vBrightness]);
+  result := format('Brightness: %d', [vBrightness]);
 end;
 
 function TMediaPlayer.getFormattedDuration: string;
