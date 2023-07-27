@@ -21,8 +21,8 @@ Control | Action
 `A`						| play the first media file in the playlist (Z/END plays last)
 `HOME`					| play the first media file in the playlist (Z/END plays last)
 `B`						| [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B]ar more prominent.
-`C`						| show/Hide on-screen [C]ontrols and media file timestamp
+`Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
+`C`						| show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`				| show/Hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`			| [D]elete current media file (after confirmation)
 `Ctrl-D and Ctrl-DEL`	| [D]elete all files in the current media file's folder (after confirmation) - subfolders not effected
@@ -74,10 +74,10 @@ Speed |
 `\`						| decrease playback speed. Can be held down for rapid decrease.
 `1`						| reset the playback speed to normal, i.e. [1]00%
 Tabbing |
-`T`						| [T]ab through the media file a 100th (default), 50th, 20th or 10th of its duration (use SHIFT-ALT, ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
-`Ctrl-T`				| [T]ab back through the media file a 100th (default), 50th, 20th or 10th of its duration (use ALT, SHIFT, CAPS LOCK to modify). Can be held down for rapid tabbing.
-`TAB`					| tab forwards 1 second. Can be held down to do a "fast forward" through the media file
-`Ctrl-TAB`				| tab backwards 1 second. Can be held down to do a "fast reserve" through the media file
+`T`						| [T]ab through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
+`Ctrl-T`				| [T]ab back through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
+`TAB`					| tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
+`Ctrl-TAB`				| tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
 Freeze Frame |
 `RIGHT ARROW`			| pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `LEFT ARROW`			| pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
@@ -95,7 +95,7 @@ Mouse |
 Volume |
 `Up Arrow`				| increase the volume. Can be held down for rapid increase.
 `Down Arrow`			| decrease the volume. Can be held down for rapid decrease.
-`Vol+ media key'        | increase the volume. Can be held down for rapid increase.
+`Vol+ media key`        | increase the volume. Can be held down for rapid increase.
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease.
 `Vol-mute media key`    | Mute/Unmute sound
 Zoom |
@@ -108,7 +108,7 @@ Additional |
 
 Media File Formats
 ------------------
-``Minimalist Media Player`` uses MVP for its media playback and manipulation functions. WVP supports more media file formats than you can shake a stick at. As such, it's a fairly safe bet that you can associate all your media files with ``Minimalist Media Player`` and they will play. If you're unsure, just run the executable and drop a media file onto the window to check it plays before permanently associating the file extension with ``Minimalist Media Player`` using "Open with..." in Windows File Explorer or whichever 3rd party file manager software you are (/should be!) using, like Directory Opus.
+``Minimalist Media Player`` uses MVP for its media playback and manipulation functions. MVP supports more media file formats than you can shake a stick at. As such, it's a fairly safe bet that you can associate all your media files with ``Minimalist Media Player`` and they will play. If you're unsure, just run the executable and drop a media file onto the window to check it plays before permanently associating the file extension with ``Minimalist Media Player`` using "Open with..." in Windows File Explorer or whichever alternative 3rd party file manager software you are (aka should be!) using instead, like Directory Opus :D
 
 Dependencies
 ------------
