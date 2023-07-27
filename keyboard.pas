@@ -29,7 +29,8 @@ type
             koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
             koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
-            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset);
+            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
+            koBookmarkLoad, koBookmarkDelete, koRotateReset);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -68,7 +69,7 @@ implementation
 
 uses
   sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, vcl.forms,
-  system.sysUtils, _debugWindow;
+  system.sysUtils, bookmark, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -151,6 +152,10 @@ begin
   case keyUp and ctrl and keyIs(P)        of TRUE: result := koAlwaysPot; end;
   case keyUp and keyIs(_2)                of TRUE: result := koPanReset; end;
   case keyUp and keyIs(_3)                of TRUE: result := koBrightnessReset; end;
+  case keyUp and keyIs(_4)                of TRUE: result := koRotateReset; end;
+  case keyUp and keyIs(_5)                of TRUE: result := koBookmarkSave; end;
+  case keyUp and keyIs(_6)                of TRUE: result := koBookmarkLoad; end;
+  case keyUp and keyIs(_7)                of TRUE: result := koBookmarkDelete; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -269,6 +274,10 @@ begin
     koAlwaysPot:         GV.alwaysPot := NOT GV.alwaysPot;
     koPanReset:          MP.panReset;
     koBrightnessReset:   MP.brightnessReset;
+    koBookmarkSave:      BM.save;
+    koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: MP.position := BM.asInteger; end;
+    koBookmarkDelete:    BM.delete;
+    koRotateReset:       MP.rotateReset;
   end;
 
   result := TRUE;

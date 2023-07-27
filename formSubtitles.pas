@@ -97,6 +97,8 @@ constructor TSubtitlesForm.create;
     aLabel.margins.right  := 3;
     aLabel.caption        := '';
     aLabel.wordWrap       := FALSE;
+    aLabel.font.style     := [fsBold];
+    aLabel.styleElements  := [];
   end;
 begin
   inherited create(NIL);
@@ -109,6 +111,7 @@ begin
   FInfoPanel.parent := SELF;
   FInfoPanel.align  := alClient;   // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   FInfoPanel.bevelOuter := bvNone;
+  FInfoPanel.font.color := clGray;
 
   FTimeLabel := TLabel.create(FInfoPanel);
   FTimeLabel.parent := FInfoPanel;
@@ -128,23 +131,25 @@ begin
   formResize;
 
   FDataMemo := TMemo.create(SELF);
-  FDataMemo.parent      := SELF;
-  FDataMemo.align       := alLeft;
-  FDataMemo.top := FTimeLabel.top - FDataMemo.height;
-  FDataMemo.left := 0;
-  FDataMemo.bevelInner  := bvNone;
-  FDataMemo.bevelOuter  := bvNone;
-  FDataMemo.borderStyle := bsNone;
-  FDataMemo.color       := clBlack;
-  FDataMemo.height      := 110;
+  FDataMemo.parent         := SELF;
+  FDataMemo.align          := alLeft;
+  FDataMemo.top            := FTimeLabel.top - FDataMemo.height;
+  FDataMemo.left           := 0;
+  FDataMemo.width          := 400;
+  FDataMemo.wordWrap       := FALSE;
+  FDataMemo.bevelInner     := bvNone;
+  FDataMemo.bevelOuter     := bvNone;
+  FDataMemo.borderStyle    := bsNone;
+  FDataMemo.color          := clBlack;
+  FDataMemo.height         := 110;
   FDataMemo.margins.bottom := 20; // otherwise the bottom line displays behind the progressBar
-  FDataMemo.readOnly    := TRUE;
-  FDataMemo.tabStop     := FALSE;
-  FDataMemo.font.name   := 'Tahoma';
-  FDataMemo.font.color  := clGray;
-  FDataMemo.font.size   := 10;
-  FDataMemo.font.style  := [fsBold];
-  FDataMemo.styleElements := [];
+  FDataMemo.readOnly       := TRUE;
+  FDataMemo.tabStop        := FALSE;
+  FDataMemo.font.name      := 'Tahoma';
+  FDataMemo.font.color     := clGray;
+  FDataMemo.font.size      := 10;
+  FDataMemo.font.style     := [fsBold];
+  FDataMemo.styleElements  := [];
   FDataMemo.lines.add('Hello');
   FDataMemo.clear;
 end;

@@ -33,6 +33,7 @@ type
     FTimerEvent: TTimerEvent;
 
     FForm: TForm;
+    FVol:  double;
     FX:    int64;
     FY:    int64;
   private
@@ -40,7 +41,10 @@ type
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
-    function  checkPot(aAlwaysPot: boolean): boolean;
+    function checkPot(aAlwaysPot: boolean): boolean;
+    function getFormattedBrightness: string;
+    function getFormattedSpeed: string;
+    function getFormattedVol: string;
 
     {property setters}
     function  getDuration: integer;
@@ -53,8 +57,6 @@ type
     function  getVideoWidth: int64;
     function  getVolume: integer;
     procedure setVolume(const Value: integer);
-    function  getFormattedVol: string;
-    function  getFormattedSpeed: string;
   public
     destructor  Destroy; override;
     function brightnessDn: boolean;
@@ -133,6 +135,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.GetPropertyInt64('brightness', brightness);
   mpv.SetPropertyInt64('brightness', brightness - 1);
+  ST.opInfo := getFormattedBrightness;
 end;
 
 function TMediaPlayer.brightnessReset: boolean;
@@ -149,6 +152,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.GetPropertyInt64('brightness', brightness);
   mpv.SetPropertyInt64('brightness', brightness + 1);
+  ST.opInfo := getFormattedBrightness;
 end;
 
 function TMediaPlayer.checkPot(aAlwaysPot: boolean): boolean;
@@ -187,6 +191,15 @@ function TMediaPlayer.getDuration: integer;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := trunc(mpv.TotalSeconds);
+end;
+
+function TMediaPlayer.getFormattedBrightness: string;
+var
+  vBrightness: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('brightness', vBrightness);
+  result := format('Brightness: %.2f', [vBrightness]);
 end;
 
 function TMediaPlayer.getFormattedDuration: string;
@@ -281,22 +294,6 @@ begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
     mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
-//    mpv.setPropertyString('osd-bar', 'yes');
-//    mpv.setPropertyString('osd-level', '0');
-//    mpv.setPropertyString('hr-seek', 'yes');
-//    mpv.setPropertyString('osd-duration', '86400000');
-//    mpv.setPropertyString('osc', 'yes'); // On Screen Control
-//    mpv.setPropertyString('osc-layout', 'bottombar');
-//    mpv.setPropertyString('osc-seekbarstyle', 'bar');
-//    mpv.setPropertyInt64('osc-deadzonesize', 0);
-//    mpv.setPropertyInt64('osc-minmousemove', 3);
-//    mpv.setPropertyInt64('osc-hidetimeout', 1000);
-//    mpv.setPropertyString('osc-vidscale', 'no');
-//    mpv.setPropertyString('--no-osd-bar', '');
-//    mpv.setPropertyString('video-unscaled', 'downscale-big');
-//    mpv.setPropertyString('config-dir', getExePath); // mpv.conf location   DISABLE USER ACCESS TO MPV.CONF
-//    mpv.setPropertyString('config', 'yes');
-//    mpv.setPropertyBool('no-keepaspect', FALSE);
     mpv.setPropertyString('sub-font', 'Segoe UI');
     mpv.setPropertyString('sub-color', '#808080');
   end;end;
@@ -362,7 +359,7 @@ function TMediaPlayer.pausePlay: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   case mpv.GetState of
-    mpsPlay: mpv.pause;
+    mpsPlay:  mpv.pause;
     mpsPause: mpv.Resume;
   end;
 end;
@@ -371,7 +368,8 @@ function TMediaPlayer.play(aURL: string): boolean;
 begin
   result := FALSE;
   openURL(aURL);
-  MI.initMediaInfo(PL.currentItem);
+  mpv.volume := FVol;
+  MI.URL     := aURL;
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
@@ -385,7 +383,6 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.first;
-  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.playLast: boolean;
@@ -393,7 +390,6 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.last;
-  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.playNext: boolean;
@@ -401,8 +397,7 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
-  case FTimer.enabled of  TRUE: checkPot(GV.alwaysPot);
-                         FALSE: begin
+  case FTimer.enabled of FALSE: begin
                                   FTimerEvent    := teClose;
                                   FTimer.enabled := TRUE; end;end;
 end;
@@ -412,7 +407,6 @@ begin
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;
-  case FTimer.enabled of TRUE: checkPot(GV.alwaysPot); end;
 end;
 
 function TMediaPlayer.resume: boolean;
@@ -474,7 +468,8 @@ procedure TMediaPlayer.setVolume(const Value: integer);
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := value;
-  ST.opInfo := formattedVol;
+  FVol       := mpv.volume;
+  ST.opInfo  := formattedVol;
 end;
 
 function TMediaPlayer.speedDn: boolean;
@@ -508,7 +503,8 @@ end;
 function TMediaPlayer.startOver: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.Seek(0, FALSE);
+  play(PL.currentItem);
+  //mpv.Seek(0, FALSE);
   ST.opInfo := 'Start over';
 end;
 
@@ -554,6 +550,7 @@ function TMediaPlayer.volDown: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := mpv.volume - 1;
+  FVol       := mpv.volume;
   ST.opInfo := formattedVol;
 end;
 
@@ -561,6 +558,7 @@ function TMediaPlayer.volUp: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := mpv.volume + 1;
+  FVol       := mpv.volume;
   ST.opInfo := formattedVol;
 end;
 
@@ -571,6 +569,7 @@ begin
   mpv.setPropertyDouble('video-pan-y', 0.0);
   mpv.setPropertyDouble('video-scale-x', 1.00);
   mpv.setPropertyDouble('video-scale-y', 1.00);
+  ST.opInfo := 'Zoom reset';
 end;
 
 function TMediaPlayer.zoomIn: boolean;

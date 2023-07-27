@@ -53,12 +53,13 @@ uses
   params in 'params.pas',
   formInputBox in 'formInputBox.pas' {InputBoxForm},
   commonUtils in 'commonUtils.pas',
-  bookmarks in 'bookmarks.pas';
+  bookmark in 'bookmark.pas',
+  configFile in 'configFile.pas';
 
 {$R *.res}
 
 begin
-//  ReportMemoryLeaksOnShutdown := TRUE;
+  ReportMemoryLeaksOnShutdown := TRUE;
   debugClear;
 
   Application.Initialize;

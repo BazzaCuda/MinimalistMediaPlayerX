@@ -88,7 +88,7 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
-  case (X = 0) OR (Y = 0) of TRUE: EXIT; end;
+  case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
   vRatio := Y / X;
 
@@ -201,7 +201,7 @@ begin
 
   case NOT CU.withinScreenLimits(newW, newH) of  TRUE: begin
                                                       newH := CU.getScreenHeight;
-                                                      newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); end;end;
+                                                      try newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
   SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
 
@@ -217,8 +217,8 @@ end;
 function TUI.initUI(aForm: TForm): boolean;
 begin
   FMainForm := aForm;
-  aForm.width         := 1700;
-  aForm.height        := 1275;
+  aForm.width         := trunc(CU.getScreenWidth * 0.6); //   1700;
+  aForm.height        := trunc(aForm.width * 0.75);
   aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;

@@ -183,7 +183,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>InputBoxForm</Form>
         </DCCReference>
         <DCCReference Include="commonUtils.pas"/>
-        <DCCReference Include="bookmarks.pas"/>
+        <DCCReference Include="bookmark.pas"/>
+        <DCCReference Include="configFile.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

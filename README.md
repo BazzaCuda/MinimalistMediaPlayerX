@@ -17,7 +17,7 @@ Control | Action
 `SPACEBAR` 				| pause/resume playback
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
-`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12
+`=`						| copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `A`						| play the first media file in the playlist (Z/END plays last)
 `HOME`					| play the first media file in the playlist (Z/END plays last)
 `B`						| [B]lackout/restore progress [B]ar
@@ -70,7 +70,7 @@ Brightness |
 `9`						| Increase brightness. Can be held down for rapid increase.
 `3`						| reset brightness to normal
 File Control |
-`=`						| copy media file name (without the extension) to clipboard. e.g. for saving the file after F12
+`=`						| copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `D` and `DEL`			| [D]elete current media file (after confirmation)
 `K`						| mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`						| [R]ename the current media file

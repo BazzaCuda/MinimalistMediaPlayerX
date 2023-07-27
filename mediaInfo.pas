@@ -13,6 +13,7 @@ type
     FHeight: integer;
     FStereoMono: string;
     FWidth: integer;
+    FNeedInfo: boolean;
     FOverallFrameRate: string;
     FOverallBitRate: integer;
     FURL: string;
@@ -24,6 +25,7 @@ type
     function getVideoBitRate: string;
     function getXY: string;
     function getStereoMono: string;
+    procedure setURL(const Value: string);
   public
     function getData(aMemo: TMemo): boolean;
     function initMediaInfo(aURL: string): boolean;
@@ -32,6 +34,7 @@ type
     property overallBitRate:    string  read getOverallBitRate;
     property overallFrameRate:  string  read getOverallFrameRate;
     property stereoMono:        string  read getStereoMono;
+    property URL:               string  read FURL write setURL;
     property videoBitRate:      string  read getVideoBitRate;
     property X:                 integer read FWidth;
     property Y:                 integer read FHeight;
@@ -63,6 +66,7 @@ end;
 
 function TMediaInfo.getData(aMemo: TMemo): boolean;
 begin
+  case FNeedInfo of TRUE: initMediaInfo(FURL); end;
   aMemo.clear;
   aMemo.lines.add('');
   aMemo.lines.add(XY);
@@ -76,7 +80,7 @@ end;
 
 function TMediaInfo.getFileSize: string;
 begin
-  result := CU.formatFileSize(FFileSize);
+  result := CU.formatFileSize(CU.getFileSize(FURL));
 end;
 
 function TMediaInfo.getOverallBitRate: string;
@@ -92,8 +96,8 @@ end;
 
 function TMediaInfo.getStereoMono: string;
 begin
-  result := 'SM: ' + copy(FStereoMono, 1, pos(' ', FStereoMono) - 1); // "Stereo / Stereo" -> "Stereo"
-  result := 'SM: ' + FStereoMono;
+  result := 'SM:  ' + copy(FStereoMono, 1, pos(' ', FStereoMono) - 1); // "Stereo / Stereo" -> "Stereo"
+  result := 'SM:  ' + FStereoMono;
 end;
 
 function TMediaInfo.getVideoBitRate: string;
@@ -120,7 +124,7 @@ begin
     FURL := aURL;
     FOverallFrameRate := mediaInfo_Get(handle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
-    case TryStrToInt64(mediaInfo_Get(handle, Stream_General,    0, 'FileSize',        Info_Text, Info_Name), FFileSize)          of FALSE: FFileSize         := 0; end;
+//    case TryStrToInt64(mediaInfo_Get(handle, Stream_General,    0, 'FileSize',        Info_Text, Info_Name), FFileSize)          of FALSE: FFileSize         := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FWidth)             of FALSE: FWidth            := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
@@ -128,9 +132,16 @@ begin
 
     FStereoMono := mediaInfo_Get(handle, Stream_Audio,  0, 'Title',         Info_Text, Info_Name);
 
+    FNeedInfo := FALSE;
   finally
     mediaInfo_close(handle);
   end;
+end;
+
+procedure TMediaInfo.setURL(const Value: string);
+begin
+  FNeedInfo := value <> FURL;
+  FURL      := value;
 end;
 
 initialization

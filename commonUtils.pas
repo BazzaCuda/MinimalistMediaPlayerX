@@ -35,8 +35,10 @@ type
     function formatSeconds(seconds: integer): string;
     function formatTime(seconds: integer): string;
     function getAspectRatio(X: integer; Y: integer): double;
+    function getConfigFilePath: string;
     function getExePath: string;
     function getFileNameWithoutExtension(aFilePath: string): string;
+    function getFileSize(const aFilePath: string): int64;
     function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
     function getWndWidthHeight(aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
     function getScreenHeight: integer;
@@ -145,8 +147,9 @@ end;
 
 function TCommonUtils.formatFileSize(aSize: int64): string;
 begin
- case aSize >= 1052266987 of  TRUE:   try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
-                             FALSE:   try result := format('FS:  %d MB', [trunc(aSize / 1024 / 1024)]); except end;end;
+ case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
+                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:  %d KB', [trunc(aSize / 1024)]); except end;
+                                                                FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
 end;
 
 function TCommonUtils.formatSeconds(seconds: integer): string;
@@ -170,6 +173,11 @@ begin
   result := Y / X;
 end;
 
+function TCommonUtils.getConfigFilePath: string;
+begin
+  result := getExePath + 'MinimalistMediaPlayer.ini';
+end;
+
 function TCommonUtils.getExePath: string;
 begin
   result := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
@@ -178,6 +186,18 @@ end;
 function TCommonUtils.getFileNameWithoutExtension(aFilePath: string): string;
 begin
   result := TPath.GetFileNameWithoutExtension(aFilePath);
+end;
+
+function TCommonUtils.getFileSize(const aFilePath: string): int64;
+var
+  vHandle:  THandle;
+  vRec:     TWin32FindData;
+begin
+  vHandle := findFirstFile(PChar(aFilePath), vRec);
+  case vHandle <> INVALID_HANDLE_VALUE of TRUE: begin
+                                                  winAPI.windows.findClose(vHandle);
+                                                  case (vRec.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 of TRUE:
+                                                    result := (int64(vRec.nFileSizeHigh) shl 32) + vRec.nFileSizeLow; end;end;end;
 end;
 
 function TCommonUtils.getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;

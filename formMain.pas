@@ -28,7 +28,6 @@ type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
   protected
   public
@@ -41,29 +40,25 @@ implementation
 
 uses
   uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
-  winApi.shellApi;
+  winApi.shellApi, configFile;
 
 {$R *.dfm}
 
 { TMMPUI }
 
-procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  debug('closing');
-  MP.releasePlayer;
-  action := TCloseAction.caFree;
-end;
-
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
   GV.appWnd := APPLICATION.HANDLE;
 
-  { initApp() }
+{ initApp()
+============}
   UI.initUI(SELF);
+  CF.initConfigFile(CU.getConfigFilePath);
   MP.initMediaPlayer(SELF);
   ST.initSubtitles(UI.videoPanel);
   MC.initCaption(UI.videoPanel);
   PB.initProgressBar(ST);
+{============}
 
   case PS.noFile of TRUE:  begin
                                 CU.ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
