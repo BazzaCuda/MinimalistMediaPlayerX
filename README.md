@@ -97,8 +97,9 @@ Mouse |
 `Right double-click video`          | toggle fullscreen mode
 `Right single-click video`          | Pause/resume playback
 `with NUMLOCK on`                   | move mouse along the progress bar to "scrub" backwards and forwards through the media file
+`CTRL`                              | hold ctrl key down and move mouse along the progress bar. Same as above.
 On-Screen Display |
-`0`                     | briefly show media caption (the filename and its position in the playlist)
+`#`                     | briefly show media caption (the filename and its position in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
@@ -137,6 +138,8 @@ Tabbing |
 `Ctrl-T`                | [T]ab back through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
+`CAPS LOCK T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
+`CAPS LOCK Ctrl-T       | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 Volume |
 `Up Arrow`              | increase the volume. Can be held down for rapid increase.
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease.

@@ -304,7 +304,7 @@ end;
 
 function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
 begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 2, FVideoPanel.top + 1)); // screen position of the top right corner of the application window, roughly.
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top + 1)); // screen position of the top right corner of the application window, roughly.
   showHelp(vPt, create);
 end;
 

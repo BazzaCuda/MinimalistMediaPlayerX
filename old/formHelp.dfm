@@ -4,7 +4,7 @@ object HelpForm: THelpForm
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Keyboard Functions'
-  ClientHeight = 585
+  ClientHeight = 880
   ClientWidth = 742
   Color = 2829099
   Font.Charset = DEFAULT_CHARSET
@@ -16,29 +16,32 @@ object HelpForm: THelpForm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   TextHeight = 13
   object backPanel: TPanel
     Left = 0
     Top = 0
     Width = 742
-    Height = 585
+    Height = 880
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object buttonPanel: TPanel
       Left = 0
-      Top = 572
+      Top = 867
       Width = 742
       Height = 13
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        742
+        13)
       object shiftLabel: TLabel
         Left = 0
         Top = 0
         Width = 223
         Height = 13
-        Align = alLeft
         Caption = 'press a [SHIFT] key again to close this window'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
@@ -48,15 +51,14 @@ object HelpForm: THelpForm
         ParentFont = False
       end
       object moveLabel: TLabel
-        Left = 223
+        Left = 356
         Top = 0
-        Width = 434
+        Width = 385
         Height = 13
-        Align = alLeft
-        AutoSize = False
+        Anchors = [akTop, akRight]
         Caption = 
-          '      If the video window is resized or moved, this help window ' +
-          'will stay attached to it'
+          'If the video window is resized or moved, this help window will s' +
+          'tay attached to it'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -65,20 +67,20 @@ object HelpForm: THelpForm
         ParentFont = False
       end
     end
-    object RT: TRichEdit
-      Left = 192
-      Top = 176
-      Width = 185
-      Height = 89
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Lines.Strings = (
-        'RT')
-      ParentFont = False
+    object lb: TListBox
+      Left = 0
+      Top = 0
+      Width = 742
+      Height = 867
+      Align = alClient
+      BevelInner = bvNone
+      BevelOuter = bvNone
+      BorderStyle = bsNone
+      Color = 2829099
+      ItemHeight = 13
       TabOrder = 1
+      TabWidth = 50
+      OnDrawItem = lbDrawItem
     end
   end
 end
