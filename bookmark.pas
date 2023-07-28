@@ -34,7 +34,7 @@ end;
 
 function TBookmark.asInteger: integer;
 begin
-  try result := strToIntDef(CF.value[PL.currentItem], 0); except result := 0; end;
+  result := CF.asInteger[PL.currentItem];
   ST.opInfo := 'From bookmark';
 end;
 

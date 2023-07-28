@@ -27,33 +27,33 @@ type
   TCommonUtils = class(TObject)
   private
   public
-    function delay(dwMilliseconds: DWORD): boolean;
-    function deleteThisFile(aFilePath: string; shift: TShiftState): boolean;
-    function doCommandLine(aCommandLIne: string): boolean;
-    function fillPlaylist(aFolder: string): boolean;
-    function formatFileSize(aSize: int64): string;
-    function formatSeconds(seconds: integer): string;
-    function formatTime(seconds: integer): string;
-    function getAspectRatio(X: integer; Y: integer): double;
+    function delay(const dwMilliseconds: DWORD): boolean;
+    function deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
+    function doCommandLine(const aCommandLIne: string): boolean;
+    function fillPlaylist(const aFolder: string): boolean;
+    function formatFileSize(const aSize: int64): string;
+    function formatSeconds(const seconds: integer): string;
+    function formatTime(const seconds: integer): string;
+    function getAspectRatio(const X: integer; const Y: integer): double;
     function getConfigFilePath: string;
     function getExePath: string;
-    function getFileNameWithoutExtension(aFilePath: string): string;
+    function getFileNameWithoutExtension(const aFilePath: string): string;
     function getFileSize(const aFilePath: string): int64;
     function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
-    function getWndWidthHeight(aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
+    function getWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
     function getScreenHeight: integer;
     function getScreenWidth: integer;
-    function initTransparentForm(aForm: TForm): TForm;
-    function initTransparentLabel(aLabel: TLabel): boolean;
-    function offScreen(aHWND: HWND): boolean;
-    function reloadPlaylist(aFolder: string): boolean;
-    function renameFile(aFilePath: string; aNewFileNamePart: string = ''): string;
-    function shellExec(anExePath, aParams: string): boolean;
-    function showOKCancelMsgDlg(aMsg: string;
-                                    msgDlgType: TMsgDlgType = mtConfirmation;
-                                    msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                                    defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
-    function withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
+    function initTransparentForm(const aForm: TForm): TForm;
+    function initTransparentLabel(const aLabel: TLabel): boolean;
+    function offScreen(const aHWND: HWND): boolean;
+    function reloadPlaylist(const aFolder: string): boolean;
+    function renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+    function shellExec(const anExePath: string; const aParams: string): boolean;
+    function showOKCancelMsgDlg(const aMsg: string;
+                                const msgDlgType: TMsgDlgType = mtConfirmation;
+                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
+                                const defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+    function withinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
   end;
 
 
@@ -63,7 +63,7 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, IOUtils,
-  formSubtitles, formCaption, _debugWindow;
+  formSubtitles, formCaption, mediaType, _debugWindow;
 
 var
   gCU: TCommonUtils;
@@ -76,7 +76,7 @@ end;
 
 { TCommonUtils }
 
-function TCommonUtils.delay(dwMilliseconds: DWORD): boolean;
+function TCommonUtils.delay(const dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
 var
   iStart, iStop: DWORD;
@@ -88,14 +88,14 @@ begin
   until (iStop  -  iStart) >= dwMilliseconds;
 end;
 
-function TCommonUtils.deleteThisFile(aFilePath: string; shift: TShiftState): boolean;
+function TCommonUtils.deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
 // performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
 begin
   case ssCtrl in Shift of  TRUE: doCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
                           FALSE: doCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
 end;
 
-function TCommonUtils.doCommandLine(aCommandLIne: string): boolean;
+function TCommonUtils.doCommandLine(const aCommandLIne: string): boolean;
 // Create a cmd.exe process to execute any command line
 // "Current Directory" defaults to the folder containing this application's executable.
 var
@@ -118,15 +118,16 @@ begin
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
 end;
 
-function TCommonUtils.fillPlaylist(aFolder: string): boolean;
+function TCommonUtils.fillPlaylist(const aFolder: string): boolean;
 const
   faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
 var
   vSR: TSearchRec;
+  vExt: string;
 
   function fileExtOK: boolean;
   begin
-    result := (extractFileExt(vSR.name) <> '') AND (NOT EXTS_FILTER.contains(lowerCase(extractFileExt(vSR.name))));
+    result := (vExt <> '') AND MT.mediaExts.contains(vExt); //NOT EXTS_FILTER.contains(vExt);
   end;
 
 begin
@@ -136,6 +137,7 @@ begin
 
   case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
+      vExt := lowerCase(extractFileExt(vSR.name));
       case fileExtOK of TRUE: PL.Add(aFolder + vSR.Name); end;
     until FindNext(vSR) <> 0;
   end;
@@ -145,28 +147,28 @@ begin
   result := TRUE;
 end;
 
-function TCommonUtils.formatFileSize(aSize: int64): string;
+function TCommonUtils.formatFileSize(const aSize: int64): string;
 begin
  case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
                              FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:  %d KB', [trunc(aSize / 1024)]); except end;
                                                                 FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
 end;
 
-function TCommonUtils.formatSeconds(seconds: integer): string;
+function TCommonUtils.formatSeconds(const seconds: integer): string;
 begin
-  case seconds < 60 of  TRUE: result := format('%ds', [seconds]);
-                       FALSE: result := format('%d:%.2d', [seconds div 60, seconds mod 60]);
+  case seconds < 100 of  TRUE: result := format('%ds', [seconds]);
+                        FALSE: result := format('%dm%.2ds', [seconds div 60, seconds mod 60]);
   end;
 end;
 
-function TCommonUtils.formatTime(seconds: integer): string;
+function TCommonUtils.formatTime(const seconds: integer): string;
 begin
   case seconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, seconds]);
                        FALSE: case seconds < 3600 of  TRUE: result := format('%.2d:%.2d', [seconds div 60, seconds mod 60]);
                                                      FALSE: result := format('%.2d:%.2d:%.2d', [seconds div 3600, (seconds mod 3600) div 60, seconds mod 3600 mod 60]); end;end;
 end;
 
-function TCommonUtils.getAspectRatio(X: integer; Y: integer): double;
+function TCommonUtils.getAspectRatio(const X: integer; const Y: integer): double;
 begin
   result := 0;
   case (X = 0) or (Y = 0) of TRUE: EXIT; end;
@@ -175,7 +177,7 @@ end;
 
 function TCommonUtils.getConfigFilePath: string;
 begin
-  result := getExePath + 'MinimalistMediaPlayer.ini';
+  result := getExePath + 'MinimalistMediaPlayer.conf';
 end;
 
 function TCommonUtils.getExePath: string;
@@ -183,7 +185,7 @@ begin
   result := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
 end;
 
-function TCommonUtils.getFileNameWithoutExtension(aFilePath: string): string;
+function TCommonUtils.getFileNameWithoutExtension(const aFilePath: string): string;
 begin
   result := TPath.GetFileNameWithoutExtension(aFilePath);
 end;
@@ -252,7 +254,7 @@ begin
   result := GetSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
 end;
 
-function TCommonUtils.getWndWidthHeight(aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
+function TCommonUtils.getWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 var
   vR: TRect;
 begin
@@ -261,7 +263,7 @@ begin
   aHeight := vR.bottom - vR.top;
 end;
 
-function TCommonUtils.initTransparentForm(aForm: TForm): TForm;
+function TCommonUtils.initTransparentForm(const aForm: TForm): TForm;
 begin
   aForm.align                  := alBottom;
   aForm.styleElements          := []; // don't allow any theme alterations
@@ -279,7 +281,7 @@ begin
   result := aForm;
 end;
 
-function TCommonUtils.initTransparentLabel(aLabel: TLabel): boolean;
+function TCommonUtils.initTransparentLabel(const aLabel: TLabel): boolean;
 begin
   aLabel.align             := alClient;
   aLabel.alignment         := taCenter;
@@ -300,7 +302,7 @@ begin
   aLabel.wordWrap          := FALSE;
 end;
 
-function TCommonUtils.offScreen(aHWND: HWND): boolean;
+function TCommonUtils.offScreen(const aHWND: HWND): boolean;
 var
   vR: TRect;
 begin
@@ -308,7 +310,7 @@ begin
   result := (vR.bottom > getScreenHeight) or (vR.right > getScreenWidth) or (vR.left < 0) or (vR.top < 0);
 end;
 
-function TCommonUtils.reloadPlaylist(aFolder: string): boolean;
+function TCommonUtils.reloadPlaylist(const aFolder: string): boolean;
 begin
   var vIx              := PL.currentIx;
   var vCurrentItem     := PL.currentItem;
@@ -327,7 +329,7 @@ begin
   ST.opInfo  := 'Playlist reloaded';
 end;
 
-function TCommonUtils.renameFile(aFilePath: string; aNewFileNamePart: string = ''): string;
+function TCommonUtils.renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 // the user gets to edit the filename part without the path and the extension
 var
   vOldFileNamePart: string;
@@ -359,15 +361,15 @@ begin
                                                               FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
-function TCommonUtils.shellExec(anExePath, aParams: string): boolean;
+function TCommonUtils.shellExec(const anExePath: string; const aParams: string): boolean;
 begin
   shellExecute(0, 'open', pchar(anExePath), pchar('"' + aParams + '"'), '', SW_SHOW);
 end;
 
-function TCommonUtils.showOKCancelMsgDlg(aMsg: string;
-                                msgDlgType: TMsgDlgType = mtConfirmation;
-                                msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                                defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+function TCommonUtils.showOKCancelMsgDlg(const aMsg: string;
+                                         const msgDlgType: TMsgDlgType = mtConfirmation;
+                                         const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
+                                         const defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
 // used for displaying the delete file/folder confirmation dialog
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
@@ -391,7 +393,7 @@ begin
   end;
 end;
 
-function TCommonUtils.withinScreenLimits(aWidth: integer; aHeight: integer): boolean;
+function TCommonUtils.withinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
   result := (aWidth <= vR.right - vR.left) AND (aHeight <= vR.bottom - vR.top);

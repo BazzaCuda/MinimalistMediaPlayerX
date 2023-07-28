@@ -44,7 +44,7 @@ type
     function doEscapeKey: boolean;
     function greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
     function handle: HWND;
-    function initUI(aForm: TForm): boolean;
+    function initUI(const aForm: TForm): boolean;
     function keepFile(aFilePath: string): boolean;
     function minimizeWindow: boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
@@ -214,16 +214,16 @@ begin
   result := FMainForm.handle;
 end;
 
-function TUI.initUI(aForm: TForm): boolean;
+function TUI.initUI(const aForm: TForm): boolean;
 begin
   FMainForm := aForm;
-  aForm.width         := trunc(CU.getScreenWidth * 0.6); //   1700;
-  aForm.height        := trunc(aForm.width * 0.75);
+//  aForm.width         := trunc(CU.getScreenWidth * 0.6); //   1700;
+//  aForm.height        := trunc(aForm.width * 0.75);
   aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
-  aForm.styleElements := []; // [seFont]; //, seClient];
+  aForm.styleElements := [];
   setGlassFrame(aForm);
   setCustomTitleBar(aForm);
   setWindowStyle(aForm);

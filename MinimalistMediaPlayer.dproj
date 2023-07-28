@@ -110,7 +110,7 @@
         <Debugger_RunParams>&quot;B:\Movies\Blazing Saddles (1974).mp4&quot;</Debugger_RunParams>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <PostBuildEvent><![CDATA[ rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\MinimalistMediaPlayer.exe
+        <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -185,6 +185,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="commonUtils.pas"/>
         <DCCReference Include="bookmark.pas"/>
         <DCCReference Include="configFile.pas"/>
+        <DCCReference Include="mediaType.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1058,7 +1059,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent> rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\MinimalistMediaPlayer.exe</PostBuildEvent>
+        <PostBuildEvent>rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

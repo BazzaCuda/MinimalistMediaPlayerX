@@ -40,7 +40,7 @@ implementation
 
 uses
   uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
-  winApi.shellApi, configFile;
+  winApi.shellApi, configFile, mediaType;
 
 {$R *.dfm}
 
@@ -71,6 +71,10 @@ begin
   CU.fillPlaylist(PS.fileFolder);
   PL.find(PS.fileFolderAndName);
   case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
+  case PL.hasItems of TRUE: case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) of mtAudio: begin SELF.width  := 600;
+                                                                                                           SELF.height := 56; end;
+                                                                                            mtVideo: begin SELF.width  := trunc(CU.getScreenWidth * 0.6);
+                                                                                                           SELF.height := trunc(SELF.width * 0.75); end;end;end;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);

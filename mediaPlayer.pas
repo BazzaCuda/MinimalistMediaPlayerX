@@ -41,9 +41,14 @@ type
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
-    function checkPot(aAlwaysPot: boolean): boolean;
+    function checkPot(const aAlwaysPot: boolean): boolean;
     function getFormattedBrightness: string;
+    function getFormattedContrast: string;
+    function getFormattedDuration: string;
+    function getFormattedGamma: string;
+    function getFormattedSaturation: string;
     function getFormattedSpeed: string;
+    function getFormattedTime: string;
     function getFormattedVol: string;
 
     {property setters}
@@ -51,22 +56,27 @@ type
     function  getPosition: integer;
     function  getSubTitle: string;
     procedure setPosition(const Value: integer);
-    function  getFormattedDuration: string;
-    function  getFormattedTime: string;
     function  getVideoHeight: int64;
     function  getVideoWidth: int64;
     function  getVolume: integer;
     procedure setVolume(const Value: integer);
   public
     destructor  Destroy; override;
+    function allReset: boolean;
     function brightnessDn: boolean;
     function brightnessReset: boolean;
     function brightnessUp: boolean;
+    function contrastUp: boolean;
+    function contrastDn: boolean;
+    function contrastReset: boolean;
     function frameBackwards: boolean;
     function frameForwards: boolean;
+    function gammaDn: boolean;
+    function gammaReset: boolean;
+    function gammaUp: boolean;
     function initMediaPlayer(aForm: TForm): boolean;
     function muteUnmute: boolean;
-    function openURL(aURL: string): boolean;
+    function openURL(const aURL: string): boolean;
     function panDn: boolean;
     function panLeft: boolean;
     function panReset: boolean;
@@ -74,7 +84,7 @@ type
     function panUp: boolean;
     function pause: boolean;
     function pausePlay: boolean;
-    function play(aURL: string): boolean;
+    function play(const aURL: string): boolean;
     function playFirst: boolean;
     function playLast: boolean;
     function playNext: boolean;
@@ -84,19 +94,22 @@ type
     function rotateLeft: boolean;
     function rotateReset: boolean;
     function rotateRight: boolean;
+    function saturationDn: boolean;
+    function saturationReset: boolean;
+    function saturationUp: boolean;
     function setProgressBar: boolean;
     function speedDn: boolean;
     function speedReset: boolean;
     function speedUp: boolean;
     function startOver: boolean;
     function stop: boolean;
-    function tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
+    function tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): boolean;
     function toggleFullscreen: boolean;
     function volDown: boolean;
     function volUp: boolean;
-    function zoomEnd: boolean;
     function zoomIn: boolean;
     function zoomOut: boolean;
+    function zoomReset: boolean;
     property duration:            integer   read getDuration;
     property formattedDuration:   string    read getFormattedDuration;
     property formattedSpeed:      string    read getFormattedSpeed;
@@ -115,7 +128,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -127,6 +140,17 @@ begin
 end;
 
 { TMediaPlayer }
+
+function TMediaPlayer.allReset: boolean;
+begin
+  zoomReset;
+  brightnessReset;
+  rotateReset;
+  contrastReset;
+  gammaReset;
+  saturationReset;
+  ST.opInfo := 'All reset';
+end;
 
 function TMediaPlayer.brightnessDn: boolean;
 var
@@ -155,9 +179,36 @@ begin
   ST.opInfo := getFormattedBrightness;
 end;
 
-function TMediaPlayer.checkPot(aAlwaysPot: boolean): boolean;
+function TMediaPlayer.checkPot(const aAlwaysPot: boolean): boolean;
 begin
   case aAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
+end;
+
+function TMediaPlayer.contrastDn: boolean;
+var
+  contrast: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('contrast', contrast);
+  mpv.SetPropertyInt64('contrast', contrast - 1);
+  ST.opInfo := getFormattedContrast;
+end;
+
+function TMediaPlayer.contrastReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.SetPropertyInt64('contrast', 0);
+  ST.opInfo := 'Contrast reset';
+end;
+
+function TMediaPlayer.contrastUp: boolean;
+var
+  contrast: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('contrast', contrast);
+  mpv.SetPropertyInt64('contrast', contrast + 1);
+  ST.opInfo := getFormattedContrast;
 end;
 
 constructor TMediaPlayer.create;
@@ -187,6 +238,33 @@ begin
   mpv.commandStr(CMD_STEP);
 end;
 
+function TMediaPlayer.gammaDn: boolean;
+var
+  gamma: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('gamma', gamma);
+  mpv.SetPropertyInt64('gamma', gamma - 1);
+  ST.opInfo := getFormattedgamma;
+end;
+
+function TMediaPlayer.gammaReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.SetPropertyInt64('gamma', 0);
+  ST.opInfo := 'Gamma reset';
+end;
+
+function TMediaPlayer.gammaUp: boolean;
+var
+  gamma: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('gamma', gamma);
+  mpv.SetPropertyInt64('gamma', gamma + 1);
+  ST.opInfo := getFormattedgamma;
+end;
+
 function TMediaPlayer.getDuration: integer;
 begin
   case mpv = NIL of TRUE: EXIT; end;
@@ -202,10 +280,37 @@ begin
   result := format('Brightness: %d', [vBrightness]);
 end;
 
+function TMediaPlayer.getFormattedContrast: string;
+var
+  vContrast: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('contrast', vContrast);
+  result := format('Contrast: %d', [vContrast]);
+end;
+
 function TMediaPlayer.getFormattedDuration: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := CU.formatTime(trunc(mpv.totalSeconds));
+end;
+
+function TMediaPlayer.getFormattedGamma: string;
+var
+  vGamma: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('gamma', vGamma);
+  result := format('Gamma: %d', [vGamma]);
+end;
+
+function TMediaPlayer.getFormattedSaturation: string;
+var
+  vSaturation: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('saturation', vSaturation);
+  result := format('Saturation: %d', [vSaturation]);
 end;
 
 function TMediaPlayer.getFormattedSpeed: string;
@@ -257,6 +362,7 @@ end;
 
 function TMediaPlayer.initMediaPlayer(aForm: TForm): boolean;
 begin
+  FVol := CF.asInteger['volume'];
 end;
 
 function TMediaPlayer.muteUnmute: boolean;
@@ -280,11 +386,11 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd: playNext;
+    mpsEnd:  playNext;
   end;
 end;
 
-function TMediaPlayer.openURL(aURL: string): boolean;
+function TMediaPlayer.openURL(const aURL: string): boolean;
 var
   hr: HRESULT;
 begin
@@ -364,7 +470,7 @@ begin
   end;
 end;
 
-function TMediaPlayer.play(aURL: string): boolean;
+function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
   openURL(aURL);
@@ -448,6 +554,33 @@ begin
   freeAndNIL(mpv);
 end;
 
+function TMediaPlayer.saturationDn: boolean;
+var
+  saturation: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('saturation', saturation);
+  mpv.SetPropertyInt64('saturation', saturation - 1);
+  ST.opInfo := getFormattedsaturation;
+end;
+
+function TMediaPlayer.saturationReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.SetPropertyInt64('saturation', 0);
+  ST.opInfo := 'Saturation reset';
+end;
+
+function TMediaPlayer.saturationUp: boolean;
+var
+  saturation: int64;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.GetPropertyInt64('saturation', saturation);
+  mpv.SetPropertyInt64('saturation', saturation + 1);
+  ST.opInfo := getFormattedsaturation;
+end;
+
 procedure TMediaPlayer.setPosition(const Value: integer);
 var
   hr: HRESULT;
@@ -464,11 +597,12 @@ begin
   case mpv.TotalSeconds > 0 of TRUE: PB.position := trunc(mpv.CurrentSeconds); end;
 end;
 
-procedure TMediaPlayer.setVolume(const Value: integer);
+procedure TMediaPlayer.setVolume(const Value: integer); // DOES THIS EVER GET CALLED?
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := value;
   FVol       := mpv.volume;
+  CF.value['volume'] := intToStr(trunc(mpv.volume));
   ST.opInfo  := formattedVol;
 end;
 
@@ -514,7 +648,7 @@ begin
   mpv.Stop;
 end;
 
-function TMediaPlayer.tab(aShiftState: TShiftState; capsLock: boolean; aFactor: integer = 0): boolean;
+function TMediaPlayer.tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): boolean;
 var
   vFactor: integer;
   vTab: integer;
@@ -551,6 +685,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := mpv.volume - 1;
   FVol       := mpv.volume;
+  CF.value['volume'] := intToStr(trunc(mpv.volume));
   ST.opInfo := formattedVol;
 end;
 
@@ -559,17 +694,8 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := mpv.volume + 1;
   FVol       := mpv.volume;
+  CF.value['volume'] := intToStr(trunc(mpv.volume));
   ST.opInfo := formattedVol;
-end;
-
-function TMediaPlayer.zoomEnd: boolean;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyDouble('video-pan-x', 0.0);
-  mpv.setPropertyDouble('video-pan-y', 0.0);
-  mpv.setPropertyDouble('video-scale-x', 1.00);
-  mpv.setPropertyDouble('video-scale-y', 1.00);
-  ST.opInfo := 'Zoom reset';
 end;
 
 function TMediaPlayer.zoomIn: boolean;
@@ -594,6 +720,16 @@ begin
   mpv.getPropertyDouble('video-scale-y', zoomY);
   mpv.setPropertyDouble('video-scale-y', zoomY - 0.01);
   ST.opInfo := 'Zoom out';
+end;
+
+function TMediaPlayer.zoomReset: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyDouble('video-pan-x', 0.0);
+  mpv.setPropertyDouble('video-pan-y', 0.0);
+  mpv.setPropertyDouble('video-scale-x', 1.00);
+  mpv.setPropertyDouble('video-scale-y', 1.00);
+  ST.opInfo := 'Zoom reset';
 end;
 
 initialization

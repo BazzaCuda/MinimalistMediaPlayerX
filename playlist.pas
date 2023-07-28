@@ -20,7 +20,7 @@ unit playlist;
 
 interface
 
-uses system.generics.collections, system.generics.defaults;
+uses system.generics.collections, system.generics.defaults, system.classes;
 
 type
   TPlaylist = class(TObject)
@@ -30,6 +30,7 @@ type
   private
     constructor create;
     destructor  Destroy; override;
+    function extractNumericPart(const S: string): Integer;
   public
     function add(anItem: string): boolean;
     function clear: boolean;
@@ -62,7 +63,7 @@ var
 implementation
 
 uses
-  system.sysUtils, sysCommands, globalVars, clipbrd, formSubtitles, commonUtils;
+  system.sysUtils, sysCommands, globalVars, clipbrd, formSubtitles, commonUtils, regularExpressions, math;
 
 function PL: TPlaylist;
 begin
@@ -208,6 +209,77 @@ begin
   result := TRUE;
 end;
 
+function TPlaylist.extractNumericPart(const S: string): Integer;
+var
+  Match: TMatch;
+begin
+  // Use a regular expression to extract the numeric part from the string
+  Match := TRegEx.Match(S, '\d+');
+  if Match.Success then
+    Result := StrToIntDef(Match.Value, 0)
+  else
+    Result := 0;
+end;
+
+function compareStr(Str1,Str2: string):Integer;
+// implements "Natural Sort Order" - author: dinilud 16/01/2008 on experts-exchange.com
+var Num1,Num2:Double;
+    pStr1,pStr2:PChar;
+  Function IsNumber(ch:Char):Boolean;
+  begin
+     Result:=ch in ['0'..'9'];
+  end;
+  Function GetNumber(var pch:PChar):Double;
+    var FoundPeriod:Boolean;
+        Count:Integer;
+  begin
+     FoundPeriod:=False;
+     Result:=0;
+     While (pch^<>#0) and (IsNumber(pch^) or ((not FoundPeriod) and (pch^='.'))) do
+     begin
+        if pch^='.' then
+        begin
+          FoundPeriod:=True;
+          Count:=0;
+        end
+        else
+        begin
+           if FoundPeriod then
+           begin
+             Inc(Count);
+             Result:=Result+(ord(pch^)-ord('0'))*Power(10,-Count);
+           end
+           else Result:=Result*10+ord(pch^)-ord('0');
+        end;
+        Inc(pch);
+     end;
+  end;
+begin
+    pStr1:=@Str1[1]; pStr2:=@Str2[1];
+    Result:=0;
+    While not ((pStr1^=#0) or (pStr2^=#0)) do
+    begin
+       if IsNumber(pStr1^) and IsNumber(pStr2^) then
+       begin
+          Num1:=GetNumber(pStr1); Num2:=GetNumber(pStr2);
+          if Num1<Num2 then Result:=-1
+          else if Num1>Num2 then Result:=1;
+          Dec(pStr1);Dec(pStr2);
+       end
+       else if pStr1^<>pStr2^ then
+       begin
+          if pStr1^<pStr2^ then Result:=-1 else Result:=1;
+       end;
+       if Result<>0 then Break;
+       Inc(pStr1); Inc(pStr2);
+    end;
+    Num1:=length(Str1); Num2:= length(Str2);
+    if (Result=0) and (Num1<>Num2) then
+    begin
+       if Num1<Num2 then Result:=-1 else Result:=1;
+    end;
+end;
+
 function TPlaylist.sort: boolean;
 begin
   result := FALSE;
@@ -216,7 +288,7 @@ begin
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
                                               begin
-                                                result := compareStr(CU.getFileNameWithoutExtension(a), CU.getFileNameWithoutExtension(b), loUserLocale);
+                                                result := compareStr(CU.getFileNameWithoutExtension(a), CU.getFileNameWithoutExtension(b));
                                               end
                                             )
                 );

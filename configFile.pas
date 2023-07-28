@@ -14,11 +14,13 @@ type
   private
     function getValue(const aName: string): string;
     procedure setValue(const aName, aValue: string);
+    function getAsInteger(const aName: string): integer;
   public
     constructor create;
     destructor destroy; override;
     function deleteName(aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
+    property asInteger[const aName: string]: integer read getAsInteger;
     property value[const aName: string]: string read getValue write setValue;
   end;
 
@@ -49,12 +51,18 @@ end;
 function TConfigFile.deleteName(aName: string): boolean;
 begin
   FFileContents.delete(FFileContents.indexOfName(aName));
+  saveConfigFile;
 end;
 
 destructor TConfigFile.destroy;
 begin
   case FFileContents <> NIL of TRUE: FFileContents.free; end;
   inherited;
+end;
+
+function TConfigFile.getAsInteger(const aName: string): integer;
+begin
+  try result := strToIntDef(FFileContents.values[aName], 0); except result := 0; end;
 end;
 
 function TConfigFile.getValue(const aName: string): string;

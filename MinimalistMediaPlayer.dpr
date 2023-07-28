@@ -54,7 +54,8 @@ uses
   formInputBox in 'formInputBox.pas' {InputBoxForm},
   commonUtils in 'commonUtils.pas',
   bookmark in 'bookmark.pas',
-  configFile in 'configFile.pas';
+  configFile in 'configFile.pas',
+  mediaType in 'mediaType.pas';
 
 {$R *.res}
 

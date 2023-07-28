@@ -27,10 +27,11 @@ type
   TKeyOp = (koNone,
             koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio, koBrightnessUp,
             koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
-            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomEnd, koGreaterWindow, koToggleControls,
+            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset, koGreaterWindow, koToggleControls,
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
-            koBookmarkLoad, koBookmarkDelete, koRotateReset);
+            koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
+            koGammaReset, koSaturationReset, koAllReset);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -75,7 +76,8 @@ const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
-  _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221;
+  _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
+  OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
 
 var
   gKB: TKeyboard;
@@ -108,7 +110,7 @@ begin
   case keyDn and keyIs(I)                 of TRUE: result := koZoomIn; end;
   case keyDn and keyIs(O)                 of TRUE: result := koZoomOut; end;
   case keyUp and keyIs(S)                 of TRUE: result := koStartOver; end;
-  case keyUp and keyIs(_0)                of TRUE: result := koShowCaption; end;
+  case keyUp and keyIs(HASH)                of TRUE: result := koShowCaption; end;
   case keyUp and keyIs(E)                 of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(VK_VOLUME_MUTE)    of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(W)                 of TRUE: result := koPlayNext; end;
@@ -119,11 +121,9 @@ begin
   case keyDn and ctrl and keyIs(VK_UP)    of TRUE: result := koPanUp; end;
   case keyDn and ctrl and keyIs(VK_DOWN)  of TRUE: result := koPanDn; end;
   case keyUp and keyIs(VK_NEXT)           of TRUE: result := koRotateR; end;
-  case keyUp and keyIs(CLOSE_BRACKET)     of TRUE: result := koRotateR; end;
   case keyUp and keyIs(VK_PRIOR)          of TRUE: result := koRotateL; end;
-  case keyUp and keyIs(OPEN_BRACKET)      of TRUE: result := koRotateL; end;
   case keyUp and keyIs(F)                 of TRUE: result := koFullscreen; end;
-  case keyUp and keyIs(U)                 of TRUE: result := koZoomEnd; end;
+  case keyUp and keyIs(U)                 of TRUE: result := koZoomReset; end;
   case keyDn and keyIs(G)                 of TRUE: result := koGreaterWindow; end;
   case keyUp and keyIs(A)                 of TRUE: result := koPlayFirst; end;
   case keyUp and keyIs(VK_HOME)           of TRUE: result := koPlayFirst; end;
@@ -131,7 +131,6 @@ begin
   case keyUp and keyIs(VK_END)            of TRUE: result := koPlayLast; end;
   case keyUp and keyIs(C)                 of TRUE: result := koToggleControls; end;
   case keyUp and keyIs(VK_F10)            of TRUE: result := koRunPot; end;
-  case keyUp and keyIs(P)                 of TRUE: result := koRunPot; end;
   case keyUp and keyIs(VK_F11)            of TRUE: result := koRunCut; end;
   case keyUp and keyIs(VK_F12)            of TRUE: result := koRunShot; end;
   case keyUp and keyIs(B)                 of TRUE: result := koToggleBlackout; end;
@@ -146,7 +145,7 @@ begin
   case keyDn and keyIs(BACKSLASH)         of TRUE: result := koSpeedDn; end;
   case keyUp and keyIs(_1)                of TRUE: result := koSpeedReset; end;
   case keyUp and keyIs(VK_ESCAPE)         of TRUE: result := koEscape; end;
-  case keyUp and keyIs(_EQUALS)           of TRUE: result := koClipboard; end;
+  case keyUp and keyIs(VK_INSERT)         of TRUE: result := koClipboard; end;
   case keyUp and keyIs(K)                 of TRUE: result := koKeep; end;
   case keyUp and keyIs(L)                 of TRUE: result := koReloadPlaylist; end;
   case keyUp and ctrl and keyIs(P)        of TRUE: result := koAlwaysPot; end;
@@ -156,6 +155,16 @@ begin
   case keyUp and keyIs(_5)                of TRUE: result := koBookmarkSave; end;
   case keyUp and keyIs(_6)                of TRUE: result := koBookmarkLoad; end;
   case keyUp and keyIs(_7)                of TRUE: result := koBookmarkDelete; end;
+  case keyDn and keyIs(_EQUALS)           of TRUE: result := koContrastUp; end;
+  case keyDn and keyIs(HYPHEN)            of TRUE: result := koContrastDn; end;
+  case keyUp and keyIs(_0)                of TRUE: result := koContrastReset; end;
+  case keyDn and keyIs(OPEN_BRACKET)      of TRUE: result := koGammaDn; end;
+  case keyDn and keyIs(CLOSE_BRACKET)     of TRUE: result := koGammaUp; end;
+  case keyUp and keyIs(SINGLE_QUOTE)      of TRUE: result := koGammaReset; end;
+  case keyDn and shift and keyIs(OPEN_BRACKET)  of TRUE: result := koSaturationDn; end; // open curly brace
+  case keyDn and shift and keyIs(CLOSE_BRACKET) of TRUE: result := koSaturationUp; end; // close curly brace
+  case keyDn and keyIs(SEMICOLON)         of TRUE: result := koSaturationReset; end;
+  case keyDn and keyIs(BACKSPACE)         of TRUE: result := koAllReset; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -251,7 +260,7 @@ begin
     koRotateR:           MP.rotateRight;
     koRotateL:           MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
-    koZoomEnd:           MP.zoomEnd;
+    koZoomReset:         MP.zoomReset;
     koGreaterWindow:     UI.greaterWindow(UI.handle, aShiftState);
     koPlayFirst:         MP.playFirst;
     koPlayLast:          MP.playLast;
@@ -278,6 +287,16 @@ begin
     koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: MP.position := BM.asInteger; end;
     koBookmarkDelete:    BM.delete;
     koRotateReset:       MP.rotateReset;
+    koAllReset:          MP.allReset;
+    koContrastUp:        MP.contrastUp;
+    koContrastDn:        MP.contrastDn;
+    koContrastReset:     MP.contrastReset;
+    koGammaUp:           MP.gammaUp;
+    koGammaDn:           MP.gammaDn;
+    koSaturationUp:      MP.saturationUp;
+    koSaturationDn:      MP.saturationDn;
+    koGammaReset:        MP.gammaReset;
+    koSaturationReset:   MP.saturationReset;
   end;
 
   result := TRUE;
