@@ -21,13 +21,14 @@ unit uiCtrls;
 interface
 
 uses
-  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.controls, vcl.ComCtrls, globalVars, vcl.extCtrls,
-  system.classes;
+  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.ComCtrls, globalVars, vcl.extCtrls,
+  system.classes, vcl.controls;
 
 type
   TUI = class(TObject)
   strict private
     FMainForm: TForm;
+    FShowingHelp: boolean;
     FVideoPanel: TPanel;
   private
     function addMenuItems(aForm: TForm): boolean;
@@ -47,11 +48,13 @@ type
     function initUI(const aForm: TForm): boolean;
     function keepFile(aFilePath: string): boolean;
     function minimizeWindow: boolean;
+    function moveHelpWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
     function smallerWindow(aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
+    function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     property videoPanel: TPanel read FVideoPanel;
   end;
@@ -62,7 +65,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  _debugWindow;
+  formHelp, _debugWindow;
 
 var
   gUI: TUI;
@@ -162,6 +165,7 @@ begin
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight, FALSE); // TESTING. TESTING.
   ST.formResize;
   PB.formResize;
+  moveHelpWindow(FALSE);
 end;
 
 function TUI.smallerWindow(aWnd: HWND): boolean;
@@ -298,6 +302,12 @@ begin
   PB.showProgressBar := NOT PB.showProgressBar;
 end;
 
+function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 2, FVideoPanel.top + 1)); // screen position of the top right corner of the application window, roughly.
+  showHelp(vPt, create);
+end;
+
 function TUI.toggleControls(shift: TShiftState): boolean;
 // we call them "controls" but they're actually the media info and the time display at the bottom of the window
 // a left-over from this app's pre-minimalist days
@@ -308,6 +318,13 @@ begin
 
  case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
                                            FALSE: ST.showData := FALSE; end;
+end;
+
+function TUI.toggleHelpWindow: boolean;
+begin
+  FShowingHelp := NOT FShowingHelp;
+  case FShowingHelp of  TRUE: moveHelpWindow;
+                       FALSE: shutHelp; end;
 end;
 
 function TUI.toggleMaximized: boolean;

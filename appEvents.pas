@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, formHelp, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -73,7 +73,8 @@ begin
 
   getWindowRect(UI.handle, wndRect);
 
-  MoveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
+  moveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
+  UI.moveHelpWindow(FALSE);
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);

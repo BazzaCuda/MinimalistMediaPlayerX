@@ -31,7 +31,7 @@ type
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
-            koGammaReset, koSaturationReset, koAllReset);
+            koGammaReset, koSaturationReset, koAllReset, koShowHelp);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -163,8 +163,9 @@ begin
   case keyUp and keyIs(SINGLE_QUOTE)      of TRUE: result := koGammaReset; end;
   case keyDn and shift and keyIs(OPEN_BRACKET)  of TRUE: result := koSaturationDn; end; // open curly brace
   case keyDn and shift and keyIs(CLOSE_BRACKET) of TRUE: result := koSaturationUp; end; // close curly brace
-  case keyDn and keyIs(SEMICOLON)         of TRUE: result := koSaturationReset; end;
-  case keyDn and keyIs(BACKSPACE)         of TRUE: result := koAllReset; end;
+  case keyUp and keyIs(SEMICOLON)         of TRUE: result := koSaturationReset; end;
+  case keyUp and keyIs(BACKSPACE)         of TRUE: result := koAllReset; end;
+  case keyUp and keyIs(VK_SHIFT)          of TRUE: result := koShowHelp; end;
 
 //  debugInteger('keyOp', integer(result));
 end;
@@ -297,6 +298,7 @@ begin
     koSaturationDn:      MP.saturationDn;
     koGammaReset:        MP.gammaReset;
     koSaturationReset:   MP.saturationReset;
+    koShowHelp:          UI.toggleHelpWindow;
   end;
 
   result := TRUE;
