@@ -32,6 +32,7 @@ type
     FTimer: TTimer;
     FTimerEvent: TTimerEvent;
 
+    FDontPlayNext: boolean;
     FForm: TForm;
     FVol:  double;
     FX:    int64;
@@ -110,6 +111,7 @@ type
     function zoomIn: boolean;
     function zoomOut: boolean;
     function zoomReset: boolean;
+    property dontPlayNext:        boolean   read FDontPlayNext write FDontPlayNext;
     property duration:            integer   read getDuration;
     property formattedDuration:   string    read getFormattedDuration;
     property formattedSpeed:      string    read getFormattedSpeed;
@@ -128,7 +130,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -373,20 +375,20 @@ begin
                    FALSE: ST.opInfo := 'muted'; end;
 end;
 
-procedure TMediaPlayer.onTimerEvent(sender: TObject);
-begin
-  FTimer.enabled := FALSE;
-  case FTimerEvent of
-    tePlay:  play(PL.currentItem);
-    teClose: sendSysCommandClose(UI.handle);
-  end;
-end;
-
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd:  playNext;
+    mpsEnd:  case FDontPlayNext of FALSE: playNext; end;
+  end;
+end;
+
+procedure TMediaPlayer.onTimerEvent(sender: TObject);
+begin
+  FTimer.enabled := FALSE;
+  case FTimerEvent of
+    tePlay:  begin play(PL.currentItem); UI.moveHelpWindow(FALSE); end;
+    teClose: sendSysCommandClose(UI.handle);
   end;
 end;
 

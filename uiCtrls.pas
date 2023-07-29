@@ -51,6 +51,7 @@ type
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
+    function setWindowSize(const aMediaType: TMediaType): boolean;
     function smallerWindow(aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
@@ -143,14 +144,17 @@ begin
   MP.pause;
 
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(PL.currentItem);
-  case ssCtrl in Shift of  TRUE: vMsg := vMsg + '*.*';
+  case ssCtrl in shift of  TRUE: vMsg := vMsg + '*.*';
                           FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
 
-  case CU.showOkCancelMsgDlg(vMsg) = IDOK of TRUE: begin
-                                                  var vIx := PL.currentIx;  // make a note of this ix because...
-                                                  MP.stop;                  // this will automatically do MP.playNext
-                                                  CU.deleteThisFile(PL.thisItem(vIx), shift);
-                                                  PL.delete(vIx); end;end;
+  case CU.showOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
+                                                      var vIx := PL.currentIx;  // make a note of this ix because...
+                                                      MP.dontPlayNext := ssCtrl in shift;
+                                                      MP.stop;                  // this will automatically do MP.playNext
+                                                      CU.deleteThisFile(PL.thisItem(vIx), shift);
+                                                      PL.delete(vIx);
+                                                      case ssCtrl in shift of TRUE: sendSysCommandClose(FMainForm.handle); end;
+                                                    end;end;
 end;
 
 function TUI.doEscapeKey: boolean;
@@ -292,6 +296,14 @@ begin
   aForm.glassFrame.top      := 1;
 end;
 
+function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
+begin
+  case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
+                                      FMainForm.height := 56; end;
+                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.6);
+                                      FMainForm.height := trunc(FMainForm.width * 0.75); end;end;
+end;
+
 function TUI.setWindowStyle(aForm: TForm): boolean;
 begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
@@ -304,7 +316,7 @@ end;
 
 function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
 begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top + 1)); // screen position of the top right corner of the application window, roughly.
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
   showHelp(vPt, create);
 end;
 

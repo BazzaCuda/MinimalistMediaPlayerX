@@ -27,9 +27,9 @@ uses
 type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMSizing(var Msg: TMessage); message WM_SIZING;
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
-  private
-  protected
   public
   end;
 
@@ -71,10 +71,7 @@ begin
   CU.fillPlaylist(PS.fileFolder);
   PL.find(PS.fileFolderAndName);
   case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
-  case PL.hasItems of TRUE: case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) of mtAudio: begin SELF.width  := 600;
-                                                                                                           SELF.height := 56; end;
-                                                                                            mtVideo: begin SELF.width  := trunc(CU.getScreenWidth * 0.6);
-                                                                                                           SELF.height := trunc(SELF.width * 0.75); end;end;end;
+  case PL.hasItems of TRUE: UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem)))); end;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);
@@ -101,6 +98,25 @@ begin
     dragFinish(hDrop);
   end;
   msg.result := 0;
+end;
+
+procedure TMMPUI.WMNCHitTest(var Msg: TWMNCHitTest);
+begin
+  inherited;
+  // Prevent the cursor from changing when hovering over the bottom edge (HTBOTTOM)
+  if Msg.Result = HTBOTTOM then
+    Msg.Result := HTCLIENT;
+end;
+
+procedure TMMPUI.WMSizing(var Msg: TMessage);
+// restricts the vertical resizing by modifying the bottom edge of the resizing rectangle to ensure that the window's height remains constant.
+var
+  NewRect: PRect;
+begin
+  inherited;
+  // Prevent vertical resizing by adjusting the rectangle's top and bottom edges
+  NewRect := PRect(Msg.LParam);
+  NewRect^.Bottom := NewRect^.Top + Height;
 end;
 
 end.
