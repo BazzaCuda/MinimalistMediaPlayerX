@@ -52,12 +52,13 @@ function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
 
 implementation
 
-uses ShellAPI;
+uses ShellAPI, globalVars, commonUtils;
 
 {$R *.dfm}
 
 function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
 begin
+  GV.inputBox := TRUE;
   with TAboutForm.create(NIL) do
   try
     setReleaseVersion(releaseVersion);
@@ -65,6 +66,8 @@ begin
     showModal;
   finally
     free;
+    CU.delay(1000);
+    GV.inputBox := FALSE;
   end;
 end;
 

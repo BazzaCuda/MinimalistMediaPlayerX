@@ -11,9 +11,7 @@ object AboutForm: TAboutForm
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
-  PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
     Left = 120
@@ -2225,9 +2223,9 @@ object AboutForm: TAboutForm
   object Label1: TLabel
     Left = 136
     Top = 16
-    Width = 347
+    Width = 344
     Height = 25
-    Caption = 'Minimalist Media Player (MMF version)'
+    Caption = 'Minimalist Media Player (MPV version)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19

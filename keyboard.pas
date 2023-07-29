@@ -52,6 +52,7 @@ type
     function getNumLock: boolean;
   public
     function  processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+    procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
     procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     property alt:         boolean     read getAlt;
     property capsLock:    boolean     read getCapsLock;
@@ -100,6 +101,7 @@ begin
   case keyDn and keyIs(VK_UP)             of TRUE: result := koVolUp; end;
   case keyDn and keyIs(VK_VOLUME_UP)      of TRUE: result := koVolUp; end;
   case keyDn and keyIs(T)                 of TRUE: result := koTab; end;
+  case keyDn and keyIs(VK_MENU)           of TRUE: result := koTab; end;
   case keyUp and keyIs(VK_SPACE)          of TRUE: result := koPausePlay; end;
   case keyDn and keyIs(VK_RIGHT)          of TRUE: result := koFrameForwards; end;
   case keyDn and keyIs(VK_LEFT)           of TRUE: result := koFrameBackwards; end;
@@ -173,6 +175,8 @@ end;
 function TKeyboard.getAlt: boolean;
 begin
   result := ssAlt in shiftState;
+  result := GV.altKeyDown;
+  case result of TRUE: include(FShiftState, ssAlt); end;
 end;
 
 function TKeyboard.getCapsLock: boolean;
@@ -215,9 +219,17 @@ begin
   result := key = aKeyCode;
 end;
 
+procedure TKeyboard.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  GV.altKeyDown := ssAlt in shift;
+  case GV.altKeyDown of TRUE: MP.tab(shiftState, capsLock); end;
+end;
+
 procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
 // keys that don't generate a standard WM_KEYUP message
 begin
+  GV.altKeyDown := NOT (ssAlt in shift);
   case key in [VK_F10] of TRUE: begin
                                postMessage(GV.appWnd, WM_KEY_UP, key, 0);
                                application.processMessages; end;end;
@@ -270,7 +282,7 @@ begin
     koRunCut:            UI.openExternalApp(LOSSLESS_CUT, PL.currentItem);
     koRunShot:           UI.openExternalApp(SHOTCUT, PL.currentItem);
     koToggleBlackout:    UI.toggleBlackout;
-    koCentreWindow:      postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
+    koCentreWindow:      begin postMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); UI.autoCentre := TRUE; end;
     koMinimizeWindow:    UI.minimizeWindow;
     koDeleteCurrentItem: UI.deleteCurrentItem(aShiftState);
     koRenameFile:        UI.renameFile(PL.currentItem);

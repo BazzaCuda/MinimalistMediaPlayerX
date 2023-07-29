@@ -34,6 +34,7 @@ type
     function formatFileSize(const aSize: int64): string;
     function formatSeconds(const seconds: integer): string;
     function formatTime(const seconds: integer): string;
+    function formattedWidthHeight(const width: integer; const height: integer): string;
     function getAspectRatio(const X: integer; const Y: integer): double;
     function getConfigFilePath: string;
     function getExePath: string;
@@ -159,6 +160,11 @@ begin
   case seconds < 100 of  TRUE: result := format('%ds', [seconds]);
                         FALSE: result := format('%dm%.2ds', [seconds div 60, seconds mod 60]);
   end;
+end;
+
+function TCommonUtils.formattedWidthHeight(const width, height: integer): string;
+begin
+  result := format('%dx%d', [width, height]);
 end;
 
 function TCommonUtils.formatTime(const seconds: integer): string;

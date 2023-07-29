@@ -46,7 +46,7 @@ function shutHelp: boolean;
 
 implementation
 
-uses ShellAPI, UICtrls, system.strUtils;
+uses ShellAPI, UICtrls, system.strUtils, commonUtils;
 
 var
   helpForm: THelpForm;
@@ -98,7 +98,7 @@ begin
   RT.bevelOuter     := bvNone;
   RT.borderStyle    := bsNone;
   RT.readOnly       := TRUE;
-  RT.lines.loadFromFile('help.rtf');
+  RT.lines.loadFromFile(CU.getExePath + 'help.rtf');
 
   SELF.width  := 700;
   SELF.height := 820;

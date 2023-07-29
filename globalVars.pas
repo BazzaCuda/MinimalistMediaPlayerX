@@ -28,6 +28,7 @@ type
     FAppWnd: HWND;
     FCloseTimer: TTimer;
   private
+    FAltKeyDown: boolean;
     FAlwaysPot: boolean;
     FInputBox: boolean;
     procedure onCloseTimerEvent(sender: TObject);
@@ -36,6 +37,7 @@ type
     constructor create;
     destructor  destroy;
     property closeApp: boolean write setCloseApp;
+    property altKeyDown: boolean read FAltKeyDown write FAltKeyDown;
     property alwaysPot: boolean read FAlwaysPot write FAlwaysPot;
     property appWnd: HWND read FAppWnd write FAppWnd;
     property inputBox: boolean read FInputBox write FInputBox;

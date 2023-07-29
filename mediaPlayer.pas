@@ -659,8 +659,8 @@ begin
   vFactor := 100;
 
   case capsLock               of TRUE: vFactor := 200; end;
-//  case ssShift in aShiftState of TRUE: vFactor := 20; end; // might remove shift-t in favor of the help window
-  case ssAlt   in aShiftState of TRUE: vFactor := 10; end;
+
+  case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
 

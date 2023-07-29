@@ -28,6 +28,7 @@ type
   TUI = class(TObject)
   strict private
     FMainForm: TForm;
+    FAutoCentre: boolean;
     FShowingHelp: boolean;
     FVideoPanel: TPanel;
   private
@@ -36,9 +37,10 @@ type
     function setGlassFrame(aForm: TForm): boolean;
     function setWindowStyle(aForm: TForm): boolean;
     function createVideoPanel(aForm: TForm): boolean;
+    function getWidth: integer;
   public
     procedure formResize(sender: TObject);
-    function adjustAspectRatio(aWnd: HWND; X, Y: int64; centreWindow: boolean = TRUE): boolean;
+    function adjustAspectRatio(aWnd: HWND; X, Y: int64): boolean;
     function centreWindow(aWnd: HWND): boolean;
     function checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
     function deleteCurrentItem(shift: TShiftState): boolean;
@@ -57,7 +59,9 @@ type
     function toggleControls(shift: TShiftState): boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
+    property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property videoPanel: TPanel read FVideoPanel;
+    property width: integer read getWidth;
   end;
 
 function UI: TUI;
@@ -87,7 +91,7 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64; centreWindow: boolean = TRUE): boolean;
+function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64): boolean;
 var
   vRatio: double;
   vWidth, vHeight: integer;
@@ -101,7 +105,7 @@ begin
 
   setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER);
 
-  case centreWindow of TRUE: UI.centreWindow(UI.handle); end;
+  case autoCentre of TRUE: UI.centreWindow(UI.handle); end;
 end;
 
 function TUI.centreWindow(aWnd: HWND): boolean;
@@ -166,15 +170,21 @@ end;
 procedure TUI.formResize(sender: TObject);
 begin
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
-  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight, FALSE); // TESTING. TESTING.
+  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight); // TESTING. TESTING.
   ST.formResize;
   PB.formResize;
   moveHelpWindow(FALSE);
+  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 end;
 
 function TUI.smallerWindow(aWnd: HWND): boolean;
 begin
   greaterWindow(aWnd, [ssCtrl]);
+end;
+
+function TUI.getWidth: integer;
+begin
+  result := FMainForm.width;
 end;
 
 function TUI.greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
@@ -225,8 +235,7 @@ end;
 function TUI.initUI(const aForm: TForm): boolean;
 begin
   FMainForm := aForm;
-//  aForm.width         := trunc(CU.getScreenWidth * 0.6); //   1700;
-//  aForm.height        := trunc(aForm.width * 0.75);
+  aForm.OnKeyDown     := KB.formKeyDn;
   aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;
@@ -239,6 +248,7 @@ begin
   addMenuItems(aForm);
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
+  FAutoCentre := TRUE;
 end;
 
 function TUI.keepFile(aFilePath: string): boolean;

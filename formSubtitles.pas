@@ -42,11 +42,11 @@ type
     constructor create;
     function  getHWND: HWND;
     function  startOpInfoTimer: boolean;
-    procedure setDisplayTime(const Value: string);
-    procedure setOpInfo(const Value: string);
+    procedure setDisplayTime(const value: string);
+    procedure setOpInfo(const value: string);
     procedure timerEvent(sender: TObject);
-    procedure setShowData(const Value: boolean);
-    procedure setShowTime(const Value: boolean);
+    procedure setShowData(const value: boolean);
+    procedure setShowTime(const value: boolean);
   public
     destructor Destroy; override;
     procedure  formResize;
@@ -65,7 +65,7 @@ function ST: TSubtitlesForm;
 implementation
 
 uses
-  mediaPlayer, commonUtils, _debugWindow;
+  mediaPlayer, commonUtils, uiCtrls, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
@@ -135,7 +135,7 @@ begin
   FDataMemo.align          := alLeft;
   FDataMemo.top            := FTimeLabel.top - FDataMemo.height;
   FDataMemo.left           := 0;
-  FDataMemo.width          := 400;
+  FDataMemo.width          := 200;
   FDataMemo.wordWrap       := FALSE;
   FDataMemo.bevelInner     := bvNone;
   FDataMemo.bevelOuter     := bvNone;
@@ -150,8 +150,8 @@ begin
   FDataMemo.font.size      := 10;
   FDataMemo.font.style     := [fsBold];
   FDataMemo.styleElements  := [];
-  FDataMemo.lines.add('Hello');
   FDataMemo.clear;
+  FDataMemo.visible        := FALSE;
 end;
 
 destructor TSubtitlesForm.Destroy;
@@ -192,25 +192,26 @@ begin
   SELF.show;
 end;
 
-procedure TSubtitlesForm.setDisplayTime(const Value: string);
+procedure TSubtitlesForm.setDisplayTime(const value: string);
 begin
   case FShowTime of FALSE: EXIT; end;
-  FTimeLabel.caption := Value;
+  FTimeLabel.caption := value;
 end;
 
-procedure TSubtitlesForm.setOpInfo(const Value: string);
+procedure TSubtitlesForm.setOpInfo(const value: string);
 begin
-  FOpInfo.caption := Value;
+  FOpInfo.caption := value;
   startOpInfoTimer;
 end;
 
-procedure TSubtitlesForm.setShowData(const Value: boolean);
+procedure TSubtitlesForm.setShowData(const value: boolean);
 begin
-  FShowData := Value;
+  FShowData := value;
   case FShowData of FALSE: FDataMemo.clear; end;
+  FDataMemo.visible := FShowData and (UI.width > 360);
 end;
 
-procedure TSubtitlesForm.setShowTime(const Value: boolean);
+procedure TSubtitlesForm.setShowTime(const value: boolean);
 begin
   FShowTime := Value;
   case FShowTime of FALSE: FTimeLabel.caption := ''; end;

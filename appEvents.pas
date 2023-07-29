@@ -75,6 +75,7 @@ begin
 
   moveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
   UI.moveHelpWindow(FALSE);
+  UI.autoCentre := FALSE;
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
