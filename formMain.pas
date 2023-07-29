@@ -27,8 +27,8 @@ uses
 type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
-    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMSizing(var Msg: TMessage); message WM_SIZING;
+    procedure WMNCHitTest(var msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMSizing(var msg: TMessage); message WM_SIZING;
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
   public
   end;
@@ -100,23 +100,23 @@ begin
   msg.result := 0;
 end;
 
-procedure TMMPUI.WMNCHitTest(var Msg: TWMNCHitTest);
+procedure TMMPUI.WMNCHitTest(var msg: TWMNCHitTest);
 begin
   inherited;
   // Prevent the cursor from changing when hovering over the bottom edge (HTBOTTOM)
-  if Msg.Result = HTBOTTOM then
-    Msg.Result := HTCLIENT;
+  if msg.result = HTBOTTOM then
+    msg.result := HTCLIENT;
 end;
 
-procedure TMMPUI.WMSizing(var Msg: TMessage);
+procedure TMMPUI.WMSizing(var msg: TMessage);
 // restricts the vertical resizing by modifying the bottom edge of the resizing rectangle to ensure that the window's height remains constant.
 var
-  NewRect: PRect;
+  newRect: PRect;
 begin
   inherited;
   // Prevent vertical resizing by adjusting the rectangle's top and bottom edges
-  NewRect := PRect(Msg.LParam);
-  NewRect^.Bottom := NewRect^.Top + Height;
+  newRect := PRect(Msg.LParam);
+  newRect^.bottom := newRect^.top + height;
 end;
 
 end.

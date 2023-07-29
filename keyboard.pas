@@ -101,7 +101,6 @@ begin
   case keyDn and keyIs(VK_UP)             of TRUE: result := koVolUp; end;
   case keyDn and keyIs(VK_VOLUME_UP)      of TRUE: result := koVolUp; end;
   case keyDn and keyIs(T)                 of TRUE: result := koTab; end;
-  case keyDn and keyIs(VK_MENU)           of TRUE: result := koTab; end;
   case keyUp and keyIs(VK_SPACE)          of TRUE: result := koPausePlay; end;
   case keyDn and keyIs(VK_RIGHT)          of TRUE: result := koFrameForwards; end;
   case keyDn and keyIs(VK_LEFT)           of TRUE: result := koFrameBackwards; end;
@@ -112,7 +111,7 @@ begin
   case keyDn and keyIs(I)                 of TRUE: result := koZoomIn; end;
   case keyDn and keyIs(O)                 of TRUE: result := koZoomOut; end;
   case keyUp and keyIs(S)                 of TRUE: result := koStartOver; end;
-  case keyUp and keyIs(HASH)                of TRUE: result := koShowCaption; end;
+  case keyUp and keyIs(HASH)              of TRUE: result := koShowCaption; end;
   case keyUp and keyIs(E)                 of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(VK_VOLUME_MUTE)    of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(W)                 of TRUE: result := koPlayNext; end;
