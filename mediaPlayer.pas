@@ -145,12 +145,13 @@ end;
 
 function TMediaPlayer.allReset: boolean;
 begin
-  zoomReset;
   brightnessReset;
-  rotateReset;
   contrastReset;
   gammaReset;
+  rotateReset;
   saturationReset;
+  speedReset;
+  zoomReset;
   ST.opInfo := 'All reset';
 end;
 
@@ -379,7 +380,7 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd:  case FDontPlayNext of FALSE: playNext; end;
+    mpsEnd:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
   end;
 end;
 

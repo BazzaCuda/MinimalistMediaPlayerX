@@ -38,6 +38,7 @@ type
     function setWindowStyle(aForm: TForm): boolean;
     function createVideoPanel(aForm: TForm): boolean;
     function getWidth: integer;
+    procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(aWnd: HWND; X, Y: int64): boolean;
@@ -133,6 +134,12 @@ begin
   application.processMessages;
 end;
 
+procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+// doesn't work in appEvents. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
+begin
+  case screen <> NIL of TRUE: screen.cursor := crDefault; end;
+end;
+
 function TUI.createVideoPanel(aForm: TForm): boolean;
 begin
   FVideoPanel        := TPanel.create(aForm);
@@ -140,6 +147,7 @@ begin
   FVideoPanel.align  := alClient;
   FVideoPanel.color  := clBlack;
   FVideoPanel.BevelOuter := bvNone;
+  FVideoPanel.OnMouseMove := onMouseMove;
 end;
 
 function TUI.deleteCurrentItem(shift: TShiftState): boolean;

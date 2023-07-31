@@ -1,14 +1,31 @@
 Minimalist Media Player
 =====================
 
-A simple but very effective media player built on MVP's API, libMPV-2.dll
+A simple but ``very`` effective media player built on MVP's API, libMPV-2.dll
 
-``Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. Keyboard options allow you to have no borders, no window title bar/caption, no progress bar, no video timestamp, etc, 
-The window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
+``Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. Keyboard options allow you to have no borders, no window title bar/caption, no progress bar, no video timestamp, etc.
 
-When you launch ``Minimalist Media Player`` by clicking on a media file, all the media files in that folder will be automatically loaded into the playlist.
+Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
 
 This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, ``Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame, brightness control, etc.
+
+### Key Features
+----------------
+Automatically matches the aspect ratio of the window to the aspect ratio of the video so it fits the window perfectly, but still allows you to zoom and pan. This is something that the MPV player itself doesn't do (you can only have one or the other). So no ugly borders. Ever. Unless they're hard-baked into the video, of course.
+
+Clicking on a media file in Windows Explorer (etc.) will automatically fill the playlist with all media files in the same folder. The playlist is sorted in "natural order" to match the order your files are listed in your file manager.
+
+All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing either of the SHIFT keys. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+
+``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
+
+You can quickly bookmark the current position of a media file and restart from that point at a later time.
+
+``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
+
+The app allows MPV to be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
+
+N.B. Many keys can be held down for rapid repitition.
 
 ### Keyboard Controls
 ---------------------
@@ -22,13 +39,12 @@ Control | Action
 `SPACEBAR`              | pause/resume playback
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
-`BACKSPACE`             | reset zoom, pan, brightness, contrast, gamma and saturation to normal
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
-`D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled in the config file
+`D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected
 `E`                     | [E]ars - Mute/Unmute sound
 `F`                     | show/cancel [F]ullScreen mode
@@ -36,10 +52,10 @@ Control | Action
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `I`                     | zoom [I]n. Can be held down for rapid zooming.
-`J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders.
+`J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic.
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`                     | re[L]oad the list of supported media files from the current folder
-`M`                     | [M]aximize / restore window
+`M`                     | Display all media info for the current media file (in development)
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming.
 `P`                     | show/hide the [P]laylist
@@ -48,17 +64,18 @@ Control | Action
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `T`                     | Tabbing. See below.
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-`V`                     | maximize / restore [V]iew, same as [M]
+`V`                     | maximize / restore [V]iew
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
-`Y`                     | [Y]et to be allocated a function
+`Y`                     | Display all MPV settings (in development)
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset panning to normal
 `3`                     | reset brightness to normal
 `4`                     | reset rotation to normal/not rotated
-`5`                     | save/bookmark the current media file timestamp to the configuration file
-`6`                     | retrieve a saved/bookmarked media file timestamp from the configuration file and continue playback from that point
+`5`                     | bookmark the current media file timestamp to the configuration file
+`6`                     | retrieve a bookmarked media file timestamp from the configuration file and continue playback from that point
 `7`                     | delete any previously saved/bookmarked media file timestamp for the current media file
 `8`                     | decrease brightness. Can be held down for rapid decrease.
 `9`                     | increase brightness. Can be held down for rapid increase.
@@ -66,6 +83,12 @@ Control | Action
 `-` (Hyphen)            | increase contrast. Can be held down for rapid increase.
 `=`                     | reset contrast to normal 
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
+`[`                     | decrease gamma setting. Can be held down for rapid decrease.
+`]`                     | increase gamma setting. Can be held down for rapid increase.
+`{`                     | decrease saturation setting. Can be held down for rapid decrease.
+`}`                     | increase saturation setting. Can be held down for rapid increase.
+`'` (single quote)      | reset gamma to normal
+`;`                     | reset saturation to normal
 INSERT                  | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 ### By Category
 ---------------
@@ -127,6 +150,8 @@ Saturation |
 `{`                     | decrease saturation. Can be held down for rapid decrease.
 `}`                     | increase saturation. Can be held down for rapid increase.
 `;`                     | reset saturation to normal
+Screenshots |
+`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file)
 Speed |
 `Numpad +`              | increase playback speed. Can be held down for rapid increase.
 `/`                     | increase playback speed. Can be held down for rapid increase.
@@ -175,4 +200,4 @@ Dependencies
 ------------
 1/ ``Minimalist Media Player`` requires libmvp-2.dll to be in the same folder as the executable. If you have an mvp.conf file in the same folder, mvp will take it into account when initializing, for example to specify your audio output preferences.
 
-2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results in less chance of Windows complaining that the file is in use (by MPV). You can check rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;)
+2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV). If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``Minimalist Media Player`` will still ask for confirmation, nothing will happen.

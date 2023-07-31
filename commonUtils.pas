@@ -355,6 +355,7 @@ begin
                                             try
                                               s           := InputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
+                                              delay(500);
                                               GV.inputBox := FALSE;
                                             end;end;end;
   except

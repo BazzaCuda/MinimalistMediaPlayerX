@@ -128,7 +128,6 @@ begin
   case msgIs(WM_LBUTTONDOWN)             of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
   case msgIs(WM_LBUTTONUP)               of TRUE: mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
-  case msgIs(WM_MOUSEMOVE)               of TRUE: case screen <> NIL of TRUE: screen.cursor := crDefault; end;end;
 
   case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
   case msgIs(WM_LBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
