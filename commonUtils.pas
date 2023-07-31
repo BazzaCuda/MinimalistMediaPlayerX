@@ -351,12 +351,12 @@ begin
 
     case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
                                    FALSE: begin
-                                            GV.inputBox   := TRUE; // ignore keystrokes. Let the InputBoxForm handle them
+                                            GV.userInput   := TRUE; // ignore keystrokes. Let the InputBoxForm handle them
                                             try
                                               s           := InputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
                                               delay(500);
-                                              GV.inputBox := FALSE;
+                                              GV.userInput := FALSE;
                                             end;end;end;
   except
     s := '';   // any funny business, force the rename to be abandoned

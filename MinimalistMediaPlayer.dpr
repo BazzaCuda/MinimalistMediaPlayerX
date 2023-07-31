@@ -64,6 +64,7 @@ begin
   debugClear;
 
   Application.Initialize;
+  Application.ShowMainForm := FALSE;
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   Application.CreateForm(TMMPUI, MMPUI);

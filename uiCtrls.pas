@@ -55,6 +55,7 @@ type
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
+    function showWindow: boolean;
     function smallerWindow(aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleControls(shift: TShiftState): boolean;
@@ -104,9 +105,11 @@ begin
   CU.getWndWidthHeight(aWnd, vWidth, vHeight);
   vHeight := trunc(vWidth * vRatio) + 2;
 
-  setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER);
+  setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER); // don't add SWP_SHOWWINDOW
 
   case autoCentre of TRUE: UI.centreWindow(UI.handle); end;
+
+  case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
 
 function TUI.centreWindow(aWnd: HWND): boolean;
@@ -115,7 +118,7 @@ var
 begin
   getWindowRect(aWnd, vR);
   SetWindowPos(aWnd, 0, (CU.getScreenWidth - (vR.Right - vR.Left)) div 2,
-                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOSIZE + SWP_NOZORDER);
 
   postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
   application.processMessages;
@@ -177,8 +180,9 @@ end;
 
 procedure TUI.formResize(sender: TObject);
 begin
+  case PL.hasItems of FALSE: EXIT; end;
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
-  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight); // TESTING. TESTING.
+  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
   ST.formResize;
   PB.formResize;
   moveHelpWindow(FALSE);
@@ -229,7 +233,7 @@ begin
                                                       newH := CU.getScreenHeight;
                                                       try newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
-  SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOZORDER + SWP_NOMOVE + SWP_NOREDRAW); // resize the window
+  SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOMOVE or SWP_NOZORDER); // resize the window
 
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
@@ -256,7 +260,9 @@ begin
   addMenuItems(aForm);
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
-  FAutoCentre := TRUE;
+  FAutoCentre         := TRUE;
+  aForm.width         := 800;
+  aForm.height        := 300;
 end;
 
 function TUI.keepFile(aFilePath: string): boolean;
@@ -324,7 +330,12 @@ end;
 
 function TUI.setWindowStyle(aForm: TForm): boolean;
 begin
-  SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+  SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
+end;
+
+function TUI.showWindow: boolean;
+begin
+  FMainForm.visible := TRUE;
 end;
 
 function TUI.toggleBlackout: boolean;

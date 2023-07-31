@@ -30,7 +30,7 @@ type
   private
     FAltKeyDown: boolean;
     FAlwaysPot: boolean;
-    FInputBox: boolean;
+    FUserInput: boolean;
     procedure onCloseTimerEvent(sender: TObject);
     procedure setCloseApp(const Value: boolean);
   public
@@ -40,7 +40,7 @@ type
     property altKeyDown: boolean read FAltKeyDown write FAltKeyDown;
     property alwaysPot: boolean read FAlwaysPot write FAlwaysPot;
     property appWnd: HWND read FAppWnd write FAppWnd;
-    property inputBox: boolean read FInputBox write FInputBox;
+    property userInput: boolean read FUserInput write FUserInput;
   end;
 
 function GV: TGlobalVars;

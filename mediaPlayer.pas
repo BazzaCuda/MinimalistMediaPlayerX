@@ -38,6 +38,7 @@ type
     FX:    int64;
     FY:    int64;
   private
+    FPlaying: boolean;
     constructor create;
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
@@ -117,6 +118,7 @@ type
     property formattedSpeed:      string    read getFormattedSpeed;
     property formattedTime:       string    read getFormattedTime;
     property formattedVol:        string    read getFormattedVol;
+    property playing:             boolean   read FPlaying     write FPlaying;
     property position:            integer   read getPosition  write setPosition;
     property subTitle:            string    read getSubTitle;
     property videoHeight:         int64     read getVideoHeight;
@@ -148,6 +150,7 @@ begin
   brightnessReset;
   contrastReset;
   gammaReset;
+  panReset;
   rotateReset;
   saturationReset;
   speedReset;
@@ -378,6 +381,8 @@ end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
+  FPlaying := eState = mpsPlay;
+
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
     mpsEnd:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
@@ -624,7 +629,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('speed', 1.00);
   CU.delay(100);
-  ST.opInfo := formattedSpeed;
+  ST.opInfo := 'Speed reset';
 end;
 
 function TMediaPlayer.speedUp: boolean;

@@ -61,17 +61,25 @@ begin
 {============}
 
   case PS.noFile of TRUE:  begin
+                                GV.userInput := TRUE;
+                                screen.cursor := crDefault;
+
                                 CU.ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                                     + 'or to permanently associate media file types with this application.'#13#10#13#10
                                                     + 'Alternatively, you can drag and drop a media file onto the window background',
                                                       mtInformation, [MBOK]);
+
+                                GV.userInput := FALSE;
+                                postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
+                                EXIT;
                               end;end;
 
 
   CU.fillPlaylist(PS.fileFolder);
-  PL.find(PS.fileFolderAndName);
-  case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
-  case PL.hasItems of TRUE: UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem)))); end;
+
+  case PL.find(PS.fileFolderAndName) of TRUE: begin
+                                                UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
+                                                postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);
@@ -90,7 +98,7 @@ begin
 
       CU.fillPlaylist(extractFilePath(vFilePath));
       PL.find(vFilePath);
-      case PL.hasItems of TRUE: MP.play(PL.currentItem); end;
+      case PL.hasItems of TRUE: postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;
 
       BREAK;              // we currently only process the first file if multiple files are dropped
     end;

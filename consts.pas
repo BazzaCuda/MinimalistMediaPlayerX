@@ -42,6 +42,8 @@ const
   WM_KEY_UP              = WM_USER + 2015;
   WM_CHECK_SCREEN_LIMITS = WM_USER + 2016;
   WM_SMALLER_WINDOW      = WM_USER + 2017;
+  WM_PLAY_CURRENT_ITEM   = WM_USER + 2018;
+  WM_SHOW_WINDOW         = WM_USER + 2019;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';

@@ -58,7 +58,7 @@ uses ShellAPI, globalVars, commonUtils;
 
 function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
 begin
-  GV.inputBox := TRUE;
+  GV.userInput := TRUE;
   with TAboutForm.create(NIL) do
   try
     setReleaseVersion(releaseVersion);
@@ -67,7 +67,7 @@ begin
   finally
     free;
     CU.delay(1000);
-    GV.inputBox := FALSE;
+    GV.userInput := FALSE;
   end;
 end;
 
