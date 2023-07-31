@@ -27,6 +27,9 @@ The app allows MPV to be configured via the normal mpv.conf file. As always with
 
 N.B. Many keys can be held down for rapid repitition.
 
+![Clipboard Image](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/198dbc3f-ed85-42b9-96b3-4e199c8bdfa9)
+
+
 ### Keyboard Controls
 ---------------------
 Although there are a lot of keyboard controls, each alphabetic letter has been applied intuitively. The action description with therefore help to associate the action with the letter.
