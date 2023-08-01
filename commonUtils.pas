@@ -351,12 +351,9 @@ begin
 
     case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
                                    FALSE: begin
-                                            GV.userInput   := TRUE; // ignore keystrokes. Let the InputBoxForm handle them
                                             try
                                               s           := InputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
-                                              delay(500);
-                                              GV.userInput := FALSE;
                                             end;end;end;
   except
     s := '';   // any funny business, force the rename to be abandoned
@@ -381,6 +378,8 @@ function TCommonUtils.showOKCancelMsgDlg(const aMsg: string;
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
 begin
+  GV.userInput := TRUE;
+  screen.cursor := crDefault;
   with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
     font.name := 'Segoe UI';
@@ -396,7 +395,8 @@ begin
     end;
     result := ShowModal;
   finally
-    Free;
+    free;
+    GV.userInput := FALSE;
   end;
 end;
 

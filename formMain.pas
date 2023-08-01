@@ -61,15 +61,11 @@ begin
 {============}
 
   case PS.noFile of TRUE:  begin
-                                GV.userInput := TRUE;
-                                screen.cursor := crDefault;
-
                                 CU.ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                                     + 'or to permanently associate media file types with this application.'#13#10#13#10
                                                     + 'Alternatively, you can drag and drop a media file onto the window background',
                                                       mtInformation, [MBOK]);
 
-                                GV.userInput := FALSE;
                                 postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
                                 EXIT;
                               end;end;

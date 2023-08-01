@@ -135,6 +135,7 @@ end;
 
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
+  screen.cursor := crHandPoint;
   case (not KB.numLock) AND not (ssCtrl in shift) of TRUE: EXIT; end;
 //  case FMoving        of TRUE: EXIT; end; // only allow one drag operation every 100ms otherwise MMF gets upset - but MPV doesn't seem to have any problem!
   setNewPosition(x);

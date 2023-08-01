@@ -123,7 +123,7 @@ begin
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
-  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput of TRUE: screen.cursor := crNone; end;end;
+  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
 
   case msgIs(WM_LBUTTONDOWN)             of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
   case msgIs(WM_LBUTTONUP)               of TRUE: mouseDown := FALSE; end;

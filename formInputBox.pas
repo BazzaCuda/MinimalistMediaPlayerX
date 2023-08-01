@@ -38,7 +38,7 @@ function inputBoxForm(APrompt: string): string;
 
 implementation
 
-uses vcl.themes, vcl.styles;
+uses vcl.themes, vcl.styles, globalVars, commonUtils;
 
 {$R *.dfm}
 
@@ -48,6 +48,7 @@ function inputBoxForm(APrompt: string): string;
 var
   vInputBoxForm: TInputBoxForm;
 begin
+  GV.userInput := TRUE; // ignore keystrokes. Let the InputBoxForm handle them
   vInputBoxForm := TInputBoxForm.Create(NIL);
   try
     with vInputBoxForm do begin
@@ -56,7 +57,9 @@ begin
       case showModal = mrOK of TRUE: result := edtInputBox.Text; end;
     end;
   finally
-    vInputBoxForm.Free;
+    vInputBoxForm.free;
+    CU.delay(500);
+    GV.userInput := FALSE;
   end;
 end;
 
