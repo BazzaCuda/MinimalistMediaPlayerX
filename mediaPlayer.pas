@@ -374,7 +374,7 @@ end;
 function TMediaPlayer.muteUnmute: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.mute := not mpv.mute;
+  mpv.mute := NOT mpv.mute;
   case mpv.mute of  TRUE: ST.opInfo := 'unmuted';
                    FALSE: ST.opInfo := 'muted'; end;
 end;
@@ -393,7 +393,7 @@ procedure TMediaPlayer.onTimerEvent(sender: TObject);
 begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
-    tePlay:  begin play(PL.currentItem); UI.moveHelpWindow(FALSE); end;
+    tePlay:  begin play(PL.currentItem); {UI.moveHelpWindow(FALSE);} end;
     teClose: sendSysCommandClose(UI.handle);
   end;
 end;
@@ -662,11 +662,11 @@ var
   vTab: integer;
   newInfo: string;
 begin
-  vFactor := 100;
+  case aFactor > 0 of  TRUE: vFactor := aFactor;
+                      FALSE: vFactor := 100; end;
 
-  case capsLock               of TRUE: vFactor := 200; end;
+  case capsLock of TRUE: vFactor := 200; end;
 
-  case ssAlt   in aShiftState of TRUE: vFactor := 50; end;
   vTab := trunc(duration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
 

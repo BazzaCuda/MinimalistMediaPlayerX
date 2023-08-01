@@ -235,7 +235,7 @@ var Num1,Num2:Double;
   begin
      FoundPeriod:=False;
      Result:=0;
-     While (pch^<>#0) and (IsNumber(pch^) or ((not FoundPeriod) and (pch^='.'))) do
+     While (pch^<>#0) and (IsNumber(pch^) or ((NOT FoundPeriod) and (pch^='.'))) do
      begin
         if pch^='.' then
         begin
@@ -257,7 +257,7 @@ var Num1,Num2:Double;
 begin
     pStr1:=@Str1[1]; pStr2:=@Str2[1];
     Result:=0;
-    While not ((pStr1^=#0) or (pStr2^=#0)) do
+    While NOT ((pStr1^=#0) or (pStr2^=#0)) do
     begin
        if IsNumber(pStr1^) and IsNumber(pStr2^) then
        begin

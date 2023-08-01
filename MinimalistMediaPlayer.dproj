@@ -187,6 +187,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="bookmark.pas"/>
         <DCCReference Include="configFile.pas"/>
         <DCCReference Include="mediaType.pas"/>
+        <DCCReference Include="formPlaylist.pas">
+            <Form>PlaylistForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

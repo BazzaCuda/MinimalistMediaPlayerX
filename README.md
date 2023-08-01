@@ -13,15 +13,19 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 ### Key Features
 ----------------
-Automatically matches the aspect ratio of the window to the aspect ratio of the video so it fits the window perfectly, but still allows you to zoom and pan. This is something that the MPV player itself doesn't do (you can only have one or the other). So no ugly borders. Ever. Unless they're hard-baked into the video, of course.
+Automatically matches the aspect ratio of the window to the aspect ratio of the video so it fits the window perfectly, but still allows you to zoom and pan. This is something the MPV player itself doesn't do - you can only have one or the other. So no ugly borders. Ever. Unless they're hard-baked into the video, of course.
 
 Clicking on a media file in Windows Explorer (etc.) will automatically fill the playlist with all media files in the same folder. The playlist is sorted in "natural order" to match the order your files are listed in your file manager.
 
-All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing either of the SHIFT keys. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
+
+All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
 ``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
 You can quickly bookmark the current position of a media file and restart from that point at a later time.
+
+You can quickly resize the video by holding down the G key to enlarge it. Or quickly reduce it by holding down Ctrl-G.
 
 ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
@@ -35,7 +39,7 @@ Although there are a lot of keyboard controls, each alphabetic letter has been a
 
 Control | Action
 ------- | ------
-`SHIFT key (either)`    | show or hide the Help window listing all the keyboard functions
+`F1`                    | show or hide the Help window listing all the keyboard and mouse functions
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
@@ -60,7 +64,7 @@ Control | Action
 `M`                     | Display all media info for the current media file (in development)
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming.
-`P`                     | show/hide the [P]laylist
+`P`                     | show/hide the [P]laylist (in development)
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
@@ -126,7 +130,8 @@ Mouse |
 On-Screen Display |
 `#`                     | briefly show media caption (the filename and its position in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
+`Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file.
+`Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file.
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
 Panning |

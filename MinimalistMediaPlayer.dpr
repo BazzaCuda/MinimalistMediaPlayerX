@@ -55,7 +55,8 @@ uses
   commonUtils in 'commonUtils.pas',
   bookmark in 'bookmark.pas',
   configFile in 'configFile.pas',
-  mediaType in 'mediaType.pas';
+  mediaType in 'mediaType.pas',
+  formPlaylist in 'formPlaylist.pas' {PlaylistForm};
 
 {$R *.res}
 

@@ -128,7 +128,7 @@ var
 
   function fileExtOK: boolean;
   begin
-    result := (vExt <> '') AND MT.mediaExts.contains(vExt); //NOT EXTS_FILTER.contains(vExt);
+    result := {(vExt <> '') AND} MT.mediaExts.contains(vExt);
   end;
 
 begin

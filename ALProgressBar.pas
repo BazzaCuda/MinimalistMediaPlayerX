@@ -29,6 +29,7 @@ uses
 type
   TProgressDirection = (pdLeftToRight, pdRightToLeft, pdBottomToTop, pdTopToBottom);
   TBarColorStyle = (cs1Color, cs2Colors, cs3Colors);
+  TShowHintEvent = procedure(var Message: TCMHintShow) of object; // BAZ
 
   TALProgressBar = class(TGraphicControl)
   private
@@ -52,6 +53,7 @@ type
     RegenerateBitmap: Boolean;
     TiledBarBitmap: TBitmap;
     fPercentage: Boolean;
+    FOnHintShow: TShowHintEvent; // BAZ
     procedure PaintBorder;
     procedure PaintPosText;
     procedure SetBorderColor1(const Value: TColor);
@@ -76,7 +78,8 @@ type
     procedure SetBarColorStyle(const Value: TBarColorStyle);
     procedure DrawColorBlending;
     procedure SetPercentage(const Value: Boolean);
-  protected
+    procedure CMHintShow(var message: TCMHintShow); message CM_HINTSHOW; // BAZ
+    protected
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -109,6 +112,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property onHintShow: TShowHintEvent read FOnHintShow write FOnHintShow; // BAZ
   end;
 
 procedure Register;
@@ -191,7 +195,7 @@ var
   BarLength, BarPixelLength, EmptySpaceLength: Integer;
   AreaTop, AreaBottom, AreaLeft, AreaRight: Integer;
 begin
-  if (fBarBitmap <> nil) and not fBarBitmap.Empty then
+  if (fBarBitmap <> nil) and NOT fBarBitmap.Empty then
   begin
     if RegenerateBitmap then
     begin
@@ -400,7 +404,7 @@ var
   Text: String;
   TextPosX, TextPosY: Integer;
 begin
-  if not fPercentage then
+  if NOT fPercentage then
     Text := fPosTextPrefix + IntToStr(fPosition) + fPosTextSuffix
   else
     Text := fPosTextPrefix + IntToStr(Round((fPosition / fMax) * 100)) + fPosTextSuffix;
@@ -551,6 +555,11 @@ procedure TALProgressBar.CMFontChanged(var Message: TMessage);
 begin
   MainBitmap.Canvas.Font.Assign(Self.Font);
   Paint;
+end;
+
+procedure TALProgressBar.CMHintShow(var message: TCMHintShow); // BAZ
+begin
+  case assigned(FOnHintShow) of TRUE: FOnHintShow(message); end;
 end;
 
 procedure TALProgressBar.SetBarColorStyle(const Value: TBarColorStyle);

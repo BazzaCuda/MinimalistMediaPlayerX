@@ -29,7 +29,9 @@ type
   strict private
     FMainForm: TForm;
     FAutoCentre: boolean;
+    FInitialized: boolean;
     FShowingHelp: boolean;
+    FShowingPlaylist: boolean;
     FVideoPanel: TPanel;
   private
     function addMenuItems(aForm: TForm): boolean;
@@ -52,6 +54,7 @@ type
     function keepFile(aFilePath: string): boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
+    function movePlaylistWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
@@ -61,7 +64,9 @@ type
     function toggleControls(shift: TShiftState): boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
+    function togglePlaylist: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
+    property initialized: boolean read FInitialized write FInitialized;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth;
   end;
@@ -72,7 +77,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, _debugWindow;
+  formHelp, formPlaylist, _debugWindow;
 
 var
   gUI: TUI;
@@ -180,6 +185,7 @@ end;
 
 procedure TUI.formResize(sender: TObject);
 begin
+  case FInitialized of FALSE: EXIT; end;
   case PL.hasItems of FALSE: EXIT; end;
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
@@ -349,11 +355,17 @@ begin
   showHelp(vPt, create);
 end;
 
+function TUI.movePlaylistWindow(const create: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
+  showPlaylist(vPt, create);
+end;
+
 function TUI.toggleControls(shift: TShiftState): boolean;
 // we call them "controls" but they're actually the media info and the time display at the bottom of the window
 // a left-over from this app's pre-minimalist days
 begin
- case (ssCtrl in shift) and ST.showTime and (not ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
+ case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
 
  ST.showTime := NOT ST.showTime;
 
@@ -372,6 +384,13 @@ function TUI.toggleMaximized: boolean;
 begin
   case FMainForm.WindowState <> wsMaximized of  TRUE: FMainForm.windowState := wsMaximized;
                                                FALSE: FMainForm.windowState := wsNormal; end;
+end;
+
+function TUI.togglePlaylist: boolean;
+begin
+  FShowingPlaylist := NOT FShowingPlaylist;
+  case FShowingPlaylist of  TRUE: movePlaylistWindow;
+                           FALSE: shutPlaylist; end;
 end;
 
 initialization

@@ -76,6 +76,8 @@ begin
   case PL.find(PS.fileFolderAndName) of TRUE: begin
                                                 UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
                                                 postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
+
+  UI.Initialized := TRUE; // don't allow UI.formResize to do anything until the first media plays.
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);

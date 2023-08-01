@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formHelp;
+unit formPlaylist;
 
 interface
 
@@ -25,12 +25,12 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
 
 type
-  THelpForm = class(TForm)
+  TPlaylistForm = class(TForm)
     backPanel: TPanel;
     buttonPanel: TPanel;
     shiftLabel: TLabel;
     moveLabel: TLabel;
-    RT: TRichEdit;
+    LB: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -39,42 +39,42 @@ type
   public
   end;
 
-function showHelp(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
-function showingHelp: boolean;
-function shutHelp: boolean;
+function showPlaylist(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
+function showingPlaylist: boolean;
+function shutPlaylist: boolean;
 
 implementation
 
 uses ShellAPI, UICtrls, system.strUtils, commonUtils;
 
 var
-  helpForm: THelpForm;
+  playlistForm: TPlaylistForm;
 
-function showingHelp: boolean;
+function showingPlaylist: boolean;
 begin
-  result := helpForm <> NIL;
+  result := playlistForm <> NIL;
 end;
 
-function showHelp(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
+function showPlaylist(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
 begin
-  case (helpForm = NIL) and createNew of TRUE: helpForm := THelpForm.create(NIL); end;
-  case helpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current help window. Used for repositioning the window when the main UI moves or resizes.
+  case (playlistForm = NIL) and createNew of TRUE: playlistForm := TPlaylistForm.create(NIL); end;
+  case playlistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
 
-  helpForm.show;
-  winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-  enableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
+  playlistForm.show;
+  winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  enableWindow(playlistForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
   setForegroundWindow(UI.handle); // so the UI keyboard functions can still be used when this form is open.
 end;
 
-function shutHelp: boolean;
+function shutPlaylist: boolean;
 begin
-  case helpForm <> NIL of TRUE: begin helpForm.close; helpForm.free; helpForm := NIL; end;end;
-  helpForm := NIL;
+  case playlistForm <> NIL of TRUE: begin playlistForm.close; playlistForm.free; playlistForm := NIL; end;end;
+  playlistForm := NIL;
 end;
 
 {$R *.dfm}
 
-procedure THelpForm.CreateParams(var Params: TCreateParams);
+procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
@@ -82,33 +82,29 @@ begin
   Params.WndParent  := self.Handle; // normally application.handle
 end;
 
-procedure THelpForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TPlaylistForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  helpForm.free; helpForm := NIL;
+  playlistForm.free; playlistForm := NIL;
 end;
 
-procedure THelpForm.FormCreate(Sender: TObject);
+procedure TPlaylistForm.FormCreate(Sender: TObject);
 begin
-  RT.align          := alClient;
-  RT.plainText      := FALSE;
-  RT.hideSelection  := TRUE;
-  RT.bevelInner     := bvNone;
-  RT.bevelOuter     := bvNone;
-  RT.borderStyle    := bsNone;
-  RT.readOnly       := TRUE;
-  RT.lines.loadFromFile(CU.getExePath + 'help.rtf');
+  LB.align          := alClient;
+  LB.bevelInner     := bvNone;
+  LB.bevelOuter     := bvNone;
+  LB.borderStyle    := bsNone;
 
-  SELF.width  := 700;
-  SELF.height := 840;
+  SELF.width  := 556;
+//  SELF.height := 840;
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := $2B2B2B;
 end;
 
 initialization
-  helpForm := NIL;
+  playlistForm := NIL;
 
 finalization
-  case helpForm <> NIL of TRUE: begin helpForm.close; helpForm.free; helpForm := NIL; end;end;
+  case playlistForm <> NIL of TRUE: begin playlistForm.close; playlistForm.free; playlistForm := NIL; end;end;
 
 end.

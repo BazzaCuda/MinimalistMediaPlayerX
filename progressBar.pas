@@ -27,8 +27,7 @@ type
   TProgressBar = class(TObject)
   strict private
     FPB: TALProgressBar;
-    FMoving: boolean;
-//    FTimer: TTimer;
+    FX: integer;
   private
     FInitialized: boolean;
     FShowProgressBar: boolean;
@@ -38,14 +37,16 @@ type
     procedure setPosition(const Value: integer);
     function  getMax: integer;
     procedure setMax(const Value: integer);
-//    procedure timerEvent(Sender: TObject);
     function getTop: integer;
     procedure setShowProgressBar(const Value: boolean);
   protected
     constructor create;
+    procedure onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
     function  setNewPosition(x: integer): integer;
   public
     destructor  Destroy; override;
+    function brighter: boolean;
+    function darker: boolean;
     function formResize: boolean;
     function initProgressBar(aForm: TForm): boolean;
     property initialized: boolean read FInitialized;
@@ -59,7 +60,7 @@ function PB: TProgressBar;
 implementation
 
 uses
-  vcl.graphics, consts, globalVars, keyboard, _debugWindow;
+  vcl.graphics, consts, globalVars, keyboard, commonUtils, mediaPlayer, system.sysUtils, configFile, _debugWindow;
 
 var
   gPB: TProgressBar;
@@ -72,6 +73,12 @@ end;
 
 { TProgressBar }
 
+function TProgressBar.brighter: boolean;
+begin
+  FPB.barColor1 := FPB.barColor1 + $010101;
+  CF.value['progressBar'] := intToStr(FPB.barColor1);
+end;
+
 constructor TProgressBar.create;
 begin
   inherited;
@@ -79,19 +86,19 @@ begin
   FPB.onMouseMove := progressBarMouseMove;
   FPB.onMouseUp   := progressBarMouseUp;
 
-//  FTimer          := TTimer.create(NIL);
-//  FTimer.enabled  := FALSE;
-//  FTimer.interval := 100;
-//  FTimer.OnTimer  := timerEvent;
-
   FShowProgressBar := TRUE;
+end;
+
+function TProgressBar.darker: boolean;
+begin
+  FPB.barColor1 := FPB.barColor1 - $010101;
+  CF.value['progressBar'] := intToStr(FPB.barColor1);
 end;
 
 destructor TProgressBar.Destroy;
 begin
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
-//  case FTimer <> NIL of TRUE: FTimer.free; end;
   inherited;
 end;
 
@@ -127,21 +134,43 @@ begin
   FPB.showPosText      := FALSE;
   FPB.barColor1        := $202020;
   FPB.barColorStyle    := cs1Color;
+  FPB.onHintShow       := onHintShow;
+  FPB.showHint         := TRUE;
+
+  case CF.asInteger['progressBar'] <> 0 of TRUE: FPB.barColor1 := CF.asInteger['progressBar']; end;
 
   FPB.max      := 100;
   FPB.Position := 0;
   FInitialized := TRUE;
 end;
 
+procedure TProgressBar.onHintShow(var message: TCMHintShow);
+begin
+  with message.hintInfo^ do
+  begin
+    hintStr    := CU.formatTime(trunc(MP.duration * (cursorPos.X / FPB.width)));
+    cursorRect := rect(cursorPos.X, cursorPos.Y, cursorPos.X, cursorPos.Y);
+  end;
+end;
+
 procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var vPoint: TPoint;
 begin
   screen.cursor := crHandPoint;
-  case (not KB.numLock) AND not (ssCtrl in shift) of TRUE: EXIT; end;
-//  case FMoving        of TRUE: EXIT; end; // only allow one drag operation every 100ms otherwise MMF gets upset - but MPV doesn't seem to have any problem!
+  FPB.hint := CU.formatTime(trunc(MP.duration * (X / FPB.width)));
+
+  case X = FX of TRUE: EXIT; end;
+  FX := X;
+
+  FPB.hint := CU.formatTime(trunc(MP.duration * (X / FPB.width)));
+
+  vPoint.X := X;
+  vPOint.Y := Y;
+  application.activateHint(FPB.clientToScreen(vPoint));
+
+  case (NOT KB.numLock) and NOT (ssCtrl in shift) of TRUE: EXIT; end;
   setNewPosition(x);
   postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0);
-//  FMoving         := TRUE;
-//  FTimer.enabled  := TRUE;
 end;
 
 procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -172,13 +201,6 @@ begin
   FShowProgressBar := Value;
   FPB.Visible := FShowProgressBar;
 end;
-
-//procedure TProgressBar.timerEvent(Sender: TObject);
-//// limit dragging operations to one every 100ms otherwise MMF gets upset and crashes the video
-//begin
-//  FTimer.enabled := FALSE;
-//  FMoving        := FALSE;
-//end;
 
 initialization
   gPB := NIL;
