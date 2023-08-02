@@ -50,6 +50,8 @@ uses ShellAPI, UICtrls, system.strUtils, commonUtils;
 var
   helpForm: THelpForm;
 
+{$R MinimalistMediaPlayer.dres}
+
 function showingHelp: boolean;
 begin
   result := helpForm <> NIL;
@@ -96,7 +98,13 @@ begin
   RT.bevelOuter     := bvNone;
   RT.borderStyle    := bsNone;
   RT.readOnly       := TRUE;
-  RT.lines.loadFromFile(CU.getExePath + 'help.rtf');
+
+  var vRS := TResourceStream.create(hInstance, pchar('Resource_HelpRTF'), RT_RCDATA);
+  try
+    RT.lines.loadFromStream(vRS);
+  finally
+    freeAndNIL(vRS);
+  end;
 
   SELF.width  := 700;
   SELF.height := 840;

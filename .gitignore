@@ -73,3 +73,8 @@ win64/
 
 # developer's privilege
 *.lnk
+MinimalistMediaPlayer_release_v1_0_/
+old/
+docs/
+
+

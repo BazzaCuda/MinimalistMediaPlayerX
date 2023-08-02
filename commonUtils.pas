@@ -376,7 +376,8 @@ function TCommonUtils.showOKCancelMsgDlg(const aMsg: string;
                                          const defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
 // used for displaying the delete file/folder confirmation dialog
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
-// The standard dialog would unhelpfully truncate them.
+// The standard dialog would unhelpfully truncate them.#
+var vControl: TControl;
 begin
   GV.userInput := TRUE;
   screen.cursor := crDefault;
@@ -386,10 +387,11 @@ begin
     font.size := 12;
     height    := height + 50;
     width     := width + 200;
+
     for var i := 0 to controlCount - 1 do begin
       case controls[i] is TLabel  of   TRUE: with Controls[i] as TLabel do Width := Width + 200; end;
       case controls[i] is TButton of   TRUE: with Controls[i] as TButton do begin
-                                                                                top  := top + 60;
+                                                                                top  := top  + 60;
                                                                                 left := left + 100;
                                                                             end;end;
     end;

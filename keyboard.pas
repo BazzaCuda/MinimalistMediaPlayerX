@@ -315,7 +315,7 @@ begin
     koShowHelp:          UI.toggleHelpWindow;
     koBrighterPB:        PB.brighter;
     koDarkerPB:          PB.darker;
-    koShowPlaylist:      UI.togglePlaylist;
+//    koShowPlaylist:      UI.togglePlaylist;
   end;
 
   result := TRUE;

@@ -18,6 +18,8 @@
 }
 program MinimalistMediaPlayer;
 
+{$R *.dres}
+
 uses
   Vcl.Forms,
   formMain in 'formMain.pas' {MMPUI},
