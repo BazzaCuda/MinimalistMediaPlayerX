@@ -9,7 +9,7 @@ Also, the window resizes to fit the video perfectly, eliminating ugly black bord
 
 This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, ``Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), brightness control, etc.
 
-![Clipboard Image](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/198dbc3f-ed85-42b9-96b3-4e199c8bdfa9)
+![Clipboard Image](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/6d824225-dd62-42f1-9b41-15527ed35edc)
 
 ### Key Features
 ----------------
