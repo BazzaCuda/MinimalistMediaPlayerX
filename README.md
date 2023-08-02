@@ -171,7 +171,7 @@ Tabbing |
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
 `CAPS LOCK T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
-`CAPS LOCK Ctrl-T       | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
+`CAPS LOCK Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 Volume |
 `Up Arrow`              | increase the volume. Can be held down for rapid increase.
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease.
