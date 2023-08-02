@@ -48,7 +48,7 @@ Control | Action
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
-`Ctrl-Shift-B`          | Make the progress [B] darker/less prominent.
+`Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent.
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
