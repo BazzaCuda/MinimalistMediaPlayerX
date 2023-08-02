@@ -39,7 +39,7 @@ Although there are a lot of keyboard controls, each alphabetic letter has been a
 
 Control | Action
 ------- | ------
-`F1`                    | show or hide the Help window listing all the keyboard and mouse functions
+`F1`                    | show or hide the Help panel listing all the keyboard and mouse functions
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
