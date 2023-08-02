@@ -406,12 +406,6 @@ function TCommonUtils.withinScreenLimits(const aWidth: integer; const aHeight: i
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
   result := (aWidth <= vR.right - vR.left) AND (aHeight <= vR.bottom - vR.top);
-//  debugInteger('screenWidth', vR.width);
-//  debugInteger('screenHeight', vR.height);
-//  debugInteger('newW', aWidth);
-//  debugInteger('newH', aHeight);
-//  debugBoolean('withinScreenLimits', result);
-//  debug('');
 end;
 
 initialization

@@ -18,7 +18,7 @@
 }
 program MinimalistMediaPlayer;
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,
@@ -39,7 +39,6 @@ uses
   playlist in 'playlist.pas',
   mediaPlayer in 'mediaPlayer.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
-  types in 'types.pas',
   tickTimer in 'tickTimer.pas',
   mediaInfo in 'mediaInfo.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
@@ -63,7 +62,7 @@ uses
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := TRUE;
+//  ReportMemoryLeaksOnShutdown := TRUE;
   debugClear;
 
   Application.Initialize;

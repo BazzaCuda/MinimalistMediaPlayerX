@@ -164,7 +164,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="formSubtitles.pas">
             <Form>subtitlesForm</Form>
         </DCCReference>
-        <DCCReference Include="types.pas"/>
         <DCCReference Include="tickTimer.pas"/>
         <DCCReference Include="mediaInfo.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
@@ -191,11 +190,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>PlaylistForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <RcItem Include="help.rtf">
-            <ContainerId>ResourceItem</ContainerId>
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_HelpRTF</ResourceId>
-        </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -231,12 +225,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <DeployFile LocalName="Win64\Release\MinimalistMediaPlayer.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>MinimalistMediaPlayer.exe</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="help.rtf" Configuration="Release" Class="ProjectFile">
-                    <Platform Name="Win64">
-                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -57,6 +57,7 @@ type
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(anApp: string; aParams: string): boolean;
     function renameFile(aFilePath: string): boolean;
+    function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
     function showWindow: boolean;
     function smallerWindow(aWnd: HWND): boolean;
@@ -77,7 +78,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, _debugWindow;
+  formHelp, formPlaylist, formAbout, _debugWindow;
 
 var
   gUI: TUI;
@@ -337,6 +338,11 @@ end;
 function TUI.setWindowStyle(aForm: TForm): boolean;
 begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
+end;
+
+function TUI.showAboutBox: boolean;
+begin
+  formAbout.showAboutBox(CU.getFileVersionFmt('', '%d.%d'), CU.getFileVersionFmt);
 end;
 
 function TUI.showWindow: boolean;

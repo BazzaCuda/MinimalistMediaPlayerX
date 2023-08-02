@@ -1134,10 +1134,10 @@ begin
   SetPropertyString('osc', 'no'); // On Screen Control
   SetPropertyString('force-window', 'yes');
   SetPropertyString('config-dir', sConfigDir); // mpv.conf location
-  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF - NO!
+  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
   SetPropertyBool('keep-open', TRUE);
   SetPropertyBool('keep-open-pause', False);
-  SetPropertyDouble('sub-delay', -10.0);
+//  SetPropertyDouble('sub-delay', -10.0);
 //  SetPropertyBool('idle-screen', FALSE);
 //  setPropertyString('osc-visibility', 'never');
 //  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');

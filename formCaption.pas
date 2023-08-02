@@ -67,8 +67,6 @@ begin
   inherited create(NIL);
   height := 80;
   FCaption := TLabel.create(NIL);
-//  SELF.OnResize := formResize;
-
 
   FOpInfoTimer := TTimer.create(NIL);
   FOpInfoTimer.interval := 5000;

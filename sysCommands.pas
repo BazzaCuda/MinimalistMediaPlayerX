@@ -27,10 +27,13 @@ function sendSysCommandClose(aHWND: HWND): boolean;
 
 implementation
 
+uses
+  uiCtrls;
+
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
-  case Message.CmdType of MENU_ABOUT_ID:  showAboutBox(CU.getFileVersionFmt('', '%d.%d'), CU.getFileVersionFmt); end;
-//  case Message.CmdType of MENU_HELP_ID:   showHelp(GV.MainTopRightPt); end;
+  case Message.CmdType of MENU_ABOUT_ID:  UI.showAboutBox; end;
+  case Message.CmdType of MENU_HELP_ID:   UI.toggleHelpWindow; end;
 end;
 
 function sendSysCommandClose(aHWND: HWND): boolean;
