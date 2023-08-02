@@ -1,1 +1,0 @@
-mpv --demuxer=help --vd=help --ad=help --oac=help --ovc=help --of=help
