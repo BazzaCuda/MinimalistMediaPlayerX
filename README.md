@@ -35,7 +35,7 @@ N.B. Many keys can be held down for rapid repitition.
 
 ### Keyboard Controls
 ---------------------
-Although there are a lot of keyboard controls, each alphabetic letter has been applied intuitively. The action description with therefore help to associate the action with the letter.
+Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
 Control | Action
 ------- | ------
@@ -43,17 +43,48 @@ Control | Action
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
+`RIGHT ARROW`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+`LEFT ARROW`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
+`Up Arrow`              | increase the volume. Can be held down for rapid increase.
+`Down Arrow`            | decrease the volume. Can be held down for rapid decrease.
+`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning.
+`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning.
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning.
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning.
+`Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
+`Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
+`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`Vol+ media key`        | increase the volume. Can be held down for rapid increase.
+`Vol- media key`        | decrease the volume. Can be held down for rapid decrease.
+`Vol-mute media key`    | mute/unmute sound
+`Numpad +`              | increase playback speed. Can be held down for rapid increase.
+`/`                     | increase playback speed. Can be held down for rapid increase.
+`Numpad -`              | decrease playback speed. Can be held down for rapid decrease.
+`\`                     | decrease playback speed. Can be held down for rapid decrease.
+`#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
+`[`                     | decrease gamma setting. Can be held down for rapid decrease.
+`]`                     | increase gamma setting. Can be held down for rapid increase.
+`{`                     | decrease saturation setting. Can be held down for rapid decrease.
+`}`                     | increase saturation setting. Can be held down for rapid increase.
+`'` (single quote)      | reset gamma to normal
+`;`                     | reset saturation to normal
+
+### Alphabetic and Numeric Controls
+---------------
+Control | Action
+------- | ------
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent.
 `Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent.
-`C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
-`Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
+`C`                     | show/hide on-screen [C]ontrols (media info) and media file timestamp
+`Ctrl-C`                | show/hide all on-screen controls, media file timestamp and media metadata
 `D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected
-`E`                     | [E]ars - Mute/Unmute sound
+`E`                     | [E]ars - mute/unmute sound
 `F`                     | show/cancel [F]ullScreen mode
 `G`                     | [G]reater window size. Can be held down for rapid increase.
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
@@ -69,14 +100,13 @@ Control | Action
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
-`T`                     | Tabbing. See below.
+`T`                     | Tab through the media file. See below in Category section
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | maximize / restore [V]iew
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
 `Y`                     | Display all MPV settings (in development)
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset panning to normal
 `3`                     | reset brightness to normal
@@ -89,15 +119,8 @@ Control | Action
 `0`                     | decrease contrast. Can be held down for rapid decrease.
 `-` (Hyphen)            | increase contrast. Can be held down for rapid increase.
 `=`                     | reset contrast to normal 
-`#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
-`[`                     | decrease gamma setting. Can be held down for rapid decrease.
-`]`                     | increase gamma setting. Can be held down for rapid increase.
-`{`                     | decrease saturation setting. Can be held down for rapid decrease.
-`}`                     | increase saturation setting. Can be held down for rapid increase.
-`'` (single quote)      | reset gamma to normal
-`;`                     | reset saturation to normal
-INSERT                  | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
-### By Category
+
+### Full List of Controls By Category
 ---------------
 Control | Action
 ------- | ------
@@ -159,46 +182,51 @@ Saturation |
 `}`                     | increase saturation. Can be held down for rapid increase.
 `;`                     | reset saturation to normal
 Screenshots |
-`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file)
+`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file) (in development)
 Speed |
-`Numpad +`              | increase playback speed. Can be held down for rapid increase.
-`/`                     | increase playback speed. Can be held down for rapid increase.
-`Numpad -`              | decrease playback speed. Can be held down for rapid decrease.
-`\`                     | decrease playback speed. Can be held down for rapid decrease.
+`Numpad +`              | increase playback speed. Can be held down for rapid increase
+`/`                     | increase playback speed. Can be held down for rapid increase
+`Numpad -`              | decrease playback speed. Can be held down for rapid decrease
+`\`                     | decrease playback speed. Can be held down for rapid decrease
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 Tabbing |
-`T`                     | [T]ab through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
-`Ctrl-T`                | [T]ab back through the media file a 100th (default), 200th or 10th of its duration (use ALT (10th) and CAPS LOCK (200th) to modify). Can be held down for rapid tabbing.
+`T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
+`Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
-`CAPS LOCK T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
+`CAPS LOCK-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
 `CAPS LOCK Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
+`SHIFT-T`               | tab forwards 50th of media duration. 
+`Ctrl-SHIFT-T`          | tab backwards 50th of media duration. 
+`Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
+`Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
 Volume |
-`Up Arrow`              | increase the volume. Can be held down for rapid increase.
-`Down Arrow`            | decrease the volume. Can be held down for rapid decrease.
-`Vol+ media key`        | increase the volume. Can be held down for rapid increase.
-`Vol- media key`        | decrease the volume. Can be held down for rapid decrease.
-`Vol-mute media key`    | Mute/Unmute sound
-`E`                     | [E]ars - Mute/Unmute sound
+`Up Arrow`              | increase the volume. Can be held down for rapid increase
+`Down Arrow`            | decrease the volume. Can be held down for rapid decrease
+`Vol+ media key`        | increase the volume. Can be held down for rapid increase
+`Vol- media key`        | decrease the volume. Can be held down for rapid decrease
+`Vol-mute media key`    | mute/unmute sound
+`E`                     | [E]ars - mute/unmute sound
 Window Control |
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `F`                     | show/cancel [F]ullScreen mode
-`G`                     | [G]reater window size. Can be held down for rapid increase.
-`Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease.
+`G`                     | [G]reater window size. Can be held down for rapid increase
+`Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | maximize / restore [V]iew, same as [M]
 Zoom |
-`I`                     | zoom [I]n. Can be held down for rapid zooming in.
-`O`                     | zoom [O]ut. Can be held down for rapid zooming out.
+`I`                     | zoom [I]n. Can be held down for rapid zooming in
+`O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 Additional |
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
-INSERT                  | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal 
 
 Media File Formats
 ------------------

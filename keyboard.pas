@@ -225,7 +225,7 @@ procedure TKeyboard.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState
 // keys that don't generate a standard WM_KEYUP message
 begin
   GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: MP.tab(shiftState, capsLock, 200); end;
+  case GV.altKeyDown of TRUE: MP.tab(shiftState, capsLock, 50); end;
 end;
 
 procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);

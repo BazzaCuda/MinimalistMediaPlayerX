@@ -665,7 +665,8 @@ begin
   case aFactor > 0 of  TRUE: vFactor := aFactor;
                       FALSE: vFactor := 100; end;
 
-  case capsLock of TRUE: vFactor := 200; end;
+  case capsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
+  case ssShift in aShiftState of TRUE: vFactor := 50; end;
 
   vTab := trunc(duration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
