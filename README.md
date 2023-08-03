@@ -46,8 +46,8 @@ Control | Action
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
-`RIGHT ARROW`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
-`LEFT ARROW`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
+`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
+`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning
@@ -138,8 +138,8 @@ Control | Action
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`                     | [R]ename the current media file
 **Freeze Frame** |
-`RIGHT ARROW`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
-`LEFT ARROW`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
+`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
 **Gamma** |
 `[`                     | decrease gamma. Can be held down for rapid decrease
 `]`                     | increase gamma. Can be held down for rapid increase
@@ -149,7 +149,7 @@ Control | Action
 `Left double-click video`           | toggle fullscreen mode
 `Right double-click video`          | toggle fullscreen mode
 `Right single-click video`          | Pause/resume playback
-`with NUMLOCK on`                   | move mouse along the progress bar to "scrub" backwards and forwards through the media file
+`with Numlock on`                   | move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `CTRL`                              | hold ctrl key down and move mouse along the progress bar. Same as above
 **On-Screen Display** |
 `#`                     | briefly show media caption (the filename and its position in the playlist)
@@ -194,10 +194,10 @@ Control | Action
 `Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
-`CAPS LOCK-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
-`CAPS LOCK Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
-`SHIFT-T`               | tab forwards 50th of media duration
-`Ctrl-SHIFT-T`          | tab backwards 50th of media duration
+`Caps Lock-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
+`Caps Lock Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
+`Shift-T`               | tab forwards 50th of media duration
+`Ctrl-Shift-T`          | tab backwards 50th of media duration
 `Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
 `Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
 **Volume** |
