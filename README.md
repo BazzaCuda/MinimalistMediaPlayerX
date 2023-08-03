@@ -124,47 +124,47 @@ Control | Action
 ---------------
 Control | Action
 ------- | ------
-Brightness |
+**Brightness** |
 `8`                     | Decrease brightness. Can be held down for rapid decrease.
 `9`                     | Increase brightness. Can be held down for rapid increase.
 `3`                     | reset brightness to normal
-Contrast |
+**Contrast** |
 `=`                     | increase contrast. Can be held down for rapid increase.
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease.
 `0`                     | reset contrast to normal 
-File Control |
+**File Control** |
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `D` and `DEL`           | [D]elete current media file (after confirmation)
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`                     | [R]ename the current media file
-Freeze Frame |
+**Freeze Frame** |
 `RIGHT ARROW`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `LEFT ARROW`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
-Gamma |
+**Gamma** |
 `[`                     | decrease gamma. Can be held down for rapid decrease;
 `]`                     | increase gamma. Can be held down for rapid increase;
 `'`                     | reset gamma
-Mouse |
+**Mouse** |
 `Left Click on the window and hold` | the window can be dragged/repositioned
 `Left double-click video`           | toggle fullscreen mode
 `Right double-click video`          | toggle fullscreen mode
 `Right single-click video`          | Pause/resume playback
 `with NUMLOCK on`                   | move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `CTRL`                              | hold ctrl key down and move mouse along the progress bar. Same as above.
-On-Screen Display |
+**On-Screen Display** |
 `#`                     | briefly show media caption (the filename and its position in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file.
 `Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file.
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
-Panning |
+**Panning** |
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning.
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning.
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning.
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning.
 `2`                     | reset panning to normal.
-Playlist |
+**Playlist** |
 `A`                     | play the first media file in the playlist (Z/END plays last)
 `HOME`                  | play the first media file in the playlist (Z/END plays last)
 `Z`                     | play the last media file in the playlist (A/HOME plays the first)
@@ -173,23 +173,23 @@ Playlist |
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `L`                     | re[L]oad the list of supported media files from the current folder
-Rotating |
+**Rotating** |
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `4`                     | reset rotation to normal/not rotated
-Saturation |
+**Saturation** |
 `{`                     | decrease saturation. Can be held down for rapid decrease.
 `}`                     | increase saturation. Can be held down for rapid increase.
 `;`                     | reset saturation to normal
-Screenshots |
+**Screenshots** |
 `F5`                    | save a screenshot of the current frame (currently to the same folder as the media file) (in development)
-Speed |
+**Speed** |
 `Numpad +`              | increase playback speed. Can be held down for rapid increase
 `/`                     | increase playback speed. Can be held down for rapid increase
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `1`                     | reset the playback speed to normal, i.e. [1]00%
-Tabbing |
+**Tabbing** |
 `T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
@@ -200,14 +200,14 @@ Tabbing |
 `Ctrl-SHIFT-T`          | tab backwards 50th of media duration. 
 `Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
 `Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
-Volume |
+**Volume** |
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
 `Vol+ media key`        | increase the volume. Can be held down for rapid increase
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease
 `Vol-mute media key`    | mute/unmute sound
 `E`                     | [E]ars - mute/unmute sound
-Window Control |
+**Window Control** |
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `F`                     | show/cancel [F]ullScreen mode
 `G`                     | [G]reater window size. Can be held down for rapid increase
@@ -217,11 +217,11 @@ Window Control |
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | maximize / restore [V]iew, same as [M]
-Zoom |
+**Zoom** |
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-Additional |
+**Additional** |
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
@@ -238,4 +238,4 @@ Dependencies
 
 2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV). If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``Minimalist Media Player`` will still ask for confirmation, nothing will happen.
 
-3. Massive credit goes to Edward Guo for his excellent port of libmpv to Delphi, https://github.com/nbuyer/libmpvdelphi
+3. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
