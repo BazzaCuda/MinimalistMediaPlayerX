@@ -7,7 +7,7 @@ A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
 
 Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. This provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
 
-This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this incarnation of ``Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
+This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of ``Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
 
 ![Clipboard Image](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/6d824225-dd62-42f1-9b41-15527ed35edc)
 
