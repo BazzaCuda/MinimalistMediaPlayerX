@@ -1,7 +1,7 @@
 Minimalist Media Player
 =====================
 
-A simple but ``very`` effective media player built on MVP's API, libMPV-2.dll
+A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
 
 ``Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. Keyboard options allow you to have no borders, no window title bar/caption, no progress bar, no video timestamp, etc.
 
