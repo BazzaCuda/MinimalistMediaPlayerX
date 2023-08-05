@@ -106,7 +106,7 @@ var
   MediaInfoA_State_Get: function  (Handle: THandle): Integer cdecl stdcall;
   MediaInfoA_Count_Get: function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer): Integer cdecl stdcall;
 
-function MediaInfoDLL_Load(LibPath: string): boolean;
+function MediaInfoDLL_Load(const LibPath: string): boolean;
 
 {$ENDIF}
 
@@ -119,7 +119,7 @@ begin
   Result := Addr <> nil;
 end;
 
-function MediaInfoDLL_Load(LibPath: string): boolean;
+function MediaInfoDLL_Load(const LibPath: string): boolean;
 begin
   Result := False;
 

@@ -40,8 +40,8 @@ type
     FShiftState:  TShiftState;
     FUpDn:        TKeyDirection;
   private
-    function keyIs(aChar: char): boolean; overload;
-    function keyIs(aKeyCode: word): boolean; overload;
+    function keyIs(const aChar: char): boolean; overload;
+    function keyIs(const aKeyCode: word): boolean; overload;
     function getKeyOp: TKeyOp;
     function getKeyUp: boolean;
     function getKeyDn: boolean;
@@ -211,12 +211,12 @@ begin
   result := ssShift in shiftState;
 end;
 
-function TKeyboard.keyIs(aChar: char): boolean;
+function TKeyboard.keyIs(const aChar: char): boolean;
 begin
   result := key = ord(aChar);
 end;
 
-function TKeyboard.keyIs(aKeyCode: word): boolean;
+function TKeyboard.keyIs(const aKeyCode: word): boolean;
 begin
   result := key = aKeyCode;
 end;
@@ -295,7 +295,7 @@ begin
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
     koReloadPlaylist:    CU.reloadPlaylist(extractFilePath(PL.currentItem));
-    koAlwaysPot:         GV.alwaysPot := NOT GV.alwaysPot;
+    koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
     koPanReset:          MP.panReset;
     koBrightnessReset:   MP.brightnessReset;
     koBookmarkSave:      BM.save;

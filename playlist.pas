@@ -32,15 +32,15 @@ type
     destructor  Destroy; override;
     function extractNumericPart(const S: string): Integer;
   public
-    function add(anItem: string): boolean;
+    function add(const anItem: string): boolean;
     function clear: boolean;
     function count: integer;
     function copyToClipboard: boolean;
     function currentItem: string;
     function currentIx: integer;
-    function delete(anIx: integer = -1): boolean;
+    function delete(const anIx: integer = -1): boolean;
     function displayItem: string;
-    function find(anItem: string): boolean;
+    function find(const anItem: string): boolean;
     function first: boolean;
     function formattedItem: string;
     function hasItems: boolean;
@@ -49,10 +49,10 @@ type
     function last: boolean;
     function next: boolean;
     function prev: boolean;
-    function replaceCurrentItem(aNewItem: string): boolean;
+    function replaceCurrentItem(const aNewItem: string): boolean;
     function sort: boolean;
-    function thisItem(anIx: integer): string;
-    function validIx(anIx: integer): boolean;
+    function thisItem(const anIx: integer): string;
+    function validIx(const anIx: integer): boolean;
   end;
 
 function PL: TPlaylist;
@@ -73,7 +73,7 @@ end;
 
 { TPlaylist }
 
-function TPlaylist.add(anItem: string): boolean;
+function TPlaylist.add(const anItem: string): boolean;
 begin
   FPlayList.add(anItem);
 //  FPlayIx := FPlayList.count - 1; // NO!
@@ -117,7 +117,7 @@ begin
   result := FPlayIx;
 end;
 
-function TPlaylist.delete(anIx: integer = -1): boolean;
+function TPlaylist.delete(const anIx: integer = -1): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
@@ -142,7 +142,7 @@ begin
   result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
 end;
 
-function TPlaylist.find(anItem: string): boolean;
+function TPlaylist.find(const anItem: string): boolean;
 begin
   FPlayIx := FPlaylist.indexOf(anItem);
   result  := FPlayIx <> -1;
@@ -201,7 +201,7 @@ begin
   result := TRUE;
 end;
 
-function TPlaylist.replaceCurrentItem(aNewItem: string): boolean;
+function TPlaylist.replaceCurrentItem(const aNewItem: string): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
@@ -221,7 +221,7 @@ begin
     Result := 0;
 end;
 
-function compareStr(Str1,Str2: string):Integer;
+function compareStr(Str1: string; Str2: string):Integer;
 // implements "Natural Sort Order" - author: dinilud 16/01/2008 on experts-exchange.com
 var Num1,Num2:Double;
     pStr1,pStr2:PChar;
@@ -295,7 +295,7 @@ begin
   result := TRUE;
 end;
 
-function TPlaylist.thisItem(anIx: integer): string;
+function TPlaylist.thisItem(const anIx: integer): string;
 begin
   result := '';
   case hasItems of FALSE: EXIT; end;
@@ -303,7 +303,7 @@ begin
   result := FPlaylist[anIx];
 end;
 
-function TPlaylist.validIx(anIx: integer): boolean;
+function TPlaylist.validIx(const anIx: integer): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;

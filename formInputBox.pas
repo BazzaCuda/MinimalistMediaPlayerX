@@ -34,7 +34,7 @@ type
   public
   end;
 
-function inputBoxForm(APrompt: string): string;
+function inputBoxForm(const APrompt: string): string;
 
 implementation
 
@@ -44,7 +44,7 @@ uses vcl.themes, vcl.styles, globalVars, commonUtils;
 
 { TInputBoxForm }
 
-function inputBoxForm(APrompt: string): string;
+function inputBoxForm(const APrompt: string): string;
 var
   vInputBoxForm: TInputBoxForm;
 begin

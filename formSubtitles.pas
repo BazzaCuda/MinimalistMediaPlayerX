@@ -50,7 +50,7 @@ type
   public
     destructor Destroy; override;
     procedure  formResize;
-    function   initSubtitles(aVideoPanel: TPanel): boolean;
+    function   initSubtitles(const aVideoPanel: TPanel): boolean;
     property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND    read getHWND;
@@ -176,7 +176,7 @@ begin
   result := SELF.HANDLE;
 end;
 
-function TSubtitlesForm.initSubtitles(aVideoPanel: TPanel): boolean;
+function TSubtitlesForm.initSubtitles(const aVideoPanel: TPanel): boolean;
 begin
   case FInitialized of TRUE: EXIT; end;
   FVideoPanel := aVideoPanel;

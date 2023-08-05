@@ -23,7 +23,7 @@ interface
 uses winAPI.messages, consts, formAbout, commonUtils, winAPI.windows, formHelp, globalVars, mediaPlayer, forms;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
-function sendSysCommandClose(aHWND: HWND): boolean;
+function sendSysCommandClose(const aHWND: HWND): boolean;
 
 implementation
 
@@ -36,7 +36,7 @@ begin
   case Message.CmdType of MENU_HELP_ID:   UI.toggleHelpWindow; end;
 end;
 
-function sendSysCommandClose(aHWND: HWND): boolean;
+function sendSysCommandClose(const aHWND: HWND): boolean;
 begin
   postMessage(aHWND, WM_CLOSE, 0, 0);
 end;

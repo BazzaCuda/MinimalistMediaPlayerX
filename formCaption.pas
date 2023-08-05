@@ -38,7 +38,7 @@ type
     constructor create;
     destructor Destroy; override;
     procedure formResize(Sender: TObject);
-    function initCaption(aVideoPanel: TPanel): boolean;
+    function initCaption(const aVideoPanel: TPanel): boolean;
     property caption: string write setCaption;
   end;
 
@@ -89,7 +89,7 @@ begin
   FCaption.top  := SELF.height - FCaption.height;
 end;
 
-function TCaptionForm.initCaption(aVideoPanel: TPanel): boolean;
+function TCaptionForm.initCaption(const aVideoPanel: TPanel): boolean;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     aLabel.font.name      := 'Tahoma';

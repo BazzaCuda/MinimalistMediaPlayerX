@@ -33,17 +33,18 @@ type
     FTimerEvent: TTimerEvent;
 
     FDontPlayNext: boolean;
-    FForm: TForm;
     FVol:  double;
     FX:    int64;
     FY:    int64;
-  private
     FPlaying: boolean;
+    FAlwaysPot: boolean;
+  private
+
     constructor create;
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
-    function checkPot(const aAlwaysPot: boolean): boolean;
+    function checkPot: boolean;
     function getFormattedBrightness: string;
     function getFormattedContrast: string;
     function getFormattedDuration: string;
@@ -76,7 +77,7 @@ type
     function gammaDn: boolean;
     function gammaReset: boolean;
     function gammaUp: boolean;
-    function initMediaPlayer(aForm: TForm): boolean;
+    function initMediaPlayer: boolean;
     function muteUnmute: boolean;
     function openURL(const aURL: string): boolean;
     function panDn: boolean;
@@ -112,6 +113,7 @@ type
     function zoomIn: boolean;
     function zoomOut: boolean;
     function zoomReset: boolean;
+    property alwaysPot:           boolean   read FAlwaysPot write FAlwaysPot;
     property dontPlayNext:        boolean   read FDontPlayNext write FDontPlayNext;
     property duration:            integer   read getDuration;
     property formattedDuration:   string    read getFormattedDuration;
@@ -185,9 +187,9 @@ begin
   ST.opInfo := getFormattedBrightness;
 end;
 
-function TMediaPlayer.checkPot(const aAlwaysPot: boolean): boolean;
+function TMediaPlayer.checkPot: boolean;
 begin
-  case aAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
+  case FAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
 end;
 
 function TMediaPlayer.contrastDn: boolean;
@@ -366,7 +368,7 @@ begin
   result := trunc(mpv.volume);
 end;
 
-function TMediaPlayer.initMediaPlayer(aForm: TForm): boolean;
+function TMediaPlayer.initMediaPlayer: boolean;
 begin
   FVol := CF.asInteger['volume'];
 end;
@@ -415,7 +417,7 @@ begin
   result := TRUE;
 end;
 
-function TMediaPlayer.panDn: boolean;
+function TMediaPlayer.panDn: boolean;                                               
 var
   panY: double;
 begin
@@ -488,7 +490,7 @@ begin
   MC.caption := PL.formattedItem;
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
-  checkPot(GV.alwaysPot);
+  checkPot;
   result := TRUE;
 end;
 

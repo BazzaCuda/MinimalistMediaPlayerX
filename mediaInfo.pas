@@ -45,8 +45,8 @@ type
     function getStereoMono: string;
     procedure setURL(const Value: string);
   public
-    function getData(aMemo: TMemo): boolean;
-    function initMediaInfo(aURL: string): boolean;
+    function getData(const aMemo: TMemo): boolean;
+    function initMediaInfo(const aURL: string): boolean;
     property audioBitRate:      string  read getAudioBitRate;
     property fileSize:          string  read getFileSize;
     property overallBitRate:    string  read getOverallBitRate;
@@ -82,7 +82,7 @@ begin
   result := format('AR:  %d Kb/s', [round(FAudioBitRate / 1000)]);
 end;
 
-function TMediaInfo.getData(aMemo: TMemo): boolean;
+function TMediaInfo.getData(const aMemo: TMemo): boolean;
 begin
   case FNeedInfo of TRUE: initMediaInfo(FURL); end;
   aMemo.clear;
@@ -128,7 +128,7 @@ begin
   result := format('XY:  %d x %d', [X, Y]);
 end;
 
-function TMediaInfo.initMediaInfo(aURL: string): boolean;
+function TMediaInfo.initMediaInfo(const aURL: string): boolean;
 var
   handle: THandle;
 begin

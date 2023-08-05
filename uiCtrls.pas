@@ -34,35 +34,35 @@ type
     FShowingPlaylist: boolean;
     FVideoPanel: TPanel;
   private
-    function addMenuItems(aForm: TForm): boolean;
-    function setCustomTitleBar(aForm: TForm): boolean;
-    function setGlassFrame(aForm: TForm): boolean;
-    function setWindowStyle(aForm: TForm): boolean;
-    function createVideoPanel(aForm: TForm): boolean;
+    function addMenuItems(const aForm: TForm): boolean;
+    function setCustomTitleBar(const aForm: TForm): boolean;
+    function setGlassFrame(const aForm: TForm): boolean;
+    function setWindowStyle(const aForm: TForm): boolean;
+    function createVideoPanel(const aForm: TForm): boolean;
     function getWidth: integer;
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   public
     procedure formResize(sender: TObject);
-    function adjustAspectRatio(aWnd: HWND; X, Y: int64): boolean;
-    function centreWindow(aWnd: HWND): boolean;
-    function checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
-    function deleteCurrentItem(shift: TShiftState): boolean;
+    function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
+    function centreWindow(const aWnd: HWND): boolean;
+    function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
+    function deleteCurrentItem(const shift: TShiftState): boolean;
     function doEscapeKey: boolean;
-    function greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
+    function greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
     function handle: HWND;
     function initUI(const aForm: TForm): boolean;
-    function keepFile(aFilePath: string): boolean;
+    function keepFile(const aFilePath: string): boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
-    function openExternalApp(anApp: string; aParams: string): boolean;
-    function renameFile(aFilePath: string): boolean;
+    function openExternalApp(const anApp: string; const aParams: string): boolean;
+    function renameFile(const aFilePath: string): boolean;
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
     function showWindow: boolean;
-    function smallerWindow(aWnd: HWND): boolean;
+    function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
-    function toggleControls(shift: TShiftState): boolean;
+    function toggleControls(const shift: TShiftState): boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
@@ -91,7 +91,7 @@ end;
 
 { TUI }
 
-function TUI.addMenuItems(aForm: TForm): boolean;
+function TUI.addMenuItems(const aForm: TForm): boolean;
 begin
   var vSysMenu := getSystemMenu(aForm.handle, FALSE);
   AppendMenu(vSysMenu, MF_SEPARATOR, 0, '');
@@ -99,7 +99,7 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.adjustAspectRatio(aWnd: HWND; X: int64; Y: int64): boolean;
+function TUI.adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
 var
   vRatio: double;
   vWidth, vHeight: integer;
@@ -118,7 +118,7 @@ begin
   case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
 
-function TUI.centreWindow(aWnd: HWND): boolean;
+function TUI.centreWindow(const aWnd: HWND): boolean;
 var
   vR: TRect;
 begin
@@ -130,7 +130,7 @@ begin
   application.processMessages;
 end;
 
-function TUI.checkScreenLimits(aWnd: HWND; aWidth: integer; aHeight: integer): boolean;
+function TUI.checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
 var
   vR: TRect;
   vWidth: integer;
@@ -149,7 +149,7 @@ begin
   case screen <> NIL of TRUE: screen.cursor := crDefault; end;
 end;
 
-function TUI.createVideoPanel(aForm: TForm): boolean;
+function TUI.createVideoPanel(const aForm: TForm): boolean;
 begin
   FVideoPanel        := TPanel.create(aForm);
   FVideoPanel.parent := aForm;
@@ -159,7 +159,7 @@ begin
   FVideoPanel.OnMouseMove := onMouseMove;
 end;
 
-function TUI.deleteCurrentItem(shift: TShiftState): boolean;
+function TUI.deleteCurrentItem(const shift: TShiftState): boolean;
 begin
   case PL.hasItems of FALSE: EXIT; end;
   MP.pause;
@@ -196,7 +196,7 @@ begin
   ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 end;
 
-function TUI.smallerWindow(aWnd: HWND): boolean;
+function TUI.smallerWindow(const aWnd: HWND): boolean;
 begin
   greaterWindow(aWnd, [ssCtrl]);
 end;
@@ -206,7 +206,7 @@ begin
   result := FMainForm.width;
 end;
 
-function TUI.greaterWindow(aWnd: HWND; shift: TShiftState): boolean;
+function TUI.greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
 const
   dx = 50;
   dy = 30;
@@ -272,7 +272,7 @@ begin
   aForm.height        := 300;
 end;
 
-function TUI.keepFile(aFilePath: string): boolean;
+function TUI.keepFile(const aFilePath: string): boolean;
 var
   vNewName: string;
 begin
@@ -292,13 +292,13 @@ begin
    application.Minimize;
 end;
 
-function TUI.openExternalApp(anApp, aParams: string): boolean;
+function TUI.openExternalApp(const anApp, aParams: string): boolean;
 begin
   MP.pause;
   CU.shellExec(anApp, aParams);
 end;
 
-function TUI.renameFile(aFilePath: string): boolean;
+function TUI.renameFile(const aFilePath: string): boolean;
 var
   vNewName: string;
 begin
@@ -310,7 +310,7 @@ begin
   MP.resume;
 end;
 
-function TUI.setCustomTitleBar(aForm: TForm): boolean;
+function TUI.setCustomTitleBar(const aForm: TForm): boolean;
 begin
   aForm.customTitleBar.enabled        := TRUE;
   aForm.customTitleBar.showCaption    := FALSE;
@@ -321,7 +321,7 @@ begin
   aForm.customTitleBar.height         := 1; // systemHeight=FALSE must be set before this
 end;
 
-function TUI.setGlassFrame(aForm: TForm): boolean;
+function TUI.setGlassFrame(const aForm: TForm): boolean;
 begin
   aForm.glassFrame.enabled  := TRUE;
   aForm.glassFrame.top      := 1;
@@ -335,7 +335,7 @@ begin
                                       FMainForm.height := trunc(FMainForm.width * 0.75); end;end;
 end;
 
-function TUI.setWindowStyle(aForm: TForm): boolean;
+function TUI.setWindowStyle(const aForm: TForm): boolean;
 begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
 end;
@@ -367,7 +367,7 @@ begin
   showPlaylist(vPt, create);
 end;
 
-function TUI.toggleControls(shift: TShiftState): boolean;
+function TUI.toggleControls(const shift: TShiftState): boolean;
 // we call them "controls" but they're actually the media info and the time display at the bottom of the window
 // a left-over from this app's pre-minimalist days
 begin

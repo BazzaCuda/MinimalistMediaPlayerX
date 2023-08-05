@@ -42,13 +42,13 @@ type
   protected
     constructor create;
     procedure onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
-    function  setNewPosition(x: integer): integer;
+    function  setNewPosition(const x: integer): integer;
   public
     destructor  Destroy; override;
     function brighter: boolean;
     function darker: boolean;
     function formResize: boolean;
-    function initProgressBar(aForm: TForm): boolean;
+    function initProgressBar(const aForm: TForm): boolean;
     property initialized: boolean read FInitialized;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -122,7 +122,7 @@ begin
   result := FPB.Top;
 end;
 
-function TProgressBar.initProgressBar(aForm: TForm): boolean;
+function TProgressBar.initProgressBar(const aForm: TForm): boolean;
 begin
   FPB.parent           := aForm;
   FPB.align            := alBottom;
@@ -186,7 +186,7 @@ begin
   FPB.max := Value;
 end;
 
-function TProgressBar.setNewPosition(x: integer): integer;
+function TProgressBar.setNewPosition(const x: integer): integer;
 begin
   FPB.Position := round(x * FPB.max / FPB.clientWidth);
 end;

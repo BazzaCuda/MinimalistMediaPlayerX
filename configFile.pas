@@ -36,7 +36,7 @@ type
   public
     constructor create;
     destructor destroy; override;
-    function deleteName(aName: string): boolean;
+    function deleteName(const aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
     property asInteger[const aName: string]: integer read getAsInteger;
     property value[const aName: string]: string read getValue write setValue;
@@ -66,7 +66,7 @@ begin
   FFileContents := TStringList.create;
 end;
 
-function TConfigFile.deleteName(aName: string): boolean;
+function TConfigFile.deleteName(const aName: string): boolean;
 begin
   FFileContents.delete(FFileContents.indexOfName(aName));
   saveConfigFile;

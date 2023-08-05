@@ -44,8 +44,8 @@ type
     procedure btnOKClick(Sender: TObject);
   private
   public
-    function setBuildVersion(aBuild: string): boolean;
-    function setReleaseVersion(aRelease: string): boolean;
+    function setBuildVersion(const aBuild: string): boolean;
+    function setReleaseVersion(const aRelease: string): boolean;
   end;
 
 function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
@@ -81,12 +81,12 @@ begin
   ShellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX', '', '', SW_SHOW);
 end;
 
-function TAboutForm.setBuildVersion(aBuild: string): boolean;
+function TAboutForm.setBuildVersion(const aBuild: string): boolean;
 begin
   lblBuildVersion.Caption := aBuild;
 end;
 
-function TAboutForm.setReleaseVersion(aRelease: string): boolean;
+function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
 begin
   lblReleaseVersion.Caption := aRelease;
 end;

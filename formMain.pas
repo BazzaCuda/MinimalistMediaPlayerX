@@ -54,7 +54,7 @@ begin
 ============}
   UI.initUI(SELF);
   CF.initConfigFile(CU.getConfigFilePath);
-  MP.initMediaPlayer(SELF);
+  MP.initMediaPlayer;
   ST.initSubtitles(UI.videoPanel);
   MC.initCaption(UI.videoPanel);
   PB.initProgressBar(ST);
