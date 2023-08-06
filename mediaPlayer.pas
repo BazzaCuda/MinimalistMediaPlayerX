@@ -147,18 +147,18 @@ end;
 
 { TMediaPlayer }
 
-function TMediaPlayer.allReset: boolean;
-begin
-  brightnessReset;
-  contrastReset;
-  gammaReset;
-  panReset;
-  rotateReset;
-  saturationReset;
-  speedReset;
-  zoomReset;
-  ST.opInfo := 'All reset';
-end;
+  function TMediaPlayer.allReset: boolean;
+  begin
+    brightnessReset;
+    contrastReset;
+    gammaReset;
+    panReset;
+    rotateReset;
+    saturationReset;
+    speedReset;
+    zoomReset;
+    ST.opInfo := 'All reset';
+  end;
 
 function TMediaPlayer.brightnessDn: boolean;
 var
