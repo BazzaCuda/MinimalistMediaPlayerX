@@ -78,7 +78,7 @@ begin
                                                 postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
 
   UI.Initialized := TRUE; // don't allow UI.formResize to do anything until the first media plays.
-  postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
+  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);
