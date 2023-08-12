@@ -250,7 +250,7 @@ begin
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:          sendSysCommandClose(UI.handle);
+    koCloseApp:          begin MP.stop; sendSysCommandClose(UI.handle); end;
     koVolUp:             MP.volUp;
     koVolDn:             MP.volDown;
     koTab:               MP.tab(aShiftState, KB.capsLock);
