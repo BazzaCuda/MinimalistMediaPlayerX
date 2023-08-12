@@ -149,7 +149,7 @@ begin
 
     FStereoMono := mediaInfo_Get(handle, Stream_Audio,  0, 'Title',         Info_Text, Info_Name);
 
-    FNeedInfo := FALSE;
+//    FNeedInfo := FALSE;         // get info each time the user asks for it
   finally
     mediaInfo_close(handle);
   end;
