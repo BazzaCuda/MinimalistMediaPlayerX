@@ -44,16 +44,12 @@ type
   TGlobalVars = class(TObject)
   strict private
     FAppWnd: HWND;
-    FCloseTimer: TTimer;
   private
     FAltKeyDown: boolean;
     FUserInput: boolean;
-//    procedure onCloseTimerEvent(sender: TObject);
-//    procedure setCloseApp(const Value: boolean);
   public
     constructor create;
     destructor  destroy;
-//    property closeApp: boolean write setCloseApp;
     property altKeyDown: boolean read FAltKeyDown write FAltKeyDown;
     property appWnd: HWND read FAppWnd write FAppWnd;
     property userInput: boolean read FUserInput write FUserInput;
@@ -84,24 +80,8 @@ end;
 
 destructor TGlobalVars.destroy;
 begin
-//  case FCloseTimer <> NIL of TRUE: FCloseTimer.free; end;
   inherited;
 end;
-
-//procedure TGlobalVars.onCloseTimerEvent(sender: TObject);
-//begin
-//  FCloseTimer.enabled := FALSE;
-//  sendSysCommandClose(UI.handle);
-//end;
-//
-//procedure TGlobalVars.setCloseApp(const Value: boolean);
-//begin
-//  FCloseTimer := TTimer.create(NIL);
-//  FCloseTimer.enabled := FALSE;
-//  FCloseTimer.interval := 100;
-//  FCloseTimer.OnTimer := onCloseTimerEvent;
-//  FCloseTimer.enabled := value;
-//end;
 
 initialization
   gGV := NIL;
