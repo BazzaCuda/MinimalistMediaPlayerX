@@ -47,7 +47,7 @@ type
     function initTransparentForm(const aForm: TForm): TForm;
     function initTransparentLabel(const aLabel: TLabel): boolean;
     function offScreen(const aHWND: HWND): boolean;
-    function reloadPlaylist(const aFolder: string): boolean;
+    function reloadPlaylist(const aFolder: string): string;
     function renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
     function shellExec(const anExePath: string; const aParams: string): boolean;
     function showOKCancelMsgDlg(const aMsg: string;
@@ -316,7 +316,7 @@ begin
   result := (vR.bottom > getScreenHeight) or (vR.right > getScreenWidth) or (vR.left < 0) or (vR.top < 0);
 end;
 
-function TCommonUtils.reloadPlaylist(const aFolder: string): boolean;
+function TCommonUtils.reloadPlaylist(const aFolder: string): string;
 begin
   var vIx              := PL.currentIx;
   var vCurrentItem     := PL.currentItem;
@@ -332,7 +332,7 @@ begin
                                                                         PL.first;
                                                                         MP.play(PL.currentItem); end;end;end;
   MC.caption := PL.formattedItem;
-  ST.opInfo  := 'Playlist reloaded';
+  result := 'Playlist reloaded';
 end;
 
 function TCommonUtils.renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;

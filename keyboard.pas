@@ -289,12 +289,12 @@ begin
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
-    koReloadPlaylist:    CU.reloadPlaylist(extractFilePath(PL.currentItem));
+    koReloadPlaylist:    ST.opInfo := CU.reloadPlaylist(extractFilePath(PL.currentItem));
     koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koBookmarkSave:      ST.opInfo := BM.save;
-    koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: MP.position := BM.asInteger; end;
+    koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: begin MP.position := BM.asInteger; ST.opInfo := 'From bookmark'; end;end;
     koBookmarkDelete:    ST.opInfo := BM.delete;
     koRotateReset:       ST.opInfo := MP.rotateReset;
     koAllReset:          ST.opInfo := MP.allReset;

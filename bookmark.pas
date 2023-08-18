@@ -37,7 +37,7 @@ function BM: TBookmark;
 implementation
 
 uses
-  system.sysUtils, playlist, configFile, mediaPlayer, formSubtitles;
+  system.sysUtils, playlist, configFile, mediaPlayer;
 
 var
   gBM: TBookmark;
@@ -53,7 +53,6 @@ end;
 function TBookmark.asInteger: integer;
 begin
   result := CF.asInteger[PL.currentItem];
-  ST.opInfo := 'From bookmark';
 end;
 
 function TBookmark.delete: string;
