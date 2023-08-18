@@ -28,8 +28,8 @@ type
   private
   public
     function asInteger: integer;
-    function delete:    boolean;
-    function save:      boolean;
+    function delete:    string;
+    function save:      string;
   end;
 
 function BM: TBookmark;
@@ -56,10 +56,10 @@ begin
   ST.opInfo := 'From bookmark';
 end;
 
-function TBookmark.delete: boolean;
+function TBookmark.delete: string;
 begin
-  result := CF.deleteName(PL.currentItem);
-  ST.opInfo := 'Bookmark deleted';
+  CF.deleteName(PL.currentItem);
+  result := 'Bookmark deleted';
 end;
 
 function TBookmark.release: boolean;
@@ -67,10 +67,10 @@ begin
   freeAndNIL(gBM);
 end;
 
-function TBookmark.save: boolean;
+function TBookmark.save: string;
 begin
   CF.value[PL.currentItem] := intToStr(MP.position);
-  ST.opInfo := 'Bookmarked';
+  result := 'Bookmarked';
   release;
 end;
 

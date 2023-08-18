@@ -71,7 +71,7 @@ implementation
 
 uses
   sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, UICtrls, consts, globalVars, commonUtils, vcl.forms,
-  system.sysUtils, bookmark, progressBar, _debugWindow;
+  system.sysUtils, bookmark, progressBar, formSubtitles, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -246,31 +246,31 @@ begin
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
     koCloseApp:          begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;
-    koVolUp:             MP.volUp;
-    koVolDn:             MP.volDown;
-    koTab:               MP.tab(aShiftState, KB.capsLock);
-    koTabTab:            MP.tab(aShiftState, KB.capsLock, -1);
+    koVolUp:             ST.opInfo := MP.volUp;
+    koVolDn:             ST.opInfo := MP.volDown;
+    koTab:               ST.opInfo := MP.tab(aShiftState, KB.capsLock);
+    koTabTab:            ST.opInfo := MP.tab(aShiftState, KB.capsLock, -1);
     koPausePlay:         MP.pausePlay;
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
     koAdjustAspectRatio: UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight);
-    koBrightnessUp:      MP.brightnessUp;
-    koBrightnessDn:      MP.brightnessDn;
-    koZoomIn:            MP.zoomIn;
-    koZoomOut:           MP.zoomOut;
-    koStartOver:         MP.startOver;
+    koBrightnessUp:      ST.opInfo := MP.brightnessUp;
+    koBrightnessDn:      ST.opInfo := MP.brightnessDn;
+    koZoomIn:            ST.opInfo := MP.zoomIn;
+    koZoomOut:           ST.opInfo := MP.zoomOut;
+    koStartOver:         ST.opInfo := MP.startOver;
     koShowCaption:       MC.caption := PL.formattedItem;
-    koMuteUnmute:        MP.muteUnmute;
+    koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koPlayNext:          MP.playNext;
     koPlayPrev:          MP.playPrev;
-    koPanLeft:           MP.panLeft;
-    koPanRight:          MP.panRight;
-    koPanUp:             MP.panUp;
-    koPanDn:             MP.panDn;
-    koRotateR:           MP.rotateRight;
-    koRotateL:           MP.rotateLeft;
+    koPanLeft:           ST.opInfo := MP.panLeft;
+    koPanRight:          ST.opInfo := MP.panRight;
+    koPanUp:             ST.opInfo := MP.panUp;
+    koPanDn:             ST.opInfo := MP.panDn;
+    koRotateR:           ST.opInfo := MP.rotateRight;
+    koRotateL:           ST.opInfo := MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
-    koZoomReset:         MP.zoomReset;
+    koZoomReset:         ST.opInfo := MP.zoomReset;
     koGreaterWindow:     UI.greaterWindow(UI.handle, aShiftState);
     koPlayFirst:         MP.playFirst;
     koPlayLast:          MP.playLast;
@@ -283,30 +283,30 @@ begin
     koMinimizeWindow:    UI.minimizeWindow;
     koDeleteCurrentItem: UI.deleteCurrentItem(aShiftState);
     koRenameFile:        UI.renameFile(PL.currentItem);
-    koSpeedUp:           MP.speedUp;
-    koSpeedDn:           MP.speedDn;
-    koSpeedReset:        MP.speedReset;
+    koSpeedUp:           ST.opInfo := MP.speedUp;
+    koSpeedDn:           ST.opInfo := MP.speedDn;
+    koSpeedReset:        ST.opInfo := MP.speedReset;
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
     koReloadPlaylist:    CU.reloadPlaylist(extractFilePath(PL.currentItem));
     koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
-    koPanReset:          MP.panReset;
-    koBrightnessReset:   MP.brightnessReset;
-    koBookmarkSave:      BM.save;
+    koPanReset:          ST.opInfo := MP.panReset;
+    koBrightnessReset:   ST.opInfo := MP.brightnessReset;
+    koBookmarkSave:      ST.opInfo := BM.save;
     koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: MP.position := BM.asInteger; end;
-    koBookmarkDelete:    BM.delete;
-    koRotateReset:       MP.rotateReset;
-    koAllReset:          MP.allReset;
-    koContrastUp:        MP.contrastUp;
-    koContrastDn:        MP.contrastDn;
-    koContrastReset:     MP.contrastReset;
-    koGammaUp:           MP.gammaUp;
-    koGammaDn:           MP.gammaDn;
-    koSaturationUp:      MP.saturationUp;
-    koSaturationDn:      MP.saturationDn;
-    koGammaReset:        MP.gammaReset;
-    koSaturationReset:   MP.saturationReset;
+    koBookmarkDelete:    ST.opInfo := BM.delete;
+    koRotateReset:       ST.opInfo := MP.rotateReset;
+    koAllReset:          ST.opInfo := MP.allReset;
+    koContrastUp:        ST.opInfo := MP.contrastUp;
+    koContrastDn:        ST.opInfo := MP.contrastDn;
+    koContrastReset:     ST.opInfo := MP.contrastReset;
+    koGammaUp:           ST.opInfo := MP.gammaUp;
+    koGammaDn:           ST.opInfo := MP.gammaDn;
+    koSaturationUp:      ST.opInfo := MP.saturationUp;
+    koSaturationDn:      ST.opInfo := MP.saturationDn;
+    koGammaReset:        ST.opInfo := MP.gammaReset;
+    koSaturationReset:   ST.opInfo := MP.saturationReset;
     koShowHelp:          UI.toggleHelpWindow;
     koBrighterPB:        PB.brighter;
     koDarkerPB:          PB.darker;
