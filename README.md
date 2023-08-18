@@ -20,6 +20,8 @@ Opening a media file from Windows Explorer (etc.) will automatically fill the pl
 
 You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
 
+If a corresponding subtitle file exists for the media file (.srt file, for example), the subtitles will be shown automatically.
+
 All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
 ``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
