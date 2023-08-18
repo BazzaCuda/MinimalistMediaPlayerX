@@ -27,9 +27,9 @@ type
   protected
   private
   public
-    function asInteger: integer;
-    function delete:    string;
-    function save:      string;
+    function asInteger(aURL: string):  integer;
+    function delete(aURL: string):     string;
+    function save(aURL: string; aPosition: integer): string;
   end;
 
 function BM: TBookmark;
@@ -37,7 +37,7 @@ function BM: TBookmark;
 implementation
 
 uses
-  system.sysUtils, playlist, configFile, mediaPlayer;
+  system.sysUtils, configFile;
 
 var
   gBM: TBookmark;
@@ -50,14 +50,14 @@ end;
 
 { TBookmark }
 
-function TBookmark.asInteger: integer;
+function TBookmark.asInteger(aURL: string): integer;
 begin
-  result := CF.asInteger[PL.currentItem];
+  result := CF.asInteger[aURL];
 end;
 
-function TBookmark.delete: string;
+function TBookmark.delete(aURL: string): string;
 begin
-  CF.deleteName(PL.currentItem);
+  CF.deleteName(aURL);
   result := 'Bookmark deleted';
 end;
 
@@ -66,9 +66,9 @@ begin
   freeAndNIL(gBM);
 end;
 
-function TBookmark.save: string;
+function TBookmark.save(aURL: string; aPosition: integer): string;
 begin
-  CF.value[PL.currentItem] := intToStr(MP.position);
+  CF.value[aURL] := intToStr(aPosition);
   result := 'Bookmarked';
   release;
 end;

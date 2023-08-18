@@ -293,9 +293,9 @@ begin
     koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
-    koBookmarkSave:      ST.opInfo := BM.save;
-    koBookmarkLoad:      case BM.asInteger <> 0 of TRUE: begin MP.position := BM.asInteger; ST.opInfo := 'From bookmark'; end;end;
-    koBookmarkDelete:    ST.opInfo := BM.delete;
+    koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);
+    koBookmarkLoad:      case BM.asInteger(PL.currentItem) <> 0 of TRUE: begin MP.position := BM.asInteger(PL.currentItem); ST.opInfo := 'From bookmark'; end;end;
+    koBookmarkDelete:    ST.opInfo := BM.delete(PL.currentItem);
     koRotateReset:       ST.opInfo := MP.rotateReset;
     koAllReset:          ST.opInfo := MP.allReset;
     koContrastUp:        ST.opInfo := MP.contrastUp;
