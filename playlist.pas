@@ -76,7 +76,6 @@ end;
 function TPlaylist.add(const anItem: string): boolean;
 begin
   FPlayList.add(anItem);
-//  FPlayIx := FPlayList.count - 1; // NO!
 end;
 
 function TPlaylist.clear: boolean;

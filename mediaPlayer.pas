@@ -34,8 +34,6 @@ type
 
     FDontPlayNext: boolean;
     FVol:  double;
-    FX:    int64;
-    FY:    int64;
     FPlaying: boolean;
     FAlwaysPot: boolean;
   private
@@ -57,12 +55,9 @@ type
     {property setters}
     function  getDuration: integer;
     function  getPosition: integer;
-    function  getSubTitle: string;
     procedure setPosition(const Value: integer);
     function  getVideoHeight: int64;
     function  getVideoWidth: int64;
-    function  getVolume: integer;
-    procedure setVolume(const Value: integer);
   public
     destructor  Destroy; override;
     function allReset: boolean;
@@ -122,10 +117,8 @@ type
     property formattedVol:        string    read getFormattedVol;
     property playing:             boolean   read FPlaying     write FPlaying;
     property position:            integer   read getPosition  write setPosition;
-    property subTitle:            string    read getSubTitle;
     property videoHeight:         int64     read getVideoHeight;
     property videoWidth:          int64     read getVideoWidth;
-    property volume:              integer   read getVolume    write setVolume;
   end;
 
 function MP: TMediaPlayer;
@@ -345,11 +338,6 @@ begin
   result := trunc(mpv.CurrentSeconds);
 end;
 
-function TMediaPlayer.getSubTitle: string;
-begin
-//  result := MMFMediaEngine.pr_TimedTextNotify.SubTitle;
-end;
-
 function TMediaPlayer.getVideoHeight: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
@@ -360,12 +348,6 @@ function TMediaPlayer.getVideoWidth: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.videoWidth;
-end;
-
-function TMediaPlayer.getVolume: integer;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := trunc(mpv.volume);
 end;
 
 function TMediaPlayer.initMediaPlayer: boolean;
@@ -401,8 +383,6 @@ begin
 end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
-var
-  hr: HRESULT;
 begin
   result := FALSE;
   releasePlayer;
@@ -592,8 +572,6 @@ begin
 end;
 
 procedure TMediaPlayer.setPosition(const Value: integer);
-var
-  hr: HRESULT;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.Seek(value, FALSE);
@@ -605,15 +583,6 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   case PB.max <> trunc(mpv.totalSeconds) of TRUE: PB.max := trunc(mpv.TotalSeconds); end;
   case mpv.TotalSeconds > 0 of TRUE: PB.position := trunc(mpv.CurrentSeconds); end;
-end;
-
-procedure TMediaPlayer.setVolume(const Value: integer); // DOES THIS EVER GET CALLED?
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.volume := value;
-  FVol       := mpv.volume;
-  CF.value['volume'] := intToStr(trunc(mpv.volume));
-  ST.opInfo  := formattedVol;
 end;
 
 function TMediaPlayer.speedDn: boolean;
@@ -648,7 +617,6 @@ function TMediaPlayer.startOver: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   play(PL.currentItem);
-  //mpv.Seek(0, FALSE);
   ST.opInfo := 'Start over';
 end;
 

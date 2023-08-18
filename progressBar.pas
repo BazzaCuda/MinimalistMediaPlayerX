@@ -37,7 +37,6 @@ type
     procedure setPosition(const Value: integer);
     function  getMax: integer;
     procedure setMax(const Value: integer);
-    function getTop: integer;
     procedure setShowProgressBar(const Value: boolean);
   protected
     constructor create;
@@ -115,11 +114,6 @@ end;
 function TProgressBar.getPosition: integer;
 begin
   result := FPB.position;
-end;
-
-function TProgressBar.getTop: integer;
-begin
-  result := FPB.Top;
 end;
 
 function TProgressBar.initProgressBar(const aForm: TForm): boolean;

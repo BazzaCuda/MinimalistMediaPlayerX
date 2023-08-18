@@ -114,7 +114,6 @@ end;
 
 function TMediaInfo.getStereoMono: string;
 begin
-  result := 'SM:  ' + copy(FStereoMono, 1, pos(' ', FStereoMono) - 1); // "Stereo / Stereo" -> "Stereo"
   result := 'SM:  ' + FStereoMono;
 end;
 

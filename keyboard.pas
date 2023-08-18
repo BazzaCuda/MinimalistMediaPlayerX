@@ -170,13 +170,10 @@ begin
   case keyDn and ctrl and keyIs(B)              of TRUE: result := koBrighterPB; end;
   case keyDn and ctrl and shift and keyIs(B)    of TRUE: result := koDarkerPB; end;
   case keyUp and keyIs(P)                       of TRUE: result := koShowPlaylist; end;
-
-//  debugInteger('keyOp', integer(result));
 end;
 
 function TKeyboard.getAlt: boolean;
 begin
-  result := ssAlt in shiftState;
   result := GV.altKeyDown;
   case result of TRUE: include(FShiftState, ssAlt); end;
 end;
@@ -225,7 +222,7 @@ procedure TKeyboard.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState
 // keys that don't generate a standard WM_KEYUP message
 begin
   GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: MP.tab(shiftState, capsLock, 50); end;
+  case GV.altKeyDown of TRUE: MP.tab(shiftState, capsLock, 200); end;
 end;
 
 procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
@@ -244,8 +241,6 @@ begin
   FKey        := aKey;
   FShiftState := aShiftState;
   FUpDn       := upDn;
-
-//  debugInteger('aKey', aKey);
 
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE

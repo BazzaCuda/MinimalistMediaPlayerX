@@ -17,6 +17,7 @@
                       in an absolute percentage value.
     v1.03 02-Sep-2001 Fixed problem with background color not being persisted
                       if the color is black.
+    v1.04 Jul-2023    Added Hint.
 }
 
 unit ALProgressBar;
@@ -133,7 +134,6 @@ constructor TALProgressBar.Create(AOwner: TComponent);
 begin
   inherited;
 
-//  Width := 200;
   Height := 20;
 
   fBorderColor1 := clBtnShadow;
