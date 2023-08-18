@@ -21,8 +21,8 @@ unit uiCtrls;
 interface
 
 uses
-  Forms, winApi.windows, consts, winAPI.shellAPI, vcl.graphics, vcl.ComCtrls, globalVars, vcl.extCtrls,
-  system.classes, vcl.controls;
+  forms, winApi.windows, winAPI.shellAPI, vcl.graphics, vcl.ComCtrls, vcl.extCtrls, system.classes, vcl.controls,
+  consts;
 
 type
   TUI = class(TObject)
@@ -78,7 +78,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, _debugWindow;
 
 var
   gUI: TUI;

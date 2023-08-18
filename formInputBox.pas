@@ -30,7 +30,6 @@ type
     btnModalResultmrOK: TButton;
     btnModalResultmrCancel: TButton;
   private
-    { Private declarations }
   public
   end;
 

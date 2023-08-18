@@ -27,9 +27,9 @@ type
   protected
   private
   public
-    function asInteger(aURL: string):  integer;
-    function delete(aURL: string):     string;
-    function save(aURL: string; aPosition: integer): string;
+    function asInteger(const aURL: string): integer;
+    function delete(const aURL: string): string;
+    function save(const aURL: string; const aPosition: integer): string;
   end;
 
 function BM: TBookmark;
@@ -50,12 +50,12 @@ end;
 
 { TBookmark }
 
-function TBookmark.asInteger(aURL: string): integer;
+function TBookmark.asInteger(const aURL: string): integer;
 begin
   result := CF.asInteger[aURL];
 end;
 
-function TBookmark.delete(aURL: string): string;
+function TBookmark.delete(const aURL: string): string;
 begin
   CF.deleteName(aURL);
   result := 'Bookmark deleted';
@@ -66,7 +66,7 @@ begin
   freeAndNIL(gBM);
 end;
 
-function TBookmark.save(aURL: string; aPosition: integer): string;
+function TBookmark.save(const aURL: string; const aPosition: integer): string;
 begin
   CF.value[aURL] := intToStr(aPosition);
   result := 'Bookmarked';

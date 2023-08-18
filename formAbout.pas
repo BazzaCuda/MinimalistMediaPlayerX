@@ -48,7 +48,7 @@ type
     function setReleaseVersion(const aRelease: string): boolean;
   end;
 
-function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
+function showAboutBox(const releaseVersion: string; const buildVersion: string): boolean;
 
 implementation
 
@@ -56,7 +56,7 @@ uses ShellAPI, globalVars, commonUtils;
 
 {$R *.dfm}
 
-function showAboutBox(releaseVersion: string; buildVersion: string): boolean;
+function showAboutBox(const releaseVersion: string; const buildVersion: string): boolean;
 begin
   GV.userInput := TRUE;
   with TAboutForm.create(NIL) do

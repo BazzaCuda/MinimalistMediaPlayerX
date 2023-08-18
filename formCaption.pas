@@ -26,12 +26,12 @@ uses
 
 type
   TCaptionForm = class(TForm)
-  private
+  strict private
     FVideoPanel: TPanel;
     FCaption: TLabel;
     FInitialized: boolean;
     FOpInfoTimer: TTimer;
-
+  private
     procedure timerEvent(sender: TObject);
     procedure setCaption(const Value: string);
   public
