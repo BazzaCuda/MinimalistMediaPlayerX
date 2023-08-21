@@ -30,7 +30,6 @@ type
     function delay(const dwMilliseconds: DWORD): boolean;
     function deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
     function doCommandLine(const aCommandLIne: string): boolean;
-    function fillPlaylist(const aFolder: string): boolean;
     function formatFileSize(const aSize: int64): string;
     function formatSeconds(const seconds: integer): string;
     function formatTime(const seconds: integer): string;
@@ -64,7 +63,7 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, IOUtils,
-  formSubtitles, formCaption, mediaType, _debugWindow;
+  formSubtitles, formCaption, _debugWindow;
 
 var
   gCU: TCommonUtils;
@@ -117,35 +116,6 @@ begin
 
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
-end;
-
-function TCommonUtils.fillPlaylist(const aFolder: string): boolean;
-const
-  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
-var
-  vSR: TSearchRec;
-  vExt: string;
-
-  function fileExtOK: boolean;
-  begin
-    result := MT.mediaExts.contains(vExt);
-  end;
-
-begin
-  result := FALSE;
-  PL.clear;
-  case directoryExists(aFolder) of FALSE: EXIT; end;
-
-  case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
-    repeat
-      vExt := lowerCase(extractFileExt(vSR.name));
-      case fileExtOK of TRUE: PL.Add(aFolder + vSR.Name); end;
-    until FindNext(vSR) <> 0;
-  end;
-
-  FindClose(vSR);
-  PL.sort;
-  result := TRUE;
 end;
 
 function TCommonUtils.formatFileSize(const aSize: int64): string;
@@ -318,19 +288,14 @@ end;
 
 function TCommonUtils.reloadPlaylist(const aFolder: string): string;
 begin
-  var vIx              := PL.currentIx;
   var vCurrentItem     := PL.currentItem;
   var vCurrentPosition := MP.position;
 
-  fillPlaylist(aFolder);
+  PL.fillPlaylist(aFolder);
   case PL.find(vCurrentItem) of  TRUE: MP.position := vCurrentPosition;
-                                 FALSE: case PL.validIx(vIx) of  TRUE: begin
-                                                                        PL.thisItem(vIx);
-                                                                        MP.play(PL.currentItem);
-                                                                        MP.position := vCurrentPosition; end;
-                                                               FALSE: begin
-                                                                        PL.first;
-                                                                        MP.play(PL.currentItem); end;end;end;
+                                FALSE: begin
+                                         PL.first;
+                                         MP.play(PL.currentItem); end;end;
   MC.caption := PL.formattedItem;
   result := 'Playlist reloaded';
 end;

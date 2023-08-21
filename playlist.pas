@@ -38,8 +38,9 @@ type
     function copyToClipboard: boolean;
     function currentItem: string;
     function currentIx: integer;
-    function delete(const anIx: integer = -1): boolean;
+    function delete(const ix: integer = -1): boolean;
     function displayItem: string;
+    function fillPlaylist(const aFolder: string): boolean;
     function find(const anItem: string): boolean;
     function first: boolean;
     function formattedItem: string;
@@ -51,8 +52,8 @@ type
     function prev: boolean;
     function replaceCurrentItem(const aNewItem: string): boolean;
     function sort: boolean;
-    function thisItem(const anIx: integer): string;
-    function validIx(const anIx: integer): boolean;
+    function thisItem(const ix: integer): string;
+    function validIx(const ix: integer): boolean;
   end;
 
 function PL: TPlaylist;
@@ -63,7 +64,7 @@ var
 implementation
 
 uses
-  system.sysUtils, sysCommands, globalVars, clipbrd, formSubtitles, commonUtils, regularExpressions, math;
+  system.sysUtils, sysCommands, globalVars, clipbrd, formSubtitles, commonUtils, regularExpressions, math, mediaType;
 
 function PL: TPlaylist;
 begin
@@ -116,17 +117,17 @@ begin
   result := FPlayIx;
 end;
 
-function TPlaylist.delete(const anIx: integer = -1): boolean;
+function TPlaylist.delete(const ix: integer = -1): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
-  case anIx = -1 of  TRUE:  begin
-                              FPlaylist.delete(FPlayIx);
-                              dec(FPlayIx); end;
-                    FALSE:  begin
-                              case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
-                              FPlaylist.delete(anIx);
-                              dec(FPlayIx); end;end;
+  case ix = -1 of  TRUE:  begin
+                            FPlaylist.delete(FPlayIx);
+                            dec(FPlayIx); end;
+                  FALSE:  begin
+                            case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
+                            FPlaylist.delete(ix);
+                            dec(FPlayIx); end;end;
   result := TRUE;
 end;
 
@@ -139,6 +140,35 @@ end;
 function TPlaylist.displayItem: string;
 begin
   result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
+end;
+
+function TPlaylist.fillPlaylist(const aFolder: string): boolean;
+const
+  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
+var
+  vSR: TSearchRec;
+  vExt: string;
+
+  function fileExtOK: boolean;
+  begin
+    result := MT.mediaExts.contains(vExt);
+  end;
+
+begin
+  result := FALSE;
+  PL.clear;
+  case directoryExists(aFolder) of FALSE: EXIT; end;
+
+  case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
+    repeat
+      vExt := lowerCase(extractFileExt(vSR.name));
+      case fileExtOK of TRUE: PL.Add(aFolder + vSR.Name); end;
+    until FindNext(vSR) <> 0;
+  end;
+
+  FindClose(vSR);
+  PL.sort;
+  result := TRUE;
 end;
 
 function TPlaylist.find(const anItem: string): boolean;
@@ -294,19 +324,19 @@ begin
   result := TRUE;
 end;
 
-function TPlaylist.thisItem(const anIx: integer): string;
+function TPlaylist.thisItem(const ix: integer): string;
 begin
   result := '';
   case hasItems of FALSE: EXIT; end;
-  case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
-  result := FPlaylist[anIx];
+  case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
+  result := FPlaylist[ix];
 end;
 
-function TPlaylist.validIx(const anIx: integer): boolean;
+function TPlaylist.validIx(const ix: integer): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
-  case (anIx < 0) or (anIx > FPlaylist.count - 1) of TRUE: EXIT; end;
+  case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
   result := TRUE;
 end;
 

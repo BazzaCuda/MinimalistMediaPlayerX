@@ -71,7 +71,7 @@ begin
                               end;end;
 
 
-  CU.fillPlaylist(PS.fileFolder);
+  PL.fillPlaylist(PS.fileFolder);
 
   case PL.find(PS.fileFolderAndName) of TRUE: begin
                                                 UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
@@ -95,7 +95,7 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      CU.fillPlaylist(extractFilePath(vFilePath));
+      PL.fillPlaylist(extractFilePath(vFilePath));
       PL.find(vFilePath);
       case PL.hasItems of TRUE: postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;
 
