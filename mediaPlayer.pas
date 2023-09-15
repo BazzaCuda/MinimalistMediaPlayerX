@@ -150,6 +150,7 @@ end;
     saturationReset;
     speedReset;
     zoomReset;
+    CU.resetColor;
     result := 'All reset';
   end;
 

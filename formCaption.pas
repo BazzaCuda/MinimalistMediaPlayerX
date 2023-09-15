@@ -38,7 +38,11 @@ type
     constructor create;
     destructor Destroy; override;
     procedure formResize(Sender: TObject);
+    function brighter: integer;
+    function color: integer;
+    function darker: integer;
     function initCaption(const aVideoPanel: TPanel): boolean;
+    function resetColor: integer;
     property caption: string write setCaption;
   end;
 
@@ -47,7 +51,7 @@ function MC: TCaptionForm; // Media Caption
 implementation
 
 uses
-  mediaPlayer, commonUtils, uiCtrls, _debugWindow;
+  mediaPlayer, commonUtils, uiCtrls, configFile, consts, _debugWindow;
 
 var
   gMC: TCaptionForm;
@@ -62,6 +66,18 @@ end;
 
 { TCaptionForm }
 
+function TCaptionForm.brighter: integer;
+begin
+  case FCaption.font.color = $FFFFFF of TRUE: EXIT; end;
+  FCaption.font.color := FCaption.font.color + $010101;
+  result := FCaption.font.color;
+end;
+
+function TCaptionForm.color: integer;
+begin
+  result := FCaption.font.color;
+end;
+
 constructor TCaptionForm.create;
 begin
   inherited create(NIL);
@@ -72,6 +88,13 @@ begin
   FOpInfoTimer.interval := 5000;
   FOpInfoTimer.enabled  := FALSE;
   FOpInfoTimer.onTimer  := timerEvent;
+end;
+
+function TCaptionForm.darker: integer;
+begin
+  case FCaption.font.color = $010101 of TRUE: EXIT; end;
+  FCaption.font.color := FCaption.font.color - $010101;
+  result := FCaption.font.color;
 end;
 
 destructor TCaptionForm.Destroy;
@@ -93,7 +116,7 @@ function TCaptionForm.initCaption(const aVideoPanel: TPanel): boolean;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     aLabel.font.name      := 'Tahoma';
-    aLabel.font.color     := clGray;
+    aLabel.font.color     := ST_DEFAULT_COLOR;
     aLabel.font.size      := 10;
     aLabel.font.style     := [fsBold];
     aLabel.margins.top    := 3;
@@ -117,11 +140,19 @@ begin
   FCaption.align := alTop;
   FCaption.alignment := taLeftJustify;
 
+  case CF.asInteger['caption'] <> 0 of TRUE: FCaption.font.color := CF.asInteger['caption']; end;
+
 //  handy for debugging
 //  SetWindowLong(SELF.handle, GWL_STYLE, GetWindowLong(SELF.handle, GWL_STYLE) OR WS_CHILD OR WS_CLIPSIBLINGS {OR WS_CLIPCHILDREN} OR WS_CAPTION AND (NOT (WS_BORDER)));
 
   FInitialized := TRUE;
   SELF.show;
+end;
+
+function TCaptionForm.resetColor: integer;
+begin
+  FCaption.font.color := ST_DEFAULT_COLOR;
+  result              := ST_DEFAULT_COLOR;
 end;
 
 procedure TCaptionForm.setCaption(const Value: string);

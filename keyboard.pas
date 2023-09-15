@@ -308,8 +308,8 @@ begin
     koGammaReset:        ST.opInfo := MP.gammaReset;
     koSaturationReset:   ST.opInfo := MP.saturationReset;
     koShowHelp:          UI.toggleHelpWindow;
-    koBrighterPB:        PB.brighter;
-    koDarkerPB:          PB.darker;
+    koBrighterPB:        CU.brighter;
+    koDarkerPB:          CU.darker;
 //    koShowPlaylist:      UI.togglePlaylist;
   end;
 

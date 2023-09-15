@@ -49,6 +49,9 @@ const
   LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
+  PB_DEFAULT_COLOR = $202020;
+  ST_DEFAULT_COLOR = $707070;
+
 type
   TMediaType = (mtUnk, mtAudio, mtVideo);
   TMediaTypeRec = record

@@ -44,10 +44,11 @@ type
     function  setNewPosition(const x: integer): integer;
   public
     destructor  Destroy; override;
-    function brighter: boolean;
-    function darker: boolean;
+    function brighter: integer;
+    function darker: integer;
     function formResize: boolean;
     function initProgressBar(const aForm: TForm): boolean;
+    function resetColor: integer;
     property initialized: boolean read FInitialized;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -72,10 +73,11 @@ end;
 
 { TProgressBar }
 
-function TProgressBar.brighter: boolean;
+function TProgressBar.brighter: integer;
 begin
+  case FPB.barColor1 = $FFFFFF of TRUE: EXIT; end;
   FPB.barColor1 := FPB.barColor1 + $010101;
-  CF.value['progressBar'] := intToStr(FPB.barColor1);
+  result := FPB.barColor1;
 end;
 
 constructor TProgressBar.create;
@@ -88,10 +90,11 @@ begin
   FShowProgressBar := TRUE;
 end;
 
-function TProgressBar.darker: boolean;
+function TProgressBar.darker: integer;
 begin
+  case FPB.barColor1 = $010101 of TRUE: EXIT; end;
   FPB.barColor1 := FPB.barColor1 - $010101;
-  CF.value['progressBar'] := intToStr(FPB.barColor1);
+  result := FPB.barColor1;
 end;
 
 destructor TProgressBar.Destroy;
@@ -126,7 +129,7 @@ begin
   FPB.borderColor2     := clBlack + 1;
   FPB.showBorder       := FALSE;
   FPB.showPosText      := FALSE;
-  FPB.barColor1        := $202020;
+  FPB.barColor1        := PB_DEFAULT_COLOR;
   FPB.barColorStyle    := cs1Color;
   FPB.onHintShow       := onHintShow;
   FPB.showHint         := TRUE;
@@ -173,6 +176,12 @@ begin
   setNewPosition(x);
   postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
   postMessage(GV.appWnd, WM_TICK, 0, 0); // update the time display immediately
+end;
+
+function TProgressBar.resetColor: integer;
+begin
+  FPB.barColor1 := PB_DEFAULT_COLOR;
+  result        := PB_DEFAULT_COLOR;
 end;
 
 procedure TProgressBar.setMax(const Value: integer);
