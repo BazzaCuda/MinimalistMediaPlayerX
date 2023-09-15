@@ -64,7 +64,7 @@ constructor TConfigFile.create;
 begin
   inherited;
   FFileContents := TStringList.create;
-//  FFileContents.DefaultEncoding := TEncoding.UTF8;
+  FFileContents.DefaultEncoding := TEncoding.UTF8;
 end;
 
 function TConfigFile.deleteName(const aName: string): boolean;
