@@ -79,6 +79,7 @@ begin
 
   UI.Initialized := TRUE; // don't allow UI.formResize to do anything until the first media plays.
   case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+  postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);
@@ -117,6 +118,7 @@ end;
 
 procedure TMMPUI.WMSizing(var msg: TMessage);
 // restricts the vertical resizing by modifying the bottom edge of the resizing rectangle to ensure that the window's height remains constant.
+// The user can control the width of a video - the app controls the height.
 var
   newRect: PRect;
 begin
