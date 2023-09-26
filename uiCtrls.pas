@@ -62,7 +62,7 @@ type
     function showWindow: boolean;
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
-    function toggleControls(const shift: TShiftState): boolean;
+    function toggleControls(shift: TShiftState): boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
@@ -367,16 +367,16 @@ begin
   showPlaylist(vPt, create);
 end;
 
-function TUI.toggleControls(const shift: TShiftState): boolean;
+function TUI.toggleControls(shift: TShiftState): boolean;
 // we call them "controls" but they're actually the media info and the time display at the bottom of the window
 // a left-over from this app's pre-minimalist days
 begin
- case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
+  case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
 
- ST.showTime := NOT ST.showTime;
+  ST.showTime := NOT ST.showTime;
 
- case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
-                                           FALSE: ST.showData := FALSE; end;
+  case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
+                                            FALSE: ST.showData := FALSE; end;
 end;
 
 function TUI.toggleHelpWindow: boolean;

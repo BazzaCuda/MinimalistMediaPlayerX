@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, formHelp, playlist, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -94,9 +94,11 @@ var
 begin
   keyDnHandled := FALSE;
 
+  shiftState   := KeyboardStateToShiftState;
+  case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
+
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
-                                    shiftState   := KeyboardStateToShiftState;
                                     key          := msg.WParam;
                                     handled      := KB.processKeyStroke(key, shiftState, kdDown);
                                     keyDnHandled := handled; end;end;
@@ -104,7 +106,6 @@ begin
 
   case msgIs(WM_KEY_UP)  of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
-                                    shiftState  := KeyboardStateToShiftState;
                                     key         := msg.WParam; // e.g. VK_F10;
                                     handled     := KB.processKeyStroke(key, shiftState, kdUp);
                                     EXIT;       end;end;
@@ -112,7 +113,6 @@ begin
   case msgIs(WM_KEYUP) of TRUE: begin
                                   case GV.userInput  of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-                                  shiftState  := KeyboardStateToShiftState;
                                   key         := msg.WParam;
                                   handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
 
@@ -141,6 +141,16 @@ begin
 
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem); end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
+
+  case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
+  case msgIs(WIN_CAPTION)             of TRUE: MC.caption := PL.formattedItem; end;
+  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;end;
+  case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleControls(shiftState); end;
+  case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
+  case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock); end;
+  case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, -1); end;
+  case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, 200); end;
+  case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, shiftState); end;
 end;
 
 constructor TAppEvents.create;

@@ -471,6 +471,10 @@ begin
   MC.caption := PL.formattedItem;
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
+
+  CU.delay(100);
+  sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL
+
   checkPot;
   result := TRUE;
 end;
@@ -617,7 +621,7 @@ end;
 function TMediaPlayer.startOver: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  play(PL.currentItem);
+  mpv.Seek(0, FALSE);
   result := 'Start over';
 end;
 

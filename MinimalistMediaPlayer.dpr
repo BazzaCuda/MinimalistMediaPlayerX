@@ -57,7 +57,8 @@ uses
   bookmark in 'bookmark.pas',
   configFile in 'configFile.pas',
   mediaType in 'mediaType.pas',
-  formPlaylist in 'formPlaylist.pas' {PlaylistForm};
+  formPlaylist in 'formPlaylist.pas' {PlaylistForm},
+  sendAll in 'sendAll.pas';
 
 {$R *.res}
 
