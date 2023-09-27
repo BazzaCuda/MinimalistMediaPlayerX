@@ -31,7 +31,7 @@ type
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
-            koGammaReset, koSaturationReset, koAllReset, koShowHelp, koBrighterPB, koDarkerPB, koShowPlaylist, koCloseAll);
+            koGammaReset, koSaturationReset, koAllReset, koShowHelp, koBrighterPB, koDarkerPB, koShowPlaylist, koCloseAll, koArrangeAll);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -106,7 +106,7 @@ begin
   case keyDn and keyIs(VK_LEFT)                 of TRUE: result := koFrameBackwards; end;
   case keyDn and keyIs(VK_TAB)                  of TRUE: result := koTabTab; end;
   case keyUp and keyIs(J)                       of TRUE: result := koAdjustAspectRatio; end;
-  case keyDn and keyIs(_9)                      of TRUE: result := koBrightnessUp; end;
+  case keyDn and keyIs(_9) and NOT ctrl         of TRUE: result := koBrightnessUp; end;
   case keyDn and keyIs(_8)                      of TRUE: result := koBrightnessDn; end;
   case keyDn and keyIs(I)                       of TRUE: result := koZoomIn; end;
   case keyDn and keyIs(O)                       of TRUE: result := koZoomOut; end;
@@ -171,6 +171,7 @@ begin
   case keyDn and ctrl and shift and keyIs(B)    of TRUE: result := koDarkerPB; end;
   case keyUp and keyIs(P)                       of TRUE: result := koShowPlaylist; end;
   case keyUp and keyIs(_0) and ctrl             of TRUE: result := koCloseAll; end;
+  case keyUp and keyIs(_9) and ctrl             of TRUE: result := koArrangeAll; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -312,6 +313,7 @@ begin
     koBrighterPB:        CU.brighter;
     koDarkerPB:          CU.darker;
     koCloseAll:          SA.sendToAll(WIN_CLOSEAPP);
+    koArrangeAll:        UI.arrangeAll;
 //    koShowPlaylist:      UI.togglePlaylist;
   end;
 

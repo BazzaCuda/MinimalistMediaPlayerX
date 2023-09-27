@@ -44,6 +44,7 @@ type
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
+    function arrangeAll: boolean;
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
     function deleteCurrentItem(const shift: TShiftState): boolean;
@@ -56,7 +57,9 @@ type
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(const anApp: string; const aParams: string): boolean;
+    function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function renameFile(const aFilePath: string): boolean;
+    function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
     function showWindow: boolean;
@@ -78,7 +81,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, globalVars, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, sendAll, _debugWindow;
 
 var
   gUI: TUI;
@@ -116,6 +119,45 @@ begin
   case autoCentre of TRUE: UI.centreWindow(UI.handle); end;
 
   case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+end;
+
+function TUI.arrangeAll: boolean;
+var
+  vCount: integer;
+  vWidth, vHeight: integer;
+  vScreenWidth, vScreenHeight: integer;
+  vZero: integer;
+begin
+  vCount := SA.count;
+  case vCount of
+    1:       SA.sendToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
+    2:       SA.sendToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
+    3, 4:    SA.sendToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
+  end;
+
+  application.processMessages; // make sure this window has resized before continuing
+
+  CU.getWndWidthHeight(UI.handle, vWidth, vHeight);
+  vScreenWidth  := CU.getScreenWidth;
+  vScreenHeight := CU.getScreenHeight;
+  vZero := (vScreenWidth div 2) - vWidth;
+
+  vCount := SA.count;
+  case vCount = 2 of TRUE: begin
+                             posWinXY(SA.HWNDs[1], vZero,  (vScreenHeight - vHeight) div 2);
+                             posWinXY(SA.HWNDs[2], vScreenWidth - vWidth, (vScreenHeight - vHeight) div 2); end;end;
+
+  case vCount in [3, 4] of TRUE: begin
+                             posWinXY(SA.HWNDs[1], vZero,  0);
+                             posWinXY(SA.HWNDs[2], vScreenWidth - vWidth, 0); end;end;
+
+  case vCount = 3 of TRUE: posWinXY(SA.HWNDs[3], vWidth div 2, vHeight); end;
+
+  case vCount = 4 of TRUE: begin
+                              posWinXY(SA.HWNDs[3], vZero,  vHeight);
+                              posWinXY(SA.HWNDs[4], vScreenWidth - vWidth, vHeight); end;end;
+
+  SA.clear;
 end;
 
 function TUI.centreWindow(const aWnd: HWND): boolean;
@@ -298,6 +340,11 @@ begin
   CU.shellExec(anApp, aParams);
 end;
 
+function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
+begin
+  SetWindowPos(aHWND, 0, x, y, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+end;
+
 function TUI.renameFile(const aFilePath: string): boolean;
 var
   vNewName: string;
@@ -308,6 +355,26 @@ begin
   case vNewName <> aFilePath of TRUE: PL.replaceCurrentItem(vNewName); end;
   MC.caption := PL.formattedItem;
   MP.resume;
+end;
+
+function TUI.resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
+var
+  vRatio: double;
+  vWidth, vHeight: integer;
+begin
+  case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
+
+  vRatio := Y / X;
+
+  case pt.x <> 0 of TRUE: begin
+                            vWidth  := pt.x;
+                            vHeight := trunc(pt.x * vRatio); end;end;
+
+  case pt.y <> 0 of TRUE: begin
+                            vWidth  := trunc(pt.y / vRatio);
+                            vHeight := pt.y; end;end;
+
+  SetWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE or SWP_NOZORDER); // resize the window
 end;
 
 function TUI.setCustomTitleBar(const aForm: TForm): boolean;
