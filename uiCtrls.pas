@@ -127,6 +127,7 @@ var
   vWidth, vHeight: integer;
   vScreenWidth, vScreenHeight: integer;
   vZero: integer;
+  vHMiddle, vVMiddle: integer;
 begin
   vCount := SA.count;
   case vCount of
@@ -140,22 +141,24 @@ begin
   CU.getWndWidthHeight(UI.handle, vWidth, vHeight);
   vScreenWidth  := CU.getScreenWidth;
   vScreenHeight := CU.getScreenHeight;
-  vZero := (vScreenWidth div 2) - vWidth;
+  vHMiddle      := vScreenWidth div 2;
+  vVMiddle      := vScreenHeight div 2;
+  vZero         := vHMiddle - vWidth;
 
   vCount := SA.count;
   case vCount = 2 of TRUE: begin
-                             posWinXY(SA.HWNDs[1], vZero,  (vScreenHeight - vHeight) div 2);
-                             posWinXY(SA.HWNDs[2], vScreenWidth - vWidth, (vScreenHeight - vHeight) div 2); end;end;
+                             posWinXY(SA.HWNDs[1], vZero,  vVMiddle - (vHeight div 2));
+                             posWinXY(SA.HWNDs[2], vHMiddle, vVMiddle - (vHeight) div 2); end;end;
 
   case vCount in [3, 4] of TRUE: begin
                              posWinXY(SA.HWNDs[1], vZero,  0);
-                             posWinXY(SA.HWNDs[2], vScreenWidth - vWidth, 0); end;end;
+                             posWinXY(SA.HWNDs[2], vHMiddle, 0); end;end;
 
-  case vCount = 3 of TRUE: posWinXY(SA.HWNDs[3], vWidth div 2, vHeight); end;
+  case vCount = 3 of TRUE: posWinXY(SA.HWNDs[3], vHMiddle - (vWidth div 2), vHeight); end;
 
   case vCount = 4 of TRUE: begin
                               posWinXY(SA.HWNDs[3], vZero,  vHeight);
-                              posWinXY(SA.HWNDs[4], vScreenWidth - vWidth, vHeight); end;end;
+                              posWinXY(SA.HWNDs[4], vHMiddle, vHeight); end;end;
 
   SA.clear;
 end;
