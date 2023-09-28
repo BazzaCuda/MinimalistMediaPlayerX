@@ -224,7 +224,7 @@ procedure TKeyboard.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState
 // keys that don't generate a standard WM_KEYUP message
 begin
   GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: SA.sendToAll(WIN_TABALT); end;
+  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT); end;
 end;
 
 procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
@@ -250,9 +250,9 @@ begin
     koCloseApp:          begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;
     koVolUp:             ST.opInfo := MP.volUp;
     koVolDn:             ST.opInfo := MP.volDown;
-    koTab:               SA.sendToAll(WIN_TAB);
-    koTabTab:            SA.sendToAll(WIN_TABTAB);
-    koPausePlay:         SA.sendToAll(WIN_PAUSE_PLAY);
+    koTab:               SA.postToAll(WIN_TAB);
+    koTabTab:            SA.postToAll(WIN_TABTAB);
+    koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY);
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
     koAdjustAspectRatio: UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight);
@@ -260,8 +260,8 @@ begin
     koBrightnessDn:      ST.opInfo := MP.brightnessDn;
     koZoomIn:            ST.opInfo := MP.zoomIn;
     koZoomOut:           ST.opInfo := MP.zoomOut;
-    koStartOver:         SA.sendToAll(WIN_RESTART);
-    koShowCaption:       SA.sendToAll(WIN_CAPTION);
+    koStartOver:         SA.postToAll(WIN_RESTART);
+    koShowCaption:       SA.postToAll(WIN_CAPTION);
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koPlayNext:          MP.playNext;
     koPlayPrev:          MP.playPrev;
@@ -273,10 +273,10 @@ begin
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
     koZoomReset:         ST.opInfo := MP.zoomReset;
-    koGreaterWindow:     SA.sendToAll(WIN_GREATER);
+    koGreaterWindow:     SA.postToAll(WIN_GREATER);
     koPlayFirst:         MP.playFirst;
     koPlayLast:          MP.playLast;
-    koToggleControls:    SA.sendToAll(WIN_CONTROLS);
+    koToggleControls:    SA.postToAll(WIN_CONTROLS);
     koRunPot:            UI.openExternalApp(POT_PLAYER, PL.currentItem);
     koRunCut:            UI.openExternalApp(LOSSLESS_CUT, PL.currentItem);
     koRunShot:           UI.openExternalApp(SHOTCUT, PL.currentItem);
@@ -312,7 +312,7 @@ begin
     koShowHelp:          UI.toggleHelpWindow;
     koBrighterPB:        CU.brighter;
     koDarkerPB:          CU.darker;
-    koCloseAll:          SA.sendToAll(WIN_CLOSEAPP);
+    koCloseAll:          SA.postToAll(WIN_CLOSEAPP);
     koArrangeAll:        UI.arrangeAll;
 //    koShowPlaylist:      UI.togglePlaylist;
   end;

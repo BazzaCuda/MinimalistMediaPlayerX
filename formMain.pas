@@ -81,7 +81,7 @@ begin
   case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
   CU.delay(100);
-  sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0);
+  case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); end;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);

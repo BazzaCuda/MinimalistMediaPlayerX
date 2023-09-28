@@ -129,14 +129,15 @@ var
   vZero: integer;
   vHMiddle, vVMiddle: integer;
 begin
-  vCount := SA.count;
-  case vCount of
-    1:       SA.sendToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
-    2:       SA.sendToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
-    3, 4:    SA.sendToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
-  end;
-
+  vCount     := SA.count;
   autoCentre := vCount = 1;
+  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
+
+  case vCount of
+    1:       SA.postToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
+    2:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
+    3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
+  end;
 
   application.processMessages; // make sure this window has resized before continuing
 
@@ -379,7 +380,7 @@ begin
                             vWidth  := trunc(pt.y / vRatio);
                             vHeight := pt.y; end;end;
 
-  SetWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE or SWP_NOZORDER); // resize the window
+  SetWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE or SWP_NOZORDER); // resize the window. Triggers adjustAspectRatio
 end;
 
 function TUI.setCustomTitleBar(const aForm: TForm): boolean;

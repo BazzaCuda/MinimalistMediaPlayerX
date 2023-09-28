@@ -17,6 +17,8 @@ type
     function add(const aHWND: HWND): boolean;
     function clear: boolean;
     function count: integer;
+    function postToAll(const cmd: WORD): boolean;
+    function postToAllEx(const cmd: WORD; const pt: TPoint): boolean;
     function sendToAll(const cmd: WORD): boolean;
     function sendToAllEx(const cmd: WORD; const pt: TPoint): boolean;
     property HWNDs[index: integer]: HWND read getHWND;
@@ -66,6 +68,7 @@ end;
 
 function TSendAll.count: integer;
 begin
+  clear;
   enumWindows(@enumAllWindows, 0);
   result := length(FHWNDs);
 end;
@@ -87,19 +90,39 @@ begin
   result := FHWNDS[index - 1]; // for simplicity in UI.arrangeAll, index parameter is 1-based
 end;
 
+function TSendAll.postToAll(const cmd: WORD): boolean;
+begin
+  postToAllEx(cmd, point(0, 0));
+end;
+
 function TSendAll.sendToAll(const cmd: WORD): boolean;
 begin
   sendToAllEx(cmd, point(0, 0));
+end;
+
+function TSendAll.postToAllEx(const cmd: WORD; const pt: TPoint): boolean;
+var
+  i: integer;
+begin
+  clear;
+  enumWindows(@enumAllWindows, 0);
+
+  for i := low(FHWNDs) to high(FHWNDs) do
+    postMessage(FHWNDs[i], cmd, pt.x, pt.y);
+
+  clear;
+  result := TRUE;
 end;
 
 function TSendAll.sendToAllEx(const cmd: WORD; const pt: TPoint): boolean;
 var
   i: integer;
 begin
+  clear;
   enumWindows(@enumAllWindows, 0);
 
   for i := low(FHWNDs) to high(FHWNDs) do
-    postMessage(FHWNDs[i], cmd, pt.x, pt.y);
+    sendMessage(FHWNDs[i], cmd, pt.x, pt.y);
 
   clear;
   result := TRUE;

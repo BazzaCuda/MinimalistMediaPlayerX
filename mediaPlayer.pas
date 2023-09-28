@@ -472,9 +472,10 @@ begin
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
 
-  CU.delay(100);
-  sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
-  application.processMessages;
+  case UI.autoCentre of TRUE: begin
+                                CU.delay(100);
+                                sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
+                                application.processMessages; end;end;
 
   checkPot;
   result := TRUE;
