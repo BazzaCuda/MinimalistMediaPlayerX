@@ -114,7 +114,7 @@ begin
   CU.getWndWidthHeight(aWnd, vWidth, vHeight);
   vHeight := trunc(vWidth * vRatio) + 2;
 
-  setWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE + SWP_NOZORDER); // don't add SWP_SHOWWINDOW
+  setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); // don't add SWP_SHOWWINDOW
 
   case autoCentre of TRUE: UI.centreWindow(UI.handle); end;
 
@@ -171,8 +171,8 @@ var
   vR: TRect;
 begin
   getWindowRect(aWnd, vR);
-  SetWindowPos(aWnd, 0, (CU.getScreenWidth - (vR.Right - vR.Left)) div 2,
-                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOSIZE + SWP_NOZORDER);
+  SetWindowPos(aWnd, HWND_TOP, (CU.getScreenWidth - (vR.Right - vR.Left)) div 2,
+                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOSIZE);
 
   postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
   application.processMessages;
@@ -288,7 +288,7 @@ begin
                                                       newH := CU.getScreenHeight - dy;
                                                       try newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
-  SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOMOVE or SWP_NOZORDER); // resize the window
+  SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
@@ -337,7 +337,7 @@ end;
 
 function TUI.minimizeWindow: boolean;
 begin
-   application.Minimize;
+   postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
 
 function TUI.openExternalApp(const anApp, aParams: string): boolean;
@@ -348,7 +348,7 @@ end;
 
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
 begin
-  SetWindowPos(aHWND, 0, x, y, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
+  SetWindowPos(aHWND, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 end;
 
 function TUI.renameFile(const aFilePath: string): boolean;
@@ -368,6 +368,7 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
+
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
   vRatio := Y / X;
@@ -380,7 +381,9 @@ begin
                             vWidth  := trunc(pt.y / vRatio);
                             vHeight := pt.y; end;end;
 
-  SetWindowPos(aWnd, 0, 0, 0, vWidth, vHeight, SWP_NOMOVE or SWP_NOZORDER); // resize the window. Triggers adjustAspectRatio
+  sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0 ); // in case it was minimized
+  SetWindowPos(aWnd, HWND_TOPMOST, 0, 0, vWidth, vHeight, SWP_NOMOVE);      // Both SWPs achieve HWND_TOP as HWND_TOP itself doesn't work.
+  SetWindowPos(aWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE); // resize the window. Triggers adjustAspectRatio
 end;
 
 function TUI.setCustomTitleBar(const aForm: TForm): boolean;

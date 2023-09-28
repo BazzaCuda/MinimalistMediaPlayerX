@@ -20,6 +20,8 @@ program MinimalistMediaPlayer;
 
 
 
+
+
 {$R *.dres}
 
 uses
