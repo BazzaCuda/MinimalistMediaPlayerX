@@ -136,6 +136,8 @@ begin
     3, 4:    SA.sendToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
   end;
 
+  autoCentre := vCount = 1;
+
   application.processMessages; // make sure this window has resized before continuing
 
   CU.getWndWidthHeight(UI.handle, vWidth, vHeight);
@@ -282,7 +284,7 @@ begin
   calcDimensions; // do what the user requested
 
   case NOT CU.withinScreenLimits(newW, newH) of  TRUE: begin
-                                                      newH := CU.getScreenHeight - dy; // EXPERIMENTAL
+                                                      newH := CU.getScreenHeight - dy;
                                                       try newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
   SetWindowPos(aWnd, 0, 0, 0, newW, newH, SWP_NOMOVE or SWP_NOZORDER); // resize the window

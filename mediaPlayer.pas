@@ -473,7 +473,8 @@ begin
   application.processMessages;
 
   CU.delay(100);
-  sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL
+  sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
+  application.processMessages;
 
   checkPot;
   result := TRUE;
