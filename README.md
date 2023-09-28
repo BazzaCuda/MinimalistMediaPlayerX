@@ -122,6 +122,8 @@ Control | Action
 `0`                     | decrease contrast. Can be held down for rapid decrease
 `-` (Hyphen)            | increase contrast. Can be held down for rapid increase
 `=`                     | reset contrast to normal 
+`Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
+`Ctrl-0`                | close all running instances of MMP
 
 ### Full List of Controls By Category
 ---------------
@@ -220,6 +222,8 @@ Control | Action
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | maximize / restore [V]iew, same as [M]
+`Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
+`Ctrl-0`                | close all running instances of MMP
 **Zoom** |
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
