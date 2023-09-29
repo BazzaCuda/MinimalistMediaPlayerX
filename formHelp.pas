@@ -107,7 +107,7 @@ begin
   end;
 
   SELF.width  := 700;
-  SELF.height := 840;
+  SELF.height := 870;
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := $2B2B2B;

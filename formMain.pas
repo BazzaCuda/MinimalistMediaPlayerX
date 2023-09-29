@@ -27,6 +27,8 @@ uses
 type
   TMMPUI = class(TForm)
     procedure FormCreate(Sender: TObject);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure WMNCHitTest(var msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMSizing(var msg: TMessage); message WM_SIZING;
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
@@ -82,6 +84,16 @@ begin
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
   CU.delay(100);
   case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); end;
+end;
+
+procedure TMMPUI.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  ST.opInfo := MP.volDown;
+end;
+
+procedure TMMPUI.FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  ST.opInfo := MP.volUp;
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);

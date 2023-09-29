@@ -132,7 +132,6 @@ begin
 
   case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
   case msgIs(WM_LBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
-  case msgIs(WM_RBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
 
   case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
   case msgIs(WM_CENTRE_WINDOW)        of TRUE: UI.centreWindow(UI.handle); end;

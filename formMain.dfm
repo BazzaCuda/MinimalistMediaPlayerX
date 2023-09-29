@@ -3038,5 +3038,7 @@ object MMPUI: TMMPUI
     00E0070000F00F0000}
   Position = poDefault
   OnCreate = FormCreate
+  OnMouseWheelDown = FormMouseWheelDown
+  OnMouseWheelUp = FormMouseWheelUp
   TextHeight = 13
 end

@@ -51,7 +51,7 @@ const
   WM_SHOW_WINDOW         = WM_USER + 2109;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
-  LOSSLESS_CUT = 'B:\Tools\LosslessCut-win-x64\LosslessCut.exe';
+  LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
   PB_DEFAULT_COLOR = $202020;
