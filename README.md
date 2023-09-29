@@ -105,10 +105,10 @@ Control | Action
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `T`                     | Tab through the media file. See below in Category section
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-`V`                     | View all MP[V] settings (in development)
+`V`                     | synchronize all [V]ideo windows (ready for next release)
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
-`Y`                     | s[Y]nchronize all media windows (ready for next release)
+`Y`                     | View all MPV settings (in development)
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset panning to normal
