@@ -370,7 +370,7 @@ begin
 
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
+    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
   end;
 end;
 

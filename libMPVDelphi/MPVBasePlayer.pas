@@ -245,7 +245,7 @@ function MPVLibLoaded(const sLibPath: string): Boolean;
 
 implementation
 
-
+uses _debugWindow;
 
 { TMPVEventThread }
 
@@ -445,6 +445,8 @@ begin
             pe^.error, pe^.reply_userdata]), False);
         end;
       end;
+
+//      case (totalSeconds > 0) and ((totalSeconds - currentSeconds) <= 0.2) of TRUE: setState(mpsStop); end;
 
       case pe^.event_id of
       MPV_EVENT_SEEK:
@@ -1135,7 +1137,7 @@ begin
   SetPropertyString('force-window', 'yes');
   SetPropertyString('config-dir', sConfigDir); // mpv.conf location
   SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
-  SetPropertyBool('keep-open', TRUE);
+  SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
   SetPropertyBool('keep-open-pause', False);
 //  SetPropertyDouble('sub-delay', -10.0);
 //  SetPropertyBool('idle-screen', FALSE);
