@@ -152,6 +152,7 @@ begin
   case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, shiftState); end;
   case msgIs(WIN_RESIZE)              of TRUE: UI.resize(UI.handle, point(msg.wParam, msg.lParam), MP.videoWidth, MP.videoHeight); end;
   case msgIs(WIN_AUTOCENTER_OFF)      of TRUE: UI.autoCentre := FALSE; end;
+  case msgIs(WIN_SYNC_MEDIA)          of TRUE: begin MP.position := msg.wParam; ST.opInfo := 'Synced'; end;end;
 end;
 
 constructor TAppEvents.create;

@@ -31,7 +31,7 @@ type
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
-            koGammaReset, koSaturationReset, koAllReset, koShowHelp, koBrighterPB, koDarkerPB, koShowPlaylist, koCloseAll, koArrangeAll);
+            koGammaReset, koSaturationReset, koAllReset, koShowHelp, koBrighterPB, koDarkerPB, koShowPlaylist, koCloseAll, koArrangeAll, koSyncMedia);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -172,6 +172,7 @@ begin
   case keyUp and keyIs(P)                       of TRUE: result := koShowPlaylist; end;
   case keyUp and keyIs(_0) and ctrl             of TRUE: result := koCloseAll; end;
   case keyUp and keyIs(_9) and ctrl             of TRUE: result := koArrangeAll; end;
+  case keyUp and keyIs(V)                       of TRUE: result := koSyncMedia; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -314,6 +315,7 @@ begin
     koDarkerPB:          CU.darker;
     koCloseAll:          SA.postToAll(WIN_CLOSEAPP);
     koArrangeAll:        UI.arrangeAll;
+    koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0));
 //    koShowPlaylist:      UI.togglePlaylist;
   end;
 
