@@ -150,12 +150,13 @@ Control | Action
 `]`                     | increase gamma. Can be held down for rapid increase
 `'`                     | reset gamma
 **Mouse** |
-`Left Click on the window and hold` | the window can be dragged/repositioned
-`Left double-click video`           | toggle fullscreen mode
-`Right double-click video`          | toggle fullscreen mode
-`Right single-click video`          | Pause/resume playback
-`with Numlock on`                   | move mouse along the progress bar to "scrub" backwards and forwards through the media file
-`CTRL`                              | hold ctrl key down and move mouse along the progress bar. Same as above
+`Left click the window and hold` | the window can be dragged/repositioned
+`Left double-click video`        |  toggle fullscreen mode
+`Right single-click the window`  | Pause/resume playback
+`with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
+`CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
+`Wheel up`                       | volume up
+`Wheel down`                     | volume down
 **On-Screen Display** |
 `#`                     | briefly show media caption (the filename and its position in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
