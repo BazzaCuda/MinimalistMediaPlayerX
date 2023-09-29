@@ -105,7 +105,7 @@ Control | Action
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `T`                     | Tab through the media file. See below in Category section
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-`V`                     | maximize / restore [V]iew
+`V`                     | 
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
 `Y`                     | Display all MPV settings (in development)
