@@ -150,8 +150,8 @@ begin
   case keyUp and keyIs(K)                       of TRUE: result := koKeep; end;
   case keyUp and keyIs(L)                       of TRUE: result := koReloadPlaylist; end;
   case keyUp and ctrl and keyIs(P)              of TRUE: result := koAlwaysPot; end;
-  case keyUp and keyIs(_2)                      of TRUE: result := koPanReset; end;
-  case keyUp and keyIs(_3)                      of TRUE: result := koBrightnessReset; end;
+  case keyUp and keyIs(_2)                      of TRUE: result := koBrightnessReset; end;
+  case keyUp and keyIs(_3)                      of TRUE: result := koPanReset; end;
   case keyUp and keyIs(_4)                      of TRUE: result := koRotateReset; end;
   case keyUp and keyIs(_5)                      of TRUE: result := koBookmarkSave; end;
   case keyUp and keyIs(_6)                      of TRUE: result := koBookmarkLoad; end;
