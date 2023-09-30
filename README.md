@@ -46,7 +46,7 @@ Control | Action
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
@@ -222,7 +222,7 @@ Control | Action
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
-`V`                     | maximize / restore [V]iew, same as [M]
+`V`                     | synchronize all [V]ideo windows (ready for next release)
 `Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 **Zoom** |
@@ -234,7 +234,7 @@ Control | Action
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma and saturation to normal 
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal 
 
 Media File Formats
 ------------------
