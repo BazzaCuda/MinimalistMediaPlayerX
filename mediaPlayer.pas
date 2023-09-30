@@ -127,7 +127,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -464,11 +464,17 @@ end;
 function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
+
   openURL(aURL);
+
+  // reset the window size for an audio file in case the previous audio had an image but this one doesn't or the previous file was a video
+  case MT.mediaType(lowerCase(extractFileExt(aURL))) = mtAudio of TRUE: UI.setWindowSize(mtAudio); end;
+
   mpv.volume := FVol;
   MI.URL     := aURL;
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
+
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
 
