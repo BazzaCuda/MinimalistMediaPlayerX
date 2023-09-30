@@ -148,7 +148,7 @@ Control | Action
 **Gamma** |
 `[`                     | decrease gamma. Can be held down for rapid decrease
 `]`                     | increase gamma. Can be held down for rapid increase
-`'`                     | reset gamma
+`'` (single quote)      | reset gamma
 **Mouse** |
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click video`        |  toggle fullscreen mode
