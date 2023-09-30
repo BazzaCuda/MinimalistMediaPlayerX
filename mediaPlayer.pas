@@ -467,7 +467,7 @@ begin
 
   openURL(aURL);
 
-  // reset the window size for an audio file in case the previous audio had an image but this one doesn't or the previous file was a video
+  // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
   case MT.mediaType(lowerCase(extractFileExt(aURL))) = mtAudio of TRUE: UI.setWindowSize(mtAudio); end;
 
   mpv.volume := FVol;
