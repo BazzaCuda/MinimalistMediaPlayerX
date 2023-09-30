@@ -238,11 +238,11 @@ Control | Action
 
 Media File Formats
 ------------------
-``Minimalist Media Player`` uses MVP for its media playback and manipulation functions and will play the overwhelming majority of media files.
+``Minimalist Media Player`` uses MPV for its media playback and manipulation functions and will play the overwhelming majority of media files.
 
 Dependencies
 ------------
-1. ``Minimalist Media Player`` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, mvp will take it into account when initializing, for example to specify your audio output preferences.
+1. ``Minimalist Media Player`` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
 
 2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV). If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``Minimalist Media Player`` will still ask for confirmation, nothing will happen.
 
