@@ -83,8 +83,8 @@ Control | Action
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent
 `Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent
-`C`                     | show/hide on-screen [C]ontrols (media info) and media file timestamp
-`Ctrl-C`                | show/hide all on-screen controls, media file timestamp and media metadata
+`C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
+`Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
 `D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected
 `E`                     | [E]ars - mute/unmute sound
