@@ -199,7 +199,7 @@ Control | Action
 `T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
-`Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reserve" through the media file
+`Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reverse" through the media file
 `Caps Lock-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
 `Caps Lock Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 `Shift-T`               | tab forwards 50th of media duration
