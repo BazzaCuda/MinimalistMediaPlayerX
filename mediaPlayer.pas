@@ -378,7 +378,7 @@ procedure TMediaPlayer.onTimerEvent(sender: TObject);
 begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
-    tePlay:  begin play(PL.currentItem); {UI.moveHelpWindow(FALSE);} end;
+    tePlay:  begin play(PL.currentItem); end;
     teClose: sendSysCommandClose(UI.handle);
   end;
 end;
