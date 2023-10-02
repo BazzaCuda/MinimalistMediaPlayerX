@@ -79,8 +79,9 @@ begin
                                                 UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
                                                 postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
 
-  UI.Initialized := TRUE; // don't allow UI.formResize to do anything until the first media plays.
-  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+  UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
+//  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
   CU.delay(100);
   case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); end;
@@ -113,6 +114,7 @@ begin
       PL.fillPlaylist(extractFilePath(vFilePath));
       PL.find(vFilePath);
       case PL.hasItems of TRUE: postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;
+      UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
 
       BREAK;              // we currently only process the first file if multiple files are dropped
     end;
