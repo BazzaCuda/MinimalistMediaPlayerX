@@ -63,7 +63,7 @@ begin
   case helpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current help window. Used for repositioning the window when the main UI moves or resizes.
 
   helpForm.show;
-  winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   enableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
   setForegroundWindow(UI.handle); // so the UI keyboard functions can still be used when this form is open.
 end;
