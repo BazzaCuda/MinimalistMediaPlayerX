@@ -85,7 +85,7 @@ begin
   playlistForm.loadPlaylist;
   playlistForm.show;
 
-  winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   focusPlaylist;
 end;
 
