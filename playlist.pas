@@ -198,7 +198,7 @@ var i: integer;
 begin
   aListBox.clear;
   for i := 0 to FPlaylist.count - 1 do
-    aListBox.items.add(FPlaylist[i]);
+    aListBox.items.add(extractFileName(FPlaylist[i]));
 end;
 
 function TPlaylist.hasItems: boolean;

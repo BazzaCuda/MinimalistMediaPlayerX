@@ -107,8 +107,7 @@ begin
   // Calculate the number of items that can fit in the visible area
   vVisibleItemCount := visibleItemCount;
 
-  // Calculate the index of the bottom visible item
-  // (TopIndex + VisibleItemCount - 1)
+  // Calculate the index of the bottom visible item: (TopIndex + VisibleItemCount - 1)
   result := (LB.itemIndex >= vTopIndex) and (LB.itemIndex <= vTopIndex + vVisibleItemCount - 1);
 end;
 
@@ -127,10 +126,15 @@ end;
 
 procedure TPlaylistForm.FormCreate(Sender: TObject);
 begin
-  LB.align          := alClient;
-  LB.bevelInner     := bvNone;
-  LB.bevelOuter     := bvNone;
-  LB.borderStyle    := bsNone;
+  LB.align            := alClient;
+  LB.bevelInner       := bvNone;
+  LB.bevelOuter       := bvNone;
+  LB.borderStyle      := bsNone;
+  LB.margins.bottom   := 10;
+  LB.margins.left     := 10;
+  LB.margins.right    := 10;
+  LB.margins.top      := 10;
+  LB.AlignWithMargins := TRUE;
 
   SELF.width  := 556;
 //  SELF.height := 840;
