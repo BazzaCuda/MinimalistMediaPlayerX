@@ -39,8 +39,10 @@ type
     function setGlassFrame(const aForm: TForm): boolean;
     function setWindowStyle(const aForm: TForm): boolean;
     function createVideoPanel(const aForm: TForm): boolean;
+    function getHeight: integer;
     function getWidth: integer;
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure onMPPlayNext(sender: TObject);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -58,6 +60,7 @@ type
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(const anApp: string; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
+    function reloadPlaylistWindow: boolean;
     function renameFile(const aFilePath: string): boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
@@ -65,11 +68,12 @@ type
     function showWindow: boolean;
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
-    function toggleControls(shift: TShiftState): boolean;
+    function toggleCaptions(shift: TShiftState): boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
+    property height: integer read getHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth;
@@ -176,6 +180,8 @@ begin
 
   postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
   application.processMessages;
+  moveHelpWindow(FALSE);
+  movePlaylistWindow(FALSE);
 end;
 
 function TUI.checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
@@ -195,6 +201,11 @@ procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 // doesn't work in appEvents. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
 begin
   case screen <> NIL of TRUE: screen.cursor := crDefault; end;
+end;
+
+procedure TUI.onMPPlayNext(sender: TObject);
+begin
+  movePlaylistWindow(FALSE);
 end;
 
 function TUI.createVideoPanel(const aForm: TForm): boolean;
@@ -217,13 +228,16 @@ begin
                           FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
 
   case CU.showOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
-                                                      var vIx := PL.currentIx;  // make a note of this ix because...
-                                                      MP.dontPlayNext := ssCtrl in shift;
-                                                      MP.stop;                  // this will automatically do MP.playNext
-                                                      CU.deleteThisFile(PL.thisItem(vIx), shift);
-                                                      PL.delete(vIx);
-                                                      case ssCtrl in shift of TRUE: sendSysCommandClose(FMainForm.handle); end;
-                                                    end;end;
+                                                      var vIx := PL.currentIx;
+                                                      MP.dontPlayNext := TRUE;  // because...
+                                                      MP.stop;                  // this would have automatically done MP.playNext
+                                                      CU.deleteThisFile(PL.currentItem, shift);
+                                                      PL.delete(PL.currentIx);
+                                                      case (ssCtrl in shift) or (NOT PL.hasItems) of  TRUE: sendSysCommandClose(FMainForm.handle);
+                                                                                                     FALSE: begin
+                                                                                                              reloadPlaylistWindow;
+                                                                                                              case vIx = 0 of  TRUE: MP.playCurrent;
+                                                                                                                              FALSE: MP.playNext; end;end;end;end;end;
 end;
 
 function TUI.doEscapeKey: boolean;
@@ -241,12 +255,18 @@ begin
   ST.formResize;
   PB.formResize;
   moveHelpWindow(FALSE);
+  movePlaylistWindow(FALSE);
   ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 end;
 
 function TUI.smallerWindow(const aWnd: HWND): boolean;
 begin
   greaterWindow(aWnd, [ssCtrl]);
+end;
+
+function TUI.getHeight: integer;
+begin
+  result := FMainForm.height;
 end;
 
 function TUI.getWidth: integer;
@@ -318,6 +338,7 @@ begin
   FAutoCentre         := TRUE;
   aForm.width         := 800;
   aForm.height        := 300;
+  MP.onPlayNext       := onMPPlayNext;
 end;
 
 function TUI.keepFile(const aFilePath: string): boolean;
@@ -349,6 +370,11 @@ end;
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
 begin
   SetWindowPos(aHWND, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+end;
+
+function TUI.reloadPlaylistWindow: boolean;
+begin
+  case showingPlaylist of TRUE: reloadPlaylist(TRUE); end;
 end;
 
 function TUI.renameFile(const aFilePath: string): boolean;
@@ -406,7 +432,7 @@ end;
 function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
-                                      FMainForm.height := 56; end;
+                                      FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
                       mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.6);
                                       FMainForm.height := trunc(FMainForm.width * 0.75); end;end;
 end;
@@ -440,12 +466,10 @@ end;
 function TUI.movePlaylistWindow(const create: boolean = TRUE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  showPlaylist(vPt, create);
+  showPlaylist(vPt, videoPanel.height, create);
 end;
 
-function TUI.toggleControls(shift: TShiftState): boolean;
-// we call them "controls" but they're actually the media info and the time display at the bottom of the window
-// a left-over from this app's pre-minimalist days
+function TUI.toggleCaptions(shift: TShiftState): boolean;
 begin
   case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
 

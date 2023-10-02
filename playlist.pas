@@ -20,7 +20,7 @@ unit playlist;
 
 interface
 
-uses system.generics.collections, system.generics.defaults, system.classes;
+uses system.generics.collections, system.generics.defaults, system.classes, vcl.stdCtrls;
 
 type
   TPlaylist = class(TObject)
@@ -44,6 +44,7 @@ type
     function find(const anItem: string): boolean;
     function first: boolean;
     function formattedItem: string;
+    function getPlaylist(aListBox: TListBox): boolean;
     function hasItems: boolean;
     function isFirst: boolean;
     function isLast: boolean;
@@ -128,6 +129,8 @@ begin
                             case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
                             FPlaylist.delete(ix);
                             dec(FPlayIx); end;end;
+
+  case (FPlayIx < 0) and (FPlaylist.count > 0) of TRUE: FPlayIx := 0; end; // the item at index 0 was deleted so point to the new item[0]
   result := TRUE;
 end;
 
@@ -188,6 +191,14 @@ function TPlaylist.formattedItem: string;
 begin
   case hasItems of FALSE: EXIT; end;
   result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, ExtractFileName(currentItem)]);
+end;
+
+function TPlaylist.getPlaylist(aListBox: TListBox): boolean;
+var i: integer;
+begin
+  aListBox.clear;
+  for i := 0 to FPlaylist.count - 1 do
+    aListBox.items.add(FPlaylist[i]);
 end;
 
 function TPlaylist.hasItems: boolean;

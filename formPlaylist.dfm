@@ -25,7 +25,6 @@ object PlaylistForm: TPlaylistForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 742
     object buttonPanel: TPanel
       Left = 0
       Top = 572
@@ -34,7 +33,6 @@ object PlaylistForm: TPlaylistForm
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 742
       object shiftLabel: TLabel
         Left = 0
         Top = 0

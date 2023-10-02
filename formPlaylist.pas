@@ -33,37 +33,60 @@ type
     LB: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure LBDblClick(Sender: TObject);
+    procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    function playItemIndex(const aItemIndex: integer): boolean;
+    function visibleItemCount: integer;
   protected
     procedure CreateParams(var Params: TCreateParams);
+    function  isItemVisible: boolean;
   public
+    function loadPlaylist(const forceReload: boolean = FALSE): boolean;
   end;
 
-function showPlaylist(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
+function focusPlaylist: boolean;
+function reloadPlaylist(const forceReload: boolean = FALSE): boolean;
+function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 function showingPlaylist: boolean;
 function shutPlaylist: boolean;
 
 implementation
 
-uses ShellAPI, UICtrls, system.strUtils, commonUtils;
+uses ShellAPI, UICtrls, system.strUtils, commonUtils, playlist, globalVars, mediaPlayer, consts, _debugWindow;
 
 var
   playlistForm: TPlaylistForm;
+
+function focusPlaylist: boolean;
+begin
+  case playlistForm = NIL of TRUE: EXIT; end;
+  setForegroundWindow(playlistForm.handle); // so this window also receives keyboard keystrokes
+end;
+
+function reloadPlaylist(const forceReload: boolean = FALSE): boolean;
+begin
+  case playlistForm = NIL of FALSE: playlistForm.loadPlaylist(forceReload); end;
+end;
 
 function showingPlaylist: boolean;
 begin
   result := playlistForm <> NIL;
 end;
 
-function showPlaylist(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
+function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 begin
   case (playlistForm = NIL) and createNew of TRUE: playlistForm := TPlaylistForm.create(NIL); end;
   case playlistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
 
+  case aHeight > UI_DEFAULT_AUDIO_HEIGHT of TRUE: playlistForm.height := aHeight; end;
+  screen.cursor := crDefault;
+
+  playlistForm.loadPlaylist;
   playlistForm.show;
+
   winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-  enableWindow(playlistForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
-  setForegroundWindow(UI.handle); // so the UI keyboard functions can still be used when this form is open.
+  focusPlaylist;
 end;
 
 function shutPlaylist: boolean;
@@ -73,6 +96,21 @@ begin
 end;
 
 {$R *.dfm}
+
+function TPlaylistForm.isItemVisible: boolean;
+var
+  vTopIndex, vVisibleItemCount: integer;
+begin
+  // Get the index of the top visible item
+  vTopIndex := LB.topIndex;
+
+  // Calculate the number of items that can fit in the visible area
+  vVisibleItemCount := visibleItemCount;
+
+  // Calculate the index of the bottom visible item
+  // (TopIndex + VisibleItemCount - 1)
+  result := (LB.itemIndex >= vTopIndex) and (LB.itemIndex <= vTopIndex + vVisibleItemCount - 1);
+end;
 
 procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
@@ -99,6 +137,53 @@ begin
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := $2B2B2B;
+
+  styleElements     := []; // don't allow any theme alterations
+  borderStyle       := bsNone;
+  LB.onDblClick     := LBDblClick;
+  LB.onKeyUp        := LBKeyUp;
+end;
+
+procedure TPlaylistForm.LBDblClick(Sender: TObject);
+begin
+  playItemIndex(LB.itemIndex);
+end;
+
+procedure TPlaylistForm.LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case key = VK_RETURN of TRUE: playItemIndex(LB.itemIndex); end;
+end;
+
+function TPlaylistForm.loadPlaylist(const forceReload: boolean = FALSE): boolean;
+begin
+  playlistForm.LB.items.beginUpdate; // prevent flicker when moving the window
+
+  try
+
+    case forceReload or (LB.items.count = 0) of TRUE:  PL.getPlaylist(LB); end;
+    case LB.count > 0 of TRUE:  begin
+                                  LB.itemIndex := PL.currentIx;
+                                  LB.selected[LB.itemIndex] := TRUE;
+                                  case isItemVisible of TRUE: EXIT; end;
+                                  var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
+                                  case vTopIndex >= LB.count of  TRUE: LB.topIndex := vTopIndex;
+                                                                FALSE: LB.topIndex := LB.itemIndex; end;end;end;
+
+  finally
+    playlistForm.LB.items.endUpdate;
+  end;
+end;
+
+function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
+begin
+  PL.find(PL.thisItem(aItemIndex));
+  MP.play(PL.currentItem);
+  UI.movePlaylistWindow(FALSE);
+end;
+
+function TPlaylistForm.visibleItemCount: integer;
+begin
+  result := LB.clientHeight div LB.itemHeight;
 end;
 
 initialization

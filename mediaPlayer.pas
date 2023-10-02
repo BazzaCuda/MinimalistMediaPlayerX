@@ -35,10 +35,10 @@ type
     FAlwaysPot: boolean;
     FDontPlayNext: boolean;
     FMuted: boolean;
+    FOnPlayNext: TNotifyEvent;
     FPlaying: boolean;
     FVol:  double;
   private
-
     constructor create;
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
@@ -84,6 +84,7 @@ type
     function pause: boolean;
     function pausePlay: boolean;
     function play(const aURL: string): boolean;
+    function playCurrent: boolean;
     function playFirst: boolean;
     function playLast: boolean;
     function playNext: boolean;
@@ -109,17 +110,18 @@ type
     function zoomIn: string;
     function zoomOut: string;
     function zoomReset: string;
-    property alwaysPot:           boolean   read FAlwaysPot write FAlwaysPot;
-    property dontPlayNext:        boolean   read FDontPlayNext write FDontPlayNext;
-    property duration:            integer   read getDuration;
-    property formattedDuration:   string    read getFormattedDuration;
-    property formattedSpeed:      string    read getFormattedSpeed;
-    property formattedTime:       string    read getFormattedTime;
-    property formattedVol:        string    read getFormattedVol;
-    property playing:             boolean   read FPlaying     write FPlaying;
-    property position:            integer   read getPosition  write setPosition;
-    property videoHeight:         int64     read getVideoHeight;
-    property videoWidth:          int64     read getVideoWidth;
+    property alwaysPot:           boolean      read FAlwaysPot    write FAlwaysPot;
+    property dontPlayNext:        boolean      read FDontPlayNext write FDontPlayNext;
+    property duration:            integer      read getDuration;
+    property formattedDuration:   string       read getFormattedDuration;
+    property formattedSpeed:      string       read getFormattedSpeed;
+    property formattedTime:       string       read getFormattedTime;
+    property formattedVol:        string       read getFormattedVol;
+    property onPlayNext:          TNotifyEvent read FOnPlayNext   write FOnPlayNext;
+    property playing:             boolean      read FPlaying      write FPlaying;
+    property position:            integer      read getPosition   write setPosition;
+    property videoHeight:         int64        read getVideoHeight;
+    property videoWidth:          int64        read getVideoWidth;
   end;
 
 function MP: TMediaPlayer;
@@ -510,6 +512,13 @@ begin
   result := TRUE;
 end;
 
+function TMediaPlayer.playCurrent: boolean;
+begin
+  FTimer.interval := 100;
+  FTimerEvent     := tePlay;
+  FTimer.enabled  := TRUE;
+end;
+
 function TMediaPlayer.playFirst: boolean;
 begin
   FTimer.interval := 100;
@@ -532,6 +541,7 @@ begin
   case FTimer.enabled of FALSE: begin
                                   FTimerEvent    := teClose;
                                   FTimer.enabled := TRUE; end;end;
+  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
 end;
 
 function TMediaPlayer.playPrev: boolean;

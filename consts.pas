@@ -58,6 +58,8 @@ const
   PB_DEFAULT_COLOR = $202020;
   ST_DEFAULT_COLOR = $707070;
 
+  UI_DEFAULT_AUDIO_HEIGHT = 56;
+
 type
   TMediaType = (mtUnk, mtAudio, mtVideo);
   TMediaTypeRec = record

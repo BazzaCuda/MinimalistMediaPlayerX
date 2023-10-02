@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -97,6 +97,8 @@ begin
   shiftState   := KeyboardStateToShiftState;
   case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
 
+  focusPlaylist; // if it's being displayed, so it keys keystrokes
+
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key          := msg.WParam;
@@ -124,14 +126,14 @@ begin
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
-  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
+  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
 
   case msgIs(WM_LBUTTONDOWN)             of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
   case msgIs(WM_LBUTTONUP)               of TRUE: mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
 
   case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
-  case msgIs(WM_LBUTTONDBLCLK)           of TRUE: MP.toggleFullscreen; end;
+  case msgIs(WM_LBUTTONDBLCLK) and NOT showingPlaylist of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
   case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
@@ -139,13 +141,13 @@ begin
   case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;
   case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow(UI.handle); end;
 
-  case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem); end;
+  case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
 
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: MC.caption := PL.formattedItem; end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;end;
-  case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleControls(shiftState); end;
+  case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
   case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock); end;
   case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, -1); end;
