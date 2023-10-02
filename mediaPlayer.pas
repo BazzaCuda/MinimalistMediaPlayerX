@@ -32,10 +32,11 @@ type
     FTimer: TTimer;
     FTimerEvent: TTimerEvent;
 
-    FDontPlayNext: boolean;
-    FVol:  double;
-    FPlaying: boolean;
     FAlwaysPot: boolean;
+    FDontPlayNext: boolean;
+    FMuted: boolean;
+    FPlaying: boolean;
+    FVol:  double;
   private
 
     constructor create;
@@ -359,7 +360,8 @@ end;
 function TMediaPlayer.muteUnmute: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.mute := NOT mpv.mute;
+  FMuted := NOT FMuted;
+  mpv.mute := FMuted;
   case mpv.mute of  TRUE: result := 'unmuted';
                    FALSE: result := 'muted'; end;
 end;
@@ -491,6 +493,7 @@ begin
   case MT.mediaType(lowerCase(extractFileExt(aURL))) = mtAudio of TRUE: UI.setWindowSize(mtAudio); end;
 
   mpv.volume := FVol;
+  mpv.mute   := FMuted;
   MI.URL     := aURL;
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
