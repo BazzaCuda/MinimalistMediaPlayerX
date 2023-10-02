@@ -75,11 +75,11 @@ type
     function initMediaPlayer: boolean;
     function muteUnmute: string;
     function openURL(const aURL: string): boolean;
-    function panDn: string;
-    function panLeft: string;
+    function panDn(const aShiftState: TShiftState): string;
+    function panLeft(const aShiftState: TShiftState): string;
     function panReset: string;
-    function panRight: string;
-    function panUp: string;
+    function panRight(const aShiftState: TShiftState): string;
+    function panUp(const aShiftState: TShiftState): string;
     function pause: boolean;
     function pausePlay: boolean;
     function play(const aURL: string): boolean;
@@ -398,23 +398,33 @@ begin
   result := TRUE;
 end;
 
-function TMediaPlayer.panDn: string;
+function TMediaPlayer.panDn(const aShiftState: TShiftState): string;
 var
   panY: double;
+  multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in aShiftState of  TRUE: multiplier := 2;
+                                 FALSE: multiplier := 1; end;
+
   mpv.getPropertyDouble('video-pan-y', panY);
-  mpv.setPropertyDouble('video-pan-y', panY + 0.001);
+  mpv.setPropertyDouble('video-pan-y', panY + (0.001 * multiplier));
   result := 'Pan down';
 end;
 
-function TMediaPlayer.panLeft: string;
+function TMediaPlayer.panLeft(const aShiftState: TShiftState): string;
 var
   panX: double;
+  multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in aShiftState of  TRUE: multiplier := 2;
+                                 FALSE: multiplier := 1; end;
+
   mpv.getPropertyDouble('video-pan-x', panX);
-  mpv.setPropertyDouble('video-pan-x', panX - 0.001);
+  mpv.setPropertyDouble('video-pan-x', panX - (0.001 * multiplier));
   result := 'Pan left';
 end;
 
@@ -426,23 +436,33 @@ begin
   result := 'Pan reset';
 end;
 
-function TMediaPlayer.panRight: string;
+function TMediaPlayer.panRight(const aShiftState: TShiftState): string;
 var
   panX: double;
+  multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in aShiftState of  TRUE: multiplier := 2;
+                                 FALSE: multiplier := 1; end;
+
   mpv.getPropertyDouble('video-pan-x', panX);
-  mpv.setPropertyDouble('video-pan-x', panX + 0.001);
+  mpv.setPropertyDouble('video-pan-x', panX + (0.001 * multiplier));
   result := 'Pan right';
 end;
 
-function TMediaPlayer.panUp: string;
+function TMediaPlayer.panUp(const aShiftState: TShiftState): string;
 var
   panY: double;
+  multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in aShiftState of  TRUE: multiplier := 2;
+                                 FALSE: multiplier := 1; end;
+
   mpv.getPropertyDouble('video-pan-y', panY);
-  mpv.setPropertyDouble('video-pan-y', panY - 0.001);
+  mpv.setPropertyDouble('video-pan-y', panY - (0.001 * multiplier));
   result := 'Pan up';
 end;
 

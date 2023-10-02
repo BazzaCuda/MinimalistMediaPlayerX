@@ -266,10 +266,10 @@ begin
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koPlayNext:          MP.playNext;
     koPlayPrev:          MP.playPrev;
-    koPanLeft:           ST.opInfo := MP.panLeft;
-    koPanRight:          ST.opInfo := MP.panRight;
-    koPanUp:             ST.opInfo := MP.panUp;
-    koPanDn:             ST.opInfo := MP.panDn;
+    koPanLeft:           ST.opInfo := MP.panLeft(aShiftState);
+    koPanRight:          ST.opInfo := MP.panRight(aShiftState);
+    koPanUp:             ST.opInfo := MP.panUp(aShiftState);
+    koPanDn:             ST.opInfo := MP.panDn(aShiftState);
     koRotateR:           ST.opInfo := MP.rotateRight;
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
