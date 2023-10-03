@@ -1139,6 +1139,7 @@ begin
   SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
   SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
   SetPropertyBool('keep-open-pause', False);
+//  SetPropertyBool('no-config', TRUE);
 //  SetPropertyDouble('sub-delay', -10.0);
 //  SetPropertyBool('idle-screen', FALSE);
 //  setPropertyString('osc-visibility', 'never');
