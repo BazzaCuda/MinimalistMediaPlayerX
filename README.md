@@ -99,20 +99,20 @@ Control | Action
 `M`                     | Display all media info for the current media file (in development)
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
-`P`                     | show/hide the [P]laylist (in development)
+`P`                     | show/hide the [P]laylist
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `T`                     | Tab through the media file. See below in Category section
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-`V`                     | synchronize all [V]ideo windows (ready for next release)
+`V`                     | synchronize all [V]ideo windows
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
 `Y`                     | View all MPV settings (in development)
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
-`2`                     | reset panning to normal
-`3`                     | reset brightness to normal
+`2`                     | reset brightness to normal
+`3`                     | reset panning to normal
 `4`                     | reset rotation to normal/not rotated
 `5`                     | bookmark the current media file timestamp to the configuration file
 `6`                     | retrieve a bookmarked media file timestamp from the configuration file and continue playback from that point
@@ -132,7 +132,7 @@ Control | Action
 **Brightness** |
 `8`                     | Decrease brightness. Can be held down for rapid decrease
 `9`                     | Increase brightness. Can be held down for rapid increase
-`3`                     | reset brightness to normal
+`2`                     | reset brightness to normal
 **Contrast** |
 `=`                     | increase contrast. Can be held down for rapid increase
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
@@ -169,7 +169,7 @@ Control | Action
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning
-`2`                     | reset panning to normal
+`3`                     | reset panning to normal
 **Playlist** |
 `A`                     | play the first media file in the playlist (Z/END plays last)
 `HOME`                  | play the first media file in the playlist (Z/END plays last)
@@ -222,7 +222,7 @@ Control | Action
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
-`V`                     | synchronize all [V]ideo windows (ready for next release)
+`V`                     | synchronize all [V]ideo windows
 `Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 **Zoom** |
