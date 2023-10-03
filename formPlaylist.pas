@@ -36,13 +36,13 @@ type
     procedure LBDblClick(Sender: TObject);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    function playItemIndex(const aItemIndex: integer): boolean;
-    function visibleItemCount: integer;
+    function  playItemIndex(const aItemIndex: integer): boolean;
+    function  visibleItemCount: integer;
   protected
     procedure CreateParams(var Params: TCreateParams);
     function  isItemVisible: boolean;
   public
-    function loadPlaylist(const forceReload: boolean = FALSE): boolean;
+    function  loadPlaylist(const forceReload: boolean = FALSE): boolean;
   end;
 
 function focusPlaylist: boolean;
@@ -97,20 +97,6 @@ end;
 
 {$R *.dfm}
 
-function TPlaylistForm.isItemVisible: boolean;
-var
-  vTopIndex, vVisibleItemCount: integer;
-begin
-  // Get the index of the top visible item
-  vTopIndex := LB.topIndex;
-
-  // Calculate the number of items that can fit in the visible area
-  vVisibleItemCount := visibleItemCount;
-
-  // Calculate the index of the bottom visible item: (TopIndex + VisibleItemCount - 1)
-  result := (LB.itemIndex >= vTopIndex) and (LB.itemIndex <= vTopIndex + vVisibleItemCount - 1);
-end;
-
 procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
@@ -146,6 +132,20 @@ begin
   borderStyle       := bsNone;
   LB.onDblClick     := LBDblClick;
   LB.onKeyUp        := LBKeyUp;
+end;
+
+function TPlaylistForm.isItemVisible: boolean;
+var
+  vTopIndex, vVisibleItemCount: integer;
+begin
+  // Get the index of the top visible item
+  vTopIndex := LB.topIndex;
+
+  // Calculate the number of items that can fit in the visible area
+  vVisibleItemCount := visibleItemCount;
+
+  // Calculate the index of the bottom visible item: (TopIndex + VisibleItemCount - 1)
+  result := (LB.itemIndex >= vTopIndex) and (LB.itemIndex <= vTopIndex + vVisibleItemCount - 1);
 end;
 
 procedure TPlaylistForm.LBDblClick(Sender: TObject);
