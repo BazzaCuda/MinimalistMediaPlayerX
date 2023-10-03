@@ -1016,8 +1016,7 @@ function mpv_set_option(ctx: PMPVHandle; const name: PMPVChar; format: mpv_forma
  *)
 {$IFDEF MPV_DYNAMIC_LOAD}
 const
-  fn_mpv_set_option_string = 'mpv_set_option_string';      .
-  .
+  fn_mpv_set_option_string = 'mpv_set_option_string';
 
 
 type

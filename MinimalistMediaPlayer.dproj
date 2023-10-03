@@ -113,6 +113,7 @@
 $(PostBuildEvent)]]></PostBuildEvent>
         <Debugger_RunParams>&quot;B:\Movies\LOTR 1 - The Fellowship Of The Ring (2001) Extended.mkv&quot;</Debugger_RunParams>
         <VerInfo_Release>10</VerInfo_Release>
+        <DCC_Define>MPV_DYNAMIC_LOAD;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
