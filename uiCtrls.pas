@@ -111,6 +111,8 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
+  case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
+
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
   vRatio := Y / X;
@@ -135,7 +137,6 @@ var
 begin
   vCount     := SA.count;
   autoCentre := vCount = 1;
-  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
 
   case vCount of
     1:       SA.postToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
@@ -251,6 +252,8 @@ begin
   case FInitialized of FALSE: EXIT; end;
   case PL.hasItems of FALSE: EXIT; end;
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
+  case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
+
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
   ST.formResize;
   PB.formResize;
@@ -394,7 +397,6 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
-
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
   vRatio := Y / X;
@@ -407,7 +409,7 @@ begin
                             vWidth  := trunc(pt.y / vRatio);
                             vHeight := pt.y; end;end;
 
-  sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0 ); // in case it was minimized
+  sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0); // in case it was minimized
   SetWindowPos(aWnd, HWND_TOPMOST, 0, 0, vWidth, vHeight, SWP_NOMOVE);      // Both SWPs achieve HWND_TOP as HWND_TOP itself doesn't work.
   SetWindowPos(aWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE); // resize the window. Triggers adjustAspectRatio
 end;
