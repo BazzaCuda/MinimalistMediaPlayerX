@@ -468,7 +468,7 @@ end;
 
 function TUI.movePlaylistWindow(const create: boolean = TRUE): boolean;
 begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
   showPlaylist(vPt, videoPanel.height, create);
 end;
 

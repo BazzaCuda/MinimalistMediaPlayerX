@@ -43,6 +43,7 @@ type
     procedure CreateParams(var Params: TCreateParams);
     function  isItemVisible: boolean;
   public
+    function  highlightCurrentItem: boolean;
     function  loadPlaylist(const forceReload: boolean = FALSE): boolean;
   end;
 
@@ -86,8 +87,10 @@ begin
   playlistForm.loadPlaylist;
   playlistForm.show;
 
-  winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   focusPlaylist;
+  application.processMessages;
+  playlistForm.highlightCurrentItem;
 end;
 
 function shutPlaylist: boolean;
@@ -135,6 +138,18 @@ begin
   LB.onKeyUp        := LBKeyUp;
 end;
 
+function TPlaylistForm.highlightCurrentItem: boolean;
+begin
+  debugBoolean('isItemVisible', isItemVisible);
+  case LB.count > 0 of TRUE:  begin
+                                LB.itemIndex := PL.currentIx;
+                                LB.selected[LB.itemIndex] := TRUE;
+                                case isItemVisible of TRUE: EXIT; end;
+                                var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
+                                case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
+                                                       FALSE: LB.topIndex := 0; end;end;end;
+end;
+
 function TPlaylistForm.isItemVisible: boolean;
 var
   vTopIndex, vVisibleItemCount: integer;
@@ -169,16 +184,9 @@ begin
   playlistForm.LB.items.beginUpdate; // prevent flicker when moving the window
 
   try
-
     case forceReload or (LB.items.count = 0) of TRUE: PL.getPlaylist(LB); end;
-    case LB.count > 0 of TRUE:  begin
-                                  LB.itemIndex := PL.currentIx;
-                                  LB.selected[LB.itemIndex] := TRUE;
-                                  case isItemVisible of TRUE: EXIT; end;
-                                  var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
-                                  case vTopIndex >= LB.count of  TRUE: LB.topIndex := vTopIndex;
-                                                                FALSE: LB.topIndex := 0; end;end;end;
 
+    highlightCurrentItem;
   finally
     playlistForm.LB.items.endUpdate;
   end;
