@@ -34,6 +34,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LBDblClick(Sender: TObject);
+    procedure LBKeyPress(Sender: TObject; var Key: Char);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     function  playItemIndex(const aItemIndex: integer): boolean;
@@ -153,6 +154,11 @@ begin
   playItemIndex(LB.itemIndex);
 end;
 
+procedure TPlaylistForm.LBKeyPress(Sender: TObject; var Key: Char);
+begin
+  key := #0;
+end;
+
 procedure TPlaylistForm.LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case key = VK_RETURN of TRUE: playItemIndex(LB.itemIndex); end;
@@ -164,14 +170,14 @@ begin
 
   try
 
-    case forceReload or (LB.items.count = 0) of TRUE:  PL.getPlaylist(LB); end;
+    case forceReload or (LB.items.count = 0) of TRUE: PL.getPlaylist(LB); end;
     case LB.count > 0 of TRUE:  begin
                                   LB.itemIndex := PL.currentIx;
                                   LB.selected[LB.itemIndex] := TRUE;
                                   case isItemVisible of TRUE: EXIT; end;
                                   var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
                                   case vTopIndex >= LB.count of  TRUE: LB.topIndex := vTopIndex;
-                                                                FALSE: LB.topIndex := LB.itemIndex; end;end;end;
+                                                                FALSE: LB.topIndex := 0; end;end;end;
 
   finally
     playlistForm.LB.items.endUpdate;

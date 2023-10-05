@@ -73,6 +73,7 @@ object PlaylistForm: TPlaylistForm
       Height = 97
       ItemHeight = 13
       TabOrder = 1
+      OnKeyPress = LBKeyPress
     end
   end
 end
