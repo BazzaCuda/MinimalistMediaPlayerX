@@ -89,7 +89,7 @@ begin
 
   winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   focusPlaylist;
-  application.processMessages;
+
   playlistForm.highlightCurrentItem;
 end;
 
