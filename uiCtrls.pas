@@ -257,6 +257,7 @@ begin
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
   ST.formResize;
   PB.formResize;
+
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
   ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);

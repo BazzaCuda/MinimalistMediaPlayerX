@@ -97,7 +97,7 @@ begin
   shiftState   := KeyboardStateToShiftState;
   case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
 
-  focusPlaylist; // if it's being displayed, so it keys keystrokes
+  focusPlaylist; // if it's being displayed, so it gets keystrokes
 
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
@@ -128,8 +128,8 @@ begin
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
   case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
 
-  case msgIs(WM_LBUTTONDOWN)             of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
-  case msgIs(WM_LBUTTONUP)               of TRUE: mouseDown := FALSE; end;
+  case msgIs(WM_LBUTTONDOWN) and NOT showingPlaylist of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+  case msgIs(WM_LBUTTONUP)   and NOT showingPlaylist of TRUE:       mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
 
   case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
