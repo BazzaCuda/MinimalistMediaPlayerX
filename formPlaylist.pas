@@ -140,7 +140,6 @@ end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
-  debugBoolean('isItemVisible', isItemVisible);
   case LB.count > 0 of TRUE:  begin
                                 LB.itemIndex := PL.currentIx;
                                 LB.selected[LB.itemIndex] := TRUE;
