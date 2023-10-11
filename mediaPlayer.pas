@@ -37,6 +37,7 @@ type
     FMuted: boolean;
     FOnPlayNext: TNotifyEvent;
     FPlaying: boolean;
+    FPausePlay: boolean;
     FVol:  double;
   private
     constructor create;
@@ -372,6 +373,8 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
+  case FPausePlay of TRUE: EXIT; end;
+
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
     mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
@@ -474,11 +477,13 @@ function TMediaPlayer.pause: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.pause;
+  FPausePlay := TRUE;
 end;
 
 function TMediaPlayer.pausePlay: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+  FPausePlay := TRUE;
   case mpv.GetState of
     mpsPlay:  mpv.pause;
     mpsPause: mpv.Resume;
@@ -488,6 +493,8 @@ end;
 function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
+
+  FPausePlay := FALSE;
 
   openURL(aURL);
 
