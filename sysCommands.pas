@@ -28,7 +28,7 @@ function sendSysCommandClose(const aHWND: HWND): boolean;
 implementation
 
 uses
-  uiCtrls;
+  uiCtrls, globalVars;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
@@ -38,7 +38,8 @@ end;
 
 function sendSysCommandClose(const aHWND: HWND): boolean;
 begin
-  postMessage(aHWND, WM_CLOSE, 0, 0);
+  GV.closeApp := TRUE;
+  case UI.initialized of TRUE: postMessage(aHWND, WM_CLOSE, 0, 0); end;
 end;
 
 end.

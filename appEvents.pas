@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, sendAll, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -133,21 +133,22 @@ begin
   case msgIs(WM_LBUTTONUP)   and NOT showingPlaylist of TRUE:       mouseDown := FALSE; end;
   case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
 
-  case msgIs(WM_RBUTTONUP)               of TRUE: MP.pausePlay; end;
+  case msgIs(WM_RBUTTONUP)                             of TRUE: begin UI.autoCentre := FALSE; postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;end;
   case msgIs(WM_LBUTTONDBLCLK) and NOT showingPlaylist of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
   case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000); UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
-  case msgIs(WM_CENTRE_WINDOW)        of TRUE: UI.centreWindow(UI.handle); end;
+  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: UI.autoCentreWindow(UI.handle); end;
   case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;
   case msgIs(WM_SMALLER_WINDOW)       of TRUE: UI.smallerWindow(UI.handle); end;
 
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
 
+  case msgIs(WIN_AUTOCENTER_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: MC.caption := PL.formattedItem; end;
-  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;end;
+  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
   case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock); end;
@@ -155,8 +156,9 @@ begin
   case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, 200); end;
   case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, shiftState); end;
   case msgIs(WIN_RESIZE)              of TRUE: UI.resize(UI.handle, point(msg.wParam, msg.lParam), MP.videoWidth, MP.videoHeight); end;
-  case msgIs(WIN_AUTOCENTER_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_SYNC_MEDIA)          of TRUE: begin MP.position := msg.wParam; ST.opInfo := 'Synced'; end;end;
+
+  case msgIs(WM_USER_CENTRE_WINDOW)   of TRUE: UI.centreWindow(UI.handle); end;
 end;
 
 constructor TAppEvents.create;

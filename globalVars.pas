@@ -44,14 +44,15 @@ type
   TGlobalVars = class(TObject)
   strict private
     FAppWnd: HWND;
-  private
     FAltKeyDown: boolean;
+    FCloseApp: boolean;
     FUserInput: boolean;
   public
     constructor create;
     destructor  destroy;
     property altKeyDown: boolean read FAltKeyDown write FAltKeyDown;
     property appWnd: HWND read FAppWnd write FAppWnd;
+    property closeApp: boolean read FCloseApp write FCloseApp;
     property userInput: boolean read FUserInput write FUserInput;
   end;
 

@@ -42,7 +42,7 @@ implementation
 
 uses
   uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
-  winApi.shellApi, configFile, mediaType;
+  winApi.shellApi, configFile, mediaType, sysCommands;
 
 {$R *.dfm}
 
@@ -80,11 +80,15 @@ begin
                                                 postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
 
   UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
-//  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtAudio of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+
+//  postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
+
+  CU.delay(100);
+  case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); end;
 
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
-  CU.delay(100);
-  case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); end;
+
+  case GV.closeApp of TRUE: sendSysCommandClose(UI.handle); end; // pending since user tried to exit during initialization
 end;
 
 procedure TMMPUI.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);

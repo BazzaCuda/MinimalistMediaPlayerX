@@ -373,7 +373,7 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FPausePlay of TRUE: EXIT; end;
+  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;
 
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
@@ -477,13 +477,13 @@ function TMediaPlayer.pause: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.pause;
-  FPausePlay := TRUE;
 end;
 
 function TMediaPlayer.pausePlay: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   FPausePlay := TRUE;
+
   case mpv.GetState of
     mpsPlay:  mpv.pause;
     mpsPause: mpv.Resume;
@@ -512,7 +512,7 @@ begin
 
   case UI.autoCentre of TRUE: begin
                                 CU.delay(100);
-                                sendMessage(GV.appWnd, WM_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
+                                sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
                                 application.processMessages; end;end;
 
   checkPot;

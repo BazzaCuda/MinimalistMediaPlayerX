@@ -47,6 +47,7 @@ type
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
     function arrangeAll: boolean;
+    function autoCentreWindow(const aWnd: HWND): boolean;
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
     function deleteCurrentItem(const shift: TShiftState): boolean;
@@ -111,6 +112,7 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
+  case GV.closeApp of TRUE: EXIT; end;
   case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
 
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
@@ -120,9 +122,9 @@ begin
   CU.getWndWidthHeight(aWnd, vWidth, vHeight);
   vHeight := trunc(vWidth * vRatio) + 2;
 
-  setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); // don't add SWP_SHOWWINDOW
+  case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
 
-  case autoCentre of TRUE: UI.centreWindow(UI.handle); end;
+  case autoCentre of TRUE: postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); end;
 
   case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
@@ -136,6 +138,7 @@ var
   vHMiddle, vVMiddle: integer;
 begin
   vCount     := SA.count;
+
   autoCentre := vCount = 1;
   case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
 
@@ -172,15 +175,34 @@ begin
   SA.clear;
 end;
 
+function TUI.autoCentreWindow(const aWnd: HWND): boolean;
+begin
+  case autoCentre of FALSE: EXIT; end;
+  centreWindow(aWnd);
+end;
+
 function TUI.centreWindow(const aWnd: HWND): boolean;
 var
   vR: TRect;
+  vHPos: integer;
+  vVPos: integer;
+
+  function alreadyCentred: boolean;
+  begin
+    vHPos := (CU.getScreenWidth -  (vR.right - vR.left)) div 2;
+    vVPos := (CU.getScreenHeight - (vR.bottom - vR.top)) div 2;
+    result := (vR.left = vHPos) and (vR.top = vVPos);
+  end;
+
 begin
   getWindowRect(aWnd, vR);
-  SetWindowPos(aWnd, HWND_TOP, (CU.getScreenWidth - (vR.Right - vR.Left)) div 2,
-                        (CU.getScreenHeight - (vR.Bottom - vR.Top)) div 2, 0, 0, SWP_NOSIZE);
 
-  postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0);
+  case alreadyCentred of TRUE: EXIT; end;
+
+  SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE);
+
+  case CU.withinScreenLimits(vR.Right - vR.Left, vR.Bottom - vR.Top) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
+
   application.processMessages;
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
@@ -192,9 +214,12 @@ var
   vWidth: integer;
   vHeight: integer;
 begin
+  case GV.closeApp of TRUE: EXIT; end;
+
   getWindowRect(aWnd, vR);
   vWidth := vR.right - vR.left;
   vHeight := vR.bottom - vR.top;
+
   case (vWidth > aWidth) or (vHeight > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
   application.processMessages;
 end;
@@ -250,6 +275,7 @@ end;
 
 procedure TUI.formResize(sender: TObject);
 begin
+  case GV.closeApp of TRUE: EXIT; end;
   case FInitialized of FALSE: EXIT; end;
   case PL.hasItems of FALSE: EXIT; end;
   case ST.initialized and PB.initialized of FALSE: EXIT; end;
@@ -463,7 +489,9 @@ end;
 
 function TUI.showWindow: boolean;
 begin
-  FMainForm.visible := TRUE;
+  case GV.closeApp of TRUE: EXIT; end; // EXPERIMENTAL
+  winAPI.windows.showWindow(FMainForm.Handle, SW_SHOW); // solves the "Cannot change Visible in onShow or in onHide" error
+  FMainForm.visible := TRUE;                            // still needed in addition to the previous in order to get a mouse cursor!
 end;
 
 function TUI.toggleBlackout: boolean;
