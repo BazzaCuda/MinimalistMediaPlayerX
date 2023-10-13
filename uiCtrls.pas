@@ -234,12 +234,12 @@ begin
                                                       MP.dontPlayNext := TRUE;  // because...
                                                       MP.stop;                  // this would have automatically done MP.playNext
                                                       CU.deleteThisFile(PL.currentItem, shift);
-                                                      PL.delete(PL.currentIx);
+                                                      PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in shift) or (NOT PL.hasItems) of  TRUE: sendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
                                                                                                               reloadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                                                              FALSE: MP.playNext; end;end;end;end;end;
+                                                                                                                              FALSE: MP.playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function TUI.doEscapeKey: boolean;
@@ -385,13 +385,23 @@ end;
 function TUI.renameFile(const aFilePath: string): boolean;
 var
   vNewName: string;
+  vWasPlaying: boolean;
+  vWasPlaylist: boolean;
 begin
   case PL.hasItems of FALSE: EXIT; end;
-  MP.pause;
+
+  vWasPlaying := MP.playing;
+  case vWasPlaying of TRUE: MP.pause; end;
+
+  vWasPlaylist := showingPlaylist;
+  case vWasPlaylist of TRUE: shutPlaylist; end;
+
   vNewName := CU.renameFile(aFilePath);
   case vNewName <> aFilePath of TRUE: PL.replaceCurrentItem(vNewName); end;
   MC.caption := PL.formattedItem;
-  MP.resume;
+
+  case vWasPlaying  of TRUE: MP.resume; end;
+  case vWasPlaylist of TRUE: movePlaylistWindow; end;
 end;
 
 function TUI.resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
