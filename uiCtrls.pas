@@ -137,6 +137,7 @@ var
 begin
   vCount     := SA.count;
   autoCentre := vCount = 1;
+  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
 
   case vCount of
     1:       SA.postToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));

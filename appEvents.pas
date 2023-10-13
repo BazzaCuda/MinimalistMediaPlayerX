@@ -67,6 +67,8 @@ var
   wndRect: TRect;
   dx, dy: integer;
 begin
+  UI.autoCentre := FALSE;
+
   getCursorPos(newMouse);
   dx := newMouse.X - mouseStart.X;
   dy := newMouse.Y - mouseStart.Y;
@@ -76,7 +78,6 @@ begin
   moveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
   UI.moveHelpWindow(FALSE);
   UI.movePlaylistWindow(FALSE);
-  UI.autoCentre := FALSE;
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
