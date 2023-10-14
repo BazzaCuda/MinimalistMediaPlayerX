@@ -53,10 +53,10 @@ Control | Action
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
-`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning
-`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning
-`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning
-`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning
+`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
@@ -165,10 +165,10 @@ Control | Action
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
 **Panning** |
-`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning
-`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning
-`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning
-`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning
+`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `3`                     | reset panning to normal
 **Playlist** |
 `A`                     | play the first media file in the playlist (Z/END plays last)
