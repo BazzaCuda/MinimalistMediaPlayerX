@@ -512,7 +512,7 @@ begin
 
   case UI.autoCentre of TRUE: begin
                                 CU.delay(100);
-                                sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); // EXPERIMENTAL - force window to update
+                                sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); // force window to update
                                 application.processMessages; end;end;
 
   checkPot;

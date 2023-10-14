@@ -489,7 +489,7 @@ end;
 
 function TUI.showWindow: boolean;
 begin
-  case GV.closeApp of TRUE: EXIT; end; // EXPERIMENTAL
+  case GV.closeApp of TRUE: EXIT; end;
   winAPI.windows.showWindow(FMainForm.Handle, SW_SHOW); // solves the "Cannot change Visible in onShow or in onHide" error
   FMainForm.visible := TRUE;                            // still needed in addition to the previous in order to get a mouse cursor!
 end;
