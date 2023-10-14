@@ -129,9 +129,10 @@ begin
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
   case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
 
-  case msgIs(WM_LBUTTONDOWN) and NOT showingPlaylist of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
-  case msgIs(WM_LBUTTONUP)   and NOT showingPlaylist of TRUE:       mouseDown := FALSE; end;
-  case mouseDown and msgIs(WM_MOUSEMOVE) of TRUE: dragUI; end;
+  case msgIs(WM_LBUTTONDOWN) and NOT showingPlaylist    of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+  case msgIs(WM_LBUTTONDOWN) and (ssCtrl in shiftState) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+  case msgIs(WM_LBUTTONUP)                              of TRUE:       mouseDown := FALSE; end;
+  case mouseDown and msgIs(WM_MOUSEMOVE)                of TRUE: dragUI; end;
 
   case msgIs(WM_RBUTTONUP)                             of TRUE: begin UI.autoCentre := FALSE; postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;end;
   case msgIs(WM_LBUTTONDBLCLK) and NOT showingPlaylist of TRUE: MP.toggleFullscreen; end;
