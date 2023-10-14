@@ -57,8 +57,8 @@ Control | Action
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
-`Left button down'      | drag the media window around the screen, but not when Playlist panel is open
-`Ctrl+Left button down' | drag the media window around the screen, even when the Playlist panel is open
+`Left button down`      | drag the media window around the screen, but not when Playlist panel is open
+`Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
@@ -227,8 +227,8 @@ Control | Action
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
-`Left button down'      | drag the media window around the screen, but not when Playlist panel is open
-`Ctrl+Left button down' | drag the media window around the screen, even when the Playlist panel is open
+`Left button down`      | drag the media window around the screen, but not when Playlist panel is open
+`Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
 **Zoom** |
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
