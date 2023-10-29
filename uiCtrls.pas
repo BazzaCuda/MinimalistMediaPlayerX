@@ -210,14 +210,14 @@ end;
 
 function TUI.checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
 var
-  vR: TRect;
-  vWidth: integer;
-  vHeight: integer;
+  vR:       TRect;
+  vWidth:   integer;
+  vHeight:  integer;
 begin
   case GV.closeApp of TRUE: EXIT; end;
 
   getWindowRect(aWnd, vR);
-  vWidth := vR.right - vR.left;
+  vWidth  := vR.right  - vR.left;
   vHeight := vR.bottom - vR.top;
 
   case (vWidth > aWidth) or (vHeight > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
@@ -237,11 +237,11 @@ end;
 
 function TUI.createVideoPanel(const aForm: TForm): boolean;
 begin
-  FVideoPanel        := TPanel.create(aForm);
-  FVideoPanel.parent := aForm;
-  FVideoPanel.align  := alClient;
-  FVideoPanel.color  := clBlack;
-  FVideoPanel.BevelOuter := bvNone;
+  FVideoPanel             := TPanel.create(aForm);
+  FVideoPanel.parent      := aForm;
+  FVideoPanel.align       := alClient;
+  FVideoPanel.color       := clBlack;
+  FVideoPanel.BevelOuter  := bvNone;
   FVideoPanel.OnMouseMove := onMouseMove;
 end;
 
@@ -275,11 +275,11 @@ end;
 
 procedure TUI.formResize(sender: TObject);
 begin
-  case GV.closeApp of TRUE: EXIT; end;
+  case GV.closeApp  of TRUE:  EXIT; end;
   case FInitialized of FALSE: EXIT; end;
-  case PL.hasItems of FALSE: EXIT; end;
-  case ST.initialized and PB.initialized of FALSE: EXIT; end;
-  case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
+  case PL.hasItems  of FALSE: EXIT; end;
+  case ST.initialized and PB.initialized   of FALSE: EXIT; end;
+  case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
   ST.formResize;
@@ -335,9 +335,9 @@ begin
 
   calcDimensions; // do what the user requested
 
-  case NOT CU.withinScreenLimits(newW, newH) of  TRUE: begin
-                                                      newH := CU.getScreenHeight - dy;
-                                                      try newW := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
+  case NOT CU.withinScreenLimits(newW, newH) of  TRUE:  begin
+                                                          newH      := CU.getScreenHeight - dy;
+                                                          try newW  := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 
@@ -352,7 +352,7 @@ end;
 
 function TUI.initUI(const aForm: TForm): boolean;
 begin
-  FMainForm := aForm;
+  FMainForm           := aForm;
   aForm.OnKeyDown     := KB.formKeyDn;
   aForm.OnKeyUp       := KB.formKeyUp;
   aForm.OnResize      := formResize;
@@ -381,8 +381,7 @@ begin
   vNewName := CU.renameFile(aFilePath, '_' + CU.getFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of TRUE: begin
                                         PL.replaceCurrentItem(vNewName);
-                                        ST.opInfo := 'Kept';
-                                      end;end;
+                                        ST.opInfo := 'Kept'; end;end;
   MC.caption := PL.formattedItem;
   MP.resume;
 end;
@@ -423,7 +422,7 @@ begin
   case vWasPlaylist of TRUE: shutPlaylist; end;
 
   vNewName := CU.renameFile(aFilePath);
-  case vNewName <> aFilePath of TRUE: PL.replaceCurrentItem(vNewName); end;
+  case vNewName = aFilePath of FALSE: PL.replaceCurrentItem(vNewName); end;
   MC.caption := PL.formattedItem;
 
   case vWasPlaying  of TRUE: MP.resume; end;

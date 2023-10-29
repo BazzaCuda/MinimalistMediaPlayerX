@@ -363,8 +363,8 @@ end;
 function TMediaPlayer.muteUnmute: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  FMuted := NOT FMuted;
-  mpv.mute := FMuted;
+  FMuted    := NOT FMuted;
+  mpv.mute  := FMuted;
   case mpv.mute of  TRUE: result := 'unmuted';
                    FALSE: result := 'muted'; end;
 end;

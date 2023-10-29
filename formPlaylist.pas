@@ -37,11 +37,11 @@ type
     procedure LBKeyPress(Sender: TObject; var Key: Char);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    function  isItemVisible: boolean;
     function  playItemIndex(const aItemIndex: integer): boolean;
     function  visibleItemCount: integer;
   protected
     procedure CreateParams(var Params: TCreateParams);
-    function  isItemVisible: boolean;
   public
     function  highlightCurrentItem: boolean;
     function  loadPlaylist(const forceReload: boolean = FALSE): boolean;

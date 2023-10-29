@@ -69,8 +69,7 @@ begin
                                                       mtInformation, [MBOK]);
 
                                 postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
-                                EXIT;
-                              end;end;
+                                EXIT; end;end;
 
 
   PL.fillPlaylist(PS.fileFolder);
@@ -80,8 +79,6 @@ begin
                                                 postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
 
   UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
-
-//  postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
 
   CU.delay(100);
   case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); end;

@@ -52,7 +52,7 @@ function showAboutBox(const releaseVersion: string; const buildVersion: string):
 
 implementation
 
-uses ShellAPI, globalVars, commonUtils;
+uses shellAPI, globalVars, commonUtils;
 
 {$R *.dfm}
 
@@ -73,12 +73,12 @@ end;
 
 procedure TAboutForm.btnOKClick(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  modalResult := mrOK;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX', '', '', SW_SHOW);
+  shellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX', '', '', SW_SHOW);
 end;
 
 function TAboutForm.setBuildVersion(const aBuild: string): boolean;
