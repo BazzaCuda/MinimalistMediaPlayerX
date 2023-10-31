@@ -146,6 +146,7 @@ begin
     1:       SA.postToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
     2:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
     3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
+    else     SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenWidth div vCount));
   end;
 
   application.processMessages; // make sure this window has resized before continuing
@@ -472,8 +473,8 @@ function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.6);
-                                      FMainForm.height := trunc(FMainForm.width * 0.75); end;end;
+                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.9);
+                                      {FMainForm.height := trunc(FMainForm.width * 0.75);} end;end;
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;

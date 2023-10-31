@@ -1101,8 +1101,7 @@ begin
   Result := Command([CMD_SEEK, FloatToStr(fPos), sAbs]);
 end;
 
-function TMPVBasePlayer.InitPlayer(const sWinHandle, sScrShotDir, sConfigDir, sLogFile: string;
-  fEventWait: Double): TMPVErrorCode;
+function TMPVBasePlayer.InitPlayer(const sWinHandle, sScrShotDir, sConfigDir, sLogFile: string; fEventWait: Double): TMPVErrorCode;
 begin
   if not MPVLibLoaded('') then
   begin
@@ -1127,9 +1126,10 @@ begin
   SetPropertyString('input-terminal', 'yes');
   SetPropertyString('msg-level', 'osd/libass=fatal');
 {$ENDIF}
+  //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
+
   //SetPropertyString('watch-later-options', STR_MUTE+','+STR_SID+','+STR_AID);
   SetPropertyString('screenshot-directory', sScrShotDir);
-//  SetPropertyInt64('osd-duration', 2000);
 //  SetPropertyString('osd-playing-msg', '${filename}');
   if sLogFile<>'' then SetPropertyString(STR_LOG_FILE, sLogFile);
   SetPropertyString(STR_WID, sWinHandle);
@@ -1139,6 +1139,24 @@ begin
   SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
   SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
   SetPropertyBool('keep-open-pause', False);
+
+  setPropertyString('sub-font', 'Segoe UI');
+  setPropertyString('sub-color', '#808080');
+  setPropertyString('osd-color', '#808080');
+  setPropertyString('osd-bold',  'yes');
+  setPropertyString('osd-back-color', '#00000000');
+  setPropertyString('osd-shadow-offset', '0');
+  SetPropertyString('screenshot-directory', sScrShotDir);
+  setPropertyString('screenshot-format', 'png');
+  SetPropertyString('osd-font-size', '14');
+  SetPropertyInt64('osd-duration', 3000);
+  setPropertyString('osd-align-x', 'right');
+  setPropertyString('osd-align-y', 'bottom');
+  setPropertyString('osd-margin-x', '4');
+  setPropertyString('osd-margin-y', '24');
+  setPropertyString('screenshot-png-compression', '0');
+  setPropertyString('screenshot-template', '%F %p %04n');
+
 //  SetPropertyBool('no-config', TRUE);
 //  SetPropertyDouble('sub-delay', -10.0);
 //  SetPropertyBool('idle-screen', FALSE);
@@ -1153,8 +1171,8 @@ begin
   SetPropertyString('reset-on-next-file', 'brightness,speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
 
   ProcessCmdLine(True);
-  Result := HandleError(mpv_initialize(m_hMPV), 'mpv_initialize');
-  if Result<>MPV_ERROR_SUCCESS then Exit;
+  Result := HandleError(mpv_initialize(m_hMPV), 'mpv_initialize'); // all property values set prior to this can be overridden in mpv.conf
+  if Result <> MPV_ERROR_SUCCESS then Exit;
 
   m_fEventWait := fEventWait;
   m_cEventThrd := TMPVEventThread.Create(Self);

@@ -105,6 +105,7 @@ type
     function startOver: string;
     function stop: boolean;
     function tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
+    function takeScreenshot: string;
     function toggleFullscreen: boolean;
     function volDown: string;
     function volUp: string;
@@ -385,7 +386,7 @@ procedure TMediaPlayer.onTimerEvent(sender: TObject);
 begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
-    tePlay:  begin play(PL.currentItem); end;
+    tePlay:  play(PL.currentItem);
     teClose: sendSysCommandClose(UI.handle);
   end;
 end;
@@ -398,8 +399,6 @@ begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
     mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
-    mpv.setPropertyString('sub-font', 'Segoe UI');
-    mpv.setPropertyString('sub-color', '#808080');
   end;end;
   mpv.openFile(aURL);
   result := TRUE;
@@ -499,7 +498,7 @@ begin
   openURL(aURL);
 
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case MT.mediaType(lowerCase(extractFileExt(aURL))) = mtAudio of TRUE: UI.setWindowSize(mtAudio); end;
+  UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
 
   mpv.volume := FVol;
   mpv.mute   := FMuted;
@@ -704,6 +703,13 @@ begin
                                 FALSE: newInfo := '>> ' + newInfo;
   end;
   result := newInfo;
+end;
+
+function TMediaPlayer.takeScreenshot: string;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.commandStr(CMD_SCREEN_SHOT);
+  result := '';
 end;
 
 function TMediaPlayer.toggleFullscreen: boolean;
