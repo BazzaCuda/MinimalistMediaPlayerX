@@ -158,9 +158,6 @@ type
     function CommandList(cCmds: TStrings; nID: MPVUInt64 = 0): TMPVErrorCode;
     function Command(const yCmds: array of string; nID: MPVUInt64 = 0): TMPVErrorCode;
 
-    // set option
-    function SetOption(const sName: string; nID: MPVUInt64 = 0): TMPVErrorCode;
-
     // Get property from MPV
     function GetPropertyBool(const sName: string; var Value: Boolean; bLogError: Boolean = True): TMPVErrorCode;
     function SetPropertyBool(const sName: string; Value: Boolean; nID: MPVUInt64 = 0): TMPVErrorCode;
@@ -245,7 +242,7 @@ function MPVLibLoaded(const sLibPath: string): Boolean;
 
 implementation
 
-uses _debugWindow;
+
 
 { TMPVEventThread }
 
@@ -257,7 +254,7 @@ end;
 
 procedure TMPVEventThread.Execute;
 begin
-  while NOT Terminated do
+  while not Terminated do
   begin
     m_cPlayer.EventLoop(@Terminated);
   end;
@@ -445,8 +442,6 @@ begin
             pe^.error, pe^.reply_userdata]), False);
         end;
       end;
-
-//      case (totalSeconds > 0) and ((totalSeconds - currentSeconds) <= 0.2) of TRUE: setState(mpsStop); end;
 
       case pe^.event_id of
       MPV_EVENT_SEEK:
@@ -1099,9 +1094,12 @@ var
 begin
   if bRelative then sAbs := 'relative' else sAbs := 'absolute';
   Result := Command([CMD_SEEK, FloatToStr(fPos), sAbs]);
+  // update current position
+  GetPropertyDouble(STR_TIME_POS, m_fCurSec, False);
 end;
 
-function TMPVBasePlayer.InitPlayer(const sWinHandle, sScrShotDir, sConfigDir, sLogFile: string; fEventWait: Double): TMPVErrorCode;
+function TMPVBasePlayer.InitPlayer(const sWinHandle, sScrShotDir, sConfigDir, sLogFile: string;
+  fEventWait: Double): TMPVErrorCode;
 begin
   if not MPVLibLoaded('') then
   begin
@@ -1112,7 +1110,7 @@ begin
   FreePlayer();
 
   // Basic procedure copied from MPV.NET
-  m_hMPV  := mpv_create();
+  m_hMPV := mpv_create();
   if m_hMPV=nil then
   begin
     Result := MPV_ERROR_NOMEM;
@@ -1163,8 +1161,6 @@ begin
 //  setPropertyString('osc-visibility', 'never');
 //  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');
 //  SetPropertyString('video-unscaled', 'downscale-big'); // this option disables pan-scan
-
-//  setOption('no-keepaspect'); // how to set this?
 
 //  SetPropertyBool('input-default-bindings', True);
 //  SetPropertyBool('input-builtin-bindings', False);
@@ -1279,6 +1275,8 @@ begin
   m_cLock.Enter;
   eSC := m_eOnStateChged;
   eState := m_eState;
+  // update current position
+  GetPropertyDouble(STR_TIME_POS, m_fCurSec, False);
   m_cLock.Leave;
   if Assigned(eSC) then
   try
@@ -1393,28 +1391,6 @@ begin
   m_cLock.Enter;
   m_eOnStateChged := Value;
   m_cLock.Leave;
-end;
-
-function TMPVBasePlayer.SetOption(const sName: string; nID: MPVUInt64): TMPVErrorCode; // BAZ
-var
-  sNm, sVal: UTF8String;
-  p: Pointer;
-begin
-  if m_hMPV=nil then
-  begin
-    Result := MPV_ERROR_UNINITIALIZED;
-    Exit;
-  end;
-  sNm := UTF8Encode(sName);
-  sVal := '1';
-  p := Pointer(sVal); // address of PAnsiChar
-
-  if nID>0 then
-    Result := HandleError(mpv_set_option(m_hMPV, PMPVChar(sNm),
-      MPV_FORMAT_NONE, @p), 'mpv_set_option(str)')
- else
-    Result := HandleError(mpv_set_option(m_hMPV, PMPVChar(sNm),
-      MPV_FORMAT_NONE, @p), 'mpv_set_option(str)');
 end;
 
 function TMPVBasePlayer.SetPropertyBool(const sName: string;

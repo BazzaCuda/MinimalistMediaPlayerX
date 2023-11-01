@@ -173,6 +173,8 @@ begin
                               posWinXY(SA.HWNDs[3], vZero,  vHeight);
                               posWinXY(SA.HWNDs[4], vHMiddle, vHeight); end;end;
 
+  case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], 100 + (50 * (i - 1)), 100 + (50 * (i - 1))); end;
+
   SA.clear;
 end;
 

@@ -3,7 +3,7 @@ unit MPVConst;
 interface
 
 const
-  // see options.c
+  // see options.c  & https://mpv.io/manual/master/
   // Options
   STR_PATH = 'path';                   STR_DWIDTH = 'dwidth';
   STR_DHEIGHT = 'dheight';             STR_AUDIO_DELAY = 'audio-delay';
@@ -11,7 +11,7 @@ const
   STR_SUB_SPEED = 'sub-speed';         STR_AUDIO_DEV_LIST = 'audio-device-list';
   STR_AS_CORRECT = 'audio-speed-correction';  STR_VERSION = 'version';
   STR_VS_CORRECT = 'video-speed-correction';
-  STR_TASKBAR_PROG = 'taskbar-progress';
+  STR_TASKBAR_PROG = 'taskbar-progress'; STR_AUDIO_FILE = 'audio-file';
   STR_SNAP_WIN = 'snap-window';        STR_ONTOP= 'ontop';
   STR_ONTOP_LEVEL = 'ontop-level';     STR_TRACK_LIST = 'track-list';
   STR_DURATION = 'duration';           STR_AUTOFIT= 'autofit';
@@ -35,6 +35,10 @@ const
   STR_VASPECT = 'video-aspect';        STR_LOG_FILE = 'log-file';
   STR_STM_BUF_SZ = 'stream-buffer-size';
   STR_CACHE = 'cache'; // demuxer-max-bytes / demuxer-max-back-bytes
+  STR_SUB_AUTO = 'sub-auto';           STR_SUB_FILE_PATHS = 'sub-file-paths';
+  STR_TIME_POS = 'time-pos';           STR_PERCENT_POS = 'percent-pos';
+  STR_TIME_REMAIN = 'time-remaining';  STR_SEEKABLE = 'seekable';
+  STR_CHAPTERS = 'chapters';           STR_CHAPTER = 'chapter';
 
   // Observe property change ID
   ID_PLAY_TIME = 1;                    ID_PAUSE = 2;
