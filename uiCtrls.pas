@@ -477,8 +477,8 @@ function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.9);
-                                      {FMainForm.height := trunc(FMainForm.width * 0.75);} end;end;
+                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 1);
+                                      {FMainForm.height := trunc(FMainForm.width * 0.75);} end;end; // leave it to adjustAspectRatio
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;
