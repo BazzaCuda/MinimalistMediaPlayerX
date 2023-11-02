@@ -36,10 +36,10 @@ object HelpForm: THelpForm
       object shiftLabel: TLabel
         Left = 0
         Top = 0
-        Width = 167
+        Width = 190
         Height = 13
         Align = alLeft
-        Caption = 'press [F1] again to close this panel'
+        Caption = 'press [F1] or Ctrl-[H] to close this panel'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -48,7 +48,7 @@ object HelpForm: THelpForm
         ParentFont = False
       end
       object moveLabel: TLabel
-        Left = 167
+        Left = 190
         Top = 0
         Width = 434
         Height = 13

@@ -1,0 +1,491 @@
+<style type="text/css">
+code{
+  font-family: "Consolas", monospace;
+}
+pre{
+  border: 1px solid #ddd;
+  border-left: 3px solid #f36d33;
+  overflow: auto;
+  padding: 1em 1.5em;
+  display: block;
+}
+Blockquote{
+  border-left: 3px solid #d0d0d0;
+  padding-left: 0.5em;
+  margin-left:1em;
+}
+Blockquote p{
+  margin: 0;
+}
+table{
+  border:1px solid;
+  border-collapse:collapse;
+  border-color: grey;
+}
+th{  padding:5px;
+  border:none;
+}
+td{
+  padding:5px;
+  border:none;
+}
+</style>
+<h3>Full List of Controls By Category</h3>
+<table>
+  <tr>
+    <th>Control</th>
+    <th>Action</th>
+    <th>Control</th>
+    <th>Action</th>
+  </tr>
+  <tr>
+    <td><strong>Brightness</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>8</code></td>
+    <td>Decrease brightness. Can be held down for rapid decrease</td>
+    <td><code>8</code></td>
+    <td>Decrease brightness. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>9</code></td>
+    <td>Increase brightness. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>2</code></td>
+    <td>reset brightness to normal</td>
+  </tr>
+  <tr>
+    <td><strong>Contrast</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>=</code></td>
+    <td>increase contrast. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>-</code> (Hyphen)</td>
+    <td>decrease contrast. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>0</code></td>
+    <td>reset contrast to normal</td>
+  </tr>
+  <tr>
+    <td><strong>File Control</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>INSERT</code></td>
+    <td>copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12</td>
+  </tr>
+  <tr>
+    <td><code>D</code> and <code>DEL</code></td>
+    <td>[D]elete current media file (after confirmation)</td>
+  </tr>
+  <tr>
+    <td><code>K</code></td>
+    <td>mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)</td>
+  </tr>
+  <tr>
+    <td><code>R</code></td>
+    <td>[R]ename the current media file</td>
+  </tr>
+  <tr>
+    <td><strong>Freeze Frame</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Right Arrow</code></td>
+    <td>pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.</td>
+  </tr>
+  <tr>
+    <td><code>Left Arrow</code></td>
+    <td>pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.</td>
+  </tr>
+  <tr>
+    <td><strong>Gamma</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>[</code></td>
+    <td>decrease gamma. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>]</code></td>
+    <td>increase gamma. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>'</code> (single quote)</td>
+    <td>reset gamma</td>
+  </tr>
+  <tr>
+    <td><strong>Mouse</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Left click the window and hold</code></td>
+    <td>the window can be dragged/repositioned</td>
+  </tr>
+  <tr>
+    <td><code>Left double-click video</code></td>
+    <td>toggle fullscreen mode</td>
+  </tr>
+  <tr>
+    <td><code>Right single-click the window</code></td>
+    <td>Pause/resume playback</td>
+  </tr>
+  <tr>
+    <td><code>with Numlock on</code></td>
+    <td>move mouse along the progress bar to &ldquo;scrub&rdquo; backwards and forwards through the media file</td>
+  </tr>
+  <tr>
+    <td><code>CTRL</code></td>
+    <td>hold ctrl key down and move mouse along the progress bar. Same as above</td>
+  </tr>
+  <tr>
+    <td><code>Wheel up</code></td>
+    <td>volume up</td>
+  </tr>
+  <tr>
+    <td><code>Wheel down</code></td>
+    <td>volume down</td>
+  </tr>
+  <tr>
+    <td><strong>On-Screen Display</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>#</code></td>
+    <td>briefly show media caption (the filename and its position in the playlist)</td>
+  </tr>
+  <tr>
+    <td><code>B</code></td>
+    <td>[B]lackout/restore progress [B]ar</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-B</code></td>
+    <td>Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Shift-B</code></td>
+    <td>Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file</td>
+  </tr>
+  <tr>
+    <td><code>C</code></td>
+    <td>show/Hide on-screen [C]ontrols (media info) and media file timestamp</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-C</code></td>
+    <td>show/Hide all on-screen controls, media file timestamp and media metadata</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-S</code></td>
+    <td>toggle subtitles on/off</td>
+  </tr>
+  <tr>
+    <td><strong>Panning</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Up Arrow</code></td>
+    <td>pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Down Arrow</code></td>
+    <td>pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Left Arrow</code></td>
+    <td>pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Right Arrow</code></td>
+    <td>pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)</td>
+  </tr>
+  <tr>
+    <td><code>3</code></td>
+    <td>reset panning to normal</td>
+  </tr>
+  <tr>
+    <td><strong>Playlist</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>A</code></td>
+    <td>play the first media file in the playlist (Z/END plays last)</td>
+  </tr>
+  <tr>
+    <td><code>HOME</code></td>
+    <td>play the first media file in the playlist (Z/END plays last)</td>
+  </tr>
+  <tr>
+    <td><code>Z</code></td>
+    <td>play the last media file in the playlist (A/HOME plays the first)</td>
+  </tr>
+  <tr>
+    <td><code>END</code></td>
+    <td>play the last media file in the playlist (A/HOME plays the first)</td>
+  </tr>
+  <tr>
+    <td><code>W</code></td>
+    <td>[W]atch the next video in the list (or play the next audio)</td>
+  </tr>
+  <tr>
+    <td><code>Numpad ENTER</code></td>
+    <td>[W]atch the next video in the list (or play the next audio)</td>
+  </tr>
+  <tr>
+    <td><code>Q</code></td>
+    <td>play the previous media file in the [Q]ueue/playlist</td>
+  </tr>
+  <tr>
+    <td><code>L</code></td>
+    <td>re[L]oad the list of supported media files from the current folder</td>
+  </tr>
+  <tr>
+    <td><strong>Rotating</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Pg Up</code></td>
+    <td>rotate video left/anti-clockwise (you must have first rotated right at least once)</td>
+  </tr>
+  <tr>
+    <td><code>Pg Dn</code></td>
+    <td>rotate video right/clockwise (you must do this at least once before you can rotate left)</td>
+  </tr>
+  <tr>
+    <td><code>4</code></td>
+    <td>reset rotation to normal/not rotated</td>
+  </tr>
+  <tr>
+    <td><strong>Saturation</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>{</code></td>
+    <td>decrease saturation. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>}</code></td>
+    <td>increase saturation. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>;</code></td>
+    <td>reset saturation to normal</td>
+  </tr>
+  <tr>
+    <td><strong>Screenshots</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>F5</code></td>
+    <td>save a screenshot of the current frame (currently to the same folder as the media file) (in development)</td>
+  </tr>
+  <tr>
+    <td><strong>Speed</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Numpad +</code></td>
+    <td>increase playback speed. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>/</code></td>
+    <td>increase playback speed. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>Numpad -</code></td>
+    <td>decrease playback speed. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>\</code></td>
+    <td>decrease playback speed. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>1</code></td>
+    <td>reset the playback speed to normal, i.e. [1]00%</td>
+  </tr>
+  <tr>
+    <td><strong>Tabbing</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>T</code></td>
+    <td>[T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-T</code></td>
+    <td>[T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing</td>
+  </tr>
+  <tr>
+    <td><code>TAB</code></td>
+    <td>tab forwards 1 second. Can be tapped repeatedly or held down to do a &ldquo;fast forward&rdquo; through the media file</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-TAB</code></td>
+    <td>tab backwards 1 second. Can be tapped repeatedly or held down to do a &ldquo;fast reverse&rdquo; through the media file</td>
+  </tr>
+  <tr>
+    <td><code>Caps Lock-T</code></td>
+    <td>tab forwards 200th of media duration. Can be tapped repeatedly or held down for &ldquo;fast forward&rdquo;</td>
+  </tr>
+  <tr>
+    <td><code>Caps Lock Ctrl-T</code></td>
+    <td>tab backwards 200th of media duration. Can be tapped repeatedly or held down for &ldquo;fast reverse&rdquo;</td>
+  </tr>
+  <tr>
+    <td><code>Shift-T</code></td>
+    <td>tab forwards 50th of media duration</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-Shift-T</code></td>
+    <td>tab backwards 50th of media duration</td>
+  </tr>
+  <tr>
+    <td><code>Left Alt key</code></td>
+    <td>tab forwards 200th of media duration. Intended to be held down for &ldquo;fast forward&rdquo;</td>
+  </tr>
+  <tr>
+    <td><code>Right Alt-Gr key</code></td>
+    <td>tab backwards 200th of media duration. Intended to be held down for &ldquo;fast reverse&rdquo;</td>
+  </tr>
+  <tr>
+    <td><strong>Volume</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>Up Arrow</code></td>
+    <td>increase the volume. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>Down Arrow</code></td>
+    <td>decrease the volume. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>Vol+ media key</code></td>
+    <td>increase the volume. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>Vol- media key</code></td>
+    <td>decrease the volume. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>Vol-mute media key</code></td>
+    <td>mute/unmute sound</td>
+  </tr>
+  <tr>
+    <td><code>E</code></td>
+    <td>[E]ars - mute/unmute sound</td>
+  </tr>
+  <tr>
+    <td><strong>Window Control</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>ESCape</code></td>
+    <td>exit Fullscreen mode, or exit the app if not in fullscreen mode</td>
+  </tr>
+  <tr>
+    <td><code>F</code></td>
+    <td>show/cancel [F]ullScreen mode</td>
+  </tr>
+  <tr>
+    <td><code>G</code></td>
+    <td>[G]reater window size. Can be held down for rapid increase</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-G</code></td>
+    <td>reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease</td>
+  </tr>
+  <tr>
+    <td><code>H</code></td>
+    <td>position the window [H]orizontally (and Vertically) in the center of the screen</td>
+  </tr>
+  <tr>
+    <td><code>J</code></td>
+    <td>ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)</td>
+  </tr>
+  <tr>
+    <td><code>M</code></td>
+    <td>[M]aximize / restore window</td>
+  </tr>
+  <tr>
+    <td><code>N</code></td>
+    <td>mi[N]imize window to the Windows taskbar</td>
+  </tr>
+  <tr>
+    <td><code>V</code></td>
+    <td>synchronize all [V]ideo windows</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-9</code></td>
+    <td>Auto-arrange up to 4 simultaneous videos</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-0</code></td>
+    <td>close all running instances of MMP</td>
+  </tr>
+  <tr>
+    <td><code>Left button down</code></td>
+    <td>drag the media window around the screen, but not when Playlist panel is open</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl+Left button down</code></td>
+    <td>drag the media window around the screen, even when the Playlist panel is open</td>
+  </tr>
+  <tr>
+    <td><strong>Zoom</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>I</code></td>
+    <td>zoom [I]n. Can be held down for rapid zooming in</td>
+  </tr>
+  <tr>
+    <td><code>O</code></td>
+    <td>zoom [O]ut. Can be held down for rapid zooming out</td>
+  </tr>
+  <tr>
+    <td><code>U</code></td>
+    <td>[U]nzoom, i.e. re-fit the video to the window</td>
+  </tr>
+  <tr>
+    <td><strong>Additional</strong></td>
+    <td><code></code></td>
+  </tr>
+  <tr>
+    <td><code>F5</code></td>
+    <td>take a screenshot</td>
+  </tr>
+  <tr>
+    <td><code>F10</code></td>
+    <td>open media file in PotPlayer (assumes default installation folder)</td>
+  </tr>
+  <tr>
+    <td><code>F11</code></td>
+    <td>open media file in LossLess Cut (assumes default installation folder)</td>
+  </tr>
+  <tr>
+    <td><code>F12</code></td>
+    <td>open media file in ShotCut editor (assumes default installation folder)</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-A</code></td>
+    <td>show [A]bout Box</td>
+  </tr>
+  <tr>
+    <td><code>Ctrl-H</code></td>
+    <td>show [H]elp panel of all keyboard and mouse controls</td>
+  </tr>
+  <tr>
+    <td><code>INSERT</code></td>
+    <td>copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12</td>
+  </tr>
+  <tr>
+    <td><code>BACKSPACE</code></td>
+    <td>reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal</td>
+  </tr>
+</table>
