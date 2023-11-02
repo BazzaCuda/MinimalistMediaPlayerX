@@ -32,7 +32,7 @@ type
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
-            koScreenshot);
+            koScreenshot, koToggleSubtitles);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -175,6 +175,7 @@ begin
   case keyUp and keyIs(_9) and ctrl                        of TRUE: result := koArrangeAll; end;
   case keyUp and keyIs(V)                                  of TRUE: result := koSyncMedia; end;
   case keyUp and keyIs(VK_F5)                              of TRUE: result := koScreenshot; end;
+  case keyUp and keyIs(S) and ctrl                         of TRUE: result := koToggleSubtitles; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -320,6 +321,7 @@ begin
     koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0));
     koTogglePlaylist:    UI.togglePlaylist;
     koScreenshot:        begin ST.opInfo := 'Screenshot...'; application.processMessages; ST.opInfo := MP.takeScreenshot; end;
+    koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
   end;
 
   result := TRUE;

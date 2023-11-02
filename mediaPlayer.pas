@@ -107,6 +107,7 @@ type
     function tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
     function takeScreenshot: string;
     function toggleFullscreen: boolean;
+    function toggleSubtitles: string;
     function volDown: string;
     function volUp: string;
     function zoomIn: string;
@@ -716,6 +717,17 @@ function TMediaPlayer.toggleFullscreen: boolean;
 begin
   UI.toggleMaximized;
   postMessage(GV.appWnd, WM_TICK, 0, 0);
+end;
+
+function TMediaPlayer.toggleSubtitles: string;
+var vSid: string;
+begin
+  mpv.GetPropertyString('sid', vSid);
+  case vSid = 'no' of  TRUE: mpv.setPropertyString('sid', 'auto');
+                      FALSE: mpv.setPropertyString('sid', 'no'); end;
+  mpv.GetPropertyString('sid', vSid);
+  case vSid = 'no' of  TRUE: result := 'subtitles off';
+                      FALSE: result := 'subtitles on'; end;
 end;
 
 function TMediaPlayer.volDown: string;

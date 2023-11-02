@@ -75,7 +75,7 @@ begin
 
   getWindowRect(UI.handle, wndRect);
 
-  moveWindow(UI.handle, dx, dy, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, FALSE);
+  moveWindow(UI.handle, dx, dy, wndRect.width, wndRect.height, FALSE);
   UI.moveHelpWindow(FALSE);
   UI.movePlaylistWindow(FALSE);
 end;

@@ -192,19 +192,21 @@ var
 
   function alreadyCentred: boolean;
   begin
-    vHPos := (CU.getScreenWidth -  (vR.right - vR.left)) div 2;
-    vVPos := (CU.getScreenHeight - (vR.bottom - vR.top)) div 2;
+    vHPos := (CU.getScreenWidth  - vR.width) div 2;
+    vVPos := (CU.getScreenHeight - vR.height) div 2;
     result := (vR.left = vHPos) and (vR.top = vVPos);
   end;
 
 begin
+  case autoCentre of FALSE: EXIT; end;
+
   getWindowRect(aWnd, vR);
 
   case alreadyCentred of TRUE: EXIT; end;
 
   SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE);
 
-  case CU.withinScreenLimits(vR.Right - vR.Left, vR.Bottom - vR.Top) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
+  case CU.withinScreenLimits(vR.width, vR.height) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
 
   application.processMessages;
   moveHelpWindow(FALSE);
@@ -220,8 +222,8 @@ begin
   case GV.closeApp of TRUE: EXIT; end;
 
   getWindowRect(aWnd, vR);
-  vWidth  := vR.right  - vR.left;
-  vHeight := vR.bottom - vR.top;
+  vWidth  := vR.width;
+  vHeight := vR.height;
 
   case (vWidth > aWidth) or (vHeight > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
   application.processMessages;

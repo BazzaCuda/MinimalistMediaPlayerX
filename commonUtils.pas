@@ -238,8 +238,8 @@ end;
 
 function TCommonUtils.getScreenHeight: integer;
 begin
-  var rect := screen.WorkAreaRect; // the screen minus the taskbar
-  result := rect.Bottom - rect.Top;
+  var vRect := screen.WorkAreaRect; // the screen minus the taskbar
+  result := vRect.height;
 end;
 
 function TCommonUtils.getScreenWidth: integer;
@@ -252,8 +252,8 @@ var
   vR: TRect;
 begin
   getWindowRect(aWnd, vR);
-  aWidth  := vR.right - vR.left;
-  aHeight := vR.bottom - vR.top;
+  aWidth  := vR.width;
+  aHeight := vR.height;
 end;
 
 function TCommonUtils.initTransparentForm(const aForm: TForm): TForm;
@@ -368,10 +368,10 @@ function TCommonUtils.showOKCancelMsgDlg(const aMsg: string;
 // The standard dialog would unhelpfully truncate them.#
 var vControl: TControl;
 begin
-  GV.userInput := TRUE;
   screen.cursor := crDefault;
   with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
+    GV.userInput := TRUE;
     font.name := 'Segoe UI';
     font.size := 12;
     height    := height + 50;
@@ -394,7 +394,7 @@ end;
 function TCommonUtils.withinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
-  result := (aWidth <= vR.right - vR.left) AND (aHeight <= vR.bottom - vR.top);
+  result := (aWidth <= vR.width) AND (aHeight <= vR.height);
 end;
 
 initialization
