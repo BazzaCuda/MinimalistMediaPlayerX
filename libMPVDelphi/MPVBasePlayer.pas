@@ -1144,9 +1144,9 @@ begin
   setPropertyString('osd-bold',  'yes');
   setPropertyString('osd-back-color', '#00000000');
   setPropertyString('osd-shadow-offset', '0');
-  SetPropertyString('screenshot-directory', sScrShotDir);
+//  SetPropertyString('screenshot-directory', sScrShotDir);
   setPropertyString('screenshot-format', 'png');
-  SetPropertyString('osd-font-size', '14');
+  SetPropertyString('osd-font-size', '10');
   SetPropertyInt64('osd-duration', 3000);
   setPropertyString('osd-align-x', 'right');
   setPropertyString('osd-align-y', 'bottom');
