@@ -43,12 +43,13 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 Control | Action
 ------- | ------
 `F1`                    | show or hide the Help panel listing all the keyboard and mouse functions
-`ALT-SPACEBAR`          | activate the system menu to get to the About Box
+`ALT-SPACEBAR`          | activate the system menu to get to the About Box and the Keyboard help panel
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
+`Ctrl-S`                | toggle subtitles on/off
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
@@ -105,6 +106,7 @@ Control | Action
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
+`Ctrl-S`                | toggle subtitles on/off
 `T`                     | Tab through the media file. See below in Category section
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
@@ -166,6 +168,7 @@ Control | Action
 `Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
+`Ctrl-S`                | toggle subtitles on/off
 **Panning** |
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
