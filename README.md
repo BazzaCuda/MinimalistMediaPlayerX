@@ -195,7 +195,7 @@ Control | Action
 `}`                     | increase saturation. Can be held down for rapid increase
 `;`                     | reset saturation to normal
 **Screenshots** | ` `
-`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file) (in development)
+`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file)
 **Speed** | ` `
 `Numpad +`              | increase playback speed. Can be held down for rapid increase
 `/`                     | increase playback speed. Can be held down for rapid increase
@@ -239,7 +239,6 @@ Control | Action
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 **Additional** | ` `
-`F5`                    | take a screenshot
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
