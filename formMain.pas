@@ -81,7 +81,7 @@ begin
   UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
 
   CU.delay(100);
-  case UI.autoCentre of TRUE: sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); end;
+  sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
 
