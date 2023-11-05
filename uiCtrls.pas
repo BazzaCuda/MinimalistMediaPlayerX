@@ -230,7 +230,7 @@ begin
   vHeight := vR.height;
 
   case (vWidth > aWidth) or (vHeight > aHeight) of  TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0);
-                                                   FALSE: {case CU.offScreen(aWnd) of TRUE:} postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); {end;}end;
+                                                   FALSE: postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
   application.processMessages;
 end;
 
