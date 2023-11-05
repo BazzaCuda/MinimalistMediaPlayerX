@@ -133,7 +133,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -510,10 +510,7 @@ begin
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
 
-  case UI.autoCentre of TRUE: begin
-                                CU.delay(100);
-                                sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); // force window to update
-                                application.processMessages; end;end;
+  SA.postToAll(WM_PROCESS_MESSAGES);
 
   checkPot;
   result := TRUE;

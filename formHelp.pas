@@ -29,8 +29,9 @@ type
     backPanel: TPanel;
     buttonPanel: TPanel;
     shiftLabel: TLabel;
-    moveLabel: TLabel;
     RT: TRichEdit;
+    helpLabel: TLabel;
+    Panel1: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private

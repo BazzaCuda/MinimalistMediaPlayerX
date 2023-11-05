@@ -51,6 +51,7 @@ const
   WM_SMALLER_WINDOW      = WM_USER + 2108;
   WM_PLAY_CURRENT_ITEM   = WM_USER + 2109;
   WM_SHOW_WINDOW         = WM_USER + 2110;
+  WM_PROCESS_MESSAGES    = WM_USER + 2111;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';

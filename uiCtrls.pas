@@ -124,7 +124,7 @@ begin
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
 
-  case autoCentre of TRUE: postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); end;
+  postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
   case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
@@ -143,13 +143,14 @@ begin
   case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
 
   case vCount of
-    1:       SA.postToAllEx(WIN_RESIZE, point(trunc(CU.getScreenWidth * 0.9), 0));
+    1:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth, 0));
     2:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
     3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
     else     SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenWidth div vCount));
   end;
 
   application.processMessages; // make sure this window has resized before continuing
+  SA.postToAll(WM_PROCESS_MESSAGES);
 
   CU.getWndWidthHeight(UI.handle, vWidth, vHeight);
   vScreenWidth  := CU.getScreenWidth;
@@ -161,7 +162,10 @@ begin
   vCount := SA.count;
   case vCount = 2 of TRUE: begin
                              posWinXY(SA.HWNDs[1], vZero,  vVMiddle - (vHeight div 2));
-                             posWinXY(SA.HWNDs[2], vHMiddle, vVMiddle - (vHeight) div 2); end;end;
+                             posWinXY(SA.HWNDs[2], vHMiddle, vVMiddle - (vHeight) div 2);
+                             case CU.offScreen(SA.HWNDs[1]) of TRUE: posWinXY(SA.HWNDs[1], vZero, 0); end;
+                             case CU.offScreen(SA.HWNDs[2]) of TRUE: posWinXY(SA.HWNDs[2], vHMiddle, 0); end;
+                           end;end;
 
   case vCount in [3, 4] of TRUE: begin
                              posWinXY(SA.HWNDs[1], vZero,  0);
@@ -174,6 +178,8 @@ begin
                               posWinXY(SA.HWNDs[4], vHMiddle, vHeight); end;end;
 
   case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], 100 + (50 * (i - 1)), 100 + (50 * (i - 1))); end;
+
+  SA.postToAll(WM_SMALLER_WINDOW);
 
   SA.clear;
 end;
@@ -198,15 +204,13 @@ var
   end;
 
 begin
-  case autoCentre of FALSE: EXIT; end;
-
   getWindowRect(aWnd, vR);
 
   case alreadyCentred of TRUE: EXIT; end;
 
-  SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE);
-
   case CU.withinScreenLimits(vR.width, vR.height) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
+
+  case (vHPos > 0) and (vVPos > 0) of TRUE: SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
 
   application.processMessages;
   moveHelpWindow(FALSE);
@@ -225,7 +229,8 @@ begin
   vWidth  := vR.width;
   vHeight := vR.height;
 
-  case (vWidth > aWidth) or (vHeight > aHeight) of TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0); end;
+  case (vWidth > aWidth) or (vHeight > aHeight) of  TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0);
+                                                   FALSE: {case CU.offScreen(aWnd) of TRUE:} postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); {end;}end;
   application.processMessages;
 end;
 
@@ -477,7 +482,7 @@ function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 1);
+                      mtVideo: begin  FMainForm.width  := trunc(CU.getScreenWidth * 0.9);
                                       {FMainForm.height := trunc(FMainForm.width * 0.75);} end;end; // leave it to adjustAspectRatio
 end;
 
@@ -527,6 +532,9 @@ end;
 
 function TUI.toggleHelpWindow: boolean;
 begin
+  shutPlaylist;
+  FShowingPlaylist := FALSE;
+
   FShowingHelp := NOT FShowingHelp;
   case FShowingHelp of  TRUE: moveHelpWindow;
                        FALSE: shutHelp; end;
@@ -540,6 +548,9 @@ end;
 
 function TUI.togglePlaylist: boolean;
 begin
+  shutHelp;
+  FShowingHelp := FALSE;
+
   FShowingPlaylist := NOT FShowingPlaylist;
   case FShowingPlaylist of  TRUE: movePlaylistWindow;
                            FALSE: shutPlaylist; end;
