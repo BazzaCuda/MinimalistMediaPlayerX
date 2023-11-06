@@ -43,6 +43,7 @@ type
     function getFileSize(const aFilePath: string): int64;
     function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
     function getWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
+    function getScreenCentre: integer;
     function getScreenHeight: integer;
     function getScreenWidth: integer;
     function initTransparentForm(const aForm: TForm): TForm;
@@ -234,6 +235,11 @@ begin
                                     // format result string
                                     Result := Format(Fmt, [iVer[1], iVer[2], iVer[3], iVer[4]]);
                                   end;end;
+end;
+
+function TCommonUtils.getScreenCentre: integer;
+begin
+  result := getScreenWidth div 2;
 end;
 
 function TCommonUtils.getScreenHeight: integer;

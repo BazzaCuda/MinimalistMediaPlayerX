@@ -510,6 +510,7 @@ begin
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
 
+  UI.tweakWindow; // force update
   SA.postToAll(WM_PROCESS_MESSAGES);
 
   checkPot;

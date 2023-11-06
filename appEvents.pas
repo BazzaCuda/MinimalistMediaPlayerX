@@ -136,19 +136,19 @@ begin
     case mouseDown and msgIs(WM_MOUSEMOVE)                of TRUE: dragUI; end;
   end;end;
 
-  case msgIs(WM_RBUTTONUP)                             of TRUE: begin UI.autoCentre := FALSE; postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;end;
+  case msgIs(WM_RBUTTONUP)                             of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
   case msgIs(WM_LBUTTONDBLCLK) and NOT showingPlaylist of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
   case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
-  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin CU.delay(05);   UI.autoCentreWindow(UI.handle); end;end;
-  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin CU.delay(05);   UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;end;
-  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin CU.delay(05);   UI.smallerWindow(UI.handle); end;end;
+  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin CU.delay(05);     UI.autoCentreWindow(UI.handle); end;end;
+  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin CU.delay(05);     UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;end;
+  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin CU.delay(05);     UI.smallerWindow(UI.handle); end;end;
 
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
 
-  case msgIs(WIN_AUTOCENTER_OFF)      of TRUE: UI.autoCentre := FALSE; end;
+  case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: MC.caption := PL.formattedItem; end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;

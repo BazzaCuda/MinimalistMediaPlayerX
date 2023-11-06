@@ -43,6 +43,7 @@ type
     function getWidth: integer;
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure onMPPlayNext(sender: TObject);
+    function getXY: TPoint;
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -73,9 +74,11 @@ type
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
+    function tweakWindow: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property height: integer read getHeight;
     property initialized: boolean read FInitialized write FInitialized;
+    property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth;
   end;
@@ -140,7 +143,7 @@ begin
   vCount     := SA.count;
 
   autoCentre := vCount = 1;
-  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTER_OFF); end;
+  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF); end;
 
   case vCount of
     1:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth, 0));
@@ -160,11 +163,14 @@ begin
   vZero         := vHMiddle - vWidth;
 
   vCount := SA.count;
+  var vHWND := 0;
+
   case vCount = 2 of TRUE: begin
-                             posWinXY(SA.HWNDs[1], vZero,  vVMiddle - (vHeight div 2));
-                             posWinXY(SA.HWNDs[2], vHMiddle, vVMiddle - (vHeight) div 2);
+                             posWinXY(SA.HWNDs[1], vZero,    (vScreenHeight - vHeight) div 2);
+                             posWinXY(SA.HWNDs[2], vHMiddle, (vScreenHeight - vHeight) div 2);
                              case CU.offScreen(SA.HWNDs[1]) of TRUE: posWinXY(SA.HWNDs[1], vZero, 0); end;
                              case CU.offScreen(SA.HWNDs[2]) of TRUE: posWinXY(SA.HWNDs[2], vHMiddle, 0); end;
+                             vHWND := SA.HWNDs[1];
                            end;end;
 
   case vCount in [3, 4] of TRUE: begin
@@ -179,9 +185,11 @@ begin
 
   case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], 100 + (50 * (i - 1)), 100 + (50 * (i - 1))); end;
 
-  SA.postToAll(WM_SMALLER_WINDOW);
+  SA.postToAll(WM_PROCESS_MESSAGES);
 
-  SA.clear;
+  SA.postToAll(WM_SMALLER_WINDOW); // force an update
+
+  case vHWND <> 0 of TRUE: begin CU.delay(500); posWinXY(vHWND, CU.getScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
@@ -231,6 +239,7 @@ begin
 
   case (vWidth > aWidth) or (vHeight > aHeight) of  TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0);
                                                    FALSE: postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
+
   application.processMessages;
 end;
 
@@ -313,6 +322,13 @@ end;
 function TUI.getWidth: integer;
 begin
   result := FMainForm.width;
+end;
+
+function TUI.getXY: TPoint;
+var vR: TRect;
+begin
+  getWindowRect(UI.handle, vR);
+  result := vR.Location;
 end;
 
 function TUI.greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
@@ -554,6 +570,11 @@ begin
   FShowingPlaylist := NOT FShowingPlaylist;
   case FShowingPlaylist of  TRUE: movePlaylistWindow;
                            FALSE: shutPlaylist; end;
+end;
+
+function TUI.tweakWindow: boolean;
+begin
+  FMainForm.width := FMainForm.width - 1;
 end;
 
 initialization
