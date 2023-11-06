@@ -361,9 +361,9 @@ begin
 
   calcDimensions; // do what the user requested
 
-  case NOT CU.withinScreenLimits(newW, newH) of  TRUE:  begin
-                                                          newH      := CU.getScreenHeight - dy;
-                                                          try newW  := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
+  case CU.withinScreenLimits(newW, newH) of FALSE:  begin
+                                                      newH      := CU.getScreenHeight - dy;
+                                                      try newW  := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 

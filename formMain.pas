@@ -32,6 +32,7 @@ type
     procedure WMNCHitTest(var msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMSizing(var msg: TMessage); message WM_SIZING;
     procedure WMDropFiles(var msg: TWMDropFiles); message WM_DROPFILES;
+    procedure WMEnterSizeMove(var Message: TMessage); message WM_ENTERSIZEMOVE;
   public
   end;
 
@@ -41,8 +42,8 @@ var
 implementation
 
 uses
-  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, _debugWindow, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
-  winApi.shellApi, configFile, mediaType, sysCommands;
+  uiCtrls, globalVars, mediaPlayer, consts, commonUtils, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
+  winApi.shellApi, configFile, mediaType, sysCommands, _debugWindow;
 
 {$R *.dfm}
 
@@ -123,6 +124,12 @@ begin
     dragFinish(hDrop);
   end;
   msg.result := 0;
+end;
+
+procedure TMMPUI.WMEnterSizeMove(var Message: TMessage);
+// the user manually starts to resize the window
+begin
+  UI.autoCentre := FALSE;
 end;
 
 procedure TMMPUI.WMNCHitTest(var msg: TWMNCHitTest);
