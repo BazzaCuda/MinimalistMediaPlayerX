@@ -499,7 +499,7 @@ begin
   openURL(aURL);
 
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case UI.autoCentre of TRUE: UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem)))); end;
+  case UI.autoCentre or ((MT.mediaType(lowerCase(extractFileExt(PL.currentItem)))) = mtAudio) of TRUE: UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem)))); end;
 
   mpv.volume := FVol;
   mpv.mute   := FMuted;
