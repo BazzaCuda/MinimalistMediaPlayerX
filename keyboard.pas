@@ -278,7 +278,7 @@ begin
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koFullscreen:        MP.toggleFullscreen;
     koZoomReset:         ST.opInfo := MP.zoomReset;
-    koGreaterWindow:     begin SA.postToAll(WIN_GREATER); SA.postToAll(WIN_AUTOCENTRE_OFF); end;
+    koGreaterWindow:     SA.postToAll(WIN_GREATER);
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
     koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
     koToggleControls:    SA.postToAll(WIN_CONTROLS);
