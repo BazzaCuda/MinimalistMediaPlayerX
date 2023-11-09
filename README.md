@@ -34,7 +34,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
-- The app allows MPV to be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
+- MPV can be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
 
 - N.B. Many keys can be held down for rapid repitition.
 
