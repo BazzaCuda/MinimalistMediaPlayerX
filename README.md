@@ -34,7 +34,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
-- MPV can be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
+- MPV playback can be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
 
 - N.B. Many keys can be held down for rapid repitition.
 
@@ -170,8 +170,8 @@ Control | Action
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file
 `Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file
-`C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
-`Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
+`C`                     | show/Hide on-screen [C]aptions (media info) and media file timestamp
+`Ctrl-C`                | show/Hide all on-screen captions, media file timestamp and media metadata
 `Ctrl-S`                | toggle subtitles on/off
 **Panning** | 
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
