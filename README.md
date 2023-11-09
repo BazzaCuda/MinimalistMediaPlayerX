@@ -14,27 +14,29 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 ### Key Features
 ----------------
-Automatically matches the aspect ratio of the window to the aspect ratio of the video so it fits the window perfectly, but still allows you to zoom and pan. This is something the MPV player itself doesn't do - you can only have one or the other. So no ugly borders. Ever. Unless they're hard-baked into the video, of course.
+- Automatically matches the aspect ratio of the window to the aspect ratio of the video so it fits the window perfectly, but still allows you to zoom and pan. This is something the MPV player itself doesn't do - you can only have one or the other. So no ugly borders. Ever. Unless they're hard-baked into the video, of course.
 
-Opening a media file from Windows Explorer (etc.) will automatically fill the playlist with all media files in the same folder. The playlist is sorted in "natural order" to match the order your files are listed in your file manager.
+- Opening a media file from Windows Explorer (etc.) will automatically fill the playlist with all media files in the same folder. The playlist is sorted in "natural order" to match the order your files are listed in your file manager.
 
-You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
+- You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
 
-If a corresponding subtitle file exists for the media file (.srt file, for example), the subtitles will be shown automatically.
+- If a corresponding subtitle file exists for the media file (.srt file, for example), the subtitles will be shown automatically.
 
-All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+- Full-resolution screenshots can be saved for individual frames.
 
-``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
+- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1 or Ctrl-H. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
-You can quickly bookmark the current position of a media file and restart from that point at a later time.
+- ``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
-You can quickly resize the video by holding down the G key to enlarge it. Or quickly reduce it by holding down Ctrl-G.
+- You can quickly bookmark the current position of a media file and restart from that point at a later time.
 
-``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
+- You can quickly resize the video by holding down the G key to enlarge it. Or quickly reduce it by holding down Ctrl-G.
 
-The app allows MPV to be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
+- ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
-N.B. Many keys can be held down for rapid repitition.
+- The app allows MPV to be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
+
+- N.B. Many keys can be held down for rapid repitition.
 
 ### Keyboard Controls
 ---------------------
