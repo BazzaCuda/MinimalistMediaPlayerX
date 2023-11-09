@@ -137,27 +137,27 @@ Control | Action
 ---------------
 Control | Action
 ------- | ------
-**Brightness** | ` `
+**Brightness** | 
 `8`                     | Decrease brightness. Can be held down for rapid decrease
 `9`                     | Increase brightness. Can be held down for rapid increase
 `2`                     | reset brightness to normal
-**Contrast** | ` `
+**Contrast** | 
 `=`                     | increase contrast. Can be held down for rapid increase
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
 `0`                     | reset contrast to normal 
-**File Control** | ` `
+**File Control** | 
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `D` and `DEL`           | [D]elete current media file (after confirmation)
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`                     | [R]ename the current media file
-**Freeze Frame** | ` `
+**Freeze Frame** | 
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
-**Gamma** | ` `
+**Gamma** | 
 `[`                     | decrease gamma. Can be held down for rapid decrease
 `]`                     | increase gamma. Can be held down for rapid increase
 `'` (single quote)      | reset gamma
-**Mouse** | ` `
+**Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click video`        |  toggle fullscreen mode
 `Right single-click the window`  | Pause/resume playback
@@ -165,7 +165,7 @@ Control | Action
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
-**On-Screen Display** | ` `
+**On-Screen Display** | 
 `#`                     | briefly show media caption (the filename and its position in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file
@@ -173,13 +173,13 @@ Control | Action
 `C`                     | show/Hide on-screen [C]ontrols (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen controls, media file timestamp and media metadata
 `Ctrl-S`                | toggle subtitles on/off
-**Panning** | ` `
+**Panning** | 
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `3`                     | reset panning to normal
-**Playlist** | ` `
+**Playlist** | 
 `A`                     | play the first media file in the playlist (Z/END plays last)
 `HOME`                  | play the first media file in the playlist (Z/END plays last)
 `Z`                     | play the last media file in the playlist (A/HOME plays the first)
@@ -188,23 +188,23 @@ Control | Action
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `L`                     | re[L]oad the list of supported media files from the current folder
-**Rotating** | ` `
+**Rotating** | 
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `4`                     | reset rotation to normal/not rotated
-**Saturation** | ` `
+**Saturation** | 
 `{`                     | decrease saturation. Can be held down for rapid decrease
 `}`                     | increase saturation. Can be held down for rapid increase
 `;`                     | reset saturation to normal
-**Screenshots** | ` `
+**Screenshots** | 
 `F5`                    | save a screenshot of the current frame (currently to the same folder as the media file)
-**Speed** | ` `
+**Speed** | 
 `Numpad +`              | increase playback speed. Can be held down for rapid increase
 `/`                     | increase playback speed. Can be held down for rapid increase
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `1`                     | reset the playback speed to normal, i.e. [1]00%
-**Tabbing** | ` `
+**Tabbing** | 
 `T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
@@ -215,14 +215,14 @@ Control | Action
 `Ctrl-Shift-T`          | tab backwards 50th of media duration
 `Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
 `Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
-**Volume** | ` `
+**Volume** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
 `Vol+ media key`        | increase the volume. Can be held down for rapid increase
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease
 `Vol-mute media key`    | mute/unmute sound
 `E`                     | [E]ars - mute/unmute sound
-**Window Control** | ` `
+**Window Control** | 
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `F`                     | show/cancel [F]ullScreen mode
 `G`                     | [G]reater window size. Can be held down for rapid increase
@@ -236,11 +236,11 @@ Control | Action
 `Ctrl-0`                | close all running instances of MMP
 `Left button down`      | drag the media window around the screen, but not when Playlist panel is open
 `Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
-**Zoom** | ` `
+**Zoom** | 
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-**Additional** | ` `
+**Additional** | 
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
