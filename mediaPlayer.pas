@@ -38,9 +38,11 @@ type
     FOnPlayNext: TNotifyEvent;
     FPlaying: boolean;
     FPausePlay: boolean;
+    FRepeat: boolean;
     FVol:  double;
   private
     constructor create;
+    procedure onInitMPV(sender: TObject);
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
@@ -107,6 +109,7 @@ type
     function tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
     function takeScreenshot: string;
     function toggleFullscreen: boolean;
+    function toggleRepeat: string;
     function toggleSubtitles: string;
     function volDown: string;
     function volUp: string;
@@ -371,6 +374,36 @@ begin
                    FALSE: result := 'muted'; end;
 end;
 
+procedure TMediaPlayer.onInitMPV(sender: TObject);
+//===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
+begin
+  with sender as TMPVBasePlayer do begin
+    SetPropertyString('osc', 'no'); // On Screen Control
+    SetPropertyString('force-window', 'yes');
+    SetPropertyString('config-dir', CU.getExePath); // mpv.conf location
+    SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
+    SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
+    SetPropertyBool('keep-open-pause', False);
+
+    setPropertyString('sub-font', 'Segoe UI');
+    setPropertyString('sub-color', '#808080');
+    setPropertyString('osd-color', '#808080');
+    setPropertyString('osd-bold',  'yes');
+    setPropertyString('osd-back-color', '#00000000');
+    setPropertyString('osd-shadow-offset', '0');
+    setPropertyString('screenshot-format', 'png');
+    SetPropertyString('osd-font-size', '10');
+    SetPropertyInt64('osd-duration', 3000);
+    setPropertyString('osd-align-x', 'right');
+    setPropertyString('osd-align-y', 'bottom');
+    setPropertyString('osd-margin-x', '4');
+    setPropertyString('osd-margin-y', '24');
+    setPropertyString('screenshot-png-compression', '0');
+    setPropertyString('screenshot-template', '%F %p %04n');
+//    SetPropertyDouble('sub-delay', -00.99);
+  end;
+end;
+
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
@@ -399,6 +432,7 @@ begin
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
+    mpv.onInitMPV    := onInitMPV;
     mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
   end;end;
   mpv.openFile(aURL);
@@ -495,6 +529,7 @@ begin
   result := FALSE;
 
   FPausePlay := FALSE;
+  FRepeat    := FALSE;
 
   openURL(aURL);
 
@@ -715,6 +750,16 @@ function TMediaPlayer.toggleFullscreen: boolean;
 begin
   UI.toggleMaximized;
   postMessage(GV.appWnd, WM_TICK, 0, 0);
+end;
+
+function TMediaPlayer.toggleRepeat: string;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  FRepeat := NOT FRepeat;
+  case FRepeat of  TRUE: mpv.setPropertyString('loop-file', 'yes');
+                  FALSE: mpv.setPropertyString('loop-file', 'no'); end;
+  case FRepeat of  TRUE: result := 'repeat on';
+                  FALSE: result := 'repeat off'; end;
 end;
 
 function TMediaPlayer.toggleSubtitles: string;

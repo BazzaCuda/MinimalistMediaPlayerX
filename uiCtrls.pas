@@ -187,7 +187,8 @@ begin
 
   SA.postToAll(WM_PROCESS_MESSAGES);
 
-  SA.postToAll(WM_SMALLER_WINDOW); // force an update
+//  SA.postToAll(WM_SMALLER_WINDOW); // force an update
+  SA.postToAll(WIN_GREATER); // force an update
 
   case vHWND <> 0 of TRUE: begin CU.delay(500); posWinXY(vHWND, CU.getScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;

@@ -63,6 +63,7 @@ type
     m_eOnPropChged: TMPVPropertyChangedEvent;
     m_eOnErrMsg: TMPVErrorMessage;
     m_eOnStateChged: TMPVStateChanged;
+    FOnInitMPV: TNotifyEvent;
   private
     procedure SetATrack(const Value: string);
     procedure SetSTrack(const Value: string);
@@ -236,6 +237,8 @@ type
     property OnProgress: TMPVProgressEvent read GetOnProgress write SetOnProgress;
     property OnPropertyChanged: TMPVPropertyChangedEvent read GetOnProgChg write SetOnProgChg;
     property OnStateChged: TMPVStateChanged read GetOnStateChg write SetOnStateChg;
+
+    property onInitMPV: TNotifyEvent read FOnInitMPV write FOnInitMPV;
   end;
 
 function MPVLibLoaded(const sLibPath: string): Boolean;
@@ -1127,36 +1130,14 @@ begin
   //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 
   //SetPropertyString('watch-later-options', STR_MUTE+','+STR_SID+','+STR_AID);
-  SetPropertyString('screenshot-directory', sScrShotDir);
+
 //  SetPropertyString('osd-playing-msg', '${filename}');
   if sLogFile<>'' then SetPropertyString(STR_LOG_FILE, sLogFile);
   SetPropertyString(STR_WID, sWinHandle);
-  SetPropertyString('osc', 'no'); // On Screen Control
-  SetPropertyString('force-window', 'yes');
-  SetPropertyString('config-dir', sConfigDir); // mpv.conf location
-  SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
-  SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
-  SetPropertyBool('keep-open-pause', False);
 
-  setPropertyString('sub-font', 'Segoe UI');
-  setPropertyString('sub-color', '#808080');
-  setPropertyString('osd-color', '#808080');
-  setPropertyString('osd-bold',  'yes');
-  setPropertyString('osd-back-color', '#00000000');
-  setPropertyString('osd-shadow-offset', '0');
-//  SetPropertyString('screenshot-directory', sScrShotDir);
-  setPropertyString('screenshot-format', 'png');
-  SetPropertyString('osd-font-size', '10');
-  SetPropertyInt64('osd-duration', 3000);
-  setPropertyString('osd-align-x', 'right');
-  setPropertyString('osd-align-y', 'bottom');
-  setPropertyString('osd-margin-x', '4');
-  setPropertyString('osd-margin-y', '24');
-  setPropertyString('screenshot-png-compression', '0');
-  setPropertyString('screenshot-template', '%F %p %04n');
+  case assigned(FOnInitMPV) of TRUE: FOnInitMPV(SELF); end;
 
 //  SetPropertyBool('no-config', TRUE);
-//  SetPropertyDouble('sub-delay', -10.0);
 //  SetPropertyBool('idle-screen', FALSE);
 //  setPropertyString('osc-visibility', 'never');
 //  setPropertyString('audio-device', 'wasapi/{1881c69e-d424-40b8-bb62-9f2aa3f36e6a}');
@@ -1164,7 +1145,7 @@ begin
 
 //  SetPropertyBool('input-default-bindings', True);
 //  SetPropertyBool('input-builtin-bindings', False);
-  SetPropertyString('reset-on-next-file', 'brightness,speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
+//  SetPropertyString('reset-on-next-file', 'brightness,speed,video-aspect-override,af,sub-visibility,audio-delay,pause');
 
   ProcessCmdLine(True);
   Result := HandleError(mpv_initialize(m_hMPV), 'mpv_initialize'); // all property values set prior to this can be overridden in mpv.conf
