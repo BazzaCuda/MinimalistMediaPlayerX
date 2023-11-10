@@ -44,14 +44,14 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 
 Control | Action
 ------- | ------
-`F1`                    | show or hide the Help panel listing all the keyboard and mouse functions
+`F1`                    | toggle the [H]elp panel listing all the keyboard and mouse functions
+`Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box and the Keyboard help panel
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
-`Ctrl-S`                | toggle subtitles on/off
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
@@ -98,7 +98,7 @@ Control | Action
 `G`                     | [G]reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
-`Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
+`Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `I`                     | zoom [I]n. Can be held down for rapid zooming
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
@@ -109,6 +109,7 @@ Control | Action
 `P`                     | show/hide the [P]laylist
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
+`Ctrl-R`                | toggle infinite repeat of the current media file (next release)
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `Ctrl-S`                | toggle subtitles on/off
 `T`                     | Tab through the media file. See below in Category section
@@ -232,7 +233,7 @@ Control | Action
 `M`                     | [M]aximize / restore window
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | synchronize all [V]ideo windows
-`Ctrl-9`                | Auto-arrange up to 4 simultaneous videos
+`Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 `Left button down`      | drag the media window around the screen, but not when Playlist panel is open
 `Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
@@ -246,6 +247,7 @@ Control | Action
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
 `Ctrl-A`                | show [A]bout Box
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
+`Ctrl-R`                | toggle infinite repeat of the current media file (next release)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal 
 
