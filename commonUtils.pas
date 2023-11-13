@@ -67,7 +67,7 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, IOUtils,
-  formSubtitles, formCaption, progressBar, configFile, _debugWindow;
+  formSubtitles, formCaption, progressBar, configFile, winAPI.activeX, _debugWindow;
 
 var
   gCU: TCommonUtils;
@@ -375,6 +375,7 @@ function TCommonUtils.showOKCancelMsgDlg(const aMsg: string;
 var vControl: TControl;
 begin
   screen.cursor := crDefault;
+  coInitialize(NIL);
   with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
     GV.userInput := TRUE;
@@ -394,6 +395,7 @@ begin
   finally
     free;
     GV.userInput := FALSE;
+    coUninitialize;
   end;
 end;
 
