@@ -109,7 +109,7 @@ Control | Action
 `P`                     | show/hide the [P]laylist
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
-`Ctrl-R`                | toggle infinite repeat of the current media file (next release)
+`Ctrl-R`                | toggle infinite repeat of the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `Ctrl-S`                | toggle subtitles on/off
 `T`                     | Tab through the media file. See below in Category section
@@ -247,7 +247,7 @@ Control | Action
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
 `Ctrl-A`                | show [A]bout Box
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
-`Ctrl-R`                | toggle infinite repeat of the current media file (next release)
+`Ctrl-R`                | toggle infinite repeat of the current media file
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal 
 
