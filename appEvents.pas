@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, sendAll, _debugWindow;
+  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, sendAll, formTimeline, _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -78,6 +78,7 @@ begin
   moveWindow(UI.handle, dx, dy, wndRect.width, wndRect.height, FALSE);
   UI.moveHelpWindow(FALSE);
   UI.movePlaylistWindow(FALSE);
+  UI.moveTimelineWindow(FALSE);
 end;
 
 procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
@@ -99,6 +100,7 @@ begin
   case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
 
   focusPlaylist; // if it's being displayed, so it gets keystrokes
+  focusTimeLine;
 
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
@@ -116,6 +118,7 @@ begin
   case msgIs(WM_KEYUP) of TRUE: begin
                                   case GV.userInput  of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
+                                  case UI.showingTimeline and TL.keyHandled(msg.WParam) of TRUE: EXIT; end;
                                   key         := msg.WParam;
                                   handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
 
@@ -127,7 +130,7 @@ begin
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
-  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and (screen.cursor <> crHandPoint) of TRUE: screen.cursor := crNone; end;end;
+  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT UI.showingTimeline) of TRUE: screen.cursor := crNone; end;end;
 
   case msg.hwnd = UI.videoPanel.handle of TRUE: begin
     case msgIs(WM_LBUTTONDOWN) and NOT showingPlaylist    of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;

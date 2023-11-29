@@ -32,6 +32,7 @@ type
     FInitialized: boolean;
     FShowingHelp: boolean;
     FShowingPlaylist: boolean;
+    FShowingTimeline: boolean;
     FVideoPanel: TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
@@ -60,6 +61,7 @@ type
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
+    function moveTimelineWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(const anApp: string; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function reloadPlaylistWindow: boolean;
@@ -71,6 +73,7 @@ type
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleCaptions(shift: TShiftState): boolean;
+    function toggleEditMode: boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
@@ -78,6 +81,7 @@ type
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property height: integer read getHeight;
     property initialized: boolean read FInitialized write FInitialized;
+    property showingTimeline: boolean read FShowingTimeline;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth;
@@ -89,7 +93,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, globalVars, sendAll, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, _debugWindow;
 
 var
   gUI: TUI;
@@ -224,6 +228,7 @@ begin
   application.processMessages;
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
+  moveTimelineWindow(FALSE);
 end;
 
 function TUI.checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
@@ -307,6 +312,7 @@ begin
 
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
+  moveTimelineWindow(FALSE);
   ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 end;
 
@@ -537,6 +543,12 @@ begin
   showPlaylist(vPt, videoPanel.height, create);
 end;
 
+function TUI.moveTimelineWindow(const create: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
+  showTimeline(vPt, FVideoPanel.width, create);
+end;
+
 function TUI.toggleCaptions(shift: TShiftState): boolean;
 begin
   case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
@@ -545,6 +557,13 @@ begin
 
   case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
                                             FALSE: ST.showData := FALSE; end;
+end;
+
+function TUI.toggleEditMode: boolean;
+begin
+  FShowingTimeline := NOT FShowingTimeline;
+  case FShowingTimeline of  TRUE: moveTimelineWindow;
+                           FALSE: shutTimeline; end;
 end;
 
 function TUI.toggleHelpWindow: boolean;

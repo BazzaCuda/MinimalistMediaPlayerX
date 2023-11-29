@@ -136,7 +136,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, _debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, formTimeline,_debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -400,6 +400,7 @@ begin
     setPropertyString('osd-margin-y', '24');
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
+    setPropertyString('sid', '1');
 //    SetPropertyDouble('sub-delay', -00.99);
   end;
 end;
@@ -667,8 +668,13 @@ end;
 function TMediaPlayer.setProgressBar: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  case PB.max <> trunc(mpv.totalSeconds) of TRUE: PB.max := trunc(mpv.TotalSeconds); end;
-  case mpv.TotalSeconds > 0 of TRUE: PB.position := trunc(mpv.CurrentSeconds); end;
+  case PB.max <> trunc(mpv.totalSeconds) of TRUE: PB.max := trunc(mpv.totalSeconds); end;
+  case mpv.totalSeconds > 0 of TRUE: PB.position := trunc(mpv.currentSeconds); end;
+
+  case UI.showingTimeline of TRUE:  begin
+                                      case TL.max <> trunc(mpv.totalSeconds) of TRUE: TL.max := trunc(mpv.totalSeconds); end;
+                                      case mpv.totalSeconds > 0 of TRUE: TL.position := trunc(mpv.currentSeconds); end;
+                                    end;end;
 end;
 
 function TMediaPlayer.speedDn: string;
@@ -766,7 +772,7 @@ function TMediaPlayer.toggleSubtitles: string;
 var vSid: string;
 begin
   mpv.GetPropertyString('sid', vSid);
-  case vSid = 'no' of  TRUE: mpv.setPropertyString('sid', 'auto');
+  case vSid = 'no' of  TRUE: mpv.setPropertyString('sid', '1');
                       FALSE: mpv.setPropertyString('sid', 'no'); end;
   mpv.GetPropertyString('sid', vSid);
   case vSid = 'no' of  TRUE: result := 'subtitles off';

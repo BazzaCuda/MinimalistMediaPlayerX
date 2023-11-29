@@ -62,7 +62,8 @@ uses
   configFile in 'configFile.pas',
   mediaType in 'mediaType.pas',
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
-  sendAll in 'sendAll.pas';
+  sendAll in 'sendAll.pas',
+  formTimeline in 'formTimeline.pas' {TimelineForm};
 
 {$R *.res}
 

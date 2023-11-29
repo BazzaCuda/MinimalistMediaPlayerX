@@ -41,7 +41,6 @@ type
   protected
     constructor create;
     procedure onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
-    function  setNewPosition(const x: integer): integer;
   public
     destructor  Destroy; override;
     function brighter: integer;
@@ -49,6 +48,7 @@ type
     function formResize: boolean;
     function initProgressBar(const aForm: TForm): boolean;
     function resetColor: integer;
+    function  setNewPosition(const x: integer): integer;
     property initialized: boolean read FInitialized;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -174,8 +174,6 @@ procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton;
 // calculate a new video position based on where the progress bar is clicked
 begin
   setNewPosition(x);
-  postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
-  postMessage(GV.appWnd, WM_TICK, 0, 0); // update the time display immediately
 end;
 
 function TProgressBar.resetColor: integer;
@@ -192,6 +190,8 @@ end;
 function TProgressBar.setNewPosition(const x: integer): integer;
 begin
   FPB.Position := round(x * FPB.max / FPB.clientWidth);
+  postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0); // change the video position
+  postMessage(GV.appWnd, WM_TICK, 0, 0); // update the time display immediately
 end;
 
 procedure TProgressBar.setPosition(const Value: integer);

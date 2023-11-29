@@ -111,7 +111,7 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\Movies\LOTR 1 - The Fellowship Of The Ring (2001) Extended.mkv&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\MoviesToGo\Kingsman The Secret Service (2014).mkv&quot;</Debugger_RunParams>
         <VerInfo_Release>16</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -192,6 +192,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="sendAll.pas"/>
+        <DCCReference Include="formTimeline.pas">
+            <Form>TimelineForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
