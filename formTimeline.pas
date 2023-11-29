@@ -439,11 +439,6 @@ end;
 
 function TTimeline.processSegments: boolean;
 var cmdLine: string;
-//  testCmd := '-f concat -safe 0 -i "B:\MoviesToGo\concat.txt" -map "0:0" "-c:0" copy "-disposition:0" default -map "0:1" "-c:1" copy "-disposition:1" default'
-//           + ' -map "0:2" "-c:2" copy -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown -f matroska -y "B:\MoviesToGo\Kingsman The Secret Service (2014) [concat].mkv"';
-
-//  var testCmd := '-hide_banner -ss 0 -i "B:\MoviesToGo\Kingsman The Secret Service (2014).mkv" -to 7724'
-//               + ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown -y "B:\MoviesToGo\Kingsman The Secret Service (2014)-seg03.mkv"';
 const
   STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
 
@@ -473,7 +468,7 @@ begin
   end;
 
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
-  cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1 -c:1 copy -disposition:1 default -map 0:2 -c:2 copy -disposition:2 default';
+  cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1? -c:1 copy -disposition:1 default -map 0:2? -c:2 copy -disposition:2 default';
   cmdLine := cmdLine + ' -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown';
   cmdLine := cmdLine + ' -y "' + extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + ' [edited]' + extractFileExt(FMediaFilePath) + '"';
   log(cmdLine);
