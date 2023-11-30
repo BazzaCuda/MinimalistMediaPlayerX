@@ -29,6 +29,7 @@ type
   strict private
     FMainForm: TForm;
     FAutoCentre: boolean;
+    FFormattedTime: string;
     FInitialized: boolean;
     FShowingHelp: boolean;
     FShowingPlaylist: boolean;
@@ -43,6 +44,7 @@ type
     function getHeight: integer;
     function getWidth: integer;
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure onMPBeforeNew(sender: TObject);
     procedure onMPPlayNew(sender: TObject);
     procedure onMPPlayNext(sender: TObject);
     procedure onMPPosition(const aMax: integer; const aPosition: integer);
@@ -196,7 +198,6 @@ begin
 
   SA.postToAll(WM_PROCESS_MESSAGES);
 
-//  SA.postToAll(WM_SMALLER_WINDOW); // force an update
   SA.postToAll(WIN_GREATER); // force an update
 
   case vHWND <> 0 of TRUE: begin CU.delay(500); posWinXY(vHWND, CU.getScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
@@ -260,6 +261,11 @@ begin
   case screen <> NIL of TRUE: screen.cursor := crDefault; end;
 end;
 
+procedure TUI.onMPBeforeNew(sender: TObject);
+begin
+  case FShowingTimeline of TRUE: TL.clear; end;
+end;
+
 procedure TUI.onMPPlayNew(sender: TObject);
 begin
   case FShowingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
@@ -270,7 +276,7 @@ begin
   movePlaylistWindow(FALSE);
 end;
 
-procedure TUI.onMPPosition(const aMax, aPosition: integer);
+procedure TUI.onMPPosition(const aMax: integer; const aPosition: integer);
 begin
   case FShowingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
 end;
@@ -423,6 +429,7 @@ begin
   FAutoCentre         := TRUE;
   aForm.width         := 800;
   aForm.height        := 300;
+  MP.onBeforeNew      := onMPBeforeNew;
   MP.onPlayNew        := onMPPlayNew;
   MP.onPlayNext       := onMPPlayNext;
   MP.onPosition       := onMPPosition;

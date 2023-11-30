@@ -37,6 +37,7 @@ type
     FAlwaysPot: boolean;
     FDontPlayNext: boolean;
     FMuted: boolean;
+    FOnBeforeNew: TNotifyEvent;
     FOnPlayNew: TNotifyEvent;
     FOnPlayNext: TNotifyEvent;
     FOnPosition: TPositionNotifyEvent;
@@ -127,6 +128,7 @@ type
     property formattedSpeed:      string       read getFormattedSpeed;
     property formattedTime:       string       read getFormattedTime;
     property formattedVol:        string       read getFormattedVol;
+    property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
     property onPlayNew:           TNotifyEvent read FOnPlayNext   write FOnPlayNew;
     property onPlayNext:          TNotifyEvent read FOnPlayNext   write FOnPlayNext;
     property onPosition:          TPositionNotifyEvent read FOnPosition write FOnPosition;
@@ -537,6 +539,8 @@ begin
 
   FPausePlay := FALSE;
   FRepeat    := FALSE;
+
+  case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
   openURL(aURL);
 
