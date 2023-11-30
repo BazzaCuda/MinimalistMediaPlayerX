@@ -117,7 +117,7 @@ type
     function filePathSEG: string;
     function getSegCount: integer;
     function getTimelineHeight: integer;
-    function loadSegments(aStringList: TStringList = NIL): boolean;
+    function loadSegments(aStringList: TStringList = NIL): string;
     function log(aLogEntry: string): boolean;
     function mergeLeft(const aSegment: TSegment): boolean;
     function mergeRight(const aSegment: TSegment): boolean;
@@ -500,7 +500,7 @@ begin
   freeSegments;
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  case fileExists(filePathMMP) of  TRUE: loadSegments;
+  case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
                                   FALSE: defaultSegment; end;
 end;
 
@@ -509,7 +509,7 @@ begin
   result := key in [ord('C'), ord('I'), ord('M'), ord('N'), ord('O'), ord('P'), ord('R'), ord('X'), ord('Z')];
 end;
 
-function TTimeline.loadSegments(aStringList: TStringList = NIL): boolean;
+function TTimeline.loadSegments(aStringList: TStringList = NIL): string;
 var
   vSL: TStringList;
   vStartSS: integer;
@@ -533,8 +533,8 @@ begin
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
       FSegments.add(TSegment.create(vStartSS, vEndss, vDeleted));
+      result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
-
   finally
     vSL.free;
   end;
