@@ -26,6 +26,8 @@ uses
 type
   TTimerEvent = (tePlay, teClose);
 
+  TPositionNotifyEvent = procedure(const aMax: integer; const aPosition: integer) of object;
+
   TMediaPlayer = class(TObject)
   strict private
     mpv: TMPVBasePlayer;
@@ -35,7 +37,9 @@ type
     FAlwaysPot: boolean;
     FDontPlayNext: boolean;
     FMuted: boolean;
+    FOnPlayNew: TNotifyEvent;
     FOnPlayNext: TNotifyEvent;
+    FOnPosition: TPositionNotifyEvent;
     FPlaying: boolean;
     FPausePlay: boolean;
     FRepeat: boolean;
@@ -123,7 +127,9 @@ type
     property formattedSpeed:      string       read getFormattedSpeed;
     property formattedTime:       string       read getFormattedTime;
     property formattedVol:        string       read getFormattedVol;
+    property onPlayNew:           TNotifyEvent read FOnPlayNext   write FOnPlayNew;
     property onPlayNext:          TNotifyEvent read FOnPlayNext   write FOnPlayNext;
+    property onPosition:          TPositionNotifyEvent read FOnPosition write FOnPosition;
     property playing:             boolean      read FPlaying      write FPlaying;
     property position:            integer      read getPosition   write setPosition;
     property videoHeight:         int64        read getVideoHeight;
@@ -136,7 +142,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, formTimeline,_debugWindow;
+  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -550,6 +556,9 @@ begin
   SA.postToAll(WM_PROCESS_MESSAGES);
 
   checkPot;
+
+  case assigned(FOnPlayNew) of TRUE: FOnPlayNew(SELF); end;
+
   result := TRUE;
 end;
 
@@ -671,10 +680,7 @@ begin
   case PB.max <> trunc(mpv.totalSeconds) of TRUE: PB.max := trunc(mpv.totalSeconds); end;
   case mpv.totalSeconds > 0 of TRUE: PB.position := trunc(mpv.currentSeconds); end;
 
-  case UI.showingTimeline of TRUE:  begin
-                                      case TL.max <> trunc(mpv.totalSeconds) of TRUE: TL.max := trunc(mpv.totalSeconds); end;
-                                      case mpv.totalSeconds > 0 of TRUE: TL.position := trunc(mpv.currentSeconds); end;
-                                    end;end;
+  case assigned(FOnPosition) of TRUE: FOnPosition(trunc(mpv.totalSeconds), trunc(mpv.currentSeconds)); end;
 end;
 
 function TMediaPlayer.speedDn: string;

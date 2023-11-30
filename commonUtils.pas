@@ -245,7 +245,7 @@ end;
 function TCommonUtils.getScreenHeight: integer;
 begin
   var vRect := screen.WorkAreaRect; // the screen minus the taskbar
-  result := vRect.height;
+  result := vRect.height - UI.timelineHeight;
 end;
 
 function TCommonUtils.getScreenWidth: integer;
@@ -402,6 +402,7 @@ end;
 function TCommonUtils.withinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 begin
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
+  vR.height := vR.height - UI.timelineHeight;
   result := (aWidth <= vR.width) AND (aHeight <= vR.height);
 end;
 

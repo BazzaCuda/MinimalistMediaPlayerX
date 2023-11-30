@@ -326,7 +326,7 @@ begin
     koScreenshot:        begin ST.opInfo := 'Screenshot...'; application.processMessages; ST.opInfo := MP.takeScreenshot; end;
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
     koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
-    koToggleEditMode:    UI.toggleEditMode;
+    koToggleEditMode:    UI.toggleTimeline;
   end;
 
   result := TRUE;

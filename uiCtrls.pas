@@ -43,8 +43,11 @@ type
     function getHeight: integer;
     function getWidth: integer;
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure onMPPlayNew(sender: TObject);
     procedure onMPPlayNext(sender: TObject);
+    procedure onMPPosition(const aMax: integer; const aPosition: integer);
     function getXY: TPoint;
+    function getTimelineHeight: integer;
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -70,10 +73,11 @@ type
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
     function showWindow: boolean;
+    function shutTimeline: boolean;
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
     function toggleCaptions(shift: TShiftState): boolean;
-    function toggleEditMode: boolean;
+    function toggleTimeline: boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
@@ -82,6 +86,7 @@ type
     property height: integer read getHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property showingTimeline: boolean read FShowingTimeline;
+    property timelineHeight: integer read getTimelineHeight;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth;
@@ -255,9 +260,19 @@ begin
   case screen <> NIL of TRUE: screen.cursor := crDefault; end;
 end;
 
+procedure TUI.onMPPlayNew(sender: TObject);
+begin
+  case FShowingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
+end;
+
 procedure TUI.onMPPlayNext(sender: TObject);
 begin
   movePlaylistWindow(FALSE);
+end;
+
+procedure TUI.onMPPosition(const aMax, aPosition: integer);
+begin
+  case FShowingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
 end;
 
 function TUI.createVideoPanel(const aForm: TForm): boolean;
@@ -324,6 +339,12 @@ end;
 function TUI.getHeight: integer;
 begin
   result := FMainForm.height;
+end;
+
+function TUI.getTimelineHeight: integer;
+begin
+  case showingTimeline of  TRUE: result := TL.timelineHeight + 10;
+                          FALSE: result := 0; end;
 end;
 
 function TUI.getWidth: integer;
@@ -402,7 +423,9 @@ begin
   FAutoCentre         := TRUE;
   aForm.width         := 800;
   aForm.height        := 300;
+  MP.onPlayNew        := onMPPlayNew;
   MP.onPlayNext       := onMPPlayNext;
+  MP.onPosition       := onMPPosition;
 end;
 
 function TUI.keepFile(const aFilePath: string): boolean;
@@ -526,6 +549,12 @@ begin
   FMainForm.visible := TRUE;                            // still needed in addition to the previous in order to get a mouse cursor!
 end;
 
+function TUI.shutTimeline: boolean;
+begin
+  FShowingTimeline := FALSE;
+  formTimeline.shutTimeline;
+end;
+
 function TUI.toggleBlackout: boolean;
 begin
   PB.showProgressBar := NOT PB.showProgressBar;
@@ -559,11 +588,13 @@ begin
                                             FALSE: ST.showData := FALSE; end;
 end;
 
-function TUI.toggleEditMode: boolean;
+function TUI.toggleTimeline: boolean;
 begin
   FShowingTimeline := NOT FShowingTimeline;
   case FShowingTimeline of  TRUE: moveTimelineWindow;
                            FALSE: shutTimeline; end;
+
+  case FShowingTimeline of TRUE: begin smallerWindow(handle); TL.initTimeline(PL.currentItem, MP.duration); end;end;
 end;
 
 function TUI.toggleHelpWindow: boolean;

@@ -118,7 +118,7 @@ begin
   case msgIs(WM_KEYUP) of TRUE: begin
                                   case GV.userInput  of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-                                  case UI.showingTimeline and TL.keyHandled(msg.WParam) of TRUE: EXIT; end;
+                                  case UI.showingTimeline and TL.keyHandled(msg.WParam) of TRUE: EXIT; end; // Timeline keystrokes take precedence
                                   key         := msg.WParam;
                                   handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
 
