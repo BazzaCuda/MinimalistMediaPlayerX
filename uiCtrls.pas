@@ -601,7 +601,6 @@ begin
   case FShowingTimeline of  TRUE: moveTimelineWindow;
                            FALSE: shutTimeline; end;
 
-  case FShowingTimeline of TRUE: debug('calling initTimeline'); end;
   case FShowingTimeline of TRUE: begin smallerWindow(handle); TL.initTimeline(PL.currentItem, MP.duration); end;end;
 end;
 

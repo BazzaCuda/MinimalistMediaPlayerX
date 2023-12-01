@@ -85,6 +85,7 @@ type
     function saveSegments: string;
     function segmentAtCursor: TSegment;
     function exportFail(aProgressForm: TProgressForm): boolean;
+    function getSegments: TObjectList<TSegment>;
   public
     function clear: boolean;
     function delSegment(const aSegment: TSegment): boolean;
@@ -96,6 +97,7 @@ type
     property position: integer read getPosition write setPosition;
     function redo: boolean;
     property segCount: integer read getSegCount;
+    property segments: TObjectList<TSegment> read getSegments;
     property timelineHeight: integer read getTimelineHeight;
   end;
 
@@ -163,6 +165,8 @@ function showTimeline(const Pt: TPoint;  const aWidth: integer; const createNew:
 begin
   case (timelineForm = NIL) and createNew of TRUE: timelineForm := TTimelineForm.create(NIL); end;
   case timelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
+
+  TSegment.parentForm := timelineForm;
 
   timelineForm.width  := aWidth;
   timelineForm.height := 54;
@@ -251,7 +255,7 @@ begin
   case key = ord('P') of TRUE: TL.processSegments; end;
 
   var vAction := TL.saveSegments;
-  applySegments(TSegment.segments);
+  applySegments(TL.segments);
 
   case vSaveUndo AND (vAction <> FPrevAction) of TRUE:  begin
                                                           TL.addUndo(vAction);
@@ -302,14 +306,14 @@ end;
 function TTimeline.createInPoint(const aPosition: integer): boolean;
 begin
   case segCount = 1 of FALSE: EXIT; end;
-  cutSegment(TSegment.segments[0], aPosition, TRUE);
+  cutSegment(segments[0], aPosition, TRUE);
 end;
 
 function TTimeline.createOutPoint(const aPosition: integer): boolean;
 begin
   case segCount = 0 of  TRUE: EXIT; end;
-  case segCount = 1 of  TRUE: cutSegment(TSegment.segments[0], aPosition, FALSE, TRUE);
-                       FALSE: case segCount = 2 of TRUE: cutSegment(TSegment.segments[1], aPosition, FALSE, TRUE); end;end;
+  case segCount = 1 of  TRUE: cutSegment(segments[0], aPosition, FALSE, TRUE);
+                       FALSE: case segCount = 2 of TRUE: cutSegment(segments[1], aPosition, FALSE, TRUE); end;end;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
@@ -318,7 +322,7 @@ begin
 
   var newStartSS := aPosition;
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS, timelineForm);
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
   aSegment.EndSS := newStartSS - 1;
 
   case newSegment.endSS <= newSegment.startSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newSegment.startSS, newSegment.endSS]); end;
@@ -327,8 +331,8 @@ begin
   case deleteLeft  of TRUE: delSegment(aSegment); end;
   case deleteRight of TRUE: delSegment(newSegment); end;
 
-  case aSegment.isLast of  TRUE: TSegment.segments.add(newSegment);
-                          FALSE: TSegment.segments.insert(aSegment.ix + 1, newSegment); end;
+  case aSegment.isLast of  TRUE: segments.add(newSegment);
+                          FALSE: segments.insert(aSegment.ix + 1, newSegment); end;
 end;
 
 function TTimeline.delSegment(const aSegment: TSegment): boolean;
@@ -350,7 +354,7 @@ function TTimeline.drawSegments: boolean;
 begin
   case FMax = 0 of TRUE: EXIT; end;
   var n := 1;
-  for var vSegment in TSegment.segments do begin
+  for var vSegment in segments do begin
     vSegment.top     := 0;
     vSegment.height  := timelineForm.height;
     vSegment.left    := trunc((vSegment.startSS / FMax) * timelineForm.width);
@@ -395,7 +399,7 @@ end;
 
 function TTimeline.freeSegments: boolean;
 begin
-  TSegment.segments.clear;
+  segments.clear;
 end;
 
 function TTimeline.getMax: integer;
@@ -410,7 +414,12 @@ end;
 
 function TTimeline.getSegCount: integer;
 begin
-  result := TSegment.segments.count;
+  result := segments.count;
+end;
+
+function TTimeline.getSegments: TObjectList<TSegment>;
+begin
+  result := TSegment.segments;
 end;
 
 function TTimeline.getTimelineHeight: integer;
@@ -421,7 +430,7 @@ end;
 function TTimeline.defaultSegment: string;
 begin
   freeSegments;
-  TSegment.segments.add(TSegment.create(0, FMax, timelineForm));
+  segments.add(TSegment.create(0, FMax));
   result := addUndo(format('0-%d,0', [FMax]));
 end;
 
@@ -435,7 +444,6 @@ end;
 
 function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
 begin
-  debugMethodEnter('initTimeLine');
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   freeSegments;
   FMediaFilePath := aMediaFilePath;
@@ -443,8 +451,7 @@ begin
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
                                   FALSE: result := defaultSegment; end;
   drawSegments;
-  applySegments(TSegment.segments);
-  debugMethodExit('initTimeLine');
+  applySegments(segments);
 end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
@@ -475,7 +482,7 @@ begin
       posComma  := pos(',', vSL[i]);
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
-      TSegment.segments.add(TSegment.create(vStartSS, vEndss, timelineForm, vDeleted));
+      segments.add(TSegment.create(vStartSS, vEndss, vDeleted));
       result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
   finally
@@ -502,9 +509,9 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix := aSegment.ix;
-  aSegment.startSS := TSegment.segments[ix - 1].startSS;
-  TSegment.segments[ix - 1].color := aSegment.color;
-  TSegment.segments.delete(ix - 1);
+  aSegment.startSS := segments[ix - 1].startSS;
+  segments[ix - 1].color := aSegment.color;
+  segments.delete(ix - 1);
 end;
 
 function TTimeline.mergeRight(const aSegment: TSegment): boolean;
@@ -512,9 +519,9 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
   var ix := aSegment.ix;
-  aSegment.endSS := TSegment.segments[ix + 1].endSS;
-  TSegment.segments[ix + 1].color := aSegment.color;
-  TSegment.segments.delete(ix + 1);
+  aSegment.endSS := segments[ix + 1].endSS;
+  segments[ix + 1].color := aSegment.color;
+  segments.delete(ix + 1);
 end;
 
 function TTimeline.processSegments: boolean;
@@ -528,15 +535,15 @@ begin
   try
     vProgressForm.show;
     var vS := '';
-    case TSegment.segments.count > 1 of  TRUE: vS := 's'; end;
-    vProgressForm.heading.caption := format('Exporting %d segment%s', [TSegment.segments.count, vS]);
+    case segments.count > 1 of  TRUE: vS := 's'; end;
+    vProgressForm.heading.caption := format('Exporting %d segment%s', [segments.count, vS]);
 
   case ctrlKeyDown of FALSE: begin
   var vSL := TStringList.create;
   try
     vSL.saveToFile(changeFileExt(FMediaFilePath, '.seg'));
     var n := 1;
-    for var vSegment in TSegment.segments do begin
+    for var vSegment in segments do begin
       case vSegment.deleted of TRUE: CONTINUE; end;
 
       cmdLine := '-hide_banner';
@@ -603,7 +610,7 @@ begin
 
   var vSL := TStringList.create;
   try
-    for var vSegment in TSegment.segments do
+    for var vSegment in segments do
       vSL.add(format('%d-%d,%d', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted)]));
 
     vSL.saveToFile(filePathMMP);
@@ -612,13 +619,13 @@ begin
     vSL.free;
   end;
 
-  case (TL.segCount = 1) AND (TSegment.segments[0].startSS = 0) AND (TSegment.segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+  case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
 function TTimeline.segmentAtCursor: TSegment;
 begin
   result := NIL;
-  for var vSegment in TSegment.segments do
+  for var vSegment in segments do
     case (vSegment.left <= timelineForm.cursorPos) and (vSegment.left + vSegment.width >= timelineForm.cursorPos) of TRUE: result := vSegment; end;
 end;
 

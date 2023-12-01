@@ -46,6 +46,7 @@ type
     function  getIsLast: boolean;
     function  getIsFirst: boolean;
 
+    class var FParent: TWinControl;
     class var FSelSeg: TSegment;
     class var FSegments: TObjectList<TSegment>;
     class destructor freeSegments;
@@ -55,7 +56,7 @@ type
     procedure doClick(Sender: TObject);
     procedure paint; override;
   public
-    constructor create(const aStartSS: integer; const aEndSS: integer; const aParent: TForm; const aDeleted: boolean = FALSE);
+    constructor create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
     function delete: boolean;
     procedure setDisplayDetails;
     property deleted:   boolean read FDeleted  write FDeleted;
@@ -71,6 +72,7 @@ type
     property trashCan:  TImage  read FTrashCan;
 
     class function clearFocus: boolean; static;
+    class property parentForm: TWinControl write FParent;
     class property segments: TObjectList<TSegment> read getSegments;
     class property selSeg: TSegment read FSelSeg write FSelSeg;
   end;
@@ -121,10 +123,10 @@ begin
   color      := NEARLY_BLACK;
 end;
 
-constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aParent: TForm; const aDeleted: boolean = FALSE);
+constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
 begin
   inherited create(NIL);
-  parent            := aParent;
+  parent            := FParent;
   height            := 54;
   font.color        := clSilver;
   font.size         := 10;
