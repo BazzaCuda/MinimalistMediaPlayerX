@@ -63,7 +63,10 @@ uses
   mediaType in 'mediaType.pas',
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
   sendAll in 'sendAll.pas',
-  formTimeline in 'formTimeline.pas' {TimelineForm};
+  formTimeline in 'formTimeline.pas' {TimelineForm},
+  formStreamList in 'formStreamList.pas' {StreamListForm},
+  formProgress in 'formProgress.pas' {ProgressForm},
+  TSegmentClass in 'TSegmentClass.pas';
 
 {$R *.res}
 

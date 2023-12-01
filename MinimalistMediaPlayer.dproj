@@ -111,7 +111,7 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\MoviesToGo\Kingsman The Secret Service (2014).mkv&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\MoviesToGo\The Lady In The Van (2015).mkv&quot;</Debugger_RunParams>
         <VerInfo_Release>16</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -136,7 +136,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Movies\test\Stephen Fry reads the Shipping Forecast - Copy.m4a&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\MoviesToGo\The Lady In The Van (2015).mkv&quot;</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -196,6 +196,15 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>TimelineForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="formStreamList.pas">
+            <Form>StreamListForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="formProgress.pas">
+            <Form>ProgressForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="TSegmentClass.pas"/>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

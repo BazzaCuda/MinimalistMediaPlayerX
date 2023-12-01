@@ -1,5 +1,5 @@
 {   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayer
 
     This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
 {   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayer
 
     This program is free software; you can redistribute it and/or modify

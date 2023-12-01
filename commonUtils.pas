@@ -1,5 +1,5 @@
 {   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayer
 
     This program is free software; you can redistribute it and/or modify
@@ -21,13 +21,14 @@ unit commonUtils;
 interface
 
 uses
-  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls, mediaPlayer;
+  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls, vcl.extCtrls, mediaPlayer;
 
 type
   TCommonUtils = class(TObject)
   private
   public
     function brighter: boolean;
+    procedure copyPNGImage(SourceImage, DestImage: TImage);
     function darker: boolean;
     function delay(const dwMilliseconds: DWORD): boolean;
     function deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
@@ -93,6 +94,20 @@ begin
   CF.value['timeCaption'] := intToStr(ST.darker);
   CF.value['progressBar'] := intToStr(PB.darker);
 end;
+
+procedure TCommonUtils.copyPNGImage(SourceImage, DestImage: TImage);
+begin
+  // Check if the source image has a picture to copy
+  if Assigned(SourceImage.Picture) and Assigned(SourceImage.Picture.Graphic) then
+  begin
+    // Clear the destination image
+    DestImage.Picture := nil;
+
+    // Assign the graphic content from the source to the destination
+    DestImage.Picture.Assign(SourceImage.Picture.Graphic);
+  end;
+end;
+
 
 function TCommonUtils.delay(const dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required

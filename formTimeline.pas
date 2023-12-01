@@ -1,5 +1,5 @@
 {   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayer
 
     This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage;
+  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage, formProgress;
 
 type
   TTimelineForm = class(TForm)
@@ -63,16 +63,23 @@ type
     function  getDuration: integer;
     procedure setSegID(const Value: string);
     function  getSegID: string;
-    procedure setDisplayDetails;
     procedure setSelected(const Value: boolean);
     function  getIx: integer;
     function  getIsLast: boolean;
     function  getIsFirst: boolean;
+
+    class var FSelSeg: TSegment;
+    class var FSegments: TObjectList<TSegment>;
+    class destructor freeSegments;
+    class function getSegments: TObjectList<TSegment>; static;
+
   protected
     procedure doClick(Sender: TObject);
     procedure paint; override;
   public
-    constructor create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
+    constructor create(const aStartSS: integer; const aEndSS: integer; const aParent: TForm; const aDeleted: boolean = FALSE);
+    function delete: boolean;
+    procedure setDisplayDetails;
     property deleted:   boolean read FDeleted  write FDeleted;
     property duration:  integer read getDuration;
     property endSS:     integer read FEndSS    write FEndSS;
@@ -84,6 +91,10 @@ type
     property selected:  boolean read FSelected write setSelected;
     property startSS:   integer read FStartSS  write FStartSS;
     property trashCan:  TImage  read FTrashCan;
+
+    class function clearFocus: boolean; static;
+    class property segments: TObjectList<TSegment> read getSegments;
+    class property selSeg: TSegment read FSelSeg write FSelSeg;
   end;
 
   TTimeline = class(TObject)
@@ -91,8 +102,6 @@ type
     FMax: integer;
     FMediaFilePath: string;
     FPosition: integer;
-    FSegments: TObjectList<TSegment>;
-    FSelSeg: TSegment;
     FUndoList: TObjectStack<TStringList>;
     FRedoList: TObjectStack<TStringList>;
     function getMax: integer;
@@ -103,13 +112,11 @@ type
   private
     constructor create;
     destructor  destroy; override;
-    function addUndo(aText: string): boolean;
-    function clearFocus: boolean;
+    function addUndo(aText: string): string;
     function createInPoint(const aPosition: integer): boolean;
     function createOutPoint(const aPosition: integer): boolean;
     function cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
-    function defaultSegment: boolean;
-    function delSegment(const aSegment: TSegment): boolean;
+    function defaultSegment: string;
     function drawSegments: boolean;
     function filePathLOG: string;
     function filePathMMP: string;
@@ -125,18 +132,18 @@ type
     function restoreSegment(const aSegment: TSegment): boolean;
     function saveSegments: string;
     function segmentAtCursor: TSegment;
+    function exportFail(aProgressForm: TProgressForm): boolean;
   public
     function clear: boolean;
+    function delSegment(const aSegment: TSegment): boolean;
     function keyHandled(key: WORD): boolean;
-    function initTimeline(aMediaFilePath: string; aMax: integer): boolean;
+    function initTimeline(aMediaFilePath: string; aMax: integer): string;
     function undo(const aPrevAction: string): boolean;
     property max: integer read getMax write setMax;
     property mediaFilePath: string read FMediaFilePath;
     property position: integer read getPosition write setPosition;
     function redo: boolean;
     property segCount: integer read getSegCount;
-    property segments: TObjectList<TSegment> read FSegments;
-    property selSeg:   TSegment read FSelSeg write FSelSeg;
     property timelineHeight: integer read getTimelineHeight;
   end;
 
@@ -145,13 +152,14 @@ function showTimeline(const Pt: TPoint; const aWidth: integer; const createNew: 
 function shutTimeline: boolean;
 function TL: TTimeline;
 
+const
+  NEARLY_BLACK = clBlack + $101010;
+
+
 implementation
 
 uses
-  progressBar, dialogs, playlist, shellAPI, commonUtils, _debugWindow;
-
-const
-  NEARLY_BLACK = clBlack + $101010;
+  progressBar, dialogs, playlist, shellAPI, commonUtils, formStreamList, _debugWindow;
 
 var
   timelineForm: TTimelineForm;
@@ -213,6 +221,8 @@ begin
 
   timelineForm.show;
   winAPI.Windows.setWindowPos(timelineForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+
+  showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, createNew);
 end;
 
 function shutTimeline: boolean;
@@ -302,17 +312,18 @@ procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftS
 begin
   var vSaveUndo := TL.keyHandled(key);
   case key = ord('C') of TRUE: begin TL.cutSegment(TL.segmentAtCursor, TL.position);  TL.drawSegments; end;end;
-  case key = ord('R') of TRUE: begin TL.restoreSegment(TL.selSeg);                    TL.drawSegments; end;end;
-  case key = ord('X') of TRUE: begin TL.delSegment(TL.selSeg);                        TL.drawSegments; end;end;
+  case key = ord('R') of TRUE: begin TL.restoreSegment(TSegment.selSeg);              TL.drawSegments; end;end;
+  case key = ord('X') of TRUE: begin TL.delSegment(TSegment.selSeg);                  TL.drawSegments; end;end;
   case key = ord('I') of TRUE: begin TL.createInPoint(TL.Position);                   TL.drawSegments; end;end;
   case key = ord('O') of TRUE: begin TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
-  case key = ord('M') of TRUE: begin TL.mergeRight(TL.selSeg);                        TL.drawSegments; end;end;
-  case key = ord('N') of TRUE: begin TL.mergeLeft(TL.selSeg);                         TL.drawSegments; end;end;
+  case key = ord('M') of TRUE: begin TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
+  case key = ord('N') of TRUE: begin TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
   case key = ord('Z') of TRUE: begin TL.undo(FPrevAction);     vSaveUndo := FALSE;    TL.drawSegments; end;end;
   case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end;
   case key = ord('P') of TRUE: TL.processSegments; end;
 
   var vAction := TL.saveSegments;
+  applySegments(TSegment.segments);
 
   case vSaveUndo AND (vAction <> FPrevAction) of TRUE:  begin
                                                           TL.addUndo(vAction);
@@ -334,11 +345,12 @@ end;
 
 { TTimeline }
 
-function TTimeline.addUndo(aText: string): boolean;
+function TTimeline.addUndo(aText: string): string;
 begin
   var vSL := TStringList.create;
   vSL.text := aText;
   FUndoList.push(vSL);
+  result := aText;
 
   debug('');
   debug('undo added');
@@ -350,19 +362,11 @@ begin
   freeSegments;
 end;
 
-function TTimeline.clearFocus: boolean;
-begin
-  for var vSegment in FSegments do vSegment.selected := FALSE;
-  FSelSeg := NIL;
-end;
-
 constructor TTimeline.create;
 begin
   inherited;
-  FSegments             := TObjectList<TSegment>.create;
   FUndoList             := TObjectStack<TStringList>.create;
   FRedoList             := TObjectStack<TStringList>.create;
-  FSegments.ownsObjects := TRUE;
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
 end;
@@ -370,14 +374,14 @@ end;
 function TTimeline.createInPoint(const aPosition: integer): boolean;
 begin
   case segCount = 1 of FALSE: EXIT; end;
-  cutSegment(FSegments[0], aPosition, TRUE);
+  cutSegment(TSegment.segments[0], aPosition, TRUE);
 end;
 
 function TTimeline.createOutPoint(const aPosition: integer): boolean;
 begin
   case segCount = 0 of  TRUE: EXIT; end;
-  case segCount = 1 of  TRUE: cutSegment(FSegments[0], aPosition, FALSE, TRUE);
-                       FALSE: case segCount = 2 of TRUE: cutSegment(FSegments[1], aPosition, FALSE, TRUE); end;end;
+  case segCount = 1 of  TRUE: cutSegment(TSegment.segments[0], aPosition, FALSE, TRUE);
+                       FALSE: case segCount = 2 of TRUE: cutSegment(TSegment.segments[1], aPosition, FALSE, TRUE); end;end;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
@@ -386,31 +390,29 @@ begin
 
   var newStartSS := aPosition;
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS, timelineForm);
   aSegment.EndSS := newStartSS - 1;
 
+  case newSegment.endSS <= newSegment.startSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newSegment.startSS, newSegment.endSS]); end;
 
-  case newSegment.endSS <= newSegment.startSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.getSegID, newSegment.startSS, newSegment.endSS]); end;
-
+  case ctrlKeyDown of TRUE: delSegment(aSegment); end;
   case deleteLeft  of TRUE: delSegment(aSegment); end;
   case deleteRight of TRUE: delSegment(newSegment); end;
 
-  case aSegment.isLast of  TRUE: FSegments.add(newSegment);
-                          FALSE: FSegments.insert(aSegment.ix + 1, newSegment); end;
+  case aSegment.isLast of  TRUE: TSegment.segments.add(newSegment);
+                          FALSE: TSegment.segments.insert(aSegment.ix + 1, newSegment); end;
 end;
 
 function TTimeline.delSegment(const aSegment: TSegment): boolean;
 begin
   case aSegment = NIL of TRUE: EXIT; end;
-  aSegment.deleted    := TRUE;
-  case aSegment.color  = NEARLY_BLACK of FALSE: aSegment.oldColor := aSegment.color; end; // in case user tries to delete an already-deleted segment
-  aSegment.color      := NEARLY_BLACK;
+  result := aSegment.delete;
 end;
+
 
 destructor TTimeline.destroy;
 begin
   freeSegments;
-  FSegments.free;
   FUndoList.free;
   FRedoList.free;
   inherited;
@@ -418,9 +420,9 @@ end;
 
 function TTimeline.drawSegments: boolean;
 begin
-  case FMax = 0 of TRUE: begin {showMessage('drawSegments zero max');} EXIT; end;end;
+  case FMax = 0 of TRUE: EXIT; end;
   var n := 1;
-  for var vSegment in FSegments do begin
+  for var vSegment in TSegment.segments do begin
     vSegment.top     := 0;
     vSegment.height  := timelineForm.height;
     vSegment.left    := trunc((vSegment.startSS / FMax) * timelineForm.width);
@@ -429,6 +431,8 @@ begin
     vSegment.segID   := intToStr(n);
     vSegment.setDisplayDetails;
     vSegment.StyleElements := [];
+    CU.copyPNGImage(timelineForm.imgTrashCan, vSegment.trashCan);
+
     VSegment.trashCan.visible := vSegment.deleted;
     case vSegment.deleted of TRUE: begin
                                       vSegment.trashCan.left := (vSegment.width  div 2) - (vSegment.trashCan.width  div 2);
@@ -463,7 +467,7 @@ end;
 
 function TTimeline.freeSegments: boolean;
 begin
-  FSegments.clear;
+  TSegment.segments.clear;
 end;
 
 function TTimeline.getMax: integer;
@@ -478,7 +482,7 @@ end;
 
 function TTimeline.getSegCount: integer;
 begin
-  result := FSegments.count;
+  result := TSegment.segments.count;
 end;
 
 function TTimeline.getTimelineHeight: integer;
@@ -486,22 +490,33 @@ begin
   result := timelineForm.height;
 end;
 
-function TTimeline.defaultSegment: boolean;
+function TTimeline.defaultSegment: string;
 begin
   freeSegments;
-  FSegments.add(TSegment.create(0, FMax));
-  addUndo(format('0-%d,0', [FMax]));
-  drawSegments;
+  TSegment.segments.add(TSegment.create(0, FMax, timelineForm));
+  result := addUndo(format('0-%d,0', [FMax]));
 end;
 
-function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): boolean;
+function TTimeLine.exportFail(aProgressForm: TProgressForm): boolean;
 begin
+  aProgressForm.label1.caption := 'Export failed';
+  aProgressForm.OKButton.visible := TRUE;
+  aProgressForm.hide;
+  aProgressForm.showModal;
+end;
+
+function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
+begin
+  debugMethodEnter('initTimeLine');
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   freeSegments;
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
-                                  FALSE: defaultSegment; end;
+  case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
+                                  FALSE: result := defaultSegment; end;
+  drawSegments;
+  applySegments(TSegment.segments);
+  debugMethodExit('initTimeLine');
 end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
@@ -532,14 +547,13 @@ begin
       posComma  := pos(',', vSL[i]);
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
-      FSegments.add(TSegment.create(vStartSS, vEndss, vDeleted));
+      TSegment.segments.add(TSegment.create(vStartSS, vEndss, timelineForm, vDeleted));
       result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
   finally
     vSL.free;
   end;
-  drawSegments;
-  case aStringList = NIL of TRUE: debugClear; end;
+  case aStringList = NIL of TRUE: debugClear; end; // currently only need to see what undo and redo are doing.
 end;
 
 function TTimeline.log(aLogEntry: string): boolean;
@@ -560,9 +574,9 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix := aSegment.ix;
-  aSegment.startSS := FSegments[ix - 1].startSS;
-  FSegments[ix - 1].color := aSegment.color;
-  FSegments.delete(ix - 1);
+  aSegment.startSS := TSegment.segments[ix - 1].startSS;
+  TSegment.segments[ix - 1].color := aSegment.color;
+  TSegment.segments.delete(ix - 1);
 end;
 
 function TTimeline.mergeRight(const aSegment: TSegment): boolean;
@@ -570,23 +584,31 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
   var ix := aSegment.ix;
-  aSegment.endSS := FSegments[ix + 1].endSS;
-  FSegments[ix + 1].color := aSegment.color;
-  FSegments.delete(ix + 1);
+  aSegment.endSS := TSegment.segments[ix + 1].endSS;
+  TSegment.segments[ix + 1].color := aSegment.color;
+  TSegment.segments.delete(ix + 1);
 end;
 
 function TTimeline.processSegments: boolean;
-var cmdLine: string;
 const
   STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
-
+var
+  cmdLine: string;
 begin
+  result := TRUE;
+  var vProgressForm := TProgressForm.create(NIL);
+  try
+    vProgressForm.show;
+    var vS := '';
+    case TSegment.segments.count > 1 of  TRUE: vS := 's'; end;
+    vProgressForm.heading.caption := format('Exporting %d segment%s', [TSegment.segments.count, vS]);
+
   case ctrlKeyDown of FALSE: begin
   var vSL := TStringList.create;
   try
     vSL.saveToFile(changeFileExt(FMediaFilePath, '.seg'));
     var n := 1;
-    for var vSegment in FSegments do begin
+    for var vSegment in TSegment.segments do begin
       case vSegment.deleted of TRUE: CONTINUE; end;
 
       cmdLine := '-hide_banner';
@@ -597,14 +619,20 @@ begin
       var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + format(' seg%.2d', [n]) + extractFileExt(FMediaFilePath);
       cmdLine := cmdLine + ' -y "' + segFile + '"';
       log(cmdLine);
+      vProgressForm.label1.caption := extractFileName(segFile);
 
-      case execAndWait(cmdLine) of TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + ''''); end;
+      case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
+                                   FALSE: result := FALSE; end;
       inc(n);
     end;
     vSL.saveToFile(filePathSEG);
   finally
     vSL.free;
   end;end;end;
+
+  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+
+  vProgressForm.label1.caption := 'Concatenating segments';
 
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
   cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1? -c:1 copy -disposition:1 default -map 0:2? -c:2 copy -disposition:2 default';
@@ -613,6 +641,11 @@ begin
   log(cmdLine);
 
   result := execAndWait(cmdLine);
+  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+
+  finally
+    vProgressForm.free;
+  end;
 end;
 
 function TTimeline.redo: boolean;
@@ -622,6 +655,7 @@ begin
 
   var vSL1 := FRedoList.peek;
   case vSL1 <> NIL of TRUE: begin loadSegments(vSL1);
+                                  drawSegments;
                                   var vSL2 := TStringList.create;
                                   vSL2.text := vSL1.text;
                                   FUndoList.push(VSL2); end;end;
@@ -641,7 +675,7 @@ begin
 
   var vSL := TStringList.create;
   try
-    for var vSegment in FSegments do
+    for var vSegment in TSegment.segments do
       vSL.add(format('%d-%d,%d', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted)]));
 
     vSL.saveToFile(filePathMMP);
@@ -650,13 +684,13 @@ begin
     vSL.free;
   end;
 
-  case (TL.segCount = 1) AND (TL.segments[0].startSS = 0) AND (TL.segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+  case (TL.segCount = 1) AND (TSegment.segments[0].startSS = 0) AND (TSegment.segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
 function TTimeline.segmentAtCursor: TSegment;
 begin
   result := NIL;
-  for var vSegment in FSegments do
+  for var vSegment in TSegment.segments do
     case (vSegment.left <= timelineForm.cursorPos) and (vSegment.left + vSegment.width >= timelineForm.cursorPos) of TRUE: result := vSegment; end;
 end;
 
@@ -682,13 +716,14 @@ begin
   case (vSL1 <> NIL) and (vSL1.text = aPrevAction) of TRUE: begin
                                                               var vSL2 := TStringList.create;
                                                               vSL2.text := vSL1.text;
-                                                              FUndoList.pop;
                                                               FRedoList.push(vSL2);
+                                                              FUndoList.pop;
                                                               case FUndoList.count = 0 of TRUE: EXIT; end;end;end;
 
   var vSL3 := FUndoList.peek;
   case vSL3 <> NIL of TRUE:  begin
                               loadSegments(vSL3);
+                              drawSegments;
                               var vSL4 := TStringList.create;
                               vSL4.text := vSL3.text;
                               FRedoList.push(vSL4); end;end;
@@ -697,31 +732,32 @@ end;
 
 { TSegment }
 
-procedure CopyPNGImage(SourceImage, DestImage: TImage);
-begin
-  // Check if the source image has a picture to copy
-  if Assigned(SourceImage.Picture) and Assigned(SourceImage.Picture.Graphic) then
-  begin
-    // Clear the destination image
-    DestImage.Picture := nil;
-
-    // Assign the graphic content from the source to the destination
-    DestImage.Picture.Assign(SourceImage.Picture.Graphic);
-  end;
-end;
-
 procedure TSegment.doClick(Sender: TObject);
 begin
-  TL.clearFocus;
-  TL.selSeg  := SELF;
+  clearFocus;
+  FSelSeg    := SELF;
   selected   := TRUE;
 end;
 
-constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
+class function TSegment.clearFocus: boolean;
+begin
+  for var vSegment in FSegments do vSegment.selected := FALSE;
+  FSelSeg := NIL;
+end;
+
+function TSegment.delete: boolean;
+begin
+  deleted    := TRUE;
+  case color  = NEARLY_BLACK of FALSE: oldColor := color; end; // in case user tries to delete an already-deleted segment
+  color      := NEARLY_BLACK;
+end;
+
+
+constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aParent: TForm; const aDeleted: boolean = FALSE);
 begin
   inherited create(NIL);
-  parent            := timelineForm;
-  height            := timelineForm.height;
+  parent            := aParent;
+  height            := 54;
   font.color        := clSilver;
   font.size         := 10;
   font.style        := [fsBold];
@@ -756,9 +792,8 @@ begin
   FTrashCan.width   := 41;
   FTrashCan.visible := FALSE;
   FTrashCan.onClick := doClick;
-  CopyPNGImage(timelineForm.imgTrashCan, FTrashCan);
 
-  case aDeleted of TRUE: TL.delSegment(SELF); end;
+  case aDeleted of TRUE: SELF.delete; end;
 end;
 
 function TSegment.getDuration: integer;
@@ -768,7 +803,7 @@ end;
 
 function TSegment.getIx: integer;
 begin
-  result := TL.segments.indexOf(SELF);
+  result := FSegments.indexOf(SELF);
 end;
 
 function TSegment.getIsFirst: boolean;
@@ -778,12 +813,20 @@ end;
 
 function TSegment.getIsLast: boolean;
 begin
-  result := ix = TL.segCount - 1;
+  result := ix = FSegments.count - 1;
 end;
 
 function TSegment.getSegID: string;
 begin
   result := FSegID.caption;
+end;
+
+class function TSegment.getSegments: TObjectList<TSegment>;
+begin
+  case FSegments = NIL of TRUE: begin
+                                  FSegments := TObjectList<TSegment>.create;
+                                  FSegments.ownsObjects := TRUE; end;end;
+  result := FSegments;
 end;
 
 procedure TSegment.paint;
@@ -812,6 +855,12 @@ procedure TSegment.setSelected(const Value: boolean);
 begin
   FSelected := Value;
   invalidate;
+end;
+
+class destructor TSegment.freeSegments;
+begin
+  FSegments.clear;
+  freeAndNil(FSegments);
 end;
 
 initialization
