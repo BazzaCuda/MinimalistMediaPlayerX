@@ -448,7 +448,6 @@ end;
 
 function TTimeline.exportSegments: boolean;
 const
-//  STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
   STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
 var
   cmdLine: string;
@@ -483,7 +482,6 @@ begin
       for var vMediaStream in MI.mediaStreams do
         case vMediaStream.selected of TRUE: begin
                                               var vID := strToInt(vMediaStream.ID);
-//                                              vMaps := vMaps + format(' -map 0:%d -c:%d copy', [vID - 1, vID - 1]);
                                               vMaps := vMaps + format(' -map 0:%d ', [vID - 1]);
                                             end;end;
       vMaps := vMaps + ' -c copy';
