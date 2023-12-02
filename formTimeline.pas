@@ -85,6 +85,7 @@ type
     function segmentAtCursor: TSegment;
     function exportFail(aProgressForm: TProgressForm): boolean;
     function getSegments: TObjectList<TSegment>;
+    procedure onCancelButton(sender: TObject);
   protected
     function exportSegments: boolean;
   public
@@ -445,6 +446,82 @@ begin
   aProgressForm.showModal;
 end;
 
+function TTimeline.exportSegments: boolean;
+const
+//  STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+  STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+var
+  cmdLine: string;
+  vMaps:   string;
+begin
+  result     := TRUE;
+  gCancelled := FALSE;
+  var vProgressForm := TProgressForm.create(NIL);
+  vProgressForm.onCancel := onCancelButton;
+
+  // export segments
+  try
+    vProgressForm.show;
+    var vS := '';
+    case segments.count > 1 of  TRUE: vS := 's'; end;
+    vProgressForm.heading.caption := format('Exporting %d streams from %d segment%s', [MI.selectedCount, TSegment.includedCount, vS]);
+
+  case ctrlKeyDown of FALSE: begin
+  var vSL := TStringList.create;
+  try
+    vSL.saveToFile(changeFileExt(FMediaFilePath, '.seg'));
+    var n := 1;
+    for var vSegment in segments do begin
+      case vSegment.deleted of TRUE: CONTINUE; end;
+
+      cmdLine := '-hide_banner';
+      cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
+      cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
+      cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
+
+      vMaps := '';
+      for var vMediaStream in MI.mediaStreams do
+        case vMediaStream.selected of TRUE: begin
+                                              var vID := strToInt(vMediaStream.ID);
+//                                              vMaps := vMaps + format(' -map 0:%d -c:%d copy', [vID - 1, vID - 1]);
+                                              vMaps := vMaps + format(' -map 0:%d ', [vID - 1]);
+                                            end;end;
+      vMaps := vMaps + ' -c copy';
+      cmdLine := cmdLine + vMaps;
+      cmdLine := cmdLine + STD_SEG_PARAMS;
+      var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + format(' seg%.2d', [n]) + extractFileExt(FMediaFilePath);
+      cmdLine := cmdLine + ' -y "' + segFile + '"';
+      log(cmdLine);
+      vProgressForm.label1.caption := extractFileName(segFile);
+
+      case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
+                                   FALSE: result := FALSE; end;
+      inc(n);
+    end;
+    vSL.saveToFile(filePathSEG);
+  finally
+    vSL.free;
+  end;end;end;
+
+  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+
+  // concatenate exported segments
+  vProgressForm.label1.caption := 'Concatenating segments';
+  cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
+  for var i := 0 to MI.selectedCount - 1 do
+    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
+  cmdLine := cmdLine + ' -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown';
+  cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
+  log(cmdLine);
+
+  result := execAndWait(cmdLine);
+  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+
+  finally
+    vProgressForm.free;
+  end;
+end;
+
 function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
@@ -527,78 +604,9 @@ begin
   segments.delete(ix + 1);
 end;
 
-function TTimeline.exportSegments: boolean;
-const
-//  STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
-  STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
-var
-  cmdLine: string;
-  vMaps:   string;
+procedure TTimeline.onCancelButton(sender: TObject);
 begin
-  result := TRUE;
-  var vProgressForm := TProgressForm.create(NIL);
-  try
-    vProgressForm.show;
-    var vS := '';
-    case segments.count > 1 of  TRUE: vS := 's'; end;
-    vProgressForm.heading.caption := format('Exporting %d streams from %d segment%s', [MI.selectedCount, TSegment.includedCount, vS]);
-
-  case ctrlKeyDown of FALSE: begin
-  var vSL := TStringList.create;
-  try
-    vSL.saveToFile(changeFileExt(FMediaFilePath, '.seg'));
-    var n := 1;
-    for var vSegment in segments do begin
-      case vSegment.deleted of TRUE: CONTINUE; end;
-
-      cmdLine := '-hide_banner';
-      cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
-      cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
-      cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
-
-      vMaps := '';
-      for var vMediaStream in MI.mediaStreams do
-        case vMediaStream.selected of TRUE: begin
-                                              var vID := strToInt(vMediaStream.ID);
-//                                              vMaps := vMaps + format(' -map 0:%d -c:%d copy', [vID - 1, vID - 1]);
-                                              vMaps := vMaps + format(' -map 0:%d ', [vID - 1]);
-                                            end;end;
-      vMaps := vMaps + ' -c copy';
-      cmdLine := cmdLine + vMaps;
-      cmdLine := cmdLine + STD_SEG_PARAMS;
-      var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + format(' seg%.2d', [n]) + extractFileExt(FMediaFilePath);
-      cmdLine := cmdLine + ' -y "' + segFile + '"';
-      log(cmdLine);
-      vProgressForm.label1.caption := extractFileName(segFile);
-
-      case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
-                                   FALSE: result := FALSE; end;
-      inc(n);
-    end;
-    vSL.saveToFile(filePathSEG);
-  finally
-    vSL.free;
-  end;end;end;
-
-  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
-
-  vProgressForm.label1.caption := 'Concatenating segments';
-
-  cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
-//  cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1? -c:1 copy -disposition:1 default -map 0:2? -c:2 copy -disposition:2 default';
-//  cmdLine := cmdLine + vMaps;
-  for var i := 0 to MI.selectedCount - 1 do
-    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy', [i, i]);
-  cmdLine := cmdLine + ' -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown';
-  cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
-  log(cmdLine);
-
-  result := execAndWait(cmdLine);
-  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
-
-  finally
-    vProgressForm.free;
-  end;
+  gCancelled := TRUE;
 end;
 
 function TTimeline.redo: boolean;

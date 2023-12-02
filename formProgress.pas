@@ -32,12 +32,15 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     procedure FormCreate(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
   private
+    FOnCancel: TNotifyEvent;
     { Private declarations }
   public
     property heading: TLabel read FHeading;
     property label1: TLabel read FLabel1;
     property OKButton: TButton read btnOK;
+    property onCancel: TNotifyEvent read FOnCancel write FOnCancel;
   end;
 
 var
@@ -46,6 +49,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TProgressForm.btnCancelClick(Sender: TObject);
+begin
+  case assigned(FOnCancel) of TRUE: FOnCancel(SELF); end;
+end;
 
 procedure TProgressForm.FormCreate(Sender: TObject);
 begin

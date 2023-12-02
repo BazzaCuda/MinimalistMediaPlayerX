@@ -62,6 +62,7 @@ object ProgressForm: TProgressForm
       Caption = 'Cancel'
       ModalResult = 1
       TabOrder = 1
+      OnClick = btnCancelClick
     end
   end
 end
