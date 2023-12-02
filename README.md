@@ -167,7 +167,7 @@ Control | Action
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
 **On-Screen Display** | 
-`#`                     | briefly show media caption (the filename and its position in the playlist)
+`#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file
 `Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file
