@@ -94,6 +94,7 @@ Control | Action
 `D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected
 `E`                     | [E]ars - mute/unmute sound
+`Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing (next release)
 `F`                     | show/cancel [F]ullScreen mode
 `G`                     | [G]reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
@@ -246,6 +247,7 @@ Control | Action
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
 `Ctrl-A`                | show [A]bout Box
+`Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing (next release)
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
