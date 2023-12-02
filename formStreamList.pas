@@ -23,7 +23,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, generics.collections, TSegmentClass,
-  formTimeline;
+  formTimeline, System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
 type
   TStreamListForm = class(TForm)
@@ -42,21 +42,31 @@ type
     imgTrashCan: TImage;
     Shape2: TShape;
     lblStream: TLabel;
-    procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure clSegmentsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
-    procedure clStreamsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+    imgIcon: TImage;
+    imageList: TImageList;
+    lblStreamID: TLabel;
+    pnlButtons: TPanel;
+    btnExport: TBitBtn;
+    procedure formCreate(Sender: TObject);
+    procedure formClose(Sender: TObject; var Action: TCloseAction);
+    procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
+    procedure clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
+    procedure clStreamsItemClick(Sender: TObject);
+    procedure btnExportClick(Sender: TObject);
   private
+    FOnExport: TNotifyEvent;
     FSegments: TObjectList<TSegment>;
     function getStreamInfo: boolean;
+    function updateStreamsCaption: boolean;
   protected
     function applySegments(const aSegments: TObjectList<TSegment>): boolean;
-    procedure CreateParams(var Params: TCreateParams);
+    procedure createParams(var Params: TCreateParams);
   public
+    property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
 
 function applySegments(const aSegments: TObjectList<TSegment>): boolean;
-function showStreamList(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
+function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
 function showingStreamList: boolean;
 function shutStreamList: boolean;
 
@@ -69,25 +79,27 @@ var
 
 function showingStreamList: boolean;
 begin
-  result := StreamListForm <> NIL;
+  result := streamListForm <> NIL;
 end;
 
-function showStreamList(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
+function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
 begin
-  case (StreamListForm = NIL) and createNew of TRUE: StreamListForm := TStreamListForm.create(NIL); end;
-  case StreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
+  case (streamListForm = NIL) and createNew of TRUE: streamListForm := TStreamListForm.create(NIL); end;
+  case streamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
 
   screen.cursor := crDefault;
 
-  StreamListForm.show;
+  streamListForm.pageControl.pages[0].show;
+  streamListForm.show;
+  streamListForm.onExport := aExportEvent;
 
-  winAPI.Windows.setWindowPos(StreamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winAPI.Windows.setWindowPos(streamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 end;
 
 function shutStreamList: boolean;
 begin
-  case StreamListForm <> NIL of TRUE: begin StreamListForm.close; StreamListForm.free; StreamListForm := NIL; end;end;
-  StreamListForm := NIL;
+  case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
+  streamListForm := NIL;
 end;
 
 function applySegments(const aSegments: TObjectList<TSegment>): boolean;
@@ -104,9 +116,14 @@ begin
   clSegments.itemCount := aSegments.count;
 end;
 
-procedure TStreamListForm.clSegmentsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+procedure TStreamListForm.btnExportClick(Sender: TObject);
 begin
-  lblSegID.caption        := format('%d', [AIndex + 1]);
+  case assigned(FOnExport) of TRUE: FOnExport(NIL); end;
+end;
+
+procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
+begin
+  lblSegID.caption        := format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS, CU.formatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS)]);
   shape1.brush.color      := FSegments[aIndex].color;
@@ -118,19 +135,35 @@ begin
   imgTrashCan.visible     := FSegments[aIndex].deleted;
 end;
 
-procedure TStreamListForm.clStreamsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
-  lblStream.caption := MI.mediaStreams[aIndex].ID
-                     + ' ' + MI.mediaStreams[aIndex].streamType
-                     + ' ' + MI.mediaStreams[aIndex].codec
+  imgIcon.picture.bitmap:= NIL;
+  case MI.mediaStreams[aIndex].selected of  TRUE: imageList.getBitmap(MI.mediaStreams[aIndex].iconIx, imgIcon.picture.bitmap);
+                                           FALSE: imageList.getBitmap(MI.mediaStreams[aIndex].iconIx + 1, imgIcon.picture.bitmap); end;
+
+  case MI.mediaStreams[aIndex].selected of  TRUE: begin lblStream.font.color := clSilver; lblStream.font.style := [fsBold]; end;
+                                           FALSE: begin lblStream.font.color := clDkGray; lblStream.font.style := [fsItalic]; end;end;
+
+  lblStreamID.caption := MI.mediaStreams[aIndex].ID;
+
+  lblStream.caption :=
+                             // MI.mediaStreams[aIndex].streamType
+                             MI.mediaStreams[aIndex].codec
                      + ' ' + MI.mediaStreams[aIndex].duration
                      + ' ' + MI.mediaStreams[aIndex].bitRate
                      + ' ' + MI.mediaStreams[aIndex].title
                      + ' ' + MI.mediaStreams[aIndex].language
-                     + ' ' + MI.mediaStreams[aIndex].data;
+                     + ' ' + MI.mediaStreams[aIndex].info;
 end;
 
-procedure TStreamListForm.CreateParams(var Params: TCreateParams);
+procedure TStreamListForm.clStreamsItemClick(Sender: TObject);
+begin
+  MI.mediaStreams[clStreams.itemIndex].selected := NOT MI.mediaStreams[clStreams.itemIndex].selected;
+  clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
+  updateStreamsCaption;
+end;
+
+procedure TStreamListForm.createParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
@@ -138,12 +171,12 @@ begin
   Params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
-procedure TStreamListForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TStreamListForm.formClose(Sender: TObject; var Action: TCloseAction);
 begin
-  StreamListForm.free; StreamListForm := NIL;
+  streamListForm.free; streamListForm := NIL;
 end;
 
-procedure TStreamListForm.FormCreate(Sender: TObject);
+procedure TStreamListForm.formCreate(Sender: TObject);
 begin
   clSegments.borderStyle       := bsNone;
   clSegments.styleElements     := []; // don't allow any theme alterations
@@ -155,7 +188,7 @@ begin
   SELF.width  := 556;
   SELF.height := 600;
 
-  SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+  setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := $2B2B2B;
 
   styleElements     := []; // don't allow any theme alterations
@@ -170,20 +203,27 @@ end;
 function TStreamListForm.getStreamInfo: boolean;
 begin
   MI.initMediaInfo;
-  tsStreams.caption := format('Streams %d/%d', [MI.StreamCount, MI.StreamCount]);
+  updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
-  MI.mediaStreams.sort(TComparer<TMediaStream>.Construct(
+  MI.mediaStreams.sort(TComparer<TMediaStream>.construct(
       function (const L, R: TMediaStream): integer
       begin
-         Result := CompareText(L.ID, R.ID)
+         case length(L.ID) = 1 of TRUE: L.ID := '0' + L.ID; end;
+         case length(R.ID) = 1 of TRUE: R.ID := '0' + R.ID; end;
+         result := compareText(L.ID, R.ID)
       end
-));
+      ));
+end;
+
+function TStreamListForm.updateStreamsCaption: boolean;
+begin
+  tsStreams.caption := format('Streams %d/%d', [MI.selectedCount, MI.streamCount]);
 end;
 
 initialization
-  StreamListForm := NIL;
+  streamListForm := NIL;
 
 finalization
-  case StreamListForm <> NIL of TRUE: begin StreamListForm.close; StreamListForm.free; StreamListForm := NIL; end;end;
+  case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
 
 end.

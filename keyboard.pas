@@ -32,7 +32,7 @@ type
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
-            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode);
+            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -127,7 +127,8 @@ begin
   case keyUp and keyIs(F)                                  of TRUE: result := koFullscreen; end;
   case keyUp and keyIs(U)                                  of TRUE: result := koZoomReset; end;
   case keyDn and keyIs(G)                                  of TRUE: result := koGreaterWindow; end;
-  case keyUp and keyIs(A)                                  of TRUE: result := koPlayFirst; end;
+  case keyUp and keyIs(A) and NOT ctrl                     of TRUE: result := koPlayFirst; end;
+  case keyUp and keyIs(A) and ctrl                         of TRUE: result := koAboutBox; end;
   case keyUp and keyIs(VK_HOME)                            of TRUE: result := koPlayFirst; end;
   case keyUp and keyIs(Z)                                  of TRUE: result := koPlayLast; end;
   case keyUp and keyIs(VK_END)                             of TRUE: result := koPlayLast; end;
@@ -327,6 +328,7 @@ begin
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
     koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
     koToggleEditMode:    UI.toggleTimeline;
+    koAboutBox:          UI.showAboutBox;
   end;
 
   result := TRUE;

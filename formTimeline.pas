@@ -45,6 +45,7 @@ type
     procedure setCursorPos(const Value: integer);
   protected
     procedure CreateParams(var Params: TCreateParams);
+    procedure exportSegments(sender: TObject);
   public
     property cursorPos: integer read getCursorPos write setCursorPos;
   end;
@@ -79,12 +80,13 @@ type
     function log(aLogEntry: string): boolean;
     function mergeLeft(const aSegment: TSegment): boolean;
     function mergeRight(const aSegment: TSegment): boolean;
-    function processSegments: boolean;
     function restoreSegment(const aSegment: TSegment): boolean;
     function saveSegments: string;
     function segmentAtCursor: TSegment;
     function exportFail(aProgressForm: TProgressForm): boolean;
     function getSegments: TObjectList<TSegment>;
+  protected
+    function exportSegments: boolean;
   public
     function clear: boolean;
     function delSegment(const aSegment: TSegment): boolean;
@@ -108,11 +110,12 @@ function TL: TTimeline;
 implementation
 
 uses
-  progressBar, dialogs, playlist, shellAPI, commonUtils, formStreamList, _debugWindow;
+  progressBar, dialogs, playlist, shellAPI, commonUtils, formStreamList, mediaInfo, _debugWindow;
 
 var
   timelineForm: TTimelineForm;
   gTL: TTimeline;
+  gCancelled: boolean;
 
 function ctrlKeyDown: boolean;
 begin
@@ -146,7 +149,7 @@ begin
           application.processMessages
         else
           BREAK;
-      until FALSE;
+      until FALSE OR gCancelled;
       getExitCodeProcess(execInfo.hProcess, exitCode);
       result := exitCode = 0;
       CloseHandle(ExecInfo.hProcess);
@@ -173,11 +176,12 @@ begin
   timelineForm.show;
   winAPI.Windows.setWindowPos(timelineForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 
-  showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, createNew);
+  showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, timelineForm.exportSegments, createNew);
 end;
 
 function shutTimeline: boolean;
 begin
+  shutStreamList;
   case gTL          <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case timelineForm <> NIL of TRUE: begin timelineForm.free; timelineForm := NIL; end;end;
 end;
@@ -232,6 +236,11 @@ begin
   pnlCursor.left := value;
 end;
 
+procedure TTimelineForm.exportSegments(sender: TObject);
+begin
+  TL.exportSegments;
+end;
+
 procedure TTimelineForm.FormCreate(Sender: TObject);
 begin
   pnlCursor.height := SELF.height;
@@ -251,7 +260,6 @@ begin
   case key = ord('N') of TRUE: begin TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
   case key = ord('Z') of TRUE: begin TL.undo(FPrevAction);     vSaveUndo := FALSE;    TL.drawSegments; end;end;
   case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end;
-  case key = ord('P') of TRUE: TL.processSegments; end;
 
   var vAction := TL.saveSegments;
   applySegments(TL.segments);
@@ -432,6 +440,7 @@ function TTimeLine.exportFail(aProgressForm: TProgressForm): boolean;
 begin
   aProgressForm.label1.caption := 'Export failed';
   aProgressForm.OKButton.visible := TRUE;
+  aProgressForm.OKButton.bringToFront;
   aProgressForm.hide;
   aProgressForm.showModal;
 end;
@@ -518,11 +527,13 @@ begin
   segments.delete(ix + 1);
 end;
 
-function TTimeline.processSegments: boolean;
+function TTimeline.exportSegments: boolean;
 const
-  STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+//  STD_SEG_PARAMS = ' -map 0:0? -c:0 copy -map 0:1? -c:1 copy -map 0:2? -c:2 copy -map 0:3? -c:3 copy -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+  STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
 var
   cmdLine: string;
+  vMaps:   string;
 begin
   result := TRUE;
   var vProgressForm := TProgressForm.create(NIL);
@@ -530,7 +541,7 @@ begin
     vProgressForm.show;
     var vS := '';
     case segments.count > 1 of  TRUE: vS := 's'; end;
-    vProgressForm.heading.caption := format('Exporting %d segment%s', [segments.count, vS]);
+    vProgressForm.heading.caption := format('Exporting %d streams from %d segment%s', [MI.selectedCount, TSegment.includedCount, vS]);
 
   case ctrlKeyDown of FALSE: begin
   var vSL := TStringList.create;
@@ -544,6 +555,16 @@ begin
       cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
       cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
       cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
+
+      vMaps := '';
+      for var vMediaStream in MI.mediaStreams do
+        case vMediaStream.selected of TRUE: begin
+                                              var vID := strToInt(vMediaStream.ID);
+//                                              vMaps := vMaps + format(' -map 0:%d -c:%d copy', [vID - 1, vID - 1]);
+                                              vMaps := vMaps + format(' -map 0:%d ', [vID - 1]);
+                                            end;end;
+      vMaps := vMaps + ' -c copy';
+      cmdLine := cmdLine + vMaps;
       cmdLine := cmdLine + STD_SEG_PARAMS;
       var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + format(' seg%.2d', [n]) + extractFileExt(FMediaFilePath);
       cmdLine := cmdLine + ' -y "' + segFile + '"';
@@ -564,7 +585,10 @@ begin
   vProgressForm.label1.caption := 'Concatenating segments';
 
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
-  cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1? -c:1 copy -disposition:1 default -map 0:2? -c:2 copy -disposition:2 default';
+//  cmdLine := cmdLine + ' -map 0:0 -c:0 copy -disposition:0 default -map 0:1? -c:1 copy -disposition:1 default -map 0:2? -c:2 copy -disposition:2 default';
+//  cmdLine := cmdLine + vMaps;
+  for var i := 0 to MI.selectedCount - 1 do
+    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy', [i, i]);
   cmdLine := cmdLine + ' -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown';
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
   log(cmdLine);

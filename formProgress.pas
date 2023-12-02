@@ -30,6 +30,7 @@ type
     FLabel1: TLabel;
     FHeading: TLabel;
     btnOK: TButton;
+    btnCancel: TButton;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }

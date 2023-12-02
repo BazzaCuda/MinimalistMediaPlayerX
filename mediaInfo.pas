@@ -30,13 +30,16 @@ type
     FID:          string;
     FBitRate:     string;
     FCodec:       string;
-    FData:        string;
     FDuration:    string;
     FLanguage:    string;
     FStreamType:  string;
     FTitle:       string;
+
+    FIconIx: integer;
+    FInfo:        string;
+    FSelected: boolean;
   protected
-    constructor create(const aID: string; const aStreamType: string; const aCodec: string; const aDuration: string; const aBitRate: string; const aTitle: string; const aLanguage: string; const aData: string);
+    constructor create(const aID: string; const aStreamType: string; const aCodec: string; const aDuration: string; const aBitRate: string; const aTitle: string; const aLanguage: string; const aInfo: string; const aIconIx: integer);
   public
     property ID:          string read FID write FID;
     property streamType:  string read FStreamType write FStreamType;
@@ -45,7 +48,10 @@ type
     property bitRate:     string read FBitRate write FBitRate;
     property title:       string read FTitle write FTitle;
     property language:    string read FLanguage write FLanguage;
-    property data:        string read FData write FData;
+
+    property iconIx:      integer read FIconIx write FIconIx;
+    property info:        string read FInfo write FInfo;
+    property selected:    boolean read FSelected write FSelected;
   end;
 
   TMediaInfo = class(TObject)
@@ -56,10 +62,8 @@ type
     FHeight: integer;
     FStereoMono: string;
     FWidth: integer;
-    FNeedInfo: boolean;
     FOverallFrameRate: string;
     FOverallBitRate: integer;
-    FURL: string;
     FVideoBitRate: integer;
     FAudioCount: integer;
     FVideoCount: integer;
@@ -68,6 +72,9 @@ type
     FOtherCount: integer;
 
     FMediaStreams: TObjectList<TMediaStream>;
+    FNeedInfo: boolean;
+    FURL: string;
+
     function getAudioBitRate: string;
     function getFileSize: string;
     function getOverallFrameRate: string;
@@ -77,6 +84,7 @@ type
     function getStereoMono: string;
     procedure setURL(const Value: string);
     function getStreamCount: integer;
+    function getSelectedCount: integer;
   protected
     constructor create;
     destructor destroy; override;
@@ -101,6 +109,8 @@ type
     property X:                 integer read FWidth;
     property Y:                 integer read FHeight;
     property XY:                string  read getXY;
+
+    property selectedCount:     integer read getSelectedCount;
   end;
 
 function MI: TMediaInfo;
@@ -169,6 +179,12 @@ begin
                                  FALSE: result := format('FR:  %s fps', [FOverallFrameRate]); end;
 end;
 
+function TMediaInfo.getSelectedCount: integer;
+begin
+  result := 0;
+  for var vMediaStream in FMediaStreams do case vMediaStream.selected of TRUE: inc(result); end;
+end;
+
 function TMediaInfo.getStereoMono: string;
 begin
   result := 'SM:  ' + FStereoMono;
@@ -211,7 +227,7 @@ var
     vLanguage   := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Language/String', Info_Text, Info_Name);
     vStreamType := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'StreamKind',      Info_Text, Info_Name);
     vTitle      := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Title',           Info_Text, Info_Name);
-    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData));
+    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData, 0));
   end;
 
   function createAudioStream(aStreamIx: integer): boolean;
@@ -224,7 +240,7 @@ var
     vLanguage   := mediaInfo_Get(handle, Stream_Audio, aStreamIx, 'Language/String', Info_Text, Info_Name);
     vStreamType := mediaInfo_Get(handle, Stream_Audio, aStreamIx, 'StreamKind',      Info_Text, Info_Name);
     vTitle      := mediaInfo_Get(handle, Stream_Audio, aStreamIx, 'Title',           Info_Text, Info_Name);
-    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData));
+    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData, 2));
   end;
 
   function createTextStream(aStreamIx: integer): boolean;
@@ -237,7 +253,7 @@ var
     vLanguage   := mediaInfo_Get(handle, Stream_Text, aStreamIx, 'Language/String', Info_Text, Info_Name);
     vStreamType := mediaInfo_Get(handle, Stream_Text, aStreamIx, 'StreamKind',      Info_Text, Info_Name);
     vTitle      := mediaInfo_Get(handle, Stream_Text, aStreamIx, 'Title',           Info_Text, Info_Name);
-    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData));
+    FMediaStreams.add(TMediaStream.create(vID, vStreamType, vCodec, vDuration, vBitRate, vTitle, vLanguage, vData, 4));
   end;
 
 begin
@@ -248,8 +264,9 @@ begin
   case handle = 0 of TRUE: EXIT; end;
   try
     case aURL <> '' of TRUE: FURL := aURL; end;
-    debugString('FURL', FURL);
     mediaInfo_Open(handle, PWideChar(FURL));
+    FMediaStreams.clear;
+
     FOverallFrameRate := mediaInfo_Get(handle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
@@ -286,7 +303,7 @@ end;
 
 { TMediaStream }
 
-constructor TMediaStream.create(const aID, aStreamType, aCodec, aDuration, aBitRate, aTitle, aLanguage, aData: string);
+constructor TMediaStream.create(const aID, aStreamType, aCodec, aDuration, aBitRate, aTitle, aLanguage, aInfo: string; const aIconIx: integer);
 begin
   FID         := aID;
   FStreamType := aStreamType;
@@ -295,7 +312,10 @@ begin
   FBitRate    := aBitRate;
   FTitle      := aTitle;
   FLanguage   := aLanguage;
-  FData       := aData;
+  FInfo       := aInfo;
+
+  FIconIx     := aIconIx;
+  FSelected   := TRUE;
 end;
 
 initialization

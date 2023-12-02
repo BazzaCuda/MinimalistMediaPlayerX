@@ -23,6 +23,8 @@ object ProgressForm: TProgressForm
     Margins.Bottom = 10
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 323
+    ExplicitHeight = 121
     object FLabel1: TLabel
       Left = 6
       Top = 59
@@ -51,6 +53,15 @@ object ProgressForm: TProgressForm
       Caption = 'OK'
       ModalResult = 1
       TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 128
+      Top = 88
+      Width = 75
+      Height = 25
+      Caption = 'Cancel'
+      ModalResult = 1
+      TabOrder = 1
     end
   end
 end

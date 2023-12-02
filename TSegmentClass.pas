@@ -52,6 +52,7 @@ type
     class var FSegments: TObjectList<TSegment>;
     class destructor freeSegments;
     class function getSegments: TObjectList<TSegment>; static;
+    class function getIncludedCount: integer; static;
 
   protected
     procedure doClick(Sender: TObject);
@@ -73,6 +74,7 @@ type
     property trashCan:  TImage  read FTrashCan;
 
     class function clearFocus: boolean; static;
+    class property includedCount: integer read getIncludedCount;
     class property parentForm: TWinControl write FParent;
     class property segments: TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
     class property selSeg: TSegment read FSelSeg write FSelSeg;
@@ -175,6 +177,13 @@ end;
 function TSegment.getIx: integer;
 begin
   result := FSegments.indexOf(SELF);
+end;
+
+class function TSegment.getIncludedCount: integer;
+begin
+  result := 0;
+  for var vSegment in FSegments do
+    case vSegment.deleted of FALSE: inc(result); end;
 end;
 
 function TSegment.getIsFirst: boolean;
