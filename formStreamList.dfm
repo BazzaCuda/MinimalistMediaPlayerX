@@ -42,14 +42,20 @@ object StreamListForm: TStreamListForm
     ParentBackground = False
     TabOrder = 0
     StyleElements = []
-    object PageControl1: TPageControl
+    object pageControl: TPageControl
       AlignWithMargins = True
       Left = 3
       Top = 3
       Width = 550
       Height = 579
-      ActivePage = tsSegments
+      ActivePage = tsStreams
       Align = alClient
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
       TabHeight = 24
       TabOrder = 0
       TabWidth = 200
@@ -2157,6 +2163,34 @@ object StreamListForm: TStreamListForm
           ItemMargins.Bottom = 0
           ParentColor = False
           TabOrder = 0
+          OnBeforeDrawItem = clStreamsBeforeDrawItem
+          object Shape2: TShape
+            Left = 0
+            Top = 0
+            Width = 538
+            Height = 70
+            Align = alClient
+            Brush.Color = 2302755
+            Shape = stRoundRect
+            ExplicitLeft = 16
+            ExplicitWidth = 249
+            ExplicitHeight = 65
+          end
+          object lblStream: TLabel
+            Left = 13
+            Top = 9
+            Width = 500
+            Height = 48
+            AutoSize = False
+            Caption = 'lblStream'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWhite
+            Font.Height = -13
+            Font.Name = 'Segoe UI'
+            Font.Style = [fsBold]
+            ParentFont = False
+            WordWrap = True
+          end
         end
       end
     end

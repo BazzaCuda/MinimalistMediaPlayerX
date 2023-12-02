@@ -106,7 +106,7 @@ procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := self.Handle; // normally application.handle
+  Params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TPlaylistForm.FormClose(Sender: TObject; var Action: TCloseAction);

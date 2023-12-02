@@ -60,7 +60,6 @@ type
     function getPosition: integer;
     procedure setMax(const Value: integer);
     procedure setPosition(const Value: integer);
-    function freeSegments: boolean;
   private
     constructor create;
     destructor  destroy; override;
@@ -169,7 +168,7 @@ begin
   TSegment.parentForm := timelineForm;
 
   timelineForm.width  := aWidth;
-  timelineForm.height := 54;
+  timelineForm.height := DEFAULT_SEGMENT_HEIGHT;
 
   timelineForm.show;
   winAPI.Windows.setWindowPos(timelineForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
@@ -198,7 +197,7 @@ procedure TTimelineForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := self.Handle; // normally application.handle
+  Params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -284,14 +283,14 @@ begin
   FUndoList.push(vSL);
   result := aText;
 
-  debug('');
-  debug('undo added');
-  for var i := 0 to vSL.count - 1 do debug(vSL[i]);
+//  debug('');
+//  debug('undo added');
+//  for var i := 0 to vSL.count - 1 do debug(vSL[i]);
 end;
 
 function TTimeline.clear: boolean;
 begin
-  freeSegments;
+  segments.clear;
 end;
 
 constructor TTimeline.create;
@@ -344,7 +343,7 @@ end;
 
 destructor TTimeline.destroy;
 begin
-  freeSegments;
+  segments.clear;
   FUndoList.free;
   FRedoList.free;
   inherited;
@@ -397,11 +396,6 @@ begin
   result := changeFileExt(FMediaFilePath, '.seg');
 end;
 
-function TTimeline.freeSegments: boolean;
-begin
-  segments.clear;
-end;
-
 function TTimeline.getMax: integer;
 begin
   result := FMax;
@@ -429,7 +423,7 @@ end;
 
 function TTimeline.defaultSegment: string;
 begin
-  freeSegments;
+  segments.clear;
   segments.add(TSegment.create(0, FMax));
   result := addUndo(format('0-%d,0', [FMax]));
 end;
@@ -445,7 +439,7 @@ end;
 function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
-  freeSegments;
+  segments.clear;
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
@@ -468,15 +462,15 @@ var
   posHyphen: integer;
   posComma: integer;
 begin
-  freeSegments;
+  segments.clear;
   vSL := TStringList.create;
   try
     case aStringList <> NIL of  TRUE: vSL.text := aStringList.text;
                                FALSE: vSL.loadFromFile(filePathMMP); end;
-    debug('');
+//    debug('');
     for var i := 0 to vSL.count - 1 do begin
       case trim(vSL[i]) = '' of TRUE: CONTINUE; end;
-      debug('loaded ' + vSL[i]);
+//      debug('loaded ' + vSL[i]);
       posHyphen := pos('-', vSL[i]);
       vStartSS  := strToInt(copy(vSL[i], 1, posHyphen - 1));
       posComma  := pos(',', vSL[i]);
@@ -488,7 +482,7 @@ begin
   finally
     vSL.free;
   end;
-  case aStringList = NIL of TRUE: debugClear; end; // currently only need to see what undo and redo are doing.
+//  case aStringList = NIL of TRUE: debugClear; end; // currently only need to see what undo and redo are doing.
 end;
 
 function TTimeline.log(aLogEntry: string): boolean;

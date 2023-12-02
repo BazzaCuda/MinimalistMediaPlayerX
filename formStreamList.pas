@@ -28,7 +28,7 @@ uses
 type
   TStreamListForm = class(TForm)
     backPanel: TPanel;
-    PageControl1: TPageControl;
+    pageControl: TPageControl;
     tsSegments: TTabSheet;
     tsStreams: TTabSheet;
     clSegments: TControlList;
@@ -40,11 +40,15 @@ type
     Shape1: TShape;
     lblSegID: TLabel;
     imgTrashCan: TImage;
+    Shape2: TShape;
+    lblStream: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+    procedure clStreamsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
   private
     FSegments: TObjectList<TSegment>;
+    function getStreamInfo: boolean;
   protected
     function applySegments(const aSegments: TObjectList<TSegment>): boolean;
     procedure CreateParams(var Params: TCreateParams);
@@ -58,7 +62,7 @@ function shutStreamList: boolean;
 
 implementation
 
-uses consts, commonUtils, _debugWindow;
+uses consts, commonUtils, mediaInfo, system.generics.defaults, _debugWindow;
 
 var
   streamListForm: TStreamListForm;
@@ -73,7 +77,6 @@ begin
   case (StreamListForm = NIL) and createNew of TRUE: StreamListForm := TStreamListForm.create(NIL); end;
   case StreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
 
-//  case aHeight > UI_DEFAULT_AUDIO_HEIGHT of TRUE: StreamListForm.height := aHeight; end;
   screen.cursor := crDefault;
 
   StreamListForm.show;
@@ -115,12 +118,24 @@ begin
   imgTrashCan.visible     := FSegments[aIndex].deleted;
 end;
 
+procedure TStreamListForm.clStreamsBeforeDrawItem(AIndex: Integer; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+begin
+  lblStream.caption := MI.mediaStreams[aIndex].ID
+                     + ' ' + MI.mediaStreams[aIndex].streamType
+                     + ' ' + MI.mediaStreams[aIndex].codec
+                     + ' ' + MI.mediaStreams[aIndex].duration
+                     + ' ' + MI.mediaStreams[aIndex].bitRate
+                     + ' ' + MI.mediaStreams[aIndex].title
+                     + ' ' + MI.mediaStreams[aIndex].language
+                     + ' ' + MI.mediaStreams[aIndex].data;
+end;
+
 procedure TStreamListForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := self.Handle; // normally application.handle
+  Params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TStreamListForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -148,6 +163,21 @@ begin
   font.color        := clSilver;
 
   clSegments.ItemCount := 0;
+
+  getStreamInfo;
+end;
+
+function TStreamListForm.getStreamInfo: boolean;
+begin
+  MI.initMediaInfo;
+  tsStreams.caption := format('Streams %d/%d', [MI.StreamCount, MI.StreamCount]);
+  clStreams.itemCount := MI.mediaStreams.count;
+  MI.mediaStreams.sort(TComparer<TMediaStream>.Construct(
+      function (const L, R: TMediaStream): integer
+      begin
+         Result := CompareText(L.ID, R.ID)
+      end
+));
 end;
 
 initialization

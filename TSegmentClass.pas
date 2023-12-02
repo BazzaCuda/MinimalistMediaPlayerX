@@ -25,6 +25,7 @@ uses
 
 const
   NEARLY_BLACK = clBlack + $101010;
+  DEFAULT_SEGMENT_HEIGHT = 54;
 
 type
   TSegment = class(TPanel)
@@ -73,13 +74,13 @@ type
 
     class function clearFocus: boolean; static;
     class property parentForm: TWinControl write FParent;
-    class property segments: TObjectList<TSegment> read getSegments;
+    class property segments: TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
     class property selSeg: TSegment read FSelSeg write FSelSeg;
   end;
 
 implementation
 
-uses system.sysUtils;
+uses system.sysUtils, _debugWindow;
 
 var nextColor: integer = 0;
 function generateRandomEvenDarkerSoftColor: TColor;
@@ -127,7 +128,7 @@ constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; cons
 begin
   inherited create(NIL);
   parent            := FParent;
-  height            := 54;
+  height            := DEFAULT_SEGMENT_HEIGHT;
   font.color        := clSilver;
   font.size         := 10;
   font.style        := [fsBold];
@@ -229,12 +230,7 @@ end;
 
 class destructor TSegment.freeSegments;
 begin
-  FSegments.clear;
   freeAndNil(FSegments);
 end;
-
-
-
-
 
 end.
