@@ -84,6 +84,7 @@ type
     function mergeRight(const aSegment: TSegment): boolean;
     function restoreSegment(const aSegment: TSegment): boolean;
     function saveSegments: string;
+    function segFileEntry(aSegFile: string): string;
     function segmentAtCursor: TSegment;
     function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function getSegments: TObjectList<TSegment>;
@@ -176,6 +177,7 @@ begin
                                                       CloseHandle(ExecInfo.hProcess);
                                                     end;
   end;
+  result := FALSE;
 end;
 
 function focusTimeline: boolean;
@@ -519,10 +521,12 @@ begin
 
           vProgressForm.subHeading.caption := extractFileName(segFile);
 
-          case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
+          case execAndWait(cmdLine) of  TRUE: vSL.add(segFileEntry(segFile));
                                        FALSE: begin
                                                 result := FALSE;
-                                                case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: execAndWait(cmdLine, rtCMD); end;
+                                                case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: begin
+                                                                                                                  vSL.add(segFileEntry(segFile)); // the user will correct the export
+                                                                                                                  execAndWait(cmdLine, rtCMD); end;end;
                                               end;
           end;
         end;
@@ -674,6 +678,11 @@ begin
   end;
 
   case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+end;
+
+function TTimeline.segFileEntry(aSegFile: string): string;
+begin
+  result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
 
 function TTimeline.segmentAtCursor: TSegment;
