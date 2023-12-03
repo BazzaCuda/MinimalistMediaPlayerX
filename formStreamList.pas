@@ -146,14 +146,12 @@ begin
 
   lblStreamID.caption := MI.mediaStreams[aIndex].ID;
 
-  lblStream.caption :=
-                             // MI.mediaStreams[aIndex].streamType
-                             MI.mediaStreams[aIndex].codec
-                     + ' ' + MI.mediaStreams[aIndex].duration
-                     + ' ' + MI.mediaStreams[aIndex].bitRate
-                     + ' ' + MI.mediaStreams[aIndex].title
-                     + ' ' + MI.mediaStreams[aIndex].language
-                     + ' ' + MI.mediaStreams[aIndex].info;
+  lblStream.caption := 'format: '     + MI.mediaStreams[aIndex].format
+                     + '  duration: '  + MI.mediaStreams[aIndex].duration
+                     + '  bitrate: '   + MI.mediaStreams[aIndex].bitRate + #13#10
+                     + 'title: '      + MI.mediaStreams[aIndex].title
+                     + '  language: '  + MI.mediaStreams[aIndex].language + #13#10
+                     + 'info: '       + MI.mediaStreams[aIndex].info;
 end;
 
 procedure TStreamListForm.clStreamsItemClick(Sender: TObject);

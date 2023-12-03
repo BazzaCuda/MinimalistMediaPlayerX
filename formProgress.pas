@@ -86,7 +86,6 @@ begin
   btnRerun.visible  := isModal;
   btnIgnore.visible := isModal;
   btnCancel.visible := NOT isModal;
-
 end;
 
 end.

@@ -164,11 +164,9 @@ begin
                                                       case aRunType of
                                                         rtFFMpeg: begin
                                                                     repeat
-                                                                      if MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) then
-                                                                        application.processMessages
-                                                                      else
-                                                                        BREAK;
-                                                                    until FALSE OR gCancelled;
+                                                                      case MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of  TRUE: application.processMessages;
+                                                                                                                                                                                  FALSE: BREAK; end;
+                                                                    until gCancelled;
                                                                     getExitCodeProcess(execInfo.hProcess, exitCode);
                                                                     result := exitCode = 0;
                                                                   end;
@@ -500,6 +498,7 @@ begin
           case vSegment.deleted of TRUE: CONTINUE; end;
 
           cmdLine := '-hide_banner';
+
           cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
           cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
           cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
@@ -541,7 +540,7 @@ begin
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
   for var i := 0 to MI.selectedCount - 1 do
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
-  cmdLine := cmdLine + ' -movflags "+faststart" -default_mode infer_no_subs -ignore_unknown';
+  cmdLine := cmdLine + STD_SEG_PARAMS;
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
   log(cmdLine);
 

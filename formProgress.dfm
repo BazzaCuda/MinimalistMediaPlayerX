@@ -2,7 +2,7 @@ object ProgressForm: TProgressForm
   Left = 0
   Top = 0
   Caption = 'ProgressForm'
-  ClientHeight = 105
+  ClientHeight = 98
   ClientWidth = 325
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object ProgressForm: TProgressForm
     Left = 0
     Top = 0
     Width = 325
-    Height = 105
+    Height = 98
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 10
@@ -47,7 +47,7 @@ object ProgressForm: TProgressForm
     end
     object btnIgnore: TButton
       Left = 201
-      Top = 69
+      Top = 70
       Width = 75
       Height = 25
       Caption = 'Ignore'
@@ -56,7 +56,7 @@ object ProgressForm: TProgressForm
     end
     object btnCancel: TButton
       Left = 128
-      Top = 69
+      Top = 70
       Width = 75
       Height = 25
       Caption = 'Cancel'
@@ -66,7 +66,7 @@ object ProgressForm: TProgressForm
     end
     object btnRerun: TButton
       Left = 55
-      Top = 69
+      Top = 70
       Width = 75
       Height = 25
       Hint = 
