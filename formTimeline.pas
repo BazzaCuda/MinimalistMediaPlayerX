@@ -25,6 +25,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage, formProgress, TSegmentClass;
 
 type
+  TRunType = (rtFFMpeg, rtCMD);
+
   TTimelineForm = class(TForm)
     pnlCursor: TPanel;
     lblPosition: TPanel;
@@ -83,7 +85,7 @@ type
     function restoreSegment(const aSegment: TSegment): boolean;
     function saveSegments: string;
     function segmentAtCursor: TSegment;
-    function exportFail(aProgressForm: TProgressForm): boolean;
+    function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function getSegments: TObjectList<TSegment>;
     procedure onCancelButton(sender: TObject);
   protected
@@ -123,7 +125,7 @@ begin
   result := GetKeyState(VK_CONTROL) < 0;
 end;
 
-function execAndWait(const aCmdLine: string): boolean;
+function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
 var
   ExecInfo: TShellExecuteInfo;
   exitCode: cardinal;
@@ -135,26 +137,44 @@ begin
     fMask := SEE_MASK_NOCLOSEPROCESS;
     Wnd := 0;
     lpVerb := 'open';
-    lpFile := 'ffmpeg';
-    lpParameters := PChar(aCmdLine);
-    lpDirectory := '';
-    nShow := SW_HIDE;
-  end;
-  result := ShellExecuteEx(@ExecInfo);
-  if result then
-  begin
-    if ExecInfo.hProcess <> 0 then // no handle if the process was activated by DDE
-    begin
-      repeat
-        if MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) then
-          application.processMessages
-        else
-          BREAK;
-      until FALSE OR gCancelled;
-      getExitCodeProcess(execInfo.hProcess, exitCode);
-      result := exitCode = 0;
-      CloseHandle(ExecInfo.hProcess);
+
+    case aRunType of
+      rtFFMPeg: lpFile := 'ffmpeg';
+      rtCMD:    lpFile := 'cmd';
     end;
+
+    case aRunType of
+      rtFFMpeg: lpParameters := PChar(aCmdLine);
+      rtCMD:    lpParameters := PChar(' /K ffmpeg ' + aCmdLine);
+    end;
+
+    lpDirectory := '';
+
+    case aRunType of
+      rtFFMpeg: nShow := SW_HIDE;
+      rtCMD:    nShow := SW_SHOW;
+    end;
+
+  end;
+
+  result := ShellExecuteEx(@ExecInfo);
+
+  case result AND (ExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
+                                                      case aRunType of
+                                                        rtFFMpeg: begin
+                                                                    repeat
+                                                                      if MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) then
+                                                                        application.processMessages
+                                                                      else
+                                                                        BREAK;
+                                                                    until FALSE OR gCancelled;
+                                                                    getExitCodeProcess(execInfo.hProcess, exitCode);
+                                                                    result := exitCode = 0;
+                                                                  end;
+                                                        rtCMD: result := TRUE;
+                                                      end;
+                                                      CloseHandle(ExecInfo.hProcess);
+                                                    end;
   end;
 end;
 
@@ -368,7 +388,7 @@ begin
     vSegment.left    := trunc((vSegment.startSS / FMax) * timelineForm.width);
     vSegment.width   := trunc((vSegment.duration / FMax) * timelineForm.width);
     vSegment.caption := '';
-    vSegment.segID   := intToStr(n);
+    vSegment.segID   := format('%.2d', [n]);
     vSegment.setDisplayDetails;
     vSegment.StyleElements := [];
     CU.copyPNGImage(timelineForm.imgTrashCan, vSegment.trashCan);
@@ -437,13 +457,18 @@ begin
   result := addUndo(format('0-%d,0', [FMax]));
 end;
 
-function TTimeLine.exportFail(aProgressForm: TProgressForm): boolean;
+function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
 begin
-  aProgressForm.label1.caption := 'Export failed';
-  aProgressForm.OKButton.visible := TRUE;
-  aProgressForm.OKButton.bringToFront;
+  case aSegID = '' of  TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
+                      FALSE: aProgressForm.subHeading.caption := format('Export of seg%s failed', [aSegID]); end;
+
+  aProgressForm.modal := TRUE;
+
   aProgressForm.hide;
-  aProgressForm.showModal;
+  result := aProgressForm.showModal;
+
+  aProgressForm.modal := FALSE;
+  aProgressForm.show; // reshow non-modally after the showModal
 end;
 
 function TTimeline.exportSegments: boolean;
@@ -452,59 +477,64 @@ const
 var
   cmdLine: string;
   vMaps:   string;
+  vID:     integer;
 begin
   result     := TRUE;
   gCancelled := FALSE;
+
   var vProgressForm := TProgressForm.create(NIL);
   vProgressForm.onCancel := onCancelButton;
+  var vS := '';
+  case segments.count > 1 of  TRUE: vS := 's'; end;
+  vProgressForm.heading.caption := format('Exporting %d segment%s (%d streams)', [TSegment.includedCount, vS, MI.selectedCount]);
+  vProgressForm.show;
 
   // export segments
   try
-    vProgressForm.show;
-    var vS := '';
-    case segments.count > 1 of  TRUE: vS := 's'; end;
-    vProgressForm.heading.caption := format('Exporting %d streams from %d segment%s', [MI.selectedCount, TSegment.includedCount, vS]);
+    case ctrlKeyDown of FALSE: begin
+      var vSL := TStringList.create;
+      try
+        vSL.saveToFile(filePathSEG); // clear previous contents
+        for var vSegment in segments do begin
+          case vSegment.deleted of TRUE: CONTINUE; end;
 
-  case ctrlKeyDown of FALSE: begin
-  var vSL := TStringList.create;
-  try
-    vSL.saveToFile(changeFileExt(FMediaFilePath, '.seg'));
-    var n := 1;
-    for var vSegment in segments do begin
-      case vSegment.deleted of TRUE: CONTINUE; end;
+          cmdLine := '-hide_banner';
+          cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
+          cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
+          cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
 
-      cmdLine := '-hide_banner';
-      cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
-      cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
-      cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
+          vMaps := '';
+          for var vMediaStream in MI.mediaStreams do
+            case vMediaStream.selected of TRUE: begin
+                                                  vID := strToInt(vMediaStream.ID);
+                                                  case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
+                                                  vMaps := vMaps + format(' -map 0:%d ', [vID]);
+                                                end;end;
+          vMaps := vMaps + ' -c copy';
+          cmdLine := cmdLine + vMaps;
+          cmdLine := cmdLine + STD_SEG_PARAMS;
+          var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
+          cmdLine := cmdLine + ' -y "' + segFile + '"';
+          log(cmdLine);
 
-      vMaps := '';
-      for var vMediaStream in MI.mediaStreams do
-        case vMediaStream.selected of TRUE: begin
-                                              var vID := strToInt(vMediaStream.ID);
-                                              vMaps := vMaps + format(' -map 0:%d ', [vID - 1]);
-                                            end;end;
-      vMaps := vMaps + ' -c copy';
-      cmdLine := cmdLine + vMaps;
-      cmdLine := cmdLine + STD_SEG_PARAMS;
-      var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + format(' seg%.2d', [n]) + extractFileExt(FMediaFilePath);
-      cmdLine := cmdLine + ' -y "' + segFile + '"';
-      log(cmdLine);
-      vProgressForm.label1.caption := extractFileName(segFile);
+          vProgressForm.subHeading.caption := extractFileName(segFile);
 
-      case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
-                                   FALSE: result := FALSE; end;
-      inc(n);
-    end;
-    vSL.saveToFile(filePathSEG);
-  finally
-    vSL.free;
-  end;end;end;
+          case execAndWait(cmdLine) of  TRUE: vSL.add('file ''' + stringReplace(segFile, '\', '\\', [rfReplaceAll]) + '''');
+                                       FALSE: begin
+                                                result := FALSE;
+                                                case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: execAndWait(cmdLine, rtCMD); end;
+                                              end;
+          end;
+        end;
+        vSL.saveToFile(filePathSEG);
+      finally
+        vSL.free;
+      end;end;end;
 
-  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+    case result of FALSE: EXIT; end;
 
   // concatenate exported segments
-  vProgressForm.label1.caption := 'Concatenating segments';
+  vProgressForm.subHeading.caption := 'Concatenating segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
   for var i := 0 to MI.selectedCount - 1 do
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);

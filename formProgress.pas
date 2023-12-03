@@ -27,20 +27,21 @@ uses
 type
   TProgressForm = class(TForm)
     Panel1: TPanel;
-    FLabel1: TLabel;
+    FSubHeading: TLabel;
     FHeading: TLabel;
-    btnOK: TButton;
+    btnIgnore: TButton;
     btnCancel: TButton;
+    btnRerun: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
   private
     FOnCancel: TNotifyEvent;
-    { Private declarations }
+    procedure setModal(const isModal: boolean);
   public
-    property heading: TLabel read FHeading;
-    property label1: TLabel read FLabel1;
-    property OKButton: TButton read btnOK;
-    property onCancel: TNotifyEvent read FOnCancel write FOnCancel;
+    property heading:       TLabel       read FHeading;
+    property subHeading:    TLabel       read FSubHeading;
+    property modal:         boolean                         write setModal;
+    property onCancel:      TNotifyEvent read FOnCancel     write FOnCancel;
   end;
 
 var
@@ -77,8 +78,15 @@ begin
     AlignWithMargins := TRUE;
     panel1.color     := $232323;
   end;
+  setModal(FALSE);
+end;
 
-  btnOK.visible := FALSE;
+procedure TProgressForm.setModal(const isModal: boolean);
+begin
+  btnRerun.visible  := isModal;
+  btnIgnore.visible := isModal;
+  btnCancel.visible := NOT isModal;
+
 end;
 
 end.

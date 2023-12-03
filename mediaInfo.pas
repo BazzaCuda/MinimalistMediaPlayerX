@@ -71,6 +71,7 @@ type
     FImageCount: integer;
     FOtherCount: integer;
 
+    FLowestID: integer;
     FMediaStreams: TObjectList<TMediaStream>;
     FNeedInfo: boolean;
     FURL: string;
@@ -110,6 +111,7 @@ type
     property Y:                 integer read FHeight;
     property XY:                string  read getXY;
 
+    property lowestID:          integer read FLowestID write FLowestID;
     property selectedCount:     integer read getSelectedCount;
   end;
 

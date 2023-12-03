@@ -56,7 +56,7 @@ type
   private
     FOnExport: TNotifyEvent;
     FSegments: TObjectList<TSegment>;
-    function getStreamInfo: boolean;
+    function getStreamInfo: integer;
     function updateStreamsCaption: boolean;
   protected
     function applySegments(const aSegments: TObjectList<TSegment>): boolean;
@@ -123,7 +123,7 @@ end;
 
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
-  lblSegID.caption        := format('%.2d', [aIndex + 1]);
+  lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS, CU.formatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS)]);
   shape1.brush.color      := FSegments[aIndex].color;
@@ -197,11 +197,12 @@ begin
 
   clSegments.ItemCount := 0;
 
-  getStreamInfo;
+  MI.lowestID := getStreamInfo;
 end;
 
-function TStreamListForm.getStreamInfo: boolean;
+function TStreamListForm.getStreamInfo: integer;
 begin
+  result := -1;
   MI.initMediaInfo;
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
@@ -213,6 +214,7 @@ begin
          result := compareText(L.ID, R.ID)
       end
       ));
+  case MI.mediaStreams.count > 0 of TRUE: result := strToInt(MI.mediaStreams[0].ID); end;
 end;
 
 function TStreamListForm.updateStreamsCaption: boolean;

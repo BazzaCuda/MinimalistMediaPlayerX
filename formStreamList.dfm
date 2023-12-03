@@ -59,7 +59,6 @@ object StreamListForm: TStreamListForm
       TabHeight = 24
       TabOrder = 0
       TabWidth = 200
-      ExplicitHeight = 494
       object tsSegments: TTabSheet
         Caption = 'Segments'
         object clSegments: TControlList
@@ -81,7 +80,6 @@ object StreamListForm: TStreamListForm
           ParentFont = False
           TabOrder = 0
           OnBeforeDrawItem = clSegmentsBeforeDrawItem
-          ExplicitHeight = 545
           object Shape1: TShape
             Left = 0
             Top = 0
@@ -2166,7 +2164,6 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
           OnBeforeDrawItem = clStreamsBeforeDrawItem
           OnItemClick = clStreamsItemClick
-          ExplicitHeight = 545
           object Shape2: TShape
             Left = 0
             Top = 0
@@ -2288,9 +2285,6 @@ object StreamListForm: TStreamListForm
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 120
-      ExplicitTop = 528
-      ExplicitWidth = 185
       object btnExport: TBitBtn
         Left = 209
         Top = -1

@@ -2,7 +2,7 @@ object ProgressForm: TProgressForm
   Left = 0
   Top = 0
   Caption = 'ProgressForm'
-  ClientHeight = 125
+  ClientHeight = 105
   ClientWidth = 325
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object ProgressForm: TProgressForm
     Left = 0
     Top = 0
     Width = 325
-    Height = 125
+    Height = 105
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 10
@@ -25,19 +25,19 @@ object ProgressForm: TProgressForm
     TabOrder = 0
     ExplicitWidth = 323
     ExplicitHeight = 121
-    object FLabel1: TLabel
+    object FSubHeading: TLabel
       Left = 6
-      Top = 59
+      Top = 38
       Width = 313
       Height = 15
       Margins.Top = 10
       Alignment = taCenter
       AutoSize = False
-      Caption = 'FLabel1'
+      Caption = 'FSubHeading'
     end
     object FHeading: TLabel
       Left = 5
-      Top = 29
+      Top = 8
       Width = 313
       Height = 15
       Margins.Top = 10
@@ -45,24 +45,39 @@ object ProgressForm: TProgressForm
       AutoSize = False
       Caption = 'FHeading'
     end
-    object btnOK: TButton
-      Left = 128
-      Top = 88
+    object btnIgnore: TButton
+      Left = 201
+      Top = 69
       Width = 75
       Height = 25
-      Caption = 'OK'
-      ModalResult = 1
-      TabOrder = 0
+      Caption = 'Ignore'
+      ModalResult = 7
+      TabOrder = 2
     end
     object btnCancel: TButton
       Left = 128
-      Top = 88
+      Top = 69
       Width = 75
       Height = 25
       Caption = 'Cancel'
-      ModalResult = 1
+      ModalResult = 2
       TabOrder = 1
       OnClick = btnCancelClick
+    end
+    object btnRerun: TButton
+      Left = 55
+      Top = 69
+      Width = 75
+      Height = 25
+      Hint = 
+        'Rerun the failed segment so you can see the FFMpeg error message' +
+        's'
+      Caption = 'Rerun'
+      Default = True
+      ModalResult = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
     end
   end
 end
