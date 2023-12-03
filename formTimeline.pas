@@ -177,7 +177,6 @@ begin
                                                       CloseHandle(ExecInfo.hProcess);
                                                     end;
   end;
-  result := FALSE;
 end;
 
 function focusTimeline: boolean;
