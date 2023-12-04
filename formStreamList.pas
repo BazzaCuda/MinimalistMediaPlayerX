@@ -57,6 +57,7 @@ type
     FOnExport: TNotifyEvent;
     FSegments: TObjectList<TSegment>;
     function getStreamInfo: integer;
+    function updateExportButton(aEnabled: boolean): boolean;
     function updateStreamsCaption: boolean;
   protected
     function applySegments(const aSegments: TObjectList<TSegment>): boolean;
@@ -159,6 +160,7 @@ begin
   MI.mediaStreams[clStreams.itemIndex].selected := NOT MI.mediaStreams[clStreams.itemIndex].selected;
   clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
   updateStreamsCaption;
+  updateExportButton(MI.selectedCount > 0);
 end;
 
 procedure TStreamListForm.createParams(var Params: TCreateParams);
@@ -218,7 +220,12 @@ begin
          result := compareText(L.ID, R.ID)
       end
       ));
-  case MI.mediaStreams.count > 0 of TRUE: result := strToInt(MI.mediaStreams[0].ID); end;
+  case MI.mediaStreams.count > 0 of TRUE: case tryStrToInt(MI.mediaStreams[0].ID, result) of FALSE: result := 0; end;end;
+end;
+
+function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;
+begin
+  btnExport.enabled := aEnabled;
 end;
 
 function TStreamListForm.updateStreamsCaption: boolean;

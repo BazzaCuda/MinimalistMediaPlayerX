@@ -522,7 +522,7 @@ begin
           vMaps := '';
           for var vMediaStream in MI.mediaStreams do
             case vMediaStream.selected of TRUE: begin
-                                                  vID := strToInt(vMediaStream.ID);
+                                                  case tryStrToInt(vMediaStream.ID, vID) of FALSE: vID := 0; end;
                                                   case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
                                                   vMaps := vMaps + format(' -map 0:%d ', [vID]);
                                                 end;end;
