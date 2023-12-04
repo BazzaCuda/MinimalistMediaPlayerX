@@ -34,6 +34,12 @@ object ProgressForm: TProgressForm
       Alignment = taCenter
       AutoSize = False
       Caption = 'FSubHeading'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
     end
     object FHeading: TLabel
       Left = 5

@@ -46,7 +46,7 @@ function shutHelp: boolean;
 
 implementation
 
-uses ShellAPI, UICtrls, system.strUtils, commonUtils;
+uses ShellAPI, UICtrls, system.strUtils, commonUtils, globalVars;
 
 var
   helpForm: THelpForm;
@@ -67,12 +67,14 @@ begin
   winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   enableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
   setForegroundWindow(UI.handle); // so the UI keyboard functions can still be used when this form is open.
+  GV.showingHelp := TRUE;
 end;
 
 function shutHelp: boolean;
 begin
   case helpForm <> NIL of TRUE: begin helpForm.close; helpForm.free; helpForm := NIL; end;end;
   helpForm := NIL;
+  GV.showingHelp := FALSE;
 end;
 
 {$R *.dfm}

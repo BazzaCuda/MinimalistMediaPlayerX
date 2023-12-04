@@ -46,14 +46,20 @@ type
     FAppWnd: HWND;
     FAltKeyDown: boolean;
     FCloseApp: boolean;
+    FShowingHelp: boolean;
+    FShowingPlaylist: boolean;
+    FShowingTimeline: boolean;
     FUserInput: boolean;
   public
     constructor create;
     destructor  destroy;
-    property altKeyDown: boolean read FAltKeyDown write FAltKeyDown;
-    property appWnd: HWND read FAppWnd write FAppWnd;
-    property closeApp: boolean read FCloseApp write FCloseApp;
-    property userInput: boolean read FUserInput write FUserInput;
+    property altKeyDown:      boolean read FAltKeyDown      write FAltKeyDown;
+    property appWnd:          HWND    read FAppWnd          write FAppWnd;
+    property closeApp:        boolean read FCloseApp        write FCloseApp;
+    property showingHelp:     boolean read FShowingHelp     write FShowingHelp;
+    property showingPlaylist: boolean read FShowingPlaylist write FShowingPlaylist;
+    property showingTimeline: boolean read FShowingTimeline write FShowingTimeline;
+    property userInput:       boolean read FUserInput       write FUserInput;
   end;
 
 function GV: TGlobalVars;

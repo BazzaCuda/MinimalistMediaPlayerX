@@ -30,14 +30,16 @@ type
     FID:          string;
     FBitRate:     string;
     FDuration:    string;
+    FFormat:      string;
     FLanguage:    string;
     FStreamType:  string;
     FTitle:       string;
+    FVideoWidth:  string;
+    FVideoHeight: string;
 
     FIconIx: integer;
     FInfo:        string;
     FSelected: boolean;
-    FFormat: string;
   protected
     constructor create(const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string; const aInfo: string; const aIconIx: integer);
   public
@@ -48,6 +50,8 @@ type
     property format:      string read FFormat write FFormat;
     property title:       string read FTitle write FTitle;
     property language:    string read FLanguage write FLanguage;
+    property videoHeight: string read FVideoHeight write FVideoHeight;
+    property videoWidth:  string read FVideoWidth write FVideoWidth;
 
     property iconIx:      integer read FIconIx write FIconIx;
     property info:        string read FInfo write FInfo;

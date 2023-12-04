@@ -74,6 +74,7 @@ end;
 function showingPlaylist: boolean;
 begin
   result := playlistForm <> NIL;
+  GV.showingPlaylist := result;
 end;
 
 function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;

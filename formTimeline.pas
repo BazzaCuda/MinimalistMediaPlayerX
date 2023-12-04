@@ -22,7 +22,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage, formProgress, TSegmentClass;
+  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage, formProgress, TSegmentClass, Vcl.Menus;
 
 type
   TRunType = (rtFFMpeg, rtCMD);
@@ -78,6 +78,7 @@ type
     function filePathSEG: string;
     function getSegCount: integer;
     function getTimelineHeight: integer;
+    function lengthenSegment(const aSegment: TSegment): boolean;
     function loadSegments(aStringList: TStringList = NIL): string;
     function log(aLogEntry: string): boolean;
     function mergeLeft(const aSegment: TSegment): boolean;
@@ -86,6 +87,7 @@ type
     function saveSegments: string;
     function segFileEntry(aSegFile: string): string;
     function segmentAtCursor: TSegment;
+    function shortenSegment(const aSegment: TSegment): boolean;
     function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function getSegments: TObjectList<TSegment>;
     procedure onCancelButton(sender: TObject);
@@ -114,7 +116,7 @@ function TL: TTimeline;
 implementation
 
 uses
-  progressBar, dialogs, playlist, shellAPI, commonUtils, formStreamList, mediaInfo, _debugWindow;
+  progressBar, dialogs, playlist, shellAPI, commonUtils, formStreamList, mediaInfo, globalVars, _debugWindow;
 
 var
   timelineForm: TTimelineForm;
@@ -197,6 +199,7 @@ begin
   winAPI.Windows.setWindowPos(timelineForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 
   showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, timelineForm.exportSegments, createNew);
+  GV.showingTimeline := TRUE;
 end;
 
 function shutTimeline: boolean;
@@ -204,6 +207,7 @@ begin
   shutStreamList;
   case gTL          <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case timelineForm <> NIL of TRUE: begin timelineForm.free; timelineForm := NIL; end;end;
+  GV.showingTimeline := FALSE;
 end;
 
 function TL: TTimeline;
@@ -278,6 +282,8 @@ begin
   case key = ord('O') of TRUE: begin TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
   case key = ord('M') of TRUE: begin TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
   case key = ord('N') of TRUE: begin TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
+  case key = ord('L') of TRUE: begin TL.lengthenSegment(TSegment.selSeg);             TL.drawSegments; end;end;
+  case key = ord('S') of TRUE: begin TL.shortenSegment(TSegment.selSeg);              TL.drawSegments; end;end;
   case key = ord('Z') of TRUE: begin TL.undo(FPrevAction);     vSaveUndo := FALSE;    TL.drawSegments; end;end;
   case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end;
 
@@ -536,7 +542,7 @@ begin
     case result of FALSE: EXIT; end;
 
   // concatenate exported segments
-  vProgressForm.subHeading.caption := 'Concatenating segments';
+  vProgressForm.subHeading.caption := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
   for var i := 0 to MI.selectedCount - 1 do
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
@@ -566,7 +572,7 @@ end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
 begin
-  result := key in [ord('C'), ord('I'), ord('M'), ord('N'), ord('O'), ord('P'), ord('R'), ord('X'), ord('Z')];
+  result := key in [ord('C'), ord('I'), ord('L'), ord('M'), ord('N'), ord('O'), ord('R'), ord('S'), ord('X'), ord('Z')];
 end;
 
 function TTimeline.loadSegments(aStringList: TStringList = NIL): string;
@@ -599,6 +605,13 @@ begin
     vSL.free;
   end;
 //  case aStringList = NIL of TRUE: debugClear; end; // currently only need to see what undo and redo are doing.
+end;
+
+function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
+begin
+  case aSegment.isLast of TRUE: EXIT; end;
+  aSegment.endSS := aSegment.endSS + 1;
+  segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
 end;
 
 function TTimeline.log(aLogEntry: string): boolean;
@@ -701,6 +714,13 @@ begin
   case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
   timelineForm.pnlCursor.left := trunc((FPosition / FMax) * timelineForm.width) - timelineForm.pnlCursor.width;
   timelineForm.lblPosition.caption  := CU.formatTime(FPosition);
+end;
+
+function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
+begin
+  case aSegment.isFirst of TRUE: EXIT; end;
+  aSegment.endSS := aSegment.endSS - 1;
+  segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS - 1;
 end;
 
 function TTimeline.undo(const aPrevAction: string): boolean;

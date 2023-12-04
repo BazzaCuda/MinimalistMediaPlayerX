@@ -146,12 +146,12 @@ begin
 
   lblStreamID.caption := MI.mediaStreams[aIndex].ID;
 
-  lblStream.caption := 'format: '     + MI.mediaStreams[aIndex].format
+  lblStream.caption := 'format: '      + MI.mediaStreams[aIndex].format
                      + '  duration: '  + MI.mediaStreams[aIndex].duration
                      + '  bitrate: '   + MI.mediaStreams[aIndex].bitRate + #13#10
-                     + 'title: '      + MI.mediaStreams[aIndex].title
+                     + 'title: '       + MI.mediaStreams[aIndex].title
                      + '  language: '  + MI.mediaStreams[aIndex].language + #13#10
-                     + 'info: '       + MI.mediaStreams[aIndex].info;
+                     + 'info: '        + MI.mediaStreams[aIndex].info;
 end;
 
 procedure TStreamListForm.clStreamsItemClick(Sender: TObject);
@@ -179,9 +179,15 @@ begin
   clSegments.borderStyle       := bsNone;
   clSegments.styleElements     := []; // don't allow any theme alterations
   clSegments.color := $232323;
+  clSegments.itemSelectionOptions.focusedColor  := $232323;
+  clSegments.itemSelectionOptions.hotColor      := $232323;
+  clSegments.itemSelectionOptions.selectedColor := $232323;
   clStreams.borderStyle        := bsNone;
   clStreams.styleElements     := []; // don't allow any theme alterations
   clStreams.color := $232323;
+  clStreams.itemSelectionOptions.focusedColor  := $232323;
+  clStreams.itemSelectionOptions.hotColor      := $232323;
+  clStreams.itemSelectionOptions.selectedColor := $232323;
 
   SELF.width  := 556;
   SELF.height := 600;

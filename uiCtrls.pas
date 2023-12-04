@@ -597,6 +597,8 @@ end;
 
 function TUI.toggleTimeline: boolean;
 begin
+  shutHelp;
+  shutPlaylist;
   FShowingTimeline := NOT FShowingTimeline;
   case FShowingTimeline of  TRUE: moveTimelineWindow;
                            FALSE: shutTimeline; end;
@@ -607,6 +609,7 @@ end;
 function TUI.toggleHelpWindow: boolean;
 begin
   shutPlaylist;
+  shutTimeline;
   FShowingPlaylist := FALSE;
 
   FShowingHelp := NOT FShowingHelp;
@@ -623,6 +626,7 @@ end;
 function TUI.togglePlaylist: boolean;
 begin
   shutHelp;
+  shutTimeline;
   FShowingHelp := FALSE;
 
   FShowingPlaylist := NOT FShowingPlaylist;
