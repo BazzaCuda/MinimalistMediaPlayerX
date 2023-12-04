@@ -121,9 +121,11 @@ end;
 
 function TSegment.delete: boolean;
 begin
+  result     := FALSE;
   deleted    := TRUE;
   case color  = NEARLY_BLACK of FALSE: oldColor := color; end; // in case user tries to delete an already-deleted segment
   color      := NEARLY_BLACK;
+  result     := TRUE;
 end;
 
 constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);

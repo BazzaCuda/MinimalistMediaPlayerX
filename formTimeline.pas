@@ -54,10 +54,12 @@ type
 
   TTimeline = class(TObject)
   strict private
+    FLengthenCount: integer;
     FMax: integer;
     FMediaFilePath: string;
     FPosition: integer;
     FPrevAction: string;
+    FShortenCount: integer;
     FUndoList: TObjectStack<TStringList>;
     FRedoList: TObjectStack<TStringList>;
     function getMax: integer;
@@ -107,6 +109,8 @@ type
     function redo: boolean;
     property segCount: integer read getSegCount;
     property segments: TObjectList<TSegment> read getSegments;
+    property lengthenCount:  integer read FLengthenCount write FLengthenCount;
+    property shortenCount:   integer read FShortenCount  write FShortenCount;
     property timelineHeight: integer read getTimelineHeight;
   end;
 
@@ -124,6 +128,14 @@ var
   timelineForm: TTimelineForm;
   gTL: TTimeline;
   gCancelled: boolean;
+
+function debugSL(aText: string; aSL: TStringList): boolean;
+begin
+  EXIT;
+  debug('');
+  debug(aText);
+  for var i := aSL.count - 1 downto 0 do debug(aSL[i]);
+end;
 
 function ctrlKeyDown: boolean;
 begin
@@ -276,33 +288,44 @@ end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  var vSaveUndo := TL.keyHandled(ord(key));
-  case key in ['l', 'L'] of TRUE: begin TL.lengthenSegment(TSegment.selSeg);             TL.drawSegments; end;end;
-  case key in ['s', 'S'] of TRUE: begin TL.shortenSegment(TSegment.selSeg);              TL.drawSegments; end;end;
+  case key in ['l', 'L'] of TRUE: begin TL.lengthenCount := TL.lengthenCount + 1; TL.lengthenSegment(TSegment.selSeg); TL.drawSegments; end;end;
+  case key in ['s', 'S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
+
   var vAction := TL.saveSegments;
   applySegments(TL.segments);
 
-  case vSaveUndo of TRUE: TL.addUndo(vAction); end;
-  case TL.keyHandled(ord(key)) of TRUE: key := #0; end;
+  case (TL.lengthenCount = 1) OR (TL.shortenCount = 1) of TRUE: TL.addUndo(vAction); end;
 end;
 
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  vOK: boolean;
+  vAction: string;
 begin
-  var vSaveUndo := TL.keyHandled(key);
-  case key = ord('C') of TRUE: begin TL.cutSegment(TL.segmentAtCursor, TL.position);  TL.drawSegments; end;end;
-  case key = ord('R') of TRUE: begin TL.restoreSegment(TSegment.selSeg);              TL.drawSegments; end;end;
-  case key = ord('X') of TRUE: begin TL.delSegment(TSegment.selSeg);                  TL.drawSegments; end;end;
-  case key = ord('I') of TRUE: begin TL.createInPoint(TL.Position);                   TL.drawSegments; end;end;
-  case key = ord('O') of TRUE: begin TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
-  case key = ord('M') of TRUE: begin TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
-  case key = ord('N') of TRUE: begin TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
+  vOK := FALSE;
+  vAction := '';
+
+  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position);  TL.drawSegments; end;end;
+  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);              TL.drawSegments; end;end;
+  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                  TL.drawSegments; end;end;
+  case key = ord('I') of TRUE: begin vOK := TL.createInPoint(TL.Position);                   TL.drawSegments; end;end;
+  case key = ord('O') of TRUE: begin vOK := TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
+  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
+  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
+
+  case key in [ord('l'), ord('L')] of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;
+  case key in [ord('s'), ord('S')] of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;
+
+  var vSaveUndo := vOK; // a change was made
+
   case key = ord('Z') of TRUE: begin TL.undo(TL.prevAction);   vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Z
   case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Y
 
-  var vAction := TL.saveSegments;
-  applySegments(TL.segments);
+  case vSaveUndo of TRUE: begin
+                            vAction := TL.saveSegments;
+                            applySegments(TL.segments);
+                            TL.addUndo(vAction); end;end;
 
-  case vSaveUndo of TRUE: TL.addUndo(vAction); end;
   case TL.keyHandled(key) of TRUE: key := 0; end;
 end;
 
@@ -330,6 +353,7 @@ begin
   vSL.text := aAction;
   FUndoList.push(vSL);
   result := aAction;
+  debugSL('added', vSL);
 end;
 
 function TTimeline.clear: boolean;
@@ -348,19 +372,23 @@ end;
 
 function TTimeline.createInPoint(const aPosition: integer): boolean;
 begin
+  result := FALSE;
   case segCount = 1 of FALSE: EXIT; end;
-  cutSegment(segments[0], aPosition, TRUE);
+  result := cutSegment(segments[0], aPosition, TRUE);
 end;
 
 function TTimeline.createOutPoint(const aPosition: integer): boolean;
 begin
+  result := FALSE;
   case segCount = 0 of  TRUE: EXIT; end;
   case segCount = 1 of  TRUE: cutSegment(segments[0], aPosition, FALSE, TRUE);
                        FALSE: case segCount = 2 of TRUE: cutSegment(segments[1], aPosition, FALSE, TRUE); end;end;
+  result := TRUE;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
 begin
+  result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
 
   var newStartSS := aPosition;
@@ -376,10 +404,12 @@ begin
 
   case aSegment.isLast of  TRUE: segments.add(newSegment);
                           FALSE: segments.insert(aSegment.ix + 1, newSegment); end;
+  result := TRUE;
 end;
 
 function TTimeline.delSegment(const aSegment: TSegment): boolean;
 begin
+  result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   result := aSegment.delete;
 end;
@@ -582,7 +612,7 @@ end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
 begin
-  result := key in [ord('C'), ord('I'), ord('L'), ord('M'), ord('N'), ord('O'), ord('R'), ord('S'), ord('X'), ord('Z')];
+  result := key in [ord('C'), ord('I'), ord('L'), ord('l'), ord('M'), ord('N'), ord('O'), ord('R'), ord('S'), ord('s'), ord('X'), ord('Z')];
 end;
 
 function TTimeline.loadSegments(aStringList: TStringList = NIL): string;
@@ -638,22 +668,26 @@ end;
 
 function TTimeline.mergeLeft(const aSegment: TSegment): boolean;
 begin
+  result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix := aSegment.ix;
   aSegment.startSS := segments[ix - 1].startSS;
   segments[ix - 1].color := aSegment.color;
   segments.delete(ix - 1);
+  result := FALSE;
 end;
 
 function TTimeline.mergeRight(const aSegment: TSegment): boolean;
 begin
+  result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
   var ix := aSegment.ix;
   aSegment.endSS := segments[ix + 1].endSS;
   segments[ix + 1].color := aSegment.color;
   segments.delete(ix + 1);
+  result := TRUE;
 end;
 
 procedure TTimeline.onCancelButton(sender: TObject);
@@ -667,19 +701,23 @@ begin
   case FRedoList.count = 0 of TRUE: EXIT; end;
 
   var vSL1 := FRedoList.peek;
-  case vSL1 <> NIL of TRUE: begin loadSegments(vSL1);
-                                  drawSegments;
-                                  var vSL2 := TStringList.create;
-                                  vSL2.text := vSL1.text;
-                                  FUndoList.push(VSL2); end;end;
+  case vSL1 <> NIL of TRUE: begin
+                              debugSL('redo', vSL1);
+                              loadSegments(vSL1);
+                              drawSegments;
+                              var vSL2 := TStringList.create;
+                              vSL2.text := vSL1.text;
+                              FUndoList.push(VSL2); end;end;
   FRedoList.pop;
 end;
 
 function TTimeline.restoreSegment(const aSegment: TSegment): boolean;
 begin
+  result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   aSegment.deleted := FALSE;
   case aSegment.oldColor = NEARLY_BLACK of FALSE: aSegment.color := aSegment.oldColor; end;
+  result := TRUE;
 end;
 
 function TTimeline.saveSegments: string;
@@ -740,6 +778,7 @@ begin
 
   var vSL1 := FUndoList.peek;
   case (vSL1 <> NIL) and (vSL1.text = aPrevAction) of TRUE: begin
+                                                              debugSL('pop', vSL1);
                                                               var vSL2 := TStringList.create;
                                                               vSL2.text := vSL1.text;
                                                               FRedoList.push(vSL2);
@@ -748,6 +787,7 @@ begin
 
   var vSL3 := FUndoList.peek;
   case vSL3 <> NIL of TRUE:  begin
+                              debugSL('undo', vSL3);
                               loadSegments(vSL3);
                               drawSegments;
                               var vSL4 := TStringList.create;

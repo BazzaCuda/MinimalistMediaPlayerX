@@ -467,7 +467,7 @@ end;
 
 function TUI.reloadPlaylistWindow: boolean;
 begin
-  case showingPlaylist of TRUE: reloadPlaylist(TRUE); end;
+  case GV.showingPlaylist of TRUE: reloadPlaylist(TRUE); end;
 end;
 
 function TUI.renameFile(const aFilePath: string): boolean;
@@ -481,7 +481,7 @@ begin
   vWasPlaying := MP.playing;
   case vWasPlaying of TRUE: MP.pause; end;
 
-  vWasPlaylist := showingPlaylist;
+  vWasPlaylist := GV.showingPlaylist;
   case vWasPlaylist of TRUE: shutPlaylist; end;
 
   vNewName := CU.renameFile(aFilePath);

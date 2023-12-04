@@ -50,7 +50,6 @@ type
 function focusPlaylist: boolean;
 function reloadPlaylist(const forceReload: boolean = FALSE): boolean;
 function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
-function showingPlaylist: boolean;
 function shutPlaylist: boolean;
 
 implementation
@@ -71,12 +70,6 @@ begin
   case playlistForm = NIL of FALSE: playlistForm.loadPlaylist(forceReload); end;
 end;
 
-function showingPlaylist: boolean;
-begin
-  result := playlistForm <> NIL;
-  GV.showingPlaylist := result;
-end;
-
 function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 begin
   case (playlistForm = NIL) and createNew of TRUE: playlistForm := TPlaylistForm.create(NIL); end;
@@ -92,12 +85,15 @@ begin
   focusPlaylist;
 
   playlistForm.highlightCurrentItem;
+
+  GV.showingPlaylist := TRUE;
 end;
 
 function shutPlaylist: boolean;
 begin
   case playlistForm <> NIL of TRUE: begin playlistForm.close; playlistForm.free; playlistForm := NIL; end;end;
   playlistForm := NIL;
+  GV.showingPlaylist := FALSE;
 end;
 
 {$R *.dfm}

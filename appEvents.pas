@@ -130,17 +130,17 @@ begin
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
-  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT UI.showingTimeline) of TRUE: screen.cursor := crNone; end;end;
+  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT GV.showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT UI.showingTimeline) of TRUE: screen.cursor := crNone; end;end;
 
   case msg.hwnd = UI.videoPanel.handle of TRUE: begin
-    case msgIs(WM_LBUTTONDOWN) and NOT showingPlaylist    of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+    case msgIs(WM_LBUTTONDOWN) and NOT GV.showingPlaylist of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
     case msgIs(WM_LBUTTONDOWN) and (ssCtrl in shiftState) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
     case msgIs(WM_LBUTTONUP)                              of TRUE:       mouseDown := FALSE; end;
     case mouseDown and msgIs(WM_MOUSEMOVE)                of TRUE: dragUI; end;
   end;end;
 
   case msgIs(WM_RBUTTONUP)                             of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
-  case msgIs(WM_LBUTTONDBLCLK) and NOT showingPlaylist of TRUE: MP.toggleFullscreen; end;
+  case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
   case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!

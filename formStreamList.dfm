@@ -2178,9 +2178,9 @@ object StreamListForm: TStreamListForm
           end
           object lblStream: TLabel
             Left = 80
-            Top = 9
+            Top = 12
             Width = 433
-            Height = 48
+            Height = 50
             AutoSize = False
             Caption = 'lblStream'
             Font.Charset = DEFAULT_CHARSET
