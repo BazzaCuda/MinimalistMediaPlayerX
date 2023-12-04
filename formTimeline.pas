@@ -39,9 +39,9 @@ type
     procedure pnlCursorMouseLeave(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   strict private
     FDragging: boolean;
-    FPrevAction: string;
   private
     function getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
@@ -57,6 +57,7 @@ type
     FMax: integer;
     FMediaFilePath: string;
     FPosition: integer;
+    FPrevAction: string;
     FUndoList: TObjectStack<TStringList>;
     FRedoList: TObjectStack<TStringList>;
     function getMax: integer;
@@ -66,7 +67,7 @@ type
   private
     constructor create;
     destructor  destroy; override;
-    function addUndo(aText: string): string;
+    function addUndo(const aAction: string): string;
     function createInPoint(const aPosition: integer): boolean;
     function createOutPoint(const aPosition: integer): boolean;
     function cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
@@ -102,6 +103,7 @@ type
     property max: integer read getMax write setMax;
     property mediaFilePath: string read FMediaFilePath;
     property position: integer read getPosition write setPosition;
+    property prevAction: string read FPrevAction write FPrevAction;
     function redo: boolean;
     property segCount: integer read getSegCount;
     property segments: TObjectList<TSegment> read getSegments;
@@ -272,6 +274,18 @@ begin
   pnlCursor.left   := -1;
 end;
 
+procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  var vSaveUndo := TL.keyHandled(ord(key));
+  case key in ['l', 'L'] of TRUE: begin TL.lengthenSegment(TSegment.selSeg);             TL.drawSegments; end;end;
+  case key in ['s', 'S'] of TRUE: begin TL.shortenSegment(TSegment.selSeg);              TL.drawSegments; end;end;
+  var vAction := TL.saveSegments;
+  applySegments(TL.segments);
+
+  case vSaveUndo of TRUE: TL.addUndo(vAction); end;
+  case TL.keyHandled(ord(key)) of TRUE: key := #0; end;
+end;
+
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   var vSaveUndo := TL.keyHandled(key);
@@ -282,17 +296,13 @@ begin
   case key = ord('O') of TRUE: begin TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
   case key = ord('M') of TRUE: begin TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
   case key = ord('N') of TRUE: begin TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
-  case key = ord('L') of TRUE: begin TL.lengthenSegment(TSegment.selSeg);             TL.drawSegments; end;end;
-  case key = ord('S') of TRUE: begin TL.shortenSegment(TSegment.selSeg);              TL.drawSegments; end;end;
-  case key = ord('Z') of TRUE: begin TL.undo(FPrevAction);     vSaveUndo := FALSE;    TL.drawSegments; end;end;
-  case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end;
+  case key = ord('Z') of TRUE: begin TL.undo(TL.prevAction);   vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Z
+  case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Y
 
   var vAction := TL.saveSegments;
   applySegments(TL.segments);
 
-  case vSaveUndo AND (vAction <> FPrevAction) of TRUE:  begin
-                                                          TL.addUndo(vAction);
-                                                          FPrevAction := vAction; end;end;
+  case vSaveUndo of TRUE: TL.addUndo(vAction); end;
   case TL.keyHandled(key) of TRUE: key := 0; end;
 end;
 
@@ -310,16 +320,16 @@ end;
 
 { TTimeline }
 
-function TTimeline.addUndo(aText: string): string;
+function TTimeline.addUndo(const aAction: string): string;
 begin
-  var vSL := TStringList.create;
-  vSL.text := aText;
-  FUndoList.push(vSL);
-  result := aText;
+  case aAction = FPrevAction of TRUE: EXIT; end;
 
-//  debug('');
-//  debug('undo added');
-//  for var i := 0 to vSL.count - 1 do debug(vSL[i]);
+  FPrevAction := aAction;
+
+  var vSL := TStringList.create;
+  vSL.text := aAction;
+  FUndoList.push(vSL);
+  result := aAction;
 end;
 
 function TTimeline.clear: boolean;
@@ -589,10 +599,9 @@ begin
   try
     case aStringList <> NIL of  TRUE: vSL.text := aStringList.text;
                                FALSE: vSL.loadFromFile(filePathMMP); end;
-//    debug('');
+
     for var i := 0 to vSL.count - 1 do begin
       case trim(vSL[i]) = '' of TRUE: CONTINUE; end;
-//      debug('loaded ' + vSL[i]);
       posHyphen := pos('-', vSL[i]);
       vStartSS  := strToInt(copy(vSL[i], 1, posHyphen - 1));
       posComma  := pos(',', vSL[i]);
@@ -604,11 +613,11 @@ begin
   finally
     vSL.free;
   end;
-//  case aStringList = NIL of TRUE: debugClear; end; // currently only need to see what undo and redo are doing.
 end;
 
 function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
 begin
+  case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
   aSegment.endSS := aSegment.endSS + 1;
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
@@ -718,6 +727,7 @@ end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
 begin
+  case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
   aSegment.endSS := aSegment.endSS - 1;
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS - 1;

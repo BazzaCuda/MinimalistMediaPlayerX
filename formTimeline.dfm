@@ -14,6 +14,7 @@ object TimelineForm: TTimelineForm
   Font.Name = 'Segoe UI'
   Font.Style = []
   OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
   OnKeyUp = FormKeyUp
   OnResize = FormResize
   TextHeight = 15
