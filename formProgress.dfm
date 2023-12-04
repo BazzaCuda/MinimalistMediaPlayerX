@@ -24,12 +24,12 @@ object ProgressForm: TProgressForm
     Align = alClient
     TabOrder = 0
     ExplicitWidth = 323
-    ExplicitHeight = 121
+    ExplicitHeight = 94
     object FSubHeading: TLabel
       Left = 6
-      Top = 38
+      Top = 35
       Width = 313
-      Height = 15
+      Height = 31
       Margins.Top = 10
       Alignment = taCenter
       AutoSize = False
@@ -40,6 +40,7 @@ object ProgressForm: TProgressForm
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      WordWrap = True
     end
     object FHeading: TLabel
       Left = 5
