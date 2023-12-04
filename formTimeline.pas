@@ -499,9 +499,9 @@ begin
 
   var vProgressForm := TProgressForm.create(NIL);
   vProgressForm.onCancel := onCancelButton;
-  var vS := '';
-  case segments.count > 1 of  TRUE: vS := 's'; end;
-  vProgressForm.heading.caption := format('Exporting %d segment%s (%d streams)', [TSegment.includedCount, vS, MI.selectedCount]);
+  var vS1 := ''; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
+  var vS2 := ''; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
+  vProgressForm.heading.caption := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
   vProgressForm.show;
 
   // export segments
