@@ -62,9 +62,11 @@ type
   private
     FChapterTitle:   string;
     FChapterStartSS: integer;
+    FChapterEndSS: integer;
   public
     property chapterTitle:   string  read FChapterTitle   write FChapterTitle;
     property chapterStartSS: integer read FChapterStartSS write FChapterStartSS;
+    property chapterEndSS:   integer read FChapterEndSS   write FChapterEndSS;
   end;
 
   TMediaInfo = class(TObject)
@@ -85,6 +87,7 @@ type
     FOtherCount: integer;
 
     FChapterCount: integer;
+    FDuration: integer;
     FLowestID: integer;
     FMediaChapters: TObjectList<TMediaChapter>;
     FMediaStreams:  TObjectList<TMediaStream>;
@@ -101,6 +104,7 @@ type
     procedure setURL(const aValue: string);
     function getStreamCount: integer;
     function getSelectedCount: integer;
+    function getDuration: integer;
   protected
     constructor create;
     destructor destroy; override;
@@ -109,7 +113,8 @@ type
     function initMediaInfo(const aURL: string = ''): boolean;
     property audioBitRate:      string  read getAudioBitRate;
     property audioCount:        integer read FAudioCount;
-    property chapterCount: integer read FChapterCount write FChapterCount;
+    property chapterCount:      integer read FChapterCount;
+    property duration:          integer read getDuration;
     property fileSize:          string  read getFileSize;
     property generalCount:      integer read FGeneralCount;
     property imageCount:        integer read FImageCount;
@@ -121,7 +126,7 @@ type
     property stereoMono:        string  read getStereoMono;
     property streamCount:       integer read getStreamCount;
     property textCount:         integer read FTextCount;
-    property URL:               string  read FURL write setURL;
+    property URL:               string  read FURL         write setURL;
     property videoBitRate:      string  read getVideoBitRate;
     property videoCount:        integer read FVideoCount;
     property X:                 integer read FWidth;
@@ -183,6 +188,11 @@ begin
   aMemo.lines.add(videoBitRate);
   aMemo.lines.add(stereoMono);
   aMemo.lines.add(fileSize);
+end;
+
+function TMediaInfo.getDuration: integer;
+begin
+  result := FDuration div 1000;
 end;
 
 function TMediaInfo.getFileSize: string;
@@ -288,7 +298,7 @@ var
     FMediaStreams.add(TMediaStream.create(vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
-  function cleanChapterTitle(aChapterTitle: string): string;
+  function cleanChapterTitle(const aChapterTitle: string): string;
   begin
     result := aChapterTitle;
     var posColon := pos(':', result);
@@ -296,11 +306,21 @@ var
 //    debug('chapterTitle: ' + result);
   end;
 
-  function cleanChapterStartSS(aStartSS: string): integer;
+  function cleanChapterStartSS(const aStartSS: string): integer;
   begin
     var vTimeSpan := TTimeSpan.parse(aStartSS);
     result := trunc(vTimeSpan.totalSeconds);
 //    debug(format('aStartSS: %s, seconds: %d ', [aStartSS, trunc(vTimeSpan.totalSeconds)]));
+  end;
+
+  function calcChapterEndSS: boolean;
+  begin
+    for var i := 0 to chapterCount - 1 do
+      case i = chapterCount - 1 of  TRUE: FMediaChapters[i].chapterEndSS := duration;
+                                   FALSE: FMediaChapters[i].chapterEndSS := FMediaChapters[i + 1].chapterStartSS - 1; end;
+
+//    for var i := 0 to chapterCount - 1 do
+//      debugFormat('chapter %d: %ds - %ds', [i + 1, FMediaChapters[i].chapterStartSS, FMediaChapters[i].chapterEndSS]);
   end;
 
   function createChapters: boolean;
@@ -312,6 +332,7 @@ var
 
     case chapterEnd > chapterBegin of TRUE: FChapterCount := chapterEnd - chapterBegin; end;
 //    debugInteger('chapter count', FChapterCount);
+   case chapterCount = 0 of TRUE: EXIT; end;
 
     FMediaChapters.clear;
     for var i := chapterBegin to chapterEnd - 1 do begin
@@ -320,6 +341,12 @@ var
       vChapter.chapterTitle   := cleanChapterTitle(string(MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Text))); // title
       vChapter.chapterStartSS := cleanChapterStartSS(MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Name));       // position
     end;
+
+    case FMediaChapters[0].chapterStartSS <> 0 of TRUE: begin
+                                                          FMediaChapters.insert(0, TMediaChapter.create);
+                                                          inc(FChapterCount); end;end;
+
+    calcChapterEndSS;
   end;
 
 begin
@@ -333,10 +360,9 @@ begin
     mediaInfo_Open(handle, PWideChar(FURL));
     FMediaStreams.clear;
 
-    createChapters;
-
     FOverallFrameRate := mediaInfo_Get(handle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'Duration',        Info_Text, Info_Name), FDuration)          of FALSE: FDuration         := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FWidth)             of FALSE: FWidth            := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
@@ -356,6 +382,8 @@ begin
       case mediaInfo_Get(handle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
       case mediaInfo_Get(handle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createTextStream(vStreamIx); end;
     end;
+
+    createChapters;
 
     FNeedInfo := FALSE;
   finally

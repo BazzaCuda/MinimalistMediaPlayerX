@@ -94,6 +94,7 @@ type
     function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function getSegments: TObjectList<TSegment>;
     procedure onCancelButton(sender: TObject);
+    function loadChapters: TStringList;
   protected
     function exportSegments: boolean;
   public
@@ -499,7 +500,7 @@ function TTimeline.defaultSegment: string;
 begin
   segments.clear;
   segments.add(TSegment.create(0, FMax));
-  result := addUndo(format('0-%d,0', [FMax]));
+  result := format('0-%d,0', [FMax]);
 end;
 
 function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -598,6 +599,17 @@ begin
   end;
 end;
 
+function TTimeLine.loadChapters: TStringList;
+begin
+  result := NIL;
+  case MI.chapterCount = 0 of TRUE: EXIT; end;
+
+  result := TStringList.create;
+
+  for var i := 0 to MI.chapterCount - 1 do
+    result.add(format('%d-%d,0', [MI.mediaChapters[i].chapterStartSS, MI.mediaChapters[i].chapterEndSS]));
+end;
+
 function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
@@ -605,7 +617,11 @@ begin
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
-                                  FALSE: result := defaultSegment; end;
+                                  FALSE: begin
+                                           var vSL := loadChapters;
+                                           case vSL <> NIL of  TRUE: begin result := addUndo(loadSegments(vSL)); vSL.free; end;
+                                                              FALSE:       result := addUndo(defaultSegment); end;end;end;
+
   drawSegments;
   applySegments(segments);
 end;
@@ -624,6 +640,7 @@ var
   posHyphen: integer;
   posComma: integer;
 begin
+  case aStringList <> NIL of TRUE: debug('stringlist <> NIL'); end;
   segments.clear;
   vSL := TStringList.create;
   try
