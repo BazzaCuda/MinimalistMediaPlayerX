@@ -58,6 +58,15 @@ type
     property selected:    boolean read FSelected write FSelected;
   end;
 
+  TMediaChapter = class(TObject)
+  private
+    FChapterTitle:   string;
+    FChapterStartSS: integer;
+  public
+    property chapterTitle:   string  read FChapterTitle   write FChapterTitle;
+    property chapterStartSS: integer read FChapterStartSS write FChapterStartSS;
+  end;
+
   TMediaInfo = class(TObject)
   private
     FAudioBitRate: integer;
@@ -77,7 +86,8 @@ type
 
     FChapterCount: integer;
     FLowestID: integer;
-    FMediaStreams: TObjectList<TMediaStream>;
+    FMediaChapters: TObjectList<TMediaChapter>;
+    FMediaStreams:  TObjectList<TMediaStream>;
     FNeedInfo: boolean;
     FURL: string;
 
@@ -88,7 +98,7 @@ type
     function getVideoBitRate: string;
     function getXY: string;
     function getStereoMono: string;
-    procedure setURL(const Value: string);
+    procedure setURL(const aValue: string);
     function getStreamCount: integer;
     function getSelectedCount: integer;
   protected
@@ -103,7 +113,8 @@ type
     property fileSize:          string  read getFileSize;
     property generalCount:      integer read FGeneralCount;
     property imageCount:        integer read FImageCount;
-    property mediaStreams:      TObjectList<TMediaStream> read FMediaStreams;
+    property mediaChapters:     TObjectList<TMediaChapter> read FMediaChapters;
+    property mediaStreams:      TObjectList<TMediaStream>  read FMediaStreams;
     property otherCount:        integer read FOtherCount;
     property overallBitRate:    string  read getOverallBitRate;
     property overallFrameRate:  string  read getOverallFrameRate;
@@ -126,7 +137,7 @@ function MI: TMediaInfo;
 implementation
 
 uses
-  mediaInfoDLL, system.sysUtils, commonUtils, _debugWindow;
+  mediaInfoDLL, system.sysUtils, commonUtils, system.timeSpan, _debugWindow;
 
 var
   gMI: TMediaInfo;
@@ -144,11 +155,14 @@ begin
   inherited;
   FMediaStreams := TObjectList<TMediaStream>.create;
   FMediaStreams.ownsObjects := TRUE;
+  FMediaChapters := TObjectList<TMediaChapter>.create;
+  FMediaChapters.ownsObjects := TRUE;
 end;
 
 destructor TMediaInfo.destroy;
 begin
   FMediaStreams.free;
+  FMediaChapters.free;
   inherited;
 end;
 
@@ -274,8 +288,38 @@ var
     FMediaStreams.add(TMediaStream.create(vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
-  function createMenuStream(aStreamIx: integer): boolean;
+  function cleanChapterTitle(aChapterTitle: string): string;
   begin
+    result := aChapterTitle;
+    var posColon := pos(':', result);
+    case posColon > 0 of TRUE: delete(result, 1, posColon); end;
+//    debug('chapterTitle: ' + result);
+  end;
+
+  function cleanChapterStartSS(aStartSS: string): integer;
+  begin
+    var vTimeSpan := TTimeSpan.parse(aStartSS);
+    result := trunc(vTimeSpan.totalSeconds);
+//    debug(format('aStartSS: %s, seconds: %d ', [aStartSS, trunc(vTimeSpan.totalSeconds)]));
+  end;
+
+  function createChapters: boolean;
+  begin
+    var chapterBegin: integer; var chapterEnd: integer;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_End',    Info_Text, Info_Name), chapterEnd)   of FALSE: chapterEnd   := 0; end;
+//    debugFormat('begin: %d, end: %d', [chapterBegin, chapterEnd]);
+
+    case chapterEnd > chapterBegin of TRUE: FChapterCount := chapterEnd - chapterBegin; end;
+//    debugInteger('chapter count', FChapterCount);
+
+    FMediaChapters.clear;
+    for var i := chapterBegin to chapterEnd - 1 do begin
+      var vChapter := TMediaChapter.create;
+      FMediaChapters.add(vChapter);
+      vChapter.chapterTitle   := cleanChapterTitle(string(MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Text))); // title
+      vChapter.chapterStartSS := cleanChapterStartSS(MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Name));       // position
+    end;
   end;
 
 begin
@@ -289,18 +333,7 @@ begin
     mediaInfo_Open(handle, PWideChar(FURL));
     FMediaStreams.clear;
 
-    var chapterBegin: integer; var chapterEnd: integer;
-    case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
-    case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_End',    Info_Text, Info_Name), chapterEnd)   of FALSE: chapterEnd   := 0; end;
-    debugFormat('begin: %d, end: %d', [chapterBegin, chapterEnd]);
-
-    case chapterEnd > chapterBegin of TRUE: FChapterCount := chapterEnd - chapterBegin; end;
-    debugInteger('chapter count', FChapterCount);
-
-    for var i := chapterBegin to chapterEnd - 1 do begin
-      debug(format('chapter %d: ', [i - 100]) + MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Text)); // Name
-      debug(format('chapter %d: ', [i - 100]) + MediaInfo_GetI(handle, Stream_Menu, 0, i, Info_Name)); // position
-    end;
+    createChapters;
 
     FOverallFrameRate := mediaInfo_Get(handle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
@@ -322,7 +355,6 @@ begin
       case mediaInfo_Get(handle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
       case mediaInfo_Get(handle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
       case mediaInfo_Get(handle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createTextStream(vStreamIx); end;
-      case mediaInfo_Get(handle, Stream_Menu,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createMenuStream(vStreamIx); end;
     end;
 
     FNeedInfo := FALSE;
@@ -331,10 +363,10 @@ begin
   end;
 end;
 
-procedure TMediaInfo.setURL(const Value: string);
+procedure TMediaInfo.setURL(const aValue: string);
 begin
-  FNeedInfo := value <> FURL;
-  FURL      := value;
+  FNeedInfo := aValue <> FURL;
+  FURL      := aValue;
 end;
 
 { TMediaStream }
