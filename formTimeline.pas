@@ -168,7 +168,7 @@ begin
       rtCMD:    lpParameters := PChar(' /K ffmpeg ' + aCmdLine);
     end;
 
-    lpDirectory := '';
+    lpDirectory := PWideChar(extractFilePath(ParamStr(0)));
 
     case aRunType of
       rtFFMpeg: nShow := SW_HIDE;
@@ -238,7 +238,7 @@ end;
 { TTimelineForm }
 
 procedure TTimelineForm.CreateParams(var Params: TCreateParams);
-// no taskbar icon for the app
+// no taskbar icon for this window
 begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);

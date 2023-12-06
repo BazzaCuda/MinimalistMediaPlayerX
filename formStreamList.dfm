@@ -48,7 +48,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 550
       Height = 538
-      ActivePage = tsSegments
+      ActivePage = tsLog
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -58,9 +58,8 @@ object StreamListForm: TStreamListForm
       ParentFont = False
       TabHeight = 24
       TabOrder = 0
-      TabWidth = 200
       object tsSegments: TTabSheet
-        Caption = 'Segments'
+        Caption = '          Segments          '
         object clSegments: TControlList
           Left = 0
           Top = 0
@@ -2148,7 +2147,7 @@ object StreamListForm: TStreamListForm
         end
       end
       object tsStreams: TTabSheet
-        Caption = 'Streams'
+        Caption = '          Streams          '
         ImageIndex = 1
         object clStreams: TControlList
           Left = 0
@@ -2275,6 +2274,14 @@ object StreamListForm: TStreamListForm
             ParentFont = False
           end
         end
+      end
+      object tsOptions: TTabSheet
+        Caption = 'Options'
+        ImageIndex = 2
+      end
+      object tsLog: TTabSheet
+        Caption = 'Log'
+        ImageIndex = 3
       end
     end
     object pnlButtons: TPanel

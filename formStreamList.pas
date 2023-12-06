@@ -23,7 +23,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, generics.collections, TSegmentClass,
-  formTimeline, System.ImageList, Vcl.ImgList, Vcl.Buttons;
+  System.ImageList, Vcl.ImgList, Vcl.Buttons;
 
 type
   TStreamListForm = class(TForm)
@@ -47,6 +47,8 @@ type
     lblStreamID: TLabel;
     pnlButtons: TPanel;
     btnExport: TBitBtn;
+    tsOptions: TTabSheet;
+    tsLog: TTabSheet;
     procedure formCreate(Sender: TObject);
     procedure formClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -164,7 +166,7 @@ begin
 end;
 
 procedure TStreamListForm.createParams(var Params: TCreateParams);
-// no taskbar icon for the app
+// no taskbar icon for this window
 begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
@@ -193,6 +195,13 @@ begin
 
   SELF.width  := 556;
   SELF.height := 600;
+
+  pageControl.tabWidth := 0; // tab widths are controlled by the width of the captions
+  tsSegments.caption := '          Segments          ';
+  tsStreams.caption  := '          Streams          ';
+  tsOptions.caption  := '          Options          ';
+  tsLog.caption      := '      Log      ';
+
 
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := $2B2B2B;
@@ -230,7 +239,7 @@ end;
 
 function TStreamListForm.updateStreamsCaption: boolean;
 begin
-  tsStreams.caption := format('Streams %d/%d', [MI.selectedCount, MI.streamCount]);
+  tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.streamCount]);
 end;
 
 initialization
