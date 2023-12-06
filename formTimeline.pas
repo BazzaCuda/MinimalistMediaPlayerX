@@ -295,7 +295,7 @@ begin
   case key in ['s', 'S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
 
   var vAction := TL.saveSegments;
-  applySegments(TL.segments);
+  TL.drawSegments;
 
   case (TL.lengthenCount = 1) OR (TL.shortenCount = 1) of TRUE: TL.addUndo(vAction); end;
 end;
@@ -326,7 +326,7 @@ begin
 
   case vSaveUndo of TRUE: begin
                             vAction := TL.saveSegments;
-                            applySegments(TL.segments);
+                            TL.drawSegments;
                             TL.addUndo(vAction); end;end;
 
   case TL.keyHandled(key) of TRUE: key := 0; end;
@@ -369,7 +369,7 @@ begin
   vSL.text := aAction;
   FUndoList.push(vSL);
   result := aAction;
-  debugSL('added undo', vSL);
+  debugSL('add undo', vSL);
 end;
 
 function TTimeline.clear: boolean;
@@ -464,6 +464,7 @@ begin
     inc(n);
   end;
   timelineForm.pnlCursor.bringToFront;
+  applySegments(TL.segments);
 end;
 
 function TTimeline.filePathOUT: string;
@@ -627,7 +628,6 @@ begin
                                                               FALSE:       result := addUndo(defaultSegment); end;end;end;
 
   drawSegments;
-  applySegments(segments);
 end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
@@ -668,7 +668,7 @@ end;
 
 function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
 begin
-  case aSegment = NIL of TRUE: EXIT; end;
+  case aSegment = NIL  of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
   aSegment.endSS := aSegment.endSS + 1;
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
@@ -735,9 +735,9 @@ begin
   case FRedoList.peek <> NIL of TRUE: begin
                                         debugSL('redo', FRedoList.peek);
                                         loadSegments(FRedoList.peek);
+                                        saveSegments;
                                         drawSegments;
                                         FUndoList.push(FRedoList.extract);
-                                        FRedoList.pop;
                                       end;end;
 end;
 
@@ -796,29 +796,31 @@ end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
 begin
-  case aSegment = NIL of TRUE: EXIT; end;
-  case aSegment.isFirst of TRUE: EXIT; end;
+  case aSegment = NIL  of TRUE: EXIT; end;
+  case aSegment.isLast of TRUE: EXIT; end;
   aSegment.endSS := aSegment.endSS - 1;
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS - 1;
 end;
 
 function TTimeline.undo(const aPrevAction: string): boolean;
+// discard the most recent action and apply the subsequent actions from the stack
 begin
   case ctrlKeyDown of FALSE: EXIT; end;
   case FUndoList.count = 0 of TRUE: EXIT; end;
 
   case (FUndoList.peek <> NIL) and (FUndoList.peek.text = aPrevAction) of TRUE: begin
-                                                                                  debugSL('pop', FUndoList.peek);
+                                                                                  debugSL('pop top', FUndoList.peek);
                                                                                   FRedoList.push(FUndoList.extract);
-                                                                                  FUndoList.pop;
                                                                                 end;end;
 
+  case FUndoList.count = 0 of TRUE: EXIT; end;
+
   case FUndoList.peek <> NIL of TRUE: begin
-                                        debugSL('undo', FUndoList.peek);
+                                        debugSL('undo pop', FUndoList.peek);
                                         loadSegments(FUndoList.peek);
+                                        saveSegments;
                                         drawSegments;
                                         FRedoList.push(FUndoList.extract);
-                                        FUndoList.pop;
                                       end;end;
 end;
 
