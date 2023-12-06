@@ -2052,6 +2052,7 @@ object TimelineForm: TTimelineForm
     Top = 40
     Width = 89
     Height = 28
+    Hint = 'Click to change time display format'
     Caption = '00:00:00'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clSilver
@@ -2059,6 +2060,9 @@ object TimelineForm: TTimelineForm
     Font.Name = 'Segoe UI'
     Font.Style = [fsBold]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
+    OnClick = lblPositionClick
   end
 end

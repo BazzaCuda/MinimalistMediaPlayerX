@@ -139,7 +139,7 @@ begin
     case mouseDown and msgIs(WM_MOUSEMOVE)                of TRUE: dragUI; end;
   end;end;
 
-  case msgIs(WM_RBUTTONUP)                             of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
+  case msgIs(WM_RBUTTONUP) and (msg.hwnd = UI.videoPanel.handle)                     of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
   case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen

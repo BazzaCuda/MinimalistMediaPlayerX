@@ -303,14 +303,12 @@ var
     result := aChapterTitle;
     var posColon := pos(':', result);
     case posColon > 0 of TRUE: delete(result, 1, posColon); end;
-//    debug('chapterTitle: ' + result);
   end;
 
   function cleanChapterStartSS(const aStartSS: string): integer;
   begin
     var vTimeSpan := TTimeSpan.parse(aStartSS);
     result := trunc(vTimeSpan.totalSeconds);
-//    debug(format('aStartSS: %s, seconds: %d ', [aStartSS, trunc(vTimeSpan.totalSeconds)]));
   end;
 
   function calcChapterEndSS: boolean;
@@ -318,9 +316,6 @@ var
     for var i := 0 to chapterCount - 1 do
       case i = chapterCount - 1 of  TRUE: FMediaChapters[i].chapterEndSS := duration;
                                    FALSE: FMediaChapters[i].chapterEndSS := FMediaChapters[i + 1].chapterStartSS - 1; end;
-
-//    for var i := 0 to chapterCount - 1 do
-//      debugFormat('chapter %d: %ds - %ds', [i + 1, FMediaChapters[i].chapterStartSS, FMediaChapters[i].chapterEndSS]);
   end;
 
   function createChapters: boolean;
@@ -328,11 +323,9 @@ var
     var chapterBegin: integer; var chapterEnd: integer;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_End',    Info_Text, Info_Name), chapterEnd)   of FALSE: chapterEnd   := 0; end;
-//    debugFormat('begin: %d, end: %d', [chapterBegin, chapterEnd]);
 
     case chapterEnd > chapterBegin of TRUE: FChapterCount := chapterEnd - chapterBegin; end;
-//    debugInteger('chapter count', FChapterCount);
-   case chapterCount = 0 of TRUE: EXIT; end;
+    case chapterCount = 0 of TRUE: EXIT; end;
 
     FMediaChapters.clear;
     for var i := chapterBegin to chapterEnd - 1 do begin

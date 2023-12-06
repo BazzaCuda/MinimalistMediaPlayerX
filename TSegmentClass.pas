@@ -37,6 +37,7 @@ type
     FSegID:       TLabel;
     FSelected:    boolean;
     FStartSS:     integer;
+    FTitle:       TLabel;
     FTrashCan:    TImage;
   private
     function  getDuration: integer;
@@ -53,6 +54,8 @@ type
     class destructor freeSegments;
     class function getSegments: TObjectList<TSegment>; static;
     class function getIncludedCount: integer; static;
+    function getTitle: string;
+    procedure setTitle(const Value: string);
 
   protected
     procedure doClick(Sender: TObject);
@@ -71,6 +74,7 @@ type
     property segID:     string  read getSegID  write setSegID;
     property selected:  boolean read FSelected write setSelected;
     property startSS:   integer read FStartSS  write FStartSS;
+    property title:     string  read getTitle  write setTitle;
     property trashCan:  TImage  read FTrashCan;
 
     class function clearFocus: boolean; static;
@@ -153,6 +157,12 @@ begin
   FSegID.left       := 4;
   FSegID.styleElements := [];
 
+  FTitle := TLabel.create(SELF);
+  FTitle.parent         := SELF;
+  FTitle.top            := 18;
+  FTitle.left           := 4;
+  FTitle.styleElements  := [];
+
   FSegDetails := TLabel.create(SELF);
   FSegDetails.parent     := SELF;
   FSegDetails.top        := 38;
@@ -211,6 +221,11 @@ begin
   result := FSegments;
 end;
 
+function TSegment.getTitle: string;
+begin
+  result := FTitle.caption;
+end;
+
 procedure TSegment.paint;
 begin
   var rect := getClientRect;
@@ -237,6 +252,11 @@ procedure TSegment.setSelected(const Value: boolean);
 begin
   FSelected := Value;
   invalidate;
+end;
+
+procedure TSegment.setTitle(const Value: string);
+begin
+  FTitle.caption := Value;
 end;
 
 class destructor TSegment.freeSegments;

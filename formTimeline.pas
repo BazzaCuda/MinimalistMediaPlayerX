@@ -40,11 +40,13 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure lblPositionClick(Sender: TObject);
   strict private
     FDragging: boolean;
   private
     function getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
+    function updatePositionDisplay: boolean;
   protected
     procedure CreateParams(var Params: TCreateParams);
     procedure exportSegments(sender: TObject);
@@ -82,13 +84,13 @@ type
     function getSegCount: integer;
     function getTimelineHeight: integer;
     function lengthenSegment(const aSegment: TSegment): boolean;
-    function loadSegments(aStringList: TStringList = NIL): string;
-    function log(aLogEntry: string): boolean;
+    function loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
+    function log(const aLogEntry: string): boolean;
     function mergeLeft(const aSegment: TSegment): boolean;
     function mergeRight(const aSegment: TSegment): boolean;
     function restoreSegment(const aSegment: TSegment): boolean;
     function saveSegments: string;
-    function segFileEntry(aSegFile: string): string;
+    function segFileEntry(const aSegFile: string): string;
     function segmentAtCursor: TSegment;
     function shortenSegment(const aSegment: TSegment): boolean;
     function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -101,7 +103,7 @@ type
     function clear: boolean;
     function delSegment(const aSegment: TSegment): boolean;
     function keyHandled(key: WORD): boolean;
-    function initTimeline(aMediaFilePath: string; aMax: integer): string;
+    function initTimeline(const aMediaFilePath: string; const aMax: integer): string;
     function undo(const aPrevAction: string): boolean;
     property max: integer read getMax write setMax;
     property mediaFilePath: string read FMediaFilePath;
@@ -342,6 +344,19 @@ begin
   result := pnlCursor.left;
 end;
 
+procedure TTimelineForm.lblPositionClick(Sender: TObject);
+begin
+  case lblPosition.tag = 0 of  TRUE: lblPosition.tag := 1;
+                              FALSE: lblPosition.tag := 0; end;
+  updatePositionDisplay;
+end;
+
+function TTimelineForm.updatePositionDisplay: boolean;
+begin
+  case lblPosition.tag = 0 of  TRUE: timelineForm.lblPosition.caption  := intToStr(TL.Position) + 's';
+                              FALSE: timelineForm.lblPosition.caption  := CU.formatTime(TL.Position); end;
+end;
+
 { TTimeline }
 
 function TTimeline.addUndo(const aAction: string): string;
@@ -354,7 +369,7 @@ begin
   vSL.text := aAction;
   FUndoList.push(vSL);
   result := aAction;
-  debugSL('added', vSL);
+  debugSL('added undo', vSL);
 end;
 
 function TTimeline.clear: boolean;
@@ -599,18 +614,7 @@ begin
   end;
 end;
 
-function TTimeLine.loadChapters: TStringList;
-begin
-  result := NIL;
-  case MI.chapterCount = 0 of TRUE: EXIT; end;
-
-  result := TStringList.create;
-
-  for var i := 0 to MI.chapterCount - 1 do
-    result.add(format('%d-%d,0', [MI.mediaChapters[i].chapterStartSS, MI.mediaChapters[i].chapterEndSS]));
-end;
-
-function TTimeline.initTimeline(aMediaFilePath: string; aMax: integer): string;
+function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): string;
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   segments.clear;
@@ -619,7 +623,7 @@ begin
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
                                   FALSE: begin
                                            var vSL := loadChapters;
-                                           case vSL <> NIL of  TRUE: begin result := addUndo(loadSegments(vSL)); vSL.free; end;
+                                           case vSL <> NIL of  TRUE: begin result := addUndo(loadSegments(vSL, TRUE)); vSL.free; end;
                                                               FALSE:       result := addUndo(defaultSegment); end;end;end;
 
   drawSegments;
@@ -631,7 +635,7 @@ begin
   result := key in [ord('C'), ord('I'), ord('L'), ord('l'), ord('M'), ord('N'), ord('O'), ord('R'), ord('S'), ord('s'), ord('X'), ord('Z')];
 end;
 
-function TTimeline.loadSegments(aStringList: TStringList = NIL): string;
+function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
 var
   vSL: TStringList;
   vStartSS: integer;
@@ -640,7 +644,6 @@ var
   posHyphen: integer;
   posComma: integer;
 begin
-  case aStringList <> NIL of TRUE: debug('stringlist <> NIL'); end;
   segments.clear;
   vSL := TStringList.create;
   try
@@ -654,7 +657,8 @@ begin
       posComma  := pos(',', vSL[i]);
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
-      segments.add(TSegment.create(vStartSS, vEndss, vDeleted));
+      var ix := segments.add(TSegment.create(vStartSS, vEndss, vDeleted));
+      case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;
       result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
   finally
@@ -670,7 +674,18 @@ begin
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
 end;
 
-function TTimeline.log(aLogEntry: string): boolean;
+function TTimeLine.loadChapters: TStringList;
+begin
+  result := NIL;
+  case MI.chapterCount = 0 of TRUE: EXIT; end;
+
+  result := TStringList.create;
+
+  for var i := 0 to MI.chapterCount - 1 do
+    result.add(format('%d-%d,0', [MI.mediaChapters[i].chapterStartSS, MI.mediaChapters[i].chapterEndSS]));
+end;
+
+function TTimeline.log(const aLogEntry: string): boolean;
 begin
   var vLogFile := filePathLOG;
   var vLog := TStringList.create;
@@ -717,15 +732,13 @@ begin
   case ctrlKeyDown of FALSE: EXIT; end;
   case FRedoList.count = 0 of TRUE: EXIT; end;
 
-  var vSL1 := FRedoList.peek;
-  case vSL1 <> NIL of TRUE: begin
-                              debugSL('redo', vSL1);
-                              loadSegments(vSL1);
-                              drawSegments;
-                              var vSL2 := TStringList.create;
-                              vSL2.text := vSL1.text;
-                              FUndoList.push(VSL2); end;end;
-  FRedoList.pop;
+  case FRedoList.peek <> NIL of TRUE: begin
+                                        debugSL('redo', FRedoList.peek);
+                                        loadSegments(FRedoList.peek);
+                                        drawSegments;
+                                        FUndoList.push(FRedoList.extract);
+                                        FRedoList.pop;
+                                      end;end;
 end;
 
 function TTimeline.restoreSegment(const aSegment: TSegment): boolean;
@@ -755,7 +768,7 @@ begin
   case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
-function TTimeline.segFileEntry(aSegFile: string): string;
+function TTimeline.segFileEntry(const aSegFile: string): string;
 begin
   result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
@@ -777,7 +790,8 @@ begin
   FPosition := value;
   case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
   timelineForm.pnlCursor.left := trunc((FPosition / FMax) * timelineForm.width) - timelineForm.pnlCursor.width;
-  timelineForm.lblPosition.caption  := CU.formatTime(FPosition);
+  timelineForm.updatePositionDisplay;
+
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
@@ -793,24 +807,19 @@ begin
   case ctrlKeyDown of FALSE: EXIT; end;
   case FUndoList.count = 0 of TRUE: EXIT; end;
 
-  var vSL1 := FUndoList.peek;
-  case (vSL1 <> NIL) and (vSL1.text = aPrevAction) of TRUE: begin
-                                                              debugSL('pop', vSL1);
-                                                              var vSL2 := TStringList.create;
-                                                              vSL2.text := vSL1.text;
-                                                              FRedoList.push(vSL2);
-                                                              FUndoList.pop;
-                                                              case FUndoList.count = 0 of TRUE: EXIT; end;end;end;
+  case (FUndoList.peek <> NIL) and (FUndoList.peek.text = aPrevAction) of TRUE: begin
+                                                                                  debugSL('pop', FUndoList.peek);
+                                                                                  FRedoList.push(FUndoList.extract);
+                                                                                  FUndoList.pop;
+                                                                                end;end;
 
-  var vSL3 := FUndoList.peek;
-  case vSL3 <> NIL of TRUE:  begin
-                              debugSL('undo', vSL3);
-                              loadSegments(vSL3);
-                              drawSegments;
-                              var vSL4 := TStringList.create;
-                              vSL4.text := vSL3.text;
-                              FRedoList.push(vSL4); end;end;
-  FUndoList.pop;
+  case FUndoList.peek <> NIL of TRUE: begin
+                                        debugSL('undo', FUndoList.peek);
+                                        loadSegments(FUndoList.peek);
+                                        drawSegments;
+                                        FRedoList.push(FUndoList.extract);
+                                        FUndoList.pop;
+                                      end;end;
 end;
 
 initialization
