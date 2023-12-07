@@ -791,7 +791,6 @@ begin
   case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
   timelineForm.pnlCursor.left := trunc((FPosition / FMax) * timelineForm.width) - timelineForm.pnlCursor.width;
   timelineForm.updatePositionDisplay;
-
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;

@@ -49,6 +49,7 @@ type
     btnExport: TBitBtn;
     tsOptions: TTabSheet;
     tsLog: TTabSheet;
+    lblTitle: TLabel;
     procedure formCreate(Sender: TObject);
     procedure formClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -129,6 +130,7 @@ begin
   lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS, CU.formatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS)]);
+  lblTitle.caption        := FSegments[aIndex].title;
   shape1.brush.color      := FSegments[aIndex].color;
   shape1.brush.style      := bsSolid;
   shape1.pen.color        := $7E7E7E;

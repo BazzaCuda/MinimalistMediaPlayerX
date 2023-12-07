@@ -48,7 +48,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 550
       Height = 538
-      ActivePage = tsLog
+      ActivePage = tsSegments
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -2144,6 +2144,19 @@ object StreamListForm: TStreamListForm
             Proportional = True
             Stretch = True
           end
+          object lblTitle: TLabel
+            Left = 96
+            Top = 8
+            Width = 38
+            Height = 17
+            Caption = 'lblTitle'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWhite
+            Font.Height = -13
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+          end
         end
       end
       object tsStreams: TTabSheet
@@ -2166,8 +2179,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 538
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
