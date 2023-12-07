@@ -22,7 +22,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
 
-- If a corresponding subtitle file exists for the media file (.srt file, for example), the subtitles will be shown automatically.
+- If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles,the subtitles will be shown automatically.
 
 - Full-resolution screenshots can be saved for individual frames.
 
