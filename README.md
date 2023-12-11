@@ -1,7 +1,8 @@
 Minimalist Media Player
 =====================
 
-v2 RELEASED: Fast, lossless audio/video editing - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
+VERSION 2 RELEASED: Fast, lossless audio/video editing 
+- https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
 A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
 
