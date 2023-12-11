@@ -619,6 +619,7 @@ function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: intege
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   segments.clear; FUndoList.clear; FRedoList.clear;
+  refreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);

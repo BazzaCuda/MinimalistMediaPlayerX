@@ -59,7 +59,7 @@ type
   private
     FOnExport: TNotifyEvent;
     FSegments: TObjectList<TSegment>;
-    function getStreamInfo: integer;
+    function getStreamInfo(const aMediaFilePath: string): integer;
     function updateExportButton(aEnabled: boolean): boolean;
     function updateStreamsCaption: boolean;
   protected
@@ -70,8 +70,8 @@ type
   end;
 
 function applySegments(const aSegments: TObjectList<TSegment>): boolean;
+function refreshStreamInfo(const aMediaFilePath: string): boolean;
 function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
-function showingStreamList: boolean;
 function shutStreamList: boolean;
 
 implementation
@@ -81,9 +81,9 @@ uses consts, commonUtils, mediaInfo, system.generics.defaults, _debugWindow;
 var
   streamListForm: TStreamListForm;
 
-function showingStreamList: boolean;
+function refreshStreamInfo(const aMediaFilePath: string): boolean;
 begin
-  result := streamListForm <> NIL;
+  MI.lowestID := streamListForm.getStreamInfo(aMediaFilePath);
 end;
 
 function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
@@ -161,6 +161,7 @@ end;
 
 procedure TStreamListForm.clStreamsItemClick(Sender: TObject);
 begin
+  showMessage('clStreamsItemClick');
   MI.mediaStreams[clStreams.itemIndex].selected := NOT MI.mediaStreams[clStreams.itemIndex].selected;
   clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
   updateStreamsCaption;
@@ -212,15 +213,19 @@ begin
   borderStyle       := bsNone;
   font.color        := clSilver;
 
-  clSegments.ItemCount := 0;
+  clSegments.itemCount := 0;
+  clStreams.itemCount  := 0;
 
-  MI.lowestID := getStreamInfo;
+//  MI.lowestID := getStreamInfo;
 end;
 
-function TStreamListForm.getStreamInfo: integer;
+function TStreamListForm.getStreamInfo(const aMediaFilePath: string): integer;
 begin
   result := -1;
-  MI.initMediaInfo;
+
+  clStreams.itemCount  := 0;
+
+  MI.initMediaInfo(aMediaFilePath);
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
   MI.mediaStreams.sort(TComparer<TMediaStream>.construct(
@@ -232,6 +237,8 @@ begin
       end
       ));
   case MI.mediaStreams.count > 0 of TRUE: case tryStrToInt(MI.mediaStreams[0].ID, result) of FALSE: result := 0; end;end;
+
+  updateExportButton(MI.selectedCount > 0);
 end;
 
 function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;

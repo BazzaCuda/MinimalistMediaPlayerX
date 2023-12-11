@@ -324,7 +324,8 @@ var
     case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Menu,         0, 'Chapters_Pos_End',    Info_Text, Info_Name), chapterEnd)   of FALSE: chapterEnd   := 0; end;
 
-    case chapterEnd > chapterBegin of TRUE: FChapterCount := chapterEnd - chapterBegin; end;
+    case chapterEnd > chapterBegin of  TRUE: FChapterCount := chapterEnd - chapterBegin;
+                                      FALSE: FChapterCount := 0; end;
     case chapterCount = 0 of TRUE: EXIT; end;
 
     FMediaChapters.clear;

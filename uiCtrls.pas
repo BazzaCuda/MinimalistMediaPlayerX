@@ -604,6 +604,8 @@ begin
                            FALSE: shutTimeline; end;
 
   case FShowingTimeline of TRUE: begin smallerWindow(handle); TL.initTimeline(PL.currentItem, MP.duration); end;end;
+
+  MP.dontPlayNext := FShowingTimeline;
 end;
 
 function TUI.toggleHelpWindow: boolean;
