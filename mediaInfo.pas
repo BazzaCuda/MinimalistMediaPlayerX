@@ -252,6 +252,8 @@ var
 
   function createVideoStream(aStreamIx: integer): boolean;
   begin
+//    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
+
     vBitRate    := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'BitRate/String',         Info_Text, Info_Name);
     vDuration   := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Duration/String5',       Info_Text, Info_Name);
     vFormat     := mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format',                 Info_Text, Info_Name);
