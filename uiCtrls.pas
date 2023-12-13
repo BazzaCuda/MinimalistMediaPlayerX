@@ -328,7 +328,7 @@ begin
   case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
-  ST.formResize;
+  ST.formResize(UI.width);
   PB.formResize;
 
   moveHelpWindow(FALSE);

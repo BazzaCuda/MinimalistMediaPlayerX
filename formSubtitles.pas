@@ -38,6 +38,7 @@ type
     FOpInfoTimer: TTimer;
     FShowTime: boolean;
     FShowData: boolean;
+    FUIWidth: integer;
 
     constructor create;
     function  getHWND: HWND;
@@ -49,7 +50,7 @@ type
     procedure setShowTime(const value: boolean);
   public
     destructor Destroy; override;
-    procedure  formResize;
+    procedure  formResize(aUIWidth: integer = 0);
     function   initSubtitles(const aVideoPanel: TPanel): boolean;
     function brighter: integer;
     function color: integer;
@@ -69,7 +70,7 @@ function ST: TSubtitlesForm;
 implementation
 
 uses
-  mediaPlayer, commonUtils, uiCtrls, configFile, consts, _debugWindow;
+  mediaPlayer, commonUtils, configFile, consts, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
@@ -188,7 +189,7 @@ begin
   inherited;
 end;
 
-procedure TSubTitlesForm.formResize;
+procedure TSubTitlesForm.formResize(aUIWidth: integer = 0);
 // align := alBottom draws the labels but not in the correct position!
 begin
   SELF.height     := DEFAULT_WINDOW_HEIGHT;
@@ -196,6 +197,7 @@ begin
   FTimeLabel.top  := SELF.height - FTimeLabel.height;
   FOpInfo.left    := FTimeLabel.left;                  // needs to be set even though align = alBottom!
   FOpInfo.top     := FTimeLabel.top - FOpInfo.height;
+  case aUIWidth <> 0 of TRUE: FUIWidth := aUIWidth; end;
 end;
 
 function TSubtitlesForm.getHWND: HWND;
@@ -247,7 +249,7 @@ procedure TSubtitlesForm.setShowData(const value: boolean);
 begin
   FShowData := value;
   case FShowData of FALSE: FDataMemo.clear; end;
-  FDataMemo.visible := FShowData and (UI.width > 360);
+  FDataMemo.visible := FShowData and (FUIWidth > 360);
 end;
 
 procedure TSubtitlesForm.setShowTime(const value: boolean);

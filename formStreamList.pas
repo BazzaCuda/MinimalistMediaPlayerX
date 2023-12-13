@@ -161,7 +161,6 @@ end;
 
 procedure TStreamListForm.clStreamsItemClick(Sender: TObject);
 begin
-  showMessage('clStreamsItemClick');
   MI.mediaStreams[clStreams.itemIndex].selected := NOT MI.mediaStreams[clStreams.itemIndex].selected;
   clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
   updateStreamsCaption;
