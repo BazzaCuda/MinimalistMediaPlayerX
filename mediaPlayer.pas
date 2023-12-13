@@ -64,9 +64,10 @@ type
     {property setters}
     function  getDuration: integer;
     function  getPosition: integer;
-    procedure setPosition(const Value: integer);
     function  getVideoHeight: int64;
     function  getVideoWidth: int64;
+    procedure setKeepOpen(const Value: boolean);
+    procedure setPosition(const Value: integer);
   public
     destructor  Destroy; override;
     function allReset: string;
@@ -128,6 +129,7 @@ type
     property formattedSpeed:      string       read getFormattedSpeed;
     property formattedTime:       string       read getFormattedTime;
     property formattedVol:        string       read getFormattedVol;
+    property keepOpen:            boolean                         write setKeepOpen;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
     property onPlayNew:           TNotifyEvent read FOnPlayNext   write FOnPlayNew;
     property onPlayNext:          TNotifyEvent read FOnPlayNext   write FOnPlayNext;
@@ -669,6 +671,11 @@ begin
   mpv.GetPropertyInt64('saturation', saturation);
   mpv.SetPropertyInt64('saturation', saturation + 1);
   result := getFormattedsaturation;
+end;
+
+procedure TMediaPlayer.setKeepOpen(const Value: boolean);
+begin
+  mpv.SetPropertyBool('keep-open', Value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
 end;
 
 procedure TMediaPlayer.setPosition(const Value: integer);
