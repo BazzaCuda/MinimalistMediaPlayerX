@@ -309,8 +309,12 @@ var
 
   function cleanChapterStartSS(const aStartSS: string): integer;
   begin
-    var vTimeSpan := TTimeSpan.parse(aStartSS);
-    result := trunc(vTimeSpan.totalSeconds);
+    try
+      var vTimeSpan := TTimeSpan.parse(aStartSS);
+      result := trunc(vTimeSpan.totalSeconds);
+    except
+      result := 0;
+    end;
   end;
 
   function calcChapterEndSS: boolean;

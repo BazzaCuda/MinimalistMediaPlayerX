@@ -608,7 +608,7 @@ begin
   log(cmdLine);
 
   result := execAndWait(cmdLine);
-  case result of FALSE: begin exportFail(vProgressForm); EXIT; end;end;
+  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: execAndWait(cmdLine, rtCMD); end;end;
 
   finally
     vProgressForm.free;
