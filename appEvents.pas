@@ -153,7 +153,7 @@ begin
 
   case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
-  case msgIs(WIN_CAPTION)             of TRUE: MC.caption := PL.formattedItem; end;
+  case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; end;end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;

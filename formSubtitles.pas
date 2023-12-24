@@ -262,7 +262,7 @@ function TSubtitlesForm.startOpInfoTimer: boolean;
 begin
   case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(NIL); end;
   FOpInfoTimer.enabled  := FALSE;
-  FOpInfoTimer.interval := 1000;
+  FOpInfoTimer.interval := 2000;
   FOpInfoTimer.onTimer  := timerEvent;
   FOpInfoTimer.enabled  := TRUE;
 end;

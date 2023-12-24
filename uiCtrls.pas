@@ -75,6 +75,7 @@ type
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType): boolean;
     function showWindow: boolean;
+    function showXY: boolean;
     function shutTimeline: boolean;
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
@@ -334,7 +335,7 @@ begin
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
   moveTimelineWindow(FALSE);
-  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+  showXY;
 end;
 
 function TUI.smallerWindow(const aWnd: HWND): boolean;
@@ -554,6 +555,11 @@ begin
   case GV.closeApp of TRUE: EXIT; end;
   winAPI.windows.showWindow(FMainForm.Handle, SW_SHOW); // solves the "Cannot change Visible in onShow or in onHide" error
   FMainForm.visible := TRUE;                            // still needed in addition to the previous in order to get a mouse cursor!
+end;
+
+function TUI.showXY: boolean;
+begin
+  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 end;
 
 function TUI.shutTimeline: boolean;
