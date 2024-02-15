@@ -448,7 +448,7 @@ begin
   end;end;
   mpv.openFile(aURL);
   result := TRUE;
-  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
+//  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
 end;
 
 function TMediaPlayer.panDn(const aShiftState: TShiftState): string;
@@ -545,15 +545,20 @@ begin
 
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
+
+// EXPERIMENTAL
+  MI.URL     := aURL;
+// ============
+
   openURL(aURL);
 
   var vMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case UI.autoCentre or (vMediaType = mtAudio) of TRUE: UI.setWindowSize(vMediaType); end;
+  case {UI.autoCentre or} (vMediaType = mtAudio) of TRUE: UI.setWindowSize(vMediaType); end;
 
   mpv.volume := FVol;
   mpv.mute   := FMuted;
-  MI.URL     := aURL;
+//  MI.URL     := aURL;
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
 

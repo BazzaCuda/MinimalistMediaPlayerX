@@ -32,7 +32,7 @@ type
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
-            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox);
+            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -180,6 +180,7 @@ begin
   case keyUp and keyIs(S) and ctrl                            of TRUE: result := koToggleSubtitles; end;
   case keyUp and keyIs(R) and ctrl                            of TRUE: result := koToggleRepeat; end;
   case keyUp and keyIs(E) and ctrl                            of TRUE: result := koToggleEditMode; end;
+  case keyUp and keyIs(M)                                     of TRUE: result := koMaximize; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -329,6 +330,7 @@ begin
     koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
     koToggleEditMode:    UI.toggleTimeline;
     koAboutBox:          UI.showAboutBox;
+    koMaximize:          UI.maximize;
   end;
 
   result := TRUE;

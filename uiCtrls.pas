@@ -50,6 +50,7 @@ type
     procedure onMPPosition(const aMax: integer; const aPosition: integer);
     function getXY: TPoint;
     function getTimelineHeight: integer;
+    procedure setHeight(const Value: integer);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -63,6 +64,7 @@ type
     function handle: HWND;
     function initUI(const aForm: TForm): boolean;
     function keepFile(const aFilePath: string): boolean;
+    function maximize: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
@@ -86,7 +88,7 @@ type
     function togglePlaylist: boolean;
     function tweakWindow: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
-    property height: integer read getHeight;
+    property height: integer read getHeight write setHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property showingTimeline: boolean read FShowingTimeline;
     property timelineHeight: integer read getTimelineHeight;
@@ -450,6 +452,13 @@ begin
   MP.resume;
 end;
 
+function TUI.maximize: boolean;
+begin
+//  UI.height := CU.getScreenHeight;
+//  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
+  setWindowSize(mtVideo);
+end;
+
 function TUI.minimizeWindow: boolean;
 begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -532,11 +541,17 @@ begin
   aForm.glassFrame.top      := 1;
 end;
 
+procedure TUI.setHeight(const Value: integer);
+begin
+  FMainForm.height := value;
+end;
+
 function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-                      mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); // EXPERIMENTAL
+//                    mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); // EXPERIMENTAL
+                      mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth * CU.getAspectRatio(MI.X, MI.Y)); // EXPERIMENTAL
                                       FMainForm.height := CU.getScreenHeight; end;end;
 end;
 
@@ -559,7 +574,8 @@ end;
 
 function TUI.showXY: boolean;
 begin
-  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+//  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+  ST.opInfo := PL.formattedItem;
 end;
 
 function TUI.shutTimeline: boolean;
