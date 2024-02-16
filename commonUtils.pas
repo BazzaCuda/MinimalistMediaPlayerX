@@ -179,7 +179,7 @@ end;
 
 function TCommonUtils.getAspectRatio(const X: integer; const Y: integer): double;
 begin
-  result := 1; // EXPERIMENTAL
+  result := 1;
   case (X = 0) or (Y = 0) of TRUE: EXIT; end;
   result := Y / X;
 end;

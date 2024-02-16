@@ -143,7 +143,7 @@ begin
   case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
-  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000);   UI.adjustAspectRatio(UI.handle, MI.X, MI.Y); end;end; //   MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
+  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
   case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin CU.delay(05);     UI.autoCentreWindow(UI.handle); end;end;
   case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin CU.delay(05);     UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;end;
   case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin CU.delay(05);     UI.smallerWindow(UI.handle); end;end;
@@ -153,7 +153,7 @@ begin
 
   case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
-  case msgIs(WIN_CAPTION)             of TRUE: begin {UI.showXY;} MC.caption := PL.formattedItem; ST.opInfo := PL.formattedItem; end;end;
+  case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; {ST.opInfo := PL.formattedItem;} end;end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;

@@ -51,6 +51,7 @@ type
     function getXY: TPoint;
     function getTimelineHeight: integer;
     procedure setHeight(const Value: integer);
+    procedure setWidth(const Value: integer);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -94,7 +95,7 @@ type
     property timelineHeight: integer read getTimelineHeight;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
-    property width: integer read getWidth;
+    property width: integer read getWidth write setWidth;
   end;
 
 function UI: TUI;
@@ -137,7 +138,9 @@ begin
   vRatio := Y / X;
 
   CU.getWndWidthHeight(aWnd, vWidth, vHeight);
-  vHeight := trunc(vWidth * vRatio) + 2;
+  case autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
+                     FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
+
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
 
@@ -208,6 +211,7 @@ end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
+//  debugBoolean('autoCentre', autoCentre);
   case autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
 end;
@@ -340,11 +344,6 @@ begin
   showXY;
 end;
 
-function TUI.smallerWindow(const aWnd: HWND): boolean;
-begin
-  greaterWindow(aWnd, [ssCtrl]);
-end;
-
 function TUI.getHeight: integer;
 begin
   result := FMainForm.height;
@@ -454,8 +453,6 @@ end;
 
 function TUI.maximize: boolean;
 begin
-//  UI.height := CU.getScreenHeight;
-//  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   setWindowSize(mtVideo);
 end;
 
@@ -546,13 +543,21 @@ begin
   FMainForm.height := value;
 end;
 
+procedure TUI.setWidth(const Value: integer);
+begin
+  FMainForm.width := value;
+end;
+
 function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-//                    mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); // EXPERIMENTAL
-                      mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth * CU.getAspectRatio(MI.X, MI.Y)); // EXPERIMENTAL
-                                      FMainForm.height := CU.getScreenHeight; end;end;
+//                    mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth / CU.getAspectRatio(MP.videoWidth, MP.videoHeight));
+                      mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
+                                      var VHeight := CU.getScreenHeight - 50;
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, 0);
+  end;end;
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;
@@ -582,6 +587,11 @@ function TUI.shutTimeline: boolean;
 begin
   FShowingTimeline := FALSE;
   formTimeline.shutTimeline;
+end;
+
+function TUI.smallerWindow(const aWnd: HWND): boolean;
+begin
+  greaterWindow(aWnd, [ssCtrl]);
 end;
 
 function TUI.toggleBlackout: boolean;
