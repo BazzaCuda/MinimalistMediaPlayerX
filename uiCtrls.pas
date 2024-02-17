@@ -143,6 +143,7 @@ begin
 
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
+//  debugFormat('%dx%d AR=%f', [vWidth, vHeight, vRatio]);
 
   postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
@@ -335,6 +336,7 @@ begin
   case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
+//  debugFormat('V: %dx%d', [MP.videoWidth, MP.videoHeight]);
   ST.formResize(UI.width);
   PB.formResize;
 
@@ -552,11 +554,11 @@ function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
 begin
   case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
                                       FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
-//                    mtVideo: begin  FMainForm.width := trunc(CU.getScreenWidth / CU.getAspectRatio(MP.videoWidth, MP.videoHeight));
                       mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
                                       var VHeight := CU.getScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE);
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); // center window
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+//                                      debugFormat('vWidth&vHeight=%dx%d XY=%dx%d AR=%f', [vWidth, vHeight, MI.X, MI.Y, CU.getAspectRatio(MI.X, MI.Y)]);
   end;end;
 end;
 
@@ -580,6 +582,7 @@ end;
 function TUI.showXY: boolean;
 begin
 //  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+//  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
   ST.opInfo := PL.formattedItem;
 end;
 

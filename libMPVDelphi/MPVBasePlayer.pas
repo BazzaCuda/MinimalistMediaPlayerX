@@ -245,7 +245,7 @@ function MPVLibLoaded(const sLibPath: string): Boolean;
 
 implementation
 
-
+uses _debugWindow;
 
 { TMPVEventThread }
 
@@ -652,7 +652,8 @@ begin
       eState := m_eState;
       if (eState=mpsPlay) then
       begin
-        if (m_fCurSec>=m_fLenMax) then
+//        debugFormat('%f of %f', [m_fCurSec, m_fLenMax]);
+        if (m_fCurSec>=m_fLenMax - 0.25) then
         begin
           // MPV does not notify EOF before unloading file
           // although reached the end, but player is still "playing"

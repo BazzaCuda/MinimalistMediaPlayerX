@@ -75,9 +75,7 @@ begin
 
   PL.fillPlaylist(PS.fileFolder);
 
-  case PL.find(PS.fileFolderAndName) of TRUE: begin
-                                                UI.setWindowSize(MT.mediaType(lowerCase(extractFileExt(PL.currentItem))));
-                                                postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;end;
+  case PL.find(PS.fileFolderAndName) of TRUE: postMessage(GV.appWnd, WM_PLAY_CURRENT_ITEM, 0, 0); end;
 
   UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
 
