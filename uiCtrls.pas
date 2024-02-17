@@ -556,7 +556,7 @@ begin
                       mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
                                       var VHeight := CU.getScreenHeight - 50;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, 0);
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE);
   end;end;
 end;
 
