@@ -653,7 +653,7 @@ begin
       if (eState=mpsPlay) then
       begin
 //        debugFormat('%f of %f', [m_fCurSec, m_fLenMax]);
-        if (m_fCurSec>=m_fLenMax - 0.25) then
+        if (m_fCurSec>=m_fLenMax {- 0.25}) then
         begin
           // MPV does not notify EOF before unloading file
           // although reached the end, but player is still "playing"
