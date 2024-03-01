@@ -104,7 +104,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, mediaType, _debugWindow;
 
 var
   gUI: TUI;
@@ -212,7 +212,6 @@ end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
-//  debugBoolean('autoCentre', autoCentre);
   case autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
 end;
@@ -457,8 +456,8 @@ function TUI.maximize: boolean;
 begin
   setWindowSize(mtVideo);
 end;
-
 function TUI.minimizeWindow: boolean;
+
 begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
