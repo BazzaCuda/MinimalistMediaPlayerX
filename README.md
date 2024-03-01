@@ -107,7 +107,7 @@ Control | Action
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`                     | re[L]oad the list of supported media files from the current folder
-`M`                     | Display all media info for the current media file (in development)
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
 `P`                     | show/hide the [P]laylist
@@ -234,7 +234,7 @@ Control | Action
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
-`M`                     | [M]aximize / restore window
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
