@@ -411,6 +411,7 @@ begin
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
     setPropertyString('sid', '1');
+//    setPropertyString('image-display-duration', '10');
 //    SetPropertyDouble('sub-delay', -00.99);
   end;
 end;
