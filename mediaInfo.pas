@@ -72,19 +72,22 @@ type
   TMediaInfo = class(TObject)
   private
     FAudioBitRate: integer;
+    FAudioCount: integer;
     FFileSize: int64;
     FGeneralCount: integer;
+    FHasCoverArt: string;
     FHeight: integer;
-    FStereoMono: string;
-    FWidth: integer;
-    FOverallFrameRate: string;
-    FOverallBitRate: integer;
-    FVideoBitRate: integer;
-    FAudioCount: integer;
-    FVideoCount: integer;
-    FTextCount: integer;
     FImageCount: integer;
+    FImageHeight: integer;
+    FImageWidth: integer;
     FOtherCount: integer;
+    FOverallBitRate: integer;
+    FOverallFrameRate: string;
+    FStereoMono: string;
+    FTextCount: integer;
+    FVideoBitRate: integer;
+    FVideoCount: integer;
+    FWidth: integer;
 
     FChapterCount: integer;
     FDuration: integer;
@@ -95,16 +98,17 @@ type
     FURL: string;
 
     function getAudioBitRate: string;
+    function getDuration: integer;
     function getFileSize: string;
+    function getHasCoverArt: boolean;
+    function getSelectedCount: integer;
+    function getStereoMono: string;
+    function getStreamCount: integer;
     function getOverallFrameRate: string;
     function getOverallBitRate: string;
     function getVideoBitRate: string;
     function getXY: string;
-    function getStereoMono: string;
     procedure setURL(const aValue: string);
-    function getStreamCount: integer;
-    function getSelectedCount: integer;
-    function getDuration: integer;
   protected
     constructor create;
     destructor destroy; override;
@@ -117,7 +121,10 @@ type
     property duration:          integer read getDuration;
     property fileSize:          string  read getFileSize;
     property generalCount:      integer read FGeneralCount;
+    property hasCoverArt:       boolean read getHasCoverArt;
     property imageCount:        integer read FImageCount;
+    property imageHeight:       integer read FImageHeight;
+    property imageWidth:        integer read FImageWidth;
     property mediaChapters:     TObjectList<TMediaChapter> read FMediaChapters;
     property mediaStreams:      TObjectList<TMediaStream>  read FMediaStreams;
     property otherCount:        integer read FOtherCount;
@@ -174,6 +181,11 @@ end;
 function TMediaInfo.getAudioBitRate: string;
 begin
   result := format('AR:  %d Kb/s', [round(FAudioBitRate / 1000)]);
+end;
+
+function TMediaInfo.getHasCoverArt: boolean;
+begin
+  result := FHasCoverArt = 'Yes';
 end;
 
 function TMediaInfo.getData(const aMemo: TMemo): boolean;
@@ -368,7 +380,10 @@ begin
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_Video,        0, 'BitRate',         Info_Text, Info_Name), FVideoBitRate)      of FALSE: FVideoBitRate     := 0; end;
 
-    FStereoMono := mediaInfo_Get(handle, Stream_Audio,  0, 'Title',         Info_Text, Info_Name);
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Image,        0, 'Width',           Info_Text, Info_Name), FImageWidth)        of FALSE: FImageWidth       := 0; end;
+    case tryStrToInt(mediaInfo_Get(handle, Stream_Image,        0, 'Height',          Info_Text, Info_Name), FImageHeight)       of FALSE: FImageHeight      := 0; end;
+
+    FStereoMono := mediaInfo_Get(handle, Stream_Audio,    0, 'Title',        Info_Text, Info_Name);
 
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'GeneralCount',    Info_Text, Info_Name), FGeneralCount)      of FALSE: FGeneralCount     := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'VideoCount',      Info_Text, Info_Name), FVideoCount)        of FALSE: FVideoCount       := 0; end;
@@ -376,6 +391,8 @@ begin
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'TextCount',       Info_Text, Info_Name), FTextCount)         of FALSE: FTextCount        := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'OtherCount',      Info_Text, Info_Name), FOtherCount)        of FALSE: FOtherCount       := 0; end;
     case tryStrToInt(mediaInfo_Get(handle, Stream_General,      0, 'ImageCount',      Info_Text, Info_Name), FImageCount)        of FALSE: FImageCount       := 0; end;
+
+    FHasCoverArt := mediaInfo_Get(handle, Stream_General, 0, 'Cover',        Info_Text, Info_Name);
 
     for var vStreamIx := 0 to streamCount - 1 do begin
       case mediaInfo_Get(handle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;

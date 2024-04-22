@@ -21,7 +21,7 @@ unit mediaPlayer;
 interface
 
 uses
-  forms, vcl.extCtrls, system.classes, MPVBasePlayer;
+  forms, vcl.extCtrls, system.classes, MPVBasePlayer, consts;
 
 type
   TTimerEvent = (tePlay, teClose);
@@ -36,6 +36,7 @@ type
 
     FAlwaysPot: boolean;
     FDontPlayNext: boolean;
+    FMediaType: TMediaType;
     FMuted: boolean;
     FOnBeforeNew: TNotifyEvent;
     FOnPlayNew: TNotifyEvent;
@@ -130,6 +131,7 @@ type
     property formattedTime:       string       read getFormattedTime;
     property formattedVol:        string       read getFormattedVol;
     property keepOpen:            boolean                         write setKeepOpen;
+    property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
     property onPlayNew:           TNotifyEvent read FOnPlayNext   write FOnPlayNew;
     property onPlayNext:          TNotifyEvent read FOnPlayNext   write FOnPlayNext;
@@ -146,7 +148,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, consts, playlist, UIctrls, sysCommands, configFile, formHelp, mediaType, sendAll, _debugWindow;
+  formCaption, mediaInfo, mpvConst, playlist, UIctrls, sysCommands, configFile, formHelp, sendAll, mediaType, _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -411,7 +413,7 @@ begin
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
     setPropertyString('sid', '1');
-//    setPropertyString('image-display-duration', '10');
+//    setPropertyDouble('image-display-duration', 100);
 //    SetPropertyDouble('sub-delay', -00.99);
   end;
 end;
@@ -548,27 +550,28 @@ begin
 
   MI.initMediaInfo(aURL);
 
-  var vMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
+  FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case UI.autoCentre or (vMediaType = mtAudio) of TRUE: UI.setWindowSize(vMediaType); end;
+  case UI.autoCentre OR  (FMediaType = mtAudio)  of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
+  case UI.autoCentre AND (FMediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
 
   openURL(aURL);
   mpv.volume := FVol;
   mpv.mute   := FMuted;
 
+  FDontPlayNext := FMediaType = mtImage;
+
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
 
-//  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
   application.processMessages;
 
-//  UI.smallerWindow(UI.handle);
-//  UI.tweakWindow; // force update
   SA.postToAll(WM_PROCESS_MESSAGES);
 
   checkPot;
 
-  case assigned(FOnPlayNew) of TRUE: FOnPlayNew(SELF); end;
+  case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
+  case UI.autoCentre AND (FMediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
 
   result := TRUE;
 end;

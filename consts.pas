@@ -53,6 +53,7 @@ const
   WM_PLAY_CURRENT_ITEM   = WM_USER + 2109;
   WM_SHOW_WINDOW         = WM_USER + 2110;
   WM_PROCESS_MESSAGES    = WM_USER + 2111;
+  WM_CENTRE_CURSOR       = WM_USER + 2112;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
@@ -64,7 +65,7 @@ const
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
 type
-  TMediaType = (mtUnk, mtAudio, mtVideo);
+  TMediaType = (mtUnk, mtAudio, mtVideo, mtImage);
   TMediaTypeRec = record
     mimeType: string;
     mediaType: TMediaType;
@@ -73,7 +74,13 @@ type
   end;
 
 const
-  mediaTypes: array[0..82] of TMediaTypeRec = (
+  mediaTypes: array[0..86] of TMediaTypeRec = (
+
+// manually added image formats
+(mimeType: 'image/jpeg';            mediaType: mtImage; typeName: 'JPEG image';                 fileExts: '.jpg.jpeg'),
+(mimeType: 'image/bmp';             mediaType: mtImage; typeName: 'BITMAP image';               fileExts: '.bmp'),
+(mimeType: 'image/png';             mediaType: mtImage; typeName: 'PNG image';                  fileExts: '.png'),
+(mimeType: 'image/webp';            mediaType: mtImage; typeName: 'WEBP image';                 fileExts: '.webp'),
 
 // DVD/Blu-ray audio formats
 (mimeType: 'audio/ac3';             mediaType: mtAudio; typeName: 'AC-3 Audio';                 fileExts: '.ac3.a52'),

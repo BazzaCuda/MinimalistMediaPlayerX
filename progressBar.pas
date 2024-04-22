@@ -44,11 +44,12 @@ type
   public
     destructor  Destroy; override;
     function brighter: integer;
+    function centreCursor: boolean;
     function darker: integer;
     function formResize: boolean;
     function initProgressBar(const aForm: TForm): boolean;
     function resetColor: integer;
-    function  setNewPosition(const x: integer): integer;
+    function setNewPosition(const x: integer): integer;
     property initialized: boolean read FInitialized;
     property max: integer read getMax write setMax;
     property position: integer read getPosition write setPosition;
@@ -78,6 +79,12 @@ begin
   case FPB.barColor1 = $FFFFFF of TRUE: EXIT; end;
   FPB.barColor1 := FPB.barColor1 + $010101;
   result := FPB.barColor1;
+end;
+
+function TProgressBar.centreCursor: boolean;
+begin
+  var vPoint := FPB.clientToScreen(point(FPB.width div 2, FPB.height div 2));
+  setCursorPos(vPoint.x, vPoint.y);
 end;
 
 constructor TProgressBar.create;

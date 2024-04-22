@@ -76,7 +76,7 @@ type
     function renameFile(const aFilePath: string): boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
-    function setWindowSize(const aMediaType: TMediaType): boolean;
+    function setWindowSize(const aMediaType: TMediaType; coverArt: boolean = FALSE): boolean;
     function showWindow: boolean;
     function showXY: boolean;
     function shutTimeline: boolean;
@@ -130,6 +130,8 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
+  case MP.mediaType = mtImage of TRUE: EXIT; end;
+  case (MP.mediaType = mtAudio) AND (NOT MI.hasCoverArt) of TRUE: EXIT; end;
   case GV.closeApp of TRUE: EXIT; end;
   case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
 
@@ -143,7 +145,6 @@ begin
 
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
-//  debugFormat('%dx%d AR=%f', [vWidth, vHeight, vRatio]);
 
   postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
@@ -456,6 +457,7 @@ function TUI.maximize: boolean;
 begin
   setWindowSize(mtVideo);
 end;
+
 function TUI.minimizeWindow: boolean;
 
 begin
@@ -549,16 +551,21 @@ begin
   FMainForm.width := value;
 end;
 
-function TUI.setWindowSize(const aMediaType: TMediaType): boolean;
+function TUI.setWindowSize(const aMediaType: TMediaType; coverArt: boolean = FALSE): boolean;
 begin
-  case aMediaType of  mtAudio: begin  FMainForm.width  := 600;
-                                      FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;
+  case aMediaType of  mtAudio: begin  case coverArt of  TRUE: FMainForm.width  := 600;
+                                                       FALSE: FMainForm.width  := 600; end;
+                                      case coverArt of FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT;
+                                                        TRUE: FMainForm.height := 400; end;end;
                       mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
                                       var VHeight := CU.getScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); // center window
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
-//                                      debugFormat('vWidth&vHeight=%dx%d XY=%dx%d AR=%f', [vWidth, vHeight, MI.X, MI.Y, CU.getAspectRatio(MI.X, MI.Y)]);
-  end;end;
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+                      mtImage: begin  var vWidth  := trunc((CU.getScreenHeight + 500)); //  / CU.getAspectRatio(MI.imageWidth, MI.imageHeight));
+                                      var VHeight := CU.getScreenHeight - 50;
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+  end;
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;
