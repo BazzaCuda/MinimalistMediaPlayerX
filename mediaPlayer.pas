@@ -36,6 +36,9 @@ type
 
     FAlwaysPot: boolean;
     FDontPlayNext: boolean;
+    FImageDisplayDuration: string;
+    FImageDisplayDurationSS: double;
+    FImagePaused: boolean;
     FMediaType: TMediaType;
     FMuted: boolean;
     FOnBeforeNew: TNotifyEvent;
@@ -61,6 +64,8 @@ type
     function getFormattedSpeed: string;
     function getFormattedTime: string;
     function getFormattedVol: string;
+
+    function pauseUnpauseImages: boolean;
 
     {property setters}
     function  getDuration: integer;
@@ -395,7 +400,7 @@ begin
     SetPropertyString('config-dir', CU.getExePath); // mpv.conf location
     SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
     SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
-    SetPropertyBool('keep-open-pause', False);
+    SetPropertyBool('keep-open-pause', FALSE);
 
     setPropertyString('sub-font', 'Segoe UI');
     setPropertyString('sub-color', '#808080');
@@ -422,11 +427,12 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;
+//  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;
+  case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
 
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin CU.delay(100); playNext; end;end;
+    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin CU.delay(trunc(FImageDisplayDurationSS) * 1000); playNext; end;end;
   end;
 end;
 
@@ -442,14 +448,17 @@ end;
 function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result := FALSE;
-  releasePlayer;
+  // releasePlayer;
   case mpv = NIL of TRUE: begin
     mpv := TMPVBasePlayer.Create;
     mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
     mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
+    mpv.getPropertyString('image-display-duration', FImageDisplayDuration, FALSE);
+    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
   end;end;
   mpv.openFile(aURL);
+
   result := TRUE;
 //  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
 end;
@@ -528,10 +537,25 @@ begin
   mpv.pause;
 end;
 
+function TMediaPlayer.pauseUnpauseImages: boolean;
+begin
+  case FMediaType = mtImage of FALSE: EXIT; end;
+  FImagePaused := NOT FImagePaused;
+
+  case FImagePaused of  TRUE: begin mpv.setPropertyString('image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
+                       FALSE: begin mpv.setPropertyString('image-display-duration', FImageDisplayDuration);   // restore the original setting
+                                    case FImageDisplayDuration = 'inf' of FALSE: playNext; end;end;end;       // if there was a set duration before, continue with the next file
+
+  case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
+                       FALSE: ST.opInfo := 'slideshow unpaused'; end;
+end;
+
 function TMediaPlayer.pausePlay: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   FPausePlay := TRUE;
+
+  pauseUnpauseImages;
 
   case mpv.GetState of
     mpsPlay:  mpv.pause;
@@ -552,17 +576,14 @@ begin
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case UI.autoCentre OR  (FMediaType = mtAudio)  of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
+  case UI.autoCentre OR (FMediaType = mtAudio) of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
   UI.centreCursor;
 
   openURL(aURL);
   mpv.volume := FVol;
   mpv.mute   := FMuted;
 
-  var vImageDisplayDuration: string;
-  mpv.getPropertyString('image-display-duration', vImageDisplayDuration, FALSE);
-
-  FDontPlayNext := (FMediaType = mtImage) and (vImageDisplayDuration = 'inf');
+  FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
