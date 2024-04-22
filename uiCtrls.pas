@@ -57,6 +57,7 @@ type
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
     function arrangeAll: boolean;
     function autoCentreWindow(const aWnd: HWND): boolean;
+    function centreCursor: boolean;
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
     function deleteCurrentItem(const shift: TShiftState): boolean;
@@ -76,7 +77,7 @@ type
     function renameFile(const aFilePath: string): boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
-    function setWindowSize(const aMediaType: TMediaType; coverArt: boolean = FALSE): boolean;
+    function setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
     function showWindow: boolean;
     function showXY: boolean;
     function shutTimeline: boolean;
@@ -215,6 +216,11 @@ function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
   case autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
+end;
+
+function TUI.centreCursor: boolean;
+begin
+  case autoCentre AND (MP.MediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
 end;
 
 function TUI.centreWindow(const aWnd: HWND): boolean;
@@ -456,6 +462,8 @@ end;
 function TUI.maximize: boolean;
 begin
   setWindowSize(mtVideo);
+  FAutoCentre := TRUE;
+  centreCursor;
 end;
 
 function TUI.minimizeWindow: boolean;
@@ -551,12 +559,12 @@ begin
   FMainForm.width := value;
 end;
 
-function TUI.setWindowSize(const aMediaType: TMediaType; coverArt: boolean = FALSE): boolean;
+function TUI.setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
 begin
-  case aMediaType of  mtAudio: begin  case coverArt of  TRUE: FMainForm.width  := 600;
-                                                       FALSE: FMainForm.width  := 600; end;
-                                      case coverArt of FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT;
-                                                        TRUE: FMainForm.height := 400; end;end;
+  case aMediaType of  mtAudio: begin  case hasCoverArt of  TRUE: FMainForm.width  := 600;
+                                                          FALSE: FMainForm.width  := 600; end;
+                                      case hasCoverArt of  TRUE: FMainForm.height := 400;
+                                                          FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;end;
                       mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
                                       var VHeight := CU.getScreenHeight - 50;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window

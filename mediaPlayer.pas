@@ -413,7 +413,7 @@ begin
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
     setPropertyString('sid', '1');
-//    setPropertyDouble('image-display-duration', 100);
+    setPropertyString('image-display-duration', 'inf');
 //    SetPropertyDouble('sub-delay', -00.99);
   end;
 end;
@@ -553,13 +553,16 @@ begin
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
   case UI.autoCentre OR  (FMediaType = mtAudio)  of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
-  case UI.autoCentre AND (FMediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
+  UI.centreCursor;
 
   openURL(aURL);
   mpv.volume := FVol;
   mpv.mute   := FMuted;
 
-  FDontPlayNext := FMediaType = mtImage;
+  var vImageDisplayDuration: string;
+  mpv.getPropertyString('image-display-duration', vImageDisplayDuration, FALSE);
+
+  FDontPlayNext := (FMediaType = mtImage) and (vImageDisplayDuration = 'inf');
 
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
@@ -571,7 +574,7 @@ begin
   checkPot;
 
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
-  case UI.autoCentre AND (FMediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
+  UI.centreCursor;
 
   result := TRUE;
 end;
@@ -773,6 +776,7 @@ end;
 function TMediaPlayer.takeScreenshot: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyString('screenshot-directory', PL.currentFolder);
   mpv.commandStr(CMD_SCREEN_SHOT);
   result := '';
 end;

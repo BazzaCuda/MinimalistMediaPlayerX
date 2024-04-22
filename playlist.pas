@@ -36,6 +36,7 @@ type
     function clear: boolean;
     function count: integer;
     function copyToClipboard: boolean;
+    function currentFolder: string;
     function currentItem: string;
     function currentIx: integer;
     function delete(const ix: integer = -1): boolean;
@@ -104,6 +105,11 @@ begin
   inherited;
   FPlaylist := TList<string>.create;
   FPLaylist.sort;
+end;
+
+function TPlaylist.currentFolder: string;
+begin
+  result := extractFilePath(currentItem);
 end;
 
 function TPlaylist.currentItem: string;
