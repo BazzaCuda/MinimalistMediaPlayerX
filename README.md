@@ -51,7 +51,7 @@ Control | Action
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box and the Keyboard help panel
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
-`SPACEBAR`              | pause/resume playback
+`SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
@@ -164,7 +164,7 @@ Control | Action
 `'` (single quote)      | reset gamma
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
-`Left double-click video`        |  toggle fullscreen mode
+`Left double-click video`        | toggle fullscreen mode
 `Right single-click the window`  | Pause/resume playback
 `with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
