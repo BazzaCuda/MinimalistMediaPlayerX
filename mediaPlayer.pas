@@ -427,12 +427,15 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-//  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;
+//  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;       // What ???
   case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
 
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin CU.delay(trunc(FImageDisplayDurationSS) * 1000); playNext; end;end;
+    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin
+                                                        case FMediaType = mtImage of TRUE: CU.delay(trunc(FImageDisplayDurationSS) * 1000); end;
+                                                        playNext;
+                                                      end;end;
   end;
 end;
 
