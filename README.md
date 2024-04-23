@@ -165,7 +165,7 @@ Control | Action
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click video`        | toggle fullscreen mode
-`Right single-click the window`  | Pause/resume playback
+`Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
 `with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
 `Wheel up`                       | volume up
@@ -254,7 +254,8 @@ Control | Action
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal 
+`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
+`SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 
 Media File Formats
 ------------------
