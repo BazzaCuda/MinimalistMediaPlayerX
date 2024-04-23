@@ -95,7 +95,7 @@ Control | Action
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
 `D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
-`Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected
+`Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
 `E`                     | [E]ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `F`                     | show/cancel [F]ullScreen mode
