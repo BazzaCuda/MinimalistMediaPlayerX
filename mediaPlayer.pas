@@ -48,6 +48,7 @@ type
     FPlaying: boolean;
     FPausePlay: boolean;
     FRepeat: boolean;
+    FScreenshotDirectory: string;
     FVol:  double;
   private
     constructor create;
@@ -457,8 +458,10 @@ begin
     mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
     mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
+
     mpv.getPropertyString('image-display-duration', FImageDisplayDuration, FALSE);
     case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
+    mpv.getPropertyString('screenshot-directory', FScreenshotDirectory, FALSE);
   end;end;
   mpv.openFile(aURL);
 
@@ -800,7 +803,7 @@ end;
 function TMediaPlayer.takeScreenshot: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyString('screenshot-directory', PL.currentFolder);
+  case FScreenshotDirectory = '' of TRUE: mpv.setPropertyString('screenshot-directory', PL.currentFolder); end; // otherwise screenshots of an image go to Windows/System32 !!
   mpv.commandStr(CMD_SCREEN_SHOT);
   result := '';
 end;
