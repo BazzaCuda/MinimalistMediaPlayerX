@@ -4,7 +4,7 @@ Minimalist Media Player
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
-Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp). If you set an image display interval, a slideshow of consecutive image files will be shown. 
+Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp). If you set an image display duration, a slideshow of consecutive image files will be shown. 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
 
 A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
