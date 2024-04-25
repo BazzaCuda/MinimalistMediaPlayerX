@@ -554,6 +554,8 @@ begin
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
                        FALSE: ST.opInfo := 'slideshow unpaused'; end;
+
+  FDontPlayNext := FImagePaused;
 end;
 
 function TMediaPlayer.pausePlay: boolean;
@@ -629,6 +631,8 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
+  case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
+
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
