@@ -7,6 +7,8 @@ VERSION 2 RELEASED: Fast, lossless audio/video editing
 Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp). If you set an image display duration, a slideshow of consecutive image files will be shown. 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
 
+**Minimalist Media Player**
+
 A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
 
 ``Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
