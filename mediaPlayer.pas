@@ -808,7 +808,7 @@ function TMediaPlayer.takeScreenshot: string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   case FScreenshotDirectory = '' of TRUE: mpv.setPropertyString('screenshot-directory', PL.currentFolder); end; // otherwise screenshots of an image go to Windows/System32 !!
-  mpv.commandStr(CMD_SCREEN_SHOT);
+  mpv.commandStr(CMD_SCREEN_SHOT + ' window');
   result := '';
 end;
 
