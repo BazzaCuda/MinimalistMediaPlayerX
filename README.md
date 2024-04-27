@@ -126,7 +126,7 @@ Control | Action
 `V`                     | synchronize all [V]ideo windows
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
-`Y`                     | View all MPV settings (in development)
+`Y`                     | [Y]et to be assigned an action
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset brightness to normal
