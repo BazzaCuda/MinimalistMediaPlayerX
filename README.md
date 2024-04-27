@@ -30,7 +30,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles,the subtitles will be shown automatically.
 
-- Full-resolution screenshots can be saved for individual frames.
+- Full-resolution screenshots can be saved for individual frames and for a displayed image.
 
 - All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1 or Ctrl-H. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
