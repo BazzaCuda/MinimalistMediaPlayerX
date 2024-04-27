@@ -81,9 +81,13 @@ type
     function brightnessDn: string;
     function brightnessReset: string;
     function brightnessUp: string;
+    function chapterNext: boolean;
+    function chapterPrev: boolean;
     function contrastUp: string;
     function contrastDn: string;
     function contrastReset: string;
+    function cycleAudio: boolean;
+    function cycleSubs: boolean;
     function frameBackwards: boolean;
     function frameForwards: boolean;
     function gammaDn: string;
@@ -208,6 +212,18 @@ begin
   result := getFormattedBrightness;
 end;
 
+function TMediaPlayer.chapterNext: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.commandStr('add chapter 1');
+end;
+
+function TMediaPlayer.chapterPrev: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.commandStr('add chapter -1');
+end;
+
 function TMediaPlayer.checkPot: boolean;
 begin
   case FAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
@@ -246,6 +262,18 @@ begin
   FTimer := TTimer.create(NIL);
   FTimer.enabled := FALSE;
   FTimer.OnTimer := onTimerEvent;
+end;
+
+function TMediaPlayer.cycleAudio: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.commandStr('cycle audio');
+end;
+
+function TMediaPlayer.cycleSubs: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.commandStr('cycle sub');
 end;
 
 destructor TMediaPlayer.Destroy;
@@ -463,7 +491,10 @@ begin
     case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
     mpv.getPropertyString('screenshot-directory', FScreenshotDirectory, FALSE);
   end;end;
+
   mpv.openFile(aURL);
+
+//  mpv.setPropertyString('start', '#9');
 
   result := TRUE;
 //  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
