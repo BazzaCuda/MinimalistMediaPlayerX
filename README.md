@@ -207,7 +207,7 @@ Control | Action
 `}`                     | increase saturation. Can be held down for rapid increase
 `;`                     | reset saturation to normal
 **Screenshots** | 
-`F5`                    | save a screenshot of the current frame (currently to the same folder as the media file)
+`F5`                    | save a screenshot of the current frame or the currently displayed image
 **Speed** | 
 `Numpad +`              | increase playback speed. Can be held down for rapid increase
 `/`                     | increase playback speed. Can be held down for rapid increase
