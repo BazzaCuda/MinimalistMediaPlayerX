@@ -251,6 +251,10 @@ Control | Action
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 **Additional** | 
+`F6`                    | cycle through audio tracks in the media file
+`F7`                    | cycle through subtitle tracks in the media file
+`F8`                    | skip to the previous chapter, if there is one
+`F9`                    | skip to the next chapter, if there is one
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
 `F11`                   | open media file in LossLess Cut (assumes default installation folder)            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder)
