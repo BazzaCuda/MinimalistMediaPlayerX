@@ -2264,7 +2264,7 @@ object AboutForm: TAboutForm
     Top = 107
     Width = 367
     Height = 25
-    Caption = 'Copyright (c) Baz "Cap'#39'n" Cuda, 2021 - 2023'
+    Caption = 'Copyright (c) Baz "Cap'#39'n" Cuda, 2021 - 2024'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
