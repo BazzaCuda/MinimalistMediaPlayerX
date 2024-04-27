@@ -323,8 +323,8 @@ begin
 
   var vSaveUndo := vOK; // a change was made
 
-  case key = ord('Z') of TRUE: begin TL.undo(TL.prevAction);   vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Z
-  case key = ord('Y') of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Y
+  case ctrlKeyDown AND (key = ord('Z')) of TRUE: begin TL.undo(TL.prevAction);   vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Z
+  case ctrlKeyDown AND (key = ord('Y')) of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Y
 
   case vSaveUndo of TRUE: begin
                             vAction := TL.saveSegments;
@@ -696,7 +696,7 @@ begin
   aSegment.startSS := segments[ix - 1].startSS;
   segments[ix - 1].color := aSegment.color;
   segments.delete(ix - 1);
-  result := FALSE;
+  result := TRUE;
 end;
 
 function TTimeline.mergeRight(const aSegment: TSegment): boolean;
@@ -718,7 +718,6 @@ end;
 
 function TTimeline.redo: boolean;
 begin
-  case ctrlKeyDown of FALSE: EXIT; end;
   case FRedoList.count = 0 of TRUE: EXIT; end;
 
   case FRedoList.peek <> NIL of TRUE: begin
@@ -793,7 +792,6 @@ end;
 function TTimeline.undo(const aPrevAction: string): boolean;
 // discard the most recent action and apply the subsequent actions from the stack
 begin
-  case ctrlKeyDown of FALSE: EXIT; end;
   case FUndoList.count = 0 of TRUE: EXIT; end;
 
   case (FUndoList.peek <> NIL) and (FUndoList.peek.text = aPrevAction) of TRUE: begin
