@@ -72,8 +72,6 @@ type
     constructor create;
     destructor  destroy; override;
     function addUndo(const aAction: string): string;
-    function createInPoint(const aPosition: integer): boolean;
-    function createOutPoint(const aPosition: integer): boolean;
     function cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
     function defaultSegment: string;
     function drawSegments: boolean;
@@ -291,6 +289,8 @@ end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
 begin
+  case TL.keyHandled(ord(key)) of FALSE: EXIT; end; // ignore irrelevant keystrokes
+
   case key in ['l', 'L'] of TRUE: begin TL.lengthenCount := TL.lengthenCount + 1; TL.lengthenSegment(TSegment.selSeg); TL.drawSegments; end;end;
   case key in ['s', 'S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
 
@@ -305,16 +305,18 @@ var
   vOK: boolean;
   vAction: string;
 begin
+  case TL.keyHandled(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes
+
   vOK := FALSE;
   vAction := '';
 
-  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position);  TL.drawSegments; end;end;
-  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);              TL.drawSegments; end;end;
-  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                  TL.drawSegments; end;end;
-  case key = ord('I') of TRUE: begin vOK := TL.createInPoint(TL.Position);                   TL.drawSegments; end;end;
-  case key = ord('O') of TRUE: begin vOK := TL.createOutPoint(TL.Position);                  TL.drawSegments; end;end;
-  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                  TL.drawSegments; end;end;
-  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                   TL.drawSegments; end;end;
+  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position);              TL.drawSegments; end;end;
+  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);                          TL.drawSegments; end;end;
+  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                              TL.drawSegments; end;end;
+  case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position, TRUE);        TL.drawSegments; end;end;
+  case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position, FALSE, TRUE); TL.drawSegments; end;end;
+  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                              TL.drawSegments; end;end;
+  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                               TL.drawSegments; end;end;
 
   case key in [ord('l'), ord('L')] of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;
   case key in [ord('s'), ord('S')] of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;
@@ -384,22 +386,6 @@ begin
   FRedoList             := TObjectStack<TStringList>.create;
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
-end;
-
-function TTimeline.createInPoint(const aPosition: integer): boolean;
-begin
-  result := FALSE;
-  case segCount = 1 of FALSE: EXIT; end;
-  result := cutSegment(segments[0], aPosition, TRUE);
-end;
-
-function TTimeline.createOutPoint(const aPosition: integer): boolean;
-begin
-  result := FALSE;
-  case segCount = 0 of  TRUE: EXIT; end;
-  case segCount = 1 of  TRUE: cutSegment(segments[0], aPosition, FALSE, TRUE);
-                       FALSE: case segCount = 2 of TRUE: cutSegment(segments[1], aPosition, FALSE, TRUE); end;end;
-  result := TRUE;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
@@ -632,8 +618,10 @@ begin
 end;
 
 function TTimeline.keyHandled(key: WORD): boolean;
+const validKeys = 'CILMNORSXYZ';
 begin
-  result := key in [ord('C'), ord('I'), ord('L'), ord('l'), ord('M'), ord('N'), ord('O'), ord('R'), ord('S'), ord('s'), ord('X'), ord('Z')];
+  case key in [97..122] of TRUE: key := key - 32; end; // convert a..z to A..Z
+  result := validKeys.contains(char(key));
 end;
 
 function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
