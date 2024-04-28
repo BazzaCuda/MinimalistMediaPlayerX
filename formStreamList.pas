@@ -56,6 +56,10 @@ type
     procedure clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clStreamsItemClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
+    procedure clSegmentsItemClick(Sender: TObject);
+    procedure btnExportMouseEnter(Sender: TObject);
+    procedure btnExportMouseLeave(Sender: TObject);
+    procedure btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   private
     FOnExport: TNotifyEvent;
     FSegments: TObjectList<TSegment>;
@@ -76,10 +80,15 @@ function shutStreamList: boolean;
 
 implementation
 
-uses consts, commonUtils, mediaInfo, system.generics.defaults, _debugWindow;
+uses consts, commonUtils, mediaInfo, system.generics.defaults, formTimeline, _debugWindow;
 
 var
   streamListForm: TStreamListForm;
+
+function ctrlKeyDown: boolean;
+begin
+  result := GetKeyState(VK_CONTROL) < 0;
+end;
 
 function refreshStreamInfo(const aMediaFilePath: string): boolean;
 begin
@@ -125,6 +134,23 @@ begin
   case assigned(FOnExport) of TRUE: FOnExport(NIL); end;
 end;
 
+procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
+begin
+  case ctrlKeyDown of  TRUE: btnExport.caption := 'Join';
+                      FALSE: btnExport.caption := 'Export'; end;
+end;
+
+procedure TStreamListForm.btnExportMouseLeave(Sender: TObject);
+begin
+  btnExport.caption := 'Export';
+end;
+
+procedure TStreamListForm.btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+  case ctrlKeyDown of  TRUE: btnExport.caption := 'Join';
+                      FALSE: btnExport.caption := 'Export'; end;
+end;
+
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
   lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
@@ -138,6 +164,11 @@ begin
   shape1.margins.bottom   := 1;
   shape1.alignWithMargins := TRUE;
   imgTrashCan.visible     := FSegments[aIndex].deleted;
+end;
+
+procedure TStreamListForm.clSegmentsItemClick(Sender: TObject);
+begin
+  TL.segments[clSegments.ItemIndex].setAsSelSeg;
 end;
 
 procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);

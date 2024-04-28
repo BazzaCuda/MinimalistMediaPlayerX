@@ -64,6 +64,7 @@ type
     constructor create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
     function delete: boolean;
     procedure setDisplayDetails;
+    function setAsSelSeg: boolean;
     property deleted:   boolean read FDeleted  write FDeleted;
     property duration:  integer read getDuration;
     property endSS:     integer read FEndSS    write FEndSS;
@@ -112,9 +113,7 @@ end;
 
 procedure TSegment.doClick(Sender: TObject);
 begin
-  clearFocus;
-  FSelSeg    := SELF;
-  selected   := TRUE;
+  setAsSelSeg;
 end;
 
 class function TSegment.clearFocus: boolean;
@@ -246,6 +245,13 @@ end;
 procedure TSegment.setSegID(const Value: string);
 begin
   FSegID.caption := value;
+end;
+
+function TSegment.setAsSelSeg: boolean;
+begin
+  clearFocus;
+  FSelSeg    := SELF;
+  selected   := TRUE;
 end;
 
 procedure TSegment.setSelected(const Value: boolean);

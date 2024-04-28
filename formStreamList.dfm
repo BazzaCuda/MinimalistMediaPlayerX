@@ -79,6 +79,7 @@ object StreamListForm: TStreamListForm
           ParentFont = False
           TabOrder = 0
           OnBeforeDrawItem = clSegmentsBeforeDrawItem
+          OnItemClick = clSegmentsItemClick
           object Shape1: TShape
             Left = 0
             Top = 0
@@ -2179,8 +2180,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 538
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2450,6 +2451,9 @@ object StreamListForm: TStreamListForm
         ParentFont = False
         TabOrder = 0
         OnClick = btnExportClick
+        OnMouseEnter = btnExportMouseEnter
+        OnMouseLeave = btnExportMouseLeave
+        OnMouseMove = btnExportMouseMove
       end
     end
   end
