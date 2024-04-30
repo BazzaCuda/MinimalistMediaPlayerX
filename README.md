@@ -7,6 +7,8 @@ VERSION 2 RELEASED: Fast, lossless audio/video editing
 Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp). If you set an image display duration, a slideshow of consecutive image files will be shown. 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
 
+TIP: You can crop an image by using zoom and pan (left, right, up, down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Gamma, Saturation or Rotation of the original image.
+
 **Minimalist Media Player**
 
 A simple but ``very`` effective media player built on MPV's API, libMPV-2.dll
