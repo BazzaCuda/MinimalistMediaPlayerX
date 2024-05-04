@@ -105,7 +105,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, mediaType, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, mediaType, dialogs, _debugWindow;
 
 var
   gUI: TUI;
@@ -648,6 +648,15 @@ function TUI.toggleTimeline: boolean;
 begin
   shutHelp;
   shutPlaylist;
+
+  case CU.isEditFriendly(PL.currentItem) of FALSE: begin CU.ShowOKCancelMsgDlg(PL.currentItem + #13#10#13#10
+                                                                             + 'The path/filename contains a single quote and/or an ampersand.'#13#10#13#10
+                                                                             + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
+                                                                             + 'Rename the path/filename first.',
+                                                                               mtInformation, [MBOK]);
+                                                         EXIT; end;end;
+
+
   FShowingTimeline := NOT FShowingTimeline;
   case FShowingTimeline of  TRUE: moveTimelineWindow;
                            FALSE: shutTimeline; end;

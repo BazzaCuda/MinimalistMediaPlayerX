@@ -49,6 +49,7 @@ type
     function getScreenWidth: integer;
     function initTransparentForm(const aForm: TForm): TForm;
     function initTransparentLabel(const aLabel: TLabel): boolean;
+    function isEditFriendly(const aFilePath: string): boolean;
     function offScreen(const aHWND: HWND): boolean;
     function reloadPlaylist(const aFolder: string): string;
     function renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
@@ -314,6 +315,11 @@ begin
   aLabel.showHint          := FALSE;
   aLabel.transparent       := TRUE;
   aLabel.wordWrap          := FALSE;
+end;
+
+function TCommonUtils.isEditFriendly(const aFilePath: string): boolean;
+begin
+  result := NOT aFilePath.contains('''') AND NOT aFilePath.contains('&');
 end;
 
 function TCommonUtils.offScreen(const aHWND: HWND): boolean;
