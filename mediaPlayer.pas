@@ -78,6 +78,7 @@ type
   public
     destructor  Destroy; override;
     function allReset: string;
+    function autoPlayNext: boolean;
     function brightnessDn: string;
     function brightnessReset: string;
     function brightnessUp: string;
@@ -184,6 +185,12 @@ end;
     CU.resetColor;
     result := 'All reset';
   end;
+
+function TMediaPlayer.autoPlayNext: boolean;
+begin
+  case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
+  playNext;
+end;
 
 function TMediaPlayer.brightnessDn: string;
 var
@@ -463,7 +470,7 @@ begin
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
     mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin
                                                         case FMediaType = mtImage of TRUE: CU.delay(trunc(FImageDisplayDurationSS) * 1000); end;
-                                                        playNext;
+                                                        autoPlayNext;
                                                       end;end;
   end;
 end;
@@ -581,7 +588,7 @@ begin
 
   case FImagePaused of  TRUE: begin mpv.setPropertyString('image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
                        FALSE: begin mpv.setPropertyString('image-display-duration', FImageDisplayDuration);   // restore the original setting
-                                    case FImageDisplayDuration = 'inf' of FALSE: playNext; end;end;end;       // if there was a set duration before, continue with the next file
+                                    case FImageDisplayDuration = 'inf' of FALSE: autoPlayNext; end;end;end;       // if there was a set duration before, continue with the next file
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
                        FALSE: ST.opInfo := 'slideshow unpaused'; end;
@@ -641,6 +648,7 @@ end;
 
 function TMediaPlayer.playCurrent: boolean;
 begin
+  pause;
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := TRUE;
@@ -648,6 +656,7 @@ end;
 
 function TMediaPlayer.playFirst: boolean;
 begin
+  pause;
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.first;
@@ -655,6 +664,7 @@ end;
 
 function TMediaPlayer.playLast: boolean;
 begin
+  pause;
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.last;
@@ -662,7 +672,7 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
-  case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
+  pause;
 
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
@@ -675,6 +685,7 @@ end;
 
 function TMediaPlayer.playPrev: boolean;
 begin
+  pause;
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;

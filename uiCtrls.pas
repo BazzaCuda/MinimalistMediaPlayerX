@@ -324,7 +324,7 @@ begin
                                                                                                      FALSE: begin
                                                                                                               reloadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                                                              FALSE: MP.playNext; end;end;end;end;end; // ...hence, playNext
+                                                                                                                              FALSE: MP.autoPlayNext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function TUI.doEscapeKey: boolean;
@@ -342,7 +342,7 @@ begin
   case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
   CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
-//  debugFormat('V: %dx%d', [MP.videoWidth, MP.videoHeight]);
+
   ST.formResize(UI.width);
   PB.formResize;
 
@@ -568,10 +568,12 @@ begin
                       mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
                                       var VHeight := CU.getScreenHeight - 50;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      application.ProcessMessages;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
                       mtImage: begin  var vWidth  := trunc((CU.getScreenHeight + 500)); //  / CU.getAspectRatio(MI.imageWidth, MI.imageHeight));
                                       var VHeight := CU.getScreenHeight - 50;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      application.ProcessMessages;
                                       SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
   end;
 end;

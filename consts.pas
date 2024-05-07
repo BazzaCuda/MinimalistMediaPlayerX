@@ -74,13 +74,14 @@ type
   end;
 
 const
-  mediaTypes: array[0..86] of TMediaTypeRec = (
+  mediaTypes: array[0..87] of TMediaTypeRec = (
 
 // manually added image formats
 (mimeType: 'image/jpeg';            mediaType: mtImage; typeName: 'JPEG image';                 fileExts: '.jpg.jpeg'),
 (mimeType: 'image/bmp';             mediaType: mtImage; typeName: 'BITMAP image';               fileExts: '.bmp'),
 (mimeType: 'image/png';             mediaType: mtImage; typeName: 'PNG image';                  fileExts: '.png'),
 (mimeType: 'image/webp';            mediaType: mtImage; typeName: 'WEBP image';                 fileExts: '.webp'),
+(mimeType: 'image/gif';             mediaType: mtImage; typeName: 'GIF image';                  fileExts: '.gif'),
 
 // DVD/Blu-ray audio formats
 (mimeType: 'audio/ac3';             mediaType: mtAudio; typeName: 'AC-3 Audio';                 fileExts: '.ac3.a52'),
