@@ -20,7 +20,7 @@ unit TProgramUpdatesClass;
 
 interface
 
-function currentReleaseVersion: string;
+function getLatestVersion: string;
 
 implementation
 
@@ -51,7 +51,7 @@ begin
   end;
 end;
 
-function currentReleaseVersion: string;
+function getLatestVersion: string;
 var
   json: string;
   obj: TJSONObject;

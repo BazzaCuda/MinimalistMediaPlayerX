@@ -2352,9 +2352,9 @@ object AboutForm: TAboutForm
   object Label7: TLabel
     Left = 360
     Top = 47
-    Width = 136
+    Width = 121
     Height = 25
-    Caption = 'Current Release:'
+    Caption = 'Latest Release:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
@@ -2362,8 +2362,8 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
   end
-  object lblCurrentReleaseVersion: TLabel
-    Left = 504
+  object lblLatestReleaseVersion: TLabel
+    Left = 488
     Top = 47
     Width = 33
     Height = 25

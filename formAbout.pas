@@ -41,7 +41,7 @@ type
     Label6: TLabel;
     lblBuildVersion: TLabel;
     Label7: TLabel;
-    lblCurrentReleaseVersion: TLabel;
+    lblLatestReleaseVersion: TLabel;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
@@ -50,11 +50,11 @@ type
   public
     function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
     function setBuildVersion(const aBuild: string): boolean;
-    function setCurrentReleaseVersion(const aRelease: string): boolean;
+    function setLatestReleaseVersion(const aRelease: string): boolean;
     function setReleaseVersion(const aRelease: string): boolean;
   end;
 
-function showAboutBox(const releaseVersion: string; const buildVersion: string): boolean;
+function showAboutBox(const thisVersion: string; const buildVersion: string): boolean;
 
 implementation
 
@@ -62,16 +62,15 @@ uses shellAPI, globalVars, commonUtils, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
 
-function showAboutBox(const releaseVersion: string; const buildVersion: string): boolean;
+function showAboutBox(const thisVersion: string; const buildVersion: string): boolean;
 begin
   GV.userInput := TRUE;
   with TAboutForm.create(NIL) do
   try
-    setReleaseVersion(releaseVersion);
+    setReleaseVersion(thisVersion);
     setBuildVersion(buildVersion);
-    var cv := currentReleaseVersion;
-    setCurrentReleaseVersion(cv);
-    compareVersions(releaseVersion, cv);
+    setLatestReleaseVersion(getLatestVersion);
+    compareVersions(thisVersion, getLatestVersion);
     showModal;
   finally
     free;
@@ -87,7 +86,7 @@ end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
 begin
-  case thisVersion = latestVersion of FALSE: lblCurrentReleaseVersion.font.style := [fsBold, fsUnderline]; end;
+  case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
@@ -110,9 +109,9 @@ begin
   lblBuildVersion.Caption := aBuild;
 end;
 
-function TAboutForm.setCurrentReleaseVersion(const aRelease: string): boolean;
+function TAboutForm.setLatestReleaseVersion(const aRelease: string): boolean;
 begin
-  lblCurrentReleaseVersion.caption := aRelease;
+  lblLatestReleaseVersion.caption := aRelease;
 end;
 
 function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
