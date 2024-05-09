@@ -585,7 +585,7 @@ end;
 
 function TUI.showAboutBox: boolean;
 begin
-  formAbout.showAboutBox(CU.getFileVersionFmt('', '%d.%d'), CU.getFileVersionFmt);
+  formAbout.showAboutBox(CU.getFileVersionFmt('', '%d.%d.%d'), CU.getFileVersionFmt);
 end;
 
 function TUI.showWindow: boolean;
