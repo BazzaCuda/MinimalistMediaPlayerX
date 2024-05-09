@@ -40,13 +40,17 @@ type
     Bevel2: TBevel;
     Label6: TLabel;
     lblBuildVersion: TLabel;
+    Label7: TLabel;
+    lblCurrentReleaseVersion: TLabel;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
     procedure lblWebsiteURLMouseLeave(Sender: TObject);
   private
   public
+    function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
     function setBuildVersion(const aBuild: string): boolean;
+    function setCurrentReleaseVersion(const aRelease: string): boolean;
     function setReleaseVersion(const aRelease: string): boolean;
   end;
 
@@ -54,7 +58,7 @@ function showAboutBox(const releaseVersion: string; const buildVersion: string):
 
 implementation
 
-uses shellAPI, globalVars, commonUtils;
+uses shellAPI, globalVars, commonUtils, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
 
@@ -65,6 +69,9 @@ begin
   try
     setReleaseVersion(releaseVersion);
     setBuildVersion(buildVersion);
+    var cv := currentReleaseVersion;
+    setCurrentReleaseVersion(cv);
+    compareVersions(releaseVersion, cv);
     showModal;
   finally
     free;
@@ -76,6 +83,11 @@ end;
 procedure TAboutForm.btnOKClick(Sender: TObject);
 begin
   modalResult := mrOK;
+end;
+
+function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
+begin
+  case thisVersion = latestVersion of FALSE: lblCurrentReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
@@ -96,6 +108,11 @@ end;
 function TAboutForm.setBuildVersion(const aBuild: string): boolean;
 begin
   lblBuildVersion.Caption := aBuild;
+end;
+
+function TAboutForm.setCurrentReleaseVersion(const aRelease: string): boolean;
+begin
+  lblCurrentReleaseVersion.caption := aRelease;
 end;
 
 function TAboutForm.setReleaseVersion(const aRelease: string): boolean;

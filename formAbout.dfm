@@ -2349,6 +2349,32 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
   end
+  object Label7: TLabel
+    Left = 360
+    Top = 47
+    Width = 136
+    Height = 25
+    Caption = 'Current Release:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblCurrentReleaseVersion: TLabel
+    Left = 504
+    Top = 47
+    Width = 33
+    Height = 25
+    Caption = 'v1.0'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
   object btnOK: TButton
     Left = 281
     Top = 246

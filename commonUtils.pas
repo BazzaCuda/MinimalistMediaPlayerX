@@ -42,7 +42,7 @@ type
     function getExePath: string;
     function getFileNameWithoutExtension(const aFilePath: string): string;
     function getFileSize(const aFilePath: string): int64;
-    function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
+    function getFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
     function getWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
     function getScreenCentre: integer;
     function getScreenHeight: integer;
@@ -212,7 +212,7 @@ begin
                                                     result := (int64(vRec.nFileSizeHigh) shl 32) + vRec.nFileSizeLow; end;end;end;
 end;
 
-function TCommonUtils.getFileVersionFmt(const aFilePath: string = ''; const fmt: string = '%d.%d.%d.%d'): string;
+function TCommonUtils.getFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 var
   vFilePath: string;
   iBufferSize: DWORD;
