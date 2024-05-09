@@ -209,6 +209,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="TSegmentClass.pas"/>
         <DCCReference Include="TProgramUpdatesClass.pas"/>
+        <DCCReference Include="formDownload.pas">
+            <Form>DownloadForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

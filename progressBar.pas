@@ -39,9 +39,9 @@ type
     procedure setMax(const Value: integer);
     procedure setShowProgressBar(const Value: boolean);
   protected
-    constructor create;
     procedure onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
   public
+    constructor create;
     destructor  Destroy; override;
     function brighter: integer;
     function centreCursor: boolean;

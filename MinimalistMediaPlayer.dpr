@@ -67,7 +67,8 @@ uses
   formStreamList in 'formStreamList.pas' {StreamListForm},
   formProgress in 'formProgress.pas' {ProgressForm},
   TSegmentClass in 'TSegmentClass.pas',
-  TProgramUpdatesClass in 'TProgramUpdatesClass.pas';
+  TProgramUpdatesClass in 'TProgramUpdatesClass.pas',
+  formDownload in 'formDownload.pas' {DownloadForm};
 
 {$R *.res}
 
