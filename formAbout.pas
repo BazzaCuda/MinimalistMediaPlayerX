@@ -42,6 +42,8 @@ type
     lblBuildVersion: TLabel;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure lblWebsiteURLMouseEnter(Sender: TObject);
+    procedure lblWebsiteURLMouseLeave(Sender: TObject);
   private
   public
     function setBuildVersion(const aBuild: string): boolean;
@@ -78,7 +80,17 @@ end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
 begin
-  shellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX', '', '', SW_SHOW);
+  shellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest', '', '', SW_SHOW);
+end;
+
+procedure TAboutForm.lblWebsiteURLMouseEnter(Sender: TObject);
+begin
+  lblWebsiteURL.font.style := [fsUnderline];
+end;
+
+procedure TAboutForm.lblWebsiteURLMouseLeave(Sender: TObject);
+begin
+  lblWebsiteURL.font.style := [];
 end;
 
 function TAboutForm.setBuildVersion(const aBuild: string): boolean;

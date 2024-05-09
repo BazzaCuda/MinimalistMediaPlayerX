@@ -17,7 +17,7 @@ object AboutForm: TAboutForm
     Left = 120
     Top = 8
     Width = 489
-    Height = 223
+    Height = 232
   end
   object Image1: TImage
     Left = 8
@@ -2288,9 +2288,9 @@ object AboutForm: TAboutForm
   object Label5: TLabel
     Left = 136
     Top = 167
-    Width = 71
+    Width = 198
     Height = 25
-    Caption = 'Website:'
+    Caption = 'Website: (latest release)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
@@ -2314,6 +2314,8 @@ object AboutForm: TAboutForm
     ParentColor = False
     ParentFont = False
     OnClick = lblWebsiteURLClick
+    OnMouseEnter = lblWebsiteURLMouseEnter
+    OnMouseLeave = lblWebsiteURLMouseLeave
   end
   object Bevel2: TBevel
     Left = 4
@@ -2349,7 +2351,7 @@ object AboutForm: TAboutForm
   end
   object btnOK: TButton
     Left = 281
-    Top = 248
+    Top = 246
     Width = 75
     Height = 25
     Caption = 'OK'

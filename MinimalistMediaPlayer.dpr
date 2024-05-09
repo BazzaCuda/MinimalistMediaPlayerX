@@ -66,8 +66,7 @@ uses
   formTimeline in 'formTimeline.pas' {TimelineForm},
   formStreamList in 'formStreamList.pas' {StreamListForm},
   formProgress in 'formProgress.pas' {ProgressForm},
-  TSegmentClass in 'TSegmentClass.pas',
-  TProgramRegistrationClass in '..\..\TProgramRegistrationClass\TProgramRegistrationClass.pas';
+  TSegmentClass in 'TSegmentClass.pas';
 
 {$R *.res}
 
