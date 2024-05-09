@@ -25,7 +25,7 @@ function currentReleaseVersion: string;
 implementation
 
 uses
-  system.json, system.classes, system.sysUtils, IdHTTP, idSSLOpenSSL, _debugWindow;
+  system.json, IdHTTP, idSSLOpenSSL, _debugWindow;
 
 var
   gLatestVersion: string = '';
