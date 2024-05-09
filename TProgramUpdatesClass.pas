@@ -25,7 +25,7 @@ function currentReleaseVersion: string;
 implementation
 
 uses
-  system.json, system.classes, system.sysUtils, IdHTTP, idSSLOpenSSL, commonUtils, _debugWindow;
+  system.json, system.classes, system.sysUtils, IdHTTP, idSSLOpenSSL, _debugWindow;
 
 var
   gLatestVersion: string = '';
@@ -55,7 +55,6 @@ function currentReleaseVersion: string;
 var
   json: string;
   obj: TJSONObject;
-  url: string;
 begin
   case gLatestVersion = '' of TRUE: begin
                                       json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
@@ -63,7 +62,7 @@ begin
                                         obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
                                         case obj = NIL of  FALSE: gLatestVersion := obj.Values['tag_name'].value; end;
                                       finally
-                                        obj.Free;
+                                        case obj = NIL of  FALSE: obj.Free; end;
                                       end;end;end;
 
   result := gLatestVersion;
