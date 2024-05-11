@@ -40,7 +40,7 @@ uses
   TSysCommandsClass in 'TSysCommandsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
-  playlist in 'playlist.pas',
+  TPlaylistClass in 'TPlaylistClass.pas',
   TMediaPlayerClass in 'TMediaPlayerClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   TTickTimerClass in 'TTickTimerClass.pas',

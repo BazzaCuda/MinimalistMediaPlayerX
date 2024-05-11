@@ -54,7 +54,7 @@ function shutPlaylist: boolean;
 
 implementation
 
-uses ShellAPI, TUICtrlsClass, system.strUtils, commonUtils, playlist, globalVars, TMediaPlayerClass, consts, _debugWindow;
+uses ShellAPI, TUICtrlsClass, system.strUtils, commonUtils, TPlaylistClass, globalVars, TMediaPlayerClass, consts, _debugWindow;
 
 var
   playlistForm: TPlaylistForm;
