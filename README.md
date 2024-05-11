@@ -9,7 +9,7 @@ Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, 
 
 **TIP**: You can crop an image by using zoom and pan (left, right, up, down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Gamma, Saturation or Rotation of the original image.
 
-**TIP**: You can edit an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It doesn't get much easier than that!!
+**TIP**: You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It doesn't get much easier than that!!
 
 **Minimalist Media Player**
 
