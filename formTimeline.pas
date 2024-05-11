@@ -123,7 +123,7 @@ function TL: TTimeline;
 implementation
 
 uses
-  progressBar, dialogs, TPlaylistClass, shellAPI, commonUtils, formStreamList, mediaInfo, globalVars, _debugWindow;
+  TProgressBarClass, dialogs, TPlaylistClass, shellAPI, commonUtils, formStreamList, mediaInfo, globalVars, _debugWindow;
 
 var
   timelineForm: TTimelineForm;

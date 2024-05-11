@@ -34,7 +34,7 @@ uses
   Vcl.Themes,
   Vcl.Styles,
   globalVars in 'globalVars.pas',
-  progressBar in 'progressBar.pas',
+  TProgressBarClass in 'TProgressBarClass.pas',
   TKeyboardClass in 'TKeyboardClass.pas',
   appEvents in 'appEvents.pas',
   TSysCommandsClass in 'TSysCommandsClass.pas',
