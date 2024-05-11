@@ -32,7 +32,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
 
-- If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles,the subtitles will be shown automatically.
+- If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. [F7] will cycle through all the subtitle tracks in the media file.
 
 - Full-resolution screenshots can be saved for individual frames and for a displayed image.
 
@@ -42,7 +42,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - You can quickly bookmark the current position of a media file and restart from that point at a later time.
 
-- You can quickly resize the video by holding down the G key to enlarge it. Or quickly reduce it by holding down Ctrl-G.
+- You can quickly resize the video by holding down the [G] key to enlarge it. Or quickly reduce it by holding down Ctrl-[G].
 
 - ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
@@ -161,7 +161,7 @@ Control | Action
 `0`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
 `C`                     | [C]ut the segment under the cursor into two segments
-`Ctrl-C`                | same as above but mark left-hand segment as e[X]cluded (same as [I])
+`Ctrl-C`                | same as above but mark the left-hand segment as e[X]cluded (same as [I])
 `I`                     | [I]n point: split segment at cursor and mark left-hand segment as e[X]cluded, i.e. deleted
 `O`                     | [O]ut point: split segment at cursor and mark right-hand segment as e[X]cluded, i.e. deleted
 `L`                     | [L]engthen the selected segment by one second
@@ -274,9 +274,9 @@ Control | Action
 `F7`                    | cycle through all subtitle tracks in the media file
 `F8`                    | skip to the previous chapter, if there is one
 `F9`                    | skip to the next chapter, if there is one
-`F10`                   | open media file in PotPlayer (assumes default installation folder)
-`F11`                   | open media file in LossLess Cut (assumes default installation folder)            
-`F12`                   | open media file in ShotCut editor (assumes default installation folder)
+`F10`                   | open media file in PotPlayer (assumes default installation folder) - can be overridden in .conf
+`F11`                   | open media file in LossLess Cut (assumes default installation folder) - can be overridden in .conf            
+`F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
 `Ctrl-A`                | show [A]bout Box
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
