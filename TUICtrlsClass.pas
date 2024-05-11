@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit uiCtrls;
+unit TUICtrlsClass;
 
 interface
 
@@ -448,15 +448,19 @@ end;
 function TUI.keepFile(const aFilePath: string): boolean;
 var
   vNewName: string;
+  vWasPlaying: boolean;
 begin
   case PL.hasItems of FALSE: EXIT; end;
-  MP.pause;
+
+  vWasPlaying := MP.playing;
+  case vWasPlaying of TRUE: MP.pause; end;
+
   vNewName := CU.renameFile(aFilePath, '_' + CU.getFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of TRUE: begin
                                         PL.replaceCurrentItem(vNewName);
                                         ST.opInfo := 'Kept'; end;end;
   MC.caption := PL.formattedItem;
-  MP.resume;
+  case vWasPlaying  of TRUE: MP.resume; end;
 end;
 
 function TUI.maximize: boolean;

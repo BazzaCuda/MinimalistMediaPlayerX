@@ -67,7 +67,7 @@ function GV: TGlobalVars;
 implementation
 
 uses
-  vcl.controls, sysCommands, uiCtrls;
+  vcl.controls, sysCommands;
 
 var
   gGV: TGlobalVars;

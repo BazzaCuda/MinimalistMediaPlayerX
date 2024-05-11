@@ -159,7 +159,7 @@ implementation
 
 uses
   vcl.controls, vcl.graphics, winAPI.windows, globalVars, formSubtitles, progressBar, keyboard, commonUtils, system.sysUtils,
-  formCaption, mediaInfo, mpvConst, playlist, UIctrls, sysCommands, configFile, formHelp, sendAll, mediaType, _debugWindow;
+  formCaption, mediaInfo, mpvConst, playlist, TUICtrlsClass, sysCommands, configFile, formHelp, sendAll, mediaType, _debugWindow;
 
 var
   gMP: TMediaPlayer;

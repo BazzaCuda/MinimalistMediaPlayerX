@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, sysCommands, globalVars, system.sysUtils, keyboard, formSubtitles, consts, progressBar, mediaPlayer,
-  UICtrls, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, sendAll, formTimeline, mediaInfo, _debugWindow;
+  TUICtrlsClass, commonUtils, vcl.controls, formHelp, playlist, formCaption, formPlaylist, sendAll, formTimeline, mediaInfo, _debugWindow;
 
 var gAE: TAppEvents;
 

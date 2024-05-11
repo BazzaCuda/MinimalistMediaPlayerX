@@ -68,7 +68,7 @@ function CU: TCommonUtils;
 implementation
 
 uses
-  system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, uiCtrls, IOUtils,
+  system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, globalVars, consts, winApi.messages, TUICtrlsClass, IOUtils,
   formSubtitles, formCaption, progressBar, configFile, winAPI.activeX, _debugWindow;
 
 var
