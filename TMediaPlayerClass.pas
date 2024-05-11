@@ -463,7 +463,6 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-//  case FPausePlay AND NOT UI.autoCentre of TRUE: EXIT; end;       // What ???
   case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
 
   case eState of
