@@ -55,7 +55,7 @@ uses
   MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
-  params in 'params.pas',
+  TParamStringsClass in 'TParamStringsClass.pas',
   formInputBox in 'formInputBox.pas' {InputBoxForm},
   commonUtils in 'commonUtils.pas',
   TBookmarkClass in 'TBookmarkClass.pas',

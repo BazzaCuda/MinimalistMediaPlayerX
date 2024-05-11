@@ -182,7 +182,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="libMPVDelphi\MPVRenderGL.pas"/>
         <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
         <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
-        <DCCReference Include="params.pas"/>
+        <DCCReference Include="TParamStringsClass.pas"/>
         <DCCReference Include="formInputBox.pas">
             <Form>InputBoxForm</Form>
         </DCCReference>
