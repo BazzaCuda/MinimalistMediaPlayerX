@@ -71,7 +71,7 @@ function KB: TKeyboard;
 implementation
 
 uses
-  sysCommands, winApi.windows, TMediaPlayerClass, mediaInfo, formCaption, playlist, TUICtrlsClass, consts, globalVars, commonUtils, vcl.forms,
+  TSysCommandsClass, winApi.windows, TMediaPlayerClass, mediaInfo, formCaption, playlist, TUICtrlsClass, consts, globalVars, commonUtils, vcl.forms,
   system.sysUtils, TBookmarkClass, progressBar, formSubtitles, TSendAllClass, formPlaylist, _debugWindow;
 
 const

@@ -158,7 +158,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="progressBar.pas"/>
         <DCCReference Include="keyboard.pas"/>
         <DCCReference Include="appEvents.pas"/>
-        <DCCReference Include="sysCommands.pas"/>
+        <DCCReference Include="TSysCommandsClass.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
         <DCCReference Include="formHelp.pas">
             <Form>HelpForm</Form>

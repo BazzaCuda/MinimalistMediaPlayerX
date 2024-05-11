@@ -37,7 +37,7 @@ uses
   progressBar in 'progressBar.pas',
   keyboard in 'keyboard.pas',
   appEvents in 'appEvents.pas',
-  sysCommands in 'sysCommands.pas',
+  TSysCommandsClass in 'TSysCommandsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
   playlist in 'playlist.pas',
