@@ -72,7 +72,7 @@ implementation
 
 uses
   sysCommands, winApi.windows, mediaPlayer, mediaInfo, formCaption, playlist, TUICtrlsClass, consts, globalVars, commonUtils, vcl.forms,
-  system.sysUtils, TBookmarkClass, progressBar, formSubtitles, sendAll, formPlaylist, _debugWindow;
+  system.sysUtils, TBookmarkClass, progressBar, formSubtitles, TSendAllClass, formPlaylist, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';

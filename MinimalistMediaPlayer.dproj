@@ -194,7 +194,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>PlaylistForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="sendAll.pas"/>
+        <DCCReference Include="TSendAllClass.pas"/>
         <DCCReference Include="formTimeline.pas">
             <Form>TimelineForm</Form>
             <FormType>dfm</FormType>

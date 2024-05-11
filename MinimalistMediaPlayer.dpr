@@ -62,7 +62,7 @@ uses
   configFile in 'configFile.pas',
   mediaType in 'mediaType.pas',
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
-  sendAll in 'sendAll.pas',
+  TSendAllClass in 'TSendAllClass.pas',
   formTimeline in 'formTimeline.pas' {TimelineForm},
   formStreamList in 'formStreamList.pas' {StreamListForm},
   formProgress in 'formProgress.pas' {ProgressForm},

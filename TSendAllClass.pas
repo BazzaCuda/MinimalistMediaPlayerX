@@ -1,4 +1,4 @@
-unit sendAll;
+unit TSendAllClass;
 
 interface
 

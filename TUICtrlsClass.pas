@@ -105,7 +105,7 @@ implementation
 
 uses
   formSubtitles, mediaInfo, mediaPlayer, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, sysCommands,
-  formHelp, formPlaylist, formAbout, globalVars, sendAll, formTimeline, mediaType, dialogs, _debugWindow;
+  formHelp, formPlaylist, formAbout, globalVars, TSendAllClass, formTimeline, mediaType, dialogs, _debugWindow;
 
 var
   gUI: TUI;
