@@ -37,7 +37,7 @@ function inputBoxForm(const APrompt: string): string;
 
 implementation
 
-uses vcl.themes, vcl.styles, globalVars, commonUtils;
+uses vcl.themes, vcl.styles, TGlobalVarsClass, commonUtils;
 
 {$R *.dfm}
 

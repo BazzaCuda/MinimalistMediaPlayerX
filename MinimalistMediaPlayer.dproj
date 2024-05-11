@@ -154,7 +154,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="TUICtrlsClass.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="globalVars.pas"/>
+        <DCCReference Include="TGlobalVarsClass.pas"/>
         <DCCReference Include="TProgressBarClass.pas"/>
         <DCCReference Include="TKeyboardClass.pas"/>
         <DCCReference Include="appEvents.pas"/>

@@ -28,7 +28,7 @@ function sendSysCommandClose(const aHWND: HWND): boolean;
 implementation
 
 uses
-  TUICtrlsClass, globalVars;
+  TUICtrlsClass, TGlobalVarsClass;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin

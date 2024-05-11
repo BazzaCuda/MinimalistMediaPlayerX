@@ -34,7 +34,7 @@ type
 implementation
 
 uses
-  winApi.windows, globalVars, consts;
+  winApi.windows, TGlobalVarsClass, consts;
 
 var
   gTT: TTickTimer;
