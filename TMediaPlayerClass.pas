@@ -233,7 +233,7 @@ end;
 
 function TMediaPlayer.checkPot: boolean;
 begin
-  case FAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(POT_PLAYER, PL.currentItem); end;end;
+  case FAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(F10_APP, PL.currentItem); end;end;
 end;
 
 function TMediaPlayer.contrastDn: string;

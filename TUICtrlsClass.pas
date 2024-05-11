@@ -73,7 +73,7 @@ type
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const create: boolean = TRUE): boolean;
     function moveTimelineWindow(const create: boolean = TRUE): boolean;
-    function openExternalApp(const anApp: string; const aParams: string): boolean;
+    function openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function reloadPlaylistWindow: boolean;
     function renameFile(const aFilePath: string): boolean;
@@ -493,10 +493,24 @@ begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
 
-function TUI.openExternalApp(const anApp, aParams: string): boolean;
+function TUI.openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 begin
   MP.pause;
-  CU.shellExec(anApp, aParams);
+
+  var vAppPath := '';
+
+  case FnnKeyApp of                             // has the user overridden the default app in the config file?
+    F10_APP: vAppPath := CF.value['F10'];
+    F11_APP: vAppPath := CF.value['F11'];
+    F12_APP: vAppPath := CF.value['F12'];
+  end;
+
+  case vAppPath = '' of TRUE: case FnnKeyApp of // No
+                                F10_APP: vAppPath := POT_PLAYER;
+                                F11_APP: vAppPath := LOSSLESS_CUT;
+                                F12_APP: vAppPath := SHOTCUT; end;end;
+
+  CU.shellExec(vAppPath, aParams);
 end;
 
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;

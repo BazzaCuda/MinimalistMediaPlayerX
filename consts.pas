@@ -73,6 +73,8 @@ type
     fileExts: string;
   end;
 
+  TFnnKeyApp = (F10_APP, F11_APP, F12_APP);
+
 const
   mediaTypes: array[0..87] of TMediaTypeRec = (
 

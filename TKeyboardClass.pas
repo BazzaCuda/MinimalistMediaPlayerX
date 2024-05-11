@@ -290,9 +290,9 @@ begin
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
     koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
     koToggleControls:    SA.postToAll(WIN_CONTROLS);
-    koRunPot:            UI.openExternalApp(POT_PLAYER, PL.currentItem);
-    koRunCut:            UI.openExternalApp(LOSSLESS_CUT, PL.currentItem);
-    koRunShot:           UI.openExternalApp(SHOTCUT, PL.currentItem);
+    koRunPot:            UI.openExternalApp(F10_APP, PL.currentItem);
+    koRunCut:            UI.openExternalApp(F11_APP, PL.currentItem);
+    koRunShot:           UI.openExternalApp(F12_APP, PL.currentItem);
     koToggleBlackout:    UI.toggleBlackout;
     koCentreWindow:      begin UI.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koMinimizeWindow:    UI.minimizeWindow;
