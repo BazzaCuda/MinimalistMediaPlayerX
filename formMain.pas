@@ -43,7 +43,7 @@ implementation
 
 uses
   TUICtrlsClass, globalVars, TMediaPlayerClass, consts, commonUtils, TPlaylistClass, TProgressBarClass, mediaInfo, formSubtitles, formCaption, TParamStringsClass,
-  winApi.shellApi, configFile, mediaType, TSysCommandsClass, _debugWindow;
+  winApi.shellApi, configFile, TMediaTypesClass, TSysCommandsClass, _debugWindow;
 
 {$R *.dfm}
 

@@ -60,7 +60,7 @@ uses
   commonUtils in 'commonUtils.pas',
   TBookmarkClass in 'TBookmarkClass.pas',
   configFile in 'configFile.pas',
-  mediaType in 'mediaType.pas',
+  TMediaTypesClass in 'TMediaTypesClass.pas',
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
   TSendAllClass in 'TSendAllClass.pas',
   formTimeline in 'formTimeline.pas' {TimelineForm},

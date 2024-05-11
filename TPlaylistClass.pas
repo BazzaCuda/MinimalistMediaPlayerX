@@ -66,7 +66,7 @@ var
 implementation
 
 uses
-  system.sysUtils, TSysCommandsClass, globalVars, clipbrd, formSubtitles, commonUtils, regularExpressions, math, mediaType;
+  system.sysUtils, TSysCommandsClass, globalVars, clipbrd, formSubtitles, commonUtils, regularExpressions, math, TMediaTypesClass;
 
 function PL: TPlaylist;
 begin
