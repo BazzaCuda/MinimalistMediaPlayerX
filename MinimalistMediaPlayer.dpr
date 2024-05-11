@@ -43,7 +43,7 @@ uses
   playlist in 'playlist.pas',
   TMediaPlayerClass in 'TMediaPlayerClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
-  tickTimer in 'tickTimer.pas',
+  TTickTimerClass in 'TTickTimerClass.pas',
   mediaInfo in 'mediaInfo.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   formCaption in 'formCaption.pas' {CaptionForm},

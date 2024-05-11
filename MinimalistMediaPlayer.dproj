@@ -168,7 +168,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="formSubtitles.pas">
             <Form>subtitlesForm</Form>
         </DCCReference>
-        <DCCReference Include="tickTimer.pas"/>
+        <DCCReference Include="TTickTimerClass.pas"/>
         <DCCReference Include="mediaInfo.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
         <DCCReference Include="formCaption.pas">
