@@ -159,8 +159,19 @@ Control | Action
 `=`                     | increase contrast. Can be held down for rapid increase
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
 `0`                     | reset contrast to normal 
+**Editing** (Ctrl-E) |
+`C`                     | [C]ut the segment under the cursor into two segments
+`Ctrl-C`                | same as above but mark left-hand segment as e[X]cluded (same as [I])
+`I`                     | [I]n point: split segment at cursor and mark left-hand segment as e[X]cluded, i.e. deleted
+`O`                     | [O]ut point: split segment at cursor and mark right-hand segment as e[X]cluded, i.e. deleted
+`L`                     | [L]engthen the selected segment by one second
+`S`                     | [S]horten the selected segment by one second
+`M`                     | [M]erge the selected segment with the segment to its right
+`N`                     | [N]erge the selected segment with the segment to its left
+`R`                     | [R]estore the selected e[X]cluded segment
+`X`                     | e[X]clude the selected segment from the final edit
 **File Control** | 
-`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `D` and `DEL`           | [D]elete current media file (after confirmation)
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`                     | [R]ename the current media file
@@ -218,6 +229,9 @@ Control | Action
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `1`                     | reset the playback speed to normal, i.e. [1]00%
+**Subtitles** |
+`Ctrl-S`                | toggle subtitles on/off
+`F7`                    | cycle through all subtitle tracks in the media file
 **Tabbing** | 
 `T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
@@ -254,9 +268,10 @@ Control | Action
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
-**Additional** | 
-`F6`                    | cycle through audio tracks in the media file
-`F7`                    | cycle through subtitle tracks in the media file
+**Additional** |
+`F5`                    | save a screenshot of the current frame or the currently displayed image
+`F6`                    | cycle through all audio tracks in the media file
+`F7`                    | cycle through all subtitle tracks in the media file
 `F8`                    | skip to the previous chapter, if there is one
 `F9`                    | skip to the next chapter, if there is one
 `F10`                   | open media file in PotPlayer (assumes default installation folder)
@@ -266,7 +281,7 @@ Control | Action
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
-`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 
