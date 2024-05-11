@@ -21,7 +21,7 @@ unit commonUtils;
 interface
 
 uses
-  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls, vcl.extCtrls, mediaPlayer;
+  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, playlist, vcl.dialogs, vcl.controls, vcl.extCtrls, TMediaPlayerClass;
 
 type
   TCommonUtils = class(TObject)

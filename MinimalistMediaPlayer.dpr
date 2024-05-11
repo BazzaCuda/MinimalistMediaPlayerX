@@ -41,7 +41,7 @@ uses
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
   playlist in 'playlist.pas',
-  mediaPlayer in 'mediaPlayer.pas',
+  TMediaPlayerClass in 'TMediaPlayerClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   tickTimer in 'tickTimer.pas',
   mediaInfo in 'mediaInfo.pas',

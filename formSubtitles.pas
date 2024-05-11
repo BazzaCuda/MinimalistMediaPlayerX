@@ -70,7 +70,7 @@ function ST: TSubtitlesForm;
 implementation
 
 uses
-  mediaPlayer, commonUtils, configFile, consts, _debugWindow;
+  TMediaPlayerClass, commonUtils, configFile, consts, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;

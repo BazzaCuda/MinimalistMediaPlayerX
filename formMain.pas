@@ -42,7 +42,7 @@ var
 implementation
 
 uses
-  TUICtrlsClass, globalVars, mediaPlayer, consts, commonUtils, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
+  TUICtrlsClass, globalVars, TMediaPlayerClass, consts, commonUtils, playlist, progressBar, mediaInfo, formSubtitles, formCaption, params,
   winApi.shellApi, configFile, mediaType, sysCommands, _debugWindow;
 
 {$R *.dfm}

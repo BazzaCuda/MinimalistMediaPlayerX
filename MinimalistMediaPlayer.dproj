@@ -164,7 +164,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>HelpForm</Form>
         </DCCReference>
         <DCCReference Include="playlist.pas"/>
-        <DCCReference Include="mediaPlayer.pas"/>
+        <DCCReference Include="TMediaPlayerClass.pas"/>
         <DCCReference Include="formSubtitles.pas">
             <Form>subtitlesForm</Form>
         </DCCReference>
