@@ -104,7 +104,7 @@ function UI: TUI;
 implementation
 
 uses
-  formSubtitles, mediaInfo, TMediaPlayerClass, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, keyboard, TSysCommandsClass,
+  formSubtitles, mediaInfo, TMediaPlayerClass, commonUtils, progressBar, winApi.messages, playlist, system.sysUtils, formCaption, TKeyboardClass, TSysCommandsClass,
   formHelp, formPlaylist, formAbout, globalVars, TSendAllClass, formTimeline, mediaType, dialogs, _debugWindow;
 
 var

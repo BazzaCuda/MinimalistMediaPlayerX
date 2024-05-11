@@ -35,7 +35,7 @@ uses
   Vcl.Styles,
   globalVars in 'globalVars.pas',
   progressBar in 'progressBar.pas',
-  keyboard in 'keyboard.pas',
+  TKeyboardClass in 'TKeyboardClass.pas',
   appEvents in 'appEvents.pas',
   TSysCommandsClass in 'TSysCommandsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',

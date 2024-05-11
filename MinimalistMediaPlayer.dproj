@@ -156,7 +156,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="globalVars.pas"/>
         <DCCReference Include="progressBar.pas"/>
-        <DCCReference Include="keyboard.pas"/>
+        <DCCReference Include="TKeyboardClass.pas"/>
         <DCCReference Include="appEvents.pas"/>
         <DCCReference Include="TSysCommandsClass.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>

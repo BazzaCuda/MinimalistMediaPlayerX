@@ -61,7 +61,7 @@ function PB: TProgressBar;
 implementation
 
 uses
-  vcl.graphics, consts, globalVars, keyboard, commonUtils, TMediaPlayerClass, system.sysUtils, configFile, _debugWindow;
+  vcl.graphics, consts, globalVars, TKeyboardClass, commonUtils, TMediaPlayerClass, system.sysUtils, configFile, _debugWindow;
 
 var
   gPB: TProgressBar;
