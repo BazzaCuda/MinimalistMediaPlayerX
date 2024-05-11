@@ -57,7 +57,7 @@ uses
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
   TParamStringsClass in 'TParamStringsClass.pas',
   formInputBox in 'formInputBox.pas' {InputBoxForm},
-  commonUtils in 'commonUtils.pas',
+  TCommonUtilsClass in 'TCommonUtilsClass.pas',
   TBookmarkClass in 'TBookmarkClass.pas',
   TConfigFileClass in 'TConfigFileClass.pas',
   TMediaTypesClass in 'TMediaTypesClass.pas',

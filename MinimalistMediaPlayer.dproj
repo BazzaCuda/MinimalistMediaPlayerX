@@ -186,7 +186,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="formInputBox.pas">
             <Form>InputBoxForm</Form>
         </DCCReference>
-        <DCCReference Include="commonUtils.pas"/>
+        <DCCReference Include="TCommonUtilsClass.pas"/>
         <DCCReference Include="TBookmarkClass.pas"/>
         <DCCReference Include="TConfigFileClass.pas"/>
         <DCCReference Include="TMediaTypesClass.pas"/>

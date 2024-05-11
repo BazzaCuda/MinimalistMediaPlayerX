@@ -46,7 +46,7 @@ function shutHelp: boolean;
 
 implementation
 
-uses ShellAPI, TUICtrlsClass, system.strUtils, commonUtils, TGlobalVarsClass;
+uses ShellAPI, TUICtrlsClass, system.strUtils, TCommonUtilsClass, TGlobalVarsClass;
 
 var
   helpForm: THelpForm;

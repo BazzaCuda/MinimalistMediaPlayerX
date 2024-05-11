@@ -149,7 +149,7 @@ function MI: TMediaInfo;
 implementation
 
 uses
-  mediaInfoDLL, system.sysUtils, commonUtils, system.timeSpan, _debugWindow;
+  mediaInfoDLL, system.sysUtils, TCommonUtilsClass, system.timeSpan, _debugWindow;
 
 var
   gMI: TMediaInfo;

@@ -158,7 +158,7 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, TGlobalVarsClass, formSubtitles, TProgressBarClass, TKeyboardClass, commonUtils, system.sysUtils,
+  vcl.controls, vcl.graphics, winAPI.windows, TGlobalVarsClass, formSubtitles, TProgressBarClass, TKeyboardClass, TCommonUtilsClass, system.sysUtils,
   formCaption, TMediaInfoClass, mpvConst, TPlaylistClass, TUICtrlsClass, TSysCommandsClass, TConfigFileClass, formHelp, TSendAllClass, TMediaTypesClass, _debugWindow;
 
 var

@@ -58,7 +58,7 @@ function showAboutBox(const thisVersion: string; const buildVersion: string): bo
 
 implementation
 
-uses shellAPI, TGlobalVarsClass, commonUtils, TProgramUpdatesClass, _debugWindow;
+uses shellAPI, TGlobalVarsClass, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
 

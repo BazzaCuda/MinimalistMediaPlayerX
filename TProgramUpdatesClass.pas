@@ -25,7 +25,7 @@ function getLatestVersion: string;
 implementation
 
 uses
-  IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, formDownload, TProgressBarClass, commonUtils, forms, strUtils, _debugWindow;
+  IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, formDownload, TProgressBarClass, TCommonUtilsClass, forms, strUtils, _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object

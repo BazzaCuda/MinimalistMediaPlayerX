@@ -40,7 +40,7 @@ implementation
 
 uses
   system.classes, winAPI.messages, TSysCommandsClass, TGlobalVarsClass, system.sysUtils, TKeyboardClass, formSubtitles, consts, TProgressBarClass, TMediaPlayerClass,
-  TUICtrlsClass, commonUtils, vcl.controls, formHelp, TPlaylistClass, formCaption, formPlaylist, TSendAllClass, formTimeline, TMediaInfoClass, _debugWindow;
+  TUICtrlsClass, TCommonUtilsClass, vcl.controls, formHelp, TPlaylistClass, formCaption, formPlaylist, TSendAllClass, formTimeline, TMediaInfoClass, _debugWindow;
 
 var gAE: TAppEvents;
 
