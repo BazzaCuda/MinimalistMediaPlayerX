@@ -2350,7 +2350,7 @@ object AboutForm: TAboutForm
     ParentFont = False
   end
   object Label7: TLabel
-    Left = 360
+    Left = 320
     Top = 47
     Width = 121
     Height = 25
@@ -2363,7 +2363,7 @@ object AboutForm: TAboutForm
     ParentFont = False
   end
   object lblLatestReleaseVersion: TLabel
-    Left = 488
+    Left = 448
     Top = 47
     Width = 33
     Height = 25

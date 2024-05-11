@@ -25,7 +25,8 @@ function getLatestVersion: string;
 implementation
 
 uses
-  IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, formDownload, TProgressBarClass, TCommonUtilsClass, forms, strUtils, _debugWindow;
+  IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, forms, strUtils,
+  formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object
@@ -105,13 +106,17 @@ var
     result := CU.getExePath + 'update_' + cleanTag + '.zip';
   end;
 begin
+  result := '(autoUpdate=no)';
+  case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
+
 try
+
   case gLatestVersion = '' of TRUE: begin
                                       json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
                                       try
                                         obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
                                         try
-                                          case obj = NIL of FALSE:  gLatestVersion := obj.values['tag_name'].value; end;
+                                          case obj = NIL of FALSE: gLatestVersion := obj.values['tag_name'].value; end;
 
 { this works but we don't need to do it because we can determine the url of each release file using the tag }
 //                                          case obj = NIL of FALSE:  begin

@@ -108,7 +108,6 @@ begin
                                     handled      := KB.processKeyStroke(key, shiftState, kdDown);
                                     keyDnHandled := handled; end;end;
 
-
   case msgIs(WM_KEY_UP)  of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key         := msg.WParam; // e.g. VK_F10;

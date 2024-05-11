@@ -86,6 +86,7 @@ end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
 begin
+  case latestVersion[1] = 'v' of FALSE: EXIT; end;
   case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
