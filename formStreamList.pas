@@ -80,7 +80,7 @@ function shutStreamList: boolean;
 
 implementation
 
-uses consts, commonUtils, mediaInfo, system.generics.defaults, formTimeline, _debugWindow;
+uses consts, commonUtils, TMediaInfoClass, system.generics.defaults, formTimeline, _debugWindow;
 
 var
   streamListForm: TStreamListForm;

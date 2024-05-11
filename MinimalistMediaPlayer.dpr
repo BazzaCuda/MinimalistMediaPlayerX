@@ -44,7 +44,7 @@ uses
   TMediaPlayerClass in 'TMediaPlayerClass.pas',
   formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   TTickTimerClass in 'TTickTimerClass.pas',
-  mediaInfo in 'mediaInfo.pas',
+  TMediaInfoClass in 'TMediaInfoClass.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   formCaption in 'formCaption.pas' {CaptionForm},
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
