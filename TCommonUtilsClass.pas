@@ -27,9 +27,7 @@ type
   TCommonUtils = class(TObject)
   private
   public
-    function brighter: boolean;
     procedure copyPNGImage(SourceImage, DestImage: TImage);
-    function darker: boolean;
     function delay(const dwMilliseconds: DWORD): boolean;
     function deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
     function doCommandLine(const aCommandLIne: string): boolean;
@@ -53,7 +51,6 @@ type
     function offScreen(const aHWND: HWND): boolean;
     function reloadPlaylist(const aFolder: string): string;
     function renameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
-    function resetColor: boolean;
     function shellExec(const anExePath: string; const aParams: string): boolean;
     function showOKCancelMsgDlg(const aMsg: string;
                                 const msgDlgType: TMsgDlgType = mtConfirmation;
@@ -69,7 +66,7 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, TGlobalVarsClass, consts, winApi.messages, TUICtrlsClass, IOUtils,
-  formSubtitles, formCaption, TProgressBarClass, TConfigFileClass, winAPI.activeX, _debugWindow;
+  formSubtitles, formCaption, TProgressBarClass, winAPI.activeX, _debugWindow;
 
 var
   gCU: TCommonUtils;
@@ -81,20 +78,6 @@ begin
 end;
 
 { TCommonUtils }
-
-function TCommonUtils.brighter: boolean;
-begin
-  CF.value['caption']     := intToStr(MC.brighter);
-  CF.value['timeCaption'] := intToStr(ST.brighter);
-  CF.value['progressBar'] := intToStr(PB.brighter);
-end;
-
-function TCommonUtils.darker: boolean;
-begin
-  CF.value['caption']     := intToStr(MC.darker);
-  CF.value['timeCaption'] := intToStr(ST.darker);
-  CF.value['progressBar'] := intToStr(PB.darker);
-end;
 
 procedure TCommonUtils.copyPNGImage(SourceImage, DestImage: TImage);
 begin
@@ -372,13 +355,6 @@ begin
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
                                                               FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
-end;
-
-function TCommonUtils.resetColor: boolean;
-begin
-  CF.value['caption']     := intToStr(MC.resetColor);
-  CF.value['timeCaption'] := intToStr(ST.resetColor);
-  CF.value['progressBar'] := intToStr(PB.resetColor);
 end;
 
 function TCommonUtils.shellExec(const anExePath: string; const aParams: string): boolean;

@@ -323,8 +323,8 @@ begin
     koGammaReset:        ST.opInfo := MP.gammaReset;
     koSaturationReset:   ST.opInfo := MP.saturationReset;
     koToggleHelp:        UI.toggleHelpWindow;
-    koBrighterPB:        CU.brighter;
-    koDarkerPB:          CU.darker;
+    koBrighterPB:        UI.brighter;
+    koDarkerPB:          UI.darker;
     koCloseAll:          SA.postToAll(WIN_CLOSEAPP);
     koArrangeAll:        UI.arrangeAll;
     koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0));

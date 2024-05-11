@@ -57,9 +57,11 @@ type
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
     function arrangeAll: boolean;
     function autoCentreWindow(const aWnd: HWND): boolean;
+    function brighter: boolean;
     function centreCursor: boolean;
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
+    function darker: boolean;
     function deleteCurrentItem(const shift: TShiftState): boolean;
     function doEscapeKey: boolean;
     function greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
@@ -75,6 +77,7 @@ type
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function reloadPlaylistWindow: boolean;
     function renameFile(const aFilePath: string): boolean;
+    function resetColor: boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
@@ -105,7 +108,7 @@ implementation
 
 uses
   formSubtitles, TMediaInfoClass, TMediaPlayerClass, TCommonUtilsClass, TProgressBarClass, winApi.messages, TPlaylistClass, system.sysUtils, formCaption, TKeyboardClass, TSysCommandsClass,
-  formHelp, formPlaylist, formAbout, TGlobalVarsClass, TSendAllClass, formTimeline, TMediaTypesClass, dialogs, _debugWindow;
+  formHelp, formPlaylist, formAbout, TGlobalVarsClass, TSendAllClass, formTimeline, TMediaTypesClass, dialogs, TConfigFileClass, _debugWindow;
 
 var
   gUI: TUI;
@@ -218,6 +221,13 @@ begin
   centreWindow(aWnd);
 end;
 
+function TUI.brighter: boolean;
+begin
+  CF.value['caption']     := intToStr(MC.brighter);
+  CF.value['timeCaption'] := intToStr(ST.brighter);
+  CF.value['progressBar'] := intToStr(PB.brighter);
+end;
+
 function TUI.centreCursor: boolean;
 begin
   case autoCentre AND (MP.MediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
@@ -267,6 +277,13 @@ begin
                                                    FALSE: postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
 
   application.processMessages;
+end;
+
+function TUI.darker: boolean;
+begin
+  CF.value['caption']     := intToStr(MC.darker);
+  CF.value['timeCaption'] := intToStr(ST.darker);
+  CF.value['progressBar'] := intToStr(PB.darker);
 end;
 
 procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -638,6 +655,13 @@ function TUI.moveTimelineWindow(const create: boolean = TRUE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
   showTimeline(vPt, FVideoPanel.width, create);
+end;
+
+function TUI.resetColor: boolean;
+begin
+  CF.value['caption']     := intToStr(MC.resetColor);
+  CF.value['timeCaption'] := intToStr(ST.resetColor);
+  CF.value['progressBar'] := intToStr(PB.resetColor);
 end;
 
 function TUI.toggleCaptions(shift: TShiftState): boolean;
