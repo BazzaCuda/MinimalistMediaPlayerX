@@ -69,7 +69,7 @@ implementation
 
 uses
   system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, TGlobalVarsClass, consts, winApi.messages, TUICtrlsClass, IOUtils,
-  formSubtitles, formCaption, TProgressBarClass, configFile, winAPI.activeX, _debugWindow;
+  formSubtitles, formCaption, TProgressBarClass, TConfigFileClass, winAPI.activeX, _debugWindow;
 
 var
   gCU: TCommonUtils;

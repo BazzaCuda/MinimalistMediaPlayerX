@@ -51,7 +51,7 @@ function MC: TCaptionForm; // Media Caption
 implementation
 
 uses
-  TMediaPlayerClass, commonUtils, configFile, consts, _debugWindow;
+  TMediaPlayerClass, commonUtils, TConfigFileClass, consts, _debugWindow;
 
 var
   gMC: TCaptionForm;

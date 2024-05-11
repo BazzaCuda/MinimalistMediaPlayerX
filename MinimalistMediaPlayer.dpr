@@ -59,7 +59,7 @@ uses
   formInputBox in 'formInputBox.pas' {InputBoxForm},
   commonUtils in 'commonUtils.pas',
   TBookmarkClass in 'TBookmarkClass.pas',
-  configFile in 'configFile.pas',
+  TConfigFileClass in 'TConfigFileClass.pas',
   TMediaTypesClass in 'TMediaTypesClass.pas',
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
   TSendAllClass in 'TSendAllClass.pas',

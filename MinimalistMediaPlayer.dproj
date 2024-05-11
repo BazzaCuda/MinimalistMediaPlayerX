@@ -188,7 +188,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="commonUtils.pas"/>
         <DCCReference Include="TBookmarkClass.pas"/>
-        <DCCReference Include="configFile.pas"/>
+        <DCCReference Include="TConfigFileClass.pas"/>
         <DCCReference Include="TMediaTypesClass.pas"/>
         <DCCReference Include="formPlaylist.pas">
             <Form>PlaylistForm</Form>
