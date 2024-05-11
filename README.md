@@ -184,7 +184,7 @@ Control | Action
 `'` (single quote)      | reset gamma
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
-`Left double-click video`        | toggle fullscreen mode
+`Left double-click the window`   | toggle fullscreen mode
 `Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
 `with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
