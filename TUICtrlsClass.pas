@@ -270,7 +270,7 @@ begin
 end;
 
 procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-// doesn't work in appEvents. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
+// doesn't work in TAppEventsClass. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
 begin
   case screen <> NIL of TRUE: screen.cursor := crDefault; end;
 end;

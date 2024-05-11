@@ -36,7 +36,7 @@ uses
   TGlobalVarsClass in 'TGlobalVarsClass.pas',
   TProgressBarClass in 'TProgressBarClass.pas',
   TKeyboardClass in 'TKeyboardClass.pas',
-  appEvents in 'appEvents.pas',
+  TAppEventsClass in 'TAppEventsClass.pas',
   TSysCommandsClass in 'TSysCommandsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   formHelp in 'formHelp.pas' {HelpForm},
