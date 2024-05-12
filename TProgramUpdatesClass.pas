@@ -26,7 +26,7 @@ implementation
 
 uses
   IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, forms, strUtils,
-  formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
+  formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, consts, _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object
@@ -71,7 +71,7 @@ begin
 
                                           gDownloadForm := TDownloadForm.create(NIL);
                                           gProgressBar  := TProgressBar.create;
-                                          gProgressBar.initProgressBar(gDownloadForm);
+                                          gProgressBar.initProgressBar(gDownloadForm, PB_COLOR_DELTA);
 
                                           try
                                             gDownloadForm.show;

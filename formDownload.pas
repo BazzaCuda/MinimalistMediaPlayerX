@@ -9,8 +9,9 @@ uses
 type
   TDownloadForm = class(TForm)
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
   private
-    { Private declarations }
   public
     property byteLabel: TLabel read label1;
   end;

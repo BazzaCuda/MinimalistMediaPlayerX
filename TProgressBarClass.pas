@@ -47,7 +47,7 @@ type
     function centreCursor: boolean;
     function darker: integer;
     function formResize: boolean;
-    function initProgressBar(const aForm: TForm): boolean;
+    function initProgressBar(const aForm: TForm; const colorDelta: integer = 1): boolean;
     function resetColor: integer;
     function setNewPosition(const x: integer): integer;
     property initialized: boolean read FInitialized;
@@ -126,7 +126,7 @@ begin
   result := FPB.position;
 end;
 
-function TProgressBar.initProgressBar(const aForm: TForm): boolean;
+function TProgressBar.initProgressBar(const aForm: TForm; const colorDelta: integer = 1): boolean;
 begin
   FPB.parent           := aForm;
   FPB.align            := alBottom;
@@ -136,12 +136,12 @@ begin
   FPB.borderColor2     := clBlack + 1;
   FPB.showBorder       := FALSE;
   FPB.showPosText      := FALSE;
-  FPB.barColor1        := PB_DEFAULT_COLOR;
+  FPB.barColor1        := PB_DEFAULT_COLOR + colorDelta;
   FPB.barColorStyle    := cs1Color;
   FPB.onHintShow       := onHintShow;
   FPB.showHint         := TRUE;
 
-  case CF.asInteger['progressBar'] <> 0 of TRUE: FPB.barColor1 := CF.asInteger['progressBar']; end;
+  case (colorDelta = 1) AND (CF.asInteger['progressBar'] <> 0) of TRUE: FPB.barColor1 := CF.asInteger['progressBar']; end;
 
   FPB.max      := 100;
   FPB.Position := 0;
