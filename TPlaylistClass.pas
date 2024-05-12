@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ var
 implementation
 
 uses
-  system.sysUtils, TSysCommandsClass, TGlobalVarsClass, clipbrd, formSubtitles, TCommonUtilsClass, regularExpressions, math, TMediaTypesClass;
+  system.sysUtils, TSysCommandsClass, TGlobalVarsClass, clipbrd, formCaptions, TCommonUtilsClass, regularExpressions, math, TMediaTypesClass;
 
 function PL: TPlaylist;
 begin

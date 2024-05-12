@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,9 +21,11 @@ unit formStreamList;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, generics.collections, TSegmentClass,
-  System.ImageList, Vcl.ImgList, Vcl.Buttons;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes, System.ImageList,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, Vcl.ImgList, Vcl.Buttons,
+  generics.collections,
+  TSegmentClass;
 
 type
   TStreamListForm = class(TForm)
@@ -80,7 +82,9 @@ function shutStreamList: boolean;
 
 implementation
 
-uses consts, TCommonUtilsClass, TMediaInfoClass, system.generics.defaults, formTimeline, _debugWindow;
+uses
+  system.generics.defaults,
+  consts, formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
 
 var
   streamListForm: TStreamListForm;
@@ -177,8 +181,8 @@ begin
   case MI.mediaStreams[aIndex].selected of  TRUE: imageList.getBitmap(MI.mediaStreams[aIndex].iconIx, imgIcon.picture.bitmap);
                                            FALSE: imageList.getBitmap(MI.mediaStreams[aIndex].iconIx + 1, imgIcon.picture.bitmap); end;
 
-  case MI.mediaStreams[aIndex].selected of  TRUE: begin lblStream.font.color := clSilver; lblStream.font.style := [fsBold]; end;
-                                           FALSE: begin lblStream.font.color := clDkGray; lblStream.font.style := [fsItalic]; end;end;
+  case MI.mediaStreams[aIndex].selected of  TRUE: begin lblStream.font.color := DARK_MODE_SILVER; lblStream.font.style := [fsBold]; end;
+                                           FALSE: begin lblStream.font.color := DARK_MODE_DKGRAY; lblStream.font.style := [fsItalic]; end;end;
 
   lblStreamID.caption := MI.mediaStreams[aIndex].ID;
 
@@ -215,16 +219,16 @@ procedure TStreamListForm.formCreate(Sender: TObject);
 begin
   clSegments.borderStyle       := bsNone;
   clSegments.styleElements     := []; // don't allow any theme alterations
-  clSegments.color := $232323;
-  clSegments.itemSelectionOptions.focusedColor  := $232323;
-  clSegments.itemSelectionOptions.hotColor      := $232323;
-  clSegments.itemSelectionOptions.selectedColor := $232323;
+  clSegments.color                              := DARK_MODE_LIGHT;
+  clSegments.itemSelectionOptions.focusedColor  := DARK_MODE_LIGHT;
+  clSegments.itemSelectionOptions.hotColor      := DARK_MODE_LIGHT;
+  clSegments.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
   clStreams.borderStyle        := bsNone;
-  clStreams.styleElements     := []; // don't allow any theme alterations
-  clStreams.color := $232323;
-  clStreams.itemSelectionOptions.focusedColor  := $232323;
-  clStreams.itemSelectionOptions.hotColor      := $232323;
-  clStreams.itemSelectionOptions.selectedColor := $232323;
+  clStreams.styleElements      := []; // don't allow any theme alterations
+  clStreams.color                              := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.focusedColor  := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.hotColor      := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
 
   SELF.width  := 556;
   SELF.height := 600;
@@ -237,11 +241,11 @@ begin
 
 
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
-  color := $2B2B2B;
+  color := DARK_MODE_DARK;
 
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
-  font.color        := clSilver;
+  font.color        := DARK_MODE_SILVER;
 
   clSegments.itemCount := 0;
   clStreams.itemCount  := 0;

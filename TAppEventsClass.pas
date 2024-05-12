@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ type
 implementation
 
 uses
-  system.classes, winAPI.messages, TSysCommandsClass, TGlobalVarsClass, system.sysUtils, TKeyboardClass, formSubtitles, consts, TProgressBarClass, TMediaPlayerClass,
+  system.classes, winAPI.messages, TSysCommandsClass, TGlobalVarsClass, system.sysUtils, TKeyboardClass, formCaptions, consts, TProgressBarClass, TMediaPlayerClass,
   TUICtrlsClass, TCommonUtilsClass, vcl.controls, formHelp, TPlaylistClass, formCaption, formPlaylist, TSendAllClass, formTimeline, TMediaInfoClass, _debugWindow;
 
 var gAE: TAppEvents;

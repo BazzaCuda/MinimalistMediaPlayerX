@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@ unit formProgress;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TProgressForm = class(TForm)
@@ -49,6 +50,9 @@ var
 
 implementation
 
+uses
+  consts;
+
 {$R *.dfm}
 
 procedure TProgressForm.btnCancelClick(Sender: TObject);
@@ -59,7 +63,7 @@ end;
 procedure TProgressForm.FormCreate(Sender: TObject);
 begin
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
-  color := $2B2B2B;
+  color := DARK_MODE_DARK;
 
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
@@ -76,7 +80,7 @@ begin
     margins.right    := 10;
     margins.top      := 10;
     AlignWithMargins := TRUE;
-    panel1.color     := $232323;
+    panel1.color     := DARK_MODE_LIGHT;
   end;
   setModal(FALSE);
 end;

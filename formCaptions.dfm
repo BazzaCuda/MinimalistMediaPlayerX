@@ -1,4 +1,4 @@
-object subtitlesForm: TsubtitlesForm
+object CaptionsForm: TCaptionsForm
   Left = 0
   Top = 0
   BorderIcons = []

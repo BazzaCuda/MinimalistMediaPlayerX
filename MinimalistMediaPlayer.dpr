@@ -24,7 +24,6 @@ uses
   Vcl.Forms,
   Vcl.Styles,
   Vcl.Themes,
-
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
   MPVClient in 'libMPVDelphi\MPVClient.pas',
   MPVConst in 'libMPVDelphi\MPVConst.pas',
@@ -33,13 +32,12 @@ uses
   MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
-
   ALProgressBar in 'ALProgressBar.pas',
   consts in 'consts.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
-
   formAbout in 'formAbout.pas' {AboutForm},
   formCaption in 'formCaption.pas' {CaptionForm},
+  formCaptions in 'formCaptions.pas' {CaptionsForm},
   formDownload in 'formDownload.pas' {DownloadForm},
   formHelp in 'formHelp.pas' {HelpForm},
   formInputBox in 'formInputBox.pas' {InputBoxForm},
@@ -47,9 +45,7 @@ uses
   formPlaylist in 'formPlaylist.pas' {PlaylistForm},
   formProgress in 'formProgress.pas' {ProgressForm},
   formStreamList in 'formStreamList.pas' {StreamListForm},
-  formSubtitles in 'formSubtitles.pas' {subtitlesForm},
   formTimeline in 'formTimeline.pas' {TimelineForm},
-
   TAppEventsClass in 'TAppEventsClass.pas',
   TBookmarkClass in 'TBookmarkClass.pas',
   TCommonUtilsClass in 'TCommonUtilsClass.pas',
@@ -68,7 +64,6 @@ uses
   TSysCommandsClass in 'TSysCommandsClass.pas',
   TTickTimerClass in 'TTickTimerClass.pas',
   TUICtrlsClass in 'TUICtrlsClass.pas',
-
   _debugWindow in '..\DebugWindow\_debugWindow.pas';
 
 {$R *.res}

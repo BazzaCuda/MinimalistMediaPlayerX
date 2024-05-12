@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,11 +21,12 @@ unit formCaption;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
 
 type
-  TCaptionForm = class(TForm)
+  TCaptionForm = class(TForm) // single caption at the top of the window
   strict private
     FVideoPanel: TPanel;
     FCaption: TLabel;
@@ -51,7 +52,7 @@ function MC: TCaptionForm; // Media Caption
 implementation
 
 uses
-  TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, consts, _debugWindow;
+  consts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
 
 var
   gMC: TCaptionForm;

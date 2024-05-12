@@ -21,9 +21,9 @@ unit formAbout;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.StdCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls;
 
 type
   TAboutForm = class(TForm)
@@ -31,7 +31,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     lblReleaseVersion: TLabel;
-    Label3: TLabel;
+    lblCopyright: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     lblWebsiteURL: TLabel;
@@ -50,6 +50,7 @@ type
   public
     function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
     function setBuildVersion(const aBuild: string): boolean;
+    function setCopyrightYear(const aYear: WORD): boolean;
     function setLatestReleaseVersion(const aRelease: string): boolean;
     function setReleaseVersion(const aRelease: string): boolean;
   end;
@@ -58,7 +59,9 @@ function showAboutBox(const thisVersion: string; const buildVersion: string): bo
 
 implementation
 
-uses shellAPI, TGlobalVarsClass, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
+uses
+  shellAPI,
+  TGlobalVarsClass, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
 
@@ -67,6 +70,7 @@ begin
   GV.userInput := TRUE;
   with TAboutForm.create(NIL) do
   try
+    setCopyrightYear(currentYear);
     setReleaseVersion(thisVersion);
     setBuildVersion(buildVersion);
     setLatestReleaseVersion(getLatestVersion);
@@ -108,6 +112,11 @@ end;
 function TAboutForm.setBuildVersion(const aBuild: string): boolean;
 begin
   lblBuildVersion.Caption := aBuild;
+end;
+
+function TAboutForm.setCopyrightYear(const aYear: WORD): boolean;
+begin
+  lblCopyright.caption := lblCopyright.caption + intToStr(aYear);
 end;
 
 function TAboutForm.setLatestReleaseVersion(const aRelease: string): boolean;

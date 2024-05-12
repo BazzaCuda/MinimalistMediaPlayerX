@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,11 @@ unit formTimeline;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Generics.Collections, Vcl.StdCtrls, Vcl.Imaging.pngimage, formProgress, TSegmentClass, Vcl.Menus;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage,
+  generics.collections,
+  formProgress, TSegmentClass;
 
 type
   TRunType = (rtFFMpeg, rtCMD);
@@ -123,7 +126,9 @@ function TL: TTimeline;
 implementation
 
 uses
-  TProgressBarClass, dialogs, TPlaylistClass, shellAPI, TCommonUtilsClass, formStreamList, TMediaInfoClass, TGlobalVarsClass, _debugWindow;
+  winApi.shellApi,
+  vcl.dialogs,
+  formStreamList, TProgressBarClass, TPlaylistClass, TCommonUtilsClass, TMediaInfoClass, TGlobalVarsClass, _debugWindow;
 
 var
   timelineForm: TTimelineForm;

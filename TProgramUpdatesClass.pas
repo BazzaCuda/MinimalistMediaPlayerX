@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,14 +25,16 @@ function getLatestVersion: string;
 implementation
 
 uses
-  IdHTTP, idSSLOpenSSL, idComponent, system.json, system.classes, system.sysUtils, forms, strUtils,
-  formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, consts, _debugWindow;
+  idHTTP, idSSLOpenSSL, idComponent,
+  system.json, system.classes, system.sysUtils, system.strUtils,
+  vcl.forms,
+  consts, formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object
-    procedure IdHTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
-    procedure IdHTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
-    procedure IdHTTPEnd(ASender: TObject; AWorkMode: TWorkMode);
+    procedure idHTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: int64);
+    procedure idHTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: int64);
+    procedure idHTTPEnd(ASender: TObject; AWorkMode: TWorkMode);
   end;
 
 var
@@ -43,31 +45,31 @@ var
 
 function fetchURL(const aURL: string; aFileStream: TStream = NIL): string;
 var
-  http:       TIdHTTP;
-  sslHandler: TIdSSLIOHandlerSocketOpenSSL;
+  http:       TidHTTP;
+  sslHandler: TidSSLIOHandlerSocketOpenSSL;
 begin
   result        := '';
   gWP           := NIL;
   gProgressBar  := NIL;
   gDownloadForm := NIL;
 
-  http := TIdHTTP.Create(nil);
-  http.Request.ContentEncoding := 'UTF-8';
+  http := TidHTTP.create(nil);
+  http.request.contentEncoding := 'UTF-8';
 
-  sslHandler := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
-  sslHandler.SSLOptions.SSLVersions := [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2];
+  sslHandler := TidSSLIOHandlerSocketOpenSSL.create(nil);
+  sslHandler.sslOptions.sslVersions := [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2];
 
   http.IOHandler       := sslHandler;
-  http.HandleRedirects := TRUE;
+  http.handleRedirects := TRUE;
 
   try
     try
       case aFileStream = NIL of  TRUE:  result := http.get(aUrl);     // just get the JSON release data
                                 FALSE:  begin
                                           gWP := TWorkProgress.create;
-                                          http.OnWorkBegin := gWP.IdHTTPWorkBegin;
-                                          http.OnWork      := gWP.IdHTTPWork;
-                                          http.OnWorkEnd   := gWP.IdHTTPEnd;
+                                          http.OnWorkBegin := gWP.idHTTPWorkBegin;
+                                          http.OnWork      := gWP.idHTTPWork;
+                                          http.OnWorkEnd   := gWP.idHTTPEnd;
 
                                           gDownloadForm := TDownloadForm.create(NIL);
                                           gProgressBar  := TProgressBar.create;
@@ -147,12 +149,12 @@ end;
 
 { TWorkProgress }
 
-procedure TWorkProgress.IdHTTPEnd(ASender: TObject; AWorkMode: TWorkMode);
+procedure TWorkProgress.idHTTPEnd(ASender: TObject; AWorkMode: TWorkMode);
 begin
 //
 end;
 
-procedure TWorkProgress.IdHTTPWork(aSender: TObject; aWorkMode: TWorkMode; aWorkCount: Int64);
+procedure TWorkProgress.idHTTPWork(aSender: TObject; aWorkMode: TWorkMode; aWorkCount: int64);
 begin
   gProgressBar.position := aWorkCount;
   gDownloadForm.byteLabel.caption := format('%n of %n', [gProgressBar.position * 1.0, gProgressBar.max * 1.0]);
@@ -160,7 +162,7 @@ begin
   application.processMessages;
 end;
 
-procedure TWorkProgress.IdHTTPWorkBegin(aSender: TObject; aWorkMode: TWorkMode; aWorkCountMax: Int64);
+procedure TWorkProgress.idHTTPWorkBegin(aSender: TObject; aWorkMode: TWorkMode; aWorkCountMax: int64);
 begin
   gProgressBar.max := aWorkCountMax;
 end;

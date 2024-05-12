@@ -161,6 +161,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="formCaption.pas">
             <Form>CaptionForm</Form>
         </DCCReference>
+        <DCCReference Include="formCaptions.pas">
+            <Form>CaptionsForm</Form>
+        </DCCReference>
         <DCCReference Include="formDownload.pas">
             <Form>DownloadForm</Form>
         </DCCReference>
@@ -181,9 +184,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="formStreamList.pas">
             <Form>StreamListForm</Form>
-        </DCCReference>
-        <DCCReference Include="formSubtitles.pas">
-            <Form>subtitlesForm</Form>
         </DCCReference>
         <DCCReference Include="formTimeline.pas">
             <Form>TimelineForm</Form>

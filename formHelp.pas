@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@ unit formHelp;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
 
 type
   THelpForm = class(TForm)
@@ -46,7 +47,9 @@ function shutHelp: boolean;
 
 implementation
 
-uses ShellAPI, TUICtrlsClass, system.strUtils, TCommonUtilsClass, TGlobalVarsClass;
+uses
+  winApi.shellAPI, system.strUtils,
+  consts, TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
 
 var
   helpForm: THelpForm;
@@ -113,7 +116,7 @@ begin
   SELF.height := 870;
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
-  color := $2B2B2B;
+  color := DARK_MODE_DARK;
 end;
 
 initialization

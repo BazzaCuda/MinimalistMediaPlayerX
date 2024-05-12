@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,16 +16,17 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formSubtitles;
+unit formCaptions;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
 
 type
-  TSubtitlesForm = class(TForm)
+  TCaptionsForm = class(TForm) // multiple captions at the bottom of the window
   private
     FDataMemo: TMemo;
     FVideoPanel: TPanel;
@@ -51,7 +52,7 @@ type
   public
     destructor Destroy; override;
     procedure  formResize(aUIWidth: integer = 0);
-    function   initSubtitles(const aVideoPanel: TPanel): boolean;
+    function   initCaptions(const aVideoPanel: TPanel): boolean;
     function brighter: integer;
     function color: integer;
     function darker: integer;
@@ -65,22 +66,22 @@ type
     property showTime:      boolean read FShowTime  write setShowTime;
   end;
 
-function ST: TSubtitlesForm;
+function ST: TCaptionsForm; // was originally for SubTitles, hence ST
 
 implementation
 
 uses
-  TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, consts, _debugWindow;
+  consts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
 
 var
-  gST: TSubtitlesForm;
+  gST: TCaptionsForm;
 
-function ST: TSubtitlesForm;
+function ST: TCaptionsForm;
 begin
-  case gST = NIL of TRUE: gST := TSubtitlesForm.create; end;
+  case gST = NIL of TRUE: gST := TCaptionsForm.create; end;
   result := gST;
 end;
 
@@ -88,7 +89,7 @@ end;
 
 { TSubtitlesForm }
 
-function TSubtitlesForm.brighter: integer;
+function TCaptionsForm.brighter: integer;
 begin
   case FTimeLabel.font.color = $FFFFFF of TRUE: EXIT; end;
   FTimeLabel.font.color   := FTimeLabel.font.color  + $010101;
@@ -97,12 +98,12 @@ begin
   result := FTimeLabel.font.color;
 end;
 
-function TSubtitlesForm.color: integer;
+function TCaptionsForm.color: integer;
 begin
   result := FTimeLabel.font.color;
 end;
 
-constructor TSubtitlesForm.create;
+constructor TCaptionsForm.create;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     aLabel.font.name      := 'Tahoma';
@@ -173,7 +174,7 @@ begin
   FDataMemo.visible        := FALSE;
 end;
 
-function TSubtitlesForm.darker: integer;
+function TCaptionsForm.darker: integer;
 begin
   case FTimeLabel.font.color = $010101 of TRUE: EXIT; end;
   FTimeLabel.font.color   := FTimeLabel.font.color  - $010101;
@@ -182,14 +183,14 @@ begin
   result := FTimeLabel.font.color;
 end;
 
-destructor TSubtitlesForm.Destroy;
+destructor TCaptionsForm.Destroy;
 begin
   case FInfoPanel     <> NIL of TRUE: FInfoPanel.free; end;
   case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
 end;
 
-procedure TSubTitlesForm.formResize(aUIWidth: integer = 0);
+procedure TCaptionsForm.formResize(aUIWidth: integer = 0);
 // align := alBottom draws the labels but not in the correct position!
 begin
   SELF.height     := DEFAULT_WINDOW_HEIGHT;
@@ -200,12 +201,12 @@ begin
   case aUIWidth <> 0 of TRUE: FUIWidth := aUIWidth; end;
 end;
 
-function TSubtitlesForm.getHWND: HWND;
+function TCaptionsForm.getHWND: HWND;
 begin
   result := SELF.HANDLE;
 end;
 
-function TSubtitlesForm.initSubtitles(const aVideoPanel: TPanel): boolean;
+function TCaptionsForm.initCaptions(const aVideoPanel: TPanel): boolean;
 begin
   case FInitialized of TRUE: EXIT; end;
   FVideoPanel := aVideoPanel;
@@ -225,7 +226,7 @@ begin
   SELF.show;
 end;
 
-function TSubtitlesForm.resetColor: integer;
+function TCaptionsForm.resetColor: integer;
 begin
   FTimeLabel.font.color   := ST_DEFAULT_COLOR;
   FOpInfo.font.color      := ST_DEFAULT_COLOR;
@@ -233,32 +234,32 @@ begin
   result                  := ST_DEFAULT_COLOR;
 end;
 
-procedure TSubtitlesForm.setDisplayTime(const value: string);
+procedure TCaptionsForm.setDisplayTime(const value: string);
 begin
   case FShowTime of FALSE: EXIT; end;
   FTimeLabel.caption := value;
 end;
 
-procedure TSubtitlesForm.setOpInfo(const value: string);
+procedure TCaptionsForm.setOpInfo(const value: string);
 begin
   FOpInfo.caption := value;
   startOpInfoTimer;
 end;
 
-procedure TSubtitlesForm.setShowData(const value: boolean);
+procedure TCaptionsForm.setShowData(const value: boolean);
 begin
   FShowData := value;
   case FShowData of FALSE: FDataMemo.clear; end;
   FDataMemo.visible := FShowData and (FUIWidth > 360);
 end;
 
-procedure TSubtitlesForm.setShowTime(const value: boolean);
+procedure TCaptionsForm.setShowTime(const value: boolean);
 begin
   FShowTime := Value;
   case FShowTime of FALSE: FTimeLabel.caption := ''; end;
 end;
 
-function TSubtitlesForm.startOpInfoTimer: boolean;
+function TCaptionsForm.startOpInfoTimer: boolean;
 begin
   case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(NIL); end;
   FOpInfoTimer.enabled  := FALSE;
@@ -267,7 +268,7 @@ begin
   FOpInfoTimer.enabled  := TRUE;
 end;
 
-procedure TSubtitlesForm.timerEvent(sender: TObject);
+procedure TCaptionsForm.timerEvent(sender: TObject);
 begin
   FOpInfoTimer.enabled  := FALSE;
   FOpInfo.caption       := '';

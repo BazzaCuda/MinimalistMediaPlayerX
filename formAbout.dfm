@@ -2259,12 +2259,12 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
   end
-  object Label3: TLabel
+  object lblCopyright: TLabel
     Left = 136
     Top = 107
-    Width = 367
+    Width = 327
     Height = 25
-    Caption = 'Copyright (c) Baz "Cap'#39'n" Cuda, 2021 - 2024'
+    Caption = 'Copyright (c) Baz "Cap'#39'n" Cuda, 2021 - '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19

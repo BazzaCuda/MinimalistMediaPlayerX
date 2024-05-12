@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@ unit formInputBox;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 type
   TInputBoxForm = class(TForm)
@@ -37,7 +38,9 @@ function inputBoxForm(const APrompt: string): string;
 
 implementation
 
-uses vcl.themes, vcl.styles, TGlobalVarsClass, TCommonUtilsClass;
+uses
+  vcl.themes, vcl.styles,
+  TGlobalVarsClass, TCommonUtilsClass;
 
 {$R *.dfm}
 

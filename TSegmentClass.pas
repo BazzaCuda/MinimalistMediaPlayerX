@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -87,7 +87,9 @@ type
 
 implementation
 
-uses system.sysUtils, _debugWindow;
+uses
+  system.sysUtils,
+  consts, _debugWindow;
 
 var nextColor: integer = 0;
 function generateRandomEvenDarkerSoftColor: TColor;
@@ -136,7 +138,7 @@ begin
   inherited create(NIL);
   parent            := FParent;
   height            := DEFAULT_SEGMENT_HEIGHT;
-  font.color        := clSilver;
+  font.color        := DARK_MODE_SILVER;
   font.size         := 10;
   font.style        := [fsBold];
   alignment         := taLeftJustify;

@@ -1,6 +1,6 @@
 {   Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@ unit formMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls;
 
 type
   TMMPUI = class(TForm)
@@ -42,8 +43,10 @@ var
 implementation
 
 uses
-  TUICtrlsClass, TGlobalVarsClass, TMediaPlayerClass, consts, TCommonUtilsClass, TPlaylistClass, TProgressBarClass, TMediaInfoClass, formSubtitles, formCaption, TParamStringsClass,
-  winApi.shellApi, TConfigFileClass, TMediaTypesClass, TSysCommandsClass, _debugWindow;
+  winApi.shellApi,
+  consts, formCaptions, formCaption,
+  TUICtrlsClass, TGlobalVarsClass, TMediaPlayerClass, TCommonUtilsClass, TPlaylistClass, TProgressBarClass, TMediaInfoClass, TParamStringsClass,
+  TConfigFileClass, TMediaTypesClass, TSysCommandsClass, _debugWindow;
 
 {$R *.dfm}
 
@@ -58,8 +61,8 @@ begin
   UI.initUI(SELF);
   CF.initConfigFile(CU.getConfigFilePath);
   MP.initMediaPlayer;
-  ST.initSubtitles(UI.videoPanel);
-  MC.initCaption(UI.videoPanel);
+  ST.initCaptions(UI.videoPanel); // multiple captions at the bottom of the window
+  MC.initCaption(UI.videoPanel);  // single caption at the top of the window
   PB.initProgressBar(ST);
 {============}
 
