@@ -97,7 +97,7 @@ Control | Action
 Control | Action
 ------- | ------
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
-`Ctrl-A`                | show [A]bout Box
+`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent
 `Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent
@@ -277,7 +277,7 @@ Control | Action
 `F10`                   | open media file in PotPlayer (assumes default installation folder) - can be overridden in .conf
 `F11`                   | open media file in LossLess Cut (assumes default installation folder) - can be overridden in .conf            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
-`Ctrl-A`                | show [A]bout Box
+`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
