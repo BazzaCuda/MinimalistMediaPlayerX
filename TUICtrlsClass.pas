@@ -1,5 +1,5 @@
 {   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda
+    Copyright (C) 2021-2024 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
