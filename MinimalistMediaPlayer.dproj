@@ -144,35 +144,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="formMain.pas">
-            <Form>MMPUI</Form>
-        </DCCReference>
-        <DCCReference Include="consts.pas"/>
-        <DCCReference Include="formAbout.pas">
-            <Form>AboutForm</Form>
-        </DCCReference>
-        <DCCReference Include="TUICtrlsClass.pas"/>
-        <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="TGlobalVarsClass.pas"/>
-        <DCCReference Include="TProgressBarClass.pas"/>
-        <DCCReference Include="TKeyboardClass.pas"/>
-        <DCCReference Include="TAppEventsClass.pas"/>
-        <DCCReference Include="TSysCommandsClass.pas"/>
-        <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
-        <DCCReference Include="formHelp.pas">
-            <Form>HelpForm</Form>
-        </DCCReference>
-        <DCCReference Include="TPlaylistClass.pas"/>
-        <DCCReference Include="TMediaPlayerClass.pas"/>
-        <DCCReference Include="formSubtitles.pas">
-            <Form>subtitlesForm</Form>
-        </DCCReference>
-        <DCCReference Include="TTickTimerClass.pas"/>
-        <DCCReference Include="TMediaInfoClass.pas"/>
-        <DCCReference Include="MediaInfoDLL.pas"/>
-        <DCCReference Include="formCaption.pas">
-            <Form>CaptionForm</Form>
-        </DCCReference>
         <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
         <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
@@ -181,37 +152,61 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="libMPVDelphi\MPVRenderGL.pas"/>
         <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
         <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
-        <DCCReference Include="TParamStringsClass.pas"/>
+        <DCCReference Include="ALProgressBar.pas"/>
+        <DCCReference Include="consts.pas"/>
+        <DCCReference Include="MediaInfoDLL.pas"/>
+        <DCCReference Include="formAbout.pas">
+            <Form>AboutForm</Form>
+        </DCCReference>
+        <DCCReference Include="formCaption.pas">
+            <Form>CaptionForm</Form>
+        </DCCReference>
+        <DCCReference Include="formDownload.pas">
+            <Form>DownloadForm</Form>
+        </DCCReference>
+        <DCCReference Include="formHelp.pas">
+            <Form>HelpForm</Form>
+        </DCCReference>
         <DCCReference Include="formInputBox.pas">
             <Form>InputBoxForm</Form>
         </DCCReference>
-        <DCCReference Include="TCommonUtilsClass.pas"/>
-        <DCCReference Include="TBookmarkClass.pas"/>
-        <DCCReference Include="TConfigFileClass.pas"/>
-        <DCCReference Include="TMediaTypesClass.pas"/>
+        <DCCReference Include="formMain.pas">
+            <Form>MMPUI</Form>
+        </DCCReference>
         <DCCReference Include="formPlaylist.pas">
             <Form>PlaylistForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="TSendAllClass.pas"/>
-        <DCCReference Include="formTimeline.pas">
-            <Form>TimelineForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="formStreamList.pas">
-            <Form>StreamListForm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="formProgress.pas">
             <Form>ProgressForm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="TSegmentClass.pas"/>
+        <DCCReference Include="formStreamList.pas">
+            <Form>StreamListForm</Form>
+        </DCCReference>
+        <DCCReference Include="formSubtitles.pas">
+            <Form>subtitlesForm</Form>
+        </DCCReference>
+        <DCCReference Include="formTimeline.pas">
+            <Form>TimelineForm</Form>
+        </DCCReference>
+        <DCCReference Include="TAppEventsClass.pas"/>
+        <DCCReference Include="TBookmarkClass.pas"/>
+        <DCCReference Include="TCommonUtilsClass.pas"/>
+        <DCCReference Include="TConfigFileClass.pas"/>
+        <DCCReference Include="TGlobalVarsClass.pas"/>
+        <DCCReference Include="TKeyboardClass.pas"/>
+        <DCCReference Include="TMediaInfoClass.pas"/>
+        <DCCReference Include="TMediaPlayerClass.pas"/>
+        <DCCReference Include="TMediaTypesClass.pas"/>
+        <DCCReference Include="TParamStringsClass.pas"/>
+        <DCCReference Include="TPlaylistClass.pas"/>
         <DCCReference Include="TProgramUpdatesClass.pas"/>
-        <DCCReference Include="formDownload.pas">
-            <Form>DownloadForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
+        <DCCReference Include="TProgressBarClass.pas"/>
+        <DCCReference Include="TSegmentClass.pas"/>
+        <DCCReference Include="TSendAllClass.pas"/>
+        <DCCReference Include="TSysCommandsClass.pas"/>
+        <DCCReference Include="TTickTimerClass.pas"/>
+        <DCCReference Include="TUICtrlsClass.pas"/>
+        <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
