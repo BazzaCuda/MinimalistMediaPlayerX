@@ -115,7 +115,7 @@ Control | Action
 `I`                     | zoom [I]n. Can be held down for rapid zooming
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
-`L`                     | re[L]oad the list of supported media files from the current folder
+`L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
@@ -212,7 +212,7 @@ Control | Action
 `W`                     | [W]atch the next video in the list (or play the next audio)
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
 `Q`                     | play the previous media file in the [Q]ueue/playlist
-`L`                     | re[L]oad the list of supported media files from the current folder
+`L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 **Rotating** | 
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
