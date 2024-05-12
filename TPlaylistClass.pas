@@ -20,7 +20,9 @@ unit TPlaylistClass;
 
 interface
 
-uses system.generics.collections, system.generics.defaults, system.classes, vcl.stdCtrls;
+uses
+  system.classes, system.generics.collections, system.generics.defaults,
+  vcl.stdCtrls;
 
 type
   TPlaylist = class(TObject)

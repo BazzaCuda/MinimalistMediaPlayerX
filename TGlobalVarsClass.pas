@@ -38,7 +38,8 @@ unit TGlobalVarsClass;
 
 interface
 
-uses  winAPI.windows, system.classes, vcl.forms, vcl.extCtrls;
+uses
+  winAPI.windows;
 
 type
   TGlobalVars = class(TObject)

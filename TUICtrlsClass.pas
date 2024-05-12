@@ -21,7 +21,9 @@ unit TUICtrlsClass;
 interface
 
 uses
-  forms, winApi.windows, winAPI.shellAPI, vcl.graphics, vcl.ComCtrls, vcl.extCtrls, system.classes, vcl.controls,
+  winApi.shellAPI, winApi.windows,
+  system.classes,
+  vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
   consts;
 
 type
@@ -68,6 +70,7 @@ type
     function handle: HWND;
     function initUI(const aForm: TForm): boolean;
     function keepFile(const aFilePath: string): boolean;
+    function loadPlaylistWindow: boolean;
     function maximize: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
@@ -75,7 +78,6 @@ type
     function moveTimelineWindow(const create: boolean = TRUE): boolean;
     function openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
-    function reloadPlaylistWindow: boolean;
     function renameFile(const aFilePath: string): boolean;
     function resetColor: boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
@@ -107,8 +109,11 @@ function UI: TUI;
 implementation
 
 uses
-  formCaptions, TMediaInfoClass, TMediaPlayerClass, TCommonUtilsClass, TProgressBarClass, winApi.messages, TPlaylistClass, system.sysUtils, formCaption, TKeyboardClass, TSysCommandsClass,
-  formHelp, formPlaylist, formAbout, TGlobalVarsClass, TSendAllClass, formTimeline, TMediaTypesClass, dialogs, TConfigFileClass, _debugWindow;
+  winApi.messages,
+  system.sysUtils,
+  vcl.dialogs,
+  formAbout, formCaption, formCaptions, formHelp, formPlaylist, formTimeline,
+  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, _debugWindow;
 
 var
   gUI: TUI;
@@ -339,7 +344,7 @@ begin
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in shift) or (NOT PL.hasItems) of  TRUE: sendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
-                                                                                                              reloadPlaylistWindow;
+                                                                                                              loadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
                                                                                                                               FALSE: MP.autoPlayNext; end;end;end;end;end; // ...hence, playNext
 end;
@@ -518,9 +523,9 @@ begin
   SetWindowPos(aHWND, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
 end;
 
-function TUI.reloadPlaylistWindow: boolean;
+function TUI.loadPlaylistWindow: boolean;
 begin
-  case GV.showingPlaylist of TRUE: reloadPlaylist(TRUE); end;
+  case GV.showingPlaylist of TRUE: formPlaylist.loadPlaylistWindow(TRUE); end;
 end;
 
 function TUI.renameFile(const aFilePath: string): boolean;

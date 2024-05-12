@@ -69,7 +69,7 @@ uses
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := TRUE;
+  ReportMemoryLeaksOnShutdown := FALSE;
   debugClear;
 
   Application.Initialize;

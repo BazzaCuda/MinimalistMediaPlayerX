@@ -71,8 +71,11 @@ function KB: TKeyboard;
 implementation
 
 uses
-  TSysCommandsClass, winApi.windows, TMediaPlayerClass, TMediaInfoClass, formCaption, TPlaylistClass, TUICtrlsClass, consts, TGlobalVarsClass, TCommonUtilsClass, vcl.forms,
-  system.sysUtils, TBookmarkClass, TProgressBarClass, formCaptions, TSendAllClass, formPlaylist, _debugWindow;
+  winApi.windows,
+  system.sysUtils,
+  vcl.forms,
+  consts, formCaption, formCaptions, formPlaylist,
+  TBookmarkClass, TCommonUtilsClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -304,7 +307,7 @@ begin
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
-    koReloadPlaylist:    begin ST.opInfo := CU.reloadPlaylist(extractFilePath(PL.currentItem)); UI.reloadPlaylistWindow; end;
+    koReloadPlaylist:    begin ST.opInfo := CU.reloadPlaylist(extractFilePath(PL.currentItem)); UI.loadPlaylistWindow; end;
     koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;

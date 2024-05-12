@@ -45,11 +45,11 @@ type
     procedure CreateParams(var Params: TCreateParams);
   public
     function  highlightCurrentItem: boolean;
-    function  loadPlaylist(const forceReload: boolean = FALSE): boolean;
+    function  loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
   end;
 
 function focusPlaylist: boolean;
-function reloadPlaylist(const forceReload: boolean = FALSE): boolean;
+function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
 function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 function shutPlaylist: boolean;
 
@@ -68,9 +68,9 @@ begin
   setForegroundWindow(playlistForm.handle); // so this window also receives keyboard keystrokes
 end;
 
-function reloadPlaylist(const forceReload: boolean = FALSE): boolean;
+function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
 begin
-  case playlistForm = NIL of FALSE: playlistForm.loadPlaylist(forceReload); end;
+  case playlistForm = NIL of FALSE: playlistForm.loadPlaylistBox(forceReload); end;
 end;
 
 function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
@@ -81,7 +81,7 @@ begin
   case aHeight > UI_DEFAULT_AUDIO_HEIGHT of TRUE: playlistForm.height := aHeight; end;
   screen.cursor := crDefault;
 
-  playlistForm.loadPlaylist;
+  playlistForm.loadPlaylistBox;
   playlistForm.show;
 
   winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
@@ -178,7 +178,7 @@ begin
   case key = VK_RETURN of TRUE: playItemIndex(LB.itemIndex); end;
 end;
 
-function TPlaylistForm.loadPlaylist(const forceReload: boolean = FALSE): boolean;
+function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
   playlistForm.LB.items.beginUpdate; // prevent flicker when moving the window
 

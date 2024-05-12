@@ -21,7 +21,10 @@ unit TProgressBarClass;
 interface
 
 uses
-  ALProgressBar, vcl.forms, vcl.controls, system.classes, vcl.extCtrls, winApi.windows;
+  winApi.windows,
+  system.classes,
+  vcl.controls, vcl.extCtrls, vcl.forms,
+  ALProgressBar;
 
 type
   TProgressBar = class(TObject)
@@ -61,7 +64,10 @@ function PB: TProgressBar;
 implementation
 
 uses
-  vcl.graphics, consts, TGlobalVarsClass, TKeyboardClass, TCommonUtilsClass, TMediaPlayerClass, system.sysUtils, TConfigFileClass, _debugWindow;
+  system.sysUtils,
+  vcl.graphics,
+  consts,
+  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass, _debugWindow;
 
 var
   gPB: TProgressBar;

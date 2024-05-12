@@ -37,7 +37,8 @@ function BM: TBookmark;
 implementation
 
 uses
-  system.sysUtils, TConfigFileClass;
+  system.sysUtils,
+  TConfigFileClass;
 
 var
   gBM: TBookmark;

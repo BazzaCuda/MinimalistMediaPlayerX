@@ -21,7 +21,10 @@ unit TSegmentClass;
 interface
 
 uses
-  vcl.extCtrls, vcl.stdCtrls, vcl.graphics, system.classes, vcl.forms, vcl.controls, winAPI.windows, generics.collections, System.Messaging;
+  winAPI.windows,
+  system.classes, System.Messaging,
+  generics.collections,
+  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 const
   NEARLY_BLACK = clBlack + $101010;

@@ -21,7 +21,9 @@ unit TCommonUtilsClass;
 interface
 
 uses
-  vcl.forms, vcl.stdCtrls, system.classes, winApi.windows, TPlaylistClass, vcl.dialogs, vcl.controls, vcl.extCtrls, TMediaPlayerClass;
+  winApi.windows,
+  system.classes,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.stdCtrls;
 
 type
   TCommonUtils = class(TObject)
@@ -65,8 +67,11 @@ function CU: TCommonUtils;
 implementation
 
 uses
-  system.sysUtils, vcl.graphics, winApi.shellApi, formInputBox, TGlobalVarsClass, consts, winApi.messages, TUICtrlsClass, IOUtils,
-  formCaptions, formCaption, TProgressBarClass, winAPI.activeX, _debugWindow;
+  winApi.shellApi, winAPI.activeX, winApi.messages,
+  system.sysUtils, system.IOUtils,
+  vcl.graphics,
+  consts, formCaption, formInputBox,
+  TGlobalVarsClass, TMediaPlayerClass, TPlaylistClass, TUICtrlsClass, _debugWindow;
 
 var
   gCU: TCommonUtils;

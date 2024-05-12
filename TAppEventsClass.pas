@@ -39,8 +39,11 @@ type
 implementation
 
 uses
-  system.classes, winAPI.messages, TSysCommandsClass, TGlobalVarsClass, system.sysUtils, TKeyboardClass, formCaptions, consts, TProgressBarClass, TMediaPlayerClass,
-  TUICtrlsClass, TCommonUtilsClass, vcl.controls, formHelp, TPlaylistClass, formCaption, formPlaylist, TSendAllClass, formTimeline, TMediaInfoClass, _debugWindow;
+  winAPI.messages,
+  system.classes, system.sysUtils,
+  vcl.controls,
+  consts, formCaption, formCaptions, formHelp, formPlaylist, formTimeline,
+  TCommonUtilsClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
 var gAE: TAppEvents;
 

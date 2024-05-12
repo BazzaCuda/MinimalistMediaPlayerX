@@ -20,7 +20,9 @@ unit TSysCommandsClass;
 
 interface
 
-uses winAPI.windows, winAPI.messages, consts;
+uses
+  winAPI.messages, winAPI.windows,
+  consts;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 function sendSysCommandClose(const aHWND: HWND): boolean;
@@ -28,7 +30,7 @@ function sendSysCommandClose(const aHWND: HWND): boolean;
 implementation
 
 uses
-  TUICtrlsClass, TGlobalVarsClass;
+  TGlobalVarsClass, TUICtrlsClass;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin

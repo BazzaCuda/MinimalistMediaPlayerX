@@ -29,7 +29,8 @@ function SA: TSendAll;
 implementation
 
 uses
-  system.sysUtils, system.classes, vcl.forms,
+  system.sysUtils, system.classes,
+  vcl.forms,
   consts, _debugWindow;
 
 var

@@ -28,7 +28,8 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  consts, formDownload, TProgressBarClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
+  consts, formDownload,
+  TConfigFileClass, TCommonUtilsClass, TProgressBarClass, _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object

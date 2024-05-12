@@ -21,7 +21,9 @@ unit TMediaPlayerClass;
 interface
 
 uses
-  forms, vcl.extCtrls, system.classes, MPVBasePlayer, consts;
+  system.classes,
+  vcl.extCtrls, vcl.forms,
+  consts, MPVBasePlayer;
 
 type
   TTimerEvent = (tePlay, teClose);
@@ -158,8 +160,12 @@ function MP: TMediaPlayer;
 implementation
 
 uses
-  vcl.controls, vcl.graphics, winAPI.windows, TGlobalVarsClass, formCaptions, TProgressBarClass, TKeyboardClass, TCommonUtilsClass, system.sysUtils,
-  formCaption, TMediaInfoClass, mpvConst, TPlaylistClass, TUICtrlsClass, TSysCommandsClass, TConfigFileClass, formHelp, TSendAllClass, TMediaTypesClass, _debugWindow;
+  winAPI.windows,
+  system.sysUtils,
+  vcl.controls, vcl.graphics,
+  mpvConst,
+  formCaption, formCaptions, formHelp,
+  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
 var
   gMP: TMediaPlayer;
