@@ -257,7 +257,7 @@ Control | Action
 `Shift-T`               | tab forwards 50th of media duration
 `Ctrl-Shift-T`          | tab backwards 50th of media duration
 `Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
-`Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
+`Ctrl-Left Alt key`     | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
 **Volume / Sound** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
