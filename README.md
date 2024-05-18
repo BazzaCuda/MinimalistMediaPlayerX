@@ -85,12 +85,18 @@ Control | Action
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
-`[`                     | decrease gamma setting. Can be held down for rapid decrease
-`]`                     | increase gamma setting. Can be held down for rapid increase
+`8`                     | decrease brightness. Can be held down for rapid decrease
+`9`                     | increase brightness. Can be held down for rapid increase
+`2`                     | reset brightness to normal
+`0`                     | reset contrast to normal
+`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
+`=`                     | increase contrast. Can be held down for rapid increase  
 `{`                     | decrease saturation setting. Can be held down for rapid decrease
 `}`                     | increase saturation setting. Can be held down for rapid increase
-`'` (single quote)      | reset gamma to normal
+`[`                     | decrease gamma setting. Can be held down for rapid decrease
+`]`                     | increase gamma setting. Can be held down for rapid increase
 `;`                     | reset saturation to normal
+`'` (single quote)      | reset gamma to normal
 
 ### Alphabetic and Numeric Controls
 ---------------
@@ -152,8 +158,8 @@ Control | Action
 Control | Action
 ------- | ------
 **Brightness** | 
-`8`                     | Decrease brightness. Can be held down for rapid decrease
-`9`                     | Increase brightness. Can be held down for rapid increase
+`8`                     | decrease brightness. Can be held down for rapid decrease
+`9`                     | increase brightness. Can be held down for rapid increase
 `2`                     | reset brightness to normal
 **Contrast** | 
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
@@ -233,10 +239,10 @@ Control | Action
 **Screenshots** | 
 `F5`                    | save a screenshot of the current frame or the currently displayed image
 **Speed** | 
-`Numpad +`              | increase playback speed. Can be held down for rapid increase
-`/`                     | increase playback speed. Can be held down for rapid increase
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
+`Numpad +`              | increase playback speed. Can be held down for rapid increase
+`/`                     | increase playback speed. Can be held down for rapid increase
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 **Subtitles** |
 `Ctrl-S`                | toggle subtitles on/off
