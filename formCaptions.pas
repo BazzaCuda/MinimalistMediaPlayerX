@@ -91,6 +91,7 @@ end;
 
 function TCaptionsForm.brighter: integer;
 begin
+  result := FTimeLabel.font.color;
   case FTimeLabel.font.color = $FFFFFF of TRUE: EXIT; end;
   FTimeLabel.font.color   := FTimeLabel.font.color  + $010101;
   FOpInfo.font.color      := FOpInfo.font.color     + $010101;
@@ -176,6 +177,7 @@ end;
 
 function TCaptionsForm.darker: integer;
 begin
+  result := FTimeLabel.font.color;
   case FTimeLabel.font.color = $010101 of TRUE: EXIT; end;
   FTimeLabel.font.color   := FTimeLabel.font.color  - $010101;
   FOpInfo.font.color      := FOpInfo.font.color     - $010101;

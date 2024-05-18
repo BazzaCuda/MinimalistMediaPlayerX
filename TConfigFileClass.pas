@@ -38,6 +38,7 @@ type
     destructor destroy; override;
     function deleteName(const aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
+    function toHex(const aInteger: integer): string;
     property asInteger[const aName: string]: integer read getAsInteger;
     property value[const aName: string]: string read getValue write setValue;
   end;
@@ -47,7 +48,7 @@ function CF: TConfigFile;
 implementation
 
 uses
-  system.sysUtils;
+  system.sysUtils, _debugWindow;
 
 var
   gCF: TConfigFile;
@@ -97,13 +98,21 @@ end;
 
 function TConfigFile.saveConfigFile: boolean;
 begin
-  FFileContents.saveToFile(FFilePath);
+  try
+    FFileContents.saveToFile(FFilePath);
+  except // trap rapid-fire write errors, e.g. when user holds down ctrl-B
+  end;
 end;
 
 procedure TConfigFile.setValue(const aName, aValue: string);
 begin
   FFileContents.values[aName] := aValue;
   saveConfigFile;
+end;
+
+function TConfigFile.toHex(const aInteger: integer): string;
+begin
+  result := '$' + intToHex(aInteger);
 end;
 
 initialization

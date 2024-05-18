@@ -82,6 +82,7 @@ end;
 
 function TProgressBar.brighter: integer;
 begin
+  result := FPB.barColor1;
   case FPB.barColor1 = $FFFFFF of TRUE: EXIT; end;
   FPB.barColor1 := FPB.barColor1 + $010101;
   result := FPB.barColor1;
@@ -105,6 +106,7 @@ end;
 
 function TProgressBar.darker: integer;
 begin
+  result := FPB.barColor1;
   case FPB.barColor1 = $010101 of TRUE: EXIT; end;
   FPB.barColor1 := FPB.barColor1 - $010101;
   result := FPB.barColor1;

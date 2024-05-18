@@ -228,9 +228,9 @@ end;
 
 function TUI.brighter: boolean;
 begin
-  CF.value['caption']     := intToStr(MC.brighter);
-  CF.value['timeCaption'] := intToStr(ST.brighter);
-  CF.value['progressBar'] := intToStr(PB.brighter);
+  CF.value['caption']     := CF.toHex(MC.brighter);
+  CF.value['timeCaption'] := CF.toHex(ST.brighter);
+  CF.value['progressBar'] := CF.toHex(PB.brighter);
 end;
 
 function TUI.centreCursor: boolean;
@@ -286,9 +286,9 @@ end;
 
 function TUI.darker: boolean;
 begin
-  CF.value['caption']     := intToStr(MC.darker);
-  CF.value['timeCaption'] := intToStr(ST.darker);
-  CF.value['progressBar'] := intToStr(PB.darker);
+  CF.value['caption']     := CF.toHex(MC.darker);
+  CF.value['timeCaption'] := CF.toHex(ST.darker);
+  CF.value['progressBar'] := CF.toHex(PB.darker);
 end;
 
 procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -678,9 +678,9 @@ end;
 
 function TUI.resetColor: boolean;
 begin
-  CF.value['caption']     := intToStr(MC.resetColor);
-  CF.value['timeCaption'] := intToStr(ST.resetColor);
-  CF.value['progressBar'] := intToStr(PB.resetColor);
+  CF.value['caption']     := CF.toHex(MC.resetColor);
+  CF.value['timeCaption'] := CF.toHex(ST.resetColor);
+  CF.value['progressBar'] := CF.toHex(PB.resetColor);
 end;
 
 function TUI.toggleCaptions(shift: TShiftState): boolean;

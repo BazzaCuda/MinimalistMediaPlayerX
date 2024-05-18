@@ -40,7 +40,6 @@ type
     destructor Destroy; override;
     procedure formResize(Sender: TObject);
     function brighter: integer;
-    function color: integer;
     function darker: integer;
     function initCaption(const aVideoPanel: TPanel): boolean;
     function resetColor: integer;
@@ -69,13 +68,9 @@ end;
 
 function TCaptionForm.brighter: integer;
 begin
+  result := FCaption.font.color;
   case FCaption.font.color = $FFFFFF of TRUE: EXIT; end;
   FCaption.font.color := FCaption.font.color + $010101;
-  result := FCaption.font.color;
-end;
-
-function TCaptionForm.color: integer;
-begin
   result := FCaption.font.color;
 end;
 
@@ -93,6 +88,7 @@ end;
 
 function TCaptionForm.darker: integer;
 begin
+  result := FCaption.font.color;
   case FCaption.font.color = $010101 of TRUE: EXIT; end;
   FCaption.font.color := FCaption.font.color - $010101;
   result := FCaption.font.color;
@@ -138,8 +134,9 @@ begin
   FCaption.parent := SELF;
   CU.initTransparentLabel(FCaption);
   defaultFontEtc(FCaption);
-  FCaption.align := alTop;
-  FCaption.alignment := taLeftJustify;
+  FCaption.align         := alTop;
+  FCaption.alignment     := taLeftJustify;
+  FCaption.StyleElements := [];
 
   case CF.asInteger['caption'] <> 0 of TRUE: FCaption.font.color := CF.asInteger['caption']; end;
 
