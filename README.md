@@ -85,12 +85,18 @@ Control | Action
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
-`[`                     | decrease gamma setting. Can be held down for rapid decrease
-`]`                     | increase gamma setting. Can be held down for rapid increase
+`8`                     | decrease brightness. Can be held down for rapid decrease
+`9`                     | increase brightness. Can be held down for rapid increase
+`2`                     | reset brightness to normal
+`0`                     | reset contrast to normal
+`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
+`=`                     | increase contrast. Can be held down for rapid increase  
 `{`                     | decrease saturation setting. Can be held down for rapid decrease
 `}`                     | increase saturation setting. Can be held down for rapid increase
-`'` (single quote)      | reset gamma to normal
+`[`                     | decrease gamma setting. Can be held down for rapid decrease
+`]`                     | increase gamma setting. Can be held down for rapid increase
 `;`                     | reset saturation to normal
+`'` (single quote)      | reset gamma to normal
 
 ### Alphabetic and Numeric Controls
 ---------------
@@ -116,7 +122,7 @@ Control | Action
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
-`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio. Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
 `P`                     | show/hide the [P]laylist
@@ -133,17 +139,17 @@ Control | Action
 `Y`                     | [Y]et to be assigned an action
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
-`2`                     | reset brightness to normal
-`3`                     | reset panning to normal
-`4`                     | reset rotation to normal/not rotated
+`2`                     | reset Brightness to normal
+`3`                     | reset Panning to normal
+`4`                     | reset Rotation to normal/not rotated
 `5`                     | bookmark the current media file timestamp to the configuration file
 `6`                     | retrieve a bookmarked media file timestamp from the configuration file and continue playback from that point
 `7`                     | delete any previously saved/bookmarked media file timestamp for the current media file
 `8`                     | decrease brightness. Can be held down for rapid decrease
 `9`                     | increase brightness. Can be held down for rapid increase
-`0`                     | decrease contrast. Can be held down for rapid decrease
-`-` (Hyphen)            | increase contrast. Can be held down for rapid increase
-`=`                     | reset contrast to normal 
+`0`                     | reset contrast to normal
+`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
+`=`                     | increase contrast. Can be held down for rapid increase  
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 
@@ -152,12 +158,12 @@ Control | Action
 Control | Action
 ------- | ------
 **Brightness** | 
-`8`                     | Decrease brightness. Can be held down for rapid decrease
-`9`                     | Increase brightness. Can be held down for rapid increase
+`8`                     | decrease brightness. Can be held down for rapid decrease
+`9`                     | increase brightness. Can be held down for rapid increase
 `2`                     | reset brightness to normal
 **Contrast** | 
-`=`                     | increase contrast. Can be held down for rapid increase
 `-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
+`=`                     | increase contrast. Can be held down for rapid increase
 `0`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
 `C`                     | [C]ut the segment under the cursor into two segments
@@ -204,6 +210,15 @@ Control | Action
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `3`                     | reset panning to normal
+**Playback** |
+`SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
+`Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
+`Ctrl-R`                | toggle infinite [R]epeat of the current media file
+`S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
+`F8`                    | skip to the previous chapter, if there is one
+`F9`                    | skip to the next chapter, if there is one
+`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
 **Playlist** | 
 `A`                     | play the first media file in the playlist (Z/END plays last)
 `HOME`                  | play the first media file in the playlist (Z/END plays last)
@@ -224,10 +239,10 @@ Control | Action
 **Screenshots** | 
 `F5`                    | save a screenshot of the current frame or the currently displayed image
 **Speed** | 
-`Numpad +`              | increase playback speed. Can be held down for rapid increase
-`/`                     | increase playback speed. Can be held down for rapid increase
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
+`Numpad +`              | increase playback speed. Can be held down for rapid increase
+`/`                     | increase playback speed. Can be held down for rapid increase
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 **Subtitles** |
 `Ctrl-S`                | toggle subtitles on/off
@@ -242,14 +257,15 @@ Control | Action
 `Shift-T`               | tab forwards 50th of media duration
 `Ctrl-Shift-T`          | tab backwards 50th of media duration
 `Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
-`Right Alt-Gr key`      | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
-**Volume** | 
+`Ctrl-Left Alt key`     | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
+**Volume / Sound** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
 `Vol+ media key`        | increase the volume. Can be held down for rapid increase
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease
 `Vol-mute media key`    | mute/unmute sound
 `E`                     | [E]ars - mute/unmute sound
+`F6`                    | cycle through all audio tracks in the media file
 **Window Control** | 
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `F`                     | show/cancel [F]ullScreen mode
@@ -257,7 +273,7 @@ Control | Action
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
-`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio. Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
