@@ -20,6 +20,20 @@ unit TProgramUpdatesClass;
 
 interface
 
+uses
+  system.zip;
+
+type
+  TProgramUpdates = class(TObject)
+  strict private
+    FReleaseTag: string;
+  private
+    function getReleaseTag: string;
+  public
+    property releaseTag: string read getReleaseTag;
+  end;
+
+function PU: TProgramUpdates;
 function getLatestVersion: string;
 
 implementation
@@ -43,6 +57,11 @@ var
   gWP: TWorkProgress;
   gProgressBar: TProgressBar;
   gDownloadForm: TDownloadForm;
+
+function PU: TProgramUpdates;
+begin
+end;
+
 
 function fetchURL(const aURL: string; aFileStream: TStream = NIL): string;
 var
@@ -166,6 +185,14 @@ end;
 procedure TWorkProgress.idHTTPWorkBegin(aSender: TObject; aWorkMode: TWorkMode; aWorkCountMax: int64);
 begin
   gProgressBar.max := aWorkCountMax;
+end;
+
+{ TProgramUpdates }
+
+function TProgramUpdates.getReleaseTag: string;
+begin
+  result := FReleaseTag;
+  case result <> '' of TRUE: EXIT; end;
 end;
 
 initialization

@@ -82,7 +82,7 @@ type
   TFnnKeyApp = (F10_APP, F11_APP, F12_APP);
 
 const
-  mediaTypes: array[0..87] of TMediaTypeRec = (
+  mediaTypes: array[0..88] of TMediaTypeRec = (
 
 // manually added image formats
 (mimeType: 'image/jpeg';            mediaType: mtImage; typeName: 'JPEG image';                 fileExts: '.jpg.jpeg'),
@@ -90,6 +90,7 @@ const
 (mimeType: 'image/png';             mediaType: mtImage; typeName: 'PNG image';                  fileExts: '.png'),
 (mimeType: 'image/webp';            mediaType: mtImage; typeName: 'WEBP image';                 fileExts: '.webp'),
 (mimeType: 'image/gif';             mediaType: mtImage; typeName: 'GIF image';                  fileExts: '.gif'),
+(mimeType: 'image/avif';            mediaType: mtImage; typeName: 'AVIF image';                 fileExts: '.avif'),
 
 // DVD/Blu-ray audio formats
 (mimeType: 'audio/ac3';             mediaType: mtAudio; typeName: 'AC-3 Audio';                 fileExts: '.ac3.a52'),
