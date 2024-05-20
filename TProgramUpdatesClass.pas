@@ -149,12 +149,17 @@ end;
 { TProgramUpdates }
 
 function TProgramUpdates.extractRelease: boolean;
-  function newName: string;
+  function backupName: string;
   begin
-    result := CU.getExePath + 'MinimalistMediaPlayer_' + CU.getFileVersionFmt('', 'v%d_%d_%d') + '.exe';
+    result := 'MinimalistMediaPlayer_' + CU.getFileVersionFmt('', 'v%d_%d_%d');
   end;
 begin
-
+  case fileExists(CU.getExePath + backupName + '.exe') of FALSE:  CU.renameFile(paramStr(0), backupName); end;
+  case fileExists(paramStr(0))                         of FALSE:  with TZipFile.create do begin
+                                                                    open(updateFile(FReleaseTag), zmRead);
+                                                                    extract('MinimalistMediaPlayer.exe', CU.getExePath);
+                                                                    free;
+                                                                  end;end;
 end;
 
 function TProgramUpdates.getJSONReleaseTag: string;
