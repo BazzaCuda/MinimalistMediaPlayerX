@@ -73,8 +73,8 @@ begin
     setCopyrightYear(currentYear);
     setReleaseVersion(thisVersion);
     setBuildVersion(buildVersion);
-    setLatestReleaseVersion(getLatestVersion);
-    compareVersions(thisVersion, getLatestVersion);
+    setLatestReleaseVersion(PU.releaseTag);
+    compareVersions(thisVersion, PU.releaseTag);
     showModal;
   finally
     free;

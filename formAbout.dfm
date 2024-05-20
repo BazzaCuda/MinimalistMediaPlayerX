@@ -2365,8 +2365,9 @@ object AboutForm: TAboutForm
   object lblLatestReleaseVersion: TLabel
     Left = 448
     Top = 47
-    Width = 33
-    Height = 25
+    Width = 137
+    Height = 54
+    AutoSize = False
     Caption = 'v1.0'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2374,6 +2375,7 @@ object AboutForm: TAboutForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    WordWrap = True
   end
   object btnOK: TButton
     Left = 281

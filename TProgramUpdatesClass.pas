@@ -28,13 +28,15 @@ type
   strict private
     FReleaseTag: string;
   private
+    function getJSONReleaseTag: string;
+    function downloadRelease(const aReleaseTag: string): string;
+    function extractRelease: boolean;
     function getReleaseTag: string;
   public
     property releaseTag: string read getReleaseTag;
   end;
 
 function PU: TProgramUpdates;
-function getLatestVersion: string;
 
 implementation
 
@@ -53,22 +55,29 @@ type
   end;
 
 var
-  gLatestVersion: string = '';
+  gPU: TProgramUpdates;
+
   gWP: TWorkProgress;
   gProgressBar: TProgressBar;
   gDownloadForm: TDownloadForm;
 
 function PU: TProgramUpdates;
 begin
+  case gPU = NIL of TRUE: gPU := TProgramUpdates.create; end;
+  result := gPU;
 end;
 
+function cleanTag(const aReleaseTag: string): string;
+begin
+  result := replaceStr(aReleaseTag, '.', '_');
+end;
 
-function fetchURL(const aURL: string; aFileStream: TStream = NIL): string;
+function fetchURL(const aURL: string; aFileStream: TStream = NIL; const aSuccess: string = ''): string;
 var
   http:       TidHTTP;
   sslHandler: TidSSLIOHandlerSocketOpenSSL;
 begin
-  result        := '';
+  result        := aSuccess;
   gWP           := NIL;
   gProgressBar  := NIL;
   gDownloadForm := NIL;
@@ -104,7 +113,7 @@ begin
                                             case gDownloadForm <> NIL of TRUE: freeAndNIL(gDownloadForm); end;
                                           end;end;end;
     except
-      on e:exception do debug(e.Message);
+      on e:exception do result := e.Message; // if there's an error (e.g. 404), report it back to the About Box via the result, overriding aSuccess.
     end;
   finally
     sslHandler.free;
@@ -112,59 +121,9 @@ begin
   end;
 end;
 
-function getLatestVersion: string;
-var
-  json: string;
-  obj:  TJSONObject;
-  jp:   TJSONPair;
-
-  function cleanTag: string;
-  begin
-    result := replaceStr(gLatestVersion, '.', '_');
-  end;
-
-  function updateFile: string;
-  begin
-    result := CU.getExePath + 'update_' + cleanTag + '.zip';
-  end;
+function updateFile(const aReleaseTag: string): string;
 begin
-  result := '(autoUpdate=no)';
-  case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
-
-try
-
-  case gLatestVersion = '' of TRUE: begin
-                                      json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
-                                      try
-                                        obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
-                                        try
-                                          case obj = NIL of FALSE: gLatestVersion := obj.values['tag_name'].value; end;
-
-{ this works but we don't need to do it because we can determine the url of each release file using the tag }
-//                                          case obj = NIL of FALSE:  begin
-//                                                                      jp := obj.get('assets');
-//                                                                      case jp = NIL of FALSE: for var element in TJSONArray(jp.JsonValue) do
-//                                                                                                case element is TJSONObject of TRUE: debug(TJSONObject(element).values['browser_download_url'].value); end;end;end;end;
-
-                                          case  gLatestVersion = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
-                                          case (gLatestVersion <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = gLatestVersion) of TRUE: EXIT; end; // we're running the latest release
-                                          case (gLatestVersion <> '') AND (fileExists(updateFile))                                 of TRUE: EXIT; end; // we've already downloaded the release file
-
-                                          var fs := TFileStream.create(updateFile, fmCreate);
-                                          try
-                                            fetchURL('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + gLatestVersion + '/MinimalistMediaPlayer_' + cleanTag + '.full.zip', fs);
-                                          finally
-                                            fs.free;
-                                          end;
-
-                                        except
-                                        end;
-                                      finally
-                                        case obj = NIL of FALSE: obj.free; end;
-                                      end;end;end;
-finally
-  result := gLatestVersion;
-end;
+  result := CU.getExePath + 'update_' + cleanTag(aReleaseTag) + '.zip';
 end;
 
 { TWorkProgress }
@@ -189,16 +148,67 @@ end;
 
 { TProgramUpdates }
 
+function TProgramUpdates.extractRelease: boolean;
+  function newName: string;
+  begin
+    result := CU.getExePath + 'MinimalistMediaPlayer_' + CU.getFileVersionFmt('', 'v%d_%d_%d') + '.exe';
+  end;
+begin
+
+end;
+
+function TProgramUpdates.getJSONReleaseTag: string;
+var
+  json: string;
+  obj:  TJSONObject;
+begin
+  result := '';
+  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
+  try
+    obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
+    try
+      case obj = NIL of FALSE: result := obj.values['tag_name'].value; end;
+    except
+    end;
+  finally
+    case obj = NIL of FALSE: obj.free; end;
+  end;
+end;
+
+function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
+begin
+  result := aReleaseTag;
+
+  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
+
+  var fs := TFileStream.create(updateFile(aReleaseTag), fmCreate);
+  try
+    result := fetchURL('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + cleanTag(aReleaseTag) + '.full.zip', fs, aReleaseTag);
+  finally
+    fs.free;
+  end;
+end;
+
 function TProgramUpdates.getReleaseTag: string;
 begin
   result := FReleaseTag;
-  case result <> '' of TRUE: EXIT; end;
+  case result = '' of FALSE: EXIT; end;
+
+  FReleaseTag := getJSONReleaseTag;
+  result := downloadRelease(FReleaseTag); // if there's an error, report it back to the About Box via the result
+
+  case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: extractRelease; end;
 end;
 
 initialization
-  gLatestVersion := '';
+  gPU := NIL;
   gWP            := NIL;
   gProgressBar   := NIL;
   gDownloadForm  := NIL;
+
+finalization
+  case gPU <> NIL of TRUE: gPU.free; end;
 
 end.
