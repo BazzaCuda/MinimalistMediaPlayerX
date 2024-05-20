@@ -20,9 +20,6 @@ unit TProgramUpdatesClass;
 
 interface
 
-uses
-  system.zip;
-
 type
   TProgramUpdates = class(TObject)
   strict private
@@ -42,7 +39,7 @@ implementation
 
 uses
   idHTTP, idSSLOpenSSL, idComponent,
-  system.json, system.classes, system.sysUtils, system.strUtils,
+  system.json, system.classes, system.sysUtils, system.strUtils, system.zip,
   vcl.forms,
   consts, formDownload,
   TConfigFileClass, TCommonUtilsClass, TProgressBarClass, _debugWindow;
