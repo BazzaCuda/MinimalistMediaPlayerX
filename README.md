@@ -305,7 +305,7 @@ Control | Action
 
 Media File Formats
 ------------------
-``Minimalist Media Player`` uses MPV for its media playback and manipulation functions and will play the overwhelming majority of media files.
+``Minimalist Media Player`` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
 Dependencies
 ------------
