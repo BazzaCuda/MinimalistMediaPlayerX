@@ -148,7 +148,7 @@ end;
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   function backupName: string;
   begin
-    result := 'MinimalistMediaPlayer_' + CU.getFileVersionFmt('', 'v%d_%d_%d');
+    result := 'MinimalistMediaPlayer ' + CU.getFileVersionFmt('', 'v%d_%d_%d');
   end;
 begin
   result := FALSE;
