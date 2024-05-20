@@ -4,8 +4,10 @@ Minimalist Media Player
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
-Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif). If you set an image display duration, a slideshow of consecutive image files will be shown.
+Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif). If you set an image display duration, a slideshow of consecutive image files will be shown.
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
+
+**NEW**: Added support for .AVIF image files.
 
 **TIP**: You can crop an image by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
