@@ -202,42 +202,42 @@ end;
 
 function TCommonUtils.getFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 var
-  vFilePath: string;
-  iBufferSize: DWORD;
-  iDummy: DWORD;
-  pBuffer: Pointer;
-  pFileInfo: Pointer;
-  iVer: array[1..4] of Word;
+  vFilePath:    string;
+  iBufferSize:  DWORD;
+  iDummy:       DWORD;
+  pBuffer:      pointer;
+  pFileInfo:    pointer;
+  iVer:         array[1..4] of WORD;
 begin
   // set default value
-  Result := '';
+  result := '';
   // get filename of exe/dll if no filename is specified
   vFilePath := aFilePath;
   case vFilePath = '' of TRUE:  begin
                                   // prepare buffer for path and terminating #0
-                                  SetLength(vFilePath, MAX_PATH + 1);
-                                  SetLength(vFilePath, GetModuleFileName(hInstance, PChar(vFilePath), MAX_PATH + 1));
+                                  setLength(vFilePath, MAX_PATH + 1);
+                                  setLength(vFilePath, getModuleFileName(hInstance, PChar(vFilePath), MAX_PATH + 1));
                                 end;end;
 
   // get size of version info (0 if no version info exists)
-  iBufferSize := GetFileVersionInfoSize(PChar(vFilePath), iDummy);
+  iBufferSize := getFileVersionInfoSize(PChar(vFilePath), iDummy);
 
   case iBufferSize > 0 of TRUE:   begin
-                                    GetMem(pBuffer, iBufferSize);
+                                    getMem(pBuffer, iBufferSize);
                                     try
                                       // get fixed file info (language independent)
-                                      GetFileVersionInfo(PChar(vFilePath), 0, iBufferSize, pBuffer);
-                                      VerQueryValue(pBuffer, '\', pFileInfo, iDummy);
+                                      getFileVersionInfo(PChar(vFilePath), 0, iBufferSize, pBuffer);
+                                      verQueryValue(pBuffer, '\', pFileInfo, iDummy);
                                       // read version blocks
-                                      iVer[1] := HiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
-                                      iVer[2] := LoWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
-                                      iVer[3] := HiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
-                                      iVer[4] := LoWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
+                                      iVer[1] := hiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
+                                      iVer[2] := loWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
+                                      iVer[3] := hiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
+                                      iVer[4] := loWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
                                     finally
-                                      FreeMem(pBuffer);
+                                      freeMem(pBuffer);
                                     end;
                                     // format result string
-                                    Result := Format(Fmt, [iVer[1], iVer[2], iVer[3], iVer[4]]);
+                                    result := format(fmt, [iVer[1], iVer[2], iVer[3], iVer[4]]);
                                   end;end;
 end;
 

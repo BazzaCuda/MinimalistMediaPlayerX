@@ -2349,23 +2349,10 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
   end
-  object Label7: TLabel
-    Left = 320
-    Top = 47
-    Width = 121
-    Height = 25
-    Caption = 'Latest Release:'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -19
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
   object lblLatestReleaseVersion: TLabel
-    Left = 448
+    Left = 443
     Top = 47
-    Width = 137
+    Width = 161
     Height = 54
     AutoSize = False
     Caption = 'v1.0'
@@ -2376,6 +2363,19 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
     WordWrap = True
+  end
+  object Label7: TLabel
+    Left = 315
+    Top = 47
+    Width = 121
+    Height = 25
+    Caption = 'Latest Release:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
   end
   object btnOK: TButton
     Left = 281

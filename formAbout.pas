@@ -40,8 +40,8 @@ type
     Bevel2: TBevel;
     Label6: TLabel;
     lblBuildVersion: TLabel;
-    Label7: TLabel;
     lblLatestReleaseVersion: TLabel;
+    Label7: TLabel;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);

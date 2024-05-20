@@ -30,7 +30,7 @@ type
   private
     function getJSONReleaseTag: string;
     function downloadRelease(const aReleaseTag: string): string;
-    function extractRelease: boolean;
+    function extractRelease(const aReleaseTag: string): boolean;
     function getReleaseTag: string;
   public
     property releaseTag: string read getReleaseTag;
@@ -148,17 +148,22 @@ end;
 
 { TProgramUpdates }
 
-function TProgramUpdates.extractRelease: boolean;
+function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   function backupName: string;
   begin
     result := 'MinimalistMediaPlayer_' + CU.getFileVersionFmt('', 'v%d_%d_%d');
   end;
 begin
+  result := FALSE;
+  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+
   case fileExists(CU.getExePath + backupName + '.exe') of FALSE:  CU.renameFile(paramStr(0), backupName); end;
   case fileExists(paramStr(0))                         of FALSE:  with TZipFile.create do begin
-                                                                    open(updateFile(FReleaseTag), zmRead);
+                                                                    open(updateFile(aReleaseTag), zmRead);
                                                                     extract('MinimalistMediaPlayer.exe', CU.getExePath);
                                                                     free;
+                                                                    result := TRUE;
                                                                   end;end;
 end;
 
@@ -204,7 +209,7 @@ begin
   FReleaseTag := getJSONReleaseTag;
   result := downloadRelease(FReleaseTag); // if there's an error, report it back to the About Box via the result
 
-  case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: extractRelease; end;
+  case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: case extractRelease(FReleaseTag) of TRUE: result := result + ' Restart_Required'; end;end;
 end;
 
 initialization
