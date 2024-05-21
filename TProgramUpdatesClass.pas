@@ -20,6 +20,9 @@ unit TProgramUpdatesClass;
 
 interface
 
+uses
+  system.zip;
+
 type
   TProgramUpdates = class(TObject)
   strict private
@@ -29,6 +32,7 @@ type
     function downloadRelease(const aReleaseTag: string): string;
     function extractRelease(const aReleaseTag: string): boolean;
     function getReleaseTag: string;
+    procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
     property releaseTag: string read getReleaseTag;
   end;
@@ -39,7 +43,7 @@ implementation
 
 uses
   idHTTP, idSSLOpenSSL, idComponent,
-  system.json, system.classes, system.sysUtils, system.strUtils, system.zip,
+  system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
   consts, formDownload,
   TConfigFileClass, TCommonUtilsClass, TProgressBarClass, _debugWindow;
@@ -157,10 +161,12 @@ begin
 
   case fileExists(CU.getExePath + backupName + '.exe') of FALSE:  CU.renameFile(paramStr(0), backupName); end;
   case fileExists(paramStr(0))                         of FALSE:  with TZipFile.create do begin
+                                                                    OnProgress := zipOnProgress;
                                                                     open(updateFile(aReleaseTag), zmRead);
+//                                                                    extractAll(CU.getExePath);
                                                                     extract('MinimalistMediaPlayer.exe', CU.getExePath);
                                                                     free;
-                                                                    result := TRUE;
+                                                                    result := fileExists(paramStr(0));
                                                                   end;end;
 end;
 
@@ -201,12 +207,20 @@ end;
 function TProgramUpdates.getReleaseTag: string;
 begin
   result := FReleaseTag;
-  case result = '' of FALSE: EXIT; end;
+  case result <> '' of TRUE: EXIT; end;
+
+  result := '(autoUpdate=no)';
+  case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
 
   FReleaseTag := getJSONReleaseTag;
   result := downloadRelease(FReleaseTag); // if there's an error, report it back to the About Box via the result
 
   case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: case extractRelease(FReleaseTag) of TRUE: result := result + ' Restart_Required'; end;end;
+end;
+
+procedure TProgramUpdates.zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
+begin
+//
 end;
 
 initialization
