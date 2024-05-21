@@ -33,12 +33,12 @@ type
     function downloadAsset(const aURL, aFileName: string): string;
     function downloadRelease(const aReleaseTag: string): string;
     function extractRelease(const aReleaseTag: string): boolean;
+    function getHasReleaseNotes: boolean;
     function getJSONReleaseTag: string;
     function getReleaseNotesFolder: string;
     function getReleaseNotesFilePath(const aReleaseTag: string): string;
     function getReleaseTag: string;
     function saveReleaseNotes(const aReleaseTag: string): boolean;
-    function getHasReleaseNotes: boolean;
   protected
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
