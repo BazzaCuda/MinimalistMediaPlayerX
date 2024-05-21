@@ -12,6 +12,7 @@ object AboutForm: TAboutForm
   Font.Name = 'Tahoma'
   Font.Style = []
   Position = poScreenCenter
+  OnShow = FormShow
   TextHeight = 13
   object Bevel1: TBevel
     Left = 120
@@ -2385,5 +2386,15 @@ object AboutForm: TAboutForm
     Caption = 'OK'
     TabOrder = 0
     OnClick = btnOKClick
+  end
+  object btnWhatsNew: TButton
+    Left = 504
+    Top = 245
+    Width = 105
+    Height = 25
+    Caption = 'What'#39's New?'
+    TabOrder = 1
+    Visible = False
+    OnClick = btnWhatsNewClick
   end
 end

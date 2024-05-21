@@ -70,7 +70,7 @@ uses
   winApi.shellApi, winAPI.activeX, winApi.messages,
   system.sysUtils, system.IOUtils,
   vcl.graphics,
-  consts, formCaption, formInputBox,
+  mmpConsts, formCaption, formInputBox,
   TGlobalVarsClass, TMediaPlayerClass, TPlaylistClass, TUICtrlsClass, _debugWindow;
 
 var

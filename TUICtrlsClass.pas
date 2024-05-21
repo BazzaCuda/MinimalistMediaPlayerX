@@ -24,7 +24,7 @@ uses
   winApi.shellAPI, winApi.windows,
   system.classes,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
-  consts;
+  mmpConsts;
 
 type
   TUI = class(TObject)
@@ -699,6 +699,7 @@ function TUI.toggleThumbnails: boolean;
 begin
   shutHelp;
   shutPlaylist;
+  shutTimeline;
   MP.pause;
   MC.toggleCaption;
 

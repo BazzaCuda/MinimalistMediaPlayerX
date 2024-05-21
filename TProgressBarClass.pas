@@ -66,7 +66,7 @@ implementation
 uses
   system.sysUtils,
   vcl.graphics,
-  consts,
+  mmpConsts,
   TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass, _debugWindow;
 
 var

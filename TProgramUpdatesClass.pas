@@ -26,15 +26,25 @@ uses
 type
   TProgramUpdates = class(TObject)
   strict private
+    FReleaseNotes: string;
     FReleaseTag: string;
   private
-    function getJSONReleaseTag: string;
+    function analyseReleaseNotes(const aReleaseTag: string): boolean;
+    function downloadAsset(const aURL, aFileName: string): string;
     function downloadRelease(const aReleaseTag: string): string;
     function extractRelease(const aReleaseTag: string): boolean;
+    function getJSONReleaseTag: string;
+    function getReleaseNotesFolder: string;
+    function getReleaseNotesFilePath(const aReleaseTag: string): string;
     function getReleaseTag: string;
+    function saveReleaseNotes(const aReleaseTag: string): boolean;
+    function getHasReleaseNotes: boolean;
+  protected
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
-    property releaseTag: string read getReleaseTag;
+    property hasReleaseNotes: boolean read getHasReleaseNotes;
+    property releaseNotes: string read FReleaseNotes;
+    property releaseTag:   string read getReleaseTag;
   end;
 
 function PU: TProgramUpdates;
@@ -45,7 +55,7 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  consts, formDownload,
+  mmpConsts, formDownload,
   TConfigFileClass, TCommonUtilsClass, TProgressBarClass, _debugWindow;
 
 type
@@ -149,6 +159,52 @@ end;
 
 { TProgramUpdates }
 
+function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): boolean;
+// download any and all images in the release notes
+begin
+  case fileExists(getReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
+  var vNotes := TStringList.create;
+  try
+    vNotes.loadFromFile(getReleaseNotesFilePath(aReleaseTag));
+    for var i := 0 to vNotes.count - 1 do begin
+      var vPos := pos('(https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/', vNotes[i]);
+      case vPos = 0 of TRUE: CONTINUE; end;
+
+      var vAssetURL := copy(vNotes[i], vPos + 1, 255);
+      var vPos2 := pos(')', vAssetURL);
+      case vPos2 = 0 of TRUE: CONTINUE; end;
+
+      delete(vAssetURL, vPos2, 255);
+
+      var vPos3 := LastDelimiter('/', vAssetURL);
+      case vPos3 = 0 of TRUE: CONTINUE; end;
+
+      var vFileName := copy(vAssetURL, vPos3 + 1, 255);
+
+      downloadAsset(vAssetURL, vFileName);
+
+      vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
+    end;
+
+    vNotes.saveToFile(getReleaseNotesFilePath(aReleaseTag));
+  finally
+    vNotes.free;
+  end;
+end;
+
+function TProgramUpdates.downloadAsset(const aURL: string; const aFileName: string): string;
+begin
+  var vDestFile := getReleaseNotesFolder + aFileName;
+  case fileExists(vDestFile) of TRUE: EXIT; end;
+
+  var fs := TFileStream.create(vDestFile, fmCreate);
+  try
+    result := fetchURL(aURL, fs);
+  finally
+    fs.free;
+  end;
+end;
+
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   function backupName: string;
   begin
@@ -170,6 +226,11 @@ begin
                                                                   end;end;
 end;
 
+function TProgramUpdates.getHasReleaseNotes: boolean;
+begin
+  result := FReleaseNotes <> '';
+end;
+
 function TProgramUpdates.getJSONReleaseTag: string;
 var
   json: string;
@@ -180,7 +241,8 @@ begin
   try
     obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
     try
-      case obj = NIL of FALSE: result := obj.values['tag_name'].value; end;
+      case obj = NIL of FALSE: result        := obj.values['tag_name'].value; end;
+      case obj = NIL of FALSE: FReleaseNotes := obj.values['body'].value; end;
     except
     end;
   finally
@@ -204,6 +266,17 @@ begin
   end;
 end;
 
+function TProgramUpdates.getReleaseNotesFilePath(const aReleaseTag: string): string;
+begin
+  result := format('%s%s%s%s', [getReleaseNotesFolder, 'releaseNotes ', cleanTag(aReleaseTag), '.md'])
+end;
+
+function TProgramUpdates.getReleaseNotesFolder: string;
+begin
+  result := CU.getExePath + 'releaseNotes\';
+  forceDirectories(result);
+end;
+
 function TProgramUpdates.getReleaseTag: string;
 begin
   result := FReleaseTag;
@@ -213,9 +286,23 @@ begin
   case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
 
   FReleaseTag := getJSONReleaseTag;
+  saveReleaseNotes(FReleaseTag);
+  analyseReleaseNotes(FReleaseTag);
+
   result := downloadRelease(FReleaseTag); // if there's an error, report it back to the About Box via the result
 
   case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: case extractRelease(FReleaseTag) of TRUE: result := result + ' Restart_Required'; end;end;
+end;
+
+function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): boolean;
+begin
+  case FReleaseNotes = '' of TRUE: EXIT; end;
+
+  with TStringList.create do begin
+    text := FReleaseNotes;
+    saveToFile(getReleaseNotesFilePath(aReleaseTag));
+    free;
+  end;
 end;
 
 procedure TProgramUpdates.zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);

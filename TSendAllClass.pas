@@ -31,7 +31,7 @@ implementation
 uses
   system.sysUtils, system.classes,
   vcl.forms,
-  consts, _debugWindow;
+  mmpConsts, _debugWindow;
 
 var
   gSendAll: TSendAll;

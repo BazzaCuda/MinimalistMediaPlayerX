@@ -92,7 +92,7 @@ implementation
 
 uses
   system.sysUtils,
-  consts, _debugWindow;
+  mmpConsts, _debugWindow;
 
 var nextColor: integer = 0;
 function generateRandomEvenDarkerSoftColor: TColor;

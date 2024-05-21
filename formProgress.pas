@@ -51,7 +51,7 @@ var
 implementation
 
 uses
-  consts;
+  mmpConsts;
 
 {$R *.dfm}
 

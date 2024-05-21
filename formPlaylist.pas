@@ -58,7 +58,7 @@ implementation
 
 uses
   ShellAPI, system.strUtils,
-  consts, TUICtrlsClass, TPlaylistClass, TGlobalVarsClass, TMediaPlayerClass, _debugWindow;
+  mmpconsts, TUICtrlsClass, TPlaylistClass, TGlobalVarsClass, TMediaPlayerClass, _debugWindow;
 
 var
   playlistForm: TPlaylistForm;

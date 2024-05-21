@@ -21,7 +21,7 @@ unit TMediaTypesClass;
 interface
 
 uses
-  consts;
+  mmpConsts;
 
 type
 

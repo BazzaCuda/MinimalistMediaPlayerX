@@ -22,7 +22,7 @@ interface
 
 uses
   winAPI.messages, winAPI.windows,
-  consts;
+  mmpConsts;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 function sendSysCommandClose(const aHWND: HWND): boolean;

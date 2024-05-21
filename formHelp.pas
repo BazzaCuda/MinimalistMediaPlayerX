@@ -49,7 +49,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  consts, TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
+  mmpConsts, TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
 
 var
   helpForm: THelpForm;

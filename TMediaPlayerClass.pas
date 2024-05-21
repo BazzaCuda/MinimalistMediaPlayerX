@@ -23,7 +23,7 @@ interface
 uses
   system.classes,
   vcl.extCtrls, vcl.forms,
-  consts, MPVBasePlayer;
+  mmpConsts, MPVBasePlayer;
 
 type
   TTimerEvent = (tePlay, teClose);

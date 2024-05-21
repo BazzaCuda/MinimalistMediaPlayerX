@@ -75,7 +75,7 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.forms,
-  consts, formCaption, formCaptions, formPlaylist, formThumbnails,
+  mmpConsts, formCaption, formCaptions, formPlaylist, formThumbnails,
   TBookmarkClass, TCommonUtilsClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
 const

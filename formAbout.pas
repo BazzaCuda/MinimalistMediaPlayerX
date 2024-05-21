@@ -42,10 +42,13 @@ type
     lblBuildVersion: TLabel;
     lblLatestReleaseVersion: TLabel;
     Label7: TLabel;
+    btnWhatsNew: TButton;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
     procedure lblWebsiteURLMouseLeave(Sender: TObject);
+    procedure btnWhatsNewClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
   public
     function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -53,6 +56,7 @@ type
     function setCopyrightYear(const aYear: WORD): boolean;
     function setLatestReleaseVersion(const aRelease: string): boolean;
     function setReleaseVersion(const aRelease: string): boolean;
+    function setWhatsNew(const aHasReleaseNotes: boolean): boolean;
   end;
 
 function showAboutBox(const thisVersion: string; const buildVersion: string): boolean;
@@ -61,6 +65,7 @@ implementation
 
 uses
   shellAPI,
+  formReleaseNotes,
   TGlobalVarsClass, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
@@ -73,8 +78,9 @@ begin
     setCopyrightYear(currentYear);
     setReleaseVersion(thisVersion);
     setBuildVersion(buildVersion);
-    setLatestReleaseVersion(PU.releaseTag);
+    setLatestReleaseVersion(PU.releaseTag);        // if the releaseTag is got, PU also downloads the release zip file and the release notes
     compareVersions(thisVersion, PU.releaseTag);
+    setWhatsNew(PU.hasReleaseNotes);
     showModal;
   finally
     free;
@@ -88,10 +94,23 @@ begin
   modalResult := mrOK;
 end;
 
+procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
+begin
+  with TReleaseNotesForm.create(NIL) do begin
+    showModal;
+    free;
+  end;
+end;
+
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
 begin
   case latestVersion[1] = 'v' of FALSE: EXIT; end;
   case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
+end;
+
+procedure TAboutForm.FormShow(Sender: TObject);
+begin
+  case btnWhatsNew.visible of TRUE: btnWhatsNew.setFocus; end;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
@@ -127,6 +146,12 @@ end;
 function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
 begin
   lblReleaseVersion.Caption := aRelease;
+end;
+
+function TAboutForm.setWhatsNew(const aHasReleaseNotes: boolean): boolean;
+begin
+  btnWhatsNew.visible := aHasReleaseNotes;
+  btnWhatsNew.default := aHasReleaseNotes;
 end;
 
 end.

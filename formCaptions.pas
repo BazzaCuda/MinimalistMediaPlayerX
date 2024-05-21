@@ -71,7 +71,7 @@ function ST: TCaptionsForm; // was originally for SubTitles, hence ST
 implementation
 
 uses
-  consts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
+  mmpConsts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;

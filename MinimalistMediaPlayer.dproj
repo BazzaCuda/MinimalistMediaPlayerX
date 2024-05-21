@@ -154,7 +154,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
         <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="consts.pas"/>
+        <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
         <DCCReference Include="formAbout.pas">
             <Form>AboutForm</Form>
@@ -211,6 +211,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TThumbnailsClass.pas"/>
         <DCCReference Include="formThumbnails.pas">
             <Form>ThumbnailsForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="formReleaseNotes.pas">
+            <Form>ReleaseNotesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <RcItem Include="help.rtf">

@@ -33,7 +33,7 @@ uses
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
   ALProgressBar in 'ALProgressBar.pas',
-  consts in 'consts.pas',
+  mmpConsts in 'mmpConsts.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   formAbout in 'formAbout.pas' {AboutForm},
   formCaption in 'formCaption.pas' {CaptionForm},
@@ -66,7 +66,8 @@ uses
   TUICtrlsClass in 'TUICtrlsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   TThumbnailsClass in 'TThumbnailsClass.pas',
-  formThumbnails in 'formThumbnails.pas' {ThumbnailsForm};
+  formThumbnails in 'formThumbnails.pas' {ThumbnailsForm},
+  formReleaseNotes in 'formReleaseNotes.pas' {ReleaseNotesForm};
 
 {$R *.res}
 
@@ -79,5 +80,6 @@ begin
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   Application.CreateForm(TMMPUI, MMPUI);
+  Application.CreateForm(TReleaseNotesForm, ReleaseNotesForm);
   Application.Run;
 end.
