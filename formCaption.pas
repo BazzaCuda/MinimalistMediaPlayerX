@@ -41,6 +41,7 @@ type
     procedure formResize(Sender: TObject);
     function brighter: integer;
     function darker: integer;
+    function toggleCaption: boolean;
     function initCaption(const aVideoPanel: TPanel): boolean;
     function resetColor: integer;
     property caption: string write setCaption;
@@ -166,6 +167,11 @@ begin
   FCaption.caption := '';
 end;
 
+
+function TCaptionForm.toggleCaption: boolean;
+begin
+  FCaption.visible := NOT FCaption.visible;
+end;
 
 initialization
   gMC := NIL;

@@ -68,7 +68,11 @@ var
 implementation
 
 uses
-  system.sysUtils, TSysCommandsClass, TGlobalVarsClass, clipbrd, formCaptions, TCommonUtilsClass, regularExpressions, math, TMediaTypesClass;
+  winApi.windows,
+  system.math, system.regularExpressions, system.sysUtils,
+  vcl.clipbrd,
+  formCaptions,
+  TCommonUtilsClass, TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass;
 
 function PL: TPlaylist;
 begin
@@ -177,7 +181,7 @@ begin
     until FindNext(vSR) <> 0;
   end;
 
-  FindClose(vSR);
+  system.sysUtils.FindClose(vSR);
   PL.sort;
   result := TRUE;
 end;

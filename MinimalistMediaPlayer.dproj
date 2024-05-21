@@ -208,6 +208,11 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TTickTimerClass.pas"/>
         <DCCReference Include="TUICtrlsClass.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
+        <DCCReference Include="TThumbnailsClass.pas"/>
+        <DCCReference Include="formThumbnails.pas">
+            <Form>ThumbnailsForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

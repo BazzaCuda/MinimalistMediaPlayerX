@@ -32,7 +32,8 @@ type
             koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
-            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter);
+            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter,
+            koThumbnails);
   TKeyDirection = (kdDown, kdUp);
 
   TKeyboard = class(TObject)
@@ -74,7 +75,7 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.forms,
-  consts, formCaption, formCaptions, formPlaylist,
+  consts, formCaption, formCaptions, formPlaylist, formThumbnails,
   TBookmarkClass, TCommonUtilsClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
 const
@@ -120,7 +121,7 @@ begin
   case keyUp and keyIs(VK_VOLUME_MUTE)                        of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(W)                                     of TRUE: result := koPlayNext; end;
   case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;
-  case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist and ctrl  of TRUE: result := koPlayPrev; end;
+  case keyDn and keyIs(VK_RETURN) and ctrl and NOT GV.showingPlaylist of TRUE: result := koPlayPrev; end;
   case keyUp and keyIs(Q)                                     of TRUE: result := koPlayPrev; end;
   case keyDn and keyIs(VK_LEFT) and ctrl                      of TRUE: result := koPanLeft; end;
   case keyDn and keyIs(VK_RIGHT) and ctrl                     of TRUE: result := koPanRight; end;
@@ -189,6 +190,7 @@ begin
   case keyUp and keyIs(VK_F7)                                 of TRUE: result := koCycleSubs; end;
   case keyUp and keyIs(VK_F8)                                 of TRUE: result := koPrevChapter; end;
   case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNextChapter; end;
+  case keyUp and keyIs(Y)                                     of TRUE: result := koThumbnails; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -264,7 +266,7 @@ begin
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;
+    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.stop; toggleThumbnailsParent(NIL);  sendSysCommandClose(UI.handle); end;
     koVolUp:             ST.opInfo := MP.volUp;
     koVolDn:             ST.opInfo := MP.volDown;
     koTab:               SA.postToAll(WIN_TAB);
@@ -343,6 +345,7 @@ begin
     koCycleSubs:         MP.cycleSubs;
     koPrevChapter:       MP.chapterPrev;
     koNextChapter:       MP.chapterNext;
+    koThumbnails:        UI.toggleThumbnails;
   end;
 
   result := TRUE;

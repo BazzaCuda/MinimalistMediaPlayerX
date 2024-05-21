@@ -64,7 +64,9 @@ uses
   TSysCommandsClass in 'TSysCommandsClass.pas',
   TTickTimerClass in 'TTickTimerClass.pas',
   TUICtrlsClass in 'TUICtrlsClass.pas',
-  _debugWindow in '..\DebugWindow\_debugWindow.pas';
+  _debugWindow in '..\DebugWindow\_debugWindow.pas',
+  TThumbnailsClass in 'TThumbnailsClass.pas',
+  formThumbnails in 'formThumbnails.pas' {ThumbnailsForm};
 
 {$R *.res}
 

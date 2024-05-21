@@ -93,6 +93,7 @@ type
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
+    function toggleThumbnails: boolean;
     function tweakWindow: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property height: integer read getHeight write setHeight;
@@ -112,8 +113,9 @@ uses
   winApi.messages,
   system.sysUtils,
   vcl.dialogs,
-  formAbout, formCaption, formCaptions, formHelp, formPlaylist, formTimeline,
-  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, _debugWindow;
+  formAbout, formCaption, formCaptions, formHelp, formPlaylist, formThumbnails, formTimeline,
+  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
+  _debugWindow;
 
 var
   gUI: TUI;
@@ -637,9 +639,9 @@ end;
 
 function TUI.showXY: boolean;
 begin
-//  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
-//  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
-  ST.opInfo := PL.formattedItem;
+////  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+////  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
+//  ST.opInfo := PL.formattedItem;
 end;
 
 function TUI.shutTimeline: boolean;
@@ -691,6 +693,13 @@ begin
 
   case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
                                             FALSE: ST.showData := FALSE; end;
+end;
+
+function TUI.toggleThumbnails: boolean;
+begin
+  MP.pause;
+  MC.toggleCaption;
+  TF.initThumbnails(MC);
 end;
 
 function TUI.toggleTimeline: boolean;

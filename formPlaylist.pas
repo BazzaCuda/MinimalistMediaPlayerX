@@ -38,6 +38,7 @@ type
     procedure LBKeyPress(Sender: TObject; var Key: Char);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    function  ctrlKeyDown: boolean;
     function  isItemVisible: boolean;
     function  playItemIndex(const aItemIndex: integer): boolean;
     function  visibleItemCount: integer;
@@ -138,6 +139,11 @@ begin
   LB.onKeyUp        := LBKeyUp;
 end;
 
+function TPlaylistForm.ctrlKeyDown: boolean;
+begin
+  result := getKeyState(VK_CONTROL) < 0;
+end;
+
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
   case LB.count > 0 of TRUE:  begin
@@ -175,7 +181,7 @@ end;
 
 procedure TPlaylistForm.LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  case key = VK_RETURN of TRUE: playItemIndex(LB.itemIndex); end;
+  case (key = VK_RETURN) and NOT ctrlKeyDown of TRUE: playItemIndex(LB.itemIndex); end;
 end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
