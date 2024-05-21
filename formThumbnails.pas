@@ -21,31 +21,32 @@ function toggleThumbnailsParent(const aForm: TForm): boolean;
 implementation
 
 uses
-  formMain, _debugWindow;
+  formMain,
+  TThumbnailsClass,_debugWindow;
 
 var
-  gTN: TThumbnailsForm;
+  gTF: TThumbnailsForm;
 
 function TF: TThumbnailsForm;
 begin
-  case gTN = NIL of TRUE: gTN := TThumbnailsForm.create(NIL); end;
-  result := gTN;
+  case gTF = NIL of TRUE: gTF := TThumbnailsForm.create(NIL); end;
+  result := gTF;
 end;
 
 function resizeThumbnailsForm(const aWidth: integer; const aHeight: integer): boolean;
 begin
-  case gTN = NIL of TRUE: EXIT; end;
-  gTN.width  := aWidth;
-  gTN.height := aHeight;
+  case gTF = NIL of TRUE: EXIT; end;
+  gTF.width  := aWidth;
+  gTF.height := aHeight;
 end;
 
 function toggleThumbnailsParent(const aForm: TForm): boolean;
 // MPV doesn't close properly if MMP closes while MC is still the parent of this form!
 begin
-  case gTN = NIL of TRUE: EXIT; end;
+  case gTF = NIL of TRUE: EXIT; end;
 
-  case gTN.parent = NIL of  TRUE: gTN.parent := aForm;
-                           FALSE: gTN.parent := NIL; end;
+  case gTF.parent = NIL of  TRUE: gTF.parent := aForm;
+                           FALSE: gTF.parent := NIL; end;
 end;
 
 {$R *.dfm}
@@ -77,9 +78,9 @@ begin
 end;
 
 initialization
-  gTN := NIL;
+  gTF := NIL;
 
 finalization
-  case gTN <> NIL of TRUE: gTN.free; end;
+  case gTF <> NIL of TRUE: gTF.free; end;
 
 end.
