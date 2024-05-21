@@ -3,8 +3,9 @@ unit formThumbnails;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls;
+  winApi.messages, winApi.windows,
+  system.classes, vcl.graphics, system.sysUtils, system.variants,
+  vcl.Controls, vcl.Dialogs, vcl.extCtrls, vcl.Forms;
 
 type
   TThumbnailsForm = class(TForm)
@@ -15,14 +16,12 @@ type
   end;
 
 function TF: TThumbnailsForm;
-function resizeThumbnailsForm(const aWidth: integer; const aHeight: integer): boolean;
 function toggleThumbnailsParent(const aForm: TForm): boolean;
 
 implementation
 
 uses
-  formMain,
-  TThumbnailsClass,_debugWindow;
+  TThumbnailsClass, _debugWindow;
 
 var
   gTF: TThumbnailsForm;
@@ -31,13 +30,6 @@ function TF: TThumbnailsForm;
 begin
   case gTF = NIL of TRUE: gTF := TThumbnailsForm.create(NIL); end;
   result := gTF;
-end;
-
-function resizeThumbnailsForm(const aWidth: integer; const aHeight: integer): boolean;
-begin
-  case gTF = NIL of TRUE: EXIT; end;
-  gTF.width  := aWidth;
-  gTF.height := aHeight;
 end;
 
 function toggleThumbnailsParent(const aForm: TForm): boolean;

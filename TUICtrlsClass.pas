@@ -697,8 +697,11 @@ end;
 
 function TUI.toggleThumbnails: boolean;
 begin
+  shutHelp;
+  shutPlaylist;
   MP.pause;
   MC.toggleCaption;
+
   TF.initThumbnails(MC);
 end;
 
