@@ -1,6 +1,8 @@
 Minimalist Media Player
 =====================
 
+THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
+
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
