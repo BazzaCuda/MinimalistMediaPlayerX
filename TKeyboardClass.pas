@@ -119,7 +119,8 @@ begin
   case keyUp and keyIs(E)                                     of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(VK_VOLUME_MUTE)                        of TRUE: result := koMuteUnmute; end;
   case keyUp and keyIs(W)                                     of TRUE: result := koPlayNext; end;
-  case keyUp and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;
+  case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;
+  case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist and ctrl  of TRUE: result := koPlayPrev; end;
   case keyUp and keyIs(Q)                                     of TRUE: result := koPlayPrev; end;
   case keyDn and keyIs(VK_LEFT) and ctrl                      of TRUE: result := koPanLeft; end;
   case keyDn and keyIs(VK_RIGHT) and ctrl                     of TRUE: result := koPanRight; end;
