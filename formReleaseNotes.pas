@@ -3,11 +3,11 @@ unit formReleaseNotes;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.stdCtrls,
+  winApi.windows, winApi.messages,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   HTMLUn2, HtmlView, MarkDownViewerComponents,
-  strUtils, Vcl.ExtCtrls;
+  strUtils;
 
 type
   TReleaseNotesForm = class(TForm)
