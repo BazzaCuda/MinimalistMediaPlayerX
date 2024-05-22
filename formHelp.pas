@@ -105,7 +105,6 @@ begin
   initMarkDownViewer(md3);
 
   md1.ProcessorDialect := mdDaringFireball; // ok because we don't have tables. mdCommonMark wasn't displaying **0** correctly
-  md1.processorDialect := mdTxtMark;
 
   md1.defFontSize := 10;
   md2.defFontSize := 10;
