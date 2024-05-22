@@ -161,7 +161,7 @@ Control | Action
 ---------------
 Control | Action
 ------- | ------
-**Brightness** | 
+**Brightness** || 
 `8`                     | decrease brightness. Can be held down for rapid decrease
 `9`                     | increase brightness. Can be held down for rapid increase
 `2`                     | reset brightness to normal
