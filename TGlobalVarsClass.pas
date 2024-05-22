@@ -49,8 +49,10 @@ type
     FCloseApp: boolean;
     FShowingHelp: boolean;
     FShowingPlaylist: boolean;
+    FShowingThumbs: boolean;
     FShowingTimeline: boolean;
     FUserInput: boolean;
+  private
   public
     constructor create;
     destructor  destroy;
@@ -59,6 +61,7 @@ type
     property closeApp:        boolean read FCloseApp        write FCloseApp;
     property showingHelp:     boolean read FShowingHelp     write FShowingHelp;
     property showingPlaylist: boolean read FShowingPlaylist write FShowingPlaylist;
+    property showingThumbs:   boolean read FShowingThumbs   write FShowingThumbs;
     property showingTimeline: boolean read FShowingTimeline write FShowingTimeline;
     property userInput:       boolean read FUserInput       write FUserInput;
   end;

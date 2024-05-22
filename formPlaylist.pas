@@ -106,7 +106,7 @@ procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
-  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
+  Params.ExStyle    := Params.ExStyle OR (WS_EX_APPWINDOW);
   Params.WndParent  := SELF.Handle; // normally application.handle
 end;
 

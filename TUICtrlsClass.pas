@@ -83,6 +83,7 @@ type
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
+    function showThumbnails: boolean;
     function showWindow: boolean;
     function showXY: boolean;
     function shutTimeline: boolean;
@@ -93,7 +94,6 @@ type
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
-    function toggleThumbnails: boolean;
     function tweakWindow: boolean;
     property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property height: integer read getHeight write setHeight;
@@ -630,6 +630,18 @@ begin
   formAbout.showAboutBox(CU.getFileVersionFmt('', 'v%d.%d.%d'), CU.getFileVersionFmt);
 end;
 
+function TUI.showThumbnails: boolean;
+begin
+  shutHelp;
+  shutPlaylist;
+  shutTimeline;
+  MP.pause;
+
+//  FMainForm.hide;
+  formThumbnails.showThumbnails(FMainForm); // showModal;
+  FMainForm.show;
+end;
+
 function TUI.showWindow: boolean;
 begin
   case GV.closeApp of TRUE: EXIT; end;
@@ -693,17 +705,6 @@ begin
 
   case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
                                             FALSE: ST.showData := FALSE; end;
-end;
-
-function TUI.toggleThumbnails: boolean;
-begin
-  shutHelp;
-  shutPlaylist;
-  shutTimeline;
-  MP.pause;
-  MC.toggleCaption;
-
-  TF.initThumbnails(MC);
 end;
 
 function TUI.toggleTimeline: boolean;

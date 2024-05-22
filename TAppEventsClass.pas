@@ -105,6 +105,8 @@ begin
   focusPlaylist; // if it's being displayed, so it gets keystrokes
   focusTimeLine;
 
+  case GV.showingThumbs of TRUE: EXIT; end;
+
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key          := msg.WParam;
@@ -132,7 +134,8 @@ begin
 
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
-  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT GV.showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT UI.showingTimeline) of TRUE: screen.cursor := crNone; end;end;
+  case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT GV.showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT UI.showingTimeline
+                                                                                                                                        AND NOT GV.showingThumbs) of TRUE: screen.cursor := crNone; end;end;
 
   case msg.hwnd = UI.videoPanel.handle of TRUE: begin
     case msgIs(WM_LBUTTONDOWN) and NOT GV.showingPlaylist of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
@@ -156,7 +159,7 @@ begin
   case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: UI.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; {ST.opInfo := PL.formattedItem;} end;end;
-  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; toggleThumbnailsParent(NIL); sendSysCommandClose(msg.hwnd); end;end;
+  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
   case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock); end;
