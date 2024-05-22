@@ -24,7 +24,7 @@ uses
   winApi.windows,
   system.classes,
   vcl.stdCtrls,
-  htmlView, MarkDownViewerComponents,
+  htmlView, markDownUtils, MarkDownViewerComponents,
   mmpConsts;
 
 function initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
@@ -56,6 +56,7 @@ begin
   aMD.defFontSize      := 11;
   aMD.scrollBars       := ssVertical;
   aMD.htOptions        := [htOverLinksActive];
+  aMD.processorDialect := mdCommonMark; // the only option if the markdown includes tables
 end;
 
 end.

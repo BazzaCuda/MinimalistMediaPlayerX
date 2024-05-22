@@ -44,8 +44,8 @@ CAPS LOCK+**T**, tab 200th >><br />
 CAPS LOCK+CTRL-**T**, << 200th<br />
 
 **Volume**<br />
-Up Arrow, increase, hold<br />
-Down Arrow, decrease, hold<br />
+&uarr; up, increase, hold<br />
+&darr; down, decrease, hold<br />
 **Vol+** media key, increase, hold<br />
 **Vol-** media key, decrease, hold<br />
 Vol **mute** media key, mute<br />

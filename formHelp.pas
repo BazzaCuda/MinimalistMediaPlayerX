@@ -52,7 +52,6 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  markDownUtils,
   mmpConsts, mmpMarkDownUtils,
   TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
 
@@ -103,8 +102,6 @@ begin
   initMarkDownViewer(md1);
   initMarkDownViewer(md2);
   initMarkDownViewer(md3);
-
-  md1.ProcessorDialect := mdDaringFireball; // ok because we don't have tables. mdCommonMark wasn't displaying **0** correctly
 
   md1.defFontSize := 10;
   md2.defFontSize := 10;

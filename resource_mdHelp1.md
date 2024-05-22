@@ -4,13 +4,13 @@
 **7** delete bookmark<br />
 
 **Brightness**<br />
-**8** decrease, hold repeat<br />
-**9** increase, hold repeat<br />
+**8** decrease  :hold to repeat<br />
+**9** increase  :hold to repeat<br />
 **2** reset brightness<br />
 
 **Contrast**<br />
-**\-** decrease, hold repeat<br />
-**=** increase, hold repeat<br />
+**\-** decrease :hold to repeat<br />
+**=** increase  :hold to repeat<br />
 **0** reset contrast<br />
 
 **File Control**<br />
@@ -21,12 +21,12 @@ Ctrl-**D** [D]elete folder after confirm<br />
 **R** [R]ename file<br />
 
 **Freeze Frame**<br />
-Right Arrow, frame +, hold repeat<br />
-Left Arrow, frame -, hold repeat<br />
+&rarr; right arrow, frame + :hold to repeat<br />
+&larr; left arrow, frame - :hold to repeat<br />
 
 **Gamma**<br />
-**[** decrease, hold repeat<br />
-**] **increase, hold repeat<br />
+**[** decrease :hold to repeat<br />
+**] **increase :hold to repeat<br />
 **'** reset gamma<br />
 
 **Mouse**<br />
@@ -35,7 +35,7 @@ Ctrl-left click hold, drag window<br />
 Left dbl-click, toggle fullscreen<br />
 Right click, pause/play<br />
 NUMLOCK on, scrub along progress bar<br />
-Ctrl, scrub along progress bar<br />
+**Ctrl**, scrub along progress bar<br />
 Wheel up, volume up<br />
 Wheel down, volume down<br />
 

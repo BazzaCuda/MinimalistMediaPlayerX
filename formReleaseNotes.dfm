@@ -826,9 +826,8 @@ object ReleaseNotesForm: TReleaseNotesForm
         '3. Massive credit and thanks are due to Edward Guo for his excel' +
         'lent port of the MPV API (libmpv) to Delphi, https://github.com/' +
         'nbuyer/libmpvdelphi.')
-    ExplicitLeft = -2
-    ExplicitTop = -2
-    ExplicitHeight = 363
+    ExplicitWidth = 1231
+    ExplicitHeight = 391
   end
   object Panel1: TPanel
     Left = 0
@@ -837,9 +836,8 @@ object ReleaseNotesForm: TReleaseNotesForm
     Height = 41
     Align = alBottom
     TabOrder = 1
-    ExplicitLeft = 344
-    ExplicitTop = 384
-    ExplicitWidth = 185
+    ExplicitTop = 397
+    ExplicitWidth = 1237
     object btnClose: TButton
       Left = 528
       Top = 10
