@@ -79,21 +79,6 @@ object HelpForm: THelpForm
         ExplicitWidth = 591
       end
     end
-    object RT: TRichEdit
-      Left = 192
-      Top = 176
-      Width = 185
-      Height = 89
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWhite
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Lines.Strings = (
-        'RT')
-      ParentFont = False
-      TabOrder = 1
-    end
     object Panel1: TPanel
       Left = 0
       Top = 0
@@ -103,17 +88,35 @@ object HelpForm: THelpForm
       BevelOuter = bvNone
       Color = 2302755
       ParentBackground = False
-      TabOrder = 2
+      TabOrder = 1
       StyleElements = [seFont, seBorder]
     end
-    object MarkdownViewer1: TMarkdownViewer
-      Left = 192
-      Top = 320
+    object md1: TMarkdownViewer
+      Left = 40
+      Top = 168
+      PrintMarginBottom = 2.000000000000000000
+      PrintMarginLeft = 2.000000000000000000
+      PrintMarginRight = 2.000000000000000000
+      PrintMarginTop = 2.000000000000000000
+      TabOrder = 2
+    end
+    object md2: TMarkdownViewer
+      Left = 232
+      Top = 168
       PrintMarginBottom = 2.000000000000000000
       PrintMarginLeft = 2.000000000000000000
       PrintMarginRight = 2.000000000000000000
       PrintMarginTop = 2.000000000000000000
       TabOrder = 3
+    end
+    object md3: TMarkdownViewer
+      Left = 424
+      Top = 168
+      PrintMarginBottom = 2.000000000000000000
+      PrintMarginLeft = 2.000000000000000000
+      PrintMarginRight = 2.000000000000000000
+      PrintMarginTop = 2.000000000000000000
+      TabOrder = 4
     end
   end
 end

@@ -85,6 +85,7 @@ implementation
 
 uses
   system.generics.defaults,
+  markDownUtils,
   mmpConsts, mmpMarkDownUtils, formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
 
 var
@@ -250,6 +251,8 @@ begin
 
   md.align := alClient;
   initMarkDownViewer(md);
+  md.ProcessorDialect := mdCommonMark; // because we have tables
+
   loadMarkDownFromResource(md, 'Resource_mdEditing');
 
   clSegments.itemCount := 0;

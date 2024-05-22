@@ -21,19 +21,21 @@ unit formHelp;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, HTMLUn2, HtmlView, MarkDownViewerComponents;
+  winApi.windows, winApi.messages,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type
   THelpForm = class(TForm)
     backPanel: TPanel;
     buttonPanel: TPanel;
     shiftLabel: TLabel;
-    RT: TRichEdit;
     helpLabel: TLabel;
     Panel1: TPanel;
-    MarkdownViewer1: TMarkdownViewer;
+    md1: TMarkdownViewer;
+    md2: TMarkdownViewer;
+    md3: TMarkdownViewer;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -50,7 +52,9 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpConsts, TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
+  markDownUtils,
+  mmpConsts, mmpMarkDownUtils,
+  TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
 
 var
   helpForm: THelpForm;
@@ -96,23 +100,31 @@ end;
 
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
-  RT.align          := alClient;
-  RT.plainText      := FALSE;
-  RT.hideSelection  := TRUE;
-  RT.bevelInner     := bvNone;
-  RT.bevelOuter     := bvNone;
-  RT.borderStyle    := bsNone;
-  RT.readOnly       := TRUE;
+  initMarkDownViewer(md1);
+  initMarkDownViewer(md2);
+  initMarkDownViewer(md3);
 
-  var vRS := TResourceStream.create(hInstance, pchar('Resource_HelpRTF'), RT_RCDATA);
-  try
-    RT.lines.loadFromStream(vRS);
-  finally
-    freeAndNIL(vRS);
-  end;
+  md1.ProcessorDialect := mdDaringFireball; // ok because we don't have tables. mdCommonMark wasn't displaying **0** correctly
+  md1.processorDialect := mdTxtMark;
 
-  SELF.width  := 700;
-  SELF.height := 870;
+  md1.defFontSize := 10;
+  md2.defFontSize := 10;
+  md3.defFontSize := 10;
+
+  md1.align := alLeft;
+  md3.align := alRight;
+  md2.align := alClient;
+
+  SELF.width  := 740;
+  SELF.height := 960;
+
+  md1.width := SELF.width div 3;
+  md2.width := SELF.width div 3;
+  md3.width := SELF.width div 3;
+
+  loadMarkDownFromResource(md1, 'resource_mdHelp1');
+  loadMarkDownFromResource(md2, 'resource_mdHelp2');
+  loadMarkDownFromResource(md3, 'resource_mdHelp3');
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;

@@ -48,6 +48,7 @@ implementation
 
 uses
   winApi.shellApi,
+  markDownUtils,
   mmpConsts, mmpMarkDownUtils, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
 
 function showReleaseNotes(const aReleaseTag: string): boolean;
@@ -79,6 +80,8 @@ end;
 function TReleaseNotesForm.initReleaseNotes: boolean;
 begin
   initMarkDownViewer(md);
+  md.processorDialect := mdCommonMark; // because we might have tables
+
   SELF.color          := md.defBackground;
   btnClose.default    := TRUE;
   btnClose.cancel     := TRUE;
