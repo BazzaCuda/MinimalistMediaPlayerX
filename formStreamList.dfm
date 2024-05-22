@@ -48,7 +48,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 550
       Height = 538
-      ActivePage = tsSegments
+      ActivePage = tsOptions
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -2180,8 +2180,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 538
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2292,6 +2292,15 @@ object StreamListForm: TStreamListForm
       object tsOptions: TTabSheet
         Caption = 'Options'
         ImageIndex = 2
+        object md: TMarkdownViewer
+          Left = 168
+          Top = 128
+          PrintMarginBottom = 2.000000000000000000
+          PrintMarginLeft = 2.000000000000000000
+          PrintMarginRight = 2.000000000000000000
+          PrintMarginTop = 2.000000000000000000
+          TabOrder = 0
+        end
       end
       object tsLog: TTabSheet
         Caption = 'Log'

@@ -60,7 +60,7 @@ object HelpForm: THelpForm
       object helpLabel: TLabel
         Left = 0
         Top = 0
-        Width = 591
+        Width = 742
         Height = 18
         Align = alBottom
         Alignment = taCenter
@@ -76,6 +76,7 @@ object HelpForm: THelpForm
         ParentColor = False
         ParentFont = False
         Transparent = False
+        ExplicitWidth = 591
       end
     end
     object RT: TRichEdit
@@ -104,6 +105,15 @@ object HelpForm: THelpForm
       ParentBackground = False
       TabOrder = 2
       StyleElements = [seFont, seBorder]
+    end
+    object MarkdownViewer1: TMarkdownViewer
+      Left = 192
+      Top = 320
+      PrintMarginBottom = 2.000000000000000000
+      PrintMarginLeft = 2.000000000000000000
+      PrintMarginRight = 2.000000000000000000
+      PrintMarginTop = 2.000000000000000000
+      TabOrder = 3
     end
   end
 end

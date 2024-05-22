@@ -1,3 +1,21 @@
+{   Minimalist Media Player
+    Copyright (C) 2021-2024 Baz Cuda
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+}
 unit formReleaseNotes;
 
 interface
@@ -30,7 +48,7 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, TProgramUpdatesClass, _debugWindow;
+  mmpConsts, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
 
 function showReleaseNotes(const aReleaseTag: string): boolean;
 begin
@@ -60,15 +78,7 @@ end;
 
 function TReleaseNotesForm.initReleaseNotes: boolean;
 begin
-  md.DefBackground    := DARK_MODE_DARK;
-  md.defFontColor     := DARK_MODE_SILVER;
-  md.defHotSpotColor  := DARK_MODE_SILVER;
-  md.defOverLinkColor := DARK_MODE_SILVER;
-  md.borderStyle      := htNone;
-  md.defFontName      := 'Tahoma';
-  md.defFontSize      := 11;
-  md.scrollBars       := ssVertical;
-  md.htOptions        := [htOverLinksActive];
+  CU.initMarkDownViewer(md);
   SELF.color          := md.defBackground;
   btnClose.default    := TRUE;
   btnClose.cancel     := TRUE;

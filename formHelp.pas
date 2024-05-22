@@ -23,7 +23,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type
   THelpForm = class(TForm)
@@ -33,6 +33,7 @@ type
     RT: TRichEdit;
     helpLabel: TLabel;
     Panel1: TPanel;
+    MarkdownViewer1: TMarkdownViewer;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
@@ -53,8 +54,6 @@ uses
 
 var
   helpForm: THelpForm;
-
-{$R MinimalistMediaPlayer.dres}
 
 function showingHelp: boolean;
 begin

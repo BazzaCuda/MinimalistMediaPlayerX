@@ -25,7 +25,7 @@ uses
   System.SysUtils, System.Variants, System.Classes, System.ImageList,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, Vcl.ImgList, Vcl.Buttons,
   generics.collections,
-  TSegmentClass;
+  TSegmentClass, HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type
   TStreamListForm = class(TForm)
@@ -52,6 +52,7 @@ type
     tsOptions: TTabSheet;
     tsLog: TTabSheet;
     lblTitle: TLabel;
+    md: TMarkdownViewer;
     procedure formCreate(Sender: TObject);
     procedure formClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -236,7 +237,7 @@ begin
   pageControl.tabWidth := 0; // tab widths are controlled by the width of the captions
   tsSegments.caption := '          Segments          ';
   tsStreams.caption  := '          Streams          ';
-  tsOptions.caption  := '          Options          ';
+  tsOptions.caption  := '           Help            ';
   tsLog.caption      := '      Log      ';
 
 
@@ -246,6 +247,19 @@ begin
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
   font.color        := DARK_MODE_SILVER;
+
+  md.align := alClient;
+  CU.initMarkDownViewer(md);
+
+  var vRS := TResourceStream.create(hInstance, pchar('Resource_mdEditing'), RT_RCDATA);
+  var vSS := TStringStream.create;
+  try
+    vSS.copyFrom(vRS);
+    md.loadFromStream(vSS);
+  finally
+    freeAndNIL(vSS);
+    freeAndNIL(vRS);
+  end;
 
   clSegments.itemCount := 0;
   clStreams.itemCount  := 0;
