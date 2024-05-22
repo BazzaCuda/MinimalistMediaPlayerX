@@ -217,6 +217,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <Form>ReleaseNotesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="mmpMarkDownUtils.pas"/>
         <RcItem Include="help.rtf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

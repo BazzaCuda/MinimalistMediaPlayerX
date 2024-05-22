@@ -67,7 +67,8 @@ uses
   _debugWindow in '..\DebugWindow\_debugWindow.pas',
   TThumbnailsClass in 'TThumbnailsClass.pas',
   formThumbnails in 'formThumbnails.pas' {ThumbnailsForm},
-  formReleaseNotes in 'formReleaseNotes.pas' {ReleaseNotesForm};
+  formReleaseNotes in 'formReleaseNotes.pas' {ReleaseNotesForm},
+  mmpMarkDownUtils in 'mmpMarkDownUtils.pas';
 
 {$R *.res}
 

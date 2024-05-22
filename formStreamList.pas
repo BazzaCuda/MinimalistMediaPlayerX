@@ -85,7 +85,7 @@ implementation
 
 uses
   system.generics.defaults,
-  mmpConsts, formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
+  mmpConsts, mmpMarkDownUtils, formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
 
 var
   streamListForm: TStreamListForm;
@@ -249,17 +249,8 @@ begin
   font.color        := DARK_MODE_SILVER;
 
   md.align := alClient;
-  CU.initMarkDownViewer(md);
-
-  var vRS := TResourceStream.create(hInstance, pchar('Resource_mdEditing'), RT_RCDATA);
-  var vSS := TStringStream.create;
-  try
-    vSS.copyFrom(vRS);
-    md.loadFromStream(vSS);
-  finally
-    freeAndNIL(vSS);
-    freeAndNIL(vRS);
-  end;
+  initMarkDownViewer(md);
+  loadMarkDownFromResource(md, 'Resource_mdEditing');
 
   clSegments.itemCount := 0;
   clStreams.itemCount  := 0;

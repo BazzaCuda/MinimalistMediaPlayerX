@@ -23,8 +23,7 @@ interface
 uses
   winApi.windows,
   system.classes,
-  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.stdCtrls,
-  htmlView, MarkDownViewerComponents;
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.stdCtrls;
 
 type
   TCommonUtils = class(TObject)
@@ -48,7 +47,6 @@ type
     function getScreenCentre: integer;
     function getScreenHeight: integer;
     function getScreenWidth: integer;
-    function initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
     function initTransparentForm(const aForm: TForm): TForm;
     function initTransparentLabel(const aLabel: TLabel): boolean;
     function isEditFriendly(const aFilePath: string): boolean;
@@ -266,19 +264,6 @@ begin
   getWindowRect(aWnd, vR);
   aWidth  := vR.width;
   aHeight := vR.height;
-end;
-
-function TCommonUtils.initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
-begin
-  aMD.DefBackground    := DARK_MODE_DARK;
-  aMD.defFontColor     := DARK_MODE_SILVER;
-  aMD.defHotSpotColor  := DARK_MODE_SILVER;
-  aMD.defOverLinkColor := DARK_MODE_SILVER;
-  aMD.borderStyle      := htNone;
-  aMD.defFontName      := 'Tahoma';
-  aMD.defFontSize      := 11;
-  aMD.scrollBars       := ssVertical;
-  aMD.htOptions        := [htOverLinksActive];
 end;
 
 function TCommonUtils.initTransparentForm(const aForm: TForm): TForm;
