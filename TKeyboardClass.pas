@@ -345,7 +345,7 @@ begin
     koCycleSubs:         MP.cycleSubs;
     koPrevChapter:       MP.chapterPrev;
     koNextChapter:       MP.chapterNext;
-    koThumbnails:        UI.toggleThumbnails;
+//    koThumbnails:        UI.toggleThumbnails;
   end;
 
   result := TRUE;

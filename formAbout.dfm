@@ -2378,14 +2378,14 @@ object AboutForm: TAboutForm
     Font.Style = []
     ParentFont = False
   end
-  object btnOK: TButton
+  object btnClose: TButton
     Left = 281
     Top = 246
     Width = 75
     Height = 25
-    Caption = 'OK'
+    Caption = '&Close'
     TabOrder = 0
-    OnClick = btnOKClick
+    OnClick = btnCloseClick
   end
   object btnWhatsNew: TButton
     Left = 504

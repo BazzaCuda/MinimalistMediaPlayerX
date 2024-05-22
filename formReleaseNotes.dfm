@@ -11,19 +11,21 @@ object ReleaseNotesForm: TReleaseNotesForm
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   TextHeight = 15
   object md: TMarkdownViewer
     Left = 3
     Top = 3
     Width = 1233
-    Height = 436
+    Height = 395
     DefFontName = 'Tahoma'
     MarginWidth = 0
     PrintMarginBottom = 2.000000000000000000
     PrintMarginLeft = 2.000000000000000000
     PrintMarginRight = 2.000000000000000000
     PrintMarginTop = 2.000000000000000000
+    OnHotSpotClick = mdHotSpotClick
     Align = alClient
     TabOrder = 0
     FileName = 'B:\Win64_Dev\Programs\MediaPlayerX\README.md'
@@ -824,7 +826,28 @@ object ReleaseNotesForm: TReleaseNotesForm
         '3. Massive credit and thanks are due to Edward Guo for his excel' +
         'lent port of the MPV API (libmpv) to Delphi, https://github.com/' +
         'nbuyer/libmpvdelphi.')
-    ExplicitWidth = 620
-    ExplicitHeight = 432
+    ExplicitLeft = -2
+    ExplicitTop = -2
+    ExplicitHeight = 363
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 401
+    Width = 1239
+    Height = 41
+    Align = alBottom
+    TabOrder = 1
+    ExplicitLeft = 344
+    ExplicitTop = 384
+    ExplicitWidth = 185
+    object btnClose: TButton
+      Left = 528
+      Top = 10
+      Width = 75
+      Height = 25
+      Caption = '&Close'
+      TabOrder = 0
+      OnClick = btnCloseClick
+    end
   end
 end

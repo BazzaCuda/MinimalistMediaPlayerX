@@ -80,6 +80,5 @@ begin
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   Application.CreateForm(TMMPUI, MMPUI);
-  Application.CreateForm(TReleaseNotesForm, ReleaseNotesForm);
   Application.Run;
 end.

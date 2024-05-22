@@ -30,21 +30,19 @@ type
     FReleaseTag: string;
   private
     function analyseReleaseNotes(const aReleaseTag: string): boolean;
-    function downloadAsset(const aURL, aFileName: string): string;
+    function downloadAsset(const aURL, aFilePath: string; const aSuccess: string = ''): string;
     function downloadRelease(const aReleaseTag: string): string;
     function extractRelease(const aReleaseTag: string): boolean;
-    function getHasReleaseNotes: boolean;
     function getJSONReleaseTag: string;
-    function getReleaseNotesFolder: string;
-    function getReleaseNotesFilePath(const aReleaseTag: string): string;
     function getReleaseTag: string;
     function saveReleaseNotes(const aReleaseTag: string): boolean;
   protected
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
-    property hasReleaseNotes: boolean read getHasReleaseNotes;
-    property releaseNotes: string read FReleaseNotes;
-    property releaseTag:   string read getReleaseTag;
+    function getReleaseNotesFilePath(const aReleaseTag: string): string;
+    function getReleaseNotesFolder: string;
+    function hasReleaseNotes(const aReleaseTag: string): boolean;
+    property releaseTag:   string read getReleaseTag; // has a couple of side-effects ;)
   end;
 
 function PU: TProgramUpdates;
@@ -167,10 +165,10 @@ begin
   try
     vNotes.loadFromFile(getReleaseNotesFilePath(aReleaseTag));
     for var i := 0 to vNotes.count - 1 do begin
-      var vPos := pos('(https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/', vNotes[i]);
-      case vPos = 0 of TRUE: CONTINUE; end;
+      var vPos1 := pos('(https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/', vNotes[i]);
+      case vPos1 = 0 of TRUE: CONTINUE; end;
 
-      var vAssetURL := copy(vNotes[i], vPos + 1, 255);
+      var vAssetURL := copy(vNotes[i], vPos1 + 1, 255);
       var vPos2 := pos(')', vAssetURL);
       case vPos2 = 0 of TRUE: CONTINUE; end;
 
@@ -181,7 +179,7 @@ begin
 
       var vFileName := copy(vAssetURL, vPos3 + 1, 255);
 
-      downloadAsset(vAssetURL, vFileName);
+      downloadAsset(vAssetURL, getReleaseNotesFolder + vFileName);
 
       vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
     end;
@@ -192,17 +190,27 @@ begin
   end;
 end;
 
-function TProgramUpdates.downloadAsset(const aURL: string; const aFileName: string): string;
+function TProgramUpdates.downloadAsset(const aURL: string; const aFilePath: string; const aSuccess: string = ''): string;
 begin
-  var vDestFile := getReleaseNotesFolder + aFileName;
-  case fileExists(vDestFile) of TRUE: EXIT; end;
+  case fileExists(aFilePath) of TRUE: EXIT; end;
 
-  var fs := TFileStream.create(vDestFile, fmCreate);
+  var fs := TFileStream.create(aFilePath, fmCreate);
   try
-    result := fetchURL(aURL, fs);
+    result := fetchURL(aURL, fs, aSuccess);
   finally
     fs.free;
   end;
+end;
+
+function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
+begin
+  result := aReleaseTag;
+
+  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
+
+  result := downloadAsset('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + cleanTag(aReleaseTag) + '.full.zip', updateFile(aReleaseTag), aReleaseTag);
 end;
 
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
@@ -226,17 +234,13 @@ begin
                                                                   end;end;
 end;
 
-function TProgramUpdates.getHasReleaseNotes: boolean;
-begin
-  result := FReleaseNotes <> '';
-end;
-
 function TProgramUpdates.getJSONReleaseTag: string;
 var
   json: string;
   obj:  TJSONObject;
 begin
   result := '';
+//  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/tags/v2.0.0'); // for DEV only
   json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
   try
     obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
@@ -247,22 +251,6 @@ begin
     end;
   finally
     case obj = NIL of FALSE: obj.free; end;
-  end;
-end;
-
-function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
-begin
-  result := aReleaseTag;
-
-  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
-  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
-  case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
-
-  var fs := TFileStream.create(updateFile(aReleaseTag), fmCreate);
-  try
-    result := fetchURL('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + cleanTag(aReleaseTag) + '.full.zip', fs, aReleaseTag);
-  finally
-    fs.free;
   end;
 end;
 
@@ -285,13 +273,21 @@ begin
   result := '(autoUpdate=no)';
   case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
 
+  result := '(not available)';
   FReleaseTag := getJSONReleaseTag;
+  case FReleaseTag = '' of TRUE: EXIT; end;
+
   saveReleaseNotes(FReleaseTag);
   analyseReleaseNotes(FReleaseTag);
 
   result := downloadRelease(FReleaseTag); // if there's an error, report it back to the About Box via the result
 
   case (result = FReleaseTag) and fileExists(updateFile(FReleaseTag)) of TRUE: case extractRelease(FReleaseTag) of TRUE: result := result + ' Restart_Required'; end;end;
+end;
+
+function TProgramUpdates.hasReleaseNotes(const aReleaseTag: string): boolean;
+begin
+  result := fileExists(getReleaseNotesFilePath(aReleaseTag));
 end;
 
 function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): boolean;

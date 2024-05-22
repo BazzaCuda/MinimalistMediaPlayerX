@@ -36,7 +36,7 @@ type
     Label5: TLabel;
     lblWebsiteURL: TLabel;
     Bevel1: TBevel;
-    btnOK: TButton;
+    btnClose: TButton;
     Bevel2: TBevel;
     Label6: TLabel;
     lblBuildVersion: TLabel;
@@ -44,7 +44,7 @@ type
     Label7: TLabel;
     btnWhatsNew: TButton;
     procedure lblWebsiteURLClick(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
     procedure lblWebsiteURLMouseLeave(Sender: TObject);
     procedure btnWhatsNewClick(Sender: TObject);
@@ -80,7 +80,7 @@ begin
     setBuildVersion(buildVersion);
     setLatestReleaseVersion(PU.releaseTag);        // if the releaseTag is got, PU also downloads the release zip file and the release notes
     compareVersions(thisVersion, PU.releaseTag);
-    setWhatsNew(PU.hasReleaseNotes);
+    setWhatsNew(PU.hasReleaseNotes(PU.releaseTag));
     showModal;
   finally
     free;
@@ -89,17 +89,14 @@ begin
   end;
 end;
 
-procedure TAboutForm.btnOKClick(Sender: TObject);
+procedure TAboutForm.btnCloseClick(Sender: TObject);
 begin
   modalResult := mrOK;
 end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
-  with TReleaseNotesForm.create(NIL) do begin
-    showModal;
-    free;
-  end;
+  showReleaseNotes(PU.releaseTag);
 end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -111,6 +108,7 @@ end;
 procedure TAboutForm.FormShow(Sender: TObject);
 begin
   case btnWhatsNew.visible of TRUE: btnWhatsNew.setFocus; end;
+  btnClose.cancel := TRUE;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
