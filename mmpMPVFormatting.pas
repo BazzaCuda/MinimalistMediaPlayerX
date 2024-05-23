@@ -23,10 +23,10 @@ interface
 uses
   MPVBasePlayer;
 
-function formatFileSize(const aSize: int64): string;
-function formatSeconds(const seconds: integer): string;
-function formatTime(const seconds: integer): string;
-function formattedWidthHeight(const width, height: integer): string;
+function mmpFormatFileSize(const aSize: int64): string;
+function mmpFormatSeconds(const seconds: integer): string;
+function mmpFormatTime(const seconds: integer): string;
+function mmpFormatWidthHeight(const width, height: integer): string;
 
 function mpvFormattedBrightness(const mpv: TMPVBasePlayer): string;
 function mpvFormattedContrast(const mpv: TMPVBasePlayer): string;
@@ -42,26 +42,26 @@ implementation
 uses
   system.sysUtils;
 
-function formatFileSize(const aSize: int64): string;
+function mmpFormatFileSize(const aSize: int64): string;
 begin
  case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
                              FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:  %d KB', [trunc(aSize / 1024)]); except end;
                                                                 FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
 end;
 
-function formatSeconds(const seconds: integer): string;
+function mmpFormatSeconds(const seconds: integer): string;
 begin
   case seconds < 100 of  TRUE: result := format('%ds', [seconds]);
                         FALSE: result := format('%dm%.2ds', [seconds div 60, seconds mod 60]);
   end;
 end;
 
-function formattedWidthHeight(const width, height: integer): string;
+function mmpFormatWidthHeight(const width, height: integer): string;
 begin
   result := format('%dx%d', [width, height]);
 end;
 
-function formatTime(const seconds: integer): string;
+function mmpFormatTime(const seconds: integer): string;
 begin
   case seconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, seconds]);
                        FALSE: case seconds < 3600 of  TRUE: result := format('%.2d:%.2d', [seconds div 60, seconds mod 60]);
@@ -91,7 +91,7 @@ end;
 function mpvFormattedDuration(const mpv: TMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := formatTime(trunc(mpv.totalSeconds));
+  result := mmpFormatTime(trunc(mpv.totalSeconds));
 end;
 
 function mpvFormattedGamma(const mpv: TMPVBasePlayer): string;
@@ -121,7 +121,7 @@ end;
 function mpvFormattedTime(const mpv: TMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := formatTime(trunc(mpv.CurrentSeconds));
+  result := mmpFormatTime(trunc(mpv.CurrentSeconds));
 end;
 
 function mpvFormattedVol(const mpv: TMPVBasePlayer): string;

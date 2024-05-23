@@ -24,11 +24,11 @@ uses
   winApi.windows;
 
 function mmpOffScreen(const aHWND: HWND): boolean;
-function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 function mmpScreenCentre: integer;
 function mmpScreenHeight: integer;
 function mmpScreenWidth: integer;
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
+function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 
 implementation
 
@@ -60,6 +60,13 @@ begin
   result := GetSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
 end;
 
+function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
+begin
+  var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
+  vR.height := vR.height - GV.timelineHeight;
+  result := (aWidth <= vR.width) AND (aHeight <= vR.height);
+end;
+
 function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 var
   vR: TRect;
@@ -67,13 +74,6 @@ begin
   getWindowRect(aWnd, vR);
   aWidth  := vR.width;
   aHeight := vR.height;
-end;
-
-function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
-begin
-  var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
-  vR.height := vR.height - GV.timelineHeight;
-  result := (aWidth <= vR.width) AND (aHeight <= vR.height);
 end;
 
 end.

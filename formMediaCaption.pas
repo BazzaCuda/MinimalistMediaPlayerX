@@ -53,7 +53,8 @@ implementation
 
 uses
   mmpConsts, mmpTransparentUtils,
-  TMediaPlayerClass, TConfigFileClass, _debugWindow;
+  TConfigFileClass, TMediaPlayerClass,
+  _debugWindow;
 
 var
   gMC: TMediaCaptionForm;

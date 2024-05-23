@@ -150,7 +150,9 @@ implementation
 
 uses
   system.sysUtils, system.timeSpan,
-  mediaInfoDLL, mmpMPVFormatting, mmpFileUtils,
+  mediaInfoDLL,
+  mmpMPVFormatting,
+  mmpFileUtils,
   _debugWindow;
 
 var
@@ -211,7 +213,7 @@ end;
 
 function TMediaInfo.getFileSize: string;
 begin
-  result := formatFileSize(mmpFileSize(FURL));
+  result := mmpFormatFileSize(mmpFileSize(FURL));
 end;
 
 function TMediaInfo.getOverallBitRate: string;

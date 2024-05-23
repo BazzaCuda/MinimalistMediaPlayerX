@@ -67,7 +67,8 @@ uses
   shellAPI,
   mmpUtils,
   formReleaseNotes,
-  TGlobalVarsClass, TProgramUpdatesClass, _debugWindow;
+  TGlobalVarsClass, TProgramUpdatesClass,
+  _debugWindow;
 
 {$R *.dfm}
 

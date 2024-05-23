@@ -41,7 +41,6 @@ uses
   mmpShellUtils,
   formInputBox;
 
-
 function mmpConfigFilePath: string;
 begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
@@ -140,7 +139,7 @@ begin
     case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
                                    FALSE: begin
                                             try
-                                              s           := InputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
+                                              s           := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
                                             end;end;end;
   except

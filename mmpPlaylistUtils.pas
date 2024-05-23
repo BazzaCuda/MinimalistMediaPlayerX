@@ -26,7 +26,7 @@ implementation
 
 uses
   formMediaCaption,
-  TPlaylistClass, TMediaPlayerClass;
+  TMediaPlayerClass, TPlaylistClass;
 
 function mmpReloadPlaylist(const aFolder: string): string;
 begin

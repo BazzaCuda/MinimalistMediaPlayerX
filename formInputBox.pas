@@ -34,12 +34,12 @@ type
   public
   end;
 
-function inputBoxForm(const APrompt: string): string;
+function mmpInputBoxForm(const APrompt: string): string;
 
 implementation
 
 uses
-  vcl.themes, vcl.styles,
+  vcl.styles, vcl.themes,
   mmpUtils,
   TGlobalVarsClass;
 
@@ -47,7 +47,7 @@ uses
 
 { TInputBoxForm }
 
-function inputBoxForm(const APrompt: string): string;
+function mmpInputBoxForm(const APrompt: string): string;
 var
   vInputBoxForm: TInputBoxForm;
 begin

@@ -23,7 +23,7 @@ interface
 uses
   winApi.windows, winApi.messages,
   system.classes, system.sysUtils, system.variants,
-  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
   HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type

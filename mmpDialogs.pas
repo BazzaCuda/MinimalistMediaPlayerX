@@ -24,9 +24,9 @@ uses
   vcl.controls, vcl.dialogs;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
-                               const msgDlgType: TMsgDlgType = mtConfirmation;
+                               const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                               const defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+                               const defButton:     TMsgDlgBtn     = MBCANCEL): TModalResult;
 
 implementation
 
@@ -37,9 +37,9 @@ uses
 
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
-                                         const msgDlgType: TMsgDlgType = mtConfirmation;
-                                         const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                                         const defButton: TMsgDlgBtn = MBCANCEL): TModalResult;
+                               const msgDlgType:    TMsgDlgType    = mtConfirmation;
+                               const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
+                               const defButton:     TMsgDlgBtn     = MBCANCEL): TModalResult;
 // used for displaying the delete file/folder confirmation dialog
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.#

@@ -22,10 +22,9 @@ interface
 
 uses
   winApi.windows, winApi.messages,
-  system.classes, system.sysUtils, system.variants,
+  system.classes, system.strUtils, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
-  HTMLUn2, HtmlView, MarkDownViewerComponents,
-  strUtils;
+  HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type
   TReleaseNotesForm = class(TForm)

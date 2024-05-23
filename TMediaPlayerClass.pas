@@ -613,7 +613,7 @@ begin
                                  FALSE: position := position + vTab; end;
 
   case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
-                       FALSE: newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]); end;
+                       FALSE: newInfo := format('%dth = %s', [vFactor, mmpFormatSeconds(round(duration / vFactor))]); end;
 
   case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
                                 FALSE: newInfo := '>> ' + newInfo;

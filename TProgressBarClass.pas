@@ -161,7 +161,7 @@ procedure TProgressBar.onHintShow(var message: TCMHintShow);
 begin
   with message.hintInfo^ do
   begin
-    hintStr    := formatTime(trunc(MP.duration * (cursorPos.X / FPB.width)));
+    hintStr    := mmpFormatTime(trunc(MP.duration * (cursorPos.X / FPB.width)));
     cursorRect := rect(cursorPos.X, cursorPos.Y, cursorPos.X, cursorPos.Y);
   end;
 end;
@@ -170,12 +170,12 @@ procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState;
 var vPoint: TPoint;
 begin
   screen.cursor := crHandPoint;
-  FPB.hint := formatTime(trunc(MP.duration * (X / FPB.width)));
+  FPB.hint := mmpFormatTime(trunc(MP.duration * (X / FPB.width)));
 
   case X = FX of TRUE: EXIT; end;
   FX := X;
 
-  FPB.hint := formatTime(trunc(MP.duration * (X / FPB.width)));
+  FPB.hint := mmpFormatTime(trunc(MP.duration * (X / FPB.width)));
 
   vPoint.X := X;
   vPOint.Y := Y;

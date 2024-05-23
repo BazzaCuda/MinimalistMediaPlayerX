@@ -72,7 +72,8 @@ implementation
 
 uses
   mmpConsts, mmpTransparentUtils,
-  TMediaPlayerClass, TConfigFileClass, _debugWindow;
+  TConfigFileClass, TMediaPlayerClass,
+  _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
