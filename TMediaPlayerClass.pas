@@ -42,16 +42,13 @@ type
     FImageDisplayDurationSS: double;
     FImagePaused: boolean;
     FMediaType: TMediaType;
-    FMuted: boolean;
     FOnBeforeNew: TNotifyEvent;
     FOnPlayNew: TNotifyEvent;
     FOnPlayNext: TNotifyEvent;
     FOnPosition: TPositionNotifyEvent;
     FPlaying: boolean;
     FPausePlay: boolean;
-    FRepeat: boolean;
     FScreenshotDirectory: string;
-    FVol:  double;
   private
     constructor create;
     procedure onInitMPV(sender: TObject);
@@ -59,14 +56,8 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
     function checkPot: boolean;
-    function getFormattedBrightness: string;
-    function getFormattedContrast: string;
     function getFormattedDuration: string;
-    function getFormattedGamma: string;
-    function getFormattedSaturation: string;
-    function getFormattedSpeed: string;
     function getFormattedTime: string;
-    function getFormattedVol: string;
 
     function pauseUnpauseImages: boolean;
 
@@ -75,8 +66,8 @@ type
     function  getPosition: integer;
     function  getVideoHeight: int64;
     function  getVideoWidth: int64;
-    procedure setKeepOpen(const Value: boolean);
-    procedure setPosition(const Value: integer);
+    procedure setKeepOpen(const value: boolean);
+    procedure setPosition(const value: integer);
   public
     destructor  Destroy; override;
     function allReset: string;
@@ -140,9 +131,7 @@ type
     property dontPlayNext:        boolean      read FDontPlayNext write FDontPlayNext;
     property duration:            integer      read getDuration;
     property formattedDuration:   string       read getFormattedDuration;
-    property formattedSpeed:      string       read getFormattedSpeed;
     property formattedTime:       string       read getFormattedTime;
-    property formattedVol:        string       read getFormattedVol;
     property keepOpen:            boolean                         write setKeepOpen;
     property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
@@ -164,6 +153,7 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
+  mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties,
   formCaption, formCaptions, formHelp,
   TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
 
@@ -199,42 +189,28 @@ begin
 end;
 
 function TMediaPlayer.brightnessDn: string;
-var
-  brightness: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', brightness);
-  mpv.SetPropertyInt64('brightness', brightness - 1);
-  result := getFormattedBrightness;
+  result := mpvBrightnessDn(mpv);
 end;
 
 function TMediaPlayer.brightnessReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('brightness', 0);
-  result := 'Brightness reset';
-end;
+  result := mpvBrightnessReset(mpv);
+ end;
 
 function TMediaPlayer.brightnessUp: string;
-var
-  brightness: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', brightness);
-  mpv.SetPropertyInt64('brightness', brightness + 1);
-  result := getFormattedBrightness;
+  result := mpvBrightnessUp(mpv);
 end;
 
 function TMediaPlayer.chapterNext: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr('add chapter 1');
+  mpvChapterNext(mpv);
 end;
 
 function TMediaPlayer.chapterPrev: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr('add chapter -1');
+  mpvChapterPrev(mpv);
 end;
 
 function TMediaPlayer.checkPot: boolean;
@@ -243,30 +219,18 @@ begin
 end;
 
 function TMediaPlayer.contrastDn: string;
-var
-  contrast: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', contrast);
-  mpv.SetPropertyInt64('contrast', contrast - 1);
-  result := getFormattedContrast;
+  result := mpvContrastDn(mpv);
 end;
 
 function TMediaPlayer.contrastReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('contrast', 0);
-  result := 'Contrast reset';
+  result := mpvContrastReset(mpv);
 end;
 
 function TMediaPlayer.contrastUp: string;
-var
-  contrast: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', contrast);
-  mpv.SetPropertyInt64('contrast', contrast + 1);
-  result := getFormattedContrast;
+  result := mpvContrastUp(mpv);
 end;
 
 constructor TMediaPlayer.create;
@@ -279,14 +243,12 @@ end;
 
 function TMediaPlayer.cycleAudio: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr('cycle audio');
+  mpvCycleAudio(mpv);
 end;
 
 function TMediaPlayer.cycleSubs: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr('cycle sub');
+  mpvCycleSubs(mpv);
 end;
 
 destructor TMediaPlayer.Destroy;
@@ -298,171 +260,73 @@ end;
 
 function TMediaPlayer.frameBackwards: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr(CMD_BACK_STEP);
+  mpvFrameBackwards(mpv);
 end;
 
 function TMediaPlayer.frameForwards: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.commandStr(CMD_STEP);
+  mpvFrameForwards(mpv);
 end;
 
 function TMediaPlayer.gammaDn: string;
-var
-  gamma: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', gamma);
-  mpv.SetPropertyInt64('gamma', gamma - 1);
-  result := getFormattedgamma;
+  result := mpvGammaDn(mpv);
 end;
 
 function TMediaPlayer.gammaReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('gamma', 0);
-  result := 'Gamma reset';
+  result := mpvGammaReset(mpv);
 end;
 
 function TMediaPlayer.gammaUp: string;
-var
-  gamma: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', gamma);
-  mpv.SetPropertyInt64('gamma', gamma + 1);
-  result := getFormattedgamma;
+  result := mpvGammaUp(mpv);
 end;
 
 function TMediaPlayer.getDuration: integer;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := trunc(mpv.TotalSeconds);
-end;
-
-function TMediaPlayer.getFormattedBrightness: string;
-var
-  vBrightness: int64;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', vBrightness);
-  result := format('Brightness: %d', [vBrightness]);
-end;
-
-function TMediaPlayer.getFormattedContrast: string;
-var
-  vContrast: int64;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', vContrast);
-  result := format('Contrast: %d', [vContrast]);
+  result := mpvDuration(mpv);
 end;
 
 function TMediaPlayer.getFormattedDuration: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := CU.formatTime(trunc(mpv.totalSeconds));
-end;
-
-function TMediaPlayer.getFormattedGamma: string;
-var
-  vGamma: int64;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', vGamma);
-  result := format('Gamma: %d', [vGamma]);
-end;
-
-function TMediaPlayer.getFormattedSaturation: string;
-var
-  vSaturation: int64;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', vSaturation);
-  result := format('Saturation: %d', [vSaturation]);
-end;
-
-function TMediaPlayer.getFormattedSpeed: string;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := format('Speed: %.2f', [mpv.PlaybackSpeed]);
+  result := mpvFormattedDuration(mpv);
 end;
 
 function TMediaPlayer.getFormattedTime: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := CU.formatTime(trunc(mpv.CurrentSeconds));
-end;
-
-function TMediaPlayer.getFormattedVol: string;
-begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := format('Volume: %d', [trunc(mpv.volume)]);
+  result := mpvFormattedTime(mpv);
 end;
 
 function TMediaPlayer.getPosition: integer;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := trunc(mpv.CurrentSeconds);
+  result := mpvPosition(mpv);
 end;
 
 function TMediaPlayer.getVideoHeight: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := mpv.videoHeight;
+  result := mpvVideoHeight(mpv);
 end;
 
 function TMediaPlayer.getVideoWidth: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  result := mpv.videoWidth;
+  result := mpvVideoWidth(mpv);
 end;
 
 function TMediaPlayer.initMediaPlayer: boolean;
 begin
-  FVol := CF.asInteger['volume'];
+//
 end;
 
 function TMediaPlayer.muteUnmute: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  FMuted    := NOT FMuted;
-  mpv.mute  := FMuted;
-  case mpv.mute of  TRUE: result := 'unmuted';
-                   FALSE: result := 'muted'; end;
+  result := mpvMuteUnmute(mpv);
 end;
 
 procedure TMediaPlayer.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
-  with sender as TMPVBasePlayer do begin
-    SetPropertyString('osc', 'no'); // On Screen Control
-    SetPropertyString('force-window', 'yes');
-    SetPropertyString('config-dir', CU.getExePath); // mpv.conf location
-    SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
-    SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
-    SetPropertyBool('keep-open-pause', FALSE);
-
-    setPropertyString('sub-font', 'Segoe UI');
-    setPropertyString('sub-color', '#808080');
-    setPropertyString('osd-color', '#808080');
-    setPropertyString('osd-bold',  'yes');
-    setPropertyString('osd-back-color', '#00000000');
-    setPropertyString('osd-shadow-offset', '0');
-    setPropertyString('screenshot-format', 'png');
-    SetPropertyString('osd-font-size', '10');
-    SetPropertyInt64('osd-duration', 3000);
-    setPropertyString('osd-align-x', 'right');
-    setPropertyString('osd-align-y', 'bottom');
-    setPropertyString('osd-margin-x', '4');
-    setPropertyString('osd-margin-y', '24');
-    setPropertyString('screenshot-png-compression', '0');
-    setPropertyString('screenshot-template', '%F %p %04n');
-    setPropertyString('sid', '1');
-    setPropertyString('image-display-duration', 'inf');
-//    SetPropertyDouble('sub-delay', -00.99);
-  end;
+  mpvSetDefaults(sender as TMPVBasePlayer, CU.getExePath);
 end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
@@ -492,98 +356,56 @@ end;
 function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result := FALSE;
-  // releasePlayer;
+
   case mpv = NIL of TRUE: begin
-    mpv := TMPVBasePlayer.Create;
+    mpvCreate(mpv);
+
     mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
-    mpv.initPlayer(intToStr(UI.handle), CU.getExePath, CU.getExePath, '');  // THIS RECREATES THE INTERNAL MPV OBJECT
 
-    mpv.getPropertyString('image-display-duration', FImageDisplayDuration, FALSE);
+    mpvInitPlayer(mpv, UI.handle, CU.getExePath, CU.getExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
+
+    mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
     case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
-    mpv.getPropertyString('screenshot-directory', FScreenshotDirectory, FALSE);
+    mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
   end;end;
 
-  mpv.openFile(aURL);
+  mpvOpenFile(mpv, aURL);
 
-//  mpv.setPropertyString('start', '#9');
+//  mpvSetPropertyString(mpv, 'start', '#9');
 
   result := TRUE;
 //  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
 end;
 
 function TMediaPlayer.panDn(const aShiftState: TShiftState): string;
-var
-  panY: double;
-  multiplier: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
-
-  mpv.getPropertyDouble('video-pan-y', panY);
-  mpv.setPropertyDouble('video-pan-y', panY + (0.001 * multiplier));
-  result := 'Pan down';
+  result := mpvPanDn(mpv, aShiftState);
 end;
 
 function TMediaPlayer.panLeft(const aShiftState: TShiftState): string;
-var
-  panX: double;
-  multiplier: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
-
-  mpv.getPropertyDouble('video-pan-x', panX);
-  mpv.setPropertyDouble('video-pan-x', panX - (0.001 * multiplier));
-  result := 'Pan left';
+  result := mpvPanLeft(mpv, aShiftState);
 end;
 
 function TMediaPlayer.panReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyDouble('video-pan-x', 0.0);
-  mpv.setPropertyDouble('video-pan-y', 0.0);
-  result := 'Pan reset';
+  result := mpvPanReset(mpv);
 end;
 
 function TMediaPlayer.panRight(const aShiftState: TShiftState): string;
-var
-  panX: double;
-  multiplier: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
-
-  mpv.getPropertyDouble('video-pan-x', panX);
-  mpv.setPropertyDouble('video-pan-x', panX + (0.001 * multiplier));
-  result := 'Pan right';
+  result := mpvPanRight(mpv, aShiftState);
 end;
 
 function TMediaPlayer.panUp(const aShiftState: TShiftState): string;
-var
-  panY: double;
-  multiplier: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
-
-  mpv.getPropertyDouble('video-pan-y', panY);
-  mpv.setPropertyDouble('video-pan-y', panY - (0.001 * multiplier));
-  result := 'Pan up';
+  result := mpvPanUp(mpv, aShiftState);
 end;
 
 function TMediaPlayer.pause: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.pause;
+  mpvPause(mpv);
 end;
 
 function TMediaPlayer.pauseUnpauseImages: boolean;
@@ -591,8 +413,8 @@ begin
   case FMediaType = mtImage of FALSE: EXIT; end;
   FImagePaused := NOT FImagePaused;
 
-  case FImagePaused of  TRUE: begin mpv.setPropertyString('image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
-                       FALSE: begin mpv.setPropertyString('image-display-duration', FImageDisplayDuration);   // restore the original setting
+  case FImagePaused of  TRUE: begin mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
+                       FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);   // restore the original setting
                                     case FImageDisplayDuration = 'inf' of FALSE: autoPlayNext; end;end;end;       // if there was a set duration before, continue with the next file
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
@@ -608,9 +430,9 @@ begin
 
   pauseUnpauseImages;
 
-  case mpv.GetState of
-    mpsPlay:  mpv.pause;
-    mpsPause: mpv.Resume;
+  case mpvState(mpv) of
+    mpsPlay:  mpvPause(mpv);
+    mpsPause: mpvResume(mpv);
   end;
 end;
 
@@ -619,7 +441,6 @@ begin
   result := FALSE;
 
   FPausePlay := FALSE;
-  FRepeat    := FALSE;
 
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
@@ -631,8 +452,7 @@ begin
   UI.centreCursor;
 
   openURL(aURL);
-  mpv.volume := FVol;
-  mpv.mute   := FMuted;
+  mpvSetVolume(mpv, CF.asInteger['volume']);
 
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
@@ -698,35 +518,22 @@ end;
 
 function TMediaPlayer.resume: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.resume;
+  mpvResume(mpv);
 end;
 
 function TMediaPlayer.rotateLeft: string;
-var
-  rot: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyInt64('video-rotate', rot);
-  mpv.setPropertyInt64('video-rotate', rot - 45);
-  result := 'Rotate left';
+  result := mpvRotateLeft(mpv);
 end;
 
 function TMediaPlayer.rotateReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyInt64('video-rotate', 0);
-  result := 'Rotate reset';
+  result := mpvRotateReset(mpv);
 end;
 
 function TMediaPlayer.rotateRight: string;
-var
-  rot: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyInt64('video-rotate', rot);
-  mpv.setPropertyInt64('video-rotate', rot + 45);
-  result := 'Rotate right';
+  result := mpvRotateRight(mpv);
 end;
 
 function TMediaPlayer.releasePlayer: boolean;
@@ -736,92 +543,64 @@ begin
 end;
 
 function TMediaPlayer.saturationDn: string;
-var
-  saturation: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', saturation);
-  mpv.SetPropertyInt64('saturation', saturation - 1);
-  result := getFormattedsaturation;
+  result := mpvSaturationDn(mpv);
 end;
 
 function TMediaPlayer.saturationReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('saturation', 0);
-  result := 'Saturation reset';
+  result := mpvSaturationReset(mpv);
 end;
 
 function TMediaPlayer.saturationUp: string;
-var
-  saturation: int64;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', saturation);
-  mpv.SetPropertyInt64('saturation', saturation + 1);
-  result := getFormattedsaturation;
+  result := mpvSaturationUp(mpv);
 end;
 
-procedure TMediaPlayer.setKeepOpen(const Value: boolean);
+procedure TMediaPlayer.setKeepOpen(const value: boolean);
 begin
-  mpv.SetPropertyBool('keep-open', Value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
+  mpvSetKeepOpen(mpv, value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
 end;
 
-procedure TMediaPlayer.setPosition(const Value: integer);
+procedure TMediaPlayer.setPosition(const value: integer);
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.Seek(value, FALSE);
+  mpvSeek(mpv, value);
   postMessage(GV.appWnd, WM_TICK, 0, 0); // immediately update the time
 end;
 
 function TMediaPlayer.setProgressBar: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  case PB.max <> trunc(mpv.totalSeconds) of TRUE: PB.max := trunc(mpv.totalSeconds); end;
-  case mpv.totalSeconds > 0 of TRUE: PB.position := trunc(mpv.currentSeconds); end;
+  case PB.max <> trunc(mpvDuration(mpv)) of TRUE: PB.max := trunc(mpvDuration(mpv)); end;
+  case mpvDuration(mpv) > 0 of TRUE: PB.position := trunc(mpvPosition(mpv)); end;
 
-  case assigned(FOnPosition) of TRUE: FOnPosition(trunc(mpv.totalSeconds), trunc(mpv.currentSeconds)); end;
+  case assigned(FOnPosition) of TRUE: FOnPosition(trunc(mpvDuration(mpv)), trunc(mpvPosition(mpv))); end;
 end;
 
 function TMediaPlayer.speedDn: string;
-var
-  speed: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyDouble('speed', speed);
-  mpv.setPropertyDouble('speed', speed - 0.01);
-  result := formattedSpeed;
+  result := mpvSpeedDn(mpv);
 end;
 
 function TMediaPlayer.speedReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyDouble('speed', 1.00);
+  result := mpvSpeedReset(mpv);
   CU.delay(100);
-  result := 'Speed reset';
 end;
 
 function TMediaPlayer.speedUp: string;
-var
-  speed: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyDouble('speed', speed);
-  mpv.setPropertyDouble('speed', speed + 0.01);
-  result := formattedSpeed;
+  result := mpvSpeedUp(mpv);
 end;
 
 function TMediaPlayer.startOver: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.Seek(0, FALSE);
-  result := 'Start over';
+  result := mpvStartOver(mpv);
 end;
 
 function TMediaPlayer.stop: boolean;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.Stop;
+  mpvStop(mpv);
 end;
 
 function TMediaPlayer.tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
@@ -843,7 +622,7 @@ begin
                                  FALSE: position := position + vTab; end;
 
   case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
-                       FALSE: newInfo := format('%dth = %s', [vFactor, CU.formatSeconds(round(duration / vFactor))]); end;
+                       FALSE: newInfo := format('%dth = %s', [vFactor, formatSeconds(round(duration / vFactor))]); end;
 
   case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
                                 FALSE: newInfo := '>> ' + newInfo;
@@ -853,10 +632,8 @@ end;
 
 function TMediaPlayer.takeScreenshot: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  case FScreenshotDirectory = '' of TRUE: mpv.setPropertyString('screenshot-directory', PL.currentFolder); end; // otherwise screenshots of an image go to Windows/System32 !!
-  mpv.commandStr(CMD_SCREEN_SHOT + ' window');
-  result := '';
+  case FScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, PL.currentFolder);           // otherwise screenshots of an image go to Windows/System32 !!
+                                    FALSE: result := mpvTakeScreenshot(mpv, FScreenshotDirectory); end;
 end;
 
 function TMediaPlayer.toggleFullscreen: boolean;
@@ -867,75 +644,37 @@ end;
 
 function TMediaPlayer.toggleRepeat: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  FRepeat := NOT FRepeat;
-  case FRepeat of  TRUE: mpv.setPropertyString('loop-file', 'yes');
-                  FALSE: mpv.setPropertyString('loop-file', 'no'); end;
-  case FRepeat of  TRUE: result := 'repeat on';
-                  FALSE: result := 'repeat off'; end;
+  result := mpvToggleRepeat(mpv);
 end;
 
 function TMediaPlayer.toggleSubtitles: string;
-var vSid: string;
 begin
-  mpv.GetPropertyString('sid', vSid);
-  case vSid = 'no' of  TRUE: mpv.setPropertyString('sid', '1');
-                      FALSE: mpv.setPropertyString('sid', 'no'); end;
-  mpv.GetPropertyString('sid', vSid);
-  case vSid = 'no' of  TRUE: result := 'subtitles off';
-                      FALSE: result := 'subtitles on'; end;
+  result := mpvToggleSubtitles(mpv);
 end;
 
 function TMediaPlayer.volDown: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.volume := mpv.volume - 1;
-  FVol       := mpv.volume;
-  CF.value['volume'] := intToStr(trunc(mpv.volume));
-  result := formattedVol;
+  result := mpvVolDown(mpv);
 end;
 
 function TMediaPlayer.volUp: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.volume := mpv.volume + 1;
-  FVol       := mpv.volume;
-  CF.value['volume'] := intToStr(trunc(mpv.volume));
-  result := formattedVol;
+  result := mpvVolUp(mpv);
 end;
 
 function TMediaPlayer.zoomIn: string;
-var
-  zoomX, zoomY: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyDouble('video-scale-x', zoomX);
-  mpv.setPropertyDouble('video-scale-x', zoomX + 0.01);
-  mpv.getPropertyDouble('video-scale-y', zoomY);
-  mpv.setPropertyDouble('video-scale-y', zoomY + 0.01);
-  result := 'Zoom in';
+  result := mpvZoomIn(mpv);
 end;
 
 function TMediaPlayer.zoomOut: string;
-var
-  zoomX, zoomY: double;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.getPropertyDouble('video-scale-x', zoomX);
-  mpv.setPropertyDouble('video-scale-x', zoomX - 0.01);
-  mpv.getPropertyDouble('video-scale-y', zoomY);
-  mpv.setPropertyDouble('video-scale-y', zoomY - 0.01);
-  result := 'Zoom out';
+  result := mpvZoomOut(mpv);
 end;
 
 function TMediaPlayer.zoomReset: string;
 begin
-  case mpv = NIL of TRUE: EXIT; end;
-  mpv.setPropertyDouble('video-pan-x', 0.0);
-  mpv.setPropertyDouble('video-pan-y', 0.0);
-  mpv.setPropertyDouble('video-scale-x', 1.00);
-  mpv.setPropertyDouble('video-scale-y', 1.00);
-  result := 'Zoom reset';
+  result := mpvZoomReset(mpv);
 end;
 
 initialization

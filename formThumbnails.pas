@@ -35,6 +35,7 @@ function showThumbnails(const aForm: TForm): boolean;
 implementation
 
 uses
+  mmpMPVCtrls,
   TGlobalVarsClass, TThumbnailsClass, _debugWindow;
 
 function showThumbnails(const aForm: TForm): boolean;
@@ -69,7 +70,7 @@ begin
 //    mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
     mpv.initPlayer(intToStr(panel1.handle), '', extractFilePath(paramStr(0)), '');  // THIS RECREATES THE INTERNAL MPV OBJECT
-//    mpv.OpenFile('B:\Images\_cropes_\Cropes001-136\022.jpg');
+    mpv.OpenFile('B:\Images\_cropes_\Cropes001-136\022.jpg');
 end;
 
 procedure TThumbnailsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -86,6 +87,7 @@ procedure TThumbnailsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShif
 begin
   case (key = ord('X')) OR (key = ord('x'))  of TRUE: begin close; EXIT; end;end;
   case key = VK_ESCAPE of TRUE: begin close; EXIT; end;end;
+  case key = VK_NEXT of TRUE: mpvRotateRight(mpv); end;
 //  key := 0;
 end;
 
@@ -104,7 +106,7 @@ begin
   panel1.align          := alClient;
   panel2.align          := alClient;
 
-  panel1.visible := FALSE;
+  panel2.visible := FALSE;
 
   panel2.styleElements  := [];
   panel2.bevelOuter     := bvNone;

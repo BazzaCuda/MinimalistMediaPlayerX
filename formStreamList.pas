@@ -85,7 +85,8 @@ implementation
 
 uses
   system.generics.defaults,
-  mmpConsts, mmpMarkDownUtils, formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
+  mmpConsts, mmpMarkDownUtils, mmpMPVFormatting,
+  formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
 
 var
   streamListForm: TStreamListForm;
@@ -160,7 +161,7 @@ procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCa
 begin
   lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
-  lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS, CU.formatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS)]);
+  lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS, formatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS)]);
   lblTitle.caption        := FSegments[aIndex].title;
   shape1.brush.color      := FSegments[aIndex].color;
   shape1.brush.style      := bsSolid;

@@ -340,7 +340,7 @@ begin
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
                                               begin
-                                                result := compareStr(CU.getFileNameWithoutExtension(a), CU.getFileNameWithoutExtension(b));
+                                                result := compareStr(upperCase(CU.getFileNameWithoutExtension(a)), upperCase(CU.getFileNameWithoutExtension(b)));
                                               end
                                             )
                 );

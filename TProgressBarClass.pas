@@ -66,7 +66,7 @@ implementation
 uses
   system.sysUtils,
   vcl.graphics,
-  mmpConsts,
+  mmpConsts, mmpMPVFormatting,
   TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass, _debugWindow;
 
 var
@@ -160,7 +160,7 @@ procedure TProgressBar.onHintShow(var message: TCMHintShow);
 begin
   with message.hintInfo^ do
   begin
-    hintStr    := CU.formatTime(trunc(MP.duration * (cursorPos.X / FPB.width)));
+    hintStr    := formatTime(trunc(MP.duration * (cursorPos.X / FPB.width)));
     cursorRect := rect(cursorPos.X, cursorPos.Y, cursorPos.X, cursorPos.Y);
   end;
 end;
@@ -169,12 +169,12 @@ procedure TProgressBar.progressBarMouseMove(Sender: TObject; Shift: TShiftState;
 var vPoint: TPoint;
 begin
   screen.cursor := crHandPoint;
-  FPB.hint := CU.formatTime(trunc(MP.duration * (X / FPB.width)));
+  FPB.hint := formatTime(trunc(MP.duration * (X / FPB.width)));
 
   case X = FX of TRUE: EXIT; end;
   FX := X;
 
-  FPB.hint := CU.formatTime(trunc(MP.duration * (X / FPB.width)));
+  FPB.hint := formatTime(trunc(MP.duration * (X / FPB.width)));
 
   vPoint.X := X;
   vPOint.Y := Y;

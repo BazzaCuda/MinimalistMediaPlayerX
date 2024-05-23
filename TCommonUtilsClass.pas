@@ -33,10 +33,6 @@ type
     function delay(const dwMilliseconds: DWORD): boolean;
     function deleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
     function doCommandLine(const aCommandLIne: string): boolean;
-    function formatFileSize(const aSize: int64): string;
-    function formatSeconds(const seconds: integer): string;
-    function formatTime(const seconds: integer): string;
-    function formattedWidthHeight(const width: integer; const height: integer): string;
     function getAspectRatio(const X: integer; const Y: integer): double;
     function getConfigFilePath: string;
     function getExePath: string;
@@ -138,32 +134,6 @@ begin
 
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(getExePath), vStartInfo, vProcInfo);
-end;
-
-function TCommonUtils.formatFileSize(const aSize: int64): string;
-begin
- case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
-                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:  %d KB', [trunc(aSize / 1024)]); except end;
-                                                                FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
-end;
-
-function TCommonUtils.formatSeconds(const seconds: integer): string;
-begin
-  case seconds < 100 of  TRUE: result := format('%ds', [seconds]);
-                        FALSE: result := format('%dm%.2ds', [seconds div 60, seconds mod 60]);
-  end;
-end;
-
-function TCommonUtils.formattedWidthHeight(const width, height: integer): string;
-begin
-  result := format('%dx%d', [width, height]);
-end;
-
-function TCommonUtils.formatTime(const seconds: integer): string;
-begin
-  case seconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, seconds]);
-                       FALSE: case seconds < 3600 of  TRUE: result := format('%.2d:%.2d', [seconds div 60, seconds mod 60]);
-                                                     FALSE: result := format('%.2d:%.2d:%.2d', [seconds div 3600, (seconds mod 3600) div 60, seconds mod 3600 mod 60]); end;end;
 end;
 
 function TCommonUtils.getAspectRatio(const X: integer; const Y: integer): double;

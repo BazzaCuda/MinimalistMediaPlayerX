@@ -128,6 +128,7 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
+  mmpMPVFormatting,
   formStreamList, TProgressBarClass, TPlaylistClass, TCommonUtilsClass, TMediaInfoClass, TGlobalVarsClass, _debugWindow;
 
 var
@@ -361,7 +362,7 @@ end;
 function TTimelineForm.updatePositionDisplay: boolean;
 begin
   case lblPosition.tag = 0 of  TRUE: timelineForm.lblPosition.caption  := intToStr(TL.Position) + 's';
-                              FALSE: timelineForm.lblPosition.caption  := CU.formatTime(TL.Position); end;
+                              FALSE: timelineForm.lblPosition.caption  := formatTime(TL.Position); end;
 end;
 
 { TTimeline }

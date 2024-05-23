@@ -68,7 +68,10 @@ uses
   TThumbnailsClass in 'TThumbnailsClass.pas',
   formThumbnails in 'formThumbnails.pas' {ThumbnailsForm},
   formReleaseNotes in 'formReleaseNotes.pas' {ReleaseNotesForm},
-  mmpMarkDownUtils in 'mmpMarkDownUtils.pas';
+  mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
+  mmpMPVCtrls in 'mmpMPVCtrls.pas',
+  mmpMPVFormatting in 'mmpMPVFormatting.pas',
+  mmpMPVProperties in 'mmpMPVProperties.pas';
 
 {$R *.res}
 

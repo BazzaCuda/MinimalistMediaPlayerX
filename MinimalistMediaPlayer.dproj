@@ -218,6 +218,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="mmpMarkDownUtils.pas"/>
+        <DCCReference Include="mmpMPVCtrls.pas"/>
+        <DCCReference Include="mmpMPVFormatting.pas"/>
+        <DCCReference Include="mmpMPVProperties.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
