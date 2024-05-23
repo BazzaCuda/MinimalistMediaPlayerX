@@ -46,7 +46,6 @@ type
     FOnPlayNext: TNotifyEvent;
     FOnPosition: TPositionNotifyEvent;
     FPlaying: boolean;
-    FPausePlay: boolean;
     FScreenshotDirectory: string;
   private
     constructor create;
@@ -419,7 +418,6 @@ end;
 function TMediaPlayer.pausePlay: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  FPausePlay := TRUE;
 
   pauseUnpauseImages;
 
@@ -432,8 +430,6 @@ end;
 function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
-
-  FPausePlay := FALSE;
 
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
