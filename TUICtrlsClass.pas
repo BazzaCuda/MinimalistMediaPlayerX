@@ -671,7 +671,7 @@ function TUI.showXY: boolean;
 begin
 ////  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 ////  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
-//  ST.opInfo := PL.formattedItem;
+  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
 end;
 
 function TUI.shutTimeline: boolean;
