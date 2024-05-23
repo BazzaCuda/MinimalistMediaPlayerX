@@ -21,11 +21,12 @@ unit formStreamList;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes, System.ImageList,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ControlList, Vcl.ImgList, Vcl.Buttons,
+  winApi.messages, winapi.Windows,
+  system.classes, system.imageList, system.sysUtils, system.variants,
   generics.collections,
-  TSegmentClass, HTMLUn2, HtmlView, MarkDownViewerComponents;
+  vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
+  HTMLUn2, HtmlView, MarkDownViewerComponents,
+  TSegmentClass;
 
 type
   TStreamListForm = class(TForm)

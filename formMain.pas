@@ -21,9 +21,9 @@ unit formMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  winApi.messages, winapi.windows,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics;
 
 type
   TMMPUI = class(TForm)

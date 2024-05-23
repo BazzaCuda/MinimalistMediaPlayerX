@@ -21,11 +21,12 @@ unit formTimeline;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage,
+  winApi.messages, winApi.Windows,
+  system.classes, system.sysUtils, system.variants,
   generics.collections,
-  formProgress, TSegmentClass;
+  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  formProgress,
+  TSegmentClass;
 
 type
   TRunType = (rtFFMpeg, rtCMD);
