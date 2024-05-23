@@ -71,6 +71,7 @@ end;
 
 function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
 begin
+  case GV.showingPlaylist of FALSE: EXIT; end;
   case playlistForm = NIL of FALSE: playlistForm.loadPlaylistBox(forceReload); end;
 end;
 

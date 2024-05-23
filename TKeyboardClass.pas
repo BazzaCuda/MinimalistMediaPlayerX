@@ -312,7 +312,7 @@ begin
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
-    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); UI.loadPlaylistWindow; end;
+    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); loadPlaylistWindow(TRUE); end;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);

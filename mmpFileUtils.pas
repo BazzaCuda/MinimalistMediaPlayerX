@@ -139,7 +139,7 @@ begin
     case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
                                    FALSE: begin
                                             try
-                                              s           := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
+                                              s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
                                             end;end;end;
   except

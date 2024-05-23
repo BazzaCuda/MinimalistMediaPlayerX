@@ -69,7 +69,6 @@ type
     function handle: HWND;
     function initUI(const aForm: TForm): boolean;
     function keepFile(const aFilePath: string): boolean;
-    function loadPlaylistWindow: boolean;
     function maximize: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
@@ -531,11 +530,6 @@ end;
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
 begin
   SetWindowPos(aHWND, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
-end;
-
-function TUI.loadPlaylistWindow: boolean;
-begin
-  case GV.showingPlaylist of TRUE: formPlaylist.loadPlaylistWindow(TRUE); end;
 end;
 
 function TUI.renameFile(const aFilePath: string): boolean;
