@@ -4,7 +4,6 @@
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
 **H** centre window [H]orizontally and V<br />
-**J** ad[J]ust aspect ratio of window<br />
 **N** mi[N]imize window to taskbar<br />
 **M** maximize video for the aspect ratio<br />
 Ctrl-**9** auto-arrange up to 4 videos<br />

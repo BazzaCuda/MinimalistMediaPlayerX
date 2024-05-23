@@ -68,7 +68,7 @@ begin
                                                      FALSE: result := format('%.2d:%.2d:%.2d', [seconds div 3600, (seconds mod 3600) div 60, seconds mod 3600 mod 60]); end;end;
 end;
 
-//==================
+//==========
 
 function mpvFormattedBrightness(const mpv: TMPVBasePlayer): string;
 var
@@ -129,8 +129,5 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   result := format('Volume: %d', [trunc(mpv.volume)]);
 end;
-
-
-
 
 end.

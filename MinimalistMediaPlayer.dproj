@@ -221,6 +221,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpMPVCtrls.pas"/>
         <DCCReference Include="mmpMPVFormatting.pas"/>
         <DCCReference Include="mmpMPVProperties.pas"/>
+        <DCCReference Include="thumbnailsKeyboard.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

@@ -36,7 +36,6 @@ type
     FTimer: TTimer;
     FTimerEvent: TTimerEvent;
 
-    FAlwaysPot: boolean;
     FDontPlayNext: boolean;
     FImageDisplayDuration: string;
     FImageDisplayDurationSS: double;
@@ -55,7 +54,6 @@ type
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
-    function checkPot: boolean;
     function getFormattedDuration: string;
     function getFormattedTime: string;
 
@@ -127,7 +125,6 @@ type
     function zoomIn: string;
     function zoomOut: string;
     function zoomReset: string;
-    property alwaysPot:           boolean      read FAlwaysPot    write FAlwaysPot;
     property dontPlayNext:        boolean      read FDontPlayNext write FDontPlayNext;
     property duration:            integer      read getDuration;
     property formattedDuration:   string       read getFormattedDuration;
@@ -211,11 +208,6 @@ end;
 function TMediaPlayer.chapterPrev: boolean;
 begin
   mpvChapterPrev(mpv);
-end;
-
-function TMediaPlayer.checkPot: boolean;
-begin
-  case FAlwaysPot of TRUE: begin CU.delay(3000); MP.pause; UI.openExternalApp(F10_APP, PL.currentItem); end;end;
 end;
 
 function TMediaPlayer.contrastDn: string;
@@ -462,8 +454,6 @@ begin
   application.processMessages;
 
   SA.postToAll(WM_PROCESS_MESSAGES);
-
-  checkPot;
 
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;

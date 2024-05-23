@@ -71,7 +71,8 @@ uses
   mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
   mmpMPVCtrls in 'mmpMPVCtrls.pas',
   mmpMPVFormatting in 'mmpMPVFormatting.pas',
-  mmpMPVProperties in 'mmpMPVProperties.pas';
+  mmpMPVProperties in 'mmpMPVProperties.pas',
+  thumbnailsKeyboard in 'thumbnailsKeyboard.pas';
 
 {$R *.res}
 
@@ -81,7 +82,7 @@ begin
 
   Application.Initialize;
   Application.ShowMainForm := FALSE;
-  Application.MainFormOnTaskbar := True;
+  Application.MainFormOnTaskbar := TRUE;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   Application.CreateForm(TMMPUI, MMPUI);
   Application.Run;

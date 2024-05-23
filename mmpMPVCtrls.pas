@@ -82,7 +82,7 @@ uses
 
 function mpvCreate(var mpv: TMPVBasePlayer): boolean;
 begin
-  mpv := TMPVBasePlayer.create;
+  mpv    := TMPVBasePlayer.create;
   result := mpv <> NIL;
 end;
 

@@ -3017,12 +3017,10 @@ object ThumbnailsForm: TThumbnailsForm
     000000000000000000FFC70000F8030000F0030000E0030000C0030000800300
     00800100000000000000000000000000000000000000000000C0030000E00700
     00E0070000F00F0000}
-  KeyPreview = True
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnKeyPress = FormKeyPress
   OnKeyUp = FormKeyUp
   TextHeight = 15
   object Panel1: TPanel

@@ -25,11 +25,11 @@ uses
 
 type
   TKeyOp = (koNone,
-            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koAdjustAspectRatio, koBrightnessUp,
+            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koBrightnessUp,
             koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
             koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset, koGreaterWindow, koToggleControls,
             koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
-            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koAlwaysPot, koPanReset, koBrightnessReset, koBookmarkSave,
+            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave,
             koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
             koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter,
@@ -53,7 +53,7 @@ type
     function getCapsLock: boolean;
     function getNumLock: boolean;
   public
-    function  processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+    function  processKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
     procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
     procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     property alt:         boolean     read getAlt;
@@ -100,7 +100,6 @@ function TKeyboard.getKeyOp: TKeyOp;
 begin
   result := koNone;
   case keyUp and keyIs(X)                                     of TRUE: result := koCloseApp; end;
-  case keyUp and keyIs(VK_ESCAPE)                             of TRUE: result := koCloseApp; end;
   case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist    of TRUE: result := koVolDn; end;
   case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koVolDn; end;
   case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist    of TRUE: result := koVolUp; end;
@@ -110,7 +109,6 @@ begin
   case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koFrameForwards; end;
   case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koFrameBackwards; end;
   case keyDn and keyIs(VK_TAB)                                of TRUE: result := koTabTab; end;
-  case keyUp and keyIs(J)                                     of TRUE: result := koAdjustAspectRatio; end;
   case keyDn and keyIs(_9) and NOT ctrl                       of TRUE: result := koBrightnessUp; end;
   case keyDn and keyIs(_8)                                    of TRUE: result := koBrightnessDn; end;
   case keyDn and keyIs(I)                                     of TRUE: result := koZoomIn; end;
@@ -144,7 +142,6 @@ begin
   case keyUp and keyIs(B) and NOT ctrl                        of TRUE: result := koToggleBlackout; end;
   case keyUp and keyIs(H)                                     of TRUE: result := koCentreWindow; end;
   case keyUp and keyIs(N)                                     of TRUE: result := koMinimizeWindow; end;
-  case keyUp and keyIs(D)                                     of TRUE: result := koDeleteCurrentItem; end;
   case keyUp and keyIs(VK_DELETE)                             of TRUE: result := koDeleteCurrentItem; end;
   case keyUp and keyIs(R)                                     of TRUE: result := koRenameFile; end;
   case keyDn and keyIs(VK_ADD)                                of TRUE: result := koSpeedUp; end;
@@ -156,7 +153,6 @@ begin
   case keyUp and keyIs(VK_INSERT)                             of TRUE: result := koClipboard; end;
   case keyUp and keyIs(K)                                     of TRUE: result := koKeep; end;
   case keyUp and keyIs(L)                                     of TRUE: result := koReloadPlaylist; end;
-  case keyUp and keyIs(P) and ctrl                            of TRUE: result := koAlwaysPot; end;
   case keyUp and keyIs(_2)                                    of TRUE: result := koBrightnessReset; end;
   case keyUp and keyIs(_3)                                    of TRUE: result := koPanReset; end;
   case keyUp and keyIs(_4)                                    of TRUE: result := koRotateReset; end;
@@ -191,6 +187,11 @@ begin
   case keyUp and keyIs(VK_F8)                                 of TRUE: result := koPrevChapter; end;
   case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNextChapter; end;
   case keyUp and keyIs(Y)                                     of TRUE: result := koThumbnails; end;
+
+  // spare keys
+  case keyUp and keyIs(D)                                     of TRUE: result := koNone; end;
+  case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
+  case keyUp and keyIs(P) and ctrl                            of TRUE: result := koNone; end;
 end;
 
 function TKeyboard.getAlt: boolean;
@@ -255,7 +256,7 @@ begin
                                application.processMessages; end;end;
 end;
 
-function TKeyboard.processKeyStroke(var aKey: word; aShiftState: TShiftState; upDn: TKeyDirection): boolean;
+function TKeyboard.processKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
 begin
   result      := FALSE;
 
@@ -274,7 +275,6 @@ begin
     koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY);
     koFrameForwards:     MP.frameForwards;
     koFrameBackwards:    MP.frameBackwards;
-    koAdjustAspectRatio: UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight);
     koBrightnessUp:      ST.opInfo := MP.brightnessUp;
     koBrightnessDn:      ST.opInfo := MP.brightnessDn;
     koZoomIn:            ST.opInfo := MP.zoomIn;
@@ -311,7 +311,6 @@ begin
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
     koReloadPlaylist:    begin ST.opInfo := CU.reloadPlaylist(extractFilePath(PL.currentItem)); UI.loadPlaylistWindow; end;
-    koAlwaysPot:         MP.alwaysPot := NOT MP.alwaysPot;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);

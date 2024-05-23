@@ -15,8 +15,8 @@
 
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />
-**D** / **DEL** [D]elete file after confirm<br />
-Ctrl-**D** [D]elete folder after confirm<br />
+**DEL** [D]elete file after confirm<br />
+Ctrl-**DEL** [D]elete folder after confirm<br />
 **K** [K]eep file (rename with leading _ )<br />
 **R** [R]ename file<br />
 
