@@ -113,8 +113,8 @@ Control | Action
 `Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
-`D` and `DEL`           | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
-`Ctrl-D and Ctrl-DEL`   | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
+`DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
+`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
 `E`                     | [E]ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `F`                     | show/cancel [F]ullScreen mode
@@ -123,7 +123,7 @@ Control | Action
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `I`                     | zoom [I]n. Can be held down for rapid zooming
-`J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders. Usually automatic
+`J`                     | [J]ust waiting to be assigned an action
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio. Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that
@@ -182,7 +182,8 @@ Control | Action
 `X`                     | e[X]clude the selected segment from the final edit
 **File Control** | 
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
-`D` and `DEL`           | [D]elete current media file (after confirmation)
+`DEL`                   | [D]elete current media file (after confirmation)
+`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `R`                     | [R]ename the current media file
 **Freeze Frame** | 
@@ -276,7 +277,6 @@ Control | Action
 `G`                     | [G]reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
-`J`                     | ad[J]ust the window's aspect ratio to match the video's aspect ratio. Gets rid of borders (usually done automatically)
 `M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio. Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that
 `N`                     | mi[N]imize window to the Windows taskbar
 `V`                     | synchronize all [V]ideo windows
