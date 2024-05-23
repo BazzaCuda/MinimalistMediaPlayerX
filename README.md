@@ -13,7 +13,7 @@ Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, 
 
 **TIP**: You can crop an image by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
-**TIP**: You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It doesn't get much easier than that!!
+**TIP**: You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It really doesn't get much easier than that!!
 
 **Minimalist Media Player**
 
@@ -316,3 +316,7 @@ Dependencies
 2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV); although, having said that, MPV seems to be much better behaved in that regard than Windows Media Player on which the previous incarnation of ``Minimalist Media Player`` was based. If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``Minimalist Media Player`` will still ask for confirmation, nothing will happen.
 
 3. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
+
+4. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources.
+
+5. Acknowledgement is due to the author of Perpetual Notes v4.05 (https://www.enselsoftware.com/product/PerpetualNotes.html) for being the only RTF editor I could find on the entire internet that could actually [,accurately] read back in what it had written out! (And I tested some big players during my search!)
