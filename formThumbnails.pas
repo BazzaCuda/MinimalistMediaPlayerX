@@ -43,7 +43,8 @@ type
     FKeyHandled: boolean;
     FMainForm: TForm;
     procedure onInitMPV(sender: TObject);
-    function processKeyOp(aKeyOp: TKeyOp): boolean;
+    function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+    function takeScreenshot: string;
   protected
     procedure createParams(var params: TCreateParams); override;
   public
@@ -84,7 +85,8 @@ end;
 procedure TThumbnailsForm.FormActivate(Sender: TObject);
 begin
   CU.delay(1000);
-  FMainForm.hide; // delay this until ThumbnailsForm has displayed over the main form
+  FMainForm.hide;   // delay this until ThumbnailsForm has displayed over the main form
+  FMainForm := NIL; // we have no more use for this so we shouldn't retain it
 end;
 
 procedure TThumbnailsForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -97,25 +99,23 @@ begin
     mpvCreate(mpv);
     mpv.onInitMPV    := onInitMPV;
     mpvInitPlayer(mpv, panel1.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-    mpvOpenFile(mpv, 'B:\Images\_cropes_\Cropes001-136\022.jpg');
+    mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
 end;
 
 procedure TThumbnailsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDown);
-  FKeyHandled := processKeyOp(vKeyOp);
+  var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
+  FKeyHandled := processKeyOp(vKeyOp, shift);
 end;
 
 procedure TThumbnailsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-  processKeyOp(processKeyStroke(mpv, key, shift, kdUp));
+  processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
 end;
 
 function TThumbnailsForm.initThumbnails(const aForm: TForm): boolean;
 begin
-//  SELF.keyPreview := TRUE;
-
   SELF.top    := aForm.top;
   SELF.left   := aForm.left;
   SELF.width  := aForm.Width;
@@ -134,8 +134,6 @@ begin
   panel2.styleElements  := [];
   panel2.bevelOuter     := bvNone;
   panel2.color          := clBlack;
-
-//  setWindowPos(SELF.handle, 0, 0, 0, 0, 0, SWP_NOSIZE OR SWP_NOMOVE OR SWP_SHOWWINDOW);
 end;
 
 procedure TThumbnailsForm.onInitMPV(sender: TObject);
@@ -145,7 +143,7 @@ begin
 end;
 
 
-function TThumbnailsForm.processKeyOp(aKeyOp: TKeyOp): boolean;
+function TThumbnailsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
 begin
   result := FALSE;
 
@@ -153,14 +151,76 @@ begin
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
     koCloseApp:     close;  // closes this form only
 
-    koBrightnessUp: mpvBrightnessUp(mpv);
-    koBrightnessDn: mpvBrightnessDn(mpv);
-    koRotateR:      mpvRotateRight(mpv);
-    koRotateL:      mpvRotateLeft(mpv);
+    koBrightnessUp:     mpvBrightnessUp(mpv);
+    koBrightnessDn:     mpvBrightnessDn(mpv);
+    koBrightnessReset:  mpvBrightnessReset(mpv);
+    koContrastUp:       mpvContrastUp(mpv);
+    koContrastDn:       mpvContrastDn(mpv);
+    koContrastReset:    mpvContrastReset(mpv);
+    koGammaUp:          mpvGammaUp(mpv);
+    koGammaDn:          mpvGammaDn(mpv);
+    koGammaReset:       mpvGammaReset(mpv);
+    koPanLeft:          mpvPanLeft(mpv, aShiftState);
+    koPanRight:         mpvPanRight(mpv, aShiftState);
+    koPanUp:            mpvPanUp(mpv, aShiftState);
+    koPanDn:            mpvPanDn(mpv, aShiftState);
+    koPanReset:         mpvPanReset(mpv);
+    koRotateR:          mpvRotateRight(mpv);
+    koRotateL:          mpvRotateLeft(mpv);
+    koRotateReset:      mpvRotateReset(mpv);
+    koSaturationUp:     mpvSaturationUp(mpv);
+    koSaturationDn:     mpvSaturationDn(mpv);
+    koSaturationReset:  mpvSaturationReset(mpv);
+    koScreenshot:       takeScreenshot;
+    koZoomIn:           mpvZoomIn(mpv);
+    koZoomOut:          mpvZoomOut(mpv);
+    koZoomReset:        mpvZoomReset(mpv);
 
+    koAllReset:         begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
+
+    koPausePlay:;
+    koStartOver:;
+    koShowCaption:;
+    koPlayFirst:;
+    koPlayNext:;
+    koPlayPrev:;
+    koPlayLast:;
+    koFullscreen:;
+    koGreaterWindow:;
+    koToggleControls:;
+    koToggleBlackout:;
+    koCentreWindow:;
+    koMinimizeWindow:;
+    koDeleteCurrentItem:;
+    koRenameFile:;
+    koEscape:;
+    koClipboard:;
+    koKeep:;
+    koReloadPlaylist:;
+    koToggleHelp:;
+    koBrighterPB:;
+    koDarkerPB:;
+    koTogglePlaylist:;
+    koCloseAll:;
+    koToggleRepeat:;
+    koAboutBox:;
+    koMaximize:;
+    koSpeedUp:;
+    koSpeedDn:;
+    koSpeedReset:;
   end;
 
   result := TRUE; // key was processed
+end;
+
+function TThumbnailsForm.takeScreenshot: string;
+begin
+  var vScreenshotDirectory: string;
+  mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
+
+//  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, PL.currentFolder);                  // otherwise screenshots of an image go to Windows/System32 !!
+  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
+                                    FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
 end;
 
 end.

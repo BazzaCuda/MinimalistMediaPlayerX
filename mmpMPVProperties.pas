@@ -24,6 +24,7 @@ uses
   MPVBasePlayer;
 
 function mpvDuration(const mpv: TMPVBasePlayer): integer;
+function mpvFileName(const mpv: TMPVBasePlayer): string;
 function mpvPosition(const mpv: TMPVBasePlayer): integer;
 function mpvState(const mpv: TMPVBasePlayer): TMPVPlayerState;
 function mpvVideoHeight(const mpv: TMPVBasePlayer): int64;
@@ -44,6 +45,12 @@ function mpvDuration(const mpv: TMPVBasePlayer): integer;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := trunc(mpv.totalSeconds);
+end;
+
+function mpvFileName(const mpv: TMPVBasePlayer): string;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  result := mpv.FileName;
 end;
 
 function mpvPosition(const mpv: TMPVBasePlayer): integer;
