@@ -30,7 +30,6 @@ type
   TUI = class(TObject)
   strict private
     FMainForm: TForm;
-    FAutoCentre: boolean;
     FFormattedTime: string;
     FInitialized: boolean;
     FShowingHelp: boolean;
@@ -95,7 +94,6 @@ type
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
     function tweakWindow: boolean;
-    property autoCentre: boolean read FAutoCentre write FAutoCentre;
     property height: integer read getHeight write setHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property showingTimeline: boolean read FShowingTimeline;
@@ -151,8 +149,8 @@ begin
   vRatio := Y / X;
 
   mmpWndWidthHeight(aWnd, vWidth, vHeight);
-  case autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
-                     FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
+  case GV.autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
+                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
 
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
@@ -172,8 +170,8 @@ var
 begin
   vCount     := SA.count;
 
-  autoCentre := vCount = 1;
-  case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF); end;
+  GV.autoCentre := vCount = 1;
+  case GV.autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF); end;
 
   case vCount of
     1:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth, 0));
@@ -224,7 +222,7 @@ end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
-  case autoCentre of FALSE: EXIT; end;
+  case GV.autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
 end;
 
@@ -237,7 +235,7 @@ end;
 
 function TUI.centreCursor: boolean;
 begin
-  case autoCentre AND (MP.MediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
+  case GV.autoCentre AND (MP.MediaType <> mtImage) of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
 end;
 
 function TUI.centreWindow(const aWnd: HWND): boolean;
@@ -470,7 +468,7 @@ begin
   addMenuItems(aForm);
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
-  FAutoCentre         := TRUE;
+  GV.autoCentre       := TRUE;
   aForm.width         := 800;
   aForm.height        := 300;
   MP.onBeforeNew      := onMPBeforeNew;
@@ -500,7 +498,7 @@ end;
 function TUI.maximize: boolean;
 begin
   setWindowSize(mtVideo);
-  FAutoCentre := TRUE;
+  GV.autoCentre := TRUE;
   centreCursor;
 end;
 

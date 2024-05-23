@@ -437,7 +437,7 @@ begin
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case UI.autoCentre OR (FMediaType = mtAudio) of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
+  case GV.autoCentre OR (FMediaType = mtAudio) of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
   UI.centreCursor;
 
   openURL(aURL);

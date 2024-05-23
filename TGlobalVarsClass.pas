@@ -46,6 +46,7 @@ type
   strict private
     FAppWnd: HWND;
     FAltKeyDown: boolean;
+    FAutoCentre: boolean;
     FCloseApp: boolean;
     FShowingHelp: boolean;
     FShowingPlaylist: boolean;
@@ -59,6 +60,7 @@ type
     destructor  destroy;
     property altKeyDown:      boolean read FAltKeyDown      write FAltKeyDown;
     property appWnd:          HWND    read FAppWnd          write FAppWnd;
+    property autoCentre:      boolean read FAutoCentre      write FAutoCentre;
     property closeApp:        boolean read FCloseApp        write FCloseApp;
     property showingHelp:     boolean read FShowingHelp     write FShowingHelp;
     property showingPlaylist: boolean read FShowingPlaylist write FShowingPlaylist;

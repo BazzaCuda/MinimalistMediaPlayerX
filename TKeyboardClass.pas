@@ -302,7 +302,7 @@ begin
     koRunCut:            UI.openExternalApp(F11_APP, PL.currentItem);
     koRunShot:           UI.openExternalApp(F12_APP, PL.currentItem);
     koToggleBlackout:    UI.toggleBlackout;
-    koCentreWindow:      begin UI.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
+    koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koMinimizeWindow:    UI.minimizeWindow;
     koDeleteCurrentItem: UI.deleteCurrentItem(aShiftState);
     koRenameFile:        UI.renameFile(PL.currentItem);

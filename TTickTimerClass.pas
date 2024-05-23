@@ -21,6 +21,7 @@ unit TTickTimerClass;
 interface
 
 uses
+  system.classes,
   vcl.extCtrls;
 
 type
@@ -28,7 +29,7 @@ type
   private
     procedure timerEvent(aSender: TObject);
   public
-    constructor create;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
@@ -42,9 +43,9 @@ var
 
 { TTickTimer }
 
-constructor TTickTimer.create;
+constructor TTickTimer.Create;
 begin
-  inherited create(NIL);
+  inherited Create(NIL);
   interval := 999;
   onTimer := timerEvent;
 end;
@@ -55,7 +56,7 @@ begin
 end;
 
 initialization
-   gTT := TTickTimer.create;
+   gTT := TTickTimer.create(NIL);
 
 finalization
   case gTT <> NIL of TRUE: gTT.free; end;

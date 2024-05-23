@@ -72,7 +72,7 @@ var
   wndRect: TRect;
   dx, dy: integer;
 begin
-  UI.autoCentre := FALSE;
+  GV.autoCentre := FALSE;
 
   getCursorPos(newMouse);
   dx := newMouse.X - mouseStart.X;
@@ -158,7 +158,7 @@ begin
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
 
-  case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: UI.autoCentre := FALSE; end;
+  case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: GV.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; {ST.opInfo := PL.formattedItem;} end;end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
