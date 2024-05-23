@@ -39,6 +39,7 @@ type
     FVideoPanel: TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
+    function delayedHide: boolean;
     function setCustomTitleBar(const aForm: TForm): boolean;
     function setGlassFrame(const aForm: TForm): boolean;
     function setWindowStyle(const aForm: TForm): boolean;
@@ -327,6 +328,22 @@ begin
   FVideoPanel.color       := clBlack;
   FVideoPanel.BevelOuter  := bvNone;
   FVideoPanel.OnMouseMove := onMouseMove;
+end;
+
+          // executed in a separate thread
+          function hideForm(parameter: pointer): integer;
+          var formPtr: TForm;
+          begin
+            CU.delay(1000);
+            formPtr := parameter;
+            formPtr.hide;
+          end;
+function TUI.delayedHide: boolean;
+var
+  i1: LONGWORD;
+  t1: integer;
+begin
+  t1 := beginThread(NIL, 0, addr(hideForm), FMainForm, 0, i1);
 end;
 
 function TUI.deleteCurrentItem(const shift: TShiftState): boolean;
@@ -631,14 +648,22 @@ begin
 end;
 
 function TUI.showThumbnails: boolean;
+  function mainFormDimensions: TRect;
+  begin
+    result.top     := FMainForm.top;
+    result.left    := FMainForm.left;
+    result.width   := FMainForm.width;
+    result.height  := FMainForm.height;
+  end;
 begin
   shutHelp;
   shutPlaylist;
   shutTimeline;
   MP.pause;
 
-//  FMainForm.hide;
-  formThumbnails.showThumbnails(FMainForm); // showModal;
+  delayedHide;
+
+  formThumbnails.showThumbnails(PL.currentFolder, mainFormDimensions); // showModal;
   FMainForm.show;
 end;
 

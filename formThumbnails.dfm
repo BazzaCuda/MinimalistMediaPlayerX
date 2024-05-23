@@ -1,7 +1,7 @@
 object ThumbnailsForm: TThumbnailsForm
   Left = 0
   Top = 0
-  Caption = 'MMP Thumbnail Browser'
+  Caption = 'MMP Image Browser'
   ClientHeight = 445
   ClientWidth = 626
   Color = clBtnFace
@@ -3017,11 +3017,11 @@ object ThumbnailsForm: TThumbnailsForm
     000000000000000000FFC70000F8030000F0030000E0030000C0030000800300
     00800100000000000000000000000000000000000000000000C0030000E00700
     00E0070000F00F0000}
-  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
+  OnShow = FormShow
   TextHeight = 15
   object Panel1: TPanel
     Left = 8

@@ -37,22 +37,22 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormActivate(Sender: TObject);
-  private
+    procedure FormShow(Sender: TObject);
+  strict private
     mpv: TMPVBasePlayer;
+    FInitialFolder: string;
     FKeyHandled: boolean;
-    FMainForm: TForm;
+  private
     procedure onInitMPV(sender: TObject);
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
     function takeScreenshot: string;
   protected
     procedure createParams(var params: TCreateParams); override;
   public
-    function initThumbnails(const aForm: TForm): boolean;
-    property mainForm: TForm read FMainForm write FMainForm;
+    function initThumbnails(const aFolder: string; const aRect: TRect): boolean;
   end;
 
-function showThumbnails(const aForm: TForm): boolean;
+function showThumbnails(const aFolder: string; const aRect: TRect): boolean;
 
 implementation
 
@@ -60,13 +60,12 @@ uses
   mmpMPVCtrls, mmpMPVProperties,
   TCommonUtilsClass, TGlobalVarsClass, TThumbnailsClass, _debugWindow;
 
-function showThumbnails(const aForm: TForm): boolean;
+function showThumbnails(const aFolder: string; const aRect: TRect): boolean;
 begin
   var vTF := TThumbnailsForm.create(NIL);
   try
-    vTF.initThumbnails(aForm);
+    vTF.initThumbnails(aFolder, aRect);
     GV.showingThumbs := TRUE;
-    vTF.mainForm := aForm;
     vTF.showModal;
   finally
     vTF.free;
@@ -82,13 +81,6 @@ begin
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
-procedure TThumbnailsForm.FormActivate(Sender: TObject);
-begin
-  CU.delay(1000);
-  FMainForm.hide;   // delay this until ThumbnailsForm has displayed over the main form
-  FMainForm := NIL; // we have no more use for this so we shouldn't retain it
-end;
-
 procedure TThumbnailsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case mpv = NIL of FALSE: freeAndNIL(mpv); end;
@@ -96,10 +88,10 @@ end;
 
 procedure TThumbnailsForm.FormCreate(Sender: TObject);
 begin
-    mpvCreate(mpv);
-    mpv.onInitMPV    := onInitMPV;
-    mpvInitPlayer(mpv, panel1.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-    mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
+  mpvCreate(mpv);
+  mpv.onInitMPV    := onInitMPV;
+  mpvInitPlayer(mpv, panel1.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+  mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
 end;
 
 procedure TThumbnailsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -114,12 +106,19 @@ begin
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
 end;
 
-function TThumbnailsForm.initThumbnails(const aForm: TForm): boolean;
+procedure TThumbnailsForm.FormShow(Sender: TObject);
 begin
-  SELF.top    := aForm.top;
-  SELF.left   := aForm.left;
-  SELF.width  := aForm.Width;
-  SELF.height := aForm.Height;
+// start here - create first page of thumbnails from FInitialFolder
+end;
+
+function TThumbnailsForm.initThumbnails(const aFolder: string; const aRect: TRect): boolean;
+begin
+  FInitialFolder := aFolder;
+
+  SELF.top    := aRect.top;
+  SELF.left   := aRect.left;
+  SELF.width  := aRect.Width;
+  SELF.height := aRect.Height;
 
   SELF.borderIcons   := [biSystemMenu, biMaximize];
   SELF.borderStyle   := bsSizeable;
