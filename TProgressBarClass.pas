@@ -67,7 +67,8 @@ uses
   system.sysUtils,
   vcl.graphics,
   mmpConsts, mmpMPVFormatting,
-  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass, _debugWindow;
+  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass,
+  _debugWindow;
 
 var
   gPB: TProgressBar;

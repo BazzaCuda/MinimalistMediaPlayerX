@@ -150,9 +150,10 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
-  mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties,
-  formCaption, formCaptions, formHelp,
-  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
+  mmpFileUtils, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpUtils,
+  formCaptions, formHelp, formMediaCaption,
+  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  _debugWindow;
 
 var
   gMP: TMediaPlayer;
@@ -318,7 +319,7 @@ end;
 procedure TMediaPlayer.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
-  mpvSetDefaults(sender as TMPVBasePlayer, CU.getExePath);
+  mpvSetDefaults(sender as TMPVBasePlayer, mmpExePath);
 end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
@@ -330,7 +331,7 @@ begin
   case eState of
     mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
     mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin
-                                                        case FMediaType = mtImage of TRUE: CU.delay(trunc(FImageDisplayDurationSS) * 1000); end;
+                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationSS) * 1000); end;
                                                         autoPlayNext;
                                                       end;end;
   end;
@@ -355,7 +356,7 @@ begin
     mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
 
-    mpvInitPlayer(mpv, UI.handle, CU.getExePath, CU.getExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
+    mpvInitPlayer(mpv, UI.handle, mmpExePath, mmpExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
 
     mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
     case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
@@ -575,7 +576,7 @@ end;
 function TMediaPlayer.speedReset: string;
 begin
   result := mpvSpeedReset(mpv);
-  CU.delay(100);
+  mmpDelay(100);
 end;
 
 function TMediaPlayer.speedUp: string;

@@ -3,8 +3,8 @@ object CaptionsForm: TCaptionsForm
   Top = 0
   BorderIcons = []
   Caption = 'SubtitlesForm'
-  ClientHeight = 112
-  ClientWidth = 1150
+  ClientHeight = 104
+  ClientWidth = 1146
   Color = clGray
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

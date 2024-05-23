@@ -44,9 +44,10 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, formCaptions, formCaption,
-  TUICtrlsClass, TGlobalVarsClass, TMediaPlayerClass, TCommonUtilsClass, TPlaylistClass, TProgressBarClass, TMediaInfoClass, TParamStringsClass,
-  TConfigFileClass, TMediaTypesClass, TSysCommandsClass, _debugWindow;
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpUtils,
+  formCaptions, formMediaCaption,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TParamStringsClass, TProgressBarClass, TSysCommandsClass, TUICtrlsClass,
+  _debugWindow;
 
 {$R *.dfm}
 
@@ -59,7 +60,7 @@ begin
 { initApp()
 ============}
   UI.initUI(SELF);
-  CF.initConfigFile(CU.getConfigFilePath);
+  CF.initConfigFile(mmpConfigFilePath);
   MP.initMediaPlayer;
   ST.initCaptions(UI.videoPanel); // multiple captions at the bottom of the window
   MC.initCaption(UI.videoPanel);  // single caption at the top of the window
@@ -67,7 +68,7 @@ begin
 {============}
 
   case PS.noFile of TRUE:  begin
-                                CU.ShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
+                                mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                                     + 'or to permanently associate media file types with this application.'#13#10#13#10
                                                     + 'Alternatively, you can drag and drop a media file onto the window background',
                                                       mtInformation, [MBOK]);
@@ -82,7 +83,7 @@ begin
 
   UI.Initialized := TRUE; // UI.formResize is only allowed to do anything after the first media plays.
 
-  CU.delay(100);
+  mmpDelay(100);
   sendMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);

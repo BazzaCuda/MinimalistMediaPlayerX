@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formCaption;
+unit formMediaCaption;
 
 interface
 
@@ -26,7 +26,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
 
 type
-  TCaptionForm = class(TForm) // single caption at the top of the window
+  TMediaCaptionForm = class(TForm) // single caption at the top of the window
   strict private
     FVideoPanel: TPanel;
     FCaption: TLabel;
@@ -47,19 +47,20 @@ type
     property caption: string write setCaption;
   end;
 
-function MC: TCaptionForm; // Media Caption
+function MC: TMediaCaptionForm; // Media Caption
 
 implementation
 
 uses
-  mmpConsts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
+  mmpConsts, mmpTransparentUtils,
+  TMediaPlayerClass, TConfigFileClass, _debugWindow;
 
 var
-  gMC: TCaptionForm;
+  gMC: TMediaCaptionForm;
 
-function MC: TCaptionForm;
+function MC: TMediaCaptionForm;
 begin
-  case gMC = NIL of TRUE: gMC := TCaptionForm.create; end;
+  case gMC = NIL of TRUE: gMC := TMediaCaptionForm.create; end;
   result := gMC;
 end;
 
@@ -67,7 +68,7 @@ end;
 
 { TCaptionForm }
 
-function TCaptionForm.brighter: integer;
+function TMediaCaptionForm.brighter: integer;
 begin
   result := FCaption.font.color;
   case FCaption.font.color = $FFFFFF of TRUE: EXIT; end;
@@ -75,7 +76,7 @@ begin
   result := FCaption.font.color;
 end;
 
-constructor TCaptionForm.create;
+constructor TMediaCaptionForm.create;
 begin
   inherited create(NIL);
   height := 80;
@@ -87,7 +88,7 @@ begin
   FOpInfoTimer.onTimer  := timerEvent;
 end;
 
-function TCaptionForm.darker: integer;
+function TMediaCaptionForm.darker: integer;
 begin
   result := FCaption.font.color;
   case FCaption.font.color = $010101 of TRUE: EXIT; end;
@@ -95,14 +96,14 @@ begin
   result := FCaption.font.color;
 end;
 
-destructor TCaptionForm.Destroy;
+destructor TMediaCaptionForm.Destroy;
 begin
   case FCaption       <> NIL of TRUE: FCaption.free; end;
   case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
   inherited;
 end;
 
-procedure TCaptionForm.formResize(Sender: TObject);
+procedure TMediaCaptionForm.formResize(Sender: TObject);
 begin
   SELF.HEIGHT := 80;
   FCaption.caption := 'resize';
@@ -110,7 +111,7 @@ begin
   FCaption.top  := SELF.height - FCaption.height;
 end;
 
-function TCaptionForm.initCaption(const aVideoPanel: TPanel): boolean;
+function TMediaCaptionForm.initCaption(const aVideoPanel: TPanel): boolean;
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     aLabel.font.name      := 'Tahoma';
@@ -129,11 +130,11 @@ begin
   FVideoPanel := aVideoPanel;
 
   SELF.parent := aVideoPanel;
-  CU.initTransparentForm(SELF);
+  mmpInitTransparentForm(SELF);
   SELF.align := alTop;
 
   FCaption.parent := SELF;
-  CU.initTransparentLabel(FCaption);
+  mmpInitTransparentLabel(FCaption);
   defaultFontEtc(FCaption);
   FCaption.align         := alTop;
   FCaption.alignment     := taLeftJustify;
@@ -148,27 +149,27 @@ begin
   SELF.show;
 end;
 
-function TCaptionForm.resetColor: integer;
+function TMediaCaptionForm.resetColor: integer;
 begin
   FCaption.font.color := ST_DEFAULT_COLOR;
   result              := ST_DEFAULT_COLOR;
 end;
 
-procedure TCaptionForm.setCaption(const Value: string);
+procedure TMediaCaptionForm.setCaption(const Value: string);
 begin
   FOpInfoTimer.enabled  := FALSE; // cancel any currently running timer
   FCaption.caption      := Value;
   FOpInfoTimer.enabled  := TRUE;
 end;
 
-procedure TCaptionForm.timerEvent(sender: TObject);
+procedure TMediaCaptionForm.timerEvent(sender: TObject);
 begin
   FOpInfoTimer.enabled := FALSE;
   FCaption.caption := '';
 end;
 
 
-function TCaptionForm.toggleCaption: boolean;
+function TMediaCaptionForm.toggleCaption: boolean;
 begin
   FCaption.visible := NOT FCaption.visible;
 end;

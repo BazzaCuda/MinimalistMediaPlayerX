@@ -53,8 +53,10 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpConsts, formDownload,
-  TConfigFileClass, TCommonUtilsClass, TProgressBarClass, _debugWindow;
+  mmpConsts, mmpFileUtils,
+  formDownload,
+  TConfigFileClass, TProgressBarClass,
+  _debugWindow;
 
 type
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object
@@ -132,7 +134,7 @@ end;
 
 function updateFile(const aReleaseTag: string): string;
 begin
-  result := CU.getExePath + 'update_' + cleanTag(aReleaseTag) + '.zip';
+  result := mmpExePath + 'update_' + cleanTag(aReleaseTag) + '.zip';
 end;
 
 { TWorkProgress }
@@ -207,7 +209,7 @@ begin
   result := aReleaseTag;
 
   case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
-  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
   case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
 
   result := downloadAsset('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + cleanTag(aReleaseTag) + '.full.zip', updateFile(aReleaseTag), aReleaseTag);
@@ -216,19 +218,19 @@ end;
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   function backupName: string;
   begin
-    result := 'MinimalistMediaPlayer ' + CU.getFileVersionFmt('', 'v%d_%d_%d');
+    result := 'MinimalistMediaPlayer ' + mmpFileVersionFmt('', 'v%d_%d_%d');
   end;
 begin
   result := FALSE;
   case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
-  case (aReleaseTag <> '') AND (CU.getFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
 
-  case fileExists(CU.getExePath + backupName + '.exe') of FALSE:  CU.renameFile(paramStr(0), backupName); end;
+  case fileExists(mmpExePath + backupName + '.exe') of FALSE:  mmpRenameFile(paramStr(0), backupName); end;
   case fileExists(paramStr(0))                         of FALSE:  with TZipFile.create do begin
                                                                     OnProgress := zipOnProgress;
                                                                     open(updateFile(aReleaseTag), zmRead);
 //                                                                    extractAll(CU.getExePath);
-                                                                    extract('MinimalistMediaPlayer.exe', CU.getExePath);
+                                                                    extract('MinimalistMediaPlayer.exe', mmpExePath);
                                                                     free;
                                                                     result := fileExists(paramStr(0));
                                                                   end;end;
@@ -261,7 +263,7 @@ end;
 
 function TProgramUpdates.getReleaseNotesFolder: string;
 begin
-  result := CU.getExePath + 'releaseNotes\';
+  result := mmpExePath + 'releaseNotes\';
   forceDirectories(result);
 end;
 

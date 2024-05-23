@@ -48,7 +48,9 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, mmpMarkDownUtils, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
+  mmpConsts, mmpFileUtils, mmpMarkDownUtils,
+  TProgramUpdatesClass,
+  _debugWindow;
 
 function showReleaseNotes(const aReleaseTag: string): boolean;
 begin
@@ -88,7 +90,7 @@ end;
 function TReleaseNotesForm.loadReleaseNotes(const aReleaseTag: string): boolean;
 begin
   SELF.caption := 'Release Notes ' + aReleaseTag;
-  md.serverRoot :=  CU.getExePath;
+  md.serverRoot :=  mmpExePath;
   md.loadFromFile(PU.getReleaseNotesFilePath(aReleaseTag));
 end;
 

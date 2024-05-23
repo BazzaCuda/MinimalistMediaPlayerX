@@ -2,8 +2,8 @@ object InputBoxForm: TInputBoxForm
   Left = 0
   Top = 0
   Caption = 'Enter New Filename'
-  ClientHeight = 70
-  ClientWidth = 404
+  ClientHeight = 66
+  ClientWidth = 402
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

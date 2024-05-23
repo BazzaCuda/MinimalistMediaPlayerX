@@ -71,7 +71,8 @@ function ST: TCaptionsForm; // was originally for SubTitles, hence ST
 implementation
 
 uses
-  mmpConsts, TMediaPlayerClass, TCommonUtilsClass, TConfigFileClass, _debugWindow;
+  mmpConsts, mmpTransparentUtils,
+  TMediaPlayerClass, TConfigFileClass, _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
@@ -136,7 +137,7 @@ begin
 
   FTimeLabel := TLabel.create(FInfoPanel);
   FTimeLabel.parent := FInfoPanel;
-  CU.initTransparentLabel(FTimeLabel);
+  mmpInitTransparentLabel(FTimeLabel);
   defaultFontEtc(FTimeLabel);
   FTimeLabel.caption  := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
   FTimeLabel.autoSize := FALSE;
@@ -144,7 +145,7 @@ begin
 
   FOpInfo := TLabel.create(FInfoPanel);
   FOpInfo.parent := FInfoPanel;
-  CU.initTransparentLabel(FOpInfo);
+  mmpInitTransparentLabel(FOpInfo);
   defaultFontEtc(FOpInfo);
   FOpInfo.autoSize  := FALSE;
   FOpInfo.width     := FTimeLabel.width;
@@ -215,7 +216,7 @@ begin
 
   SELF.parent := aVideoPanel;
   SELF.align  := alBottom;
-  CU.initTransparentForm(SELF);
+  mmpInitTransparentForm(SELF);
 
   case CF.asInteger['timeCaption'] <> 0 of TRUE: FTimeLabel.font.color := CF.asInteger['timeCaption']; end;
   FOpInfo.font.color      := FTimeLabel.font.color;

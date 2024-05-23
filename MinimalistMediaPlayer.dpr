@@ -36,7 +36,7 @@ uses
   mmpConsts in 'mmpConsts.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   formAbout in 'formAbout.pas' {AboutForm},
-  formCaption in 'formCaption.pas' {CaptionForm},
+  formMediaCaption in 'formMediaCaption.pas' {MediaCaptionForm},
   formCaptions in 'formCaptions.pas' {CaptionsForm},
   formDownload in 'formDownload.pas' {DownloadForm},
   formHelp in 'formHelp.pas' {HelpForm},
@@ -48,7 +48,6 @@ uses
   formTimeline in 'formTimeline.pas' {TimelineForm},
   TAppEventsClass in 'TAppEventsClass.pas',
   TBookmarkClass in 'TBookmarkClass.pas',
-  TCommonUtilsClass in 'TCommonUtilsClass.pas',
   TConfigFileClass in 'TConfigFileClass.pas',
   TGlobalVarsClass in 'TGlobalVarsClass.pas',
   TKeyboardClass in 'TKeyboardClass.pas',
@@ -72,7 +71,17 @@ uses
   mmpMPVCtrls in 'mmpMPVCtrls.pas',
   mmpMPVFormatting in 'mmpMPVFormatting.pas',
   mmpMPVProperties in 'mmpMPVProperties.pas',
-  thumbnailsKeyboard in 'thumbnailsKeyboard.pas';
+  thumbnailsKeyboard in 'thumbnailsKeyboard.pas',
+  TThumbnailClass in 'TThumbnailClass.pas',
+  mmpFileUtils in 'mmpFileUtils.pas',
+  mmpShellUtils in 'mmpShellUtils.pas',
+  mmpDesktopUtils in 'mmpDesktopUtils.pas',
+  mmpImageUtils in 'mmpImageUtils.pas',
+  mmpTransparentUtils in 'mmpTransparentUtils.pas',
+  mmpMathUtils in 'mmpMathUtils.pas',
+  mmpDialogs in 'mmpDialogs.pas',
+  mmpPlaylistUtils in 'mmpPlaylistUtils.pas',
+  mmpUtils in 'mmpUtils.pas';
 
 {$R *.res}
 

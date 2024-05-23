@@ -159,8 +159,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="formAbout.pas">
             <Form>AboutForm</Form>
         </DCCReference>
-        <DCCReference Include="formCaption.pas">
-            <Form>CaptionForm</Form>
+        <DCCReference Include="formMediaCaption.pas">
+            <Form>MediaCaptionForm</Form>
         </DCCReference>
         <DCCReference Include="formCaptions.pas">
             <Form>CaptionsForm</Form>
@@ -191,7 +191,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DCCReference>
         <DCCReference Include="TAppEventsClass.pas"/>
         <DCCReference Include="TBookmarkClass.pas"/>
-        <DCCReference Include="TCommonUtilsClass.pas"/>
         <DCCReference Include="TConfigFileClass.pas"/>
         <DCCReference Include="TGlobalVarsClass.pas"/>
         <DCCReference Include="TKeyboardClass.pas"/>
@@ -222,6 +221,16 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpMPVFormatting.pas"/>
         <DCCReference Include="mmpMPVProperties.pas"/>
         <DCCReference Include="thumbnailsKeyboard.pas"/>
+        <DCCReference Include="TThumbnailClass.pas"/>
+        <DCCReference Include="mmpFileUtils.pas"/>
+        <DCCReference Include="mmpShellUtils.pas"/>
+        <DCCReference Include="mmpDesktopUtils.pas"/>
+        <DCCReference Include="mmpImageUtils.pas"/>
+        <DCCReference Include="mmpTransparentUtils.pas"/>
+        <DCCReference Include="mmpMathUtils.pas"/>
+        <DCCReference Include="mmpDialogs.pas"/>
+        <DCCReference Include="mmpPlaylistUtils.pas"/>
+        <DCCReference Include="mmpUtils.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

@@ -42,8 +42,10 @@ uses
   winAPI.messages,
   system.classes, system.sysUtils,
   vcl.controls,
-  mmpConsts, formCaption, formCaptions, formHelp, formPlaylist, formThumbnails, formTimeline,
-  TCommonUtilsClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
+  mmpConsts, mmpDesktopUtils, mmpUtils,
+  formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbnails, formTimeline,
+  TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  _debugWindow;
 
 var gAE: TAppEvents;
 
@@ -148,10 +150,10 @@ begin
   case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
-  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin CU.delay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
-  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin CU.delay(05);     UI.autoCentreWindow(UI.handle); end;end;
-  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin CU.delay(05);     UI.checkScreenLimits(UI.handle, CU.getScreenWidth, CU.getScreenHeight); end;end;
-  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin CU.delay(05);     UI.smallerWindow(UI.handle); end;end;
+  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin mmpDelay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
+  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin mmpDelay(05);     UI.autoCentreWindow(UI.handle); end;end;
+  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin mmpDelay(05);     UI.checkScreenLimits(UI.handle, mmpScreenWidth, mmpScreenHeight); end;end;
+  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin mmpDelay(05);     UI.smallerWindow(UI.handle); end;end;
 
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;

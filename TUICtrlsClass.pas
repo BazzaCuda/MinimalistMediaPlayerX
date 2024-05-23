@@ -52,7 +52,6 @@ type
     procedure onMPPlayNext(sender: TObject);
     procedure onMPPosition(const aMax: integer; const aPosition: integer);
     function getXY: TPoint;
-    function getTimelineHeight: integer;
     procedure setHeight(const Value: integer);
     procedure setWidth(const Value: integer);
   public
@@ -100,7 +99,6 @@ type
     property height: integer read getHeight write setHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property showingTimeline: boolean read FShowingTimeline;
-    property timelineHeight: integer read getTimelineHeight;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth write setWidth;
@@ -114,8 +112,9 @@ uses
   winApi.messages,
   system.sysUtils,
   vcl.dialogs,
-  formAbout, formCaption, formCaptions, formHelp, formPlaylist, formThumbnails, formTimeline,
-  TCommonUtilsClass, TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpMathUtils, mmpShellUtils, mmpUtils,
+  formAbout, formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbnails, formTimeline,
+  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
   _debugWindow;
 
 var
@@ -151,7 +150,7 @@ begin
 
   vRatio := Y / X;
 
-  CU.getWndWidthHeight(aWnd, vWidth, vHeight);
+  mmpWndWidthHeight(aWnd, vWidth, vHeight);
   case autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
                      FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
 
@@ -160,7 +159,7 @@ begin
 
   postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
-  case MP.playing and CU.withinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+  case MP.playing and mmpWithinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
 end;
 
 function TUI.arrangeAll: boolean;
@@ -177,18 +176,18 @@ begin
   case autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF); end;
 
   case vCount of
-    1:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth, 0));
-    2:       SA.postToAllEx(WIN_RESIZE, point(CU.getScreenWidth div 2, 0));
-    3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenHeight div 2));
-    else     SA.postToAllEx(WIN_RESIZE, point(0, CU.getScreenWidth div vCount));
+    1:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth, 0));
+    2:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth div 2, 0));
+    3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenHeight div 2));
+    else     SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenWidth div vCount));
   end;
 
   application.processMessages; // make sure this window has resized before continuing
   SA.postToAll(WM_PROCESS_MESSAGES);
 
-  CU.getWndWidthHeight(UI.handle, vWidth, vHeight);
-  vScreenWidth  := CU.getScreenWidth;
-  vScreenHeight := CU.getScreenHeight;
+  mmpWndWidthHeight(UI.handle, vWidth, vHeight);
+  vScreenWidth  := mmpScreenWidth;
+  vScreenHeight := mmpScreenHeight;
   vHMiddle      := vScreenWidth div 2;
   vVMiddle      := vScreenHeight div 2;
   vZero         := vHMiddle - vWidth;
@@ -199,8 +198,8 @@ begin
   case vCount = 2 of TRUE: begin
                              posWinXY(SA.HWNDs[1], vZero,    (vScreenHeight - vHeight) div 2);
                              posWinXY(SA.HWNDs[2], vHMiddle, (vScreenHeight - vHeight) div 2);
-                             case CU.offScreen(SA.HWNDs[1]) of TRUE: posWinXY(SA.HWNDs[1], vZero, 0); end;
-                             case CU.offScreen(SA.HWNDs[2]) of TRUE: posWinXY(SA.HWNDs[2], vHMiddle, 0); end;
+                             case mmpOffScreen(SA.HWNDs[1]) of TRUE: posWinXY(SA.HWNDs[1], vZero, 0); end;
+                             case mmpOffScreen(SA.HWNDs[2]) of TRUE: posWinXY(SA.HWNDs[2], vHMiddle, 0); end;
                              vHWND := SA.HWNDs[1];
                            end;end;
 
@@ -220,7 +219,7 @@ begin
 
   SA.postToAll(WIN_GREATER); // force an update
 
-  case vHWND <> 0 of TRUE: begin CU.delay(500); posWinXY(vHWND, CU.getScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
+  case vHWND <> 0 of TRUE: begin mmpDelay(500); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
@@ -249,8 +248,8 @@ var
 
   function alreadyCentred: boolean;
   begin
-    vHPos := (CU.getScreenWidth  - vR.width) div 2;
-    vVPos := (CU.getScreenHeight - vR.height) div 2;
+    vHPos := (mmpScreenWidth  - vR.width) div 2;
+    vVPos := (mmpScreenHeight - vR.height) div 2;
     result := (vR.left = vHPos) and (vR.top = vVPos);
   end;
 
@@ -259,7 +258,7 @@ begin
 
   case alreadyCentred of TRUE: EXIT; end;
 
-  case CU.withinScreenLimits(vR.width, vR.height) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
+  case mmpWithinScreenLimits(vR.width, vR.height) of FALSE: postMessage(GV.appWnd, WM_CHECK_SCREEN_LIMITS, 0, 0); end;
 
   case (vHPos > 0) and (vVPos > 0) of TRUE: SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
 
@@ -334,7 +333,7 @@ end;
           function hideForm(parameter: pointer): integer;
           var formPtr: TForm;
           begin
-            CU.delay(1000);
+            mmpDelay(1000);
             formPtr := parameter;
             formPtr.hide;
           end;
@@ -355,11 +354,11 @@ begin
   case ssCtrl in shift of  TRUE: vMsg := vMsg + '*.*';
                           FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
 
-  case CU.showOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
+  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
                                                       var vIx := PL.currentIx;
                                                       MP.dontPlayNext := TRUE;  // because...
                                                       MP.stop;                  // this would have automatically done MP.playNext
-                                                      CU.deleteThisFile(PL.currentItem, shift);
+                                                      mmpDeleteThisFile(PL.currentItem, shift);
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in shift) or (NOT PL.hasItems) of  TRUE: sendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
@@ -382,7 +381,7 @@ begin
   case ST.initialized and PB.initialized   of FALSE: EXIT; end;
   case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
-  CU.delay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
+  mmpDelay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
 
   ST.formResize(UI.width);
   PB.formResize;
@@ -396,12 +395,6 @@ end;
 function TUI.getHeight: integer;
 begin
   result := FMainForm.height;
-end;
-
-function TUI.getTimelineHeight: integer;
-begin
-  case showingTimeline of  TRUE: result := TL.timelineHeight + 10;
-                          FALSE: result := 0; end;
 end;
 
 function TUI.getWidth: integer;
@@ -446,9 +439,9 @@ begin
 
   calcDimensions; // do what the user requested
 
-  case CU.withinScreenLimits(newW, newH) of FALSE:  begin
-                                                      newH      := CU.getScreenHeight - dy;
-                                                      try newW  := trunc(newH / CU.getAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
+  case mmpWithinScreenLimits(newW, newH) of FALSE:  begin
+                                                      newH      := mmpScreenHeight - dy;
+                                                      try newW  := trunc(newH / mmpAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 
@@ -496,7 +489,7 @@ begin
   vWasPlaying := MP.playing;
   case vWasPlaying of TRUE: MP.pause; end;
 
-  vNewName := CU.renameFile(aFilePath, '_' + CU.getFileNameWithoutExtension(aFilePath));
+  vNewName := mmpRenameFile(aFilePath, '_' + mmpFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of TRUE: begin
                                         PL.replaceCurrentItem(vNewName);
                                         ST.opInfo := 'Kept'; end;end;
@@ -534,7 +527,7 @@ begin
                                 F11_APP: vAppPath := LOSSLESS_CUT;
                                 F12_APP: vAppPath := SHOTCUT; end;end;
 
-  CU.shellExec(vAppPath, aParams);
+  mmpShellExec(vAppPath, aParams);
 end;
 
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
@@ -561,7 +554,7 @@ begin
   vWasPlaylist := GV.showingPlaylist;
   case vWasPlaylist of TRUE: shutPlaylist; end;
 
-  vNewName := CU.renameFile(aFilePath);
+  vNewName := mmpRenameFile(aFilePath);
   case vNewName = aFilePath of FALSE: PL.replaceCurrentItem(vNewName); end;
   MC.caption := PL.formattedItem;
 
@@ -624,16 +617,16 @@ begin
                                                           FALSE: FMainForm.width  := 600; end;
                                       case hasCoverArt of  TRUE: FMainForm.height := 400;
                                                           FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;end;
-                      mtVideo: begin  var vWidth  := trunc((CU.getScreenHeight - 50) / CU.getAspectRatio(MI.X, MI.Y));
-                                      var VHeight := CU.getScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                      mtVideo: begin  var vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.X, MI.Y));
+                                      var VHeight := mmpScreenHeight - 50;
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
                                       application.ProcessMessages;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
-                      mtImage: begin  var vWidth  := trunc((CU.getScreenHeight + 500)); //  / CU.getAspectRatio(MI.imageWidth, MI.imageHeight));
-                                      var VHeight := CU.getScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+                      mtImage: begin  var vWidth  := trunc((mmpScreenHeight + 500)); //  / CU.getAspectRatio(MI.imageWidth, MI.imageHeight));
+                                      var VHeight := mmpScreenHeight - 50;
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
                                       application.ProcessMessages;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (CU.getScreenWidth - vWidth) div 2, (CU.getScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
   end;
 end;
 
@@ -644,7 +637,7 @@ end;
 
 function TUI.showAboutBox: boolean;
 begin
-  formAbout.showAboutBox(CU.getFileVersionFmt('', 'v%d.%d.%d'), CU.getFileVersionFmt);
+  formAbout.showAboutBox(mmpFileVersionFmt('', 'v%d.%d.%d'), mmpFileVersionFmt);
 end;
 
 function TUI.showThumbnails: boolean;
@@ -737,7 +730,7 @@ begin
   shutHelp;
   shutPlaylist;
 
-  case CU.isEditFriendly(PL.currentItem) of FALSE: begin CU.ShowOKCancelMsgDlg(PL.currentItem + #13#10#13#10
+  case mmpIsEditFriendly(PL.currentItem) of FALSE: begin mmpShowOKCancelMsgDlg(PL.currentItem + #13#10#13#10
                                                                              + 'The path/filename contains a single quote and/or an ampersand.'#13#10#13#10
                                                                              + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                                              + 'Rename the path/filename first.',

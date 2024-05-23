@@ -75,8 +75,10 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, formCaption, formCaptions, formPlaylist, formThumbnails,
-  TBookmarkClass, TCommonUtilsClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass, _debugWindow;
+  mmpConsts, mmpPlaylistUtils,
+  formCaptions, formMediaCaption, formPlaylist, formThumbnails,
+  TBookmarkClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  _debugWindow;
 
 const
   A = 'A'; B = 'B'; C = 'C'; D = 'D'; E = 'E'; F = 'F'; G = 'G'; H = 'H'; I = 'I'; J = 'J'; K = 'K'; L = 'L'; M = 'M';
@@ -310,7 +312,7 @@ begin
     koEscape:            UI.doEscapeKey;
     koClipboard:         PL.copyToClipboard;
     koKeep:              UI.keepFile(PL.currentItem);
-    koReloadPlaylist:    begin ST.opInfo := CU.reloadPlaylist(extractFilePath(PL.currentItem)); UI.loadPlaylistWindow; end;
+    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); UI.loadPlaylistWindow; end;
     koPanReset:          ST.opInfo := MP.panReset;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);

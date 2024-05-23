@@ -51,6 +51,7 @@ type
     FShowingPlaylist: boolean;
     FShowingThumbs: boolean;
     FShowingTimeline: boolean;
+    FTimelineHeight: integer;
     FUserInput: boolean;
   private
   public
@@ -63,6 +64,7 @@ type
     property showingPlaylist: boolean read FShowingPlaylist write FShowingPlaylist;
     property showingThumbs:   boolean read FShowingThumbs   write FShowingThumbs;
     property showingTimeline: boolean read FShowingTimeline write FShowingTimeline;
+    property timelineHeight:  integer read FTimelineHeight  write FTimelineHeight;
     property userInput:       boolean read FUserInput       write FUserInput;
   end;
 

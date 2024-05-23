@@ -71,8 +71,9 @@ uses
   winApi.windows,
   system.math, system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
+  mmpFileUtils,
   formCaptions,
-  TCommonUtilsClass, TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass;
+  TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass;
 
 function PL: TPlaylist;
 begin
@@ -96,7 +97,7 @@ end;
 function TPlaylist.copyToClipboard: boolean;
 begin
   result := FALSE;
-  clipboard.AsText := CU.getFileNameWithoutExtension(currentItem);
+  clipboard.AsText := mmpFileNameWithoutExtension(currentItem);
   ST.opInfo := 'Copied to clipboard';
   result := TRUE;
 end;
@@ -340,7 +341,7 @@ begin
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
                                               begin
-                                                result := compareStr(upperCase(CU.getFileNameWithoutExtension(a)), upperCase(CU.getFileNameWithoutExtension(b)));
+                                                result := compareStr(upperCase(mmpFileNameWithoutExtension(a)), upperCase(mmpFileNameWithoutExtension(b)));
                                               end
                                             )
                 );

@@ -86,7 +86,9 @@ implementation
 uses
   system.generics.defaults,
   mmpConsts, mmpMarkDownUtils, mmpMPVFormatting,
-  formTimeline, TCommonUtilsClass, TMediaInfoClass, _debugWindow;
+  formTimeline,
+  TMediaInfoClass,
+  _debugWindow;
 
 var
   streamListForm: TStreamListForm;

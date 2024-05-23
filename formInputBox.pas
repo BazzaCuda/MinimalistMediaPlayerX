@@ -40,7 +40,8 @@ implementation
 
 uses
   vcl.themes, vcl.styles,
-  TGlobalVarsClass, TCommonUtilsClass;
+  mmpUtils,
+  TGlobalVarsClass;
 
 {$R *.dfm}
 
@@ -60,7 +61,7 @@ begin
     end;
   finally
     vInputBoxForm.free;
-    CU.delay(500);
+    mmpDelay(500);
     GV.userInput := FALSE;
   end;
 end;

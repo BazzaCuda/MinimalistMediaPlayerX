@@ -58,7 +58,8 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  TCommonUtilsClass, TGlobalVarsClass, TThumbnailsClass, _debugWindow;
+  TGlobalVarsClass, TThumbnailsClass,
+  _debugWindow;
 
 function showThumbnails(const aFolder: string; const aRect: TRect): boolean;
 begin

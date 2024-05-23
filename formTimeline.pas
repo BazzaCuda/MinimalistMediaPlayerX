@@ -83,7 +83,6 @@ type
     function filePathOUT: string;
     function filePathSEG: string;
     function getSegCount: integer;
-    function getTimelineHeight: integer;
     function lengthenSegment(const aSegment: TSegment): boolean;
     function loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
     function log(const aLogEntry: string): boolean;
@@ -115,7 +114,6 @@ type
     property segments: TObjectList<TSegment> read getSegments;
     property lengthenCount:  integer read FLengthenCount write FLengthenCount;
     property shortenCount:   integer read FShortenCount  write FShortenCount;
-    property timelineHeight: integer read getTimelineHeight;
   end;
 
 function focusTimeline: boolean;
@@ -128,8 +126,10 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpMPVFormatting,
-  formStreamList, TProgressBarClass, TPlaylistClass, TCommonUtilsClass, TMediaInfoClass, TGlobalVarsClass, _debugWindow;
+  mmpFileUtils, mmpImageUtils, mmpMPVFormatting,
+  formStreamList,
+  TGlobalVarsClass, TMediaInfoClass, TPlaylistClass, TProgressBarClass,
+  _debugWindow;
 
 var
   timelineForm: TTimelineForm;
@@ -221,6 +221,7 @@ begin
 
   showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, timelineForm.exportSegments, createNew);
   GV.showingTimeline := TRUE;
+  GV.timelineHeight  := timelineForm.height + 10;
 end;
 
 function shutTimeline: boolean;
@@ -229,6 +230,7 @@ begin
   case gTL          <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case timelineForm <> NIL of TRUE: begin timelineForm.free; timelineForm := NIL; end;end;
   GV.showingTimeline := FALSE;
+  GV.timelineHeight  := 0;
 end;
 
 function TL: TTimeline;
@@ -444,7 +446,7 @@ begin
     vSegment.segID   := format('%.2d', [n]);
     vSegment.setDisplayDetails;
     vSegment.StyleElements := [];
-    CU.copyPNGImage(timelineForm.imgTrashCan, vSegment.trashCan);
+    mmpCopyPNGImage(timelineForm.imgTrashCan, vSegment.trashCan);
 
     VSegment.trashCan.visible := vSegment.deleted;
     case vSegment.deleted of TRUE: begin
@@ -461,7 +463,7 @@ end;
 
 function TTimeline.filePathOUT: string;
 begin
-  result := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + ' [edited]' + extractFileExt(FMediaFilePath);
+  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' [edited]' + extractFileExt(FMediaFilePath);
 end;
 
 function TTimeline.filePathLOG: string;
@@ -497,11 +499,6 @@ end;
 function TTimeline.getSegments: TObjectList<TSegment>;
 begin
   result := TSegment.segments;
-end;
-
-function TTimeline.getTimelineHeight: integer;
-begin
-  result := timelineForm.height;
 end;
 
 function TTimeline.defaultSegment: string;
@@ -568,7 +565,7 @@ begin
           vMaps := vMaps + ' -c copy';
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
-          var segFile := extractFilePath(FMediaFilePath) + CU.getFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
+          var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
           cmdLine := cmdLine + ' -y "' + segFile + '"';
           log(cmdLine);
 

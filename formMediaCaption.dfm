@@ -1,10 +1,10 @@
-object CaptionForm: TCaptionForm
+object MediaCaptionForm: TMediaCaptionForm
   Left = 0
   Top = 0
   BorderIcons = []
   Caption = 'captionForm'
-  ClientHeight = 91
-  ClientWidth = 1144
+  ClientHeight = 87
+  ClientWidth = 1142
   Color = clGray
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

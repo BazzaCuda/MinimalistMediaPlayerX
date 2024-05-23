@@ -65,8 +65,9 @@ implementation
 
 uses
   shellAPI,
+  mmpUtils,
   formReleaseNotes,
-  TGlobalVarsClass, TCommonUtilsClass, TProgramUpdatesClass, _debugWindow;
+  TGlobalVarsClass, TProgramUpdatesClass, _debugWindow;
 
 {$R *.dfm}
 
@@ -84,7 +85,7 @@ begin
     showModal;
   finally
     free;
-    CU.delay(1000);
+    mmpDelay(1000);
     GV.userInput := FALSE;
   end;
 end;

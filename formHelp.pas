@@ -53,7 +53,7 @@ implementation
 uses
   winApi.shellAPI, system.strUtils,
   mmpConsts, mmpMarkDownUtils,
-  TUICtrlsClass, TCommonUtilsClass, TGlobalVarsClass;
+  TGlobalVarsClass, TUICtrlsClass;
 
 var
   helpForm: THelpForm;

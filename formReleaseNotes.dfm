@@ -2,8 +2,8 @@ object ReleaseNotesForm: TReleaseNotesForm
   Left = 0
   Top = 0
   Caption = 'Release Notes'
-  ClientHeight = 442
-  ClientWidth = 1239
+  ClientHeight = 434
+  ClientWidth = 1235
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object ReleaseNotesForm: TReleaseNotesForm
   object md: TMarkdownViewer
     Left = 3
     Top = 3
-    Width = 1233
-    Height = 395
+    Width = 1229
+    Height = 387
     DefFontName = 'Tahoma'
     MarginWidth = 0
     PrintMarginBottom = 2.000000000000000000
@@ -831,8 +831,8 @@ object ReleaseNotesForm: TReleaseNotesForm
   end
   object Panel1: TPanel
     Left = 0
-    Top = 401
-    Width = 1239
+    Top = 393
+    Width = 1235
     Height = 41
     Align = alBottom
     TabOrder = 1
