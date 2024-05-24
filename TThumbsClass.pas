@@ -37,6 +37,7 @@ type
   private
     function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function generateThumbs(const aItemIx: integer): boolean;
+    procedure thumbClick(sender: TObject);
   public
     FPlaylist: TPlaylist;
     constructor create;
@@ -113,11 +114,13 @@ begin
   vThumbLeft := THUMB_MARGIN;
 
   repeat
-    FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem));
+    FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem, FThumbSize, FThumbSize));
     vIx := FThumbs.count - 1;
 
     FThumbs[vIx].top  := vThumbTop;
     FThumbs[vIx].left := vThumbLeft;
+    FThumbs[vIx].tag  := FPlaylist.currentIx;
+    FThumbs[vIx].OnClick := thumbClick;
 
     calcNextThumbPosition;
 
@@ -145,6 +148,13 @@ begin
                                   FCurrentFolder := extractFilePath(aFilePath);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end;
   generateThumbs(FPlaylist.currentIx);
+end;
+
+procedure TThumbs.thumbClick(sender: TObject);
+begin
+  debugInteger('tag received', TControl(sender).tag);
+  FPlaylist.setIx(TControl(sender).tag);
+  FMPVHost.openFile(FPlayList.currentItem);
 end;
 
 function TThumbs.thumbsPerPage: integer;

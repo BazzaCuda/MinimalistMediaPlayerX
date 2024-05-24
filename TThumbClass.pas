@@ -25,6 +25,7 @@ uses
 
 type
   TThumb = class(TImage)
+  strict private
   public
     constructor create(const aParent: TPanel; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
   end;
@@ -41,6 +42,7 @@ begin
   inherited Create(NIL);
 
   parent  := aParent;
+
   width   := THUMB_DEFAULT_SIZE;
   height  := THUMB_DEFAULT_SIZE;
   stretch := TRUE;

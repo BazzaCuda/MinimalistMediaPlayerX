@@ -3073,12 +3073,12 @@ object ThumbsForm: TThumbsForm
     ExplicitTop = 421
     ExplicitWidth = 624
   end
-  object pnlThumbsHost: TPanel
+  object FThumbsHost: TPanel
     Left = 112
     Top = 112
     Width = 377
     Height = 161
-    Caption = 'pnlThumbsHost'
+    Caption = 'FThumbsHost'
     TabOrder = 1
   end
 end

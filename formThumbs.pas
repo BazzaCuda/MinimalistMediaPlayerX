@@ -31,7 +31,7 @@ uses
 type
   TThumbsForm = class(TForm)
     StatusBar: TStatusBar;
-    pnlThumbsHost: TPanel;
+    FThumbsHost: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -52,6 +52,7 @@ type
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
     function showPlaylist: boolean;
     function takeScreenshot: string;
+    function showThumbsHost: boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
   public
@@ -135,7 +136,7 @@ end;
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
   FThumbs := TThumbs.create;
-  FThumbs.initThumbs(FMPVHost, pnlThumbsHost);
+  FThumbs.initThumbs(FMPVHost, FThumbsHost);
   FThumbs.playThumbs(FInitialFilePath);
 end;
 
@@ -154,14 +155,14 @@ begin
   SELF.color         := clBlack;
 
   FMPVHost.align      := alClient;
-  pnlThumbsHost.align := alClient;
+  FThumbsHost.align := alClient;
 
   FMPVHost.visible      := FALSE;
-  pnlThumbsHost.visible := TRUE;
+  FThumbsHost.visible := TRUE;
 
-  pnlThumbsHost.styleElements  := [];
-  pnlThumbsHost.bevelOuter     := bvNone;
-  pnlThumbsHost.color          := clBlack;
+  FThumbsHost.styleElements  := [];
+  FThumbsHost.bevelOuter     := bvNone;
+  FThumbsHost.color          := clBlack;
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
@@ -173,7 +174,7 @@ end;
 procedure TThumbsForm.onOpenFile(const aURL: string);
 begin
   FMPVHost.visible      := TRUE;
-  pnlThumbsHost.visible := FALSE;
+  FThumbsHost.visible := FALSE;
   mpvOpenFile(mpv, aURL);
 end;
 
@@ -217,7 +218,7 @@ begin
     koStartOver:;
     koShowCaption:;
     koPlayFirst:;
-    koPlayNext:         FThumbs.playThumbs;
+    koPlayNext:         begin showThumbsHost; FThumbs.playThumbs; end;
     koPlayPrev:         FThumbs.playPrevThumbsPage;
     koPlayLast:;
     koFullscreen:;
@@ -251,8 +252,14 @@ end;
 function TThumbsForm.showPlaylist: boolean;
 begin
 //  EXIT; // EXPERIMENTAL
-  var vPt := pnlThumbsHost.ClientToScreen(point(pnlThumbsHost.left + pnlThumbsHost.width, pnlThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
-  formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, pnlThumbsHost.height, TRUE);
+  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
+  formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, FThumbsHost.height, TRUE);
+end;
+
+function TThumbsForm.showThumbsHost: boolean;
+begin
+  FThumbsHost.visible := TRUE;
+  FMPVHost.visible    := FALSE;
 end;
 
 function TThumbsForm.takeScreenshot: string;

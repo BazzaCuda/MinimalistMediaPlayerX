@@ -155,6 +155,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(M)                                     of TRUE: result := koMaximize; end;
     case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koPlayPrev; end;
+    case keyUp and keyIs(Y)                                     of TRUE: result := koPlayNext; end;
 
 
 
@@ -182,7 +183,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 //    case keyUp and keyIs(VK_F7)                                 of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_F8)                                 of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNone; end;
-//    case keyUp and keyIs(Y)                                     of TRUE: result := koNone; end;
   end;
 
 begin
