@@ -4,7 +4,7 @@
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License, or
+    the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit TThumbClass;
+unit TMPVHostClass;
 
 interface
 
@@ -24,10 +24,23 @@ uses
   vcl.extCtrls;
 
 type
-  TThumb = class(TImage)
+  TOpenFileEvent = procedure(const aURL: string) of object;
 
+  TMPVHost = class(TPanel)
+  private
+    FOnOpenFile: TOpenFileEvent;
+  public
+    function openFile(const aURL: string): string;
+    property OnOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
   end;
 
 implementation
+
+{ TMPVHost }
+
+function TMPVHost.openFile(const aURL: string): string;
+begin
+  case assigned(FOnOpenFile) of TRUE: FOnOpenFile(aURL); end;
+end;
 
 end.

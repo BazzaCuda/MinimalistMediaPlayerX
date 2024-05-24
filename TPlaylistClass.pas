@@ -22,18 +22,21 @@ interface
 
 uses
   system.classes, system.generics.collections, system.generics.defaults,
-  vcl.stdCtrls;
+  vcl.stdCtrls,
+  mmpConsts;
 
 type
+  TSetOfMediaType = set of TMediaType;
+
   TPlaylist = class(TObject)
   strict private
     FPlayIx: integer;
     FPlaylist: TList<string>;
   private
-    constructor create;
-    destructor  Destroy; override;
     function extractNumericPart(const S: string): Integer;
   public
+    constructor create;
+    destructor  Destroy; override;
     function add(const anItem: string): boolean;
     function clear: boolean;
     function count: integer;
@@ -43,7 +46,7 @@ type
     function currentIx: integer;
     function delete(const ix: integer = -1): boolean;
     function displayItem: string;
-    function fillPlaylist(const aFolder: string): boolean;
+    function fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
     function find(const anItem: string): boolean;
     function first: boolean;
     function formattedItem: string;
@@ -158,7 +161,7 @@ begin
   result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
 end;
 
-function TPlaylist.fillPlaylist(const aFolder: string): boolean;
+function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
 const
   faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
 var
@@ -167,7 +170,7 @@ var
 
   function fileExtOK: boolean;
   begin
-    result := MT.mediaExts.contains(vExt);
+    result := MT.mediaType(vExt) in aSetOfMediaType;
   end;
 
 begin

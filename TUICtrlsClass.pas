@@ -648,7 +648,7 @@ begin
 
   delayedHide;
 
-  formThumbs.showThumbnails(PL.currentItem, mainFormDimensions); // showModal;
+  formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
   FMainForm.show;
 end;
 

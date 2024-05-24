@@ -25,11 +25,11 @@ uses
   system.classes, vcl.graphics, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
-  mmpThumbsKeyboard;
+  mmpThumbsKeyboard,
+  TMPVHostClass, TThumbsClass;
 
 type
   TThumbsForm = class(TForm)
-    pnlMPV: TPanel;
     StatusBar: TStatusBar;
     pnlThumbsHost: TPanel;
     procedure FormCreate(Sender: TObject);
@@ -41,27 +41,30 @@ type
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
     FKeyHandled: boolean;
+    FMPVHost: TMPVHost;
+    FThumbs: TThumbs;
   private
     procedure onInitMPV(sender: TObject);
+    procedure onOpenFile(const aURL: string);
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
     function takeScreenshot: string;
   protected
-    procedure createParams(var params: TCreateParams); override;
+    procedure CreateParams(var params: TCreateParams); override;
   public
     function initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
   end;
 
-function showThumbnails(const aFilePath: string; const aRect: TRect): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
 
 implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpConsts,
-  TGlobalVarsClass, TSendAllClass, TThumbsClass,
+  TGlobalVarsClass, TSendAllClass,
   _debugWindow;
 
-function showThumbnails(const aFilePath: string; const aRect: TRect): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
 begin
   var vTF := TThumbsForm.create(NIL);
   try
@@ -76,7 +79,7 @@ end;
 
 {$R *.dfm}
 
-procedure TThumbsForm.createParams(var params: TCreateParams);
+procedure TThumbsForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
@@ -84,14 +87,20 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  case mpv = NIL of FALSE: freeAndNIL(mpv); end;
+  case FMPVHost = NIL of FALSE: freeAndNIL(FMPVHost); end;
+  case FThumbs  = NIL of FALSE: freeAndNIL(FThumbs); end;
+  case mpv      = NIL of FALSE: freeAndNIL(mpv); end;
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
+  FMPVHost := TMPVHost.create(SELF);
+  FMPVHost.parent := SELF;
+  FMPVHost.OnOpenFile := onOpenFile;
+
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
-  mpvInitPlayer(mpv, pnlMPV.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+  mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
 //  mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
 
 end;
@@ -110,8 +119,10 @@ end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
-// start here - create first page of thumbnails from FInitialFolder
-  mpvOpenFile(mpv, FInitialFilePath);
+//  mpvOpenFile(mpv, FInitialFilePath);
+  FThumbs := TThumbs.create;
+  FThumbs.initThumbs(FMPVHost, pnlThumbsHost);
+  FThumbs.playThumbs(FInitialFilePath);
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -128,8 +139,8 @@ begin
   SELF.borderWidth   := 0;
   SELF.color         := clBlack;
 
-  pnlMPV.align          := alClient;
-  pnlThumbsHost.align   := alClient;
+  FMPVHost.align      := alClient;
+  pnlThumbsHost.align := alClient;
 
   pnlThumbsHost.visible := FALSE;
 
@@ -142,6 +153,11 @@ procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
   mpvSetDefaults(mpv, extractFilePath(paramStr(0)));
+end;
+
+procedure TThumbsForm.onOpenFile(const aURL: string);
+begin
+  mpvOpenFile(mpv, aURL);
 end;
 
 

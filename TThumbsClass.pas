@@ -21,58 +21,69 @@ unit TThumbsClass;
 interface
 
 uses
-  vcl.extCtrls, vcl.forms;
+  generics.collections,
+  vcl.extCtrls, vcl.forms,
+  mmpConsts,
+  TMPVHostClass, TPlaylistClass, TThumbClass;
 
 type
   TThumbs = class(TObject)
   strict private
-    FPanel: TPanel;
+    FCurrentFolder:   string;
+    FMPVHost:         TMPVHost;
+    FPlaylist:        TPlaylist;
+    FThumbsHost:      TPanel;
+    FThumbs:          TObjectList<TThumb>;
+  private
+    function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
   public
     constructor create;
     destructor destroy; override;
-    function initThumbnails(const aFilePath: string; const aThumbsHost: TPanel): boolean;
+    function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
+    function playThumbs(const aFilePath: string): boolean;
   end;
-
-//function TN: TThumbnails;
 
 implementation
 
 uses
+  system.sysUtils,
   vcl.controls, vcl.graphics;
 
-//var
-//  gTN: TThumbnails;
-
-//function TN: TThumbnails;
-//begin
-//  case gTN = NIL of TRUE: gTN := TThumbnails.create; end;
-//  result := gTN;
-//end;
-
-{ TThumbnails }
+{ TThumbs }
 
 constructor TThumbs.create;
 begin
   inherited;
-  FPanel := TPanel.create(NIL);
-  FPanel.styleElements := [];
+  FPlaylist := TPlaylist.create;
+  FThumbs := TObjectList<TThumb>.create;
+  FThumbs.ownsObjects := TRUE;
 end;
 
 destructor TThumbs.destroy;
 begin
-  case FPanel = NIL of FALSE: FPanel.free; end;
+  case FPlaylist  = NIL of FALSE: FPlaylist.free; end;
+  case FThumbs    = NIL of FALSE: FThumbs.free;   end;
   inherited;
 end;
 
-function TThumbs.initThumbnails(const aFilePath: string; const aThumbsHost: TPanel): boolean;
+function TThumbs.fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
 begin
-
+  case aPlaylist.hasItems AND (aPlaylist.currentFolder =  aCurrentFolder) of TRUE: aPlaylist.find(aFilePath); end;
+  case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
+  case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(extractFilePath(aFilePath), [mtImage]); end;
 end;
 
-//initialization
-//  gTN := NIL;
+function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
+begin
+  FMPVHost    := aMPVHost;
+  FThumbsHost := aThumbsHost;
+end;
 
-//finalization
-//  case gTN <> NIL of TRUE: gTN.free; end;
+function TThumbs.playThumbs(const aFilePath: string): boolean;
+begin
+  FCurrentFolder := extractFilePath(aFilePath);
+  fillPlaylist(FPlaylist, aFilePath, FCurrentFolder);
+  FMPVHost.openFile(aFilePath);
+end;
 
 end.

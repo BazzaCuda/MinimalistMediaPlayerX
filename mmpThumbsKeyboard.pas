@@ -31,7 +31,7 @@ type
             koGreaterWindow, koToggleControls, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
             koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
-            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize);
+            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koNext, koPrev);
   TKeyDirection = (kdDn, kdUp);
 
 function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
@@ -153,6 +153,10 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(_0) and ctrl                           of TRUE: result := koCloseAll; end;
     case keyUp and keyIs(R) and ctrl                            of TRUE: result := koToggleRepeat; end;
     case keyUp and keyIs(M)                                     of TRUE: result := koMaximize; end;
+    case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koNext; end;
+    case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koPrev; end;
+
+
 
 //    case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist    of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koNone; end;
@@ -161,8 +165,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 //    case keyDn and keyIs(T)                                     of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koNone; end;
 //    case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
-//    case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koNone; end;
-//    case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koNone; end;
 //    case keyUp and keyIs(E)                                     of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_VOLUME_MUTE)                        of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_F10)                                of TRUE: result := koNone; end;

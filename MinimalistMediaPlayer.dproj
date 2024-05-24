@@ -231,6 +231,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpDialogs.pas"/>
         <DCCReference Include="mmpPlaylistUtils.pas"/>
         <DCCReference Include="mmpUtils.pas"/>
+        <DCCReference Include="TMPVHostClass.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

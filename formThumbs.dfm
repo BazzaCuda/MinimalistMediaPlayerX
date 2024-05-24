@@ -3023,14 +3023,6 @@ object ThumbsForm: TThumbsForm
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   TextHeight = 15
-  object pnlMPV: TPanel
-    Left = 8
-    Top = 8
-    Width = 345
-    Height = 185
-    Caption = 'pnlMPV'
-    TabOrder = 0
-  end
   object StatusBar: TStatusBar
     Left = 0
     Top = 425
@@ -3080,11 +3072,11 @@ object ThumbsForm: TThumbsForm
     ExplicitWidth = 624
   end
   object pnlThumbsHost: TPanel
-    Left = 216
-    Top = 232
+    Left = 112
+    Top = 112
     Width = 377
     Height = 161
     Caption = 'pnlThumbsHost'
-    TabOrder = 2
+    TabOrder = 1
   end
 end
