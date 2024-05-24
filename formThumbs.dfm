@@ -3021,6 +3021,7 @@ object ThumbsForm: TThumbsForm
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
+  OnResize = FormResize
   OnShow = FormShow
   TextHeight = 15
   object StatusBar: TStatusBar

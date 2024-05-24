@@ -37,6 +37,7 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
@@ -115,6 +116,12 @@ procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftSta
 begin
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
+end;
+
+procedure TThumbsForm.FormResize(Sender: TObject);
+begin
+  case FThumbs = NIL of TRUE: EXIT; end;
+  FThumbs.playThumbs;
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);

@@ -87,7 +87,12 @@ var
   vIx:        integer;
   vDone:      boolean;
 
-  procedure calcNextThumbPosition;
+  function adjustCurrentItem: boolean;  // guarantee a full page of thumbnails on the last page
+  begin
+    case (FPlaylist.count - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(FPlaylist.count - thumbsPerPage); end;
+  end;
+
+  function calcNextThumbPosition: integer;
   begin
     vThumbLeft := vThumbLeft + FThumbSize + THUMB_MARGIN;
     case (vThumbLeft + FThumbSize) > FThumbsHost.width of
@@ -100,6 +105,8 @@ begin
   case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
 
   FThumbs.clear;
+
+  adjustCurrentItem;
 
   vThumbTop  := THUMB_MARGIN;
   vThumbLeft := THUMB_MARGIN;
