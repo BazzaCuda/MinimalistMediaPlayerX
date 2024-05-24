@@ -76,7 +76,7 @@ uses
   system.sysUtils,
   vcl.forms,
   mmpConsts, mmpPlaylistUtils,
-  formCaptions, formMediaCaption, formPlaylist, formThumbnails,
+  formCaptions, formMediaCaption, formPlaylist, formThumbs,
   TBookmarkClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
 

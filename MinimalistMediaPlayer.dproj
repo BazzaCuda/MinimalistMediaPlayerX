@@ -207,9 +207,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TTickTimerClass.pas"/>
         <DCCReference Include="TUICtrlsClass.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
-        <DCCReference Include="TThumbnailsClass.pas"/>
-        <DCCReference Include="formThumbnails.pas">
-            <Form>ThumbnailsForm</Form>
+        <DCCReference Include="TThumbsClass.pas"/>
+        <DCCReference Include="formThumbs.pas">
+            <Form>ThumbsForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="formReleaseNotes.pas">
@@ -220,8 +220,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpMPVCtrls.pas"/>
         <DCCReference Include="mmpMPVFormatting.pas"/>
         <DCCReference Include="mmpMPVProperties.pas"/>
-        <DCCReference Include="thumbnailsKeyboard.pas"/>
-        <DCCReference Include="TThumbnailClass.pas"/>
+        <DCCReference Include="mmpThumbsKeyboard.pas"/>
+        <DCCReference Include="TThumbClass.pas"/>
         <DCCReference Include="mmpFileUtils.pas"/>
         <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>

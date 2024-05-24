@@ -110,7 +110,7 @@ uses
   system.sysUtils,
   vcl.dialogs,
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpMathUtils, mmpShellUtils, mmpUtils,
-  formAbout, formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbnails, formTimeline,
+  formAbout, formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
   _debugWindow;
 
@@ -648,7 +648,7 @@ begin
 
   delayedHide;
 
-  formThumbnails.showThumbnails(PL.currentFolder, mainFormDimensions); // showModal;
+  formThumbs.showThumbnails(PL.currentItem, mainFormDimensions); // showModal;
   FMainForm.show;
 end;
 
@@ -663,6 +663,7 @@ function TUI.showXY: boolean;
 begin
 ////  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
 ////  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
+  // On modern large, wide screens, it's useful to have this displayed both top left and bottom right, depending on how you're sat/slumped :D
   case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
 end;
 

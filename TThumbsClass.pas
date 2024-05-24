@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit TThumbnailsClass;
+unit TThumbsClass;
 
 interface
 
@@ -24,55 +24,55 @@ uses
   vcl.extCtrls, vcl.forms;
 
 type
-  TThumbnails = class(TObject)
+  TThumbs = class(TObject)
   strict private
     FPanel: TPanel;
   public
     constructor create;
     destructor destroy; override;
-    function initThumbnails(const aForm: TForm): boolean;
+    function initThumbnails(const aFilePath: string; const aThumbsHost: TPanel): boolean;
   end;
 
-function TN: TThumbnails;
+//function TN: TThumbnails;
 
 implementation
 
 uses
   vcl.controls, vcl.graphics;
 
-var
-  gTN: TThumbnails;
+//var
+//  gTN: TThumbnails;
 
-function TN: TThumbnails;
-begin
-  case gTN = NIL of TRUE: gTN := TThumbnails.create; end;
-  result := gTN;
-end;
+//function TN: TThumbnails;
+//begin
+//  case gTN = NIL of TRUE: gTN := TThumbnails.create; end;
+//  result := gTN;
+//end;
 
 { TThumbnails }
 
-constructor TThumbnails.create;
+constructor TThumbs.create;
 begin
   inherited;
   FPanel := TPanel.create(NIL);
   FPanel.styleElements := [];
 end;
 
-destructor TThumbnails.destroy;
+destructor TThumbs.destroy;
 begin
   case FPanel = NIL of FALSE: FPanel.free; end;
   inherited;
 end;
 
-function TThumbnails.initThumbnails(const aForm: TForm): boolean;
+function TThumbs.initThumbnails(const aFilePath: string; const aThumbsHost: TPanel): boolean;
 begin
 
 end;
 
-initialization
-  gTN := NIL;
+//initialization
+//  gTN := NIL;
 
-finalization
-  case gTN <> NIL of TRUE: gTN.free; end;
+//finalization
+//  case gTN <> NIL of TRUE: gTN.free; end;
 
 end.

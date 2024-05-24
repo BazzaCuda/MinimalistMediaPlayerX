@@ -43,7 +43,7 @@ uses
   system.classes, system.sysUtils,
   vcl.controls,
   mmpConsts, mmpDesktopUtils, mmpUtils,
-  formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbnails, formTimeline,
+  formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
 

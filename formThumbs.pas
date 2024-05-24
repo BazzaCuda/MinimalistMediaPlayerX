@@ -16,23 +16,22 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formThumbnails;
+unit formThumbs;
 
 interface
 
 uses
   winApi.messages, winApi.windows,
   system.classes, vcl.graphics, system.sysUtils, system.variants,
-  vcl.Controls, vcl.Dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
-  MPVBasePlayer, Vcl.Imaging.jpeg,
-  thumbnailsKeyboard;
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
+  MPVBasePlayer,
+  mmpThumbsKeyboard;
 
 type
-  TThumbnailsForm = class(TForm)
-    Panel1: TPanel;
+  TThumbsForm = class(TForm)
+    pnlMPV: TPanel;
     StatusBar: TStatusBar;
-    Panel2: TPanel;
-    Image1: TImage;
+    pnlThumbsHost: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -40,7 +39,7 @@ type
     procedure FormShow(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
-    FInitialFolder: string;
+    FInitialFilePath: string;
     FKeyHandled: boolean;
   private
     procedure onInitMPV(sender: TObject);
@@ -49,23 +48,24 @@ type
   protected
     procedure createParams(var params: TCreateParams); override;
   public
-    function initThumbnails(const aFolder: string; const aRect: TRect): boolean;
+    function initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
   end;
 
-function showThumbnails(const aFolder: string; const aRect: TRect): boolean;
+function showThumbnails(const aFilePath: string; const aRect: TRect): boolean;
 
 implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  TGlobalVarsClass, TThumbnailsClass,
+  mmpConsts,
+  TGlobalVarsClass, TSendAllClass, TThumbsClass,
   _debugWindow;
 
-function showThumbnails(const aFolder: string; const aRect: TRect): boolean;
+function showThumbnails(const aFilePath: string; const aRect: TRect): boolean;
 begin
-  var vTF := TThumbnailsForm.create(NIL);
+  var vTF := TThumbsForm.create(NIL);
   try
-    vTF.initThumbnails(aFolder, aRect);
+    vTF.initThumbnails(aFilePath, aRect);
     GV.showingThumbs := TRUE;
     vTF.showModal;
   finally
@@ -76,45 +76,47 @@ end;
 
 {$R *.dfm}
 
-procedure TThumbnailsForm.createParams(var params: TCreateParams);
+procedure TThumbsForm.createParams(var params: TCreateParams);
 begin
   inherited;
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
-procedure TThumbnailsForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case mpv = NIL of FALSE: freeAndNIL(mpv); end;
 end;
 
-procedure TThumbnailsForm.FormCreate(Sender: TObject);
+procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
-  mpvInitPlayer(mpv, panel1.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-  mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
+  mpvInitPlayer(mpv, pnlMPV.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+//  mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
+
 end;
 
-procedure TThumbnailsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
   FKeyHandled := processKeyOp(vKeyOp, shift);
 end;
 
-procedure TThumbnailsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
 end;
 
-procedure TThumbnailsForm.FormShow(Sender: TObject);
+procedure TThumbsForm.FormShow(Sender: TObject);
 begin
 // start here - create first page of thumbnails from FInitialFolder
+  mpvOpenFile(mpv, FInitialFilePath);
 end;
 
-function TThumbnailsForm.initThumbnails(const aFolder: string; const aRect: TRect): boolean;
+function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
 begin
-  FInitialFolder := aFolder;
+  FInitialFilePath := aFilePath;
 
   SELF.top    := aRect.top;
   SELF.left   := aRect.left;
@@ -126,24 +128,24 @@ begin
   SELF.borderWidth   := 0;
   SELF.color         := clBlack;
 
-  panel1.align          := alClient;
-  panel2.align          := alClient;
+  pnlMPV.align          := alClient;
+  pnlThumbsHost.align   := alClient;
 
-  panel2.visible := FALSE;
+  pnlThumbsHost.visible := FALSE;
 
-  panel2.styleElements  := [];
-  panel2.bevelOuter     := bvNone;
-  panel2.color          := clBlack;
+  pnlThumbsHost.styleElements  := [];
+  pnlThumbsHost.bevelOuter     := bvNone;
+  pnlThumbsHost.color          := clBlack;
 end;
 
-procedure TThumbnailsForm.onInitMPV(sender: TObject);
+procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
   mpvSetDefaults(mpv, extractFilePath(paramStr(0)));
 end;
 
 
-function TThumbnailsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
 begin
   result := FALSE;
 
@@ -201,7 +203,7 @@ begin
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:;
-    koCloseAll:;
+    koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
     koToggleRepeat:;
     koAboutBox:;
     koMaximize:;
@@ -213,7 +215,7 @@ begin
   result := TRUE; // key was processed
 end;
 
-function TThumbnailsForm.takeScreenshot: string;
+function TThumbsForm.takeScreenshot: string;
 begin
   var vScreenshotDirectory: string;
   mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
