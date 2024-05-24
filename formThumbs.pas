@@ -29,6 +29,8 @@ uses
   TMPVHostClass, TThumbsClass;
 
 type
+  THostType = (htMPVHost, htThumbsHost);
+
   TThumbsForm = class(TForm)
     StatusBar: TStatusBar;
     FThumbsHost: TPanel;
@@ -52,7 +54,10 @@ type
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
     function showPlaylist: boolean;
     function takeScreenshot: string;
-    function showThumbsHost: boolean;
+    function playNext: boolean;
+    function playPrev: boolean;
+    function whichHost: THostType;
+    function showHost(const aHostType: THostType): boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
   public
@@ -178,10 +183,27 @@ begin
   mpvOpenFile(mpv, aURL);
 end;
 
+function TThumbsForm.playNext: boolean;
+begin
+  case whichHost of
+    htMPVHost:    FThumbs.playNext;
+    htThumbsHost: FThumbs.playThumbs;
+  end;
+end;
+
+function TThumbsForm.playPrev: boolean;
+begin
+  case whichHost of
+    htMPVHost:    FThumbs.playPrev;
+    htThumbsHost: FThumbs.playPrevThumbsPage;
+  end;
+end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
 begin
   result := FALSE;
+
+  var vIx := FThumbs.currentIx;
 
   case aKeyOp of
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
@@ -218,8 +240,9 @@ begin
     koStartOver:;
     koShowCaption:;
     koPlayFirst:;
-    koPlayNext:         begin showThumbsHost; FThumbs.playThumbs; end;
-    koPlayPrev:         FThumbs.playPrevThumbsPage;
+    koPlayThumbs:       begin showHost(htThumbsHost); FThumbs.playThumbs; end;
+    koPlayNext:         playNext;
+    koPlayPrev:         playPrev;
     koPlayLast:;
     koFullscreen:;
     koGreaterWindow:;
@@ -246,7 +269,18 @@ begin
     koSpeedReset:;
   end;
 
+  case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin
+                                                                            FThumbsHost.refresh;
+                                                                            application.processMessages; end;end;end;
+
+
   result := TRUE; // key was processed
+end;
+
+function TThumbsForm.showHost(const aHostType: THostType): boolean;
+begin
+  FMPVHost.visible    := aHostType = htMPVHost;
+  FThumbsHost.visible := aHostType = htThumbsHost;
 end;
 
 function TThumbsForm.showPlaylist: boolean;
@@ -254,12 +288,6 @@ begin
 //  EXIT; // EXPERIMENTAL
   var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
   formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, FThumbsHost.height, TRUE);
-end;
-
-function TThumbsForm.showThumbsHost: boolean;
-begin
-  FThumbsHost.visible := TRUE;
-  FMPVHost.visible    := FALSE;
 end;
 
 function TThumbsForm.takeScreenshot: string;
@@ -270,6 +298,12 @@ begin
 //  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, PL.currentFolder);                  // otherwise screenshots of an image go to Windows/System32 !!
   case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
                                     FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
+end;
+
+function TThumbsForm.whichHost: THostType;
+begin
+  case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
+  case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
 
 end.

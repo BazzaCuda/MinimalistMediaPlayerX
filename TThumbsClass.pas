@@ -33,19 +33,23 @@ type
     FMPVHost:         TMPVHost;
     FThumbsHost:      TPanel;
     FThumbs:          TObjectList<TThumb>;
-    FThumbSize: integer;
+    FThumbSize:       integer;
   private
     function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
-    function generateThumbs(const aItemIx: integer): boolean;
+    function generateThumbs(const aItemIx: integer): integer;
     procedure thumbClick(sender: TObject);
+    function getCurrentIx: integer;
   public
     FPlaylist: TPlaylist;
     constructor create;
     destructor destroy; override;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
+    function playNext: boolean;
+    function playPrev: boolean;
     function playPrevThumbsPage: boolean;
-    function playThumbs(const aFilePath: string = ''): boolean;
+    function playThumbs(const aFilePath: string = ''): integer;
     function thumbsPerPage: integer;
+    property currentIx: integer read getCurrentIx;
     property thumbSize: integer read FThumbSize write FThumbSize;
   end;
 
@@ -82,7 +86,7 @@ begin
   case aPlaylist.hasItems AND (aPlaylist.currentIx = -1) of TRUE: aPlaylist.first; end;
 end;
 
-function TThumbs.generateThumbs(const aItemIx: integer): boolean;
+function TThumbs.generateThumbs(const aItemIx: integer): integer;
 var
   vThumbTop:  integer;
   vThumbLeft: integer;
@@ -126,6 +130,13 @@ begin
 
     vDone := NOT FPlaylist.next;
   until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone;
+
+  result := FPlaylist.currentIx;
+end;
+
+function TThumbs.getCurrentIx: integer;
+begin
+  result := FPlaylist.currentIx;
 end;
 
 function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
@@ -142,17 +153,26 @@ begin
   end;end;
 end;
 
-function TThumbs.playThumbs(const aFilePath: string = ''): boolean;
+function TThumbs.playNext: boolean;
+begin
+  case FPlaylist.next of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+end;
+
+function TThumbs.playPrev: boolean;
+begin
+  case FPlaylist.prev of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+end;
+
+function TThumbs.playThumbs(const aFilePath: string = ''): integer;
 begin
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end;
-  generateThumbs(FPlaylist.currentIx);
+  result := generateThumbs(FPlaylist.currentIx);
 end;
 
 procedure TThumbs.thumbClick(sender: TObject);
 begin
-  debugInteger('tag received', TControl(sender).tag);
   FPlaylist.setIx(TControl(sender).tag);
   FMPVHost.openFile(FPlayList.currentItem);
 end;
