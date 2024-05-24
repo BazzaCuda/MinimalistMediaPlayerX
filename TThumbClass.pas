@@ -39,6 +39,7 @@ uses
 constructor TThumb.create(const aParent: TPanel; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 begin
   inherited Create(NIL);
+
   parent  := aParent;
   width   := THUMB_DEFAULT_SIZE;
   height  := THUMB_DEFAULT_SIZE;

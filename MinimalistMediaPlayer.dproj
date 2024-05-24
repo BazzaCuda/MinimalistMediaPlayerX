@@ -111,7 +111,7 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\Downloads\Waiting for Godot (2001).mkv&quot; &quot;nofile&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\DCIM\Screenshots\Screenshot_20240127_204456_Vivaldi.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>2</VerInfo_MajorVer>
         <VerInfo_MinorVer>2</VerInfo_MinorVer>
         <VerInfo_Release>4</VerInfo_Release>

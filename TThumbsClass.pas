@@ -35,6 +35,7 @@ type
     FThumbs:          TObjectList<TThumb>;
   private
     function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+    function generateThumbs(const aItemIx: integer): boolean;
   public
     FPlaylist:        TPlaylist;
     constructor create;
@@ -74,6 +75,46 @@ begin
   case aPlaylist.hasItems AND (aPlaylist.currentIx = -1)                  of TRUE: aPlaylist.first; end;
 end;
 
+function TThumbs.generateThumbs(const aItemIx: integer): boolean;
+var
+  vThumbTop:  integer;
+  vThumbLeft: integer;
+  vIx:        integer;
+  vDone:      boolean;
+  vThumbSize: integer;
+
+  procedure calcNextThumbPosition;
+  begin
+    vThumbLeft := vThumbLeft + vThumbSize + THUMB_MARGIN;
+    case (vThumbLeft + vThumbSize) > FThumbsHost.width of
+      TRUE: begin
+              vThumbLeft  := THUMB_MARGIN;
+              vThumbTop   := vThumbTop + vThumbSize + THUMB_MARGIN; end;end;
+  end;
+
+begin
+  case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
+
+  vThumbTop  := THUMB_MARGIN;
+  vThumbLeft := THUMB_MARGIN;
+
+  vThumbSize := THUMB_DEFAULT_SIZE; // placeholder for when we allow the user to increase/decrease the size
+
+  repeat
+    FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem));
+    vIx := FThumbs.count - 1;
+
+    FThumbs[vIx].top  := vThumbTop;
+    FThumbs[vIx].left := vThumbLeft;
+
+    vDone := NOT FPlaylist.next;
+
+    calcNextThumbPosition;
+
+  until (vThumbTop + THUMB_DEFAULT_SIZE > FThumbsHost.height) OR vDone;
+
+end;
+
 function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
 begin
   FMPVHost    := aMPVHost;
@@ -84,7 +125,7 @@ function TThumbs.playThumbs(const aFilePath: string): boolean;
 begin
   FCurrentFolder := extractFilePath(aFilePath);
   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder);
-  case FPlaylist.currentIx <> -1 of TRUE: FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem)); end;
+  generateThumbs(FPlaylist.currentIx);
 
 
 
