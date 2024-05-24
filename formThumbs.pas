@@ -202,8 +202,8 @@ begin
     koStartOver:;
     koShowCaption:;
     koPlayFirst:;
-    koPlayNext:;
-    koPlayPrev:;
+    koPlayNext:         FThumbs.playThumbs;
+    koPlayPrev:         FThumbs.playPrevThumbsPage;
     koPlayLast:;
     koFullscreen:;
     koGreaterWindow:;

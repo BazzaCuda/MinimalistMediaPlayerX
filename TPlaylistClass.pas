@@ -58,6 +58,7 @@ type
     function next: boolean;
     function prev: boolean;
     function replaceCurrentItem(const aNewItem: string): boolean;
+    function setIx(const ix: integer): integer;
     function sort: boolean;
     function thisItem(const ix: integer): string;
     function validIx(const ix: integer): boolean;
@@ -338,6 +339,12 @@ begin
     begin
        if Num1<Num2 then Result:=-1 else Result:=1;
     end;
+end;
+
+function TPlaylist.setIx(const ix: integer): integer;
+begin
+  case validIx(ix) of  TRUE: FPlayIx := ix;
+                      FALSE: first; end;
 end;
 
 function TPlaylist.sort: boolean;

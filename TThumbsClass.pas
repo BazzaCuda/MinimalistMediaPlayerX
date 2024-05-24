@@ -33,15 +33,19 @@ type
     FMPVHost:         TMPVHost;
     FThumbsHost:      TPanel;
     FThumbs:          TObjectList<TThumb>;
+    FThumbSize: integer;
   private
     function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function generateThumbs(const aItemIx: integer): boolean;
   public
-    FPlaylist:        TPlaylist;
+    FPlaylist: TPlaylist;
     constructor create;
     destructor destroy; override;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
-    function playThumbs(const aFilePath: string): boolean;
+    function playPrevThumbsPage: boolean;
+    function playThumbs(const aFilePath: string = ''): boolean;
+    function thumbsPerPage: integer;
+    property thumbSize: integer read FThumbSize write FThumbSize;
   end;
 
 implementation
@@ -58,6 +62,7 @@ begin
   FPlaylist := TPlaylist.create;
   FThumbs := TObjectList<TThumb>.create;
   FThumbs.ownsObjects := TRUE;
+  FThumbSize := THUMB_DEFAULT_SIZE;
 end;
 
 destructor TThumbs.destroy;
@@ -81,24 +86,23 @@ var
   vThumbLeft: integer;
   vIx:        integer;
   vDone:      boolean;
-  vThumbSize: integer;
 
   procedure calcNextThumbPosition;
   begin
-    vThumbLeft := vThumbLeft + vThumbSize + THUMB_MARGIN;
-    case (vThumbLeft + vThumbSize) > FThumbsHost.width of
+    vThumbLeft := vThumbLeft + FThumbSize + THUMB_MARGIN;
+    case (vThumbLeft + FThumbSize) > FThumbsHost.width of
       TRUE: begin
               vThumbLeft  := THUMB_MARGIN;
-              vThumbTop   := vThumbTop + vThumbSize + THUMB_MARGIN; end;end;
+              vThumbTop   := vThumbTop + FThumbSize + THUMB_MARGIN; end;end;
   end;
 
 begin
   case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
 
+  FThumbs.clear;
+
   vThumbTop  := THUMB_MARGIN;
   vThumbLeft := THUMB_MARGIN;
-
-  vThumbSize := THUMB_DEFAULT_SIZE; // placeholder for when we allow the user to increase/decrease the size
 
   repeat
     FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem));
@@ -107,12 +111,10 @@ begin
     FThumbs[vIx].top  := vThumbTop;
     FThumbs[vIx].left := vThumbLeft;
 
-    vDone := NOT FPlaylist.next;
-
     calcNextThumbPosition;
 
-  until (vThumbTop + THUMB_DEFAULT_SIZE > FThumbsHost.height) OR vDone;
-
+    vDone := NOT FPlaylist.next;
+  until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone;
 end;
 
 function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
@@ -121,23 +123,26 @@ begin
   FThumbsHost := aThumbsHost;
 end;
 
-function TThumbs.playThumbs(const aFilePath: string): boolean;
+function TThumbs.playPrevThumbsPage: boolean;
 begin
-  FCurrentFolder := extractFilePath(aFilePath);
-  fillPlaylist(FPlaylist, aFilePath, FCurrentFolder);
+  case FPlaylist.isFirst of FALSE:  begin
+                                      FPlaylist.setIx(FPlaylist.currentIx - (thumbsPerPage * 2));
+                                      playThumbs;
+  end;end;
+end;
+
+function TThumbs.playThumbs(const aFilePath: string = ''): boolean;
+begin
+  case aFilePath <> '' of TRUE: begin
+                                  FCurrentFolder := extractFilePath(aFilePath);
+                                  fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end;
+
   generateThumbs(FPlaylist.currentIx);
+end;
 
-
-
-
-
-
-
-
-
-//  FMPVHost.openFile(FPlaylist.currentItem);
-//  FMPVHost.openFile(aFilePath);
-//  FMPVHost.openFile('B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
+function TThumbs.thumbsPerPage: integer;
+begin
+  result := (FThumbsHost.width div (FThumbSize + THUMB_MARGIN)) * ((FThumbsHost.height) div (FThumbSize + THUMB_MARGIN));
 end;
 
 end.
