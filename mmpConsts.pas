@@ -69,6 +69,10 @@ const
   DARK_MODE_SILVER = $C0C0C0; // clSilver
   DARK_MODE_DKGRAY = $808080; // clDkGray
 
+  THUMB_DEFAULT_SIZE  = 160;
+  THUMB_FIRST_TOP     = 10;
+  THUMB_FIRST_LEFT    = 10;
+
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
 type
@@ -142,7 +146,7 @@ const
 (mimeType: 'video/webm';            mediaType: mtVideo; typeName: 'WebM video';                 fileExts: '.webm'),
 (mimeType: 'audio/webm';            mediaType: mtAudio; typeName: 'WebM audio';                 fileExts: '.weba'),
 // Misc formats
-(mimeType: 'video/avi';             mediaType: mtVideo; typeName: 'video Clip';                 fileExts: '.avi.vfw'),
+(mimeType: 'video/avi';             mediaType: mtVideo; typeName: 'video Clip';                 fileExts: '.avii.vfw'),   // .avii = .avi; fudge because of the ambiguity that .avi and .avif now cause. should have been .av1f !!
 (mimeType: '';                      mediaType: mtVideo; typeName: 'DivX video';                 fileExts: '.divx'),
 (mimeType: '';                      mediaType: mtVideo; typeName: '3ivx video';                 fileExts: '.3iv'),
 (mimeType: '';                      mediaType: mtVideo; typeName: 'XVID video';                 fileExts: '.xvid'),

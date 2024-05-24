@@ -72,8 +72,8 @@ type
     function maximize: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const create: boolean = TRUE): boolean;
-    function movePlaylistWindow(const create: boolean = TRUE): boolean;
-    function moveTimelineWindow(const create: boolean = TRUE): boolean;
+    function movePlaylistWindow(const createNew: boolean = TRUE): boolean;
+    function moveTimelineWindow(const createNew: boolean = TRUE): boolean;
     function openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function renameFile(const aFilePath: string): boolean;
@@ -689,16 +689,16 @@ begin
   showHelp(vPt, create);
 end;
 
-function TUI.movePlaylistWindow(const create: boolean = TRUE): boolean;
+function TUI.movePlaylistWindow(const createNew: boolean = TRUE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  showPlaylist(vPt, videoPanel.height, create);
+  showPlaylist(PL, vPt, videoPanel.height, createNew);
 end;
 
-function TUI.moveTimelineWindow(const create: boolean = TRUE): boolean;
+function TUI.moveTimelineWindow(const createNew: boolean = TRUE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
-  showTimeline(vPt, FVideoPanel.width, create);
+  showTimeline(vPt, FVideoPanel.width, createNew);
 end;
 
 function TUI.resetColor: boolean;

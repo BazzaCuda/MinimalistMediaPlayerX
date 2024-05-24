@@ -82,7 +82,8 @@ uses
   mmpDialogs in 'mmpDialogs.pas',
   mmpPlaylistUtils in 'mmpPlaylistUtils.pas',
   mmpUtils in 'mmpUtils.pas',
-  TMPVHostClass in 'TMPVHostClass.pas';
+  TMPVHostClass in 'TMPVHostClass.pas',
+  mmpThumbUtils in 'mmpThumbUtils.pas';
 
 {$R *.res}
 

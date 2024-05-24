@@ -21,9 +21,10 @@ unit formPlaylist;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.ComCtrls;
+  winApi.windows, WinApi.messages,
+  system.sysUtils, system.variants, system.classes,
+  vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  TPlaylistClass;
 
 type
   TPlaylistForm = class(TForm)
@@ -38,6 +39,7 @@ type
     procedure LBKeyPress(Sender: TObject; var Key: Char);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FPL: TPlaylist;
     function  ctrlKeyDown: boolean;
     function  isItemVisible: boolean;
     function  playItemIndex(const aItemIndex: integer): boolean;
@@ -47,18 +49,19 @@ type
   public
     function  highlightCurrentItem: boolean;
     function  loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
+    property  playlist: TPlaylist read FPL write FPL;
   end;
 
 function focusPlaylist: boolean;
 function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
-function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
+function showPlaylist(const aPL: TPlaylist; const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 function shutPlaylist: boolean;
 
 implementation
 
 uses
   ShellAPI, system.strUtils,
-  mmpconsts, TUICtrlsClass, TPlaylistClass, TGlobalVarsClass, TMediaPlayerClass, _debugWindow;
+  mmpconsts, TUICtrlsClass, TGlobalVarsClass, TMediaPlayerClass, _debugWindow;
 
 var
   playlistForm: TPlaylistForm;
@@ -75,13 +78,15 @@ begin
   case playlistForm = NIL of FALSE: playlistForm.loadPlaylistBox(forceReload); end;
 end;
 
-function showPlaylist(const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
+function showPlaylist(const aPL: TPlaylist; const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 begin
   case (playlistForm = NIL) and createNew of TRUE: playlistForm := TPlaylistForm.create(NIL); end;
   case playlistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
 
   case aHeight > UI_DEFAULT_AUDIO_HEIGHT of TRUE: playlistForm.height := aHeight; end;
   screen.cursor := crDefault;
+
+  playlistForm.playlist := aPL;
 
   playlistForm.loadPlaylistBox;
   playlistForm.show;
@@ -148,7 +153,7 @@ end;
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
   case LB.count > 0 of TRUE:  begin
-                                LB.itemIndex := PL.currentIx;
+                                LB.itemIndex := FPL.currentIx;
                                 LB.selected[LB.itemIndex] := TRUE;
                                 case isItemVisible of TRUE: EXIT; end;
                                 var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
@@ -190,7 +195,7 @@ begin
   playlistForm.LB.items.beginUpdate; // prevent flicker when moving the window
 
   try
-    case forceReload or (LB.items.count = 0) of TRUE: PL.getPlaylist(LB); end;
+    case forceReload or (LB.items.count = 0) of TRUE: FPL.getPlaylist(LB); end;
 
     highlightCurrentItem;
   finally
@@ -200,9 +205,9 @@ end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
-  PL.find(PL.thisItem(aItemIndex));
-  MP.play(PL.currentItem);
-  UI.movePlaylistWindow(FALSE);
+  FPL.find(FPL.thisItem(aItemIndex));
+  MP.play(FPL.currentItem);
+  UI.movePlaylistWindow(FALSE); // should be TNotifyEvent!
 end;
 
 function TPlaylistForm.visibleItemCount: integer;

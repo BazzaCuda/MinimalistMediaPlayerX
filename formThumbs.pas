@@ -47,6 +47,7 @@ type
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+    function showPlaylist: boolean;
     function takeScreenshot: string;
   protected
     procedure CreateParams(var params: TCreateParams); override;
@@ -61,6 +62,7 @@ implementation
 uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpConsts,
+  formPlaylist,
   TGlobalVarsClass, TSendAllClass,
   _debugWindow;
 
@@ -101,8 +103,6 @@ begin
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-//  mpvOpenFile(mpv, 'B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
-
 end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -119,7 +119,6 @@ end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
-//  mpvOpenFile(mpv, FInitialFilePath);
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, pnlThumbsHost);
   FThumbs.playThumbs(FInitialFilePath);
@@ -142,7 +141,8 @@ begin
   FMPVHost.align      := alClient;
   pnlThumbsHost.align := alClient;
 
-  pnlThumbsHost.visible := FALSE;
+  FMPVHost.visible      := FALSE;
+  pnlThumbsHost.visible := TRUE;
 
   pnlThumbsHost.styleElements  := [];
   pnlThumbsHost.bevelOuter     := bvNone;
@@ -157,6 +157,8 @@ end;
 
 procedure TThumbsForm.onOpenFile(const aURL: string);
 begin
+  FMPVHost.visible      := TRUE;
+  pnlThumbsHost.visible := FALSE;
   mpvOpenFile(mpv, aURL);
 end;
 
@@ -218,7 +220,7 @@ begin
     koToggleHelp:;
     koBrighterPB:;
     koDarkerPB:;
-    koTogglePlaylist:;
+    koTogglePlaylist:   showPlaylist;
     koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
     koToggleRepeat:;
     koAboutBox:;
@@ -229,6 +231,13 @@ begin
   end;
 
   result := TRUE; // key was processed
+end;
+
+function TThumbsForm.showPlaylist: boolean;
+begin
+//  EXIT; // EXPERIMENTAL
+  var vPt := pnlThumbsHost.ClientToScreen(point(pnlThumbsHost.left + pnlThumbsHost.width, pnlThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
+  formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, pnlThumbsHost.height, TRUE);
 end;
 
 function TThumbsForm.takeScreenshot: string;

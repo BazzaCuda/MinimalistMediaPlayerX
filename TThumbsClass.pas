@@ -31,12 +31,12 @@ type
   strict private
     FCurrentFolder:   string;
     FMPVHost:         TMPVHost;
-    FPlaylist:        TPlaylist;
     FThumbsHost:      TPanel;
     FThumbs:          TObjectList<TThumb>;
   private
     function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
   public
+    FPlaylist:        TPlaylist;
     constructor create;
     destructor destroy; override;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
@@ -68,9 +68,10 @@ end;
 
 function TThumbs.fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
 begin
-  case aPlaylist.hasItems AND (aPlaylist.currentFolder =  aCurrentFolder) of TRUE: aPlaylist.find(aFilePath); end;
   case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
   case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(extractFilePath(aFilePath), [mtImage]); end;
+  case aPlaylist.hasItems AND (aPlaylist.currentFolder =  aCurrentFolder) of TRUE: aPlaylist.find(aFilePath); end; // same folder so find the horse we rode in on
+  case aPlaylist.hasItems AND (aPlaylist.currentIx = -1)                  of TRUE: aPlaylist.first; end;
 end;
 
 function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel): boolean;
@@ -83,7 +84,19 @@ function TThumbs.playThumbs(const aFilePath: string): boolean;
 begin
   FCurrentFolder := extractFilePath(aFilePath);
   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder);
-  FMPVHost.openFile(aFilePath);
+  case FPlaylist.currentIx <> -1 of TRUE: FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem)); end;
+
+
+
+
+
+
+
+
+
+//  FMPVHost.openFile(FPlaylist.currentItem);
+//  FMPVHost.openFile(aFilePath);
+//  FMPVHost.openFile('B:\Images\Asterix the Gaul\16 Asterix in Switzerland\Asterix -07- Asterix in Switzerland - 12.jpg');
 end;
 
 end.

@@ -175,18 +175,22 @@ var
 
 begin
   result := FALSE;
-  PL.clear;
+  clear;
   case directoryExists(aFolder) of FALSE: EXIT; end;
 
   case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
       vExt := lowerCase(extractFileExt(vSR.name));
-      case fileExtOK of TRUE: PL.Add(aFolder + vSR.Name); end;
+      case fileExtOK of TRUE: add(aFolder + vSR.Name); end;
     until FindNext(vSR) <> 0;
   end;
 
   system.sysUtils.FindClose(vSR);
-  PL.sort;
+  sort;
+
+  case hasItems of  TRUE: FPlayIx := 0;
+                   FALSE: FPlayIx := -1; end;
+
   result := TRUE;
 end;
 
