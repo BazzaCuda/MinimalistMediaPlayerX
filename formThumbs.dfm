@@ -3025,7 +3025,7 @@ object ThumbsForm: TThumbsForm
   OnResize = FormResize
   OnShow = FormShow
   TextHeight = 15
-  object StatusBar: TStatusBar
+  object FStatusBar: TStatusBar
     Left = 0
     Top = 425
     Width = 626
@@ -3062,14 +3062,14 @@ object ThumbsForm: TThumbsForm
         Width = 190
       end
       item
-        Alignment = taRightJustify
+        Alignment = taCenter
         Bevel = pbRaised
-        Style = psOwnerDraw
         Text = '123 / 123'
-        Width = 84
+        Width = 100
       end>
     SizeGrip = False
     UseSystemFont = False
+    OnResize = FStatusBarResize
     ExplicitTop = 421
     ExplicitWidth = 624
   end
@@ -3080,5 +3080,10 @@ object ThumbsForm: TThumbsForm
     Height = 161
     Caption = 'FThumbsHost'
     TabOrder = 1
+  end
+  object applicationEvents: TApplicationEvents
+    OnHint = applicationEventsHint
+    Left = 80
+    Top = 40
   end
 end

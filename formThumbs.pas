@@ -26,14 +26,15 @@ uses
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
   mmpThumbsKeyboard,
-  TMPVHostClass, TThumbsClass;
+  TMPVHostClass, TThumbsClass, Vcl.AppEvnts;
 
 type
   THostType = (htMPVHost, htThumbsHost);
 
   TThumbsForm = class(TForm)
-    StatusBar: TStatusBar;
+    FStatusBar: TStatusBar;
     FThumbsHost: TPanel;
+    applicationEvents: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -41,6 +42,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FStatusBarResize(Sender: TObject);
+    procedure applicationEventsHint(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
@@ -58,6 +61,8 @@ type
     function playPrev: boolean;
     function whichHost: THostType;
     function showHost(const aHostType: THostType): boolean;
+    function PlayNextFolder: boolean;
+    function PlayPrevFolder: boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
   public
@@ -70,9 +75,10 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts,
+  mmpConsts, mmpPanelCtrls,
   formPlaylist,
   TGlobalVarsClass, TSendAllClass,
+  mmpFolderNavigation, mmpTicker, mmpUtils,
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
@@ -89,6 +95,13 @@ begin
 end;
 
 {$R *.dfm}
+
+procedure TThumbsForm.applicationEventsHint(Sender: TObject);
+begin
+  case length(application.hint) > 1 of
+    TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT)); //    mmpSetPanelText(FStatusBar, pnName, copy(application.hint, 2, MAXINT));
+                                           FALSE: mmpSetPanelText(FStatusBar, pnHint, application.hint); end;end;
+end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
 begin
@@ -113,6 +126,8 @@ begin
   FMPVHost := TMPVHost.create(SELF);
   FMPVHost.parent := SELF;
   FMPVHost.OnOpenFile := onOpenFile;
+
+  mmpInitStatusBar(FStatusBar);
 
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
@@ -141,7 +156,7 @@ end;
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
   FThumbs := TThumbs.create;
-  FThumbs.initThumbs(FMPVHost, FThumbsHost);
+  FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FThumbs.playThumbs(FInitialFilePath);
 end;
 
@@ -178,9 +193,15 @@ end;
 
 procedure TThumbsForm.onOpenFile(const aURL: string);
 begin
-  FMPVHost.visible      := TRUE;
-  FThumbsHost.visible := FALSE;
-  mpvOpenFile(mpv, aURL);
+  showHost(htMPVHost);
+
+  tickerStart;
+  try
+    mpvOpenFile(mpv, aURL); // don't blink!
+  except end;
+  tickerStop;
+
+  FThumbs.setPanelText(aURL, tickerTotalMs);
 end;
 
 function TThumbsForm.playNext: boolean;
@@ -191,12 +212,28 @@ begin
   end;
 end;
 
+function TThumbsForm.PlayNextFolder: boolean;
+var
+  nextFolder: string;
+begin
+  nextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
+  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$'); end;
+end;
+
 function TThumbsForm.playPrev: boolean;
 begin
   case whichHost of
     htMPVHost:    FThumbs.playPrev;
     htThumbsHost: FThumbs.playPrevThumbsPage;
   end;
+end;
+
+function TThumbsForm.PlayPrevFolder: boolean;
+var
+  prevFolder: string;
+begin
+  prevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
+  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$'); end;
 end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
@@ -236,13 +273,18 @@ begin
 
     koAllReset:         begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
 
+    koPlayThumbs:       begin showHost(htThumbsHost); FThumbs.playThumbs; end;
+    koPlayNext:         playNext;
+    koPlayPrev:         playPrev;
+    koNextFolder:       playNextFolder;
+    koPrevFolder:       playPrevFolder;
+
+
+
     koPausePlay:;
     koStartOver:;
     koShowCaption:;
     koPlayFirst:;
-    koPlayThumbs:       begin showHost(htThumbsHost); FThumbs.playThumbs; end;
-    koPlayNext:         playNext;
-    koPlayPrev:         playPrev;
     koPlayLast:;
     koFullscreen:;
     koGreaterWindow:;
@@ -273,13 +315,13 @@ begin
                                                                             FThumbsHost.refresh;
                                                                             application.processMessages; end;end;end;
 
-
   result := TRUE; // key was processed
 end;
 
 function TThumbsForm.showHost(const aHostType: THostType): boolean;
 begin
   FMPVHost.visible    := aHostType = htMPVHost;
+  FThumbsHost.enabled := aHostType = htThumbsHost;
   FThumbsHost.visible := aHostType = htThumbsHost;
 end;
 
@@ -290,12 +332,16 @@ begin
   formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, FThumbsHost.height, TRUE);
 end;
 
+procedure TThumbsForm.FStatusBarResize(Sender: TObject);
+begin
+  mmpResizeStatusBar(FStatusBar);
+end;
+
 function TThumbsForm.takeScreenshot: string;
 begin
   var vScreenshotDirectory: string;
   mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
 
-//  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, PL.currentFolder);                  // otherwise screenshots of an image go to Windows/System32 !!
   case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
                                     FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
 end;

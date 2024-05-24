@@ -21,10 +21,15 @@ unit mmpMPVFormatting;
 interface
 
 uses
-  MPVBasePlayer;
+  MPVBasePlayer,
+  _debugWindow;
 
+function mmpFormatFileNumber(aFileNumber: integer; aFileCount: integer): string;
 function mmpFormatFileSize(const aSize: int64): string;
+function mmpFormatThumbFileSize(const aSize: int64): string;
+function mmpFormatPageNumber(aPageNumber: integer; aPageCount: integer): string;
 function mmpFormatSeconds(const seconds: integer): string;
+function mmpFormatTickCount(aTickCount: double): string;
 function mmpFormatTime(const seconds: integer): string;
 function mmpFormatWidthHeight(const width, height: integer): string;
 
@@ -42,6 +47,16 @@ implementation
 uses
   system.sysUtils;
 
+function mmpFormatFileNumber(aFileNumber: integer; aFileCount: integer): string;
+begin
+  result := format(' %d / %d ', [aFileNumber, aFileCount])
+end;
+
+function mmpFormatPageNumber(aPageNumber: integer; aPageCount: integer): string;
+begin
+  result := format('page %d / %d', [aPageNumber, aPageCount]);
+end;
+
 function mmpFormatFileSize(const aSize: int64): string;
 begin
  case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
@@ -49,11 +64,23 @@ begin
                                                                 FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
 end;
 
+function mmpFormatThumbFileSize(const aSize: int64): string;
+begin
+ case aSize >= 1052266987 of  TRUE: try result := format('%.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
+                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('%d KB', [trunc(aSize / 1024)]); except end;
+                                                                FALSE: try result := format('%.2f MB', [aSize / 1024 / 1024]); except end;end;end;
+end;
+
 function mmpFormatSeconds(const seconds: integer): string;
 begin
   case seconds < 100 of  TRUE: result := format('%ds', [seconds]);
                         FALSE: result := format('%dm%.2ds', [seconds div 60, seconds mod 60]);
   end;
+end;
+
+function mmpFormatTickCount(aTickCount: double): string;
+begin
+  result := format('%.4fms', [aTickCount]);
 end;
 
 function mmpFormatWidthHeight(const width, height: integer): string;

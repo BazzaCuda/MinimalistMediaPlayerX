@@ -71,7 +71,7 @@ const
 
   THUMB_DEFAULT_SIZE  = 160;
   THUMB_MARGIN        = 10;
-
+  THUMB_NO_IMAGES     = 'No images in this folder';
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
 type

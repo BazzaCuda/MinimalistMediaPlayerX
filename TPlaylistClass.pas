@@ -52,6 +52,7 @@ type
     function formattedItem: string;
     function getPlaylist(aListBox: TListBox): boolean;
     function hasItems: boolean;
+    function indexOf(const anItem: string): integer;
     function isFirst: boolean;
     function isLast: boolean;
     function last: boolean;
@@ -225,6 +226,11 @@ end;
 function TPlaylist.hasItems: boolean;
 begin
   result := FPlaylist.count > 0;
+end;
+
+function TPlaylist.indexOf(const anItem: string): integer;
+begin
+  result := FPlaylist.indexOf(anItem);
 end;
 
 function TPlaylist.isFirst: boolean;

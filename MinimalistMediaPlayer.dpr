@@ -83,7 +83,10 @@ uses
   mmpPlaylistUtils in 'mmpPlaylistUtils.pas',
   mmpUtils in 'mmpUtils.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
-  mmpThumbUtils in 'mmpThumbUtils.pas';
+  mmpThumbUtils in 'mmpThumbUtils.pas',
+  mmpPanelCtrls in 'mmpPanelCtrls.pas',
+  mmpTicker in 'mmpTicker.pas',
+  mmpFolderNavigation in 'mmpFolderNavigation.pas';
 
 {$R *.res}
 

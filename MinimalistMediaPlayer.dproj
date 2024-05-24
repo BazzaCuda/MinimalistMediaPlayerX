@@ -233,6 +233,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpUtils.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
         <DCCReference Include="mmpThumbUtils.pas"/>
+        <DCCReference Include="mmpPanelCtrls.pas"/>
+        <DCCReference Include="mmpTicker.pas"/>
+        <DCCReference Include="mmpFolderNavigation.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
