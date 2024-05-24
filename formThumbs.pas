@@ -38,11 +38,13 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
     FKeyHandled: boolean;
     FMPVHost: TMPVHost;
+    FShowing: boolean;
     FThumbs: TThumbs;
   private
     procedure onInitMPV(sender: TObject);
@@ -88,6 +90,11 @@ begin
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
+procedure TThumbsForm.FormActivate(Sender: TObject);
+begin
+  FShowing := TRUE;
+end;
+
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case FMPVHost = NIL of FALSE: freeAndNIL(FMPVHost); end;
@@ -121,6 +128,7 @@ end;
 procedure TThumbsForm.FormResize(Sender: TObject);
 begin
   case FThumbs = NIL of TRUE: EXIT; end;
+  case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   FThumbs.playThumbs;
 end;
 

@@ -52,7 +52,8 @@ implementation
 
 uses
   system.sysUtils,
-  vcl.controls, vcl.graphics;
+  vcl.controls, vcl.graphics,
+  _debugWindow;
 
 { TThumbs }
 
@@ -75,9 +76,9 @@ end;
 function TThumbs.fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
 begin
   case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
-  case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(extractFilePath(aFilePath), [mtImage]); end;
-  case aPlaylist.hasItems AND (aPlaylist.currentFolder =  aCurrentFolder) of TRUE: aPlaylist.find(aFilePath); end; // same folder so find the horse we rode in on
-  case aPlaylist.hasItems AND (aPlaylist.currentIx = -1)                  of TRUE: aPlaylist.first; end;
+  case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(aCurrentFolder, [mtImage]); end;
+  case aPlaylist.hasItems of TRUE:  aPlaylist.find(aFilePath); end;
+  case aPlaylist.hasItems AND (aPlaylist.currentIx = -1) of TRUE: aPlaylist.first; end;
 end;
 
 function TThumbs.generateThumbs(const aItemIx: integer): boolean;
@@ -143,7 +144,6 @@ begin
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end;
-
   generateThumbs(FPlaylist.currentIx);
 end;
 
