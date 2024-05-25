@@ -4,7 +4,8 @@ Minimalist Media Player
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
 
 VERSION 3 is COMING!! Now with image and thumbnail browsing and manipulation. Stay tuned!!
-![Clipboard Image (22)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/70ae8049-b462-4afa-a983-56e86642e1ad)
+![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
+
 
 
 
