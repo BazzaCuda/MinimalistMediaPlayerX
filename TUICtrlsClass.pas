@@ -649,6 +649,8 @@ function TUI.showThumbnails: boolean;
     vProvisionalHeight  := FMainForm.height - mmpCaptionHeight - THUMB_MARGIN - 20; // try to estimate the width of FThumbsHost (20 = statusBar height)
     vThumbsPer          := round(vProvisionalHeight / vThumbSize);                  // round up so it's always taller than TMMPUI
     result.height       := (vThumbsPer * vThumbSize) + (THUMB_MARGIN * 2) + mmpBorderWidth + mmpCaptionHeight + 20;
+
+    case result.height > mmpScreenHeight of TRUE: result.height := result.height - vThumbSize; end;
   end;
 begin
   shutHelp;

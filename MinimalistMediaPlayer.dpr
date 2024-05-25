@@ -87,7 +87,9 @@ uses
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
   mmpTicker in 'mmpTicker.pas',
   mmpFolderNavigation in 'mmpFolderNavigation.pas',
-  mmpWindowCtrls in 'mmpWindowCtrls.pas';
+  mmpWindowCtrls in 'mmpWindowCtrls.pas',
+  mmpUserFolders in 'mmpUserFolders.pas',
+  mmpFolderUtils in 'mmpFolderUtils.pas';
 
 {$R *.res}
 

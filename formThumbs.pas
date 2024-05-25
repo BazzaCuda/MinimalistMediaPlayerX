@@ -55,6 +55,8 @@ type
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
     function autoCentre: boolean;
+    function deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function playCurrentItem: boolean;
     function playFirst: boolean;
     function playLast: boolean;
     function playNext: boolean;
@@ -62,6 +64,8 @@ type
     function playPrev: boolean;
     function playPrevFolder: boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+    function renameFile(const aFilePath: string): boolean;
+    function saveMoveFile(const aFilePath: string): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
     function takeScreenshot: string;
@@ -78,7 +82,7 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUtils, mmpWindowCtrls,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUtils, mmpWindowCtrls,
   formAboutBox, formPlaylist,
   TGlobalVarsClass, TSendAllClass,
 
@@ -115,6 +119,25 @@ procedure TThumbsForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
+end;
+
+function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): boolean;
+begin
+  case FThumbs.playlist.hasItems of FALSE: EXIT; end;
+
+  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem);
+  case ssCtrl in ashiftState of  TRUE: vMsg := vMsg + '*.*';
+                          FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
+
+  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
+                                                      var vIx := FThumbs.playlist.currentIx;
+                                                      mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState);
+                                                      FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
+                                                      case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
+                                                                                                     FALSE: begin
+                                                                                                              loadPlaylistWindow;
+                                                                                                              case vIx = 0 of  TRUE: playCurrentItem;
+                                                                                                                              FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
 procedure TThumbsForm.FormActivate(Sender: TObject);
@@ -203,6 +226,14 @@ begin
   FThumbs.setPanelText(aURL, tickerTotalMs);
 end;
 
+function TThumbsForm.playCurrentItem: boolean;
+begin
+  case whichHost of
+    htMPVHost:    FThumbs.playCurrentItem;
+    htThumbsHost: FThumbs.playThumbs;
+  end;
+end;
+
 function TThumbsForm.playFirst: boolean;
 begin
   FThumbs.playlist.first;
@@ -258,6 +289,29 @@ begin
   FMPVHost.visible    := aHostType = htMPVHost;
   FThumbsHost.enabled := aHostType = htThumbsHost;
   FThumbsHost.visible := aHostType = htThumbsHost;
+end;
+
+function TThumbsForm.renameFile(const aFilePath: string): boolean;
+var
+  vNewName: string;
+begin
+  case FThumbs.playlist.hasItems of FALSE: EXIT; end;
+
+  vNewName := mmpRenameFile(aFilePath);
+  case vNewName = aFilePath of FALSE: begin
+                                        FThumbs.playlist.replaceCurrentItem(vNewName);
+                                        mmpSetPanelText(FStatusBar, pnSave, 'Renamed: ' + aFilePath); end;end;
+  mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
+end;
+
+function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
+begin
+  case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
+                                                          mmpSetPanelText(FStatusBar, pnHint, 'Moved');
+                                                          FThumbs.playlist.delete(FThumbs.playlist.currentIx);
+                                                          playCurrentItem;
+                                                        end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnHint, 'NOT Moved'); end;
 end;
 
 function TThumbsForm.showPlaylist: boolean;
@@ -351,7 +405,9 @@ begin
     koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
     koGreaterWindow:    begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
     koCentreWindow:     mmpCentreWindow(SELF.handle);
-    koSaveImage:;
+    koRenameFile:       case whichHost of htMPVHost:  renameFile(FThumbs.playlist.currentItem); end;
+    koSaveImage:        case whichHost of htMPVHost:  saveMoveFile(FThumbs.playlist.currentItem); end;
+    koDeleteCurrentItem: case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
 
 
 
@@ -361,8 +417,6 @@ begin
     koToggleControls:;
     koToggleBlackout:;
     koMinimizeWindow:;
-    koDeleteCurrentItem:;
-    koRenameFile:;
     koClipboard:;
     koKeep:;
     koReloadPlaylist:;

@@ -106,6 +106,7 @@ begin
   case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koVolDn; end;
   case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist    of TRUE: result := koVolUp; end;
   case keyDn and keyIs(VK_VOLUME_UP)                          of TRUE: result := koVolUp; end;
+  case keyUp and keyIs(T) and (MP.mediaType = mtImage)        of TRUE: result := koThumbnails; end;
   case keyDn and keyIs(T)                                     of TRUE: result := koTab; end;
   case keyUp and keyIs(VK_SPACE)                              of TRUE: result := koPausePlay; end;
   case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koFrameForwards; end;
@@ -188,7 +189,6 @@ begin
   case keyUp and keyIs(VK_F7)                                 of TRUE: result := koCycleSubs; end;
   case keyUp and keyIs(VK_F8)                                 of TRUE: result := koPrevChapter; end;
   case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNextChapter; end;
-  case keyUp and keyIs(Y)                                     of TRUE: result := koThumbnails; end;
 
   // spare keys
   case keyUp and keyIs(D)                                     of TRUE: result := koNone; end;

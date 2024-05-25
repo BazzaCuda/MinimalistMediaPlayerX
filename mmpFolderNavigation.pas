@@ -28,15 +28,8 @@ function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderD
 implementation
 
 uses
-  system.classes, system.sysUtils;
-
-function RTBS(aFolderPath: string): string;
-begin
-  result := aFolderPath;
-  case (length(result) > 1) and
-     charInSet(result[length(result)], ['\','/']) and
-      ((length(result) <> 3) or (result[2] <> ':')) of TRUE: setLength(result, length(result) - 1); end;
-end;
+  system.classes, system.sysUtils,
+  mmpFolderUtils;
 
 procedure findSubFolders(const aFolderList: TStringList; const aFolderPath: string);
 var

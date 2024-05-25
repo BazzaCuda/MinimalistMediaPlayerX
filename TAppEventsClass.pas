@@ -101,7 +101,7 @@ var
 begin
   keyDnHandled := FALSE;
 
-  shiftState   := KeyboardStateToShiftState;
+  shiftState   := keyboardStateToShiftState;
   case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
 
   focusPlaylist; // if it's being displayed, so it gets keystrokes

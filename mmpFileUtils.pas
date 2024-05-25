@@ -24,6 +24,7 @@ uses
   system.classes;
 
 function mmpConfigFilePath: string;
+function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
@@ -37,13 +38,43 @@ implementation
 uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
-  vcl.dialogs,
-  mmpShellUtils,
-  formInputBox;
+  vcl.dialogs, vcl.forms,
+  mmpFolderUtils, mmpShellUtils,
+  formInputBox,
+  TConfigFileClass;
 
 function mmpConfigFilePath: string;
 begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
+end;
+
+function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean): boolean;
+var
+  vDestFile: string;
+  vDestFolder: string;
+  vCancel: PBOOL;
+  i: integer;
+  vExt: string;
+begin
+  result := FALSE;
+  try
+    vDestFolder := ITBS(CF.value['baseFolder'] + aFolder);
+    vDestFile   := vDestFolder + ExtractFileName(aFilePath);
+    forceDirectories(vDestFolder);
+    vCancel := PBOOL(FALSE);
+    i := 0;
+    case directoryExists(CF.value['baseFolder']) of TRUE: begin
+      vExt := extractFileExt(aFilePath);
+      while fileExists(vDestFile) do begin
+        inc(i);
+        vDestFile := vDestFolder + TPath.getFileNameWithoutExtension(aFilePath) + ' ' + IntToStr(i) + vExt;
+      end;
+
+      result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
+      case result and DeleteIt of TRUE: mmpDeleteThisFile(aFilePath, keyboardStateToShiftState); end;
+    end;end;
+  finally
+  end;
 end;
 
 function mmpDeleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
