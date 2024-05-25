@@ -3,6 +3,13 @@ Minimalist Media Player
 
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
 
+VERSION 3 is COMING!! Now with image and thumbnail browsing and manipulation. Stay tuned!!
+![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
+
+
+
+
+
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
