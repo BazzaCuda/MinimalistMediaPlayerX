@@ -35,7 +35,7 @@ uses
   ALProgressBar in 'ALProgressBar.pas',
   mmpConsts in 'mmpConsts.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
-  formAbout in 'formAbout.pas' {AboutForm},
+  formAboutBox in 'formAboutBox.pas' {AboutBoxForm},
   formMediaCaption in 'formMediaCaption.pas' {MediaCaptionForm},
   formCaptions in 'formCaptions.pas' {CaptionsForm},
   formDownload in 'formDownload.pas' {DownloadForm},
@@ -86,7 +86,8 @@ uses
   mmpThumbUtils in 'mmpThumbUtils.pas',
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
   mmpTicker in 'mmpTicker.pas',
-  mmpFolderNavigation in 'mmpFolderNavigation.pas';
+  mmpFolderNavigation in 'mmpFolderNavigation.pas',
+  mmpWindowCtrls in 'mmpWindowCtrls.pas';
 
 {$R *.res}
 

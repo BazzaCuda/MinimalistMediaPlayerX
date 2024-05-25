@@ -26,10 +26,10 @@ uses
 
 type
   TKeyOp = (koNone,
-            koCloseApp, koPausePlay, koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koPlayFirst, koPlayNext,
+            koCloseApp, koPausePlay, koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koSaveImage, koShowCaption, koPlayFirst, koPlayNext,
             koPlayPrev, koPlayLast, koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset,
             koGreaterWindow, koToggleControls, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
-            koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
+            koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder
             );
@@ -41,7 +41,6 @@ implementation
 
 uses
   winApi.windows,
-  mmpMPVCtrls,
   TGlobalVarsClass,
   _debugWindow;
 
@@ -87,8 +86,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
   function getKeyOp: TKeyOp;
   begin
     result := koNone;
-    case keyUp and keyIs(X)                                     of TRUE: result := koCloseApp; end;
-    case keyUp and keyIs(VK_ESCAPE)                             of TRUE: result := koCloseApp; end;
+    case keyUp and keyIs(X)                                     of TRUE: result := koCloseImageBrowser; end;
+    case keyUp and keyIs(VK_ESCAPE)                             of TRUE: result := koCloseImageBrowser; end;
 
     case keyDn and keyIs(_9) and NOT ctrl                       of TRUE: result := koBrightnessUp; end;
     case keyDn and keyIs(_8)                                    of TRUE: result := koBrightnessDn; end;
@@ -118,7 +117,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(BACKSPACE)                             of TRUE: result := koAllReset; end;
 
     case keyUp and keyIs(VK_SPACE)                              of TRUE: result := koPausePlay; end;
-    case keyUp and keyIs(S)                                     of TRUE: result := koStartOver; end;
+    case keyUp and keyIs(S)                                     of TRUE: result := koSaveImage; end;
     case keyUp and keyIs(HASH)                                  of TRUE: result := koShowCaption; end;
     case keyUp and keyIs(W)                                     of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;

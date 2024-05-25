@@ -25,6 +25,7 @@ uses
   vcl.forms;
 
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
+function mmpProcessMessages: boolean;
 
 implementation
 
@@ -38,6 +39,11 @@ begin
     iStop  := GetTickCount;
     application.processMessages;
   until (iStop  -  iStart) >= dwMilliseconds;
+end;
+
+function mmpProcessMessages: boolean;
+begin
+  application.processMessages;
 end;
 
 

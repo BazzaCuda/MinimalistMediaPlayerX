@@ -58,7 +58,6 @@ type
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
     function arrangeAll: boolean;
     function autoCentreWindow(const aWnd: HWND): boolean;
-    function brighter: boolean;
     function centreCursor: boolean;
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
@@ -79,7 +78,6 @@ type
     function renameFile(const aFilePath: string): boolean;
     function resetColor: boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
-    function showAboutBox: boolean;
     function setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
     function showThumbnails: boolean;
     function showWindow: boolean;
@@ -107,10 +105,10 @@ implementation
 
 uses
   winApi.messages,
-  system.sysUtils,
+  system.math, system.sysUtils,
   vcl.dialogs,
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpMathUtils, mmpShellUtils, mmpUtils,
-  formAbout, formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
+  formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
   _debugWindow;
 
@@ -223,13 +221,6 @@ function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
   case GV.autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
-end;
-
-function TUI.brighter: boolean;
-begin
-  CF.value['caption']     := CF.toHex(MC.brighter);
-  CF.value['timeCaption'] := CF.toHex(ST.brighter);
-  CF.value['progressBar'] := CF.toHex(PB.brighter);
 end;
 
 function TUI.centreCursor: boolean;
@@ -627,18 +618,37 @@ begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
 end;
 
-function TUI.showAboutBox: boolean;
-begin
-  formAbout.showAboutBox(mmpFileVersionFmt('', 'v%d.%d.%d'), mmpFileVersionFmt);
-end;
-
 function TUI.showThumbnails: boolean;
   function mainFormDimensions: TRect;
+  // Taking TUI's height and width as a starting point, we want Image Browser to be at least as wide and as tall so that we get a smooth transition and TUI disappears behind Image Browser.
+  // We also want Image Browser to fit an exact number of thumbnails horizontally and vertically with only a standard THUMB_MARGIN margin around all four sides
+  // This is complicated by the fact that with themes running, Windows doesn't accurately report the window border widths [I think].
+  // Nevertheless, we try to estimate the eventual size of the FThumbsHost TPanel:
+  // Width:   subtract the widths of both window side borders and the left thumb margin
+  //          calculate the number of thumbs that can fit horizontally (rounded up) and multiply back up
+  //          re-add the widths of both window side borders and the left thumb margin.
+  // Height:  subtract the heights of the window caption, the bottom border and the status bar
+  //          calculate the number of thumbs that can fit vertically (rounded up) and multiply back up
+  //          re-add the heights of the window caption, the bottom border and the status bar.
+  var
+    vProvisionalWidth:  integer;
+    vProvisionalHeight: integer;
+    vThumbSize: integer;
+    vThumbsPer: integer;
+    vMod: integer;
   begin
     result.top     := FMainForm.top;
     result.left    := FMainForm.left;
-    result.width   := FMainForm.width;
-    result.height  := FMainForm.height;
+
+    vThumbSize          := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
+
+    vProvisionalWidth   := FMainForm.width - (mmpBorderWidth * 2) - THUMB_MARGIN; // try to estimate the width of FThumbsHost
+    vThumbsPer          := ceil(vProvisionalWidth / vThumbSize);                  // round up so it's always wider than TMMPUI
+    result.width        := (vThumbsPer * vThumbSize) + (mmpBorderWidth * 2) + (THUMB_MARGIN * 2);
+
+    vProvisionalHeight  := FMainForm.height - mmpCaptionHeight - THUMB_MARGIN - 20; // try to estimate the width of FThumbsHost (20 = statusBar height)
+    vThumbsPer          := round(vProvisionalHeight / vThumbSize);                  // round up so it's always taller than TMMPUI
+    result.height       := (vThumbsPer * vThumbSize) + (THUMB_MARGIN * 2) + mmpBorderWidth + mmpCaptionHeight + 20;
   end;
 begin
   shutHelp;

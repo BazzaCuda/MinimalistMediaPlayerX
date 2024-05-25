@@ -23,6 +23,8 @@ interface
 uses
   winApi.windows;
 
+function mmpBorderWidth: integer;
+function mmpCaptionHeight: integer;
 function mmpOffScreen(const aHWND: HWND): boolean;
 function mmpScreenCentre: integer;
 function mmpScreenHeight: integer;
@@ -34,7 +36,20 @@ implementation
 
 uses
   vcl.forms,
-  TGlobalVarsClass;
+  TGlobalVarsClass,
+  _debugWindow;
+
+function mmpBorderWidth: integer;
+begin
+  result := getSystemMetrics(SM_CXSIZEFRAME);
+  debugInteger('border width', result);
+end;
+
+function mmpCaptionHeight: integer;
+begin
+  result := getSystemMetrics(SM_CYCAPTION);
+  debugInteger('caption height', result);
+end;
 
 function mmpOffScreen(const aHWND: HWND): boolean;
 var
@@ -57,7 +72,7 @@ end;
 
 function mmpScreenWidth: integer;
 begin
-  result := GetSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
+  result := getSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
 end;
 
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;

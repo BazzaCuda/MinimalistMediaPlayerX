@@ -75,9 +75,9 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpPlaylistUtils,
-  formCaptions, formMediaCaption, formPlaylist, formThumbs,
-  TBookmarkClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  mmpConsts, mmpFileUtils, mmpPlaylistUtils,
+  formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
+  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
 
 const
@@ -330,7 +330,7 @@ begin
     koGammaReset:        ST.opInfo := MP.gammaReset;
     koSaturationReset:   ST.opInfo := MP.saturationReset;
     koToggleHelp:        UI.toggleHelpWindow;
-    koBrighterPB:        UI.brighter;
+    koBrighterPB:        begin CF.value['caption'] := CF.toHex(MC.brighter); CF.value['timeCaption'] := CF.toHex(ST.brighter); CF.value['progressBar'] := CF.toHex(PB.brighter); end;
     koDarkerPB:          UI.darker;
     koCloseAll:          SA.postToAll(WIN_CLOSEAPP);
     koArrangeAll:        UI.arrangeAll;
@@ -340,7 +340,7 @@ begin
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
     koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
     koToggleEditMode:    UI.toggleTimeline;
-    koAboutBox:          UI.showAboutBox;
+    koAboutBox:          showAboutBox;
     koMaximize:          UI.maximize;
     koCycleAudio:        MP.cycleAudio;
     koCycleSubs:         MP.cycleSubs;

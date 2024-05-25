@@ -31,6 +31,7 @@ type
   strict private
     FCurrentFolder:   string;
     FMPVHost:         TMPVHost;
+    FPlaylist:        TPlaylist;
     FStatusBar:       TStatusBar;
     FThumbsHost:      TPanel;
     FThumbs:          TObjectList<TThumb>;
@@ -41,10 +42,10 @@ type
     procedure thumbClick(sender: TObject);
     function getCurrentIx: integer;
   public
-    FPlaylist: TPlaylist;
     constructor create;
     destructor destroy; override;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel; const aStatusBar: TStatusBar): boolean;
+    function playCurrentItem: boolean;
     function playNext: boolean;
     function playPrev: boolean;
     function playPrevThumbsPage: boolean;
@@ -53,6 +54,7 @@ type
     function thumbsPerPage: integer;
     property currentFolder: string read FCurrentFolder;
     property currentIx: integer read getCurrentIx;
+    property playlist: TPlaylist read FPlaylist;
     property thumbSize: integer read FThumbSize write FThumbSize;
     property statusBar: TStatusBar write FStatusBar;
   end;
@@ -63,7 +65,7 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mmpMPVFormatting,
-  mmpFileUtils, mmpPanelCtrls,
+  mmpFileUtils, mmpPanelCtrls, mmpUtils,
   _debugWindow;
 
 { TThumbs }
@@ -168,17 +170,22 @@ begin
   FStatusBar  := aStatusBar;
 end;
 
+function TThumbs.playCurrentItem: boolean;
+begin
+  case FPlaylist.hasItems of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+end;
+
+function TThumbs.playNext: boolean;
+begin
+  case FPlaylist.next of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+end;
+
 function TThumbs.playPrevThumbsPage: boolean;
 begin
   case FPlaylist.isFirst of FALSE:  begin
                                       FPlaylist.setIx(FPlaylist.currentIx - (thumbsPerPage * 2));
                                       playThumbs;
   end;end;
-end;
-
-function TThumbs.playNext: boolean;
-begin
-  case FPlaylist.next of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
 function TThumbs.playPrev: boolean;
@@ -194,6 +201,7 @@ begin
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
   result := generateThumbs(FPlaylist.currentIx);
+  mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 
 function TThumbs.setPanelText(const aURL: string; aTickCount: double = 0): boolean;
@@ -222,7 +230,7 @@ end;
 
 function TThumbs.thumbsPerPage: integer;
 begin
-  result := (FThumbsHost.width div (FThumbSize + THUMB_MARGIN)) * (FThumbsHost.height div (FThumbSize + THUMB_MARGIN));
+  result := ((FThumbsHost.width - THUMB_MARGIN) div (FThumbSize + THUMB_MARGIN)) * ((FThumbsHost.height - THUMB_MARGIN) div (FThumbSize + THUMB_MARGIN));
 end;
 
 end.

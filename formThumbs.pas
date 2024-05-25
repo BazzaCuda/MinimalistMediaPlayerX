@@ -23,10 +23,10 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.classes, vcl.graphics, system.sysUtils, system.variants,
-  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
+  vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
   mmpThumbsKeyboard,
-  TMPVHostClass, TThumbsClass, Vcl.AppEvnts;
+  TMPVHostClass, TThumbsClass;
 
 type
   THostType = (htMPVHost, htThumbsHost);
@@ -46,6 +46,7 @@ type
     procedure applicationEventsHint(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
+    FAutoCentre: boolean;
     FInitialFilePath: string;
     FKeyHandled: boolean;
     FMPVHost: TMPVHost;
@@ -54,15 +55,18 @@ type
   private
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
+    function autoCentre: boolean;
+    function playFirst: boolean;
+    function playLast: boolean;
+    function playNext: boolean;
+    function playNextFolder: boolean;
+    function playPrev: boolean;
+    function playPrevFolder: boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+    function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
     function takeScreenshot: string;
-    function playNext: boolean;
-    function playPrev: boolean;
     function whichHost: THostType;
-    function showHost(const aHostType: THostType): boolean;
-    function PlayNextFolder: boolean;
-    function PlayPrevFolder: boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
   public
@@ -75,10 +79,10 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpPanelCtrls,
-  formPlaylist,
+  mmpConsts, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUtils, mmpWindowCtrls,
+  formAboutBox, formPlaylist,
   TGlobalVarsClass, TSendAllClass,
-  mmpFolderNavigation, mmpTicker, mmpUtils,
+
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
@@ -103,6 +107,11 @@ begin
                                            FALSE: mmpSetPanelText(FStatusBar, pnHint, application.hint); end;end;
 end;
 
+function TThumbsForm.autoCentre: boolean;
+begin
+  case FAutoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
+end;
+
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
@@ -116,9 +125,9 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  case mpv      = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
   case FMPVHost = NIL of FALSE: freeAndNIL(FMPVHost); end;
   case FThumbs  = NIL of FALSE: freeAndNIL(FThumbs); end;
-  case mpv      = NIL of FALSE: freeAndNIL(mpv); end;
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
@@ -132,6 +141,8 @@ begin
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+
+  FAutoCentre := TRUE;
 end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -150,7 +161,7 @@ procedure TThumbsForm.FormResize(Sender: TObject);
 begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
-  FThumbs.playThumbs;
+  case whichHost of htThumbsHost: FThumbs.playThumbs; end;
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
@@ -166,8 +177,10 @@ begin
 
   SELF.top    := aRect.top;
   SELF.left   := aRect.left;
-  SELF.width  := aRect.Width;
-  SELF.height := aRect.Height;
+  SELF.width  := aRect.width;
+  SELF.height := aRect.height;
+
+//  autoCentre; // defeats the purpose of setting top and left
 
   SELF.borderIcons   := [biSystemMenu, biMaximize];
   SELF.borderStyle   := bsSizeable;
@@ -193,15 +206,34 @@ end;
 
 procedure TThumbsForm.onOpenFile(const aURL: string);
 begin
-  showHost(htMPVHost);
-
   tickerStart;
   try
     mpvOpenFile(mpv, aURL); // don't blink!
   except end;
   tickerStop;
 
+  showHost(htMPVHost);
+
+  mmpInitStatusBar(FStatusBar);
   FThumbs.setPanelText(aURL, tickerTotalMs);
+end;
+
+function TThumbsForm.playFirst: boolean;
+begin
+  FThumbs.playlist.first;
+  case whichHost of
+    htMPVHost:    FThumbs.playCurrentItem;
+    htThumbsHost: FThumbs.playThumbs;
+  end;
+end;
+
+function TThumbsForm.playLast: boolean;
+begin
+  FThumbs.playlist.last;
+  case whichHost of
+    htMPVHost:    FThumbs.playCurrentItem;
+    htThumbsHost: FThumbs.playThumbs;
+  end;
 end;
 
 function TThumbsForm.playNext: boolean;
@@ -212,12 +244,12 @@ begin
   end;
 end;
 
-function TThumbsForm.PlayNextFolder: boolean;
+function TThumbsForm.playNextFolder: boolean;
 var
   nextFolder: string;
 begin
   nextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
-  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$'); end;
+  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$'); end; // because extractFilePath needs a file name
 end;
 
 function TThumbsForm.playPrev: boolean;
@@ -228,12 +260,12 @@ begin
   end;
 end;
 
-function TThumbsForm.PlayPrevFolder: boolean;
+function TThumbsForm.playPrevFolder: boolean;
 var
   prevFolder: string;
 begin
   prevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
-  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$'); end;
+  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$'); end; // because extractFilePath needs a file name
 end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
@@ -244,7 +276,8 @@ begin
 
   case aKeyOp of
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
-    koCloseApp:     close;  // closes this form only
+
+    koCloseImageBrowser:     close;
 
     koBrightnessUp:     mpvBrightnessUp(mpv);
     koBrightnessDn:     mpvBrightnessDn(mpv);
@@ -273,28 +306,29 @@ begin
 
     koAllReset:         begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
 
-    koPlayThumbs:       begin showHost(htThumbsHost); FThumbs.playThumbs; end;
+    koPlayThumbs:       begin FThumbs.playThumbs; showHost(htThumbsHost); end;
     koPlayNext:         playNext;
     koPlayPrev:         playPrev;
     koNextFolder:       playNextFolder;
     koPrevFolder:       playPrevFolder;
+    koPlayFirst:        playFirst;
+    koPlayLast:         playLast;
+    koAboutBox:         showAboutBox;
+    koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
+    koGreaterWindow:    begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
+    koCentreWindow:     mmpCentreWindow(SELF.handle);
+    koSaveImage:;
 
 
 
     koPausePlay:;
-    koStartOver:;
     koShowCaption:;
-    koPlayFirst:;
-    koPlayLast:;
     koFullscreen:;
-    koGreaterWindow:;
     koToggleControls:;
     koToggleBlackout:;
-    koCentreWindow:;
     koMinimizeWindow:;
     koDeleteCurrentItem:;
     koRenameFile:;
-    koEscape:;
     koClipboard:;
     koKeep:;
     koReloadPlaylist:;
@@ -302,9 +336,7 @@ begin
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:   showPlaylist;
-    koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
     koToggleRepeat:;
-    koAboutBox:;
     koMaximize:;
     koSpeedUp:;
     koSpeedDn:;
@@ -329,7 +361,7 @@ function TThumbsForm.showPlaylist: boolean;
 begin
 //  EXIT; // EXPERIMENTAL
   var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
-  formPlaylist.showPlaylist(FThumbs.FPlaylist, vPt, FThumbsHost.height, TRUE);
+  formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
 end;
 
 procedure TThumbsForm.FStatusBarResize(Sender: TObject);
@@ -339,6 +371,7 @@ end;
 
 function TThumbsForm.takeScreenshot: string;
 begin
+  case whichHost of htThumbsHost: EXIT; end;
   var vScreenshotDirectory: string;
   mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
 

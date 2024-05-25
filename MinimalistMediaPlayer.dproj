@@ -106,15 +106,13 @@
         <DCC_ExeOutput>.\$(Platform)\$(Config)\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.2.4.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.2.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\DCIM\Screenshots\Screenshot_20240127_204456_Vivaldi.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
-        <VerInfo_MajorVer>2</VerInfo_MajorVer>
-        <VerInfo_MinorVer>2</VerInfo_MinorVer>
-        <VerInfo_Release>4</VerInfo_Release>
+        <Debugger_RunParams>&quot;B:\Images\twitter-2022-11-24\703355166783901696-CcLRy_GWEAAEpBL.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
+        <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -156,8 +154,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
-        <DCCReference Include="formAbout.pas">
-            <Form>AboutForm</Form>
+        <DCCReference Include="formAboutBox.pas">
+            <Form>AboutBoxForm</Form>
         </DCCReference>
         <DCCReference Include="formMediaCaption.pas">
             <Form>MediaCaptionForm</Form>
@@ -236,6 +234,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpPanelCtrls.pas"/>
         <DCCReference Include="mmpTicker.pas"/>
         <DCCReference Include="mmpFolderNavigation.pas"/>
+        <DCCReference Include="mmpWindowCtrls.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

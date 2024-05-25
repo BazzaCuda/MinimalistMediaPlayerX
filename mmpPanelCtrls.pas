@@ -21,7 +21,8 @@ unit mmpPanelCtrls;
 interface
 
 uses
-  vcl.comCtrls;
+  vcl.comCtrls,
+  mmpUtils;
 
 type
   TPanelName = (pnName, pnNumb, pnSize, pnHint, pnSave, pnVers);
@@ -75,6 +76,7 @@ begin
     pnSave: aStatusBar.panels[PANEL_SAVE].text := aText;
     pnVers: aStatusBar.panels[PANEL_VERS].text := aText;
   end;
+  aStatusBar.refresh;
 end;
 
 end.

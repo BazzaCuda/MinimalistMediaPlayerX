@@ -16,17 +16,17 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit formAbout;
+unit formAboutBox;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Imaging.pngimage, Vcl.ExtCtrls, Vcl.StdCtrls;
+  winApi.windows, winApi.messages,
+  system.sysUtils, system.variants, system.classes,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls;
 
 type
-  TAboutForm = class(TForm)
+  TAboutBoxForm = class(TForm)
     Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
@@ -59,23 +59,24 @@ type
     function setWhatsNew(const aHasReleaseNotes: boolean): boolean;
   end;
 
-function showAboutBox(const thisVersion: string; const buildVersion: string): boolean;
+function showAboutBox(const thisVersion: string; const buildVersion: string): boolean; overload;
+function showAboutBox: boolean; overload;
 
 implementation
 
 uses
   shellAPI,
-  mmpUtils,
+  mmpFileUtils, mmpUtils,
   formReleaseNotes,
   TGlobalVarsClass, TProgramUpdatesClass,
   _debugWindow;
 
 {$R *.dfm}
 
-function showAboutBox(const thisVersion: string; const buildVersion: string): boolean;
+function showAboutBox(const thisVersion: string; const buildVersion: string): boolean; overload;
 begin
   GV.userInput := TRUE;
-  with TAboutForm.create(NIL) do
+  with TAboutBoxForm.create(NIL) do
   try
     setCopyrightYear(currentYear);
     setReleaseVersion(thisVersion);
@@ -91,64 +92,69 @@ begin
   end;
 end;
 
-procedure TAboutForm.btnCloseClick(Sender: TObject);
+function showAboutBox: boolean; overload;
+begin
+  showAboutBox(mmpFileVersionFmt('', 'v%d.%d.%d'), mmpFileVersionFmt);
+end;
+
+procedure TAboutBoxForm.btnCloseClick(Sender: TObject);
 begin
   modalResult := mrOK;
 end;
 
-procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
+procedure TAboutBoxForm.btnWhatsNewClick(Sender: TObject);
 begin
   showReleaseNotes(PU.releaseTag);
 end;
 
-function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
+function TAboutBoxForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
 begin
   case latestVersion[1] = 'v' of FALSE: EXIT; end;
   case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
-procedure TAboutForm.FormShow(Sender: TObject);
+procedure TAboutBoxForm.FormShow(Sender: TObject);
 begin
   case btnWhatsNew.visible of TRUE: btnWhatsNew.setFocus; end;
   btnClose.cancel := TRUE;
 end;
 
-procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
+procedure TAboutBoxForm.lblWebsiteURLClick(Sender: TObject);
 begin
   shellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest', '', '', SW_SHOW);
 end;
 
-procedure TAboutForm.lblWebsiteURLMouseEnter(Sender: TObject);
+procedure TAboutBoxForm.lblWebsiteURLMouseEnter(Sender: TObject);
 begin
   lblWebsiteURL.font.style := [fsUnderline];
 end;
 
-procedure TAboutForm.lblWebsiteURLMouseLeave(Sender: TObject);
+procedure TAboutBoxForm.lblWebsiteURLMouseLeave(Sender: TObject);
 begin
   lblWebsiteURL.font.style := [];
 end;
 
-function TAboutForm.setBuildVersion(const aBuild: string): boolean;
+function TAboutBoxForm.setBuildVersion(const aBuild: string): boolean;
 begin
   lblBuildVersion.Caption := aBuild;
 end;
 
-function TAboutForm.setCopyrightYear(const aYear: WORD): boolean;
+function TAboutBoxForm.setCopyrightYear(const aYear: WORD): boolean;
 begin
   lblCopyright.caption := lblCopyright.caption + intToStr(aYear);
 end;
 
-function TAboutForm.setLatestReleaseVersion(const aRelease: string): boolean;
+function TAboutBoxForm.setLatestReleaseVersion(const aRelease: string): boolean;
 begin
   lblLatestReleaseVersion.caption := aRelease;
 end;
 
-function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
+function TAboutBoxForm.setReleaseVersion(const aRelease: string): boolean;
 begin
   lblReleaseVersion.Caption := aRelease;
 end;
 
-function TAboutForm.setWhatsNew(const aHasReleaseNotes: boolean): boolean;
+function TAboutBoxForm.setWhatsNew(const aHasReleaseNotes: boolean): boolean;
 begin
   btnWhatsNew.visible := aHasReleaseNotes;
   btnWhatsNew.default := aHasReleaseNotes;

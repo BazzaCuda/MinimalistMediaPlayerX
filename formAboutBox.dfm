@@ -1,4 +1,4 @@
-object AboutForm: TAboutForm
+object AboutBoxForm: TAboutBoxForm
   Left = 0
   Top = 0
   BorderStyle = bsDialog

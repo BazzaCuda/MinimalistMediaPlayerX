@@ -54,6 +54,7 @@ var
 begin
   coInitialize(NIL); //move this to app startup code
 
+try
   try
     oleCheck(SHGetMalloc(Malloc));
     oleCheck(SHGetDesktopFolder(DesktopFolder));
@@ -89,6 +90,7 @@ begin
     sourceFolder  := NIL;
     malloc        := NIL;
   end;
+except end;
 end;
 
 end.

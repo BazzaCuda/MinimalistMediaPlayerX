@@ -40,7 +40,7 @@ implementation
 
 uses
   winAPI.messages,
-  system.classes, system.sysUtils,
+  system.classes, system.sysUtils, system.types,
   vcl.controls,
   mmpConsts, mmpDesktopUtils, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,

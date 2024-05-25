@@ -22,7 +22,8 @@ interface
 
 uses
   winAPI.messages, winAPI.windows,
-  mmpConsts;
+  mmpConsts,
+  formAboutBox;
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 function sendSysCommandClose(const aHWND: HWND): boolean;
@@ -34,7 +35,7 @@ uses
 
 function doSysCommand(var Message: TWMSysCommand): boolean;
 begin
-  case Message.CmdType of MENU_ABOUT_ID:  UI.showAboutBox; end;
+  case Message.CmdType of MENU_ABOUT_ID:  showAboutBox; end;
   case Message.CmdType of MENU_HELP_ID:   UI.toggleHelpWindow; end;
 end;
 
