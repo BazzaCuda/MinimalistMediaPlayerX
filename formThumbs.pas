@@ -46,7 +46,6 @@ type
     procedure applicationEventsHint(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
-    FAutoCentre: boolean;
     FInitialFilePath: string;
     FKeyHandled: boolean;
     FMPVHost: TMPVHost;
@@ -109,7 +108,7 @@ end;
 
 function TThumbsForm.autoCentre: boolean;
 begin
-  case FAutoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
+  case GV.autoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
 end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
@@ -141,20 +140,6 @@ begin
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-
-  FAutoCentre := TRUE;
-end;
-
-procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
-  FKeyHandled := processKeyOp(vKeyOp, shift);
-end;
-
-procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-  processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -180,7 +165,7 @@ begin
   SELF.width  := aRect.width;
   SELF.height := aRect.height;
 
-//  autoCentre; // defeats the purpose of setting top and left
+//  autoCentre;
 
   SELF.borderIcons   := [biSystemMenu, biMaximize];
   SELF.borderStyle   := bsSizeable;
@@ -268,6 +253,55 @@ begin
   case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$'); end; // because extractFilePath needs a file name
 end;
 
+function TThumbsForm.showHost(const aHostType: THostType): boolean;
+begin
+  FMPVHost.visible    := aHostType = htMPVHost;
+  FThumbsHost.enabled := aHostType = htThumbsHost;
+  FThumbsHost.visible := aHostType = htThumbsHost;
+end;
+
+function TThumbsForm.showPlaylist: boolean;
+begin
+//  EXIT; // EXPERIMENTAL
+  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
+  formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
+end;
+
+procedure TThumbsForm.FStatusBarResize(Sender: TObject);
+begin
+  mmpResizeStatusBar(FStatusBar);
+end;
+
+function TThumbsForm.takeScreenshot: string;
+begin
+  case whichHost of htThumbsHost: EXIT; end;
+  var vScreenshotDirectory: string;
+  mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
+
+  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
+                                    FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
+end;
+
+function TThumbsForm.whichHost: THostType;
+begin
+  case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
+  case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
+end;
+
+//==========
+
+procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
+  FKeyHandled := processKeyOp(vKeyOp, shift);
+end;
+
+procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
+  processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
+end;
+
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
 begin
   result := FALSE;
@@ -343,46 +377,11 @@ begin
     koSpeedReset:;
   end;
 
-  case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin
+  case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin // has the thumbnail page been recreated starting at a different item Ix ?
                                                                             FThumbsHost.refresh;
                                                                             application.processMessages; end;end;end;
 
   result := TRUE; // key was processed
-end;
-
-function TThumbsForm.showHost(const aHostType: THostType): boolean;
-begin
-  FMPVHost.visible    := aHostType = htMPVHost;
-  FThumbsHost.enabled := aHostType = htThumbsHost;
-  FThumbsHost.visible := aHostType = htThumbsHost;
-end;
-
-function TThumbsForm.showPlaylist: boolean;
-begin
-//  EXIT; // EXPERIMENTAL
-  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
-  formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
-end;
-
-procedure TThumbsForm.FStatusBarResize(Sender: TObject);
-begin
-  mmpResizeStatusBar(FStatusBar);
-end;
-
-function TThumbsForm.takeScreenshot: string;
-begin
-  case whichHost of htThumbsHost: EXIT; end;
-  var vScreenshotDirectory: string;
-  mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
-
-  case vScreenshotDirectory = '' of  TRUE: result := mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
-                                    FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
-end;
-
-function TThumbsForm.whichHost: THostType;
-begin
-  case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
-  case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
 
 end.

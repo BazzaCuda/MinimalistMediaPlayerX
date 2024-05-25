@@ -42,13 +42,11 @@ uses
 function mmpBorderWidth: integer;
 begin
   result := getSystemMetrics(SM_CXSIZEFRAME);
-  debugInteger('border width', result);
 end;
 
 function mmpCaptionHeight: integer;
 begin
   result := getSystemMetrics(SM_CYCAPTION);
-  debugInteger('caption height', result);
 end;
 
 function mmpOffScreen(const aHWND: HWND): boolean;

@@ -34,8 +34,8 @@ uses
 
 function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
 const
-  dx = 50;
-  dy = 30;
+  dx = 170; // this will need to be changed when the user can alter the size of the thumbnails
+  dy = 170;
 var
   newW: integer;
   newH: integer;
@@ -63,8 +63,6 @@ begin
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
-
-//  mmpProcessMessages; // EXPERIMENTAL
 end;
 
 function mmpCentreWindow(const aWnd: HWND): boolean;
