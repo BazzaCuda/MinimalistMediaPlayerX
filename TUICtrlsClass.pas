@@ -677,7 +677,7 @@ begin
   shutHelp;
   shutPlaylist;
   shutTimeline;
-  MP.pausePlay;
+  case MP.ImagesPaused of FALSE: MP.pausePlay; end;
 
   delayedHide;
 

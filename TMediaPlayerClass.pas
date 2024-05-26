@@ -130,6 +130,7 @@ type
     property duration:            integer      read getDuration;
     property formattedDuration:   string       read getFormattedDuration;
     property formattedTime:       string       read getFormattedTime;
+    property ImagesPaused:        boolean      read FImagePaused;
     property keepOpen:            boolean                         write setKeepOpen;
     property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
