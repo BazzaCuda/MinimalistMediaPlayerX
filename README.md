@@ -1,4 +1,4 @@
-Minimalist Media Player
+MMP - Minimalist Media Player
 =====================
 
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
