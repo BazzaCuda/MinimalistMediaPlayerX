@@ -332,7 +332,7 @@ end;
 
 function TThumbsForm.showPlaylist: boolean;
 begin
-//  EXIT; // EXPERIMENTAL
+  EXIT; // EXPERIMENTAL
   var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
   formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
 end;
