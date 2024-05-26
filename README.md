@@ -3,7 +3,7 @@ MMP - Minimalist Media Player
 
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
 
-VERSION 3 is COMING!! Now with image and thumbnail browsing and manipulation. Stay tuned!!
+VERSION 3 is COMING!! Now with image and thumbnail browsing and image manipulation. Stay tuned!!
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
 
