@@ -89,6 +89,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     result := koNone;
     case keyUp and keyIs(X)                                               of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(VK_ESCAPE)                                       of TRUE: result := koCloseImageBrowser; end;
+    case keyUp and keyIs(_0) and ctrl                                     of TRUE: result := koCloseAll; end;
 
     case keyDn and keyIs(_9) and NOT ctrl                                 of TRUE: result := koBrightnessUp; end;
     case keyDn and keyIs(_8)                                              of TRUE: result := koBrightnessDn; end;
@@ -157,7 +158,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;
     case keyDn and keyIs(B) and ctrl and shift                            of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(P)                                               of TRUE: result := koTogglePlaylist; end;
-    case keyUp and keyIs(_0) and ctrl                                     of TRUE: result := koCloseAll; end;
     case keyUp and keyIs(R) and ctrl                                      of TRUE: result := koToggleRepeat; end;
     case keyUp and keyIs(M)                                               of TRUE: result := koMaximize; end;
     case keyDn and keyIs(VK_RIGHT) and not ctrl                           of TRUE: result := koPlayNext; end;

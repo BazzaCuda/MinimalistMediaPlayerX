@@ -101,6 +101,7 @@ begin
   Application.ShowMainForm := FALSE;
   Application.MainFormOnTaskbar := TRUE;
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
+  application.title := 'MMP - Minimalist Media Player';
   Application.CreateForm(TMMPUI, MMPUI);
   Application.Run;
 end.

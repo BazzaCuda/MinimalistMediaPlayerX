@@ -57,6 +57,7 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
+    function keepFile(const aFilePath: string): boolean;
     function playCurrentItem: boolean;
     function playFirst: boolean;
     function playLast: boolean;
@@ -209,6 +210,21 @@ begin
   FThumbsHost.bevelOuter     := bvNone;
   FThumbsHost.color          := clBlack;
 end;
+
+
+function TThumbsForm.keepFile(const aFilePath: string): boolean;
+var
+  vNewName: string;
+begin
+  case FThumbs.playlist.hasItems of FALSE: EXIT; end;
+
+  vNewName := mmpRenameFile(aFilePath, '_' + mmpFileNameWithoutExtension(aFilePath));
+  case vNewName <> aFilePath of  TRUE: begin
+                                        FThumbs.playlist.replaceCurrentItem(vNewName);
+                                        mmpSetPanelText(FStatusBar, pnVers, 'Kept'); end;
+                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Kept'); end;
+end;
+
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
@@ -364,6 +380,12 @@ procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftS
 begin
   mmpResetPanelVers(FStatusBar);
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
+
+  case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
+    of  TRUE: begin
+                FKeyHandled := TRUE; // don't let the user accidentally change folders or image with the arrow keys after adjusting the image somehow
+                EXIT; end;end;
+
   FKeyHandled := processKeyOp(vKeyOp, shift);
 end;
 
@@ -385,47 +407,48 @@ begin
 
     koCloseImageBrowser:     close;
 
-    koBrightnessUp:     mpvBrightnessUp(mpv);
-    koBrightnessDn:     mpvBrightnessDn(mpv);
-    koBrightnessReset:  mpvBrightnessReset(mpv);
-    koContrastUp:       mpvContrastUp(mpv);
-    koContrastDn:       mpvContrastDn(mpv);
-    koContrastReset:    mpvContrastReset(mpv);
-    koGammaUp:          mpvGammaUp(mpv);
-    koGammaDn:          mpvGammaDn(mpv);
-    koGammaReset:       mpvGammaReset(mpv);
-    koPanLeft:          mpvPanLeft(mpv);
-    koPanRight:         mpvPanRight(mpv);
-    koPanUp:            mpvPanUp(mpv);
-    koPanDn:            mpvPanDn(mpv);
-    koPanReset:         mpvPanReset(mpv);
-    koRotateR:          mpvRotateRight(mpv);
-    koRotateL:          mpvRotateLeft(mpv);
-    koRotateReset:      mpvRotateReset(mpv);
-    koSaturationUp:     mpvSaturationUp(mpv);
-    koSaturationDn:     mpvSaturationDn(mpv);
-    koSaturationReset:  mpvSaturationReset(mpv);
-    koScreenshot:       takeScreenshot;
-    koZoomIn:           mpvZoomIn(mpv);
-    koZoomOut:          mpvZoomOut(mpv);
-    koZoomReset:        mpvZoomReset(mpv);
+    koBrightnessUp:       mpvBrightnessUp(mpv);
+    koBrightnessDn:       mpvBrightnessDn(mpv);
+    koBrightnessReset:    mpvBrightnessReset(mpv);
+    koContrastUp:         mpvContrastUp(mpv);
+    koContrastDn:         mpvContrastDn(mpv);
+    koContrastReset:      mpvContrastReset(mpv);
+    koGammaUp:            mpvGammaUp(mpv);
+    koGammaDn:            mpvGammaDn(mpv);
+    koGammaReset:         mpvGammaReset(mpv);
+    koPanLeft:            mpvPanLeft(mpv);
+    koPanRight:           mpvPanRight(mpv);
+    koPanUp:              mpvPanUp(mpv);
+    koPanDn:              mpvPanDn(mpv);
+    koPanReset:           mpvPanReset(mpv);
+    koRotateR:            mpvRotateRight(mpv);
+    koRotateL:            mpvRotateLeft(mpv);
+    koRotateReset:        mpvRotateReset(mpv);
+    koSaturationUp:       mpvSaturationUp(mpv);
+    koSaturationDn:       mpvSaturationDn(mpv);
+    koSaturationReset:    mpvSaturationReset(mpv);
+    koScreenshot:         takeScreenshot;
+    koZoomIn:             mpvZoomIn(mpv);
+    koZoomOut:            mpvZoomOut(mpv);
+    koZoomReset:          mpvZoomReset(mpv);
 
-    koAllReset:         begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
+    koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
 
-    koPlayThumbs:       begin FThumbs.playThumbs; showHost(htThumbsHost); end;
-    koPlayNext:         playNext;
-    koPlayPrev:         playPrev;
-    koNextFolder:       playNextFolder;
-    koPrevFolder:       playPrevFolder;
-    koPlayFirst:        playFirst;
-    koPlayLast:         playLast;
-    koAboutBox:         showAboutBox;
-    koCloseAll:         begin close; SA.postToAll(WIN_CLOSEAPP); end;
-    koGreaterWindow:    begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
-    koCentreWindow:     mmpCentreWindow(SELF.handle);
-    koRenameFile:       case whichHost of htMPVHost:  renameFile(FThumbs.playlist.currentItem); end;
-    koSaveImage:        case whichHost of htMPVHost:  saveMoveFile(FThumbs.playlist.currentItem); end;
-    koDeleteCurrentItem: case whichHost of htMPVHost: deleteCurrentItem; end;
+    koPlayThumbs:         begin FThumbs.playThumbs; showHost(htThumbsHost); end;
+    koPlayNext:           playNext;
+    koPlayPrev:           playPrev;
+    koNextFolder:         playNextFolder;
+    koPrevFolder:         playPrevFolder;
+    koPlayFirst:          playFirst;
+    koPlayLast:           playLast;
+    koAboutBox:           showAboutBox;
+    koCloseAll:           begin close; SA.postToAll(WIN_CLOSEAPP); end;
+    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
+    koCentreWindow:       mmpCentreWindow(SELF.handle);
+    koRenameFile:         case whichHost of htMPVHost:  renameFile(FThumbs.playlist.currentItem); end;
+    koSaveImage:          case whichHost of htMPVHost:  saveMoveFile(FThumbs.playlist.currentItem); end;
+    koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
+    koKeep:               keepFile(FThumbs.playlist.currentItem);
 
 
 
@@ -436,12 +459,11 @@ begin
     koToggleBlackout:;
     koMinimizeWindow:;
     koClipboard:;
-    koKeep:;
     koReloadPlaylist:;
     koToggleHelp:;
     koBrighterPB:;
     koDarkerPB:;
-    koTogglePlaylist:   showPlaylist;
+    koTogglePlaylist:     showPlaylist;
     koToggleRepeat:;
     koMaximize:;
     koSpeedUp:;

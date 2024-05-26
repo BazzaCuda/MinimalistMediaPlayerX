@@ -21,8 +21,10 @@ unit mmpMPVProperties;
 interface
 
 uses
-  MPVBasePlayer;
+  MPVBasePlayer,
+  _debugWindow;
 
+function mpvAdjusted(const mpv: TMPVBasePlayer): boolean;
 function mpvDuration(const mpv: TMPVBasePlayer): integer;
 function mpvFileName(const mpv: TMPVBasePlayer): string;
 function mpvPosition(const mpv: TMPVBasePlayer): integer;
@@ -32,7 +34,7 @@ function mpvVideoWidth(const mpv: TMPVBasePlayer): int64;
 
 //==========
 
-function mpvGetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; var aString: string): TMPVErrorCode;
+function mpvGetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; var  aString: string): TMPVErrorCode;
 function mpvSetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; const aValue: string): TMPVErrorCode;
 function mpvSetKeepOpen(const mpv: TMPVBasePlayer; const value: boolean): boolean;
 function mpvSetVolume(const mpv: TMPVBasePlayer; const aVolume: integer): boolean;
@@ -40,6 +42,32 @@ function mpvSetVolume(const mpv: TMPVBasePlayer; const aVolume: integer): boolea
 function mpvSetDefaults(const mpv: TMPVBasePlayer; const aExePath: string): boolean;
 
 implementation
+
+function mpvAdjusted(const mpv: TMPVBasePlayer): boolean;
+var
+  brightness: int64;
+  contrast: int64;
+  gamma: int64;
+  panX: double;
+  panY: double;
+  rot: int64;
+  saturation: int64;
+  zoomX, zoomY: double;
+begin
+  mpv.GetPropertyInt64('brightness', brightness);
+  mpv.GetPropertyInt64('contrast', contrast);
+  mpv.GetPropertyInt64('gamma', gamma);
+  mpv.getPropertyDouble('video-pan-x', panX);
+  mpv.getPropertyDouble('video-pan-y', panY);
+  mpv.getPropertyInt64('video-rotate', rot);
+  mpv.GetPropertyInt64('saturation', saturation);
+  mpv.getPropertyDouble('video-scale-x', zoomX);
+  mpv.getPropertyDouble('video-scale-y', zoomY);
+  result := brightness + contrast + gamma + panX + panY + rot + saturation + zoomX + zoomY <> 2; // video-scale-x = 1; video-scale-y = 1
+
+//  debugFormat('brightness: %d, contrast: %d, gamma: %d, panX: %f, panY: %f, rot: %d, saturation: %d, zoomX: %f, zoomY: %f', [brightness, contrast, gamma, panX, panY, rot, saturation, zoomX, zoomY]);
+//  debugBoolean('mpvAdjusted', result);
+end;
 
 function mpvDuration(const mpv: TMPVBasePlayer): integer;
 begin
