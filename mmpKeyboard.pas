@@ -111,9 +111,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(T) and (MP.mediaType = mtImage)                  of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(Y)                                               of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T) and (MP.mediaType <> mtImage)                 of TRUE: result := koTab; end;
-    case keyDn and keyIs(VK_SPACE) and (MP.mediaType = mtImage)           of TRUE: result := koPlayNext; end;
-    case keyDn and keyIs(VK_SPACE) and ctrl and (MP.mediaType = mtImage)  of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(VK_SPACE) and (MP.mediaType <> mtImage)          of TRUE: result := koPausePlay; end;
+    case keyUp and keyIs(VK_SPACE)                                        of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_RIGHT) and (MP.mediaType <> mtVideo)          of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_LEFT)  and (MP.mediaType <> mtVideo)          of TRUE: result := koPlayPrev; end;
     case keyDn and keyIs(VK_RIGHT) and (MP.mediaType = mtVideo)           of TRUE: result := koFrameForwards; end;
