@@ -24,6 +24,7 @@ uses
   system.classes;
 
 function mmpCentreWindow(const aWnd: HWND): boolean;
+function mmpFocusWindow(const aWnd: HWND): boolean;
 function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
 
 implementation
@@ -31,6 +32,32 @@ implementation
 uses
   mmpDesktopUtils,
   mmpUtils; // EXPERIMENTAL
+
+function mmpFocusWindow(const aWnd: HWND): boolean;
+begin
+  SetForegroundWindow(aWnd);
+end;
+
+function mmpCentreWindow(const aWnd: HWND): boolean;
+var
+  vR: TRect;
+  vHPos: integer;
+  vVPos: integer;
+
+  function alreadyCentred: boolean;
+  begin
+    vHPos := (mmpScreenWidth  - vR.width) div 2;
+    vVPos := (mmpScreenHeight - vR.height) div 2;
+    result := (vR.left = vHPos) and (vR.top = vVPos);
+  end;
+
+begin
+  getWindowRect(aWnd, vR);
+
+  case alreadyCentred of TRUE: EXIT; end;
+
+  case (vHPos > 0) and (vVPos > 0) of TRUE: setWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
+end;
 
 function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
 const
@@ -63,27 +90,6 @@ begin
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
-end;
-
-function mmpCentreWindow(const aWnd: HWND): boolean;
-var
-  vR: TRect;
-  vHPos: integer;
-  vVPos: integer;
-
-  function alreadyCentred: boolean;
-  begin
-    vHPos := (mmpScreenWidth  - vR.width) div 2;
-    vVPos := (mmpScreenHeight - vR.height) div 2;
-    result := (vR.left = vHPos) and (vR.top = vVPos);
-  end;
-
-begin
-  getWindowRect(aWnd, vR);
-
-  case alreadyCentred of TRUE: EXIT; end;
-
-  case (vHPos > 0) and (vVPos > 0) of TRUE: setWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
 end;
 
 end.

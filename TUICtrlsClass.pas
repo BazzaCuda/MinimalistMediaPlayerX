@@ -677,7 +677,7 @@ begin
   shutHelp;
   shutPlaylist;
   shutTimeline;
-  MP.pause;
+  MP.pausePlay;
 
   delayedHide;
 

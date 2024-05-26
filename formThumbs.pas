@@ -54,6 +54,7 @@ type
   private
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
+    procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
     function playCurrentItem: boolean;
@@ -165,6 +166,7 @@ begin
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -225,6 +227,15 @@ begin
   showHost(htMPVHost);
 
   FThumbs.setPanelText(aURL, tickerTotalMs);
+end;
+
+procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
+// don't need this yet, so not hooked up to mpv
+begin
+  case eState of
+    mpsPlay:;
+    mpsEnd {, mpsStop}:;
+  end;
 end;
 
 function TThumbsForm.playCurrentItem: boolean;
