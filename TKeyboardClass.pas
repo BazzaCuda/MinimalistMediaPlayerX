@@ -34,36 +34,16 @@ type
             koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
             koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter,
             koThumbnails);
-  TKeyDirection = (kdDown, kdUp);
+  TKeyDirection = (kdDn, kdUp);
 
   TKeyboard = class(TObject)
   strict private
-    FKey:         word;
-    FShiftState:  TShiftState;
-    FUpDn:        TKeyDirection;
   private
-    function keyIs(const aChar: char): boolean; overload;
-    function keyIs(const aKeyCode: word): boolean; overload;
-    function getKeyOp: TKeyOp;
-    function getKeyUp: boolean;
-    function getKeyDn: boolean;
-    function getCtrl: boolean;
-    function getShift: boolean;
-    function getAlt: boolean;
     function getCapsLock: boolean;
     function getNumLock: boolean;
   public
     function  processKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
-    procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
-    procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
-    property alt:         boolean     read getAlt;
     property capsLock:    boolean     read getCapsLock;
-    property ctrl:        boolean     read getCtrl;
-    property key:         word        read FKey         write FKey;
-    property shift:       boolean     read getShift;
-    property shiftState:  TShiftState read FShiftState  write FShiftState;
-    property keyDn:       boolean     read getKeyDn;
-    property keyUp:       boolean     read getKeyUp;
     property numLock:     boolean     read getNumLock;
   end;
 
@@ -75,7 +55,7 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpPlaylistUtils,
+  mmpConsts, mmpFileUtils, mmpPlaylistUtils, mmpUtils,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
   TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
@@ -98,128 +78,10 @@ end;
 
 { TKeyboard }
 
-function TKeyboard.getKeyOp: TKeyOp;
-begin
-  result := koNone;
-  case keyUp and keyIs(X)                                     of TRUE: result := koCloseApp; end;
-  case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist    of TRUE: result := koVolDn; end;
-  case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koVolDn; end;
-  case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist    of TRUE: result := koVolUp; end;
-  case keyDn and keyIs(VK_VOLUME_UP)                          of TRUE: result := koVolUp; end;
-  case keyUp and keyIs(T) and (MP.mediaType = mtImage)        of TRUE: result := koThumbnails; end;
-  case keyDn and keyIs(T)                                     of TRUE: result := koTab; end;
-  case keyUp and keyIs(VK_SPACE)                              of TRUE: result := koPausePlay; end;
-  case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koFrameForwards; end;
-  case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koFrameBackwards; end;
-  case keyDn and keyIs(VK_TAB)                                of TRUE: result := koTabTab; end;
-  case keyDn and keyIs(_9) and NOT ctrl                       of TRUE: result := koBrightnessUp; end;
-  case keyDn and keyIs(_8)                                    of TRUE: result := koBrightnessDn; end;
-  case keyDn and keyIs(I)                                     of TRUE: result := koZoomIn; end;
-  case keyDn and keyIs(O)                                     of TRUE: result := koZoomOut; end;
-  case keyUp and keyIs(S)                                     of TRUE: result := koStartOver; end;
-  case keyUp and keyIs(HASH)                                  of TRUE: result := koShowCaption; end;
-  case keyUp and keyIs(E)                                     of TRUE: result := koMuteUnmute; end;
-  case keyUp and keyIs(VK_VOLUME_MUTE)                        of TRUE: result := koMuteUnmute; end;
-  case keyUp and keyIs(W)                                     of TRUE: result := koPlayNext; end;
-  case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;
-  case keyDn and keyIs(VK_RETURN) and ctrl and NOT GV.showingPlaylist of TRUE: result := koPlayPrev; end;
-  case keyUp and keyIs(Q)                                     of TRUE: result := koPlayPrev; end;
-  case keyDn and keyIs(VK_LEFT) and ctrl                      of TRUE: result := koPanLeft; end;
-  case keyDn and keyIs(VK_RIGHT) and ctrl                     of TRUE: result := koPanRight; end;
-  case keyDn and keyIs(VK_UP) and ctrl                        of TRUE: result := koPanUp; end;
-  case keyDn and keyIs(VK_DOWN) and ctrl                      of TRUE: result := koPanDn; end;
-  case keyUp and keyIs(VK_NEXT) and NOT GV.showingPlaylist    of TRUE: result := koRotateR; end;
-  case keyUp and keyIs(VK_PRIOR) and NOT GV.showingPlaylist   of TRUE: result := koRotateL; end;
-  case keyUp and keyIs(F)                                     of TRUE: result := koFullscreen; end;
-  case keyUp and keyIs(U)                                     of TRUE: result := koZoomReset; end;
-  case keyDn and keyIs(G)                                     of TRUE: result := koGreaterWindow; end;
-  case keyUp and keyIs(A) and NOT ctrl                        of TRUE: result := koPlayFirst; end;
-  case keyUp and keyIs(A) and ctrl                            of TRUE: result := koAboutBox; end;
-  case keyUp and keyIs(VK_HOME)                               of TRUE: result := koPlayFirst; end;
-  case keyUp and keyIs(Z)                                     of TRUE: result := koPlayLast; end;
-  case keyUp and keyIs(VK_END)                                of TRUE: result := koPlayLast; end;
-  case keyUp and keyIs(C)                                     of TRUE: result := koToggleControls; end;
-  case keyUp and keyIs(VK_F10)                                of TRUE: result := koRunPot; end;
-  case keyUp and keyIs(VK_F11)                                of TRUE: result := koRunCut; end;
-  case keyUp and keyIs(VK_F12)                                of TRUE: result := koRunShot; end;
-  case keyUp and keyIs(B) and NOT ctrl                        of TRUE: result := koToggleBlackout; end;
-  case keyUp and keyIs(H)                                     of TRUE: result := koCentreWindow; end;
-  case keyUp and keyIs(N)                                     of TRUE: result := koMinimizeWindow; end;
-  case keyUp and keyIs(VK_DELETE)                             of TRUE: result := koDeleteCurrentItem; end;
-  case keyUp and keyIs(R)                                     of TRUE: result := koRenameFile; end;
-  case keyDn and keyIs(VK_ADD)                                of TRUE: result := koSpeedUp; end;
-  case keyDn and keyIs(SLASH)                                 of TRUE: result := koSpeedUp; end;
-  case keyDn and keyIs(VK_SUBTRACT)                           of TRUE: result := koSpeedDn; end;
-  case keyDn and keyIs(BACKSLASH)                             of TRUE: result := koSpeedDn; end;
-  case keyUp and keyIs(_1)                                    of TRUE: result := koSpeedReset; end;
-  case keyUp and keyIs(VK_ESCAPE)                             of TRUE: result := koEscape; end;
-  case keyUp and keyIs(VK_INSERT)                             of TRUE: result := koClipboard; end;
-  case keyUp and keyIs(K)                                     of TRUE: result := koKeep; end;
-  case keyUp and keyIs(L)                                     of TRUE: result := koReloadPlaylist; end;
-  case keyUp and keyIs(_2)                                    of TRUE: result := koBrightnessReset; end;
-  case keyUp and keyIs(_3)                                    of TRUE: result := koPanReset; end;
-  case keyUp and keyIs(_4)                                    of TRUE: result := koRotateReset; end;
-  case keyUp and keyIs(_5)                                    of TRUE: result := koBookmarkSave; end;
-  case keyUp and keyIs(_6)                                    of TRUE: result := koBookmarkLoad; end;
-  case keyUp and keyIs(_7)                                    of TRUE: result := koBookmarkDelete; end;
-  case keyDn and keyIs(_EQUALS)                               of TRUE: result := koContrastUp; end;
-  case keyDn and keyIs(HYPHEN)                                of TRUE: result := koContrastDn; end;
-  case keyUp and keyIs(_0) and NOT ctrl                       of TRUE: result := koContrastReset; end;
-  case keyDn and keyIs(OPEN_BRACKET)                          of TRUE: result := koGammaDn; end;
-  case keyDn and keyIs(CLOSE_BRACKET)                         of TRUE: result := koGammaUp; end;
-  case keyUp and keyIs(SINGLE_QUOTE)                          of TRUE: result := koGammaReset; end;
-  case keyDn and keyIs(OPEN_BRACKET) and shift                of TRUE: result := koSaturationDn; end; // open curly brace
-  case keyDn and keyIs(CLOSE_BRACKET) and shift               of TRUE: result := koSaturationUp; end; // close curly brace
-  case keyUp and keyIs(SEMICOLON)                             of TRUE: result := koSaturationReset; end;
-  case keyUp and keyIs(BACKSPACE)                             of TRUE: result := koAllReset; end;
-  case keyUp and keyIs(VK_F1)                                 of TRUE: result := koToggleHelp; end;
-  case keyUp and keyIs(H) and ctrl                            of TRUE: result := koToggleHelp; end;
-  case keyDn and keyIs(B) and ctrl                            of TRUE: result := koBrighterPB; end;
-  case keyDn and keyIs(B) and ctrl and shift                  of TRUE: result := koDarkerPB; end;
-  case keyUp and keyIs(P)                                     of TRUE: result := koTogglePlaylist; end;
-  case keyUp and keyIs(_0) and ctrl                           of TRUE: result := koCloseAll; end;
-  case keyUp and keyIs(_9) and ctrl                           of TRUE: result := koArrangeAll; end;
-  case keyUp and keyIs(V)                                     of TRUE: result := koSyncMedia; end;
-  case keyUp and keyIs(VK_F5)                                 of TRUE: result := koScreenshot; end;
-  case keyUp and keyIs(S) and ctrl                            of TRUE: result := koToggleSubtitles; end;
-  case keyUp and keyIs(R) and ctrl                            of TRUE: result := koToggleRepeat; end;
-  case keyUp and keyIs(E) and ctrl                            of TRUE: result := koToggleEditMode; end;
-  case keyUp and keyIs(M)                                     of TRUE: result := koMaximize; end;
-  case keyUp and keyIs(VK_F6)                                 of TRUE: result := koCycleAudio; end;
-  case keyUp and keyIs(VK_F7)                                 of TRUE: result := koCycleSubs; end;
-  case keyUp and keyIs(VK_F8)                                 of TRUE: result := koPrevChapter; end;
-  case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNextChapter; end;
-
-  // spare keys
-  case keyUp and keyIs(D)                                     of TRUE: result := koNone; end;
-  case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
-  case keyUp and keyIs(P) and ctrl                            of TRUE: result := koNone; end;
-end;
-
-function TKeyboard.getAlt: boolean;
-begin
-  result := GV.altKeyDown;
-  case result of TRUE: include(FShiftState, ssAlt); end;
-end;
 
 function TKeyboard.getCapsLock: boolean;
 begin
   result := GetKeyState(VK_CAPITAL) <> 0;
-end;
-
-function TKeyboard.getCtrl: boolean;
-begin
-  result := ssCtrl in shiftState;
-end;
-
-function TKeyboard.getKeyDn: boolean;
-begin
-  result := FUpDn = kdDown;
-end;
-
-function TKeyboard.getKeyUp: boolean;
-begin
-  result := FUpDn = kdUp;
 end;
 
 function TKeyboard.getNumLock: boolean;
@@ -227,44 +89,139 @@ begin
   result := GetKeyState(VK_NUMLOCK) <> 0;
 end;
 
-function TKeyboard.getShift: boolean;
-begin
-  result := ssShift in shiftState;
-end;
+function TKeyboard.processKeyStroke(const aKey: word;  const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
 
-function TKeyboard.keyIs(const aChar: char): boolean;
-begin
-  result := key = ord(aChar);
-end;
+    function ctrl: boolean;
+    begin
+      result := ssCtrl in aShiftState;
+    end;
 
-function TKeyboard.keyIs(const aKeyCode: word): boolean;
-begin
-  result := key = aKeyCode;
-end;
+    function keyDn: boolean;
+    begin
+      result := upDn = kdDn;
+    end;
 
-procedure TKeyboard.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
-// keys that don't generate a standard WM_KEYUP message
-begin
-  GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT); end;
-end;
+    function keyUp: boolean;
+    begin
+      result := upDn = kdUp;
+    end;
 
-procedure TKeyboard.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
-// keys that don't generate a standard WM_KEYUP message
-begin
-  GV.altKeyDown := NOT (key = VK_MENU);
-  case key in [VK_F10] of TRUE: begin
-                               postMessage(GV.appWnd, WM_KEY_UP, key, 0);
-                               application.processMessages; end;end;
-end;
+    function keyIs(const aKeyCode: word): boolean; overload;
+    begin
+      result := aKey = aKeyCode;
+    end;
 
-function TKeyboard.processKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
+    function keyIs(const aChar: char): boolean; overload;
+    begin
+      result := aKey = ord(aChar);
+    end;
+
+    function shift: boolean;
+    begin
+      result := ssShift in aShiftState;
+    end;
+
+  function getKeyOp: TKeyOp;
+  begin
+    result := koNone;
+    case keyUp and keyIs(X)                                     of TRUE: result := koCloseApp; end;
+    case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist    of TRUE: result := koVolDn; end;
+    case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koVolDn; end;
+    case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist    of TRUE: result := koVolUp; end;
+    case keyDn and keyIs(VK_VOLUME_UP)                          of TRUE: result := koVolUp; end;
+    case keyUp and keyIs(T) and (MP.mediaType = mtImage)        of TRUE: result := koThumbnails; end;
+    case keyDn and keyIs(Y)                                     of TRUE: result := koThumbnails; end;
+    case keyDn and keyIs(T) and (MP.mediaType <> mtImage)       of TRUE: result := koTab; end;
+    case keyUp and keyIs(VK_SPACE)                              of TRUE: result := koPausePlay; end;
+    case keyDn and keyIs(VK_RIGHT)                              of TRUE: result := koFrameForwards; end;
+    case keyDn and keyIs(VK_LEFT)                               of TRUE: result := koFrameBackwards; end;
+    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koTabTab; end;
+    case keyDn and keyIs(_9) and NOT ctrl                       of TRUE: result := koBrightnessUp; end;
+    case keyDn and keyIs(_8)                                    of TRUE: result := koBrightnessDn; end;
+    case keyDn and keyIs(I)                                     of TRUE: result := koZoomIn; end;
+    case keyDn and keyIs(O)                                     of TRUE: result := koZoomOut; end;
+    case keyUp and keyIs(S)                                     of TRUE: result := koStartOver; end;
+    case keyUp and keyIs(HASH)                                  of TRUE: result := koShowCaption; end;
+    case keyUp and keyIs(E)                                     of TRUE: result := koMuteUnmute; end;
+    case keyUp and keyIs(VK_VOLUME_MUTE)                        of TRUE: result := koMuteUnmute; end;
+    case keyUp and keyIs(W)                                     of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist  of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_RETURN) and ctrl and NOT GV.showingPlaylist of TRUE: result := koPlayPrev; end;
+    case keyUp and keyIs(Q)                                     of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_LEFT) and ctrl                      of TRUE: result := koPanLeft; end;
+    case keyDn and keyIs(VK_RIGHT) and ctrl                     of TRUE: result := koPanRight; end;
+    case keyDn and keyIs(VK_UP) and ctrl                        of TRUE: result := koPanUp; end;
+    case keyDn and keyIs(VK_DOWN) and ctrl                      of TRUE: result := koPanDn; end;
+    case keyUp and keyIs(VK_NEXT) and NOT GV.showingPlaylist    of TRUE: result := koRotateR; end;
+    case keyUp and keyIs(VK_PRIOR) and NOT GV.showingPlaylist   of TRUE: result := koRotateL; end;
+    case keyUp and keyIs(F)                                     of TRUE: result := koFullscreen; end;
+    case keyUp and keyIs(U)                                     of TRUE: result := koZoomReset; end;
+    case keyDn and keyIs(G)                                     of TRUE: result := koGreaterWindow; end;
+    case keyUp and keyIs(A) and NOT ctrl                        of TRUE: result := koPlayFirst; end;
+    case keyUp and keyIs(A) and ctrl                            of TRUE: result := koAboutBox; end;
+    case keyUp and keyIs(VK_HOME)                               of TRUE: result := koPlayFirst; end;
+    case keyUp and keyIs(Z)                                     of TRUE: result := koPlayLast; end;
+    case keyUp and keyIs(VK_END)                                of TRUE: result := koPlayLast; end;
+    case keyUp and keyIs(C)                                     of TRUE: result := koToggleControls; end;
+    case keyUp and keyIs(VK_F10)                                of TRUE: result := koRunPot; end;
+    case keyUp and keyIs(VK_F11)                                of TRUE: result := koRunCut; end;
+    case keyUp and keyIs(VK_F12)                                of TRUE: result := koRunShot; end;
+    case keyUp and keyIs(B) and NOT ctrl                        of TRUE: result := koToggleBlackout; end;
+    case keyUp and keyIs(H)                                     of TRUE: result := koCentreWindow; end;
+    case keyUp and keyIs(N)                                     of TRUE: result := koMinimizeWindow; end;
+    case keyUp and keyIs(VK_DELETE)                             of TRUE: result := koDeleteCurrentItem; end;
+    case keyUp and keyIs(R)                                     of TRUE: result := koRenameFile; end;
+    case keyDn and keyIs(VK_ADD)                                of TRUE: result := koSpeedUp; end;
+    case keyDn and keyIs(SLASH)                                 of TRUE: result := koSpeedUp; end;
+    case keyDn and keyIs(VK_SUBTRACT)                           of TRUE: result := koSpeedDn; end;
+    case keyDn and keyIs(BACKSLASH)                             of TRUE: result := koSpeedDn; end;
+    case keyUp and keyIs(_1)                                    of TRUE: result := koSpeedReset; end;
+    case keyUp and keyIs(VK_ESCAPE)                             of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_INSERT)                             of TRUE: result := koClipboard; end;
+    case keyUp and keyIs(K)                                     of TRUE: result := koKeep; end;
+    case keyUp and keyIs(L)                                     of TRUE: result := koReloadPlaylist; end;
+    case keyUp and keyIs(_2)                                    of TRUE: result := koBrightnessReset; end;
+    case keyUp and keyIs(_3)                                    of TRUE: result := koPanReset; end;
+    case keyUp and keyIs(_4)                                    of TRUE: result := koRotateReset; end;
+    case keyUp and keyIs(_5)                                    of TRUE: result := koBookmarkSave; end;
+    case keyUp and keyIs(_6)                                    of TRUE: result := koBookmarkLoad; end;
+    case keyUp and keyIs(_7)                                    of TRUE: result := koBookmarkDelete; end;
+    case keyDn and keyIs(_EQUALS)                               of TRUE: result := koContrastUp; end;
+    case keyDn and keyIs(HYPHEN)                                of TRUE: result := koContrastDn; end;
+    case keyUp and keyIs(_0) and NOT ctrl                       of TRUE: result := koContrastReset; end;
+    case keyDn and keyIs(OPEN_BRACKET)                          of TRUE: result := koGammaDn; end;
+    case keyDn and keyIs(CLOSE_BRACKET)                         of TRUE: result := koGammaUp; end;
+    case keyUp and keyIs(SINGLE_QUOTE)                          of TRUE: result := koGammaReset; end;
+    case keyDn and keyIs(OPEN_BRACKET) and shift                of TRUE: result := koSaturationDn; end; // open curly brace
+    case keyDn and keyIs(CLOSE_BRACKET) and shift               of TRUE: result := koSaturationUp; end; // close curly brace
+    case keyUp and keyIs(SEMICOLON)                             of TRUE: result := koSaturationReset; end;
+    case keyUp and keyIs(BACKSPACE)                             of TRUE: result := koAllReset; end;
+    case keyUp and keyIs(VK_F1)                                 of TRUE: result := koToggleHelp; end;
+    case keyUp and keyIs(H) and ctrl                            of TRUE: result := koToggleHelp; end;
+    case keyDn and keyIs(B) and ctrl                            of TRUE: result := koBrighterPB; end;
+    case keyDn and keyIs(B) and ctrl and shift                  of TRUE: result := koDarkerPB; end;
+    case keyUp and keyIs(P)                                     of TRUE: result := koTogglePlaylist; end;
+    case keyUp and keyIs(_0) and ctrl                           of TRUE: result := koCloseAll; end;
+    case keyUp and keyIs(_9) and ctrl                           of TRUE: result := koArrangeAll; end;
+    case keyUp and keyIs(V)                                     of TRUE: result := koSyncMedia; end;
+    case keyUp and keyIs(VK_F5)                                 of TRUE: result := koScreenshot; end;
+    case keyUp and keyIs(S) and ctrl                            of TRUE: result := koToggleSubtitles; end;
+    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koToggleRepeat; end;
+    case keyUp and keyIs(E) and ctrl                            of TRUE: result := koToggleEditMode; end;
+    case keyUp and keyIs(M)                                     of TRUE: result := koMaximize; end;
+    case keyUp and keyIs(VK_F6)                                 of TRUE: result := koCycleAudio; end;
+    case keyUp and keyIs(VK_F7)                                 of TRUE: result := koCycleSubs; end;
+    case keyUp and keyIs(VK_F8)                                 of TRUE: result := koPrevChapter; end;
+    case keyUp and keyIs(VK_F9)                                 of TRUE: result := koNextChapter; end;
+
+    // spare keys
+    case keyUp and keyIs(D)                                     of TRUE: result := koNone; end;
+    case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
+    case keyUp and keyIs(P) and ctrl                            of TRUE: result := koNone; end;
+  end;
+
 begin
   result      := FALSE;
-
-  FKey        := aKey;
-  FShiftState := aShiftState;
-  FUpDn       := upDn;
 
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
@@ -286,10 +243,10 @@ begin
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
     koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
-    koPanLeft:           ST.opInfo := MP.panLeft(aShiftState);
-    koPanRight:          ST.opInfo := MP.panRight(aShiftState);
-    koPanUp:             ST.opInfo := MP.panUp(aShiftState);
-    koPanDn:             ST.opInfo := MP.panDn(aShiftState);
+    koPanLeft:           ST.opInfo := MP.panLeft;
+    koPanRight:          ST.opInfo := MP.panRight;
+    koPanUp:             ST.opInfo := MP.panUp;
+    koPanDn:             ST.opInfo := MP.panDn;
     koRotateR:           ST.opInfo := MP.rotateRight;
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koFullscreen:        case NOT GV.showingPlaylist AND NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
@@ -304,7 +261,7 @@ begin
     koToggleBlackout:    UI.toggleBlackout;
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koMinimizeWindow:    UI.minimizeWindow;
-    koDeleteCurrentItem: UI.deleteCurrentItem(aShiftState);
+    koDeleteCurrentItem: UI.deleteCurrentItem;
     koRenameFile:        UI.renameFile(PL.currentItem);
     koSpeedUp:           ST.opInfo := MP.speedUp;
     koSpeedDn:           ST.opInfo := MP.speedDn;

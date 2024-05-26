@@ -90,7 +90,6 @@ procedure TAppEvents.appEventsMessage(var msg: tagMSG; var handled: boolean);
 // main event handler for capturing keystrokes
 var
   key: word;
-  shiftState: TShiftState;
   keyDnHandled: boolean;
   sysCommand: TWMSysCommand;
 
@@ -101,8 +100,9 @@ var
 begin
   keyDnHandled := FALSE;
 
-  shiftState   := keyboardStateToShiftState;
-  case getKeyState(VK_CONTROL) < 0 of TRUE: include(shiftState, ssCtrl); end;
+  var vShiftState   := mmpShiftState;
+
+  case getKeyState(VK_CONTROL) < 0 of TRUE: include(vShiftState, ssCtrl); end;
 
   focusPlaylist; // if it's being displayed, so it gets keystrokes
   focusTimeLine;
@@ -112,13 +112,13 @@ begin
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key          := msg.WParam;
-                                    handled      := KB.processKeyStroke(key, shiftState, kdDown);
+                                    handled      := KB.processKeyStroke(key, vShiftState, kdDn);
                                     keyDnHandled := handled; end;end;
 
   case msgIs(WM_KEY_UP)  of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key         := msg.WParam; // e.g. VK_F10;
-                                    handled     := KB.processKeyStroke(key, shiftState, kdUp);
+                                    handled     := KB.processKeyStroke(key, vShiftState, kdUp);
                                     EXIT;       end;end;
 
   case msgIs(WM_KEYUP) of TRUE: begin
@@ -126,7 +126,7 @@ begin
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
                                   case UI.showingTimeline and TL.keyHandled(msg.WParam) of TRUE: EXIT; end; // Timeline keystrokes take precedence
                                   key         := msg.WParam;
-                                  handled     := KB.processKeyStroke(key, shiftState, kdUp); end;end;
+                                  handled     := KB.processKeyStroke(key, vShiftState, kdUp); end;end;
 
   case msgIs(WM_SYSCOMMAND) of TRUE:  begin
                                         sysCommand.CmdType := msg.wParam;
@@ -140,10 +140,10 @@ begin
                                                                                                                                         AND NOT GV.showingThumbs) of TRUE: screen.cursor := crNone; end;end;
 
   case msg.hwnd = UI.videoPanel.handle of TRUE: begin
-    case msgIs(WM_LBUTTONDOWN) and NOT GV.showingPlaylist of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
-    case msgIs(WM_LBUTTONDOWN) and (ssCtrl in shiftState) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
-    case msgIs(WM_LBUTTONUP)                              of TRUE:       mouseDown := FALSE; end;
-    case mouseDown and msgIs(WM_MOUSEMOVE)                of TRUE: dragUI; end;
+    case msgIs(WM_LBUTTONDOWN) and NOT GV.showingPlaylist  of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+    case msgIs(WM_LBUTTONDOWN) and (ssCtrl in vShiftState) of TRUE: begin mouseDown := TRUE; setStartPoint;  end;end;
+    case msgIs(WM_LBUTTONUP)                               of TRUE:       mouseDown := FALSE; end;
+    case mouseDown and msgIs(WM_MOUSEMOVE)                 of TRUE: dragUI; end;
   end;end;
 
   case msgIs(WM_RBUTTONUP) and (msg.hwnd = UI.videoPanel.handle)                     of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
@@ -162,12 +162,12 @@ begin
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; {ST.opInfo := PL.formattedItem;} end;end;
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
-  case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions(shiftState); end;
+  case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions; end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
-  case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock); end;
-  case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, -1); end;
-  case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(shiftState, KB.capsLock, 200); end;
-  case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, shiftState); end;
+  case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(KB.capsLock); end;
+  case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(KB.capsLock, -1); end;
+  case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(KB.capsLock, 200); end;
+  case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, vShiftState); end;
   case msgIs(WIN_RESIZE)              of TRUE: UI.resize(UI.handle, point(msg.wParam, msg.lParam), MP.videoWidth, MP.videoHeight); end;
   case msgIs(WIN_SYNC_MEDIA)          of TRUE: begin MP.position := msg.wParam; ST.opInfo := 'Synced'; end;end;
 

@@ -24,8 +24,8 @@ uses
   system.classes;
 
 function mmpConfigFilePath: string;
-function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean): boolean;
-function mmpDeleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
+function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean = FALSE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
@@ -39,7 +39,7 @@ uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
-  mmpFolderUtils, mmpShellUtils,
+  mmpFolderUtils, mmpShellUtils, mmpUtils,
   formInputBox,
   TConfigFileClass;
 
@@ -48,7 +48,7 @@ begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
 end;
 
-function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean): boolean;
+function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean = FALSE): boolean;
 var
   vDestFile: string;
   vDestFolder: string;
@@ -71,17 +71,17 @@ begin
       end;
 
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
-      case result and DeleteIt of TRUE: mmpDeleteThisFile(aFilePath, keyboardStateToShiftState); end;
+      case result and DeleteIt of TRUE: mmpDeleteThisFile(aFilePath, []); end;
     end;end;
   finally
   end;
 end;
 
-function mmpDeleteThisFile(const aFilePath: string; const shift: TShiftState): boolean;
+function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
 // performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
 begin
-  case ssCtrl in Shift of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
-                          FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
+  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
+                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
 end;
 
 function mmpExePath: string;

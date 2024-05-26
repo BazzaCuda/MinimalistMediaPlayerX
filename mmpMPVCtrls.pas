@@ -46,11 +46,11 @@ function mpvGammaDn(const mpv: TMPVBasePlayer): string;
 function mpvGammaReset(const mpv: TMPVBasePlayer): string;
 function mpvGammaUp(const mpv: TMPVBasePlayer): string;
 function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
-function mpvPanDn(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
-function mpvPanLeft(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanDn(const mpv: TMPVBasePlayer): string;
+function mpvPanLeft(const mpv: TMPVBasePlayer): string;
 function mpvPanReset(const mpv: TMPVBasePlayer): string;
-function mpvPanRight(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
-function mpvPanUp(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanRight(const mpv: TMPVBasePlayer): string;
+function mpvPanUp(const mpv: TMPVBasePlayer): string;
 function mpvPause(const mpv: TMPVBasePlayer): boolean;
 function mpvResume(const mpv: TMPVBasePlayer): boolean;
 function mpvRotateLeft(const mpv: TMPVBasePlayer): string;
@@ -78,6 +78,8 @@ implementation
 
 uses
   system.sysUtils,
+  vcl.forms,
+  mmpUtils,
   TConfigFileClass;
 
 function mpvCreate(var mpv: TMPVBasePlayer): boolean;
@@ -224,30 +226,30 @@ begin
                    FALSE: result := 'muted'; end;
 end;
 
-function mpvPanDn(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanDn(const mpv: TMPVBasePlayer): string;
 var
   panY: double;
   multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
 
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
+  case ssShift in mmpShiftState of  TRUE: multiplier := 2;
+                                   FALSE: multiplier := 1; end;
 
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY + (0.001 * multiplier));
   result := 'Pan down';
 end;
 
-function mpvPanLeft(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanLeft(const mpv: TMPVBasePlayer): string;
 var
   panX: double;
   multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
 
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
+  case ssShift in mmpShiftState of  TRUE: multiplier := 2;
+                                   FALSE: multiplier := 1; end;
 
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX - (0.001 * multiplier));
@@ -262,30 +264,30 @@ begin
   result := 'Pan reset';
 end;
 
-function mpvPanRight(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanRight(const mpv: TMPVBasePlayer): string;
 var
   panX: double;
   multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
 
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
+  case ssShift in mmpShiftState of  TRUE: multiplier := 2;
+                                   FALSE: multiplier := 1; end;
 
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX + (0.001 * multiplier));
   result := 'Pan right';
 end;
 
-function mpvPanUp(const mpv: TMPVBasePlayer; const aShiftState: TShiftState): string;
+function mpvPanUp(const mpv: TMPVBasePlayer): string;
 var
   panY: double;
   multiplier: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
 
-  case ssShift in aShiftState of  TRUE: multiplier := 2;
-                                 FALSE: multiplier := 1; end;
+  case ssShift in mmpShiftState of  TRUE: multiplier := 2;
+                                   FALSE: multiplier := 1; end;
 
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY - (0.001 * multiplier));
@@ -454,24 +456,34 @@ end;
 function mpvZoomIn(const mpv: TMPVBasePlayer): string;
 var
   zoomX, zoomY: double;
+  dx: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in mmpShiftState of  TRUE: dx := 0.10;
+                                   FALSE: dx := 0.01; end;
+
   mpv.getPropertyDouble('video-scale-x', zoomX);
-  mpv.setPropertyDouble('video-scale-x', zoomX + 0.01);
+  mpv.setPropertyDouble('video-scale-x', zoomX + dx);
   mpv.getPropertyDouble('video-scale-y', zoomY);
-  mpv.setPropertyDouble('video-scale-y', zoomY + 0.01);
+  mpv.setPropertyDouble('video-scale-y', zoomY + dx);
   result := 'Zoom in';
 end;
 
 function mpvZoomOut(const mpv: TMPVBasePlayer): string;
 var
   zoomX, zoomY: double;
+  dx: double;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+
+  case ssShift in mmpShiftState of  TRUE: dx := 0.10;
+                                   FALSE: dx := 0.01; end;
+
   mpv.getPropertyDouble('video-scale-x', zoomX);
-  mpv.setPropertyDouble('video-scale-x', zoomX - 0.01);
+  mpv.setPropertyDouble('video-scale-x', zoomX - dx);
   mpv.getPropertyDouble('video-scale-y', zoomY);
-  mpv.setPropertyDouble('video-scale-y', zoomY - 0.01);
+  mpv.setPropertyDouble('video-scale-y', zoomY - dx);
   result := 'Zoom out';
 end;
 

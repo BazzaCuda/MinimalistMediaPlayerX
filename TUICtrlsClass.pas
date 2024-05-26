@@ -53,6 +53,8 @@ type
     function getXY: TPoint;
     procedure setHeight(const Value: integer);
     procedure setWidth(const Value: integer);
+    procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
+    procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
@@ -62,9 +64,9 @@ type
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
     function darker: boolean;
-    function deleteCurrentItem(const shift: TShiftState): boolean;
+    function deleteCurrentItem: boolean;
     function doEscapeKey: boolean;
-    function greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
+    function greaterWindow(const aWnd: HWND; aShiftState: TShiftState): boolean;
     function handle: HWND;
     function initUI(const aForm: TForm): boolean;
     function keepFile(const aFilePath: string): boolean;
@@ -85,7 +87,7 @@ type
     function shutTimeline: boolean;
     function smallerWindow(const aWnd: HWND): boolean;
     function toggleBlackout: boolean;
-    function toggleCaptions(shift: TShiftState): boolean;
+    function toggleCaptions: boolean;
     function toggleTimeline: boolean;
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
@@ -136,7 +138,7 @@ var
   vRatio: double;
   vWidth, vHeight: integer;
 begin
-  case MP.mediaType = mtImage of TRUE: EXIT; end;
+  case MP.mediaType = mtImage of TRUE: begin postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); EXIT; end;end;
   case (MP.mediaType = mtAudio) AND (NOT MI.hasCoverArt) of TRUE: EXIT; end;
   case GV.closeApp of TRUE: EXIT; end;
   case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
@@ -333,22 +335,25 @@ begin
   t1 := beginThread(NIL, 0, addr(hideForm), FMainForm, 0, i1);
 end;
 
-function TUI.deleteCurrentItem(const shift: TShiftState): boolean;
+function TUI.deleteCurrentItem: boolean;
 begin
   case PL.hasItems of FALSE: EXIT; end;
   MP.pause;
 
+  var vShiftState := mmpShiftState;
+
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(PL.currentItem);
-  case ssCtrl in shift of  TRUE: vMsg := vMsg + '*.*';
-                          FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
+  case ssCtrl in mmpShiftState of  TRUE: vMsg := vMsg + '*.*';
+                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
 
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
                                                       var vIx := PL.currentIx;
                                                       MP.dontPlayNext := TRUE;  // because...
                                                       MP.stop;                  // this would have automatically done MP.playNext
-                                                      mmpDeleteThisFile(PL.currentItem, shift);
+                                                      mmpDeleteThisFile(PL.currentItem, vShiftState);
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in shift) or (NOT PL.hasItems) of  TRUE: sendSysCommandClose(FMainForm.handle);
+                                                      case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
+                                                                                                      TRUE: sendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
                                                                                                               loadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
@@ -397,18 +402,18 @@ begin
   result := vR.Location;
 end;
 
-function TUI.greaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
+function TUI.greaterWindow(const aWnd: HWND; aShiftState: TShiftState): boolean;
 const
   dx = 50;
   dy = 30;
 var
-  newW: integer;
-  newH: integer;
-  vR:   TRect;
+  newW:         integer;
+  newH:         integer;
+  vR:           TRect;
 
   function calcDimensions: boolean;
   begin
-    case ssCtrl in shift of
+    case ssCtrl in aShiftState of
       TRUE: begin
               newW := newW - dx;
               newH := newH - dy;
@@ -442,11 +447,27 @@ begin
   result := FMainForm.handle;
 end;
 
+procedure TUI.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  GV.altKeyDown := ssAlt in shift;
+  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT); end;
+end;
+
+procedure TUI.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  GV.altKeyDown := NOT (key = VK_MENU);
+  case key in [VK_F10] of TRUE: begin
+                               postMessage(GV.appWnd, WM_KEY_UP, key, 0);
+                               application.processMessages; end;end;
+end;
+
 function TUI.initUI(const aForm: TForm): boolean;
 begin
   FMainForm           := aForm;
-  aForm.OnKeyDown     := KB.formKeyDn;
-  aForm.OnKeyUp       := KB.formKeyUp;
+  aForm.OnKeyDown     := formKeyDn;
+  aForm.OnKeyUp       := formKeyUp;
   aForm.OnResize      := formResize;
   aForm.position      := poScreenCenter;
   aForm.borderIcons   := [biSystemMenu];
@@ -720,14 +741,15 @@ begin
   CF.value['progressBar'] := CF.toHex(PB.resetColor);
 end;
 
-function TUI.toggleCaptions(shift: TShiftState): boolean;
+function TUI.toggleCaptions: boolean;
 begin
-  case (ssCtrl in shift) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
+  var vShiftState := mmpShiftState;
+  case (ssCtrl in vShiftState) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
 
   ST.showTime := NOT ST.showTime;
 
-  case (ssCtrl in shift) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
-                                            FALSE: ST.showData := FALSE; end;
+  case (ssCtrl in vShiftState) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
+                                                  FALSE: ST.showData := FALSE; end;
 end;
 
 function TUI.toggleTimeline: boolean;

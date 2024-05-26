@@ -55,7 +55,7 @@ type
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
     function autoCentre: boolean;
-    function deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function deleteCurrentItem: boolean;
     function playCurrentItem: boolean;
     function playFirst: boolean;
     function playLast: boolean;
@@ -121,19 +121,21 @@ begin
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
-function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): boolean;
+function TThumbsForm.deleteCurrentItem: boolean;
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
+  var vShiftState := mmpShiftState;
+
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem);
-  case ssCtrl in ashiftState of  TRUE: vMsg := vMsg + '*.*';
-                          FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
+  case ssCtrl in vshiftState of  TRUE: vMsg := vMsg + '*.*';
+                                FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
 
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
                                                       var vIx := FThumbs.playlist.currentIx;
-                                                      mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState);
+                                                      mmpDeleteThisFile(FThumbs.playlist.currentItem, vShiftState);
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
+                                                      case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
                                                                                                      FALSE: begin
                                                                                                               loadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: playCurrentItem;
@@ -376,10 +378,10 @@ begin
     koGammaUp:          mpvGammaUp(mpv);
     koGammaDn:          mpvGammaDn(mpv);
     koGammaReset:       mpvGammaReset(mpv);
-    koPanLeft:          mpvPanLeft(mpv, aShiftState);
-    koPanRight:         mpvPanRight(mpv, aShiftState);
-    koPanUp:            mpvPanUp(mpv, aShiftState);
-    koPanDn:            mpvPanDn(mpv, aShiftState);
+    koPanLeft:          mpvPanLeft(mpv);
+    koPanRight:         mpvPanRight(mpv);
+    koPanUp:            mpvPanUp(mpv);
+    koPanDn:            mpvPanDn(mpv);
     koPanReset:         mpvPanReset(mpv);
     koRotateR:          mpvRotateRight(mpv);
     koRotateL:          mpvRotateLeft(mpv);
@@ -407,7 +409,7 @@ begin
     koCentreWindow:     mmpCentreWindow(SELF.handle);
     koRenameFile:       case whichHost of htMPVHost:  renameFile(FThumbs.playlist.currentItem); end;
     koSaveImage:        case whichHost of htMPVHost:  saveMoveFile(FThumbs.playlist.currentItem); end;
-    koDeleteCurrentItem: case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
+    koDeleteCurrentItem: case whichHost of htMPVHost: deleteCurrentItem; end;
 
 
 

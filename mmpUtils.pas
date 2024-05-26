@@ -22,10 +22,12 @@ interface
 
 uses
   winApi.windows,
+  system.classes,
   vcl.forms;
 
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpProcessMessages: boolean;
+function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit just for this
 
 implementation
 
@@ -39,6 +41,14 @@ begin
     iStop  := GetTickCount;
     application.processMessages;
   until (iStop  -  iStart) >= dwMilliseconds;
+end;
+
+function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit that needs this
+var
+  KeyState: TKeyBoardState;
+begin
+  GetKeyboardState(KeyState);
+  Result := KeyboardStateToShiftState(KeyState);
 end;
 
 function mmpProcessMessages: boolean;

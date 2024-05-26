@@ -87,11 +87,11 @@ type
     function initMediaPlayer: boolean;
     function muteUnmute: string;
     function openURL(const aURL: string): boolean;
-    function panDn(const aShiftState: TShiftState): string;
-    function panLeft(const aShiftState: TShiftState): string;
+    function panDn: string;
+    function panLeft: string;
     function panReset: string;
-    function panRight(const aShiftState: TShiftState): string;
-    function panUp(const aShiftState: TShiftState): string;
+    function panRight: string;
+    function panUp: string;
     function pause: boolean;
     function pausePlay: boolean;
     function play(const aURL: string): boolean;
@@ -114,7 +114,7 @@ type
     function speedUp: string;
     function startOver: string;
     function stop: boolean;
-    function tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
+    function tab(const capsLock: boolean; const aFactor: integer = 0): string;
     function takeScreenshot: string;
     function toggleFullscreen: boolean;
     function toggleRepeat: string;
@@ -370,14 +370,14 @@ begin
 //  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
 end;
 
-function TMediaPlayer.panDn(const aShiftState: TShiftState): string;
+function TMediaPlayer.panDn: string;
 begin
-  result := mpvPanDn(mpv, aShiftState);
+  result := mpvPanDn(mpv);
 end;
 
-function TMediaPlayer.panLeft(const aShiftState: TShiftState): string;
+function TMediaPlayer.panLeft: string;
 begin
-  result := mpvPanLeft(mpv, aShiftState);
+  result := mpvPanLeft(mpv);
 end;
 
 function TMediaPlayer.panReset: string;
@@ -385,14 +385,14 @@ begin
   result := mpvPanReset(mpv);
 end;
 
-function TMediaPlayer.panRight(const aShiftState: TShiftState): string;
+function TMediaPlayer.panRight: string;
 begin
-  result := mpvPanRight(mpv, aShiftState);
+  result := mpvPanRight(mpv);
 end;
 
-function TMediaPlayer.panUp(const aShiftState: TShiftState): string;
+function TMediaPlayer.panUp: string;
 begin
-  result := mpvPanUp(mpv, aShiftState);
+  result := mpvPanUp(mpv);
 end;
 
 function TMediaPlayer.pause: boolean;
@@ -590,7 +590,7 @@ begin
   mpvStop(mpv);
 end;
 
-function TMediaPlayer.tab(const aShiftState: TShiftState; const capsLock: boolean; const aFactor: integer = 0): string;
+function TMediaPlayer.tab(const capsLock: boolean; const aFactor: integer = 0): string;
 var
   vFactor: integer;
   vTab: integer;
@@ -600,19 +600,19 @@ begin
                       FALSE: vFactor := 100; end;
 
   case capsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
-  case ssShift in aShiftState of TRUE: vFactor := 50; end;
+  case ssShift in mmpShiftState of TRUE: vFactor := 50; end;
 
   vTab := trunc(duration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
 
-  case ssCtrl  in aShiftState of  TRUE: position := position - vTab;
-                                 FALSE: position := position + vTab; end;
+  case ssCtrl  in mmpShiftState of  TRUE: position := position - vTab;
+                                   FALSE: position := position + vTab; end;
 
   case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
                        FALSE: newInfo := format('%dth = %s', [vFactor, mmpFormatSeconds(round(duration / vFactor))]); end;
 
-  case ssCtrl in aShiftState of  TRUE: newInfo := '<< ' + newInfo;
-                                FALSE: newInfo := '>> ' + newInfo;
+  case ssCtrl in mmpShiftState of  TRUE: newInfo := '<< ' + newInfo;
+                                  FALSE: newInfo := '>> ' + newInfo;
   end;
   result := newInfo;
 end;
