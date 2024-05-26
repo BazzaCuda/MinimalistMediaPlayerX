@@ -49,14 +49,16 @@ type
     procedure timerEvent(sender: TObject);
     procedure setShowData(const value: boolean);
     procedure setShowTime(const value: boolean);
+    function getColor: TColor;
+    procedure setColor(const Value: TColor);
   public
     destructor Destroy; override;
     procedure  formResize(aUIWidth: integer = 0);
     function   initCaptions(const aVideoPanel: TPanel): boolean;
     function brighter: integer;
-    function color: integer;
     function darker: integer;
     function resetColor: integer;
+    property color:         TColor  read getColor   write setColor;
     property dataMemo:      TMemo   read FDataMemo;
     property displayTime:   string                  write setDisplayTime;
     property HWND:          HWND    read getHWND;
@@ -98,11 +100,6 @@ begin
   FTimeLabel.font.color   := FTimeLabel.font.color  + $010101;
   FOpInfo.font.color      := FOpInfo.font.color     + $010101;
   FDataMemo.font.color    := FDataMemo.font.color   + $010101;
-  result := FTimeLabel.font.color;
-end;
-
-function TCaptionsForm.color: integer;
-begin
   result := FTimeLabel.font.color;
 end;
 
@@ -205,6 +202,11 @@ begin
   case aUIWidth <> 0 of TRUE: FUIWidth := aUIWidth; end;
 end;
 
+function TCaptionsForm.getColor: TColor;
+begin
+  result := FTimeLabel.font.color;
+end;
+
 function TCaptionsForm.getHWND: HWND;
 begin
   result := SELF.HANDLE;
@@ -236,6 +238,11 @@ begin
   FOpInfo.font.color      := ST_DEFAULT_COLOR;
   FDataMemo.font.color    := ST_DEFAULT_COLOR;
   result                  := ST_DEFAULT_COLOR;
+end;
+
+procedure TCaptionsForm.setColor(const Value: TColor);
+begin
+  FTimeLabel.font.color := value;
 end;
 
 procedure TCaptionsForm.setDisplayTime(const value: string);

@@ -69,6 +69,7 @@ type
     destructor  Destroy; override;
     function allReset: string;
     function autoPlayNext: boolean;
+    function blankOutTimeCaption: boolean;
     function brightnessDn: string;
     function brightnessReset: string;
     function brightnessUp: string;
@@ -101,6 +102,7 @@ type
     function playNext: boolean;
     function playPrev: boolean;
     function releasePlayer: boolean;
+    function resetTimeCaption: boolean;
     function resume: boolean;
     function rotateLeft: string;
     function rotateReset: string;
@@ -427,6 +429,19 @@ begin
   end;
 end;
 
+var gColor: TColor;
+function TMediaPlayer.blankOutTimeCaption: boolean; // EXPERIMENTAL
+begin
+  case gColor = 0 of TRUE:  begin
+                              gColor := ST.color;
+                              ST.color := $00000000; end;end;
+end;
+function TMediaPlayer.resetTimeCaption: boolean;
+begin
+  case gColor = 0 of FALSE: begin ST.color := gColor;
+                                  gColor   := 0;     end;end;
+end;
+
 function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
@@ -439,6 +454,9 @@ begin
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
   case GV.autoCentre OR (FMediaType = mtAudio) of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
   UI.centreCursor;
+
+  case FMediaType of mtImage: blankOutTimeCaption;
+                         else resetTimeCaption; end;
 
   openURL(aURL);
   mpvSetVolume(mpv, CF.asInteger['volume']);

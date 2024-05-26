@@ -207,7 +207,7 @@ begin
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(UI.handle); end;
+    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.pausePlay; sendSysCommandClose(UI.handle); end;
     koVolUp:             ST.opInfo := MP.volUp;
     koVolDn:             ST.opInfo := MP.volDown;
     koTab:               SA.postToAll(WIN_TAB);
