@@ -22,7 +22,7 @@ Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, 
 
 **TIP**: You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It really doesn't get much easier than that!!
 
-**Minimalist Media Player**
+**MMP - Minimalist Media Player**
 
 A powerful and ``very`` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
 
