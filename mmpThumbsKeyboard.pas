@@ -114,6 +114,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(OPEN_BRACKET) and shift                          of TRUE: result := koSaturationDn; end; // open curly brace
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(S) and ctrl                                      of TRUE: result := koScreenshot; end; // in Image Browser, all F-keys are reserved
+    case keyUp and keyIs(S) and NOT ctrl                                  of TRUE: result := koSaveImage; end;
     case keyDn and keyIs(I)                                               of TRUE: result := koZoomIn; end;
     case keyDn and keyIs(O)                                               of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(U)                                               of TRUE: result := koZoomReset; end;
@@ -124,7 +125,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(VK_SPACE) and GV.playingSlideshow                of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(S)                                               of TRUE: result := koSaveImage; end;
     case keyUp and keyIs(HASH)                                            of TRUE: result := koShowCaption; end;
     case keyUp and keyIs(W)                                               of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist            of TRUE: result := koPlayNext; end;
@@ -164,9 +164,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_LEFT)  and not ctrl                           of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(Y)                                               of TRUE: result := koPlayThumbs; end;
     case keyDn and keyIs(T)                                               of TRUE: result := koPlayThumbs; end;
-    case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist              of TRUE: result := koNextFolder; end;
-    case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist              of TRUE: result := koPrevFolder; end;
-
 
 //    case keyUp and keyIs(VK_F1)                                 of TRUE: result := koToggleHelp; end;
 //    case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koNone; end;
@@ -183,7 +180,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 //    case keyUp and keyIs(_7)                                    of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_9) and ctrl                           of TRUE: result := koNone; end;
 //    case keyUp and keyIs(V)                                     of TRUE: result := koNone; end;
-//    case keyUp and keyIs(S) and ctrl                            of TRUE: result := koNone; end;
 //    case keyUp and keyIs(E) and ctrl                            of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_F6)                                 of TRUE: result := koNone; end;
 //    case keyUp and keyIs(VK_F7)                                 of TRUE: result := koNone; end;
