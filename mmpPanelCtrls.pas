@@ -28,6 +28,7 @@ type
   TPanelName = (pnName, pnNumb, pnSize, pnHint, pnSave, pnVers);
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
 function mmpSetPanelText(const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
 
@@ -43,7 +44,12 @@ const
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
-  aStatusBar.panels[PANEL_VERS].text := 'Help = Ctrl-[H]'; // won't currently be seen
+  mmpResetPanelVers(aStatusBar);
+end;
+
+function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
+begin
+  aStatusBar.panels[PANEL_VERS].text := 'Help = Ctrl-[H]';
 end;
 
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;

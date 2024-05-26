@@ -224,7 +224,6 @@ begin
 
   showHost(htMPVHost);
 
-  mmpInitStatusBar(FStatusBar);
   FThumbs.setPanelText(aURL, tickerTotalMs);
 end;
 
@@ -267,7 +266,9 @@ var
   nextFolder: string;
 begin
   nextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
-  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$'); end; // because extractFilePath needs a file name
+  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  playCurrentItem;
 end;
 
 function TThumbsForm.playPrev: boolean;
@@ -283,7 +284,9 @@ var
   prevFolder: string;
 begin
   prevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
-  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$'); end; // because extractFilePath needs a file name
+  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  playCurrentItem;
 end;
 
 function TThumbsForm.showHost(const aHostType: THostType): boolean;
@@ -309,11 +312,11 @@ end;
 function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
 begin
   case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnHint, 'Moved');
+                                                          mmpSetPanelText(FStatusBar, pnVers, 'Moved');
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnHint, 'NOT Moved'); end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Moved'); end;
 end;
 
 function TThumbsForm.showPlaylist: boolean;
@@ -348,12 +351,14 @@ end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  mmpResetPanelVers(FStatusBar);
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
   FKeyHandled := processKeyOp(vKeyOp, shift);
 end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  mmpResetPanelVers(FStatusBar);
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
 end;

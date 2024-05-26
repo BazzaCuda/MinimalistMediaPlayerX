@@ -27,6 +27,8 @@ uses
   TMPVHostClass, TPlaylistClass, TThumbClass;
 
 type
+  TPlayType = (ptGenerateThumbs, ptPlaylistOnly);
+
   TThumbs = class(TObject)
   strict private
     FCurrentFolder:   string;
@@ -49,7 +51,7 @@ type
     function playNext: boolean;
     function playPrev: boolean;
     function playPrevThumbsPage: boolean;
-    function playThumbs(const aFilePath: string = ''): integer;
+    function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = 0): boolean;
     function thumbsPerPage: integer;
     property currentFolder: string read FCurrentFolder;
@@ -193,14 +195,15 @@ begin
   case FPlaylist.prev of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
-function TThumbs.playThumbs(const aFilePath: string = ''): integer;
+function TThumbs.playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
 begin
+  result := -1;
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
                                   mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
-  result := generateThumbs(FPlaylist.currentIx);
+  case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 

@@ -122,8 +122,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(BACKSPACE)                                       of TRUE: result := koAllReset; end;
 
     case keyUp and keyIs(VK_SPACE) and GV.playingSlideshow                of TRUE: result := koPausePlay; end;
-    case keyUp and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
-    case keyUp and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(S)                                               of TRUE: result := koSaveImage; end;
     case keyUp and keyIs(HASH)                                            of TRUE: result := koShowCaption; end;
     case keyUp and keyIs(W)                                               of TRUE: result := koPlayNext; end;
@@ -164,13 +164,12 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_LEFT)  and not ctrl                           of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(Y)                                               of TRUE: result := koPlayThumbs; end;
     case keyDn and keyIs(T)                                               of TRUE: result := koPlayThumbs; end;
-
+    case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist              of TRUE: result := koNextFolder; end;
+    case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist              of TRUE: result := koPrevFolder; end;
 
 
 //    case keyUp and keyIs(VK_F1)                                 of TRUE: result := koToggleHelp; end;
-//    case keyDn and keyIs(VK_DOWN) and NOT GV.showingPlaylist    of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_VOLUME_DOWN)                        of TRUE: result := koNone; end;
-//    case keyDn and keyIs(VK_UP)   and NOT GV.showingPlaylist    of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_VOLUME_UP)                          of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koNone; end;
 //    case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
