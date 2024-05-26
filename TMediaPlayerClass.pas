@@ -149,9 +149,9 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
-  mmpFileUtils, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpUtils,
+  mmpFileUtils, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpUtils,
   formCaptions, formHelp, formMediaCaption,
-  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
 
 var

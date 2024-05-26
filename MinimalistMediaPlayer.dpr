@@ -50,7 +50,7 @@ uses
   TBookmarkClass in 'TBookmarkClass.pas',
   TConfigFileClass in 'TConfigFileClass.pas',
   TGlobalVarsClass in 'TGlobalVarsClass.pas',
-  TKeyboardClass in 'TKeyboardClass.pas',
+  mmpKeyboard in 'mmpKeyboard.pas',
   TMediaInfoClass in 'TMediaInfoClass.pas',
   TMediaPlayerClass in 'TMediaPlayerClass.pas',
   TMediaTypesClass in 'TMediaTypesClass.pas',

@@ -42,9 +42,9 @@ uses
   winAPI.messages,
   system.classes, system.sysUtils, system.types,
   vcl.controls,
-  mmpConsts, mmpDesktopUtils, mmpUtils,
+  mmpConsts, mmpDesktopUtils, mmpKeyboard, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
-  TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
 
 var gAE: TAppEvents;
@@ -112,13 +112,13 @@ begin
   case msgIs(WM_KEYDOWN) of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key          := msg.WParam;
-                                    handled      := KB.processKeyStroke(key, vShiftState, kdDn);
+                                    handled      := KBProcessKeyStroke(key, vShiftState, kdDn);
                                     keyDnHandled := handled; end;end;
 
   case msgIs(WM_KEY_UP)  of TRUE: begin
                                     case GV.userInput of TRUE: EXIT; end; // don't trap keystrokes when the inputBoxForm is being displayed
                                     key         := msg.WParam; // e.g. VK_F10;
-                                    handled     := KB.processKeyStroke(key, vShiftState, kdUp);
+                                    handled     := KBProcessKeyStroke(key, vShiftState, kdUp);
                                     EXIT;       end;end;
 
   case msgIs(WM_KEYUP) of TRUE: begin
@@ -126,7 +126,7 @@ begin
                                   case keyDnHandled of TRUE: EXIT; end; // Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
                                   case UI.showingTimeline and TL.keyHandled(msg.WParam) of TRUE: EXIT; end; // Timeline keystrokes take precedence
                                   key         := msg.WParam;
-                                  handled     := KB.processKeyStroke(key, vShiftState, kdUp); end;end;
+                                  handled     := KBProcessKeyStroke(key, vShiftState, kdUp); end;end;
 
   case msgIs(WM_SYSCOMMAND) of TRUE:  begin
                                         sysCommand.CmdType := msg.wParam;
@@ -164,9 +164,9 @@ begin
   case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; sendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions; end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
-  case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(KB.capsLock); end;
-  case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(KB.capsLock, -1); end;
-  case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(KB.capsLock, 200); end;
+  case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(KBCapsLock); end;
+  case msgIs(WIN_TABTAB)              of TRUE: ST.opInfo := MP.tab(KBCapsLock, -1); end;
+  case msgIs(WIN_TABALT)              of TRUE: ST.opInfo := MP.tab(KBCapsLock, 200); end;
   case msgIs(WIN_GREATER)             of TRUE: UI.greaterWindow(UI.handle, vShiftState); end;
   case msgIs(WIN_RESIZE)              of TRUE: UI.resize(UI.handle, point(msg.wParam, msg.lParam), MP.videoWidth, MP.videoHeight); end;
   case msgIs(WIN_SYNC_MEDIA)          of TRUE: begin MP.position := msg.wParam; ST.opInfo := 'Synced'; end;end;

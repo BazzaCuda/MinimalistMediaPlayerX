@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit TKeyboardClass;
+unit mmpKeyboard;
 
 interface
 
@@ -36,18 +36,9 @@ type
             koThumbnails);
   TKeyDirection = (kdDn, kdUp);
 
-  TKeyboard = class(TObject)
-  strict private
-  private
-    function getCapsLock: boolean;
-    function getNumLock: boolean;
-  public
-    function  processKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
-    property capsLock:    boolean     read getCapsLock;
-    property numLock:     boolean     read getNumLock;
-  end;
-
-function KB: TKeyboard;
+function KBCapsLock: boolean;
+function KBNumLock: boolean;
+function KBProcessKeyStroke(const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
 
 implementation
 
@@ -67,59 +58,47 @@ const
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
   OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
 
-var
-  gKB: TKeyboard;
-
-function KB: TKeyboard;
-begin
-  case gKB = NIL of TRUE: gKB := TKeyboard.create; end;
-  result := gKB;
-end;
-
-{ TKeyboard }
-
-
-function TKeyboard.getCapsLock: boolean;
+function KBCapsLock: boolean;
 begin
   result := GetKeyState(VK_CAPITAL) <> 0;
 end;
 
-function TKeyboard.getNumLock: boolean;
+function KBNumLock: boolean;
 begin
   result := GetKeyState(VK_NUMLOCK) <> 0;
 end;
 
-function TKeyboard.processKeyStroke(const aKey: word;  const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
+function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; const upDn: TKeyDirection): boolean;
 
-    function ctrl: boolean;
-    begin
-      result := ssCtrl in aShiftState;
-    end;
+  function ctrl: boolean;
+  begin
+    result := ssCtrl in aShiftState;
+  end;
 
-    function keyDn: boolean;
-    begin
-      result := upDn = kdDn;
-    end;
+  function keyDn: boolean;
+  begin
+    result := upDn = kdDn;
+  end;
 
-    function keyUp: boolean;
-    begin
-      result := upDn = kdUp;
-    end;
+  function keyUp: boolean;
+  begin
+    result := upDn = kdUp;
+  end;
 
-    function keyIs(const aKeyCode: word): boolean; overload;
-    begin
-      result := aKey = aKeyCode;
-    end;
+  function keyIs(const aKeyCode: word): boolean; overload;
+  begin
+    result := aKey = aKeyCode;
+  end;
 
-    function keyIs(const aChar: char): boolean; overload;
-    begin
-      result := aKey = ord(aChar);
-    end;
+  function keyIs(const aChar: char): boolean; overload;
+  begin
+    result := aKey = ord(aChar);
+  end;
 
-    function shift: boolean;
-    begin
-      result := ssShift in aShiftState;
-    end;
+  function shift: boolean;
+  begin
+    result := ssShift in aShiftState;
+  end;
 
   function getKeyOp: TKeyOp;
   begin
@@ -308,11 +287,5 @@ begin
 
   result := TRUE;
 end;
-
-initialization
-  gKB := NIL;
-
-finalization
-  case gKB <> NIL of TRUE: gKB.free; end;
 
 end.

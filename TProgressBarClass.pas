@@ -66,8 +66,8 @@ implementation
 uses
   system.sysUtils,
   vcl.graphics,
-  mmpConsts, mmpMPVFormatting,
-  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaPlayerClass,
+  mmpConsts, mmpKeyboard, mmpMPVFormatting,
+  TConfigFileClass, TGlobalVarsClass, TMediaPlayerClass,
   _debugWindow;
 
 var
@@ -181,7 +181,7 @@ begin
   vPOint.Y := Y;
   application.activateHint(FPB.clientToScreen(vPoint));
 
-  case (NOT KB.numLock) and NOT (ssCtrl in shift) of TRUE: EXIT; end;
+  case (NOT KBNumLock) and NOT (ssCtrl in shift) of TRUE: EXIT; end;
   setNewPosition(x);
   postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0);
 end;

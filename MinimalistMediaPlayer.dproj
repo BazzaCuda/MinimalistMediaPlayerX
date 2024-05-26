@@ -191,7 +191,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TBookmarkClass.pas"/>
         <DCCReference Include="TConfigFileClass.pas"/>
         <DCCReference Include="TGlobalVarsClass.pas"/>
-        <DCCReference Include="TKeyboardClass.pas"/>
+        <DCCReference Include="mmpKeyboard.pas"/>
         <DCCReference Include="TMediaInfoClass.pas"/>
         <DCCReference Include="TMediaPlayerClass.pas"/>
         <DCCReference Include="TMediaTypesClass.pas"/>

@@ -109,9 +109,9 @@ uses
   winApi.messages,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpMathUtils, mmpShellUtils, mmpUtils,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpShellUtils, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
-  TConfigFileClass, TGlobalVarsClass, TKeyboardClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
   _debugWindow;
 
 var
