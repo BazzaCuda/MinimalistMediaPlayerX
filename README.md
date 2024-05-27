@@ -1,6 +1,8 @@
 MMP - Minimalist Media Player
 =====================
 
+MMP - Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
 
 VERSION 3 is COMING!! Now with image and thumbnail browsing and image manipulation. Stay tuned!!
