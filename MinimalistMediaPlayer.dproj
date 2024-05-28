@@ -111,7 +111,7 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\Downloads\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot; &quot;B:\Images\zTest\from mobile\Dylan_Original_Model.JPG.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Images\zTest\from mobile\Dylan_Original_Model.JPG.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
     </PropertyGroup>

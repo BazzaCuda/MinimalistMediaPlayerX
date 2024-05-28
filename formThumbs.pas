@@ -65,10 +65,11 @@ type
     function playNextFolder: boolean;
     function playPrev: boolean;
     function playPrevFolder: boolean;
-    function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+    function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
     function renameFile(const aFilePath: string): boolean;
     function saveCopyFile(const aFilePath: string): boolean;
     function saveMoveFile(const aFilePath: string): boolean;
+    function saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
     function takeScreenshot: string;
@@ -85,7 +86,7 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUtils, mmpWindowCtrls,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formPlaylist,
   TGlobalVarsClass, TSendAllClass,
 
@@ -169,6 +170,7 @@ begin
   mpv.onInitMPV    := onInitMPV;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
   mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
+  mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -353,6 +355,16 @@ begin
                                                 FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Saved'); end;
 end;
 
+function TThumbsForm.saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
+begin
+  case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE:  begin
+                                                          mmpSetPanelText(FStatusBar, pnVers, 'Moved');
+                                                          FThumbs.playlist.delete(FThumbs.playlist.currentIx);
+                                                          playCurrentItem;
+                                                        end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Moved'); end;
+end;
+
 function TThumbsForm.showPlaylist: boolean;
 begin
   EXIT; // EXPERIMENTAL
@@ -393,16 +405,17 @@ begin
                 FKeyHandled := TRUE; // don't let the user accidentally change folders or image with the arrow keys after adjusting the image somehow
                 EXIT; end;end;
 
-  FKeyHandled := processKeyOp(vKeyOp, shift);
+  FKeyHandled := processKeyOp(vKeyOp, shift, key);
 end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-  processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift);
+  processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
+  case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10
 end;
 
-function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
+function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
 begin
   result := FALSE;
 
@@ -456,6 +469,7 @@ begin
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
+    koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFileToKeyFolder(FThumbs.playlist.currentItem, mmpFolderFromFKey(aKey)); end;
 
 
 

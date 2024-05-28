@@ -21,6 +21,7 @@ unit mmpUserFolders;
 interface
 
 function mmpUserBaseFolder(const aFolder: string): string;
+function mmpFolderFromFKey(const aKey: WORD): string;
 function mmpUserOverride(const aFolder: string): string;
 
 implementation
@@ -38,10 +39,15 @@ begin
 
   result := CF.value['baseFolder'];
   case result <> '' of TRUE: result := ITBS(result); end;
+end;
 
+function mmpFolderFromFKey(const aKey: WORD): string;
+begin
+  result := 'folder' + intToStr(aKey - 111); // F1-F12 = 112-123
 end;
 
 function mmpUserOverride(const aFolder: string): string;
+// destination folders can be absolute paths or relative to the base folder
 begin
   result := '';
   var vValue := CF.value[aFolder];

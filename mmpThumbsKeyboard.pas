@@ -31,8 +31,8 @@ type
             koGreaterWindow, koToggleControls, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
             koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
-            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy
-
+            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy,
+            koMoveToKeyFolder
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -145,6 +145,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(Y)                                               of TRUE: result := koPlayThumbs; end;
     case keyDn and keyIs(T)                                               of TRUE: result := koPlayThumbs; end;
     case keyUp and keyIs(C)                                               of TRUE: result := koSaveCopy; end;
+    case keyUp and (aKey in [VK_F1..VK_F12])                              of TRUE: result := koMoveToKeyFolder; end;
 
 // TO DO
     case keyUp and keyIs(H) and ctrl                                      of TRUE: result := koToggleHelp; end;
