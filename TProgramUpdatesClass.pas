@@ -240,10 +240,26 @@ function TProgramUpdates.getJSONReleaseTag: string;
 var
   json: string;
   obj:  TJSONObject;
+
+  function getDevJson(const aTag: string): string;
+  begin
+    with TStringList.create do begin
+      loadFromFile(getReleaseNotesFilePath(aTag)); // you need to create this file manually
+      result := text;
+      free;
+    end;
+  end;
+
+//  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/tags/v2.0.0'); // for DEV only
+
 begin
   result := '';
-//  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/tags/v2.0.0'); // for DEV only
   json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
+
+////=== DEV ONLY ===
+//  json := getDevJson('v3.0.0');
+////=== DEV ONLY ===
+
   try
     obj := TJSONObject.ParseJSONValue(json) as TJSONObject;
     try
@@ -254,6 +270,10 @@ begin
   finally
     case obj = NIL of FALSE: obj.free; end;
   end;
+
+////=== DEV ONLY ===
+//  result := 'v3.0.0';
+////=== DEV ONLY ===
 end;
 
 function TProgramUpdates.getReleaseNotesFilePath(const aReleaseTag: string): string;

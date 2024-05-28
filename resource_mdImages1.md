@@ -18,7 +18,7 @@ Ctrl-**DEL** [D]elete folder after confirm\*\*<br />
 **S** Save/Move to "Moved" folder\*<br />
 Ctrl-**S** Save screenshot of altered image<br />
 **R** [R]ename file<br />
-**F1-F12**\* Save/Move to user-defined folder\*<br />
+**F1-F12** Save/Move to user-defined folder\*<br />
 
 **Gamma**<br />
 **[** decrease :hold to repeat<br />

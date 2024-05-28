@@ -235,7 +235,7 @@ function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
 begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
-  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width + 1, FThumbsHost.top - 2 - mmpCaptionHeight - (mmpBorderWidth * 2))); // screen position of the top right corner of the application window, roughly.
+  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width + 1, FThumbsHost.top - 2 - mmpCaptionHeight - mmpBorderWidth)); // screen position of the top right corner of the application window, roughly.
   showHelp(SELF.handle, vPt, htImages, aCreateNew);
 end;
 

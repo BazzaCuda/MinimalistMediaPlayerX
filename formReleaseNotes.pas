@@ -31,6 +31,7 @@ type
     md: TMarkdownViewer;
     Panel1: TPanel;
     btnClose: TButton;
+    Label1: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
