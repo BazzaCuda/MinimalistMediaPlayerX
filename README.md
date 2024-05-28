@@ -312,6 +312,8 @@ Control | Action
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
+`T`                     | on an image, display the Image/Thumbnails Browser. On an audio or video file, Tab as normal
+`Y`                     | display the Image/Thumbnails Browser regardless of what type of media file is currently showing
 
 Media File Formats
 ------------------
