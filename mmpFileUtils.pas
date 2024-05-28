@@ -39,9 +39,9 @@ uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
-  mmpFolderUtils, mmpShellUtils, mmpUtils,
+  mmpShellUtils, mmpUserFolders, mmpUtils,
   formInputBox,
-  TConfigFileClass;
+  _debugWindow;
 
 function mmpConfigFilePath: string;
 begin
@@ -58,9 +58,12 @@ var
 begin
   result := FALSE;
   try
-    vDestFolder := ITBS(CF.value['baseFolder'] + aFolder);
+    vDestFolder := mmpUserBaseFolder(aFolder) + mmpUserOverride(aFolder);
+    debug(vDestFolder);
     vDestFile   := vDestFolder + ExtractFileName(aFilePath);
-    forceDirectories(vDestFolder);
+    try
+      forceDirectories(vDestFolder);
+    except end;                        // this will get picked up by the failed directoryExists below
     vCancel := PBOOL(FALSE);
     i := 0;
     case directoryExists(vDestFolder) of TRUE: begin

@@ -346,11 +346,11 @@ end;
 function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
 begin
   case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnVers, 'Moved');
+                                                          mmpSetPanelText(FStatusBar, pnVers, 'Saved');
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Moved'); end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Saved'); end;
 end;
 
 function TThumbsForm.showPlaylist: boolean;

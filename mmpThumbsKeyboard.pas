@@ -146,6 +146,9 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(T)                                               of TRUE: result := koPlayThumbs; end;
     case keyUp and keyIs(C)                                               of TRUE: result := koSaveCopy; end;
 
+// TO DO
+    case keyUp and keyIs(H) and ctrl                                      of TRUE: result := koToggleHelp; end;
+
 
 //    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;
 //    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
@@ -158,7 +161,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 //    case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
 //    case keyUp and keyIs(VK_INSERT)                                       of TRUE: result := koClipboard; end;
 //    case keyUp and keyIs(L)                                               of TRUE: result := koReloadPlaylist; end;
-//    case keyUp and keyIs(H) and ctrl                                      of TRUE: result := koToggleHelp; end;
 //    case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;
 //    case keyDn and keyIs(B) and ctrl and shift                            of TRUE: result := koDarkerPB; end;
 //    case keyUp and keyIs(P)                                               of TRUE: result := koTogglePlaylist; end;

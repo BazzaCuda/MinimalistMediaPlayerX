@@ -177,7 +177,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(CLOSE_BRACKET) and shift                         of TRUE: result := koSaturationUp; end; // close curly brace
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(BACKSPACE)                                       of TRUE: result := koAllReset; end;
-    case keyUp and keyIs(VK_F1)                                           of TRUE: result := koToggleHelp; end;
+//    case keyUp and keyIs(VK_F1)                                           of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(H) and ctrl                                      of TRUE: result := koToggleHelp; end;
     case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;
     case keyDn and keyIs(B) and ctrl and shift                            of TRUE: result := koDarkerPB; end;
