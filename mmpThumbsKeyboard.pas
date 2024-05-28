@@ -32,7 +32,7 @@ type
             koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koTogglePlaylist, koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder,
-            koThumbsUp, koThumbsDn
+            koThumbsUp, koThumbsDn, koAdjustAspectRatio
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -151,6 +151,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(L)                                               of TRUE: result := koReloadPlaylist; end;
     case keyDn and keyIs(VK_UP)   and shift and NOT ctrl                  of TRUE: result := koThumbsUp; end;
     case keyDn and keyIs(VK_DOWN) and shift and NOT ctrl                  of TRUE: result := koThumbsDn; end;
+    case keyUp and keyIs(J)                                               of TRUE: result := koAdjustAspectRatio; end;
 
 // TO DO
 
@@ -172,7 +173,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 // spare keys
 //    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koNone; end;
-//    case keyUp and keyIs(J)                                     of TRUE: result := koNone; end;
 //    case keyUp and keyIs(P) and ctrl                            of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_5)                                    of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_6)                                    of TRUE: result := koNone; end;

@@ -319,7 +319,8 @@ end;
           function hideForm(parameter: pointer): integer;
           var formPtr: TForm;
           begin
-            mmpDelay(2000);
+            debug('hideForm');
+            mmpDelay(1500);
             formPtr := parameter;
             formPtr.hide;
           end;
@@ -679,6 +680,7 @@ begin
 
   formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
   FMainForm.show;
+  SetActiveWindow(FMainForm.handle);
 end;
 
 function TUI.showWindow: boolean;

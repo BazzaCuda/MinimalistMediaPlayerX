@@ -55,6 +55,7 @@ type
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
+    function adjustAspectRatio: boolean;
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
@@ -90,7 +91,7 @@ uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
-  TGlobalVarsClass, TSendAllClass,
+  TGlobalVarsClass, TMediaInfoClass, TSendAllClass,
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
@@ -108,11 +109,31 @@ end;
 
 {$R *.dfm}
 
+function TThumbsForm.adjustAspectRatio: boolean;
+var
+  vWidth:  integer;
+  vHeight: integer;
+begin
+  case (MI.imageWidth <= 0) OR (MI.imageHeight <= 0) of TRUE: EXIT; end;
+
+  var vRatio := MI.imageHeight / MI.imageWidth;
+
+  mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
+  case GV.autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
+                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
+
+  vHeight := vHeight + 42;
+
+  case (SELF.width <> vWidth) or (SELF.height <> vHeight) of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end;
+
+  case GV.autoCentre of  TRUE: autoCentre; end;
+end;
+
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
 begin
   case length(application.hint) > 1 of
-    TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT)); //    mmpSetPanelText(FStatusBar, pnName, copy(application.hint, 2, MAXINT));
-                                           FALSE: mmpSetPanelText(FStatusBar, pnHint, application.hint); end;end;
+    TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT), 0, TRUE);
+                                           FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
 end;
 
 function TThumbsForm.autoCentre: boolean;
@@ -252,6 +273,8 @@ begin
     mpvOpenFile(mpv, aURL); // don't blink!
   except end;
   tickerStop;
+
+  MI.initMediaInfo(aURL);
 
   showHost(htMPVHost);
 
@@ -492,6 +515,7 @@ begin
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
+    koAdjustAspectRatio:  case whichHost of htMPVHost: adjustAspectRatio; end;
 
     koPausePlay:;
     koShowCaption:;

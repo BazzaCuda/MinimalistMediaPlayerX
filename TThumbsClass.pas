@@ -39,10 +39,10 @@ type
     FThumbs:          TObjectList<TThumb>;
     FThumbSize:       integer;
   private
-    function fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
-    function generateThumbs(const aItemIx: integer): integer;
     procedure thumbClick(sender: TObject);
-    function getCurrentIx: integer;
+    function  fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+    function  generateThumbs(const aItemIx: integer): integer;
+    function  getCurrentIx: integer;
   public
     constructor create;
     destructor destroy; override;
@@ -52,7 +52,7 @@ type
     function playPrev: boolean;
     function playPrevThumbsPage: boolean;
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
-    function setPanelText(const aURL: string; aTickCount: double = 0): boolean;
+    function setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
     function thumbsPerPage: integer;
     property currentFolder: string read FCurrentFolder;
     property currentIx: integer read getCurrentIx;
@@ -68,6 +68,7 @@ uses
   vcl.controls, vcl.graphics,
   mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
+  TMediaInfoClass,
   _debugWindow;
 
 { TThumbs }
@@ -207,20 +208,27 @@ begin
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 
-function TThumbs.setPanelText(const aURL: string; aTickCount: double = 0): boolean;
+function TThumbs.setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
 begin
   case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnName, extractFileName(aURL));
                              FALSE: mmpSetPanelText(FStatusBar, pnName, THUMB_NO_IMAGES); end;
 
-
   case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnNumb, mmpFormatFileNumber(FPlaylist.indexOf(aURL) + 1, FPlaylist.count));
                              FALSE: mmpSetPanelText(FStatusBar, pnNumb, mmpFormatFileNumber(0, 0)); end;
 
-  case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(mmpFileSize(aURL)));
-                             FALSE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(0)); end;
+  case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(mmpFileSize(aURL)));
+                                                               FALSE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(0)); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnSize, ''); end;
 
 
-  mmpSetPanelText(FStatusBar, pnHint, mmpFormatTickCount(aTickCount));
+  case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: begin
+                                                                        MI.initMediaInfo(aURL);
+                                                                        mmpSetPanelText(FStatusBar, pnXXYY, format('%d x %d', [MI.imageWidth, MI.imageHeight]));
+                                                                      end;
+                                                               FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
+
+  mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount));
   mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder);
 end;
 

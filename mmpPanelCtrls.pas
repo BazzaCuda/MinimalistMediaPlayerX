@@ -25,7 +25,7 @@ uses
   mmpUtils;
 
 type
-  TPanelName = (pnName, pnNumb, pnSize, pnHint, pnSave, pnVers);
+  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnVers);
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
@@ -38,13 +38,15 @@ const
   PANEL_NAME = 0;
   PANEL_NUMB = 1;
   PANEL_SIZE = 2;
-  PANEL_HINT = 3;
-  PANEL_SAVE = 4;
-  PANEL_VERS = 5;
+  PANEL_XXYY = 3;
+  PANEL_HINT = 4;
+  PANEL_SAVE = 5;
+  PANEL_VERS = 6;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
   mmpResetPanelVers(aStatusBar);
+  mmpSetPanelText(aStatusBar, pnTick, '');
 end;
 
 function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
@@ -61,6 +63,7 @@ begin
 
   fixedWidths := aStatusBar.panels[PANEL_NUMB].width
                + aStatusBar.panels[PANEL_SIZE].width
+               + aStatusBar.panels[PANEL_XXYY].width
                + aStatusBar.panels[PANEL_HINT].width
                + aStatusBar.panels[PANEL_VERS].width;
 
@@ -78,7 +81,8 @@ begin
     pnName: aStatusBar.panels[PANEL_NAME].text := aText;
     pnNumb: aStatusBar.panels[PANEL_NUMB].text := aText;
     pnSize: aStatusBar.panels[PANEL_SIZE].text := aText;
-    pnHint: aStatusBar.panels[PANEL_HINT].text := aText;
+    pnXXYY: aStatusBar.panels[PANEL_XXYY].text := aText;
+    pnTick: aStatusBar.panels[PANEL_HINT].text := aText;
     pnSave: aStatusBar.panels[PANEL_SAVE].text := aText;
     pnVers: aStatusBar.panels[PANEL_VERS].text := aText;
   end;

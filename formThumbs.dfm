@@ -3039,21 +3039,30 @@ object ThumbsForm: TThumbsForm
     Panels = <
       item
         Bevel = pbRaised
-        Width = 290
+        Width = 50
       end
       item
+        Alignment = taCenter
         Bevel = pbRaised
         Text = '00000 / 00000'
         Width = 86
       end
       item
+        Alignment = taCenter
         Bevel = pbRaised
-        Text = '999kb'
-        Width = 70
+        Text = '17MB'
+        Width = 50
       end
       item
+        Alignment = taCenter
         Bevel = pbRaised
-        Width = 100
+        Text = '1024 x 1024'
+        Width = 80
+      end
+      item
+        Alignment = taCenter
+        Text = '0.0000ms'
+        Width = 70
       end
       item
         Bevel = pbRaised
