@@ -45,6 +45,7 @@ function mpvFrameForwards(const mpv: TMPVBasePlayer): boolean;
 function mpvGammaDn(const mpv: TMPVBasePlayer): string;
 function mpvGammaReset(const mpv: TMPVBasePlayer): string;
 function mpvGammaUp(const mpv: TMPVBasePlayer): string;
+function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string; // currently redundant - mpvSetMute is used instead
 function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
 function mpvPanDn(const mpv: TMPVBasePlayer): string;
 function mpvPanLeft(const mpv: TMPVBasePlayer): string;
@@ -59,7 +60,7 @@ function mpvRotateRight(const mpv: TMPVBasePlayer): string;
 function mpvSaturationDn(const mpv: TMPVBasePlayer): string;
 function mpvSaturationReset(const mpv: TMPVBasePlayer): string;
 function mpvSaturationUp(const mpv: TMPVBasePlayer): string;
-function mpvSeek(const mpv: TMPVBasePlayer; const value: integer): boolean;
+function mpvSeek(const mpv: TMPVBasePlayer; const aValue: integer): boolean;
 function mpvSpeedDn(const mpv: TMPVBasePlayer): string;
 function mpvSpeedReset(const mpv: TMPVBasePlayer): string;
 function mpvSpeedUp(const mpv: TMPVBasePlayer): string;
@@ -79,8 +80,9 @@ implementation
 uses
   system.sysUtils,
   vcl.forms,
-  mmpUtils,
-  TConfigFileClass;
+  mmpMPVProperties, mmpUtils,
+  TConfigFileClass,
+  _debugWindow;
 
 function mpvCreate(var mpv: TMPVBasePlayer): boolean;
 begin
@@ -218,12 +220,29 @@ begin
   result := mpvFormattedgamma(mpv);
 end;
 
-function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
+function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string; // currently redundant - mpvSetMute is used instead
+var vValue: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.mute := NOT mpv.mute;
-  case mpv.mute of  TRUE: result := 'unmuted';
-                   FALSE: result := 'muted'; end;
+  mpvSetMute(mpv, aValue);
+  mpvGetMute(mpv, vValue);
+  case vValue of    TRUE: result := 'muted';
+                   FALSE: result := 'unmuted'; end;
+  case vValue of    TRUE: CF.value['muted'] := 'yes';
+                   FALSE: CF.value['muted'] := 'no'; end;
+end;
+
+function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
+var vValue: boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpvGetMute(mpv, vValue);
+  mpvSetMute(mpv, NOT vValue);
+  mpvGetMute(mpv, vValue);
+  case vValue of    TRUE: result := 'muted';
+                   FALSE: result := 'unmuted'; end;
+  case vValue of    TRUE: CF.value['muted'] := 'yes';
+                   FALSE: CF.value['muted'] := 'no'; end;
 end;
 
 function mpvPanDn(const mpv: TMPVBasePlayer): string;
@@ -350,10 +369,10 @@ begin
   result := 'Saturation reset';
 end;
 
-function mpvSeek(const mpv: TMPVBasePlayer; const value: integer): boolean;
+function mpvSeek(const mpv: TMPVBasePlayer; const aValue: integer): boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.Seek(value, FALSE);
+  mpv.Seek(aValue, FALSE);
 end;
 
 function mpvSaturationUp(const mpv: TMPVBasePlayer): string;

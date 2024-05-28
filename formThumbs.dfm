@@ -3053,7 +3053,6 @@ object ThumbsForm: TThumbsForm
       end
       item
         Bevel = pbRaised
-        Text = 'Zoom in'
         Width = 100
       end
       item

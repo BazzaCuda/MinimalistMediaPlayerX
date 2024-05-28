@@ -36,6 +36,8 @@ function mpvVideoWidth(const mpv: TMPVBasePlayer): int64;
 
 function mpvGetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; var  aString: string): TMPVErrorCode;
 function mpvSetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; const aValue: string): TMPVErrorCode;
+function mpvgetMute(const mpv: TMPVBasePlayer; var aBoolean: boolean): TMPVErrorCode;
+function mpvSetMute(const mpv: TMPVBasePlayer; const value: boolean): boolean;
 function mpvSetKeepOpen(const mpv: TMPVBasePlayer; const value: boolean): boolean;
 function mpvSetVolume(const mpv: TMPVBasePlayer; const aVolume: integer): boolean;
 
@@ -110,19 +112,31 @@ end;
 function mpvGetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; var aString: string): TMPVErrorCode;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := mpv.GetPropertyString(aProperty, aString, FALSE);
+  result := mpv.getPropertyString(aProperty, aString, FALSE);
 end;
 
 function mpvSetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; const aValue: string): TMPVErrorCode;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  result := mpv.SetPropertyString(aProperty, aValue);
+  result := mpv.setPropertyString(aProperty, aValue);
 end;
 
 function mpvSetKeepOpen(const mpv: TMPVBasePlayer; const value: boolean): boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyBool('keep-open', value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
+  mpv.setPropertyBool('keep-open', value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
+end;
+
+function mpvgetMute(const mpv: TMPVBasePlayer; var aBoolean: boolean): TMPVErrorCode;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyBool('mute', aBoolean);
+end;
+
+function mpvSetMute(const mpv: TMPVBasePlayer; const value: boolean): boolean;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyBool('mute', value);
 end;
 
 function mpvSetVolume(const mpv: TMPVBasePlayer; const aVolume: integer): boolean;

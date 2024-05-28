@@ -460,7 +460,8 @@ begin
                          else resetTimeCaption; end;
 
   openURL(aURL);
-  mpvSetVolume(mpv, CF.asInteger['volume']);
+  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
+  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 

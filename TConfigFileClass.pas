@@ -31,7 +31,8 @@ type
     function saveConfigFile: boolean;
   private
     function getValue(const aName: string): string;
-    procedure setValue(const aName, aValue: string);
+    procedure setValue(const aName: string; const aValue: string);
+    function getAsBoolean(const aName: string): boolean;
     function getAsInteger(const aName: string): integer;
   public
     constructor create;
@@ -39,6 +40,7 @@ type
     function deleteName(const aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
     function toHex(const aInteger: integer): string;
+    property asBoolean[const aName: string]: boolean read getAsBoolean;
     property asInteger[const aName: string]: integer read getAsInteger;
     property value[const aName: string]: string read getValue write setValue;
   end;
@@ -48,7 +50,8 @@ function CF: TConfigFile;
 implementation
 
 uses
-  system.sysUtils, _debugWindow;
+  system.sysUtils,
+  _debugWindow;
 
 var
   gCF: TConfigFile;
@@ -80,6 +83,11 @@ begin
   inherited;
 end;
 
+function TConfigFile.getAsBoolean(const aName: string): boolean;
+begin
+  result := lowerCase(FFileContents.values[aName]) = 'yes';
+end;
+
 function TConfigFile.getAsInteger(const aName: string): integer;
 begin
   try result := strToIntDef(FFileContents.values[aName], 0); except result := 0; end;
@@ -104,7 +112,7 @@ begin
   end;
 end;
 
-procedure TConfigFile.setValue(const aName, aValue: string);
+procedure TConfigFile.setValue(const aName: string; const aValue: string);
 begin
   FFileContents.values[aName] := aValue;
   saveConfigFile;

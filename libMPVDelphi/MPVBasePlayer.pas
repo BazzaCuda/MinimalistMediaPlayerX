@@ -204,7 +204,7 @@ type
 
     // Get/set volume: 0~1000
     function GetVolume: Double;
-    function SetVolume(fVol: Double): TMPVErrorCode;
+//    function SetVolume(fVol: Double): TMPVErrorCode;
     function SetMute(bMute: Boolean): TMPVErrorCode;
     function GetMute: Boolean;
 
@@ -226,7 +226,7 @@ type
     property VideoWidth: Int64 read m_nX;
     property VideoHeight: Int64 read m_nY;
     property Volume: Double read m_fVol write SetVol;
-    property Mute: Boolean read m_bMute write SetVolMute;
+//    property Mute: Boolean read m_bMute write SetVolMute;
     property AudioDevice: string read GetAudioDev write SetAudioDev;
     property AudioDeviceList: string read GetAudioDevList;
 
@@ -1556,11 +1556,11 @@ begin
   SetMute(Value);
 end;
 
-function TMPVBasePlayer.SetVolume(fVol: Double): TMPVErrorCode;
-begin
-  if m_bMute and (fVol>0) then SetMute(False);
-  Result := SetPropertyDouble(STR_VOLUME, fVol);
-end;
+//function TMPVBasePlayer.SetVolume(fVol: Double): TMPVErrorCode;
+//begin
+//  if m_bMute and (fVol>0) then SetMute(False);
+//  Result := SetPropertyDouble(STR_VOLUME, fVol);
+//end;
 
 procedure TMPVBasePlayer.SetVTrack(const Value: string);
 begin
