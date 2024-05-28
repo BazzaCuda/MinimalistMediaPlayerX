@@ -26,12 +26,12 @@ uses
 
 type
   TKeyOp = (koNone,
-            koCloseApp, koPausePlay, koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koSaveImage, koShowCaption, koPlayFirst, koPlayNext,
+            koCloseApp, koPausePlay, koBrightnessUp, koBrightnessDn, koZoomIn, koZoomOut, koSaveMove, koShowCaption, koPlayFirst, koPlayNext,
             koPlayPrev, koPlayLast, koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset,
             koGreaterWindow, koToggleControls, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
             koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
-            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder
+            koTogglePlaylist, koCloseAll, koScreenshot, koToggleRepeat, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy
 
             );
   TKeyDirection = (kdDn, kdUp);
@@ -116,7 +116,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(OPEN_BRACKET) and shift                          of TRUE: result := koSaturationDn; end; // open curly brace
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(S) and ctrl                                      of TRUE: result := koScreenshot; end; // in Image Browser, all F-keys are reserved
-    case keyUp and keyIs(S) and NOT ctrl                                  of TRUE: result := koSaveImage; end;
+    case keyUp and keyIs(S) and NOT ctrl                                  of TRUE: result := koSaveMove; end;
     case keyDn and keyIs(I)                                               of TRUE: result := koZoomIn; end;
     case keyDn and keyIs(O)                                               of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(U)                                               of TRUE: result := koZoomReset; end;
@@ -144,11 +144,12 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(K)                                               of TRUE: result := koKeep; end;
     case keyUp and keyIs(Y)                                               of TRUE: result := koPlayThumbs; end;
     case keyDn and keyIs(T)                                               of TRUE: result := koPlayThumbs; end;
+    case keyUp and keyIs(C)                                               of TRUE: result := koSaveCopy; end;
+
 
 //    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;
 //    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
 //    case keyUp and keyIs(B) and NOT ctrl                                  of TRUE: result := koToggleBlackout; end;
-//    case keyUp and keyIs(C)                                               of TRUE: result := koToggleControls; end;
 //    case keyUp and keyIs(HASH)                                            of TRUE: result := koShowCaption; end;
 //    case keyDn and keyIs(VK_ADD)                                          of TRUE: result := koSpeedUp; end;
 //    case keyDn and keyIs(SLASH)                                           of TRUE: result := koSpeedUp; end;

@@ -67,6 +67,7 @@ type
     function playPrevFolder: boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState): boolean;
     function renameFile(const aFilePath: string): boolean;
+    function saveCopyFile(const aFilePath: string): boolean;
     function saveMoveFile(const aFilePath: string): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
@@ -336,6 +337,12 @@ begin
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
 end;
 
+function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
+begin
+  case mmpCopyFile(aFilePath, 'Copied', FALSE) of  TRUE:  mmpSetPanelText(FStatusBar, pnVers, 'Copied');
+                                                  FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Copied'); end;
+end;
+
 function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
 begin
   case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
@@ -444,10 +451,11 @@ begin
     koCloseAll:           begin close; SA.postToAll(WIN_CLOSEAPP); end;
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
     koCentreWindow:       mmpCentreWindow(SELF.handle);
-    koRenameFile:         case whichHost of htMPVHost:  renameFile(FThumbs.playlist.currentItem); end;
-    koSaveImage:          case whichHost of htMPVHost:  saveMoveFile(FThumbs.playlist.currentItem); end;
+    koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
+    koSaveMove:           case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem); end;
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
+    koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
 
 
 

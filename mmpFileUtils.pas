@@ -63,7 +63,7 @@ begin
     forceDirectories(vDestFolder);
     vCancel := PBOOL(FALSE);
     i := 0;
-    case directoryExists(CF.value['baseFolder']) of TRUE: begin
+    case directoryExists(vDestFolder) of TRUE: begin
       vExt := extractFileExt(aFilePath);
       while fileExists(vDestFile) do begin
         inc(i);
