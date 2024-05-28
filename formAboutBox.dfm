@@ -3,7 +3,7 @@ object AboutBoxForm: TAboutBoxForm
   Top = 0
   BorderStyle = bsDialog
   Caption = 'About'
-  ClientHeight = 269
+  ClientHeight = 276
   ClientWidth = 630
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
