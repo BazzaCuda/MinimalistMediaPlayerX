@@ -27,6 +27,8 @@ uses
   HTMLUn2, HtmlView, MarkDownViewerComponents;
 
 type
+  THelpType = (htHelp, htImages);
+
   THelpForm = class(TForm)
     backPanel: TPanel;
     buttonPanel: TPanel;
@@ -36,16 +38,15 @@ type
     md1: TMarkdownViewer;
     md2: TMarkdownViewer;
     md3: TMarkdownViewer;
-    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
   protected
+    constructor create(const aHelpType: THelpType);
     procedure CreateParams(var Params: TCreateParams);
   public
   end;
 
-function showHelp(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
-function showingHelp: boolean;
+function showHelp(const aHWND: HWND; const Pt: TPoint; const aHelpType: THelpType; const createNew: boolean = TRUE): boolean;
 function shutHelp: boolean;
 
 implementation
@@ -53,25 +54,20 @@ implementation
 uses
   winApi.shellAPI, system.strUtils,
   mmpConsts, mmpMarkDownUtils,
-  TGlobalVarsClass, TUICtrlsClass;
+  TGlobalVarsClass;
 
 var
   helpForm: THelpForm;
 
-function showingHelp: boolean;
+function showHelp(const aHWND: HWND; const Pt: TPoint; const aHelpType: THelpType; const createNew: boolean = TRUE): boolean;
 begin
-  result := helpForm <> NIL;
-end;
-
-function showHelp(const Pt: TPoint; const createNew: boolean = TRUE): boolean;
-begin
-  case (helpForm = NIL) and createNew of TRUE: helpForm := THelpForm.create(NIL); end;
+  case (helpForm = NIL) and createNew of TRUE: helpForm := THelpForm.create(aHelpType); end;
   case helpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current help window. Used for repositioning the window when the main UI moves or resizes.
 
   helpForm.show;
   winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   enableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
-  setForegroundWindow(UI.handle); // so the UI keyboard functions can still be used when this form is open.
+  setForegroundWindow(aHWND); // so the UI keyboard functions can still be used when this form is open.
   GV.showingHelp := TRUE;
 end;
 
@@ -84,21 +80,12 @@ end;
 
 {$R *.dfm}
 
-procedure THelpForm.CreateParams(var Params: TCreateParams);
-// no taskbar icon for the app
-begin
-  inherited;
-  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := SELF.Handle; // normally application.handle
-end;
+{ THelpForm }
 
-procedure THelpForm.FormClose(Sender: TObject; var Action: TCloseAction);
+constructor THelpForm.create(const aHelpType: THelpType);
 begin
-  helpForm.free; helpForm := NIL;
-end;
+  inherited create(NIL);
 
-procedure THelpForm.FormCreate(Sender: TObject);
-begin
   initMarkDownViewer(md1);
   initMarkDownViewer(md2);
   initMarkDownViewer(md3);
@@ -118,12 +105,31 @@ begin
   md2.width := SELF.width div 3;
   md3.width := SELF.width div 3;
 
-  loadMarkDownFromResource(md1, 'resource_mdHelp1');
-  loadMarkDownFromResource(md2, 'resource_mdHelp2');
-  loadMarkDownFromResource(md3, 'resource_mdHelp3');
+  case aHelpType of   htHelp: begin
+                                loadMarkDownFromResource(md1, 'resource_mdHelp1');
+                                loadMarkDownFromResource(md2, 'resource_mdHelp2');
+                                loadMarkDownFromResource(md3, 'resource_mdHelp3'); end;
+                    htImages: begin
+                                loadMarkDownFromResource(md1, 'resource_mdImages1');
+                                loadMarkDownFromResource(md2, 'resource_mdImages2');
+                                loadMarkDownFromResource(md3, 'resource_mdImages3'); end;
+  end;
 
   SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
+end;
+
+procedure THelpForm.CreateParams(var Params: TCreateParams);
+// no taskbar icon for the app
+begin
+  inherited;
+  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
+  Params.WndParent  := SELF.Handle; // normally application.handle
+end;
+
+procedure THelpForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  helpForm.free; helpForm := NIL;
 end;
 
 initialization

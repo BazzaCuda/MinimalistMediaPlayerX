@@ -32,9 +32,6 @@ type
     FMainForm: TForm;
     FFormattedTime: string;
     FInitialized: boolean;
-    FShowingHelp: boolean;
-    FShowingPlaylist: boolean;
-    FShowingTimeline: boolean;
     FVideoPanel: TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
@@ -95,7 +92,6 @@ type
     function tweakWindow: boolean;
     property height: integer read getHeight write setHeight;
     property initialized: boolean read FInitialized write FInitialized;
-    property showingTimeline: boolean read FShowingTimeline;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
     property width: integer read getWidth write setWidth;
@@ -291,12 +287,12 @@ end;
 
 procedure TUI.onMPBeforeNew(sender: TObject);
 begin
-  case FShowingTimeline of TRUE: TL.clear; end;
+  case GV.showingTimeline of TRUE: TL.clear; end;
 end;
 
 procedure TUI.onMPPlayNew(sender: TObject);
 begin
-  case FShowingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
+  case GV.showingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
 end;
 
 procedure TUI.onMPPlayNext(sender: TObject);
@@ -306,7 +302,7 @@ end;
 
 procedure TUI.onMPPosition(const aMax: integer; const aPosition: integer);
 begin
-  case FShowingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
+  case GV.showingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
 end;
 
 function TUI.createVideoPanel(const aForm: TForm): boolean;
@@ -702,7 +698,6 @@ end;
 
 function TUI.shutTimeline: boolean;
 begin
-  FShowingTimeline := FALSE;
   formTimeline.shutTimeline;
 end;
 
@@ -719,7 +714,7 @@ end;
 function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  showHelp(vPt, create);
+  showHelp(SELF.handle, vPt, htHelp, create);
 end;
 
 function TUI.movePlaylistWindow(const createNew: boolean = TRUE): boolean;
@@ -765,25 +760,22 @@ begin
                                                          EXIT; end;end;
 
 
-  FShowingTimeline := NOT FShowingTimeline;
-  case FShowingTimeline of  TRUE: moveTimelineWindow;
-                           FALSE: shutTimeline; end;
+  case GV.showingTimeline of  TRUE: shutTimeline;
+                             FALSE: moveTimelineWindow; end;
 
-  case FShowingTimeline of TRUE: begin smallerWindow(handle); TL.initTimeline(PL.currentItem, MP.duration); end;end;
+  case GV.showingTimeline of TRUE: begin smallerWindow(handle); TL.initTimeline(PL.currentItem, MP.duration); end;end;
 
-  MP.dontPlayNext := FShowingTimeline;
-  MP.keepOpen     := FShowingTimeline;
+  MP.dontPlayNext := GV.showingTimeline;
+  MP.keepOpen     := GV.showingTimeline;
 end;
 
 function TUI.toggleHelpWindow: boolean;
 begin
   shutPlaylist;
   shutTimeline;
-  FShowingPlaylist := FALSE;
 
-  FShowingHelp := NOT FShowingHelp;
-  case FShowingHelp of  TRUE: moveHelpWindow;
-                       FALSE: shutHelp; end;
+  case GV.showingHelp of  TRUE: shutHelp;
+                      FALSE: moveHelpWindow; end;
 end;
 
 function TUI.toggleMaximized: boolean;
@@ -796,11 +788,9 @@ function TUI.togglePlaylist: boolean;
 begin
   shutHelp;
   shutTimeline;
-  FShowingHelp := FALSE;
 
-  FShowingPlaylist := NOT FShowingPlaylist;
-  case FShowingPlaylist of  TRUE: movePlaylistWindow;
-                           FALSE: shutPlaylist; end;
+  case showingPlaylist of  TRUE: shutPlaylist;
+                          FALSE: movePlaylistWindow; end;
 end;
 
 function TUI.tweakWindow: boolean;

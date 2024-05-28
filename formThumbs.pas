@@ -58,6 +58,7 @@ type
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
+    function moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
     function playCurrentItem: boolean;
     function playFirst: boolean;
     function playLast: boolean;
@@ -76,6 +77,7 @@ type
     function whichHost: THostType;
   protected
     procedure CreateParams(var params: TCreateParams); override;
+    procedure WMMove(var Message: TMessage) ; message WM_MOVE;
   public
     function initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
   end;
@@ -86,10 +88,9 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
-  formAboutBox, formPlaylist,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TSendAllClass,
-
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
@@ -156,6 +157,7 @@ begin
   case mpv      = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
   case FMPVHost = NIL of FALSE: freeAndNIL(FMPVHost); end;
   case FThumbs  = NIL of FALSE: freeAndNIL(FThumbs); end;
+  shutHelp;
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
@@ -178,6 +180,7 @@ begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   case whichHost of htThumbsHost: FThumbs.playThumbs; end;
+  moveHelpWindow;
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
@@ -228,6 +231,13 @@ begin
                                 FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Kept'); end;
 end;
 
+function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
+begin
+  case FThumbs = NIL of TRUE: EXIT; end;
+  case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
+  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width + 1, FThumbsHost.top - 2 - mmpCaptionHeight - (mmpBorderWidth * 2))); // screen position of the top right corner of the application window, roughly.
+  showHelp(SELF.handle, vPt, htImages, aCreateNew);
+end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
@@ -393,6 +403,13 @@ begin
   case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
 
+procedure TThumbsForm.WMMove(var Message: TMessage);
+begin
+  case FThumbs = NIL of TRUE: EXIT; end;
+  case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
+  moveHelpWindow;
+end;
+
 //==========
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -470,7 +487,9 @@ begin
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
     koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFileToKeyFolder(FThumbs.playlist.currentItem, mmpFolderFromFKey(aKey)); end;
-
+    koToggleHelp:         case GV.showingHelp of TRUE: shutHelp; FALSE: moveHelpWindow(TRUE); end;
+    koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
+    koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
 
 
     koPausePlay:;
@@ -479,13 +498,9 @@ begin
     koToggleControls:;
     koToggleBlackout:;
     koMinimizeWindow:;
-    koClipboard:;
-    koReloadPlaylist:;
-    koToggleHelp:;
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:     showPlaylist;
-    koToggleRepeat:;
     koMaximize:;
     koSpeedUp:;
     koSpeedDn:;

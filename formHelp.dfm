@@ -15,7 +15,6 @@ object HelpForm: THelpForm
   KeyPreview = True
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
   TextHeight = 13
   object backPanel: TPanel
     Left = 0
@@ -43,8 +42,8 @@ object HelpForm: THelpForm
         Alignment = taCenter
         AutoSize = False
         Caption = 
-          'press [F1] or Ctrl-[H] to close this panel.   If the video windo' +
-          'w is resized or moved, this help panel will stay attached to it'
+          'press Ctrl-[H] to close this panel.   If the window is resized o' +
+          'r moved, this help panel will stay attached to it'
         Color = 4079166
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray

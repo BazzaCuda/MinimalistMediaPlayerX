@@ -16,13 +16,13 @@
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />
 **DEL** [D]elete file after confirm<br />
-Ctrl-**DEL** [D]elete folder after confirm<br />
+Ctrl-**DEL** [D]elete folder after confirm\*\*<br />
 **K** [K]eep file (rename with leading _ )<br />
 **R** [R]ename file<br />
 
 **Freeze Frame**<br />
-&rarr; right arrow, frame + :hold to repeat<br />
-&larr; left arrow, frame - :hold to repeat<br />
+&rarr; **right** arrow, frame + :hold to repeat<br />
+&larr; **left** arrow, frame - :hold to repeat<br />
 
 **Gamma**<br />
 **[** decrease :hold to repeat<br />
@@ -46,3 +46,5 @@ Ctrl-**B** [B]righten progress [B]ar, hold<br />
 Ctrl-SHIFT-**B** darken progress [B]ar, hold<br />
 **C** show/hide time [C]aptions<br />
 Ctrl-**C **show/hide all [C]aptions<br />
+
+\*\* doesn't touch the contents of subfolders<br />

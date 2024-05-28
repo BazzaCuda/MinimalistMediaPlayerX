@@ -1,9 +1,10 @@
 **Panning**<br />
-Ctrl-Up Arrow, pan up<br />
-Ctrl-Dn Arrow, pan down<br />
-Ctrl-Left Arrow, pan left<br />
-Ctrl-Right Arrow, pan right<br />
+&uarr; Ctrl-**Up** arrow, pan up<br />
+&darr; Ctrl-**Dn** arrow, pan down<br />
+&larr; Ctrl-**Left** arrow, pan left<br />
+&rarr; Ctrl-**Right** arrow, pan right<br />
 **3** reset panning<br />
+_(add SHIFT for quicker panning)_<br />
 
 **Playlist**<br />
 **A** play fiirst in playlist<br />
@@ -44,11 +45,11 @@ CAPS LOCK+**T**, tab 200th >><br />
 CAPS LOCK+CTRL-**T**, << 200th<br />
 
 **Volume**<br />
-&uarr; up, increase, hold<br />
-&darr; down, decrease, hold<br />
+&uarr; **Up** arrow, increase, hold<br />
+&darr; **Dn** arrow, decrease, hold<br />
 **Vol+** media key, increase, hold<br />
 **Vol-** media key, decrease, hold<br />
 Vol **mute** media key, mute<br />
 **E** [E]ars, mute / unmute<br />
-Mouse wheel **up**, vol up<br />
-Mouse wheel **down**, vol down<br />
+Mouse wheel **Up**, vol up<br />
+Mouse wheel **Dn**, vol down<br />

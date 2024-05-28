@@ -54,6 +54,7 @@ type
 
 function focusPlaylist: boolean;
 function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
+function showingPlaylist: boolean;
 function showPlaylist(const aPL: TPlaylist; const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;
 function shutPlaylist: boolean;
 
@@ -76,6 +77,11 @@ function loadPlaylistWindow(const forceReload: boolean = FALSE): boolean;
 begin
   case GV.showingPlaylist of FALSE: EXIT; end;
   case playlistForm = NIL of FALSE: playlistForm.loadPlaylistBox(forceReload); end;
+end;
+
+function showingPlaylist: boolean;
+begin
+  result := playlistForm <> NIL;
 end;
 
 function showPlaylist(const aPL: TPlaylist; const Pt: TPoint; const aHeight: integer; const createNew: boolean = TRUE): boolean;

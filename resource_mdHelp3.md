@@ -13,6 +13,7 @@ Ctrl-**0**  close all instances of MMP<br />
 **I** zoom [I]n, hold for repeat<br />
 **O** zoom [O]out, hold for repeat<br />
 **U** [U]nzoom, i.e. cancel zoom<br />
+_(add SHIFT for quicker zooming)_<br />
 
 **Additional**<br />
 **F5** take screenshot<br />
@@ -38,6 +39,8 @@ Ctrl-**0**  close all instances of MMP<br />
 **Spacebar** = pause/play<br />
 Ctrl-**R** = toggle infinite repeat<br />
 Ctrl-**S** = toggle [S]ubtitles<br />
+**T** show thumbnails if this is an image (else Tab)<br />
+**Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows<br />
 **X** = e[X]it fullscreen or app<br />
 
