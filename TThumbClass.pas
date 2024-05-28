@@ -43,8 +43,8 @@ begin
 
   parent  := aParent;
 
-  width   := THUMB_DEFAULT_SIZE;
-  height  := THUMB_DEFAULT_SIZE;
+  width   := aDesiredWidth;  // THUMB_DEFAULT_SIZE;
+  height  := aDesiredHeight; // THUMB_DEFAULT_SIZE;
   stretch := TRUE;
 
   extractThumb(picture.bitmap, aFilePath, aDesiredWidth, aDesiredHeight);

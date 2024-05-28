@@ -104,8 +104,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_DOWN) and ctrl                                of TRUE: result := koPanDn; end;
     case keyDn and keyIs(VK_LEFT) and ctrl                                of TRUE: result := koPanLeft; end;
     case keyDn and keyIs(VK_RIGHT) and ctrl                               of TRUE: result := koPanRight; end;
-    case keyDn and keyIs(VK_UP) and NOT ctrl                              of TRUE: result := koPrevFolder; end;
-    case keyDn and keyIs(VK_DOWN) and NOT ctrl                            of TRUE: result := koNextFolder; end;
+    case keyDn and keyIs(VK_UP)   and NOT shift and NOT ctrl              of TRUE: result := koPrevFolder; end;
+    case keyDn and keyIs(VK_DOWN) and NOT shift and NOT ctrl              of TRUE: result := koNextFolder; end;
     case keyDn and keyIs(VK_LEFT) and NOT ctrl                            of TRUE: result := koPlayPrev; end;
     case keyDn and keyIs(VK_RIGHT) and NOT ctrl                           of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(_3)                                              of TRUE: result := koPanReset; end;
