@@ -199,7 +199,7 @@ begin
   SELF.width  := aRect.width;
   SELF.height := aRect.height;
 
-//  autoCentre;
+  case GV.autoCentre of TRUE: autoCentre; end;
 
   SELF.borderIcons   := [biSystemMenu, biMaximize];
   SELF.borderStyle   := bsSizeable;

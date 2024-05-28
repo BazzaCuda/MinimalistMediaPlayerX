@@ -149,8 +149,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(H) and ctrl                                      of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(VK_INSERT)                                       of TRUE: result := koClipboard; end;
     case keyUp and keyIs(L)                                               of TRUE: result := koReloadPlaylist; end;
-    case keyUp and keyIs(VK_UP)   and shift and NOT ctrl                  of TRUE: result := koThumbsUp; end;
-    case keyUp and keyIs(VK_DOWN) and shift and NOT ctrl                  of TRUE: result := koThumbsDn; end;
+    case keyDn and keyIs(VK_UP)   and shift and NOT ctrl                  of TRUE: result := koThumbsUp; end;
+    case keyDn and keyIs(VK_DOWN) and shift and NOT ctrl                  of TRUE: result := koThumbsDn; end;
 
 // TO DO
 

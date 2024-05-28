@@ -319,7 +319,7 @@ end;
           function hideForm(parameter: pointer): integer;
           var formPtr: TForm;
           begin
-            mmpDelay(1000);
+            mmpDelay(2000);
             formPtr := parameter;
             formPtr.hide;
           end;

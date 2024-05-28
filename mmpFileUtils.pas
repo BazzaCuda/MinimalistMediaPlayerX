@@ -59,7 +59,6 @@ begin
   result := FALSE;
   try
     vDestFolder := mmpUserBaseFolder(aFolder) + mmpUserOverride(aFolder);
-    debug(vDestFolder);
     vDestFile   := vDestFolder + ExtractFileName(aFilePath);
     try
       forceDirectories(vDestFolder);
