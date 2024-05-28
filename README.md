@@ -49,7 +49,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - Full-resolution screenshots can be saved for individual frames and for a displayed image.
 
-- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing F1 or Ctrl-H. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-H. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
 - ``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
@@ -69,7 +69,6 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 
 Control | Action
 ------- | ------
-`F1`                    | toggle the [H]elp panel listing all the keyboard and mouse functions
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `ALT-SPACEBAR`          | activate the system menu to get to the About Box and the Keyboard help panel
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
