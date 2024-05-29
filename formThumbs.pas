@@ -35,6 +35,8 @@ type
     FStatusBar: TStatusBar;
     FThumbsHost: TPanel;
     applicationEvents: TApplicationEvents;
+    timer: TTimer;
+    procedure applicationEventsHint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -43,7 +45,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FStatusBarResize(Sender: TObject);
-    procedure applicationEventsHint(Sender: TObject);
+    procedure timerTimer(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
@@ -76,6 +78,7 @@ type
     function showPlaylist: boolean;
     function takeScreenshot: string;
     function whichHost: THostType;
+    function windowSize(const aKeyOp: TKeyOp): boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
     procedure WMMove(var Message: TMessage) ; message WM_MOVE;
@@ -89,7 +92,7 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass,
   _debugWindow;
@@ -118,13 +121,22 @@ begin
 
   var vRatio := MI.imageHeight / MI.imageWidth;
 
+// Plan A
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
-  case GV.autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
-                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
+  {case GV.autoCentre of  TRUE:} vWidth := trunc(vHeight / vRatio);
+//                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
 
   vHeight := vHeight + 42;
 
-  case (SELF.width <> vWidth) or (SELF.height <> vHeight) of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end;
+// Plan B
+                                      vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.imageWidth, MI.imageHeight)) - 80;
+                                      VHeight := mmpScreenHeight - 50;
+                                      SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                      application.ProcessMessages;
+                                      SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+
+// Plan A
+//  case (SELF.width <> vWidth) or (SELF.height <> vHeight) of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end;
 
   case GV.autoCentre of  TRUE: autoCentre; end;
 end;
@@ -209,6 +221,7 @@ begin
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FThumbs.playThumbs(FInitialFilePath);
+  timer.enabled := TRUE;
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -248,15 +261,20 @@ begin
   vNewName := mmpRenameFile(aFilePath, '_' + mmpFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of  TRUE: begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
-                                        mmpSetPanelText(FStatusBar, pnVers, 'Kept'); end;
-                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Kept'); end;
+                                        mmpSetPanelText(FStatusBar, pnHelp, 'Kept'); end;
+                                FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Kept'); end;
 end;
 
 function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
+var vHostPanel: TPanel;
 begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
-  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width + 1, FThumbsHost.top - 2 - mmpCaptionHeight - mmpBorderWidth)); // screen position of the top right corner of the application window, roughly.
+
+  case whichHost of htMPVHost:    vHostPanel := FMPVHost;
+                    htThumbsHost: vHostPanel := FThumbsHost; end;
+
+  var vPt := FThumbsHost.ClientToScreen(point(vHostPanel.left + vHostPanel.width + 1, vHostPanel.top - 2 - mmpCaptionHeight - mmpBorderWidth)); // screen position of the top right corner of the application window, roughly.
   showHelp(SELF.handle, vPt, htImages, aCreateNew);
 end;
 
@@ -374,28 +392,28 @@ end;
 
 function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
 begin
-  case mmpCopyFile(aFilePath, 'Copied', FALSE) of  TRUE:  mmpSetPanelText(FStatusBar, pnVers, 'Copied');
-                                                  FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Copied'); end;
+  case mmpCopyFile(aFilePath, 'Copied', FALSE) of  TRUE:  mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
+                                                  FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Copied'); end;
 end;
 
 function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
 begin
   case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnVers, 'Saved');
+                                                          mmpSetPanelText(FStatusBar, pnHelp, 'Saved');
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Saved'); end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Saved'); end;
 end;
 
 function TThumbsForm.saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
 begin
   case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnVers, 'Moved');
+                                                          mmpSetPanelText(FStatusBar, pnHelp, 'Moved');
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnVers, 'NOT Moved'); end;
+                                                FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Moved'); end;
 end;
 
 function TThumbsForm.showPlaylist: boolean;
@@ -420,10 +438,32 @@ begin
                                     FALSE: result := mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
 end;
 
+procedure TThumbsForm.timerTimer(Sender: TObject);
+begin
+  timer.enabled := FALSE;
+//  mpvStop(mpv);
+  case GV.mainForm <> NIL of TRUE: GV.mainForm.hide; end;
+  showWindow(GV.mainForm.handle, SW_HIDE); // EXPERIMENTAL - delayedHide doesn't always work
+end;
+
 function TThumbsForm.whichHost: THostType;
 begin
   case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
   case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
+end;
+
+function TThumbsForm.windowSize(const aKeyOp: TKeyOp): boolean;
+var dxy: integer;
+begin
+  case ssShift in mmpShiftState of  TRUE: dxy := 10;
+                                   FALSE: dxy := 1; end;
+
+  case aKeyOp of
+    koWindowShorter:  SELF.height := SELF.height - dxy;
+    koWindowTaller:   SELF.height := SELF.height + dxy;
+    koWindowNarrower: SELF.width  := SELF.width  - dxy;
+    koWindowWider:    SELF.width  := SELF.width  + dxy;
+  end;
 end;
 
 procedure TThumbsForm.WMMove(var Message: TMessage);
@@ -431,6 +471,7 @@ begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   moveHelpWindow;
+  GV.autoCentre := FALSE;
 end;
 
 //==========
@@ -516,6 +557,10 @@ begin
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
     koAdjustAspectRatio:  case whichHost of htMPVHost: adjustAspectRatio; end;
+    koWindowShorter,
+    koWindowTaller,
+    koWindowNarrower,
+    koWindowWider:        case whichHost of htMPVHost: windowSize(aKeyOp); end;
 
     koPausePlay:;
     koShowCaption:;

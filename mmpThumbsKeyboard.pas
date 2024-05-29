@@ -32,7 +32,7 @@ type
             koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koTogglePlaylist, koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder,
-            koThumbsUp, koThumbsDn, koAdjustAspectRatio
+            koThumbsUp, koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -152,17 +152,19 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_UP)   and shift and NOT ctrl                  of TRUE: result := koThumbsUp; end;
     case keyDn and keyIs(VK_DOWN) and shift and NOT ctrl                  of TRUE: result := koThumbsDn; end;
     case keyUp and keyIs(J)                                               of TRUE: result := koAdjustAspectRatio; end;
+    case keyDn and keyIs(VK_SUBTRACT) and NOT ctrl                        of TRUE: result := koWindowShorter; end;
+    case keyDn and keyIs(VK_ADD)      and NOT ctrl                        of TRUE: result := koWindowTaller; end;
+    case keyDn and keyIs(VK_SUBTRACT) and     ctrl                        of TRUE: result := koWindowNarrower; end;
+    case keyDn and keyIs(VK_ADD)      and     ctrl                        of TRUE: result := koWindowWider; end;
 
 // TO DO
+    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
 
 
 //    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;
-//    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
 //    case keyUp and keyIs(B) and NOT ctrl                                  of TRUE: result := koToggleBlackout; end;
 //    case keyUp and keyIs(HASH)                                            of TRUE: result := koShowCaption; end;
-//    case keyDn and keyIs(VK_ADD)                                          of TRUE: result := koSpeedUp; end;
 //    case keyDn and keyIs(SLASH)                                           of TRUE: result := koSpeedUp; end;
-//    case keyDn and keyIs(VK_SUBTRACT)                                     of TRUE: result := koSpeedDn; end;
 //    case keyDn and keyIs(BACKSLASH)                                       of TRUE: result := koSpeedDn; end;
 //    case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
 //    case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;

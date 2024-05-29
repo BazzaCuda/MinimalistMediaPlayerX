@@ -22,10 +22,10 @@ interface
 
 uses
   vcl.comCtrls,
-  mmpUtils;
+  mmpConsts, mmpUtils;
 
 type
-  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnVers);
+  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnHelp);
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
@@ -41,17 +41,25 @@ const
   PANEL_XXYY = 3;
   PANEL_HINT = 4;
   PANEL_SAVE = 5;
-  PANEL_VERS = 6;
+  PANEL_HELP = 6;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
   mmpResetPanelVers(aStatusBar);
   mmpSetPanelText(aStatusBar, pnTick, '');
+
+  mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
+  mmpSetPanelText(aStatusBar, pnNumb, '');
+  mmpSetPanelText(aStatusBar, pnSize, '');
+  mmpSetPanelText(aStatusBar, pnXXYY, '');
+  mmpSetPanelText(aStatusBar, pnTick, '');
+  mmpSetPanelText(aStatusBar, pnSave, '');
+  mmpSetPanelText(aStatusBar, pnHelp, '');
 end;
 
 function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
 begin
-  aStatusBar.panels[PANEL_VERS].text := 'Help = Ctrl-[H]';
+  aStatusBar.panels[PANEL_HELP].text := 'Help = Ctrl-[H]';
 end;
 
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
@@ -65,7 +73,7 @@ begin
                + aStatusBar.panels[PANEL_SIZE].width
                + aStatusBar.panels[PANEL_XXYY].width
                + aStatusBar.panels[PANEL_HINT].width
-               + aStatusBar.panels[PANEL_VERS].width;
+               + aStatusBar.panels[PANEL_HELP].width;
 
   availWidth := aStatusBar.width - fixedWidths;
 
@@ -84,7 +92,7 @@ begin
     pnXXYY: aStatusBar.panels[PANEL_XXYY].text := aText;
     pnTick: aStatusBar.panels[PANEL_HINT].text := aText;
     pnSave: aStatusBar.panels[PANEL_SAVE].text := aText;
-    pnVers: aStatusBar.panels[PANEL_VERS].text := aText;
+    pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;
   end;
   aStatusBar.refresh;
 end;

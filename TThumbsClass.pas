@@ -64,11 +64,12 @@ type
 implementation
 
 uses
+  winApi.windows,
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
-  TMediaInfoClass,
+  TGlobalVarsClass, TMediaInfoClass,
   _debugWindow;
 
 { TThumbs }
@@ -126,7 +127,7 @@ var
     tpp   := thumbsPerPage;
     extra := 0;
     case FPlaylist.count div tpp * tpp < FPlaylist.count of TRUE: extra := 1; end; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
-    mmpSetPanelText(FStatusBar, pnVers, mmpFormatPageNumber(((FPlaylist.currentIx + tpp - 1) div tpp) + 1, FPlaylist.count div tpp + extra));
+    mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(((FPlaylist.currentIx + tpp - 1) div tpp) + 1, FPlaylist.count div tpp + extra));
   end;
 
 begin
@@ -201,6 +202,7 @@ begin
   result := -1;
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
+                                  mmpInitStatusBar(FStatusBar); // EXPERIMENTAL
                                   mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 

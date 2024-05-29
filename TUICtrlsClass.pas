@@ -319,8 +319,7 @@ end;
           function hideForm(parameter: pointer): integer;
           var formPtr: TForm;
           begin
-            debug('hideForm');
-            mmpDelay(1500);
+            mmpDelay(2000);
             formPtr := parameter;
             formPtr.hide;
           end;
@@ -463,6 +462,7 @@ end;
 function TUI.initUI(const aForm: TForm): boolean;
 begin
   FMainForm           := aForm;
+  GV.mainForm         := aForm;
   aForm.OnKeyDown     := formKeyDn;
   aForm.OnKeyUp       := formKeyUp;
   aForm.OnResize      := formResize;

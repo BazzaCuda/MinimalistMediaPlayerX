@@ -3094,4 +3094,10 @@ object ThumbsForm: TThumbsForm
     Left = 80
     Top = 40
   end
+  object timer: TTimer
+    Enabled = False
+    OnTimer = timerTimer
+    Left = 456
+    Top = 328
+  end
 end

@@ -31,7 +31,8 @@ implementation
 
 uses
   mmpDesktopUtils,
-  mmpUtils; // EXPERIMENTAL
+  mmpUtils, // EXPERIMENTAL
+  TGlobalVarsClass;
 
 function mmpFocusWindow(const aWnd: HWND): boolean;
 begin
@@ -57,6 +58,7 @@ begin
   case alreadyCentred of TRUE: EXIT; end;
 
   case (vHPos > 0) and (vVPos > 0) of TRUE: setWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
+  GV.autoCentre := TRUE;
 end;
 
 function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
