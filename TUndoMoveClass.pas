@@ -38,11 +38,15 @@ type
   public
     function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
     function undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
+    property undoRecs: TObjectStack<TUndoRec> read FUndoRecs;
   end;
 
 function UM: TUndoMove;
 
 implementation
+
+uses
+  _debugWindow;
 
 var
   gUM: TUndoMove;
@@ -68,15 +72,15 @@ begin
   inherited;
 end;
 
-function TUndoMove.recordUndo(const aSrcFilePath, aDstFilePath: string): boolean;
+function TUndoMove.recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
 begin
-  var vUndoRec := TUndoRec.create;
+  var vUndoRec           := TUndoRec.create;
   vUndoRec.urSrcFilePath := aSrcFilePath;
   vUndoRec.urDstFilePath := aDstFilePath;
   FUndoRecs.push(vUndoRec);
 end;
 
-function TUndoMove.undoPop(var aSrcFilePath, aDstFilePath: string): boolean;
+function TUndoMove.undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
 begin
   aSrcFilePath  := '';
   aDstFilePath  := '';
@@ -86,6 +90,8 @@ begin
   var vUndoRec  := FUndoRecs.extract;
   aSrcFilePath  := vUndoRec.urDstFilePath;
   aDstFilePath  := vUndoRec.urSrcFilePath;
+  vUndoRec.free;
+
   result        := TRUE;
 end;
 
@@ -93,6 +99,6 @@ initialization
   gUM := NIL;
 
 finalization
-  case gUM <> NIL of TRUE: gUM.free; end;
+  case gUM <> NIL of TRUE: begin gUM.undoRecs.clear; gUM.free; end;end;
 
 end.

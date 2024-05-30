@@ -24,7 +24,7 @@ uses
   system.classes;
 
 function mmpConfigFilePath: string;
-function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean = FALSE): boolean;
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const deleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
@@ -49,7 +49,7 @@ begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
 end;
 
-function mmpCopyFile(aFilePath: string; aFolder: string; deleteIt: boolean = FALSE): boolean;
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const deleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
 var
   vDestFile: string;
   vDestFolder: string;
@@ -59,7 +59,7 @@ var
 begin
   result := FALSE;
   try
-    vDestFolder := mmpUserBaseFolder(aFolder) + mmpUserOverride(aFolder);
+    vDestFolder := aDstFolder;
     vDestFile   := vDestFolder + ExtractFileName(aFilePath);
     try
       forceDirectories(vDestFolder);
@@ -76,7 +76,7 @@ begin
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
       case result and DeleteIt of TRUE: begin
                                           mmpDeleteThisFile(aFilePath, []);
-                                          UM.recordUndo(aFilePath, vDestFile);
+                                          case aRecordUndo of TRUE: UM.recordUndo(aFilePath, vDestFile); end;
                                         end;end;
     end;end;
   finally

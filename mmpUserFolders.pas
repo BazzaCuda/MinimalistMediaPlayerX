@@ -21,6 +21,7 @@ unit mmpUserFolders;
 interface
 
 function mmpUserBaseFolder(const aFolder: string): string;
+function mmpUserDstFolder(const aFolder: string): string;
 function mmpFolderFromFKey(const aKey: WORD): string;
 function mmpUserOverride(const aFolder: string): string;
 
@@ -44,6 +45,11 @@ end;
 function mmpFolderFromFKey(const aKey: WORD): string;
 begin
   result := 'folder' + intToStr(aKey - 111); // F1-F12 = 112-123
+end;
+
+function mmpUserDstFolder(const aFolder: string): string;
+begin
+  result := mmpUserBaseFolder(aFolder) + mmpUserOverride(aFolder);
 end;
 
 function mmpUserOverride(const aFolder: string): string;
