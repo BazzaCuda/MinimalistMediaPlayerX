@@ -31,11 +31,14 @@ Numpad **ENTER**, play next\*<br />
 **}** increase, hold repeat<br />
 **;** reset saturation<br />
 
+**Screeshots**<br />
+Ctrl-**S**, save screenshot of altered image<br />
+
 **Slideshow**<br />
 **Spacebar** = pause/play slideshow<br />
 Ctrl-**Spacebar** play slideshow in reverse\*<br />
 **/**, increase speed, hold<br />
-**\**, decrease speed, hold<br />
+**\\**, decrease speed, hold<br />
 **1** reset speed to [1]00% of default<br />
 
 **Thumbnails**<br />
