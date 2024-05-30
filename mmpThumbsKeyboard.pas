@@ -157,6 +157,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_SUBTRACT) and     ctrl                        of TRUE: result := koWindowNarrower; end;
     case keyDn and keyIs(VK_ADD)      and     ctrl                        of TRUE: result := koWindowWider; end;
     case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
+    case keyUp and keyIs(M)                                               of TRUE: result := koMaximize; end;
 
 // TO DO
 
@@ -170,7 +171,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 //    case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;
 //    case keyDn and keyIs(B) and ctrl and shift                            of TRUE: result := koDarkerPB; end;
 //    case keyUp and keyIs(P)                                               of TRUE: result := koTogglePlaylist; end;
-//    case keyUp and keyIs(M)                                               of TRUE: result := koMaximize; end;
 
 // spare keys
 //    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koNone; end;

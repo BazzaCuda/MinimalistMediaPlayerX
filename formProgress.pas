@@ -36,9 +36,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
   private
-    FOnCancel: TNotifyEvent;
+    FOnCancel:  TNotifyEvent;
+    procedure setButtons(const value: boolean);
     procedure setModal(const isModal: boolean);
   public
+    property buttons:       boolean                         write setButtons;
     property heading:       TLabel       read FHeading;
     property subHeading:    TLabel       read FSubHeading;
     property modal:         boolean                         write setModal;
@@ -83,6 +85,14 @@ begin
     panel1.color     := DARK_MODE_LIGHT;
   end;
   setModal(FALSE);
+end;
+
+procedure TProgressForm.setButtons(const value: boolean);
+begin
+  btnRerun.visible  := value;
+  btnIgnore.visible := value;
+  btnCancel.visible := value;
+  case value of FALSE: SELF.height := 80; end;
 end;
 
 procedure TProgressForm.setModal(const isModal: boolean);

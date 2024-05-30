@@ -61,6 +61,7 @@ type
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
+    function maximizeWindow: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
     function playCurrentItem: boolean;
@@ -94,7 +95,7 @@ implementation
 uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
-  formAboutBox, formHelp, formPlaylist,
+  formAboutBox, formHelp, formPlaylist, formProgress,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass,
   _debugWindow;
 
@@ -122,29 +123,14 @@ begin
 
   var vRatio := MI.imageHeight / MI.imageWidth;
 
-// Plan A
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
-  {case GV.autoCentre of  TRUE:} vWidth := trunc(vHeight / vRatio);
-//                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
 
-  vHeight := vHeight + 42;
+  vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight));
+  vHeight := trunc(vWidth * vRatio) + 2;
 
-// Plan B
-//                                      vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.imageWidth, MI.imageHeight)) - 80;
-//                                      VHeight := mmpScreenHeight - 50;
+  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
 
-// Plan C
-                                      vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight)); // - 80;
-                                      vHeight := trunc(vWidth * vRatio) + 2;
-
-                                      SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
-                                      application.ProcessMessages;
-                                      SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
-
-// Plan A
-//  case (SELF.width <> vWidth) or (SELF.height <> vHeight) of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end;
-
-  case GV.autoCentre of  TRUE: autoCentre; end;
+  case GV.autoCentre of TRUE: autoCentre; end;
 end;
 
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
@@ -226,8 +212,19 @@ procedure TThumbsForm.FormShow(Sender: TObject);
 begin
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
-  FThumbs.playThumbs(FInitialFilePath);
-  timer.enabled := TRUE;
+  var vProgressForm := TProgressForm.create(NIL);
+  try
+    vProgressForm.modal := FALSE;
+    vProgressForm.heading.caption     := 'MMP Image Browser';
+    vProgressForm.subHeading.caption  := 'Creating Thumbnails';
+    vProgressForm.buttons             := FALSE;
+    vProgressForm.show;
+    mmpProcessMessages;
+    FThumbs.playThumbs(FInitialFilePath);
+    timer.enabled := TRUE;
+  finally
+    vProgressForm.free;
+  end;
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -269,6 +266,25 @@ begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
                                         mmpSetPanelText(FStatusBar, pnHelp, 'Kept'); end;
                                 FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Kept'); end;
+end;
+
+function TThumbsForm.maximizeWindow: boolean;
+// maximize to the largest size given the screen height,
+// while maintaing the correct aspect ratio, width-wise, for the image dimensions
+var
+  vWidth:  integer;
+  vHeight: integer;
+begin
+  case (MI.imageWidth <= 0) OR (MI.imageHeight <= 0) of TRUE: EXIT; end;
+
+  var vRatio := MI.imageHeight / MI.imageWidth;
+
+  vHeight := mmpScreenHeight - 50;
+
+  vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight));
+  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); // center window
+  application.ProcessMessages;
+  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
 end;
 
 function TThumbsForm.minimizeWindow: boolean;
@@ -573,6 +589,7 @@ begin
     koWindowNarrower,
     koWindowWider:        case whichHost of htMPVHost: windowSize(aKeyOp); end;
     koMinimizeWindow:     minimizeWindow;
+    koMaximize:           maximizeWindow;
 
     koPausePlay:;
     koShowCaption:;
@@ -582,7 +599,6 @@ begin
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:     showPlaylist;
-    koMaximize:;
     koSpeedUp:;
     koSpeedDn:;
     koSpeedReset:;
