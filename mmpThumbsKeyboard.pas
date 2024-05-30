@@ -156,9 +156,9 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_ADD)      and NOT ctrl                        of TRUE: result := koWindowTaller; end;
     case keyDn and keyIs(VK_SUBTRACT) and     ctrl                        of TRUE: result := koWindowNarrower; end;
     case keyDn and keyIs(VK_ADD)      and     ctrl                        of TRUE: result := koWindowWider; end;
+    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
 
 // TO DO
-    case keyUp and keyIs(N)                                               of TRUE: result := koMinimizeWindow; end;
 
 
 //    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;

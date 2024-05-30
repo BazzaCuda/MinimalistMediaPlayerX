@@ -61,6 +61,7 @@ type
     function autoCentre: boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
+    function minimizeWindow: boolean;
     function moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
     function playCurrentItem: boolean;
     function playFirst: boolean;
@@ -268,6 +269,11 @@ begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
                                         mmpSetPanelText(FStatusBar, pnHelp, 'Kept'); end;
                                 FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Kept'); end;
+end;
+
+function TThumbsForm.minimizeWindow: boolean;
+begin
+  SELF.windowState := TWindowState.wsMinimized;
 end;
 
 function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
@@ -566,13 +572,13 @@ begin
     koWindowTaller,
     koWindowNarrower,
     koWindowWider:        case whichHost of htMPVHost: windowSize(aKeyOp); end;
+    koMinimizeWindow:     minimizeWindow;
 
     koPausePlay:;
     koShowCaption:;
     koFullscreen:;
     koToggleControls:;
     koToggleBlackout:;
-    koMinimizeWindow:;
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:     showPlaylist;
