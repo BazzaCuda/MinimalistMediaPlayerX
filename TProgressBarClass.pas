@@ -181,7 +181,7 @@ begin
   vPOint.Y := Y;
   application.activateHint(FPB.clientToScreen(vPoint));
 
-  case (NOT KBNumLock) and NOT (ssCtrl in shift) of TRUE: EXIT; end;
+  case NOT (ssCtrl in shift) of TRUE: EXIT; end;
   setNewPosition(x);
   postMessage(GV.appWnd, WM_PROGRESSBAR_CLICK, 0, 0);
 end;

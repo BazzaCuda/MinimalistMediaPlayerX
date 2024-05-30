@@ -34,7 +34,6 @@ Left click hold, drag window<br />
 Ctrl-left click hold, drag window<br />
 Left dbl-click, toggle fullscreen<br />
 Right click, pause/play<br />
-NUMLOCK on, scrub along progress bar<br />
 **Ctrl**, scrub along progress bar<br />
 Wheel up, volume up<br />
 Wheel down, volume down<br />

@@ -129,8 +129,13 @@ begin
   vHeight := vHeight + 42;
 
 // Plan B
-                                      vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.imageWidth, MI.imageHeight)) - 80;
-                                      VHeight := mmpScreenHeight - 50;
+//                                      vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.imageWidth, MI.imageHeight)) - 80;
+//                                      VHeight := mmpScreenHeight - 50;
+
+// Plan C
+                                      vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight)); // - 80;
+                                      vHeight := trunc(vWidth * vRatio) + 2;
+
                                       SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
                                       application.ProcessMessages;
                                       SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
