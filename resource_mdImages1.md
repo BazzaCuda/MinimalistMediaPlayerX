@@ -15,10 +15,11 @@
 Ctrl-**DEL** [D]elete folder after confirm\*\*<br />
 **C** Save/Copy to "Copied" folder\*<br />
 **K** [K]eep file (rename with leading _ )<br />
-**S** Save/Move to "Moved" folder\*<br />
+**S** Save/Move to "Saved" folder\*<br />
 Ctrl-**S** Save screenshot of altered image<br />
 **R** [R]ename file<br />
 **F1-F12** Save/Move to user-defined folder\*<br />
+Ctrl-**U** undo Save/Move<br />
 
 **Gamma**<br />
 **[** decrease :hold to repeat<br />

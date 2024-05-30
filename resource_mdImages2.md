@@ -12,8 +12,6 @@
 **END** play last in playlist\*<br />
 **W** [W]atch next in playlist\*<br />
 **Q** watch previous in playlist\*<br />
-**Spacebar** play next in playlist\*<br />
-Ctrl-**Spacebar** play previous in playlist\*<br />
 Numpad **ENTER**, play next\*<br />
 &larr; **left arrow**, play previous\*<br />
 &rarr; **right arrow**, play next\*<br />
@@ -21,7 +19,7 @@ Numpad **ENTER**, play next\*<br />
 &darr; **Dn arrow**, next folder<br />
 **L** re[L]oad playlist from folder<br />
 **D** next [D]irectory/folder<br />
-**E** previous director/folder<br />
+**E** previous directory/folder<br />
 
 **Rotating**<br />
 **Pg Up**, rotate left<br />
@@ -35,8 +33,9 @@ Numpad **ENTER**, play next\*<br />
 
 **Slideshow**<br />
 **Spacebar** = pause/play slideshow<br />
-Numpad **+**, increase speed, hold<br />
-Numpad **-**, decrease speed, hold<br />
+Ctrl-**Spacebar** play slideshow in reverse\*<br />
+**/**, increase speed, hold<br />
+**\**, decrease speed, hold<br />
 **1** reset speed to [1]00% of default<br />
 
 **Thumbnails**<br />

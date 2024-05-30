@@ -25,6 +25,7 @@ uses
   system.classes, vcl.graphics, system.sysUtils, system.variants,
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
+  formProgress,
   mmpThumbsKeyboard,
   TMPVHostClass, TThumbsClass;
 
@@ -46,9 +47,11 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FStatusBarResize(Sender: TObject);
     procedure timerTimer(Sender: TObject);
+    procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
   strict private
     mpv: TMPVBasePlayer;
     FInitialFilePath: string;
+    FProgressForm: TProgressForm;
     FKeyHandled: boolean;
     FMPVHost: TMPVHost;
     FShowing: boolean;
@@ -94,7 +97,7 @@ implementation
 uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
-  formAboutBox, formHelp, formPlaylist, formProgress,
+  formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass,
   _debugWindow;
 
@@ -174,6 +177,7 @@ end;
 procedure TThumbsForm.FormActivate(Sender: TObject);
 begin
   FShowing := TRUE;
+  freeAndNIL(FProgressForm);
 end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -211,19 +215,20 @@ procedure TThumbsForm.FormShow(Sender: TObject);
 begin
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
-  var vProgressForm := TProgressForm.create(NIL);
+  FProgressForm := TProgressForm.create(NIL);
   try
-    vProgressForm.modal := FALSE;
-    vProgressForm.heading.caption     := 'MMP Image Browser';
-    vProgressForm.subHeading.caption  := 'Creating Thumbnails';
-    vProgressForm.buttons             := FALSE;
-    vProgressForm.show;
+    FProgressForm.modal               := FALSE;
+    FProgressForm.buttons             := FALSE;
+    FProgressForm.heading.caption     := 'MMP Image Browser';
+    FProgressForm.subHeading.caption  := 'Creating Thumbnails';
+    FProgressForm.show;
     mmpProcessMessages;
     FThumbs.playThumbs(FInitialFilePath);
     timer.enabled := TRUE;
   finally
-    vProgressForm.free;
+//    vProgressForm.free;
   end;
+  setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -422,19 +427,29 @@ begin
                                                             mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
                                                             mmpSetPanelText(FStatusBar, pnSave, 'Copied to: ' + extractFilePath(aFilePath));
                                                           end;
-                                                  FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Copied'); end;
+                                                  FALSE:  begin
+                                                            mmpSetPanelOwnerDraw(FStatusBar, pnHelp, TRUE);
+                                                            mmpSetPanelText(FStatusBar, pnHelp, 'NOT Copied');
+                                                            end;end;
 end;
 
 function TThumbsForm.saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
+var vOpText: string;
 begin
-  case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnHelp, 'Moved');
-                                                          mmpSetPanelText(FStatusBar, pnSave, 'Moved to: ' + extractFilePath(aFilePath));
-                                                          FThumbs.savePanelReserved := TRUE;
-                                                          FThumbs.playlist.delete(FThumbs.playlist.currentIx);
-                                                          playCurrentItem;
-                                                        end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Moved'); end;
+  case aKeyFolder = 'Saved' of  TRUE: vOpText := 'Saved';       // [S]ave
+                               FALSE: vOpText := 'Moved'; end;
+
+  case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE: begin
+                                                            mmpSetPanelText(FStatusBar, pnHelp, vOpText);
+                                                            mmpSetPanelText(FStatusBar, pnSave, vOpText + ' to: ' + extractFilePath(aFilePath));
+                                                            FThumbs.savePanelReserved := TRUE;
+                                                            FThumbs.playlist.delete(FThumbs.playlist.currentIx);
+                                                            playCurrentItem;
+                                                          end;
+                                                  FALSE:  begin
+                                                            mmpSetPanelOwnerDraw(FStatusBar, pnHelp, TRUE);
+                                                            mmpSetPanelText(FStatusBar, pnHelp, 'NOT ' + vOpText);
+                                                          end;end;
 end;
 
 function TThumbsForm.showPlaylist: boolean;
@@ -442,6 +457,17 @@ begin
   EXIT; // EXPERIMENTAL
   var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
   formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
+end;
+
+procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
+// only called for panelVers which has style set to psOwnerDraw at app launch. This is changed in TPanelCtrl.ShowThumbsPageNo
+begin
+  statusBar.canvas.font.style   := [fsBold];
+  statusBar.canvas.brush.color  := clMaroon;
+  statusBar.canvas.fillRect(rect);
+  var vCenterX: integer := (rect.right - rect.left - statusBar.canvas.textWidth(panel.text)) div 2;
+  var vCenterY: integer := (rect.bottom - rect.top - statusBar.canvas.textHeight(panel.text)) div 2;
+  textOut(statusBar.canvas.handle, rect.left + vCenterX, rect.top + vCenterY, PChar(panel.text), length(panel.text));
 end;
 
 procedure TThumbsForm.FStatusBarResize(Sender: TObject);
@@ -462,9 +488,8 @@ end;
 procedure TThumbsForm.timerTimer(Sender: TObject);
 begin
   timer.enabled := FALSE;
-//  mpvStop(mpv);
   case GV.mainForm <> NIL of TRUE: GV.mainForm.hide; end;
-  showWindow(GV.mainForm.handle, SW_HIDE); // EXPERIMENTAL - delayedHide doesn't always work
+  case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // EXPERIMENTAL - delayedHide doesn't always work - the delay might be being optimized out
 end;
 
 function TThumbsForm.whichHost: THostType;
@@ -567,7 +592,7 @@ begin
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
-    koSaveMove:           case whichHost of htMPVHost: saveMoveFileToKeyFolder(FThumbs.playlist.currentItem, 'Moved'); end;
+    koSaveMove:           case whichHost of htMPVHost: saveMoveFileToKeyFolder(FThumbs.playlist.currentItem, 'Saved'); end;
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;

@@ -22,15 +22,17 @@ interface
 
 uses
   vcl.comCtrls,
-  mmpConsts, mmpUtils;
+  mmpConsts, mmpUtils,
+  _debugWindow;
 
 type
   TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnHelp);
 
-function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
-function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
-function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
-function mmpSetPanelText(const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
+function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelVers    (const aStatusBar: TStatusBar): boolean;
+function mmpResizeStatusBar   (const aStatusBar: TStatusBar): boolean;
+function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
+function mmpSetPanelText      (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
 
 implementation
 
@@ -59,7 +61,8 @@ end;
 
 function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
 begin
-  aStatusBar.panels[PANEL_HELP].text := 'Help = Ctrl-[H]';
+  aStatusBar.panels[PANEL_HELP].style := psText;
+  aStatusBar.panels[PANEL_HELP].text  := 'Help = Ctrl-[H]';
 end;
 
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
@@ -79,6 +82,16 @@ begin
 
   aStatusBar.panels[PANEL_NAME].width := availWidth div 2;
   aStatusBar.panels[PANEL_SAVE].width := availWidth div 2;
+end;
+
+function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
+begin
+  case aStatusBar = NIL of TRUE: EXIT; end;
+
+  case aOwnerDraw of  TRUE: aStatusBar.panels[ord(aPanelName)].style := psOwnerDraw;
+                     FALSE: aStatusBar.panels[ord(aPanelName)].style := psText; end;
+
+  mmpProcessMessages;
 end;
 
 function mmpSetPanelText(const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;

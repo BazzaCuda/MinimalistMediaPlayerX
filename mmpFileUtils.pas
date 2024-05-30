@@ -40,6 +40,7 @@ uses
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
   mmpShellUtils, mmpUserFolders, mmpUtils,
+  TUndoMoveClass,
   formInputBox,
   _debugWindow;
 
@@ -73,7 +74,10 @@ begin
       end;
 
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
-      case result and DeleteIt of TRUE: mmpDeleteThisFile(aFilePath, []); end;
+      case result and DeleteIt of TRUE: begin
+                                          mmpDeleteThisFile(aFilePath, []);
+                                          UM.recordUndo(aFilePath, vDestFile);
+                                        end;end;
     end;end;
   finally
   end;

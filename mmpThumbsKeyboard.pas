@@ -119,13 +119,13 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(S) and NOT ctrl                                  of TRUE: result := koSaveMove; end;
     case keyDn and keyIs(I)                                               of TRUE: result := koZoomIn; end;
     case keyDn and keyIs(O)                                               of TRUE: result := koZoomOut; end;
-    case keyUp and keyIs(U)                                               of TRUE: result := koZoomReset; end;
+    case keyUp and keyIs(U) and NOT ctrl                                  of TRUE: result := koZoomReset; end;
 
     case keyUp and keyIs(BACKSPACE)                                       of TRUE: result := koAllReset; end;
 
 //    case keyUp and keyIs(VK_SPACE) and GV.playingSlideshow                of TRUE: result := koPausePlay; end;
-    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
-    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
+//    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
+//    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(W)                                               of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RETURN) and NOT GV.showingPlaylist            of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RETURN) and ctrl and NOT GV.showingPlaylist   of TRUE: result := koPlayPrev; end;

@@ -319,7 +319,7 @@ end;
           function hideForm(parameter: pointer): integer;
           var formPtr: TForm;
           begin
-            mmpDelay(2000);
+            mmpDelay(2000);        // this delay might be being optimized out
             formPtr := parameter;
             formPtr.hide;
           end;
@@ -676,11 +676,11 @@ begin
   shutTimeline;
   case MP.ImagesPaused of FALSE: MP.pausePlay; end;
 
-  delayedHide;
+//  delayedHide; can't be relied on to hide the main form
 
   formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
   FMainForm.show;
-  SetActiveWindow(FMainForm.handle);
+  setActiveWindow(FMainForm.handle);
 end;
 
 function TUI.showWindow: boolean;

@@ -89,7 +89,8 @@ uses
   mmpFolderNavigation in 'mmpFolderNavigation.pas',
   mmpWindowCtrls in 'mmpWindowCtrls.pas',
   mmpUserFolders in 'mmpUserFolders.pas',
-  mmpFolderUtils in 'mmpFolderUtils.pas';
+  mmpFolderUtils in 'mmpFolderUtils.pas',
+  TUndoMoveClass in 'TUndoMoveClass.pas';
 
 {$R *.res}
 
