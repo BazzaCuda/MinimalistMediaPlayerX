@@ -67,6 +67,7 @@ type
     function maximizeWindow: boolean;
     function minimizeWindow: boolean;
     function moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
+    function pausePlay: boolean;
     function playCurrentItem: boolean;
     function playFirst: boolean;
     function playLast: boolean;
@@ -341,6 +342,11 @@ begin
   end;
 end;
 
+function TThumbsForm.pausePlay: boolean;
+begin
+
+end;
+
 function TThumbsForm.playCurrentItem: boolean;
 begin
   case whichHost of
@@ -494,7 +500,7 @@ procedure TThumbsForm.timerTimer(Sender: TObject);
 begin
   timer.enabled := FALSE;
   case GV.mainForm <> NIL of TRUE: GV.mainForm.hide; end;
-  case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // EXPERIMENTAL - delayedHide doesn't always work - the delay might be being optimized out
+  case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // UI.delayedHide doesn't always work - the delay might be being optimized out
 end;
 
 function TThumbsForm.undoMove: string;
@@ -628,8 +634,8 @@ begin
     koMinimizeWindow:     minimizeWindow;
     koMaximize:           maximizeWindow;
     koUndoMove:           undoMove;
+    koPausePlay:          pausePlay;
 
-    koPausePlay:;
     koShowCaption:;
     koFullscreen:;
     koToggleControls:;

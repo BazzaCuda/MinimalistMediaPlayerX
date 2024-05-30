@@ -31,7 +31,6 @@ implementation
 
 uses
   mmpDesktopUtils,
-  mmpUtils, // EXPERIMENTAL
   TGlobalVarsClass;
 
 function mmpFocusWindow(const aWnd: HWND): boolean;

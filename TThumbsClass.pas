@@ -204,7 +204,7 @@ begin
   result := -1;
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
-                                  mmpInitStatusBar(FStatusBar); // EXPERIMENTAL
+                                  mmpInitStatusBar(FStatusBar);
                                   mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 

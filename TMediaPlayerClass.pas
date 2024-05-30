@@ -431,7 +431,7 @@ begin
 end;
 
 var gColor: TColor;
-function TMediaPlayer.blankOutTimeCaption: boolean; // EXPERIMENTAL
+function TMediaPlayer.blankOutTimeCaption: boolean;
 begin
   case gColor = 0 of TRUE:  begin
                               gColor := ST.color;

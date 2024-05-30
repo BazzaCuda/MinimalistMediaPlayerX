@@ -151,6 +151,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_RETURN) and NOT ctrl and NOT GV.showingPlaylist   of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT) and     ctrl                           of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT) and NOT ctrl                           of TRUE: result := koPlayNext; end;
+    case keyUp and keyIs(VK_SPACE)                                        of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT) and     ctrl                        of TRUE: result := koWindowNarrower; end;
     case keyDn and keyIs(VK_SUBTRACT) and NOT ctrl                        of TRUE: result := koWindowShorter; end;
     case keyDn and keyIs(VK_UP) and     ctrl                              of TRUE: result := koPanUp; end; // can also be ctrl-shift
@@ -161,7 +162,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 
 
 // TO DO
-//    case keyUp and keyIs(VK_SPACE) and GV.playingSlideshow                of TRUE: result := koPausePlay; end;
 //    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
 //    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
 //    case keyDn and keyIs(SLASH)                                           of TRUE: result := koSpeedUp; end;
