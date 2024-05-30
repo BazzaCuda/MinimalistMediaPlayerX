@@ -607,67 +607,66 @@ begin
   case aKeyOp of
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
 
+    koAboutBox:           showAboutBox;
+    koAdjustAspectRatio:  case whichHost of htMPVHost: adjustAspectRatio; end;
     koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
     koBrightnessUp:       mpvBrightnessUp(mpv);
     koBrightnessDn:       mpvBrightnessDn(mpv);
     koBrightnessReset:    mpvBrightnessReset(mpv);
-    koCloseImageBrowser:     close;
+    koCentreWindow:       mmpCentreWindow(SELF.handle);
+    koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
+    koCloseAll:           begin close; SA.postToAll(WIN_CLOSEAPP); end;
+    koCloseImageBrowser:  close;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
+    koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
+    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
+    koKeep:               keepFile(FThumbs.playlist.currentItem);
+    koMaximize:           maximizeWindow;
+    koMinimizeWindow:     minimizeWindow;
+    koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder(mmpFolderFromFKey(aKey)), 'Moved'); end;
+    koNextFolder:         playNextFolder;
     koPanLeft:            mpvPanLeft(mpv);
     koPanRight:           mpvPanRight(mpv);
     koPanUp:              mpvPanUp(mpv);
     koPanDn:              mpvPanDn(mpv);
     koPanReset:           mpvPanReset(mpv);
+    koPausePlay:          case whichHost of htMPVHost: pausePlay; end;
+    koPlayFirst:          playFirst;
+    koPlayLast:           playLast;
     koPlayNext:           playNext;
     koPlayPrev:           playPrev;
     koPlayThumbs:         begin FThumbs.playThumbs; showHost(htThumbsHost); end;
+    koPrevFolder:         playPrevFolder;
+    koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
+    koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
     koRotateReset:        mpvRotateReset(mpv);
     koSaturationUp:       mpvSaturationUp(mpv);
     koSaturationDn:       mpvSaturationDn(mpv);
     koSaturationReset:    mpvSaturationReset(mpv);
+    koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
+    koSaveMove:           case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder('Saved'), 'Saved'); end;
     koScreenshot:         takeScreenshot;
+    koSpeedDn:            speedDn;
+    koSpeedUp:            speedUp;
+    koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
+    koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
+    koToggleHelp:         case GV.showingHelp of TRUE: shutHelp; FALSE: moveHelpWindow(TRUE); end;
+    koUndoMove:           undoMove;
     koZoomIn:             mpvZoomIn(mpv);
     koZoomOut:            mpvZoomOut(mpv);
     koZoomReset:          mpvZoomReset(mpv);
 
-
-    koNextFolder:         playNextFolder;
-    koPrevFolder:         playPrevFolder;
-    koPlayFirst:          playFirst;
-    koPlayLast:           playLast;
-    koAboutBox:           showAboutBox;
-    koCloseAll:           begin close; SA.postToAll(WIN_CLOSEAPP); end;
-    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
-    koCentreWindow:       mmpCentreWindow(SELF.handle);
-    koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
-    koSaveMove:           case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder('Saved'), 'Saved'); end;
-    koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
-    koKeep:               keepFile(FThumbs.playlist.currentItem);
-    koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
-    koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder(mmpFolderFromFKey(aKey)), 'Moved'); end;
-    koToggleHelp:         case GV.showingHelp of TRUE: shutHelp; FALSE: moveHelpWindow(TRUE); end;
-    koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
-    koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
-    koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
-    koAdjustAspectRatio:  case whichHost of htMPVHost: adjustAspectRatio; end;
     koWindowShorter,
     koWindowTaller,
     koWindowNarrower,
     koWindowWider:        case whichHost of htMPVHost: windowSize(aKeyOp); end;
-    koMinimizeWindow:     minimizeWindow;
-    koMaximize:           maximizeWindow;
-    koUndoMove:           undoMove;
-    koPausePlay:          case whichHost of htMPVHost: pausePlay; end;
-    koSpeedDn:            speedDn;
-    koSpeedUp:            speedUp;
 
     koShowCaption:;
     koFullscreen:;
