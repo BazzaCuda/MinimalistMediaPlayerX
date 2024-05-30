@@ -25,22 +25,32 @@ uses
   system.classes,
   vcl.forms;
 
+function mmpCancelDelay: boolean;
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpProcessMessages: boolean;
 function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit just for this
 
 implementation
 
+var
+  gCancel: boolean;
+
+function mmpCancelDelay: boolean;
+begin
+  gCancel := TRUE;
+end;
+
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
 var
   iStart, iStop: DWORD;
 begin
+  gCancel := FALSE;
   iStart := GetTickCount;
   repeat
     iStop  := GetTickCount;
     application.processMessages;
-  until (iStop  -  iStart) >= dwMilliseconds;
+  until gCancel or ((iStop  -  iStart) >= dwMilliseconds);
 end;
 
 function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit that needs this

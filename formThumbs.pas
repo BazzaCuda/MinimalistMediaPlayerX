@@ -357,7 +357,9 @@ function TThumbsForm.pausePlay: boolean;
 begin
   GV.playingSlideshow := NOT GV.playingSlideshow;
 
-  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(FImageDisplayDuration div 1000));
+  case NOT GV.playingSlideshow of TRUE: mmpCancelDelay; end;
+
+  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(FImageDisplayDuration div 1000)); // doesn't really matter as long as it's valid and not 'inf'
                               FALSE: mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;
 
   case GV.playingSlideshow of  TRUE: mmpSetPanelText(FStatusBar, pnHelp, 'Slideshow');
