@@ -419,7 +419,10 @@ end;
 
 function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
 begin
-  case mmpCopyFile(aFilePath, 'Copied', FALSE) of  TRUE:  mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
+  case mmpCopyFile(aFilePath, 'Copied', FALSE) of  TRUE:  begin
+                                                            mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
+                                                            mmpSetPanelText(FStatusBar, pnSave, 'Copied to: ' + extractFilePath(aFilePath));
+                                                          end;
                                                   FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Copied'); end;
 end;
 
@@ -427,6 +430,8 @@ function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
 begin
   case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
                                                           mmpSetPanelText(FStatusBar, pnHelp, 'Saved');
+                                                          mmpSetPanelText(FStatusBar, pnSave, 'Saved to: ' + extractFilePath(aFilePath));
+                                                          FThumbs.ignoreSavePanel := TRUE;
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
@@ -437,6 +442,8 @@ function TThumbsForm.saveMoveFileToKeyFolder(const aFilePath: string; const aKey
 begin
   case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE:  begin
                                                           mmpSetPanelText(FStatusBar, pnHelp, 'Moved');
+                                                          mmpSetPanelText(FStatusBar, pnSave, 'Moved to: ' + extractFilePath(aFilePath));
+                                                          FThumbs.ignoreSavePanel := TRUE;
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;

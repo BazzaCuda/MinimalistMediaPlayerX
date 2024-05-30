@@ -39,6 +39,7 @@ type
     FThumbs:          TObjectList<TThumb>;
     FThumbSize:       integer;
   private
+    FIgnoreSavePanel: boolean;
     procedure thumbClick(sender: TObject);
     function  fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function  generateThumbs(const aItemIx: integer): integer;
@@ -54,11 +55,12 @@ type
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
     function thumbsPerPage: integer;
-    property currentFolder: string read FCurrentFolder;
-    property currentIx: integer read getCurrentIx;
-    property playlist: TPlaylist read FPlaylist;
-    property thumbSize: integer read FThumbSize write FThumbSize;
-    property statusBar: TStatusBar write FStatusBar;
+    property currentFolder:   string    read FCurrentFolder;
+    property currentIx:       integer   read getCurrentIx;
+    property ignoreSavePanel: boolean                             write FIgnoreSavePanel;
+    property playlist:        TPlaylist read FPlaylist;
+    property thumbSize:       integer   read FThumbSize           write FThumbSize;
+    property statusBar:       TStatusBar                          write FStatusBar;
   end;
 
 implementation
@@ -231,7 +233,9 @@ begin
                              FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
 
   mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount));
-  mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder);
+
+  case FIgnoreSavePanel of  TRUE: FIgnoreSavePanel := FALSE;
+                           FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
 end;
 
 
