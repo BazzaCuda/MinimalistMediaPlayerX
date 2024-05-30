@@ -74,6 +74,8 @@ const
   THUMB_NO_IMAGES     = 'No images in this folder';
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
+  IMAGE_DISPLAY_DURATION = 3000;
+
 type
   TMediaType = (mtUnk, mtAudio, mtVideo, mtImage);
   TMediaTypeRec = record

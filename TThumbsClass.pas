@@ -183,7 +183,8 @@ end;
 
 function TThumbs.playNext: boolean;
 begin
-  case FPlaylist.next of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+  result := FPlaylist.next;
+  case result of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
 function TThumbs.playPrevThumbsPage: boolean;

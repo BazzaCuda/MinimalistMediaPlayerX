@@ -50,6 +50,7 @@ type
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
   strict private
     mpv: TMPVBasePlayer;
+    FImageDisplayDuration: integer;
     FInitialFilePath: string;
     FProgressForm: TProgressForm;
     FKeyHandled: boolean;
@@ -82,6 +83,8 @@ type
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
+    function speedDn: boolean;
+    function speedUp: boolean;
     function takeScreenshot: string;
     function undoMove: string;
     function whichHost: THostType;
@@ -102,7 +105,7 @@ uses
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
-  _debugWindow;
+  _debugWindow{, RTTI};
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
 begin
@@ -197,10 +200,13 @@ begin
   FMPVHost.parent := SELF;
   FMPVHost.OnOpenFile := onOpenFile;
 
+  FImageDisplayDuration := IMAGE_DISPLAY_DURATION;
+
   mmpInitStatusBar(FStatusBar);
 
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
+  mpv.OnStateChged := onStateChange;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
   mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
@@ -334,17 +340,30 @@ begin
 end;
 
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
-// don't need this yet, so not hooked up to mpv
+//var vState: string;
 begin
+//  vState := TRttiEnumerationType.getName(eState);
+//  debugString('onStateChange', vState);
+  case GV.playingSlideshow of FALSE: EXIT; end;
   case eState of
     mpsPlay:;
-    mpsEnd {, mpsStop}:;
+    mpsEnd {, mpsStop}: case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
+                                                                case GV.playingSlideshow of TRUE: case playNext of FALSE: playFirst; end;end;end;end;
   end;
+//  mmpProcessMessages;
 end;
 
 function TThumbsForm.pausePlay: boolean;
 begin
+  GV.playingSlideshow := NOT GV.playingSlideshow;
 
+  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(FImageDisplayDuration div 1000));
+                              FALSE: mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;
+
+  case GV.playingSlideshow of  TRUE: mmpSetPanelText(FStatusBar, pnHelp, 'Slideshow');
+                              FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'PAUSED'); end;
+
+  case GV.playingSlideshow of  TRUE: FThumbs.playCurrentItem; end;
 end;
 
 function TThumbsForm.playCurrentItem: boolean;
@@ -376,8 +395,8 @@ end;
 function TThumbsForm.playNext: boolean;
 begin
   case whichHost of
-    htMPVHost:    FThumbs.playNext;
-    htThumbsHost: FThumbs.playThumbs;
+    htMPVHost:    result := FThumbs.playNext;
+    htThumbsHost: result := FThumbs.playThumbs <> -1;
   end;
 end;
 
@@ -468,6 +487,19 @@ begin
   EXIT; // EXPERIMENTAL
   var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
   formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
+end;
+
+function TThumbsForm.speedDn: boolean;
+begin
+  FImageDisplayDuration := FImageDisplayDuration + 100;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
+end;
+
+function TThumbsForm.speedUp: boolean;
+begin
+  case FImageDisplayDuration = 100 of TRUE: EXIT; end;
+  FImageDisplayDuration := FImageDisplayDuration - 100;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -575,11 +607,11 @@ begin
   case aKeyOp of
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
 
-    koCloseImageBrowser:     close;
-
+    koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
     koBrightnessUp:       mpvBrightnessUp(mpv);
     koBrightnessDn:       mpvBrightnessDn(mpv);
     koBrightnessReset:    mpvBrightnessReset(mpv);
+    koCloseImageBrowser:     close;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
@@ -591,6 +623,9 @@ begin
     koPanUp:              mpvPanUp(mpv);
     koPanDn:              mpvPanDn(mpv);
     koPanReset:           mpvPanReset(mpv);
+    koPlayNext:           playNext;
+    koPlayPrev:           playPrev;
+    koPlayThumbs:         begin FThumbs.playThumbs; showHost(htThumbsHost); end;
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
     koRotateReset:        mpvRotateReset(mpv);
@@ -602,11 +637,7 @@ begin
     koZoomOut:            mpvZoomOut(mpv);
     koZoomReset:          mpvZoomReset(mpv);
 
-    koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
 
-    koPlayThumbs:         begin FThumbs.playThumbs; showHost(htThumbsHost); end;
-    koPlayNext:           playNext;
-    koPlayPrev:           playPrev;
     koNextFolder:         playNextFolder;
     koPrevFolder:         playPrevFolder;
     koPlayFirst:          playFirst;
@@ -634,7 +665,9 @@ begin
     koMinimizeWindow:     minimizeWindow;
     koMaximize:           maximizeWindow;
     koUndoMove:           undoMove;
-    koPausePlay:          pausePlay;
+    koPausePlay:          case whichHost of htMPVHost: pausePlay; end;
+    koSpeedDn:            speedDn;
+    koSpeedUp:            speedUp;
 
     koShowCaption:;
     koFullscreen:;
@@ -643,8 +676,6 @@ begin
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:     showPlaylist;
-    koSpeedUp:;
-    koSpeedDn:;
     koSpeedReset:;
   end;
 

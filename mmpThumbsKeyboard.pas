@@ -124,6 +124,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(Y)                                               of TRUE: result := koPlayThumbs; end;
     case keyUp and keyIs(Z)                                               of TRUE: result := koPlayLast; end;
 
+    case keyDn and keyIs(BACKSLASH)                                       of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                       of TRUE: result := koAllReset; end;
     case keyDn and keyIs(CLOSE_BRACKET) and     shift                     of TRUE: result := koSaturationUp; end; // close curly brace
     case keyDn and keyIs(CLOSE_BRACKET) and NOT shift                     of TRUE: result := koGammaUp; end;
@@ -132,6 +133,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(OPEN_BRACKET)  and NOT shift                     of TRUE: result := koGammaDn; end;
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                    of TRUE: result := koGammaReset; end;
+    case keyDn and keyIs(SLASH)                                          of TRUE: result := koSpeedUp; end;
 
     case keyDn and keyIs(VK_ADD) and     ctrl                             of TRUE: result := koWindowWider; end;
     case keyDn and keyIs(VK_ADD) and NOT ctrl                             of TRUE: result := koWindowTaller; end;
@@ -164,8 +166,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 // TO DO
 //    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
 //    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
-//    case keyDn and keyIs(SLASH)                                           of TRUE: result := koSpeedUp; end;
-//    case keyDn and keyIs(BACKSLASH)                                       of TRUE: result := koSpeedDn; end;
 //    case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
 
 
