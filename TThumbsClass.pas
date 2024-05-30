@@ -31,15 +31,15 @@ type
 
   TThumbs = class(TObject)
   strict private
-    FCurrentFolder:   string;
-    FMPVHost:         TMPVHost;
-    FPlaylist:        TPlaylist;
-    FStatusBar:       TStatusBar;
-    FThumbsHost:      TPanel;
-    FThumbs:          TObjectList<TThumb>;
-    FThumbSize:       integer;
+    FCurrentFolder:     string;
+    FMPVHost:           TMPVHost;
+    FPlaylist:          TPlaylist;
+    FSavePanelReserved: boolean;
+    FStatusBar:         TStatusBar;
+    FThumbsHost:        TPanel;
+    FThumbs:            TObjectList<TThumb>;
+    FThumbSize:         integer;
   private
-    FIgnoreSavePanel: boolean;
     procedure thumbClick(sender: TObject);
     function  fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function  generateThumbs(const aItemIx: integer): integer;
@@ -55,12 +55,12 @@ type
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
     function thumbsPerPage: integer;
-    property currentFolder:   string    read FCurrentFolder;
-    property currentIx:       integer   read getCurrentIx;
-    property ignoreSavePanel: boolean                             write FIgnoreSavePanel;
-    property playlist:        TPlaylist read FPlaylist;
-    property thumbSize:       integer   read FThumbSize           write FThumbSize;
-    property statusBar:       TStatusBar                          write FStatusBar;
+    property currentFolder:     string    read FCurrentFolder;
+    property currentIx:         integer   read getCurrentIx;
+    property savePanelReserved: boolean                             write FSavePanelReserved;
+    property playlist:          TPlaylist read FPlaylist;
+    property thumbSize:         integer   read FThumbSize           write FThumbSize;
+    property statusBar:         TStatusBar                          write FStatusBar;
   end;
 
 implementation
@@ -234,8 +234,8 @@ begin
 
   mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount));
 
-  case FIgnoreSavePanel of  TRUE: FIgnoreSavePanel := FALSE;
-                           FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
+  case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
+                             FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
 end;
 
 

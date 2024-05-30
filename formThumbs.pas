@@ -74,7 +74,6 @@ type
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
     function renameFile(const aFilePath: string): boolean;
     function saveCopyFile(const aFilePath: string): boolean;
-    function saveMoveFile(const aFilePath: string): boolean;
     function saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
@@ -426,24 +425,12 @@ begin
                                                   FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Copied'); end;
 end;
 
-function TThumbsForm.saveMoveFile(const aFilePath: string): boolean;
-begin
-  case mmpCopyFile(aFilePath, 'Moved', TRUE) of  TRUE:  begin
-                                                          mmpSetPanelText(FStatusBar, pnHelp, 'Saved');
-                                                          mmpSetPanelText(FStatusBar, pnSave, 'Saved to: ' + extractFilePath(aFilePath));
-                                                          FThumbs.ignoreSavePanel := TRUE;
-                                                          FThumbs.playlist.delete(FThumbs.playlist.currentIx);
-                                                          playCurrentItem;
-                                                        end;
-                                                FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Saved'); end;
-end;
-
 function TThumbsForm.saveMoveFileToKeyFolder(const aFilePath: string; const aKeyFolder: string): boolean;
 begin
   case mmpCopyFile(aFilePath, aKeyFolder, TRUE) of  TRUE:  begin
                                                           mmpSetPanelText(FStatusBar, pnHelp, 'Moved');
                                                           mmpSetPanelText(FStatusBar, pnSave, 'Moved to: ' + extractFilePath(aFilePath));
-                                                          FThumbs.ignoreSavePanel := TRUE;
+                                                          FThumbs.savePanelReserved := TRUE;
                                                           FThumbs.playlist.delete(FThumbs.playlist.currentIx);
                                                           playCurrentItem;
                                                         end;
@@ -580,7 +567,7 @@ begin
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
-    koSaveMove:           case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem); end;
+    koSaveMove:           case whichHost of htMPVHost: saveMoveFileToKeyFolder(FThumbs.playlist.currentItem, 'Moved'); end;
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koSaveCopy:           case whichHost of htMPVHost: saveCopyFile(FThumbs.playlist.currentItem); end;
