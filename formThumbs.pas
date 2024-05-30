@@ -26,7 +26,7 @@ uses
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
   formProgress,
-  mmpThumbsKeyboard,
+  mmpConsts, mmpThumbsKeyboard,
   TMPVHostClass, TThumbsClass;
 
 type
@@ -50,13 +50,14 @@ type
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
   strict private
     mpv: TMPVBasePlayer;
-    FImageDisplayDuration: integer;
-    FInitialFilePath: string;
-    FProgressForm: TProgressForm;
-    FKeyHandled: boolean;
-    FMPVHost: TMPVHost;
-    FShowing: boolean;
-    FThumbs: TThumbs;
+    FImageDisplayDuration:  integer;
+    FInitialFilePath:       string;
+    FProgressForm:          TProgressForm;
+    FKeyHandled:            boolean;
+    FMPVHost:               TMPVHost;
+    FShowing:               boolean;
+    FSlideshowDirection:    TSlideshowDirection;
+    FThumbs:                TThumbs;
   private
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
@@ -78,12 +79,15 @@ type
     function playPrevFolder: boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
     function renameFile(const aFilePath: string): boolean;
+    function reverseSlideshow: boolean;
     function saveCopyFile(const aFilePath: string): boolean;
     function saveMoveFile(const aFilePath: string; const aFolder: string; const aOpText: string): boolean;
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
+    function showSlideshowDirection: boolean;
     function speedDn: boolean;
+    function speedReset: boolean;
     function speedUp: boolean;
     function takeScreenshot: string;
     function undoMove: string;
@@ -102,7 +106,7 @@ implementation
 
 uses
   mmpMPVCtrls, mmpMPVProperties,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow{, RTTI};
@@ -201,6 +205,7 @@ begin
   FMPVHost.OnOpenFile := onOpenFile;
 
   FImageDisplayDuration := IMAGE_DISPLAY_DURATION;
+  FSlideshowDirection   := sdForwards;
 
   mmpInitStatusBar(FStatusBar);
 
@@ -348,8 +353,11 @@ begin
   case eState of
     mpsPlay:;
     mpsEnd {, mpsStop}: case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
-                                                                case GV.playingSlideshow of TRUE: case playNext of FALSE: playFirst; end;end;end;end;
-  end;
+                                                                case GV.playingSlideshow of
+                                                                  TRUE: case FSlideshowDirection of
+                                                                               sdForwards:  case playNext of FALSE: playFirst; end;
+                                                                               sdBackwards: case playPrev of FALSE: playLast;  end;
+                                                                        end;end;end;end;end;
 //  mmpProcessMessages;
 end;
 
@@ -362,7 +370,7 @@ begin
   case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(FImageDisplayDuration div 1000)); // doesn't really matter as long as it's valid and not 'inf'
                               FALSE: mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;
 
-  case GV.playingSlideshow of  TRUE: mmpSetPanelText(FStatusBar, pnHelp, 'Slideshow');
+  case GV.playingSlideshow of  TRUE: showSlideshowDirection;
                               FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'PAUSED'); end;
 
   case GV.playingSlideshow of  TRUE: FThumbs.playCurrentItem; end;
@@ -415,8 +423,8 @@ end;
 function TThumbsForm.playPrev: boolean;
 begin
   case whichHost of
-    htMPVHost:    FThumbs.playPrev;
-    htThumbsHost: FThumbs.playPrevThumbsPage;
+    htMPVHost:    result := FThumbs.playPrev;
+    htThumbsHost: result := FThumbs.playPrevThumbsPage;
   end;
 end;
 
@@ -448,6 +456,13 @@ begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
                                         mmpSetPanelText(FStatusBar, pnSave, 'Renamed: ' + aFilePath); end;end;
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
+end;
+
+function TThumbsForm.reverseSlideshow: boolean;
+begin
+  FSlideshowDirection := TSlideshowDirection(1 - ord(FSlideshowDirection)); // x := 1 - x
+  showSlideshowDirection;
+  case GV.playingSlideshow of FALSE: pausePlay; end;
 end;
 
 function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
@@ -491,9 +506,22 @@ begin
   formPlaylist.showPlaylist(FThumbs.playlist, vPt, FThumbsHost.height, TRUE);
 end;
 
+function TThumbsForm.showSlideshowDirection: boolean;
+begin
+  case FSlideshowDirection of
+    sdForwards:   mmpSetPanelText(FStatusBar, pnHelp, 'Slideshow ->');
+    sdBackwards:  mmpSetPanelText(FStatusBar, pnHelp, '<- Slideshow'); end;
+end;
+
 function TThumbsForm.speedDn: boolean;
 begin
   FImageDisplayDuration := FImageDisplayDuration + 100;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
+end;
+
+function TThumbsForm.speedReset: boolean;
+begin
+  FImageDisplayDuration := IMAGE_DISPLAY_DURATION;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
 end;
 
@@ -646,6 +674,7 @@ begin
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
+    koReverseSlideshow:   case whichHost of htMPVHost: reverseSlideshow; end;
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
     koRotateReset:        mpvRotateReset(mpv);
@@ -656,6 +685,7 @@ begin
     koSaveMove:           case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder('Saved'), 'Saved'); end;
     koScreenshot:         takeScreenshot;
     koSpeedDn:            speedDn;
+    koSpeedReset:         speedReset;
     koSpeedUp:            speedUp;
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
@@ -677,7 +707,6 @@ begin
     koBrighterPB:;
     koDarkerPB:;
     koTogglePlaylist:     showPlaylist;
-    koSpeedReset:;
   end;
 
   case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin // has the thumbnail page been recreated starting at a different item Ix ?

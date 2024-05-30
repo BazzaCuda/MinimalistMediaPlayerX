@@ -197,7 +197,8 @@ end;
 
 function TThumbs.playPrev: boolean;
 begin
-  case FPlaylist.prev of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
+  result := FPlaylist.prev;
+  case result of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
 function TThumbs.playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;

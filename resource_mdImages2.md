@@ -21,6 +21,8 @@ Numpad **ENTER**, play next\*<br />
 **D** next [D]irectory/folder<br />
 **E** previous directory/folder<br />
 
+_\* or next/previous/first/last thumbnail page_<br />
+
 **Rotating**<br />
 **Pg Up**, rotate left<br />
 **Pg Dn**, rotate right<br />
@@ -32,11 +34,11 @@ Numpad **ENTER**, play next\*<br />
 **;** reset saturation<br />
 
 **Screeshots**<br />
-Ctrl-**S**, save screenshot of altered image<br />
+Ctrl-**S**, save hi-res screenshot of altered image<br />
 
 **Slideshow**<br />
 **Spacebar** = pause/play slideshow<br />
-Ctrl-**Spacebar** play slideshow in reverse\*<br />
+Ctrl-**Spacebar** reverse slideshow direction<br />
 **/**, increase speed, hold<br />
 **\\**, decrease speed, hold<br />
 **1** reset speed to [1]00% of default<br />
@@ -47,5 +49,4 @@ Ctrl-**Spacebar** play slideshow in reverse\*<br />
 &uarr; Shift-**Up arrow**, increase size<br />
 &darr; Shift-**Dn arrow**, decrease size<br />
 
-\* or next/previous/first/last thumbnail page<br />
 

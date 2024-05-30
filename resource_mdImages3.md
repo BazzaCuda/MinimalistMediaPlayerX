@@ -7,15 +7,15 @@ Ctrl-**0** close all instances of MMP
 Ctrl-**G**, un[G]reater window size, hold<br />
 **H** centre window [H]orizontally and V<br />
 **J** ad[J]ust to image aspect ratio<br />
-**M** [M]aximize maintaining aspect ration<br />
+**M** [M]aximize maintaining aspect ratio<br />
 **N** mi[N]imize window to taskbar<br />
 Numpad **Subtract**, reduce height\*<br />
 Numpad **Add**, increase height\*<br />
 Ctrl-Numpad **Subtract**, reduce width\*<br />
 Ctrl-Numpad **Add**, increase width\*<br />
 
-\* image window only<br />
-\* add SHIFT for greater change<br />
+_\* image window only_<br />
+_\* add **SHIFT** for greater change_<br />
 
 **Zoom**<br />
 **I** zoom [I]n, hold for repeat<br />

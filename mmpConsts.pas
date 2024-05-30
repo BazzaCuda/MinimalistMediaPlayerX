@@ -87,6 +87,8 @@ type
 
   TFnnKeyApp = (F10_APP, F11_APP, F12_APP);
 
+  TSlideshowDirection = (sdForwards, sdBackwards);
+
 const
   mediaTypes: array[0..89] of TMediaTypeRec = (
 

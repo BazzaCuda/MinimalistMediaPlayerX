@@ -32,7 +32,7 @@ type
             koCloseImageBrowser, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koRotateReset, koContrastUp, koContrastDn, koContrastReset,
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koTogglePlaylist, koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder,
-            koThumbsUp, koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove
+            koThumbsUp, koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -88,6 +88,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
   begin
     result := koNone;
 
+    case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
     case keyUp and keyIs(_2)                                              of TRUE: result := koBrightnessReset; end;
     case keyUp and keyIs(_3)                                              of TRUE: result := koPanReset; end;
     case keyUp and keyIs(_4)                                              of TRUE: result := koRotateReset; end;
@@ -153,7 +154,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_RETURN) and NOT ctrl and NOT GV.showingPlaylist   of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT) and     ctrl                           of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT) and NOT ctrl                           of TRUE: result := koPlayNext; end;
-    case keyUp and keyIs(VK_SPACE)                                        of TRUE: result := koPausePlay; end;
+    case keyUp and keyIs(VK_SPACE) and     ctrl                           of TRUE: result := koReverseSlideshow; end;
+    case keyUp and keyIs(VK_SPACE) and NOT ctrl                           of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT) and     ctrl                        of TRUE: result := koWindowNarrower; end;
     case keyDn and keyIs(VK_SUBTRACT) and NOT ctrl                        of TRUE: result := koWindowShorter; end;
     case keyDn and keyIs(VK_UP) and     ctrl                              of TRUE: result := koPanUp; end; // can also be ctrl-shift
@@ -166,7 +168,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 // TO DO
 //    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
 //    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
-//    case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
 
 
 
