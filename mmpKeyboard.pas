@@ -25,15 +25,14 @@ uses
 
 type
   TKeyOp = (koNone,
-            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koBrightnessUp,
-            koBrightnessDn, koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast,
-            koPanLeft, koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset, koGreaterWindow, koToggleControls,
-            koRunPot, koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp,
-            koSpeedDn, koSpeedReset, koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave,
-            koBookmarkLoad, koBookmarkDelete, koRotateReset, koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn,
-            koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia,
-            koScreenshot, koToggleSubtitles, koToggleRepeat, koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter,
-            koThumbnails);
+            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koBrightnessUp, koBrightnessDn,
+            koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast, koPanLeft,
+            koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset, koGreaterWindow, koToggleControls, koRunPot,
+            koRunCut, koRunShot, koToggleBlackout, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
+            koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave, koBookmarkLoad, koBookmarkDelete, koRotateReset,
+            koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
+            koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
+            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -209,84 +208,84 @@ begin
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
-    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.pausePlay; sendSysCommandClose(UI.handle); end;
-    koVolUp:             ST.opInfo := MP.volUp;
-    koVolDn:             ST.opInfo := MP.volDown;
-    koTab:               SA.postToAll(WIN_TAB, KBNumLock);
-    koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
-    koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
-    koFrameForwards:     MP.frameForwards;
-    koFrameBackwards:    MP.frameBackwards;
-    koBrightnessUp:      ST.opInfo := MP.brightnessUp;
-    koBrightnessDn:      ST.opInfo := MP.brightnessDn;
-    koZoomIn:            ST.opInfo := MP.zoomIn;
-    koZoomOut:           ST.opInfo := MP.zoomOut;
-    koStartOver:         SA.postToAll(WIN_RESTART, KBNumLock);
-    koShowCaption:       SA.postToAll(WIN_CAPTION, KBNumLock);
-    koMuteUnmute:        ST.opInfo := MP.muteUnmute;
-    koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
-    koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
-    koPanLeft:           ST.opInfo := MP.panLeft;
-    koPanRight:          ST.opInfo := MP.panRight;
-    koPanUp:             ST.opInfo := MP.panUp;
-    koPanDn:             ST.opInfo := MP.panDn;
-    koRotateR:           ST.opInfo := MP.rotateRight;
-    koRotateL:           ST.opInfo := MP.rotateLeft;
-    koFullscreen:        case NOT GV.showingPlaylist AND NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
-    koZoomReset:         ST.opInfo := MP.zoomReset;
-    koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
-    koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
-    koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
-    koToggleControls:    SA.postToAll(WIN_CONTROLS, KBNumLock);
-    koRunPot:            UI.openExternalApp(F10_APP, PL.currentItem);
-    koRunCut:            UI.openExternalApp(F11_APP, PL.currentItem);
-    koRunShot:           UI.openExternalApp(F12_APP, PL.currentItem);
-    koToggleBlackout:    UI.toggleBlackout;
-    koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
-    koMinimizeWindow:    UI.minimizeWindow;
-    koDeleteCurrentItem: UI.deleteCurrentItem;
-    koRenameFile:        UI.renameFile(PL.currentItem);
-    koSpeedUp:           ST.opInfo := MP.speedUp;
-    koSpeedDn:           ST.opInfo := MP.speedDn;
-    koSpeedReset:        ST.opInfo := MP.speedReset;
-    koEscape:            UI.doEscapeKey;
-    koClipboard:         PL.copyToClipboard;
-    koKeep:              UI.keepFile(PL.currentItem);
-    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); loadPlaylistWindow(TRUE); end;
-    koPanReset:          ST.opInfo := MP.panReset;
-    koBrightnessReset:   ST.opInfo := MP.brightnessReset;
-    koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);
-    koBookmarkLoad:      case BM.asInteger(PL.currentItem) <> 0 of TRUE: begin MP.position := BM.asInteger(PL.currentItem); ST.opInfo := 'From bookmark'; end;end;
-    koBookmarkDelete:    ST.opInfo := BM.delete(PL.currentItem);
-    koRotateReset:       ST.opInfo := MP.rotateReset;
-    koAllReset:          ST.opInfo := MP.allReset;
-    koContrastUp:        ST.opInfo := MP.contrastUp;
-    koContrastDn:        ST.opInfo := MP.contrastDn;
-    koContrastReset:     ST.opInfo := MP.contrastReset;
-    koGammaUp:           ST.opInfo := MP.gammaUp;
-    koGammaDn:           ST.opInfo := MP.gammaDn;
-    koSaturationUp:      ST.opInfo := MP.saturationUp;
-    koSaturationDn:      ST.opInfo := MP.saturationDn;
-    koGammaReset:        ST.opInfo := MP.gammaReset;
-    koSaturationReset:   ST.opInfo := MP.saturationReset;
-    koToggleHelp:        UI.toggleHelpWindow;
-    koBrighterPB:        begin CF.value['caption'] := CF.toHex(MC.brighter); CF.value['timeCaption'] := CF.toHex(ST.brighter); CF.value['progressBar'] := CF.toHex(PB.brighter); end;
-    koDarkerPB:          UI.darker;
-    koCloseAll:          SA.postToAll(WIN_CLOSEAPP, TRUE);
-    koArrangeAll:        UI.arrangeAll;
-    koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0), TRUE);
-    koTogglePlaylist:    UI.togglePlaylist;
-    koScreenshot:        begin ST.opInfo := 'Screenshot...'; application.processMessages; ST.opInfo := MP.takeScreenshot; end;
-    koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
-    koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
-    koToggleEditMode:    UI.toggleTimeline;
     koAboutBox:          showAboutBox;
-    koMaximize:          UI.maximize;
+    koAllReset:          ST.opInfo := MP.allReset;
+    koArrangeAll:        UI.arrangeAll;
+    koBookmarkDelete:    ST.opInfo := BM.delete(PL.currentItem);
+    koBookmarkLoad:      case BM.asInteger(PL.currentItem) <> 0 of TRUE: begin MP.position := BM.asInteger(PL.currentItem); ST.opInfo := 'From bookmark'; end;end;
+    koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);
+    koBrighterPB:        begin CF.value['caption'] := CF.toHex(MC.brighter); CF.value['timeCaption'] := CF.toHex(ST.brighter); CF.value['progressBar'] := CF.toHex(PB.brighter); end;
+    koBrightnessDn:      ST.opInfo := MP.brightnessDn;
+    koBrightnessUp:      ST.opInfo := MP.brightnessUp;
+    koBrightnessReset:   ST.opInfo := MP.brightnessReset;
+    koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
+    koClipboard:         PL.copyToClipboard;
+    koCloseAll:          SA.postToAll(WIN_CLOSEAPP, TRUE);
+    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.pausePlay; sendSysCommandClose(UI.handle); end;
+    koContrastDn:        ST.opInfo := MP.contrastDn;
+    koContrastUp:        ST.opInfo := MP.contrastUp;
+    koContrastReset:     ST.opInfo := MP.contrastReset;
     koCycleAudio:        MP.cycleAudio;
     koCycleSubs:         MP.cycleSubs;
-    koPrevChapter:       MP.chapterPrev;
+    koDarkerPB:          UI.darker;
+    koDeleteCurrentItem: UI.deleteCurrentItem;
+    koEscape:            UI.doEscapeKey;
+    koFrameBackwards:    MP.frameBackwards;
+    koFrameForwards:     MP.frameForwards;
+    koFullscreen:        case NOT GV.showingPlaylist AND NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
+    koGammaDn:           ST.opInfo := MP.gammaDn;
+    koGammaReset:        ST.opInfo := MP.gammaReset;
+    koGammaUp:           ST.opInfo := MP.gammaUp;
+    koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
+    koKeep:              UI.keepFile(PL.currentItem);
+    koMaximize:          UI.maximize;
+    koMinimizeWindow:    UI.minimizeWindow;
+    koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koNextChapter:       MP.chapterNext;
+    koPanDn:             ST.opInfo := MP.panDn;
+    koPanLeft:           ST.opInfo := MP.panLeft;
+    koPanReset:          ST.opInfo := MP.panReset;
+    koPanRight:          ST.opInfo := MP.panRight;
+    koPanUp:             ST.opInfo := MP.panUp;
+    koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
+    koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
+    koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
+    koRenameFile:        UI.renameFile(PL.currentItem);
+    koRotateL:           ST.opInfo := MP.rotateLeft;
+    koRotateR:           ST.opInfo := MP.rotateRight;
+    koRotateReset:       ST.opInfo := MP.rotateReset;
+    koShowCaption:       SA.postToAll(WIN_CAPTION, KBNumLock);
+    koSpeedDn:           ST.opInfo := MP.speedDn;
+    koSpeedReset:        ST.opInfo := MP.speedReset;
+    koSpeedUp:           ST.opInfo := MP.speedUp;
+    koStartOver:         SA.postToAll(WIN_RESTART, KBNumLock);
+    koTab:               SA.postToAll(WIN_TAB, KBNumLock);
+    koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
+    koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
+    koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
+    koPrevChapter:       MP.chapterPrev;
+    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); loadPlaylistWindow(TRUE); end;
+    koRunCut:            UI.openExternalApp(F11_APP, PL.currentItem);
+    koRunPot:            UI.openExternalApp(F10_APP, PL.currentItem);
+    koRunShot:           UI.openExternalApp(F12_APP, PL.currentItem);
+    koSaturationDn:      ST.opInfo := MP.saturationDn;
+    koSaturationReset:   ST.opInfo := MP.saturationReset;
+    koSaturationUp:      ST.opInfo := MP.saturationUp;
+    koScreenshot:        begin ST.opInfo := 'Screenshot...'; application.processMessages; ST.opInfo := MP.takeScreenshot; end;
+    koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0), TRUE);
     koThumbnails:        UI.showThumbnails;
+    koToggleBlackout:    UI.toggleBlackout;
+    koToggleControls:    SA.postToAll(WIN_CONTROLS, KBNumLock);
+    koToggleEditMode:    UI.toggleTimeline;
+    koToggleHelp:        UI.toggleHelpWindow;
+    koTogglePlaylist:    UI.togglePlaylist;
+    koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
+    koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
+    koVolDn:             ST.opInfo := MP.volDown;
+    koVolUp:             ST.opInfo := MP.volUp;
+    koZoomIn:            ST.opInfo := MP.zoomIn;
+    koZoomOut:           ST.opInfo := MP.zoomOut;
+    koZoomReset:         ST.opInfo := MP.zoomReset;
   end;
 
   result := TRUE;
