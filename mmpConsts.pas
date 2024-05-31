@@ -74,7 +74,7 @@ const
   THUMB_NO_IMAGES     = 'No images in this folder';
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
-  IMAGE_DISPLAY_DURATION = 3000;
+  IMAGE_DISPLAY_DURATION = 3; // in seconds, to match the setting in mpv.conf
 
 type
   TMediaType = (mtUnk, mtAudio, mtVideo, mtImage);

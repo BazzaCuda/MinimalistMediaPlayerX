@@ -14,7 +14,6 @@ Numpad **Add**, increase height\*<br />
 Ctrl-Numpad **Subtract**, reduce width\*<br />
 Ctrl-Numpad **Add**, increase width\*<br />
 
-_\* image window only_<br />
 _\* add **SHIFT** for greater change_<br />
 
 **Zoom**<br />

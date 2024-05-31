@@ -233,9 +233,10 @@ end;
 constructor TMediaPlayer.create;
 begin
   inherited;
-  FTimer := TTimer.create(NIL);
-  FTimer.enabled := FALSE;
-  FTimer.OnTimer := onTimerEvent;
+  FImagePaused    := TRUE;
+  FTimer          := TTimer.create(NIL);
+  FTimer.enabled  := FALSE;
+  FTimer.OnTimer  := onTimerEvent;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
@@ -330,13 +331,13 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
+  case FImagePaused AND (FMediaType = mtImage) of TRUE: begin FLocked := FALSE; EXIT; end;end; // EXPERIMENTALLY COMMENTED OUT
 
   case eState of
     mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
     mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
     {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
-                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end;
+                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end; // code-controlled slideshow
                                                         autoPlayNext;
                                                       end;end;
             end;
@@ -363,11 +364,15 @@ begin
     mpv.onInitMPV    := onInitMPV;
 
     mpvInitPlayer(mpv, UI.handle, mmpExePath, mmpExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
+    mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
 
     mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
-    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := 0; end;
+    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
+
     FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
-    mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
+
+    FImageDisplayDuration := 'autoPlayNext'; // anything except 'inf'
+    mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.
   end;end;
 
   mpvOpenFile(mpv, aURL);
@@ -412,10 +417,9 @@ function TMediaPlayer.pauseUnpauseImages: boolean;
 begin
   case FMediaType = mtImage of FALSE: EXIT; end;
   FImagePaused := NOT FImagePaused;
-  FLocked      := NOT FImagePaused;
 
   case FImagePaused of  TRUE: begin mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
-                       FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);   // restore the original setting
+                       FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', intToStr(trunc(FImageDisplayDurationMs) div 1000));  // restore the original setting
                                     case FImageDisplayDuration = 'inf' of FALSE: autoPlayNext; end;end;end;       // if there was a set duration before, continue with the next file
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';

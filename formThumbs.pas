@@ -207,7 +207,7 @@ begin
   FMPVHost.parent := SELF;
   FMPVHost.OnOpenFile := onOpenFile;
 
-  FImageDisplayDuration := IMAGE_DISPLAY_DURATION;
+  FImageDisplayDuration := IMAGE_DISPLAY_DURATION * 1000;
   FSlideshowDirection   := sdForwards;
 
   mmpInitStatusBar(FStatusBar);
@@ -330,6 +330,7 @@ procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
   mpvSetDefaults(mpv, extractFilePath(paramStr(0)));
+  mpvsetPropertyString(mpv, 'image-display-duration', 'inf');  // my gaff; my rules.
 end;
 
 procedure TThumbsForm.onOpenFile(const aURL: string);
@@ -372,6 +373,7 @@ end;
 
 procedure TThumbsForm.onThumbClick(sender: TObject);
 begin
+  FThumbs.cancel;
   mmpResetPanelHelp(FStatusBar);
   showHost(htMPVHost);
   FThumbs.playlist.setIx(TControl(sender).tag);
@@ -537,7 +539,7 @@ end;
 
 function TThumbsForm.speedReset: boolean;
 begin
-  FImageDisplayDuration := IMAGE_DISPLAY_DURATION;
+  FImageDisplayDuration := IMAGE_DISPLAY_DURATION * 1000;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
 end;
 
