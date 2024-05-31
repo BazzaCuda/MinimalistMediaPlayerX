@@ -207,7 +207,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
 begin
   result      := FALSE;
 
-  case (aKey in [VK_LEFT, VK_RIGHT]) and MP.isLocked of TRUE: EXIT; end; // EXPERIMENTAL
+//  case (aKey in [VK_LEFT, VK_RIGHT]) and MP.isLocked of TRUE: EXIT; end; // EXPERIMENTAL
 
   case getKeyOp of
     koNone:       EXIT; // key not processed. bypass setting result to TRUE

@@ -216,13 +216,8 @@ begin
   mpv.onInitMPV    := onInitMPV;
   mpv.OnStateChged := onStateChange;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-//  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
   mpvSetPropertyString(mpv, 'image-display-duration', '5'); // override the user's .conf file, forces a state change event: EXPERIMENTAL
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
-
-//  var vIDD: string;
-//  mpvGetPropertyString(mpv, 'image-display-duration', vIDD);
-//  debug(vIDD);
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);

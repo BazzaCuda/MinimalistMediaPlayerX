@@ -38,7 +38,7 @@ type
 
     FDontPlayNext: boolean;
     FImageDisplayDuration: string;
-    FImageDisplayDurationSS: double;
+    FImageDisplayDurationMs: double;
     FImagePaused: boolean;
     FLocked: boolean;
     FMediaType: TMediaType;
@@ -336,7 +336,7 @@ begin
     mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
     mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
     {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
-                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationSS) * 1000); end;
+                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end;
                                                         autoPlayNext;
                                                       end;end;
             end;
@@ -365,7 +365,8 @@ begin
     mpvInitPlayer(mpv, UI.handle, mmpExePath, mmpExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
 
     mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
-    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationSS) of FALSE: FImageDisplayDurationSS := 0; end;
+    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := 0; end;
+    FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
     mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
   end;end;
 
@@ -411,6 +412,7 @@ function TMediaPlayer.pauseUnpauseImages: boolean;
 begin
   case FMediaType = mtImage of FALSE: EXIT; end;
   FImagePaused := NOT FImagePaused;
+  FLocked      := NOT FImagePaused;
 
   case FImagePaused of  TRUE: begin mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
                        FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);   // restore the original setting
@@ -510,7 +512,6 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
-//  FLocked := TRUE; // EXPERIMENTAL
   pause;
 
   FTimer.interval := 100;
@@ -524,8 +525,9 @@ end;
 
 function TMediaPlayer.playPrev: boolean;
 begin
-//  FLocked := TRUE; // EXPERIMENTAL
   pause;
+  case FImagePaused of FALSE: pauseUnpauseImages; end;
+
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;
