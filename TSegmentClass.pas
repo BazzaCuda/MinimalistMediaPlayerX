@@ -146,7 +146,6 @@ begin
   font.style        := [fsBold];
   alignment         := taLeftJustify;
   onClick           := doClick;
-  doubleBuffered    := TRUE;
 
   startSS           := aStartSS;
   endSS             := aEndSS;

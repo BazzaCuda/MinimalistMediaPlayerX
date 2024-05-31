@@ -23,7 +23,7 @@ interface
 uses
   generics.collections,
   system.classes,
-  vcl.comCtrls, vcl.extCtrls, vcl.forms,
+  vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
   mmpConsts,
   TMPVHostClass, TPlaylistClass, TThumbClass;
 
@@ -38,7 +38,8 @@ type
     FPlaylist:          TPlaylist;
     FSavePanelReserved: boolean;
     FStatusBar:         TStatusBar;
-    FThumbsHost:        TPanel;
+//    FThumbsHost:        TPanel;
+    FThumbsHost:        TWinControl;
     FThumbs:            TObjectList<TThumb>;
     FThumbSize:         integer;
   private
@@ -48,10 +49,8 @@ type
   public
     constructor create;
     destructor destroy; override;
-    function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel; const aStatusBar: TStatusBar): boolean;
+    function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function playCurrentItem: boolean;
-//    function playNext: boolean;
-//    function playPrev: boolean;
     function playPrevThumbsPage: boolean;
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
@@ -70,7 +69,7 @@ implementation
 uses
   winApi.windows,
   system.sysUtils,
-  vcl.controls, vcl.graphics,
+  {vcl.controls,} vcl.graphics,
   mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
   TGlobalVarsClass, TMediaInfoClass,
@@ -130,8 +129,10 @@ var
   begin
     tpp   := thumbsPerPage;
     extra := 0;
-    case FPlaylist.count div tpp * tpp < FPlaylist.count of TRUE: extra := 1; end; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
-    mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(((FPlaylist.currentIx + tpp - 1) div tpp) + 1, FPlaylist.count div tpp + extra));
+    case FPlaylist.count mod tpp > 0 of TRUE: extra := 1; end; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
+    var vPageNo := FPlaylist.currentIx div tpp;
+    case FPlaylist.isLast of TRUE: vPageNo := vPageNo + extra; end;
+    mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(vPageNo, (FPlaylist.count div tpp) + extra));
   end;
 
 begin
@@ -144,10 +145,8 @@ begin
   vThumbTop  := THUMB_MARGIN;
   vThumbLeft := THUMB_MARGIN;
 
-  setPanelPageNo;
-
   repeat
-    FThumbs.add(TThumb.create(FThumbsHost, FPlayList.currentItem, FThumbSize, FThumbSize));
+    FThumbs.add(TThumb.create(FPlayList.currentItem, FThumbSize, FThumbSize));
     vIx := FThumbs.count - 1;
 
     FThumbs[vIx].top      := vThumbTop;
@@ -156,14 +155,18 @@ begin
     FThumbs[vIx].OnClick  := FOnThumbClick;
     FThumbs[vIx].hint     := '|$' + FPlaylist.currentItem;
 
+    FThumbs[vIx].parent := FThumbsHost;  // delay to prevent flicker of top left thumbnail
+
     setPanelText(FPlaylist.currentItem);
 
-    mmpProcessMessages; // EXPERIMENTAL: show the thumbnails as they're drawn
+    mmpProcessMessages; // show the thumbnails as they're drawn
 
     calcNextThumbPosition;
 
     vDone := NOT FPlaylist.next;
   until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone;
+
+  setPanelPageNo;
 
   result := FPlaylist.currentIx;
 end;
@@ -173,7 +176,7 @@ begin
   result := FPlaylist.currentIx;
 end;
 
-function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TPanel; const aStatusBar: TStatusBar): boolean;
+function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
 begin
   FMPVHost    := aMPVHost;
   FThumbsHost := aThumbsHost;
@@ -185,12 +188,6 @@ begin
   case FPlaylist.hasItems of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
-//function TThumbs.playNext: boolean;
-//begin
-//  result := FPlaylist.next;
-//  case result of TRUE: playCurrentItem end;
-//end;
-
 function TThumbs.playPrevThumbsPage: boolean;
 begin
   case FPlaylist.isFirst of FALSE:  begin
@@ -198,12 +195,6 @@ begin
                                       playThumbs;
   end;end;
 end;
-
-//function TThumbs.playPrev: boolean;
-//begin
-//  result := FPlaylist.prev;
-//  case result of TRUE: playCurrentItem; end;
-//end;
 
 function TThumbs.playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
 begin
@@ -214,9 +205,11 @@ begin
                                   mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
+//  debugInteger('StartIx', FPlaylist.currentIx);
   case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
+//  debugInteger('EndIx', FPlaylist.currentIx);
 
-//  debugInteger('currentIx', FPlaylist.currentIx);
+//  debugInteger('thumbsPP', thumbsPerPage);
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 

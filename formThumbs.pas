@@ -222,7 +222,7 @@ begin
 //  debugBoolean('formResize visible', SELF.visible);
   case FThumbs = NIL of TRUE:  EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
-  case whichHost of htThumbsHost: FThumbs.playThumbs; end;
+  case whichHost of htThumbsHost: playCurrentItem; end;
   moveHelpWindow;
 end;
 
@@ -265,7 +265,7 @@ begin
   SELF.color         := clBlack;
 
   FMPVHost.align      := alClient;
-  FThumbsHost.align := alClient;
+  FThumbsHost.align   := alClient;
 
   FMPVHost.visible    := FALSE;
   FThumbsHost.visible := TRUE;
@@ -406,7 +406,7 @@ begin
   FThumbs.playlist.first;
   case whichHost of
     htMPVHost:    playCurrentItem;
-    htThumbsHost: FThumbs.playThumbs;
+    htThumbsHost: playCurrentItem;
   end;
 end;
 
@@ -415,7 +415,7 @@ begin
   FThumbs.playlist.last;
   case whichHost of
     htMPVHost:    playCurrentItem;
-    htThumbsHost: FThumbs.playThumbs;
+    htThumbsHost: playCurrentItem;
   end;
 end;
 
@@ -423,7 +423,7 @@ function TThumbsForm.playNext: boolean;
 begin
   case whichHost of
     htMPVHost:    begin FLocked := FThumbs.playlist.next; case FLocked of TRUE: playCurrentItem; end;end;
-    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: FThumbs.playThumbs; end;
+    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: playCurrentItem; end;
   end;
 end;
 
@@ -458,7 +458,6 @@ end;
 function TThumbsForm.showHost(const aHostType: THostType): boolean;
 begin
   FMPVHost.visible    := aHostType = htMPVHost;
-  FThumbsHost.enabled := aHostType = htThumbsHost;
   FThumbsHost.visible := aHostType = htThumbsHost;
 end;
 
@@ -632,7 +631,7 @@ procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftS
 begin
   mmpResetPanelHelp(FStatusBar);
 
-  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end; // EXPERIMENTAL
+  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end;
 
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
@@ -646,7 +645,7 @@ end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end; // EXPERIMENTAL
+  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end;
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
   case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10
@@ -694,7 +693,7 @@ begin
     koPlayLast:           playLast;
     koPlayNext:           playNext;
     koPlayPrev:           playPrev;
-    koPlayThumbs:         begin showHost(htThumbsHost); FThumbs.playThumbs; end; // EXPERIMENTAL
+    koPlayThumbs:         begin showHost(htThumbsHost); FThumbs.playThumbs; end;
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;

@@ -37,7 +37,7 @@ begin
   aForm.borderStyle            := bsNone;
   aForm.color                  := clBlack;
   aForm.ctl3D                  := FALSE;
-  aForm.doubleBuffered         := TRUE;
+//  aForm.doubleBuffered         := TRUE; // EXPERIMENTALLY COMMENTED OUT
   aForm.margins.bottom         := 0;
   aForm.formStyle              := fsStayOnTop; // Keep the form always on top - hmmm. How does this impact infoPanel?
   aForm.borderIcons            := [];

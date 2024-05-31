@@ -21,13 +21,13 @@ unit TThumbClass;
 interface
 
 uses
-  vcl.extCtrls;
+  vcl.controls, vcl.extCtrls;
 
 type
   TThumb = class(TImage)
   strict private
   public
-    constructor create(const aParent: TPanel; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+    constructor create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
   end;
 
 implementation
@@ -37,11 +37,9 @@ uses
 
 { TThumb }
 
-constructor TThumb.create(const aParent: TPanel; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+constructor TThumb.create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 begin
   inherited Create(NIL);
-
-  parent  := aParent;
 
   width   := aDesiredWidth;  // THUMB_DEFAULT_SIZE;
   height  := aDesiredHeight; // THUMB_DEFAULT_SIZE;

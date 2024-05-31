@@ -463,6 +463,8 @@ begin
   case FMediaType of mtImage: blankOutTimeCaption;
                          else resetTimeCaption; end;
 
+  FLocked := FMediaType = mtImage; // EXPERIMENTAL
+
   openURL(aURL);
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
