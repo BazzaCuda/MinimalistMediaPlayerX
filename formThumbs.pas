@@ -281,7 +281,6 @@ begin
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
   FThumbsHost.color          := clBlack;
-  FThumbsHost.color          := clGray;
 end;
 
 
