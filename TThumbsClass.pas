@@ -32,13 +32,13 @@ type
 
   TThumbs = class(TObject)
   strict private
+    FCancel: boolean;
     FCurrentFolder:     string;
     FMPVHost:           TMPVHost;
     FOnThumbClick:      TNotifyEvent;
     FPlaylist:          TPlaylist;
     FSavePanelReserved: boolean;
     FStatusBar:         TStatusBar;
-//    FThumbsHost:        TPanel;
     FThumbsHost:        TWinControl;
     FThumbs:            TObjectList<TThumb>;
     FThumbSize:         integer;
@@ -49,11 +49,12 @@ type
   public
     constructor create;
     destructor destroy; override;
+    function cancel: boolean;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function playCurrentItem: boolean;
     function playPrevThumbsPage: boolean;
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
-    function setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
+    function setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
     function thumbsPerPage: integer;
     property currentFolder:     string        read FCurrentFolder;
     property currentIx:         integer       read getCurrentIx;
@@ -76,6 +77,11 @@ uses
   _debugWindow;
 
 { TThumbs }
+
+function TThumbs.cancel: boolean;
+begin
+  FCancel := TRUE;
+end;
 
 constructor TThumbs.create;
 begin
@@ -164,7 +170,7 @@ begin
     calcNextThumbPosition;
 
     vDone := NOT FPlaylist.next;
-  until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone;
+  until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone OR FCancel;
 
   setPanelPageNo;
 
@@ -205,6 +211,7 @@ begin
                                   mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
+  FCancel := FALSE;
 //  debugInteger('StartIx', FPlaylist.currentIx);
   case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
 //  debugInteger('EndIx', FPlaylist.currentIx);
@@ -213,7 +220,7 @@ begin
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 
-function TThumbs.setPanelText(const aURL: string; aTickCount: double = 0; const aGetMediaInfo: boolean = FALSE): boolean;
+function TThumbs.setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
 begin
   case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnName, extractFileName(aURL));
                              FALSE: mmpSetPanelText(FStatusBar, pnName, THUMB_NO_IMAGES); end;
@@ -233,7 +240,7 @@ begin
                                                                FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
                              FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
 
-  mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount));
+  case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
 
   case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;

@@ -149,7 +149,7 @@ end;
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
 begin
   case length(application.hint) > 1 of
-    TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT), 0, TRUE);
+    TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT), -1, TRUE);
                                            FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
 end;
 
@@ -396,7 +396,7 @@ end;
 function TThumbsForm.playCurrentItem: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin FLocked := TRUE; FThumbs.playCurrentItem; FThumbs.setPanelText(FThumbs.playlist.currentItem, 0, TRUE); end;
+    htMPVHost:    begin FLocked := TRUE; FThumbs.playCurrentItem; FThumbs.setPanelText(FThumbs.playlist.currentItem, -1, TRUE); end;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
@@ -668,8 +668,8 @@ begin
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin close; SA.postToAll(WIN_CLOSEAPP); end;
-    koCloseImageBrowser:  close;
+    koCloseAll:           begin FThumbs.cancel; close; SA.postToAll(WIN_CLOSEAPP); end;
+    koCloseImageBrowser:  begin FThumbs.cancel; close; end;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
