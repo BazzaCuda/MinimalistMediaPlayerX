@@ -222,7 +222,6 @@ end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
 begin
-//  debugBoolean('formResize visible', SELF.visible);
   case FThumbs = NIL of TRUE:  EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   case whichHost of htThumbsHost: playCurrentItem; end;
@@ -231,7 +230,6 @@ end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
-//  debugBoolean('formShowEnter visible', SELF.visible);
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FThumbs.onThumbClick := onThumbClick;
@@ -248,7 +246,6 @@ begin
   finally
   end;
   setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
-//  debugBoolean('formShowExit visible', SELF.visible);
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
