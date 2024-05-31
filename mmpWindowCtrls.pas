@@ -25,12 +25,12 @@ uses
 
 function mmpCentreWindow(const aWnd: HWND): boolean;
 function mmpFocusWindow(const aWnd: HWND): boolean;
-function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
+function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer): boolean;
 
 implementation
 
 uses
-  mmpDesktopUtils,
+  mmpConsts, mmpDesktopUtils,
   TGlobalVarsClass;
 
 function mmpFocusWindow(const aWnd: HWND): boolean;
@@ -60,18 +60,17 @@ begin
   GV.autoCentre := TRUE;
 end;
 
-function mmpGreaterWindow(const aWnd: HWND; const shift: TShiftState): boolean;
-const
-  dx = 170; // this will need to be changed when the user can alter the size of the thumbnails
-  dy = 170;
+function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer): boolean;
 var
+  dx:   integer;
+  dy:   integer;
   newW: integer;
   newH: integer;
   vR:   TRect;
 
   function calcDimensions: boolean;
   begin
-    case ssCtrl in shift of
+    case ssCtrl in aShiftState of
       TRUE: begin
               newW := newW - dx;
               newH := newH - dy;
@@ -84,6 +83,9 @@ var
   end;
 
 begin
+  dx := aThumbSize + THUMB_MARGIN;
+  dy := aThumbSize + THUMB_MARGIN;
+
   getWindowRect(aWnd, vR);
   newW := vR.Width;
   newH := vR.height;

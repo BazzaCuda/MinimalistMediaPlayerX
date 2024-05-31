@@ -64,6 +64,7 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio: boolean;
     function autoCentre: boolean;
+    function checkWindowSize(const aCtrlKeyDown: boolean): boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
     function maximizeWindow: boolean;
@@ -156,6 +157,13 @@ end;
 function TThumbsForm.autoCentre: boolean;
 begin
   case GV.autoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
+end;
+
+function TThumbsForm.checkWindowSize(const aCtrlKeyDown: boolean): boolean;
+begin
+  result := TRUE;
+  case aCtrlKeyDown of FALSE: EXIT; end;
+  result := NOT ((FThumbs.thumbColCount = 1) or (FThumbs.thumbRowCount = 1))
 end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
@@ -273,6 +281,7 @@ begin
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
   FThumbsHost.color          := clBlack;
+  FThumbsHost.color          := clGray;
 end;
 
 
@@ -629,7 +638,7 @@ end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  mmpResetPanelHelp(FStatusBar);
+  case whichHost of htMPVHost: mmpResetPanelHelp(FStatusBar); end; // don't obliterate thumbnail page numbers
 
   case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end;
 
@@ -677,7 +686,7 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState); autoCentre; end;
+    koGreaterWindow:      case checkWindowSize(ssCtrl in aShiftState) of TRUE: begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize); autoCentre; end;end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koMaximize:           maximizeWindow;
     koMinimizeWindow:     minimizeWindow;
@@ -721,7 +730,7 @@ begin
     koWindowShorter,
     koWindowTaller,
     koWindowNarrower,
-    koWindowWider:        case whichHost of htMPVHost: windowSize(aKeyOp); end;
+    koWindowWider:        {case whichHost of htMPVHost:} windowSize(aKeyOp); {end;}
 
     koShowCaption:;
     koFullscreen:;

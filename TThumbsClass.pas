@@ -55,7 +55,9 @@ type
     function playPrevThumbsPage: boolean;
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
+    function thumbColCount: integer;
     function thumbsPerPage: integer;
+    function thumbRowCount: integer;
     property currentFolder:     string        read FCurrentFolder;
     property currentIx:         integer       read getCurrentIx;
     property onThumbClick:      TNotifyEvent  read FOnThumbClick    write FOnThumbClick;
@@ -112,7 +114,6 @@ var
   vThumbTop:  integer;
   vThumbLeft: integer;
   vIx:        integer;
-  vDone:      boolean;
 
   function adjustCurrentItem: boolean;  // guarantee a full page of thumbnails on the last page
   begin
@@ -134,9 +135,9 @@ var
     extra: integer;
   begin
     tpp   := thumbsPerPage;
-    extra := 0;
-    case FPlaylist.count mod tpp > 0 of TRUE: extra := 1; end; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
-    var vPageNo := FPlaylist.currentIx div tpp;
+    case FPlaylist.count mod tpp > 0 of  TRUE: extra := 1; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
+                                        FALSE: extra := 0; end;
+    var vPageNo := ((FPlaylist.currentIx + tpp - 1) div tpp) + 1;
     case FPlaylist.isLast of TRUE: vPageNo := vPageNo + extra; end;
     mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(vPageNo, (FPlaylist.count div tpp) + extra));
   end;
@@ -147,6 +148,8 @@ begin
   case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
 
   adjustCurrentItem;
+
+  setPanelPageNo;
 
   vThumbTop  := THUMB_MARGIN;
   vThumbLeft := THUMB_MARGIN;
@@ -169,10 +172,7 @@ begin
 
     calcNextThumbPosition;
 
-    vDone := NOT FPlaylist.next;
-  until (vThumbTop + FThumbSize > FThumbsHost.height) OR vDone OR FCancel;
-
-  setPanelPageNo;
+  until (NOT FPlaylist.next) OR ((vThumbTop + FThumbSize) > FThumbsHost.height) OR FCancel;
 
   result := FPlaylist.currentIx;
 end;
@@ -212,11 +212,7 @@ begin
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
   FCancel := FALSE;
-//  debugInteger('StartIx', FPlaylist.currentIx);
   case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
-//  debugInteger('EndIx', FPlaylist.currentIx);
-
-//  debugInteger('thumbsPP', thumbsPerPage);
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 
@@ -246,9 +242,37 @@ begin
                              FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
 end;
 
+function TThumbs.thumbColCount: integer;
+var
+  vWorkingWidth: integer;
+  vReqdWidth: integer;
+  vRemainingWidth: integer;
+begin
+  result := 1;
+  vWorkingWidth := FThumbsHost.width - THUMB_MARGIN;                           // ignore the left-hand margin
+  case vWorkingWidth < (FThumbSize + THUMB_MARGIN) of TRUE: EXIT; end;         // prevent division by zero
+  result := vWorkingWidth div (FThumbSize + THUMB_MARGIN);                     // how many thumbs with right margins can fit?
+  vRemainingWidth := vWorkingWidth - (result * (FThumbSize + THUMB_MARGIN));   // how much space is left?
+  case vRemainingWidth >= FThumbSize of TRUE: inc(result); end;                // we can fit another thumbnail without a right margin
+end;
+
+function TThumbs.thumbRowCount: integer;
+var
+  vWorkingHeight: integer;
+  vReqdHeight: integer;
+  vRemainingHeight: integer;
+begin
+  result := 1;
+  vWorkingHeight := FThumbsHost.height - THUMB_MARGIN;                         // ignore the top margin
+  case vWorkingHeight < (FThumbSize + THUMB_MARGIN) of TRUE: EXIT; end;        // prevent division by zero
+  result := vWorkingHeight div (FThumbSize + THUMB_MARGIN);                    // how many thumbs with right margins can fit?
+  vRemainingHeight := vWorkingHeight - (result * (FThumbSize + THUMB_MARGIN)); // how much space is left?
+  case vRemainingHeight >= FThumbsize of TRUE: inc(result); end;               // we can fit another thumbnail without a bottom margin
+end;
+
 function TThumbs.thumbsPerPage: integer;
 begin
-  result := ((FThumbsHost.width - THUMB_MARGIN) div (FThumbSize + THUMB_MARGIN)) * ((FThumbsHost.height - THUMB_MARGIN) div (FThumbSize + THUMB_MARGIN));
+  result := thumbColCount * thumbRowCount;
 end;
 
 end.
