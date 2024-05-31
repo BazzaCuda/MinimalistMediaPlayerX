@@ -40,6 +40,7 @@ type
     FImageDisplayDuration: string;
     FImageDisplayDurationSS: double;
     FImagePaused: boolean;
+    FLocked: boolean;
     FMediaType: TMediaType;
     FOnBeforeNew: TNotifyEvent;
     FOnPlayNew: TNotifyEvent;
@@ -131,6 +132,7 @@ type
     property formattedDuration:   string       read getFormattedDuration;
     property formattedTime:       string       read getFormattedTime;
     property ImagesPaused:        boolean      read FImagePaused;
+    property isLocked:            boolean      read FLocked;
     property keepOpen:            boolean                         write setKeepOpen;
     property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
@@ -331,11 +333,13 @@ begin
   case FImagePaused AND (FMediaType = mtImage) of TRUE: EXIT; end;
 
   case eState of
-    mpsPlay: postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-    mpsEnd {, mpsStop}:  case FDontPlayNext of FALSE: begin
+    mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
+    mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
+    {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
                                                         case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationSS) * 1000); end;
                                                         autoPlayNext;
                                                       end;end;
+            end;
   end;
 end;
 
@@ -504,6 +508,7 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
+//  FLocked := TRUE; // EXPERIMENTAL
   pause;
 
   FTimer.interval := 100;
@@ -517,6 +522,7 @@ end;
 
 function TMediaPlayer.playPrev: boolean;
 begin
+//  FLocked := TRUE; // EXPERIMENTAL
   pause;
   FTimer.interval := 100;
   FTimerEvent     := tePlay;

@@ -53,6 +53,7 @@ type
     function getPlaylist(aListBox: TListBox): boolean;
     function hasItems: boolean;
     function indexOf(const anItem: string): integer;
+    function insert(const anItem: string): boolean;
     function isFirst: boolean;
     function isLast: boolean;
     function last: boolean;
@@ -78,7 +79,8 @@ uses
   vcl.clipbrd,
   mmpFileUtils,
   formCaptions,
-  TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass;
+  TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass,
+  _debugWindow;
 
 function PL: TPlaylist;
 begin
@@ -233,6 +235,13 @@ begin
   result := FPlaylist.indexOf(anItem);
 end;
 
+function TPlaylist.insert(const anItem: string): boolean;
+// insert at FPlayIx + 1, after the current item
+begin
+  case next of  TRUE: FPlaylist.insert(FPlayIx, anItem);
+               FALSE: FPlaylist.add(anItem); end;
+end;
+
 function TPlaylist.isFirst: boolean;
 begin
   result := FPlayIx = 0;
@@ -357,11 +366,14 @@ function TPlaylist.sort: boolean;
 begin
   result := FALSE;
 
+//  FPlaylist.Sort; // EXPERIMENTAL
+//  EXIT;
+
   FPlaylist.Sort(
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
                                               begin
-                                                result := compareStr(upperCase(mmpFileNameWithoutExtension(a)), upperCase(mmpFileNameWithoutExtension(b)));
+                                                result := compareStr(lowerCase(mmpFileNameWithoutExtension(extractFileName(a))), lowerCase(mmpFileNameWithoutExtension(extractFileName(b))));
                                               end
                                             )
                 );

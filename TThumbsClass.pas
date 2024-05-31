@@ -156,6 +156,8 @@ begin
 
     setPanelText(FPlaylist.currentItem);
 
+    mmpProcessMessages; // EXPERIMENTAL: show the thumbnails as they're drawn
+
     calcNextThumbPosition;
 
     vDone := NOT FPlaylist.next;
@@ -211,6 +213,8 @@ begin
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
   case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
+
+//  debugInteger('currentIx', FPlaylist.currentIx);
   mmpProcessMessages; // force statusBar page number to display if the left or right arrow is held down (also displays file name and number)
 end;
 

@@ -97,7 +97,7 @@ end;
 
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 begin
-  result := TPath.GetFileNameWithoutExtension(aFilePath);
+  result := TPath.getFileNameWithoutExtension(aFilePath);
 end;
 
 function mmpFileSize(const aFilePath: string): int64;

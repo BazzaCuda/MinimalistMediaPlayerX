@@ -44,7 +44,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure FStatusBarResize(Sender: TObject);
     procedure timerTimer(Sender: TObject);
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -52,6 +51,7 @@ type
     mpv: TMPVBasePlayer;
     FImageDisplayDuration:  integer;
     FInitialFilePath:       string;
+    FLocked:                boolean;
     FProgressForm:          TProgressForm;
     FKeyHandled:            boolean;
     FMPVHost:               TMPVHost;
@@ -109,7 +109,7 @@ uses
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
-  _debugWindow{, RTTI};
+  _debugWindow, RTTI;
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
 begin
@@ -184,12 +184,6 @@ begin
                                                                                                                               FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
-procedure TThumbsForm.FormActivate(Sender: TObject);
-begin
-  FShowing := TRUE;
-  freeAndNIL(FProgressForm);
-end;
-
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   case mpv      = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
@@ -213,13 +207,19 @@ begin
   mpv.onInitMPV    := onInitMPV;
   mpv.OnStateChged := onStateChange;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
+//  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // override the user's .conf file
+  mpvSetPropertyString(mpv, 'image-display-duration', '5'); // override the user's .conf file, forces a state change event: EXPERIMENTAL
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
+
+//  var vIDD: string;
+//  mpvGetPropertyString(mpv, 'image-display-duration', vIDD);
+//  debug(vIDD);
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
 begin
-  case FThumbs = NIL of TRUE: EXIT; end;
+//  debugBoolean('formResize visible', SELF.visible);
+  case FThumbs = NIL of TRUE:  EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   case whichHost of htThumbsHost: FThumbs.playThumbs; end;
   moveHelpWindow;
@@ -227,6 +227,7 @@ end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
+//  debugBoolean('formShowEnter visible', SELF.visible);
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FProgressForm := TProgressForm.create(NIL);
@@ -237,12 +238,12 @@ begin
     FProgressForm.subHeading.caption  := 'Creating Thumbnails';
     FProgressForm.show;
     mmpProcessMessages;
-    FThumbs.playThumbs(FInitialFilePath);
+    setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
     timer.enabled := TRUE;
   finally
-//    vProgressForm.free;
   end;
   setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
+//  debugBoolean('formShowExit visible', SELF.visible);
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -264,7 +265,7 @@ begin
   FMPVHost.align      := alClient;
   FThumbsHost.align := alClient;
 
-  FMPVHost.visible      := FALSE;
+  FMPVHost.visible    := FALSE;
   FThumbsHost.visible := TRUE;
 
   FThumbsHost.styleElements  := [];
@@ -334,6 +335,7 @@ begin
   tickerStart;
   try
     mpvOpenFile(mpv, aURL); // don't blink!
+    mmpProcessMessages;
   except end;
   tickerStop;
 
@@ -345,20 +347,25 @@ begin
 end;
 
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
-//var vState: string;
+var vState: string;
 begin
 //  vState := TRttiEnumerationType.getName(eState);
 //  debugString('onStateChange', vState);
-  case GV.playingSlideshow of FALSE: EXIT; end;
+
+//  case GV.playingSlideshow of FALSE: EXIT; end; // ?? Do we still need this ??
+
   case eState of
-    mpsPlay:;
-    mpsEnd {, mpsStop}: case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
+    mpsLoading: {FLocked := TRUE}; // ignore rapid keystrokes like held down left and right arrows until mpv has finished displaying each image, then continue
+    mpsPlay: FLocked := FALSE;
+    mpsEnd: begin FLocked := FALSE;
+    {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
                                                                 case GV.playingSlideshow of
                                                                   TRUE: case FSlideshowDirection of
                                                                                sdForwards:  case playNext of FALSE: playFirst; end;
                                                                                sdBackwards: case playPrev of FALSE: playLast;  end;
                                                                         end;end;end;end;end;
-//  mmpProcessMessages;
+            end;
+  mmpProcessMessages;
 end;
 
 function TThumbsForm.pausePlay: boolean;
@@ -404,10 +411,16 @@ end;
 
 function TThumbsForm.playNext: boolean;
 begin
+//  case FLocked of TRUE: EXIT; end;
+//  case whichHost of htMPVHost: case FLocked of TRUE: EXIT; end;end;
+  case whichHost of htMPVHost: FLocked := TRUE; end; // lock until mpv state changes to play or end
+
   case whichHost of
     htMPVHost:    result := FThumbs.playNext;
-    htThumbsHost: result := FThumbs.playThumbs <> -1;
+    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: result := FThumbs.playThumbs <> -1; end;
   end;
+
+  FLocked := (whichHost = htMPVHost) and result; // stay locked ?
 end;
 
 function TThumbsForm.playNextFolder: boolean;
@@ -422,10 +435,15 @@ end;
 
 function TThumbsForm.playPrev: boolean;
 begin
+//  case whichHost of htMPVHost: case FLocked of TRUE: EXIT; end;end;
+  case whichHost of htMPVHost: FLocked := TRUE; end; // lock until mpv state changes to play or end
+
   case whichHost of
     htMPVHost:    result := FThumbs.playPrev;
-    htThumbsHost: result := FThumbs.playPrevThumbsPage;
+    htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: result := FThumbs.playPrevThumbsPage; end;
   end;
+
+  FLocked := (whichHost = htMPVHost) and result; // stay locked ?
 end;
 
 function TThumbsForm.playPrevFolder: boolean;
@@ -563,6 +581,9 @@ begin
   timer.enabled := FALSE;
   case GV.mainForm <> NIL of TRUE: GV.mainForm.hide; end;
   case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // UI.delayedHide doesn't always work - the delay might be being optimized out
+  FShowing := TRUE;
+  freeAndNIL(FProgressForm);
+  FThumbs.playThumbs(FInitialFilePath);
 end;
 
 function TThumbsForm.undoMove: string;
@@ -572,10 +593,10 @@ var
 begin
   case UM.undoPop(vSrcFilePath, vDstFilePath) of  TRUE: case saveMoveFileToFolder(vSrcFilePath, extractFilePath(vDstFilePath), 'Undone', FALSE)
                                                             of TRUE:  begin
-                                                                        FThumbs.playlist.add(vDstFilePath);
+                                                                        FThumbs.playlist.insert(vDstFilePath);
                                                                         FThumbs.playlist.find(vDstFilePath);
                                                                         FThumbs.playCurrentItem; end;end;
-                                                 FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'Nothing!'); end;
+                                                 FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'Nothing to Undo'); end;
 end;
 
 function TThumbsForm.whichHost: THostType;
@@ -611,6 +632,9 @@ end;
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   mmpResetPanelVers(FStatusBar);
+
+  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end; // EXPERIMENTAL
+
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
   case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
@@ -623,6 +647,7 @@ end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end; // EXPERIMENTAL
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
   case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10
@@ -670,7 +695,7 @@ begin
     koPlayLast:           playLast;
     koPlayNext:           playNext;
     koPlayPrev:           playPrev;
-    koPlayThumbs:         begin FThumbs.playThumbs; showHost(htThumbsHost); end;
+    koPlayThumbs:         begin showHost(htThumbsHost); FThumbs.playThumbs; end; // EXPERIMENTAL
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
