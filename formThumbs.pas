@@ -359,7 +359,7 @@ begin
 
   case eState of
     mpsLoading: {FLocked := TRUE}; // ignore rapid keystrokes like held down left and right arrows until mpv has finished displaying each image, then continue
-    mpsPlay: FLocked := FALSE;
+    mpsPlay,  {: FLocked := FALSE;} // EXPERIMENTAL COMBINE THE TWO
     mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
     {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
                                                                 case GV.playingSlideshow of
@@ -424,7 +424,7 @@ end;
 function TThumbsForm.playNext: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin FLocked := FThumbs.playlist.next; case FLocked of TRUE: playCurrentItem; end;end;
+    htMPVHost:    begin result := FThumbs.playlist.next; FLocked := result; case FLocked of TRUE: playCurrentItem; end;end;
     htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: playCurrentItem; end;
   end;
 end;
@@ -442,7 +442,7 @@ end;
 function TThumbsForm.playPrev: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin FLocked := FThumbs.playlist.prev; case FLocked of TRUE: playCurrentItem; end;end;
+    htMPVHost:    begin result := FThumbs.playlist.prev; FLocked := result; case FLocked of TRUE: playCurrentItem; end;end;
     htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: FThumbs.playPrevThumbsPage; end;
   end;
 end;

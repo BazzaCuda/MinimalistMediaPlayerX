@@ -72,6 +72,7 @@ const
   THUMB_DEFAULT_SIZE  = 160;
   THUMB_MARGIN        = 10;
   THUMB_NO_IMAGES     = 'No images in this folder';
+
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
   IMAGE_DISPLAY_DURATION = 3; // in seconds, to match the setting in mpv.conf
