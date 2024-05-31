@@ -95,6 +95,7 @@ type
     function windowSize(const aKeyOp: TKeyOp): boolean;
   protected
     procedure CreateParams(var params: TCreateParams); override;
+    procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage) ; message WM_MOVE;
   public
     function initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
@@ -230,6 +231,7 @@ begin
 //  debugBoolean('formShowEnter visible', SELF.visible);
   FThumbs := TThumbs.create;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
+  FThumbs.onThumbClick := onThumbClick;
   FProgressForm := TProgressForm.create(NIL);
   try
     FProgressForm.modal               := FALSE;
@@ -357,7 +359,7 @@ begin
   case eState of
     mpsLoading: {FLocked := TRUE}; // ignore rapid keystrokes like held down left and right arrows until mpv has finished displaying each image, then continue
     mpsPlay: FLocked := FALSE;
-    mpsEnd: begin FLocked := FALSE;
+    mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
     {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
                                                                 case GV.playingSlideshow of
                                                                   TRUE: case FSlideshowDirection of
@@ -366,6 +368,14 @@ begin
                                                                         end;end;end;end;end;
             end;
   mmpProcessMessages;
+end;
+
+procedure TThumbsForm.onThumbClick(sender: TObject);
+begin
+  mmpResetPanelHelp(FStatusBar);
+  showHost(htMPVHost);
+  FThumbs.playlist.setIx(TControl(sender).tag);
+  playCurrentItem;
 end;
 
 function TThumbsForm.pausePlay: boolean;
@@ -386,7 +396,7 @@ end;
 function TThumbsForm.playCurrentItem: boolean;
 begin
   case whichHost of
-    htMPVHost:    FThumbs.playCurrentItem;
+    htMPVHost:    begin FLocked := TRUE; FThumbs.playCurrentItem; FThumbs.setPanelText(FThumbs.playlist.currentItem, 0, TRUE); end;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
@@ -395,7 +405,7 @@ function TThumbsForm.playFirst: boolean;
 begin
   FThumbs.playlist.first;
   case whichHost of
-    htMPVHost:    FThumbs.playCurrentItem;
+    htMPVHost:    playCurrentItem;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
@@ -404,23 +414,17 @@ function TThumbsForm.playLast: boolean;
 begin
   FThumbs.playlist.last;
   case whichHost of
-    htMPVHost:    FThumbs.playCurrentItem;
+    htMPVHost:    playCurrentItem;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
 
 function TThumbsForm.playNext: boolean;
 begin
-//  case FLocked of TRUE: EXIT; end;
-//  case whichHost of htMPVHost: case FLocked of TRUE: EXIT; end;end;
-  case whichHost of htMPVHost: FLocked := TRUE; end; // lock until mpv state changes to play or end
-
   case whichHost of
-    htMPVHost:    result := FThumbs.playNext;
-    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: result := FThumbs.playThumbs <> -1; end;
+    htMPVHost:    begin FLocked := FThumbs.playlist.next; case FLocked of TRUE: playCurrentItem; end;end;
+    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: FThumbs.playThumbs; end;
   end;
-
-  FLocked := (whichHost = htMPVHost) and result; // stay locked ?
 end;
 
 function TThumbsForm.playNextFolder: boolean;
@@ -435,15 +439,10 @@ end;
 
 function TThumbsForm.playPrev: boolean;
 begin
-//  case whichHost of htMPVHost: case FLocked of TRUE: EXIT; end;end;
-  case whichHost of htMPVHost: FLocked := TRUE; end; // lock until mpv state changes to play or end
-
   case whichHost of
-    htMPVHost:    result := FThumbs.playPrev;
-    htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: result := FThumbs.playPrevThumbsPage; end;
+    htMPVHost:    begin FLocked := FThumbs.playlist.prev; case FLocked of TRUE: playCurrentItem; end;end;
+    htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: FThumbs.playPrevThumbsPage; end;
   end;
-
-  FLocked := (whichHost = htMPVHost) and result; // stay locked ?
 end;
 
 function TThumbsForm.playPrevFolder: boolean;
@@ -631,7 +630,7 @@ end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  mmpResetPanelVers(FStatusBar);
+  mmpResetPanelHelp(FStatusBar);
 
   case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end; // EXPERIMENTAL
 

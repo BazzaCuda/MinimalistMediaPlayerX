@@ -29,7 +29,7 @@ type
   TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnHelp);
 
 function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
-function mmpResetPanelVers    (const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelHelp    (const aStatusBar: TStatusBar): boolean;
 function mmpResizeStatusBar   (const aStatusBar: TStatusBar): boolean;
 function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
 function mmpSetPanelText      (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
@@ -47,7 +47,7 @@ const
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
-  mmpResetPanelVers(aStatusBar);
+  mmpResetPanelHelp(aStatusBar);
   mmpSetPanelText(aStatusBar, pnTick, '');
 
   mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
@@ -59,7 +59,7 @@ begin
   mmpSetPanelText(aStatusBar, pnHelp, '');
 end;
 
-function mmpResetPanelVers(const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelHelp(const aStatusBar: TStatusBar): boolean;
 begin
   aStatusBar.panels[PANEL_HELP].style := psText;
   aStatusBar.panels[PANEL_HELP].text  := 'Help = Ctrl-[H]';

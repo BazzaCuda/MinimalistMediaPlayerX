@@ -164,7 +164,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 
     case keyUp and (aKey in [VK_F1..VK_F12])                              of TRUE: result := koMoveToKeyFolder; end;
 
-
 // TO DO
 //    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
 //    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
