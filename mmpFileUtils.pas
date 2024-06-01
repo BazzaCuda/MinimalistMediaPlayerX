@@ -31,6 +31,7 @@ function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
+function mmpIsFileInUse(const aFilePath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 
 implementation
@@ -39,7 +40,7 @@ uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
-  mmpShellUtils, mmpUserFolders, mmpUtils,
+  mmpDialogs, mmpShellUtils, mmpUserFolders, mmpUtils,
   TUndoMoveClass,
   formInputBox,
   _debugWindow;
@@ -86,8 +87,16 @@ end;
 function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
 // performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
 begin
+  result := FALSE;
+
+  case mmpIsFileInUse(aFilePath) of TRUE: begin
+                                            mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 + 'This file is in use by another process and won''t be deleted', TMsgDlgType.mtWarning, [mbOK]);
+                                            EXIT; end;end;
+
   case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
                                 FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
+
+  result := TRUE;
 end;
 
 function mmpExePath: string;
@@ -189,5 +198,38 @@ begin
                                                               FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
+// N.B. Both of these versions work, so far.
+// I've kept the second as a fallback in case some scenarios emerge later
+// which the first can't cope with.
+// But the first is simpler, so it gets the vote for now.
+
+function mmpIsFileInUse(const aFilePath: string): boolean;
+var
+  vFile: THANDLE;
+begin
+  result := FALSE;
+
+  vFile := fileOpen(aFilePath, fmOpenWrite OR fmShareExclusive);
+
+  result := (vFile = INVALID_HANDLE_VALUE);
+
+  case result of FALSE: closeHandle(vFile); end;
+end;
+
+//function mmpIsFileInUse(const aFilePath: string): Boolean;
+//var
+//  hFile:  THANDLE;
+//  attr:   DWORD;
+//begin
+//  result := FALSE;
+//  setLastError(ERROR_SUCCESS);
+//
+//  attr := getFileAttributes(PChar(aFilePath));
+//  case (attr <> $FFFFFFFF) and (attr AND FILE_ATTRIBUTE_DIRECTORY <> 0) of TRUE: EXIT; end;
+//
+//  hFile := CreateFile(PChar(aFilePath), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+//  case (hfile <> INVALID_HANDLE_VALUE) of  TRUE: closeHandle(hFile);
+//                                          FALSE: result := GetLastError = ERROR_SHARING_VIOLATION; end;
+//end;
 
 end.

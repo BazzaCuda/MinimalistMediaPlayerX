@@ -346,7 +346,7 @@ begin
                                                       var vIx := PL.currentIx;
                                                       MP.dontPlayNext := TRUE;  // because...
                                                       MP.stop;                  // this would have automatically done MP.playNext
-                                                      mmpDeleteThisFile(PL.currentItem, vShiftState);
+                                                      case mmpDeleteThisFile(PL.currentItem, vShiftState) of FALSE: EXIT; end;
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
                                                                                                       TRUE: sendSysCommandClose(FMainForm.handle);
