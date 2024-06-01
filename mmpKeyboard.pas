@@ -224,8 +224,8 @@ begin
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koClipboard:         PL.copyToClipboard;
-    koCloseAll:          SA.postToAll(WIN_CLOSEAPP, TRUE);
-    koCloseApp:          begin MP.dontPlayNext := TRUE; MP.pause; sendSysCommandClose(UI.handle); end;
+    koCloseAll:          begin mmpCancelDelay; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
+    koCloseApp:          begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; sendSysCommandClose(UI.handle); end;
     koContrastDn:        ST.opInfo := MP.contrastDn;
     koContrastUp:        ST.opInfo := MP.contrastUp;
     koContrastReset:     ST.opInfo := MP.contrastReset;

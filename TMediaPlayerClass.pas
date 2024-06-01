@@ -331,10 +331,23 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FImagePaused AND (FMediaType = mtImage) of TRUE: begin FLocked := FALSE; EXIT; end;end; // EXPERIMENTALLY COMMENTED OUT
+  case FImagePaused AND (FMediaType = mtImage) of TRUE: begin FLocked := FALSE; EXIT; end;end;
 
+  case (FMediaType <> mtImage) of TRUE:
   case eState of
     mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
+    mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
+    {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
+                                                        {case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end;} // code-controlled slideshow
+                                                        autoPlayNext;
+                                                      end;end;
+            end;
+  end;
+  end;
+
+  case (FMediaType = mtImage) of TRUE:
+  case eState of
+    mpsPlay,
     mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
     {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
                                                         case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end; // code-controlled slideshow
@@ -342,6 +355,9 @@ begin
                                                       end;end;
             end;
   end;
+  end;
+
+
 end;
 
 procedure TMediaPlayer.onTimerEvent(sender: TObject);
@@ -420,7 +436,7 @@ begin
 
   case FImagePaused of  TRUE: begin mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
                        FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', intToStr(trunc(FImageDisplayDurationMs) div 1000));  // restore the original setting
-                                    case FImageDisplayDuration = 'inf' of FALSE: autoPlayNext; end;end;end;       // if there was a set duration before, continue with the next file
+                                    playnext; end;end;
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
                        FALSE: ST.opInfo := 'slideshow unpaused'; end;

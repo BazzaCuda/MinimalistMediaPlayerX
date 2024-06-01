@@ -49,15 +49,15 @@ type
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
   strict private
     mpv: TMPVBasePlayer;
-    FImageDisplayDuration:  integer;
-    FInitialFilePath:       string;
-    FLocked:                boolean;
-    FProgressForm:          TProgressForm;
-    FKeyHandled:            boolean;
-    FMPVHost:               TMPVHost;
-    FShowing:               boolean;
-    FSlideshowDirection:    TSlideshowDirection;
-    FThumbs:                TThumbs;
+    FImageDisplayDurationMs:  double;
+    FInitialFilePath:         string;
+    FLocked:                  boolean;
+    FProgressForm:            TProgressForm;
+    FKeyHandled:              boolean;
+    FMPVHost:                 TMPVHost;
+    FShowing:                 boolean;
+    FSlideshowDirection:      TSlideshowDirection;
+    FThumbs:                  TThumbs;
   private
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
@@ -207,17 +207,19 @@ begin
   FMPVHost.parent := SELF;
   FMPVHost.OnOpenFile := onOpenFile;
 
-  FImageDisplayDuration := IMAGE_DISPLAY_DURATION * 1000;
-  FSlideshowDirection   := sdForwards;
-
   mmpInitStatusBar(FStatusBar);
 
   mpvCreate(mpv);
   mpv.onInitMPV    := onInitMPV;
   mpv.OnStateChged := onStateChange;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
-  mpvSetPropertyString(mpv, 'image-display-duration', '5'); // override the user's .conf file, forces a state change event: EXPERIMENTAL
+//  mpvSetPropertyString(mpv, 'image-display-duration', '5'); // override the user's .conf file, forces a state change event: EXPERIMENTAL
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
+
+  var vImageDisplayDuration: string;
+  mpvGetPropertyString(mpv, 'image-display-duration', vImageDisplayDuration);
+  FImageDisplayDurationMs := StrToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
+  FSlideshowDirection   := sdForwards;
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -330,7 +332,6 @@ procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
   mpvSetDefaults(mpv, extractFilePath(paramStr(0)));
-  mpvsetPropertyString(mpv, 'image-display-duration', 'inf');  // my gaff; my rules.
 end;
 
 procedure TThumbsForm.onOpenFile(const aURL: string);
@@ -361,7 +362,7 @@ begin
     mpsLoading: {FLocked := TRUE}; // ignore rapid keystrokes like held down left and right arrows until mpv has finished displaying each image, then continue
     mpsPlay,  {: FLocked := FALSE;} // EXPERIMENTAL COMBINE THE TWO
     mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
-    {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(FImageDisplayDuration);
+    {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
                                                                 case GV.playingSlideshow of
                                                                   TRUE: case FSlideshowDirection of
                                                                                sdForwards:  case playNext of FALSE: playFirst; end;
@@ -386,7 +387,7 @@ begin
 
   case NOT GV.playingSlideshow of TRUE: mmpCancelDelay; end;
 
-  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(FImageDisplayDuration div 1000)); // doesn't really matter as long as it's valid and not 'inf'
+  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(trunc(FImageDisplayDurationMs) div 1000)); // doesn't really matter as long as it's valid and not 'inf'
                               FALSE: mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;
 
   case GV.playingSlideshow of  TRUE: showSlideshowDirection;
@@ -533,21 +534,21 @@ end;
 
 function TThumbsForm.speedDn: boolean;
 begin
-  FImageDisplayDuration := FImageDisplayDuration + 100;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
+  FImageDisplayDurationMs := FImageDisplayDurationMs + 100;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationms)]));
 end;
 
 function TThumbsForm.speedReset: boolean;
 begin
-  FImageDisplayDuration := IMAGE_DISPLAY_DURATION * 1000;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
+  FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION * 1000;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
 end;
 
 function TThumbsForm.speedUp: boolean;
 begin
-  case FImageDisplayDuration = 100 of TRUE: EXIT; end;
-  FImageDisplayDuration := FImageDisplayDuration - 100;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDuration]));
+  case FImageDisplayDurationMs = 100 of TRUE: EXIT; end;
+  FImageDisplayDurationMs := FImageDisplayDurationMs - 100;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -670,8 +671,8 @@ begin
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin FThumbs.cancel; close; SA.postToAll(WIN_CLOSEAPP); end;
-    koCloseImageBrowser:  begin FThumbs.cancel; close; end;
+    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; close; SA.postToAll(WIN_CLOSEAPP); end;
+    koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; close; end;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
