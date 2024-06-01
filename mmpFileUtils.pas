@@ -31,7 +31,7 @@ function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
-function mmpIsFileInUse(const aFilePath: string): boolean;
+function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 
 implementation
@@ -86,12 +86,15 @@ end;
 
 function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
 // performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
+var vSysMessage: string;
 begin
   result := FALSE;
 
-  case mmpIsFileInUse(aFilePath) of TRUE: begin
-                                            mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 + 'This file is in use by another process and won''t be deleted', TMsgDlgType.mtWarning, [mbOK]);
-                                            EXIT; end;end;
+  case mmpIsFileInUse(aFilePath, vSysMessage) of TRUE:  begin
+                                                          mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 +
+                                                                                'This file won''t be deleted'#13#10#13#10 +
+                                                                                vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
+                                                          EXIT; end;end;
 
   case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
                                 FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
@@ -198,36 +201,16 @@ begin
                                                               FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
-// N.B. Both of these versions work, so far.
-// I've kept the second as a fallback in case some scenarios emerge later
-// which the first can't cope with.
-// But the first is simpler, so it gets the vote for now.
-
-//function mmpIsFileInUse(const aFilePath: string): boolean;
-//var
-//  vFile: THANDLE;
-//begin
-//  result := FALSE;
-//
-//  vFile := fileOpen(aFilePath, fmOpenWrite OR fmShareExclusive);
-//
-//  result := (vFile = INVALID_HANDLE_VALUE);
-//
-//  case result of FALSE: closeHandle(vFile); end;
-//end;
-
-function mmpIsFileInUse(const aFilePath: string): Boolean;
-var
-  hFile:  THANDLE;
-  attr:   DWORD;
+function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
 begin
   result := FALSE;
+  aSysErrorMessage := '';
   setLastError(ERROR_SUCCESS);
-  EXIT; // EXPERIMENTAL
 
-  hFile := createFile(PChar(aFilePath), GENERIC_READ or GENERIC_WRITE, 0, NIL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-  case (hfile <> INVALID_HANDLE_VALUE) of  TRUE: closeHandle(hFile);
-                                          FALSE: result := TRUE; end;
+  var hFile := createFile(PWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ OR FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
+  result := hFile = INVALID_HANDLE_VALUE;
+  case result of  TRUE: aSysErrorMessage := sysErrorMessage(getLastError);
+                 FALSE: closeHandle(hFile); end;
 end;
 
 end.
