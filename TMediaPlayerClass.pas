@@ -328,6 +328,7 @@ begin
 end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
+// no mpsStop event as yet
 begin
   FPlaying := eState = mpsPlay;
 
@@ -337,11 +338,7 @@ begin
   case eState of
     mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
     mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
-    {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
-                                                        {case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end;} // code-controlled slideshow
-                                                        autoPlayNext;
-                                                      end;end;
-            end;
+                   case FDontPlayNext of FALSE: autoPlayNext; end;end;
   end;
   end;
 
@@ -349,14 +346,11 @@ begin
   case eState of
     mpsPlay,
     mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
-    {mpsEnd {, mpsStop}case FDontPlayNext of FALSE: begin
-                                                        case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end; // code-controlled slideshow
-                                                        autoPlayNext;
-                                                      end;end;
-            end;
+                   case FDontPlayNext of FALSE: begin
+                                                  case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end; // code-controlled slideshow
+                                                  autoPlayNext; end;end;end;
   end;
   end;
-
 
 end;
 
