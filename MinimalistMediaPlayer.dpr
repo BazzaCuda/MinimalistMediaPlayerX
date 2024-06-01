@@ -95,7 +95,7 @@ uses
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := FALSE;
+  ReportMemoryLeaksOnShutdown := TRUE;
   debugClear;
 
   Application.Initialize;

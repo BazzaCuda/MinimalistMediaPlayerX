@@ -337,18 +337,18 @@ begin
   case (FMediaType <> mtImage) of TRUE:
   case eState of
     mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
-    mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
-                   case FDontPlayNext of FALSE: autoPlayNext; end;end;
+    mpsEnd:  begin FLocked := FALSE;
+                   case FDontPlayNext of FALSE: playNext; end;end;
   end;
   end;
 
   case (FMediaType = mtImage) of TRUE:
   case eState of
     mpsPlay,
-    mpsEnd:  begin FLocked := FALSE; // EXPERIMENTAL
+    mpsEnd:  begin FLocked := FALSE;
                    case FDontPlayNext of FALSE: begin
-                                                  case FMediaType = mtImage of TRUE: mmpDelay(trunc(FImageDisplayDurationMs)); end; // code-controlled slideshow
-                                                  autoPlayNext; end;end;end;
+                                                  mmpDelay(trunc(FImageDisplayDurationMs)); // code-controlled slideshow
+                                                  case FMediaType = mtImage of TRUE: playNext; end;end;end;end;
   end;
   end;
 
@@ -428,9 +428,7 @@ begin
   case FMediaType = mtImage of FALSE: EXIT; end;
   FImagePaused := NOT FImagePaused;
 
-  case FImagePaused of  TRUE: begin mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;              // prevent the [next] image from being closed when the duration has expired
-                       FALSE: begin mpvSetPropertyString(mpv, 'image-display-duration', intToStr(trunc(FImageDisplayDurationMs) div 1000));  // restore the original setting
-                                    playnext; end;end;
+  case FImagePaused of FALSE: playnext; end;
 
   case FImagePaused of  TRUE: ST.opInfo := 'slideshow paused';
                        FALSE: ST.opInfo := 'slideshow unpaused'; end;

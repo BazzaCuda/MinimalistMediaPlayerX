@@ -111,7 +111,7 @@ uses
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
-  _debugWindow, RTTI;
+  _debugWindow{, RTTI};
 
 function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
 begin
@@ -351,7 +351,7 @@ begin
 end;
 
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
-var vState: string;
+//var vState: string;
 begin
 //  vState := TRttiEnumerationType.getName(eState);
 //  debugString('onStateChange', vState);
