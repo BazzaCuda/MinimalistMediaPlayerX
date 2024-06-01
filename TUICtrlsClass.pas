@@ -351,9 +351,9 @@ begin
                                                       case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
                                                                                                       TRUE: sendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
-                                                                                                              loadPlaylistWindow;
+                                                                                                              loadPlaylistWindow(TRUE);
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                                                              FALSE: MP.autoPlayNext; end;end;end;end;end; // ...hence, playNext
+                                                                                                                              FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function TUI.doEscapeKey: boolean;
