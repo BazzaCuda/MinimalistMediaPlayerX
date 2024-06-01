@@ -203,33 +203,31 @@ end;
 // which the first can't cope with.
 // But the first is simpler, so it gets the vote for now.
 
-function mmpIsFileInUse(const aFilePath: string): boolean;
-var
-  vFile: THANDLE;
-begin
-  result := FALSE;
-
-  vFile := fileOpen(aFilePath, fmOpenWrite OR fmShareExclusive);
-
-  result := (vFile = INVALID_HANDLE_VALUE);
-
-  case result of FALSE: closeHandle(vFile); end;
-end;
-
-//function mmpIsFileInUse(const aFilePath: string): Boolean;
+//function mmpIsFileInUse(const aFilePath: string): boolean;
 //var
-//  hFile:  THANDLE;
-//  attr:   DWORD;
+//  vFile: THANDLE;
 //begin
 //  result := FALSE;
-//  setLastError(ERROR_SUCCESS);
 //
-//  attr := getFileAttributes(PChar(aFilePath));
-//  case (attr <> $FFFFFFFF) and (attr AND FILE_ATTRIBUTE_DIRECTORY <> 0) of TRUE: EXIT; end;
+//  vFile := fileOpen(aFilePath, fmOpenWrite OR fmShareExclusive);
 //
-//  hFile := CreateFile(PChar(aFilePath), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-//  case (hfile <> INVALID_HANDLE_VALUE) of  TRUE: closeHandle(hFile);
-//                                          FALSE: result := GetLastError = ERROR_SHARING_VIOLATION; end;
+//  result := (vFile = INVALID_HANDLE_VALUE);
+//
+//  case result of FALSE: closeHandle(vFile); end;
 //end;
+
+function mmpIsFileInUse(const aFilePath: string): Boolean;
+var
+  hFile:  THANDLE;
+  attr:   DWORD;
+begin
+  result := FALSE;
+  setLastError(ERROR_SUCCESS);
+  EXIT; // EXPERIMENTAL
+
+  hFile := createFile(PChar(aFilePath), GENERIC_READ or GENERIC_WRITE, 0, NIL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  case (hfile <> INVALID_HANDLE_VALUE) of  TRUE: closeHandle(hFile);
+                                          FALSE: result := TRUE; end;
+end;
 
 end.
