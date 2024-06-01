@@ -17,8 +17,8 @@ type
     function add(const aHWND: HWND): boolean;
     function clear: boolean;
     function count: integer;
-    function postToAll(const cmd: WORD; const aSendToAll: boolean = FALSE): boolean;
-    function postToAllEx(const cmd: WORD; const pt: TPoint; const aSendToAll: boolean = FALSE): boolean;
+    function postToAll(const cmd: WORD; const aPostToAll: boolean = FALSE): boolean;
+    function postToAllEx(const cmd: WORD; const pt: TPoint; const aPostToAll: boolean = FALSE): boolean;
     function sendToAll(const cmd: WORD): boolean;
     function sendToAllEx(const cmd: WORD; const pt: TPoint): boolean;
     property HWNDs[index: integer]: HWND read getHWND;
@@ -93,9 +93,9 @@ begin
   result := FHWNDS[index - 1]; // for simplicity in UI.arrangeAll, index parameter is 1-based
 end;
 
-function TSendAll.postToAll(const cmd: WORD; const aSendToAll: boolean = FALSE): boolean;
+function TSendAll.postToAll(const cmd: WORD; const aPostToAll: boolean = FALSE): boolean;
 begin
-  postToAllEx(cmd, point(0, 0), aSendToAll);
+  postToAllEx(cmd, point(0, 0), aPostToAll);
 end;
 
 function TSendAll.sendToAll(const cmd: WORD): boolean;
@@ -103,11 +103,11 @@ begin
   sendToAllEx(cmd, point(0, 0));
 end;
 
-function TSendAll.postToAllEx(const cmd: WORD; const pt: TPoint; const aSendToAll: boolean = FALSE): boolean;
+function TSendAll.postToAllEx(const cmd: WORD; const pt: TPoint; const aPostToAll: boolean = FALSE): boolean;
 var
   i: integer;
 begin
-  case aSendToAll of FALSE: begin postMessage(GV.appWnd, cmd, pt.x, pt.y);
+  case aPostToAll of FALSE: begin postMessage(GV.appWnd, cmd, pt.x, pt.y);
                                   EXIT; end;end;
 
   clear;

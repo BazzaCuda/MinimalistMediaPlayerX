@@ -166,17 +166,17 @@ begin
   vCount     := SA.count;
 
   GV.autoCentre := vCount = 1;
-  case GV.autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF); end;
+  case GV.autoCentre of FALSE: SA.postToAll(WIN_AUTOCENTRE_OFF, TRUE); end;
 
   case vCount of
-    1:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth, 0));
-    2:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth div 2, 0));
-    3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenHeight div 2));
-    else     SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenWidth div vCount));
+    1:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth, 0), TRUE);
+    2:       SA.postToAllEx(WIN_RESIZE, point(mmpScreenWidth div 2, 0), TRUE);
+    3, 4:    SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenHeight div 2), TRUE);
+    else     SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenWidth div vCount), TRUE);
   end;
 
   application.processMessages; // make sure this window has resized before continuing
-  SA.postToAll(WM_PROCESS_MESSAGES);
+  SA.postToAll(WM_PROCESS_MESSAGES, TRUE);
 
   mmpWndWidthHeight(UI.handle, vWidth, vHeight);
   vScreenWidth  := mmpScreenWidth;
@@ -208,9 +208,9 @@ begin
 
   case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], 100 + (50 * (i - 1)), 100 + (50 * (i - 1))); end;
 
-  SA.postToAll(WM_PROCESS_MESSAGES);
+  SA.postToAll(WM_PROCESS_MESSAGES, TRUE);
 
-  SA.postToAll(WIN_GREATER); // force an update
+  SA.postToAll(WIN_GREATER, TRUE); // force an update
 
   case vHWND <> 0 of TRUE: begin mmpDelay(500); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
@@ -447,7 +447,7 @@ procedure TUI.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
 // keys that don't generate a standard WM_KEYUP message
 begin
   GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT); end;
+  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT, KBNumLock); end;
 end;
 
 procedure TUI.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);

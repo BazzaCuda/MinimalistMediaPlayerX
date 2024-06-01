@@ -492,7 +492,7 @@ begin
 
   application.processMessages;
 
-  SA.postToAll(WM_PROCESS_MESSAGES);
+  SA.postToAll(WM_PROCESS_MESSAGES, KBNumLock);
 
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
