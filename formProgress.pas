@@ -92,7 +92,7 @@ begin
   btnRerun.visible  := value;
   btnIgnore.visible := value;
   btnCancel.visible := value;
-  case value of FALSE: SELF.height := 80; end;
+  case value of FALSE: SELF.height := SELF.height - btnRerun.height; end;
 end;
 
 procedure TProgressForm.setModal(const isModal: boolean);
