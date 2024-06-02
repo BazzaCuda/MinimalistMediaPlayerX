@@ -850,8 +850,10 @@ begin
 end;
 
 function TUI.tweakWindow: boolean;
+var vWidth: integer; vHeight: integer;
 begin
-  FMainForm.width := FMainForm.width - 1;
+  mmpWndWidthHeight(FMainForm.handle, vWidth, vHeight);
+  SetWindowPos(FMainForm.handle, 0, 0, 0, vWidth + 1, vHeight, SWP_NOMOVE); // don't use VCL FMainForm.width!
 end;
 
 initialization

@@ -488,6 +488,8 @@ begin
                         FALSE: UI.setWindowSize(UI.height, []); end;
   UI.centreCursor;
 
+  UI.tweakWindow;
+
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
