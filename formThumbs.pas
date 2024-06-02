@@ -62,6 +62,7 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio: boolean;
     function autoCentre: boolean;
+    function checkThumbsPerPage: boolean;
     function checkWindowSize(const aCtrlKeyDown: boolean): boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
@@ -157,6 +158,22 @@ begin
   case GV.autoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
 end;
 
+function TThumbsForm.checkThumbsPerPage: boolean;
+begin
+  var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
+  var  vThumbsPerRow := (FThumbsHost.width  - THUMB_MARGIN) div vThumbsSize;
+  var  vThumbsPerCol := (FThumbsHost.height - THUMB_MARGIN) div vThumbsSize;
+  var  vReqdWidth    := THUMB_MARGIN + (vThumbsPerRow * vThumbsSize);
+  var  vReqdHeight   := THUMB_MARGIN + (vThumbsPerCol * vThumbsSize);
+  var  vBlankWidth   := FThumbsHost.width  - vReqdWidth;
+  var  vBlankHeight  := FThumbsHost.height - vReqdHeight;
+  case vBlankWidth   >  vThumbsSize div 3 of  TRUE: SELF.width  := SELF.width + (vThumbsSize - vBlankWidth);
+                                             FALSE: SELF.width  := SELF.width - vBlankWidth; end;
+  case vBlankHeight  >  vThumbsSize div 3 of  TRUE: SELF.height := SELF.height + (vThumbsSize - vBlankHeight);
+                                             FALSE: SELF.height := SELF.height - vBlankHeight; end;
+  case (SELF.width > mmpScreenWidth) or (SELF.height > mmpScreenHeight) of TRUE: mmpGreaterWindow(SELF.handle, [ssCtrl], vThumbsSize, htThumbsHost); end;
+end;
+
 function TThumbsForm.checkWindowSize(const aCtrlKeyDown: boolean): boolean;
 begin
   result := TRUE; EXIT; // EXPERIMENTAL
@@ -245,6 +262,9 @@ begin
     timer.enabled := TRUE;
   finally
   end;
+  debugInteger('FThumbsHost.width', FThumbsHost.width);
+  checkThumbsPerPage;
+
   setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
 end;
 

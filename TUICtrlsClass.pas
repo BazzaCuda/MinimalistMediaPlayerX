@@ -676,9 +676,22 @@ begin
                                         mmpProcessMessages;
                                   end;
 
-                        mtImage:  begin vWidth  := trunc((mmpScreenHeight + 500));
-                                        VHeight := mmpScreenHeight - 50;
-                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                        mtImage:  begin
+                                        case aStartingHeight = -1 of  TRUE: begin
+                                                                              vWidth  := mmpScreenHeight + 500;
+                                                                              vHeight := mmpScreenHeight - 30; end;
+                                                                     FALSE: begin
+                                                                              vWidth  := aStartingHeight + 500;
+                                                                              vHeight := aStartingHeight; end;end;
+
+                                        while NOT withinScreenLimits do
+                                        begin
+                                          vWidth  := vWidth  - 30;
+                                          vHeight := vHeight - 30;
+                                        end;
+
+                                        case GV.autoCentre of TRUE:
+                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); end; // center window
                                         mmpProcessMessages;
                                         SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
   end;
@@ -691,45 +704,18 @@ end;
 
 function TUI.showThumbnails: boolean;
   function mainFormDimensions: TRect;
-  // Taking TUI's height and width as a starting point, we want Image Browser to be at least as wide and as tall so that we get a smooth transition and TUI disappears behind Image Browser.
-  // We also want Image Browser to fit an exact number of thumbnails horizontally and vertically with only a standard THUMB_MARGIN margin around all four sides
-  // This is complicated by the fact that with themes running, Windows doesn't accurately report the window border widths [I think].
-  // Nevertheless, we try to estimate the eventual size of the FThumbsHost TPanel:
-  // Width:   subtract the widths of both window side borders and the left thumb margin
-  //          calculate the number of thumbs that can fit horizontally (rounded up) and multiply back up
-  //          re-add the widths of both window side borders and the left thumb margin.
-  // Height:  subtract the heights of the window caption, the bottom border and the status bar
-  //          calculate the number of thumbs that can fit vertically (rounded up) and multiply back up
-  //          re-add the heights of the window caption, the bottom border and the status bar.
-  var
-    vProvisionalWidth:  integer;
-    vProvisionalHeight: integer;
-    vThumbSize: integer;
-    vThumbsPer: integer;
-    vMod: integer;
   begin
-    result.top     := FMainForm.top;
-    result.left    := FMainForm.left;
-
-    vThumbSize          := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
-
-    vProvisionalWidth   := FMainForm.width - (mmpBorderWidth * 2) - THUMB_MARGIN; // try to estimate the width of FThumbsHost
-    vThumbsPer          := ceil(vProvisionalWidth / vThumbSize);                  // round up so it's always wider than TMMPUI
-    result.width        := (vThumbsPer * vThumbSize) + (mmpBorderWidth * 2) + (THUMB_MARGIN * 2);
-
-    vProvisionalHeight  := FMainForm.height - mmpCaptionHeight - THUMB_MARGIN - 20; // try to estimate the width of FThumbsHost (20 = statusBar height)
-    vThumbsPer          := round(vProvisionalHeight / vThumbSize);                  // round up so it's always taller than TMMPUI
-    result.height       := (vThumbsPer * vThumbSize) + (THUMB_MARGIN * 2) + mmpBorderWidth + mmpCaptionHeight + 20;
-
-    case result.height > mmpScreenHeight of TRUE: result.height := result.height - vThumbSize; end;
+    result.top    := FMainForm.top;
+    result.left   := FMainForm.left;
+    result.width  := FMainForm.width;
+    result.height := FMainForm.height;
   end;
 begin
   shutHelp;
   shutPlaylist;
   shutTimeline;
   case MP.ImagesPaused of FALSE: MP.pausePlay; end;
-
-//  delayedHide; can't be relied on to hide the main form
+  MP.pause;
 
   formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
   FMainForm.show;

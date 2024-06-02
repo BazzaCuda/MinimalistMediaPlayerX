@@ -134,7 +134,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(OPEN_BRACKET)  and NOT shift                     of TRUE: result := koGammaDn; end;
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                    of TRUE: result := koGammaReset; end;
-    case keyDn and keyIs(SLASH)                                          of TRUE: result := koSpeedUp; end;
+    case keyDn and keyIs(SLASH)                                           of TRUE: result := koSpeedUp; end;
 
     case keyDn and keyIs(VK_ADD) and     ctrl                             of TRUE: result := koWindowWider; end;
     case keyDn and keyIs(VK_ADD) and NOT ctrl                             of TRUE: result := koWindowTaller; end;
