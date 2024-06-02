@@ -30,8 +30,6 @@ uses
   TMPVHostClass, TThumbsClass;
 
 type
-  THostType = (htMPVHost, htThumbsHost);
-
   TThumbsForm = class(TForm)
     FStatusBar: TStatusBar;
     FThumbsHost: TPanel;
@@ -161,7 +159,7 @@ end;
 
 function TThumbsForm.checkWindowSize(const aCtrlKeyDown: boolean): boolean;
 begin
-  result := TRUE;
+  result := TRUE; EXIT; // EXPERIMENTAL
   case aCtrlKeyDown of FALSE: EXIT; end;
   result := NOT ((FThumbs.thumbColCount = 1) or (FThumbs.thumbRowCount = 1))
 end;
@@ -680,7 +678,7 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      case checkWindowSize(ssCtrl in aShiftState) of TRUE: begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize); autoCentre; end;end;
+    koGreaterWindow:      case checkWindowSize(ssCtrl in aShiftState) of TRUE: begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCentre; end;end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koMaximize:           maximizeWindow;
     koMinimizeWindow:     minimizeWindow;

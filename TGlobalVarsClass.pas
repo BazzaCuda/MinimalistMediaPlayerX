@@ -53,6 +53,7 @@ type
     FPlayingSlideshow: boolean;
     FShowingHelp: boolean;
     FShowingPlaylist: boolean;
+    FShowingStreamList: boolean;
     FShowingThumbs: boolean;
     FShowingTimeline: boolean;
     FTimelineHeight: integer;
@@ -69,6 +70,7 @@ type
     property playingSlideshow:  boolean read FPlayingSlideshow  write FPlayingSlideshow;
     property showingHelp:       boolean read FShowingHelp       write FShowingHelp;
     property showingPlaylist:   boolean read FShowingPlaylist   write FShowingPlaylist;
+    property showingStreamList: boolean read FShowingStreamList write FShowingStreamList;
     property showingThumbs:     boolean read FShowingThumbs     write FShowingThumbs;
     property showingTimeline:   boolean read FShowingTimeline   write FShowingTimeline;
     property timelineHeight:    integer read FTimelineHeight    write FTimelineHeight;

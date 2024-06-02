@@ -21,16 +21,17 @@ unit mmpWindowCtrls;
 interface
 uses
   winApi.windows,
-  system.classes;
+  system.classes,
+  mmpConsts;
 
 function mmpCentreWindow(const aWnd: HWND): boolean;
 function mmpFocusWindow(const aWnd: HWND): boolean;
-function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer): boolean;
+function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
 
 implementation
 
 uses
-  mmpConsts, mmpDesktopUtils,
+  mmpDesktopUtils,
   TGlobalVarsClass;
 
 function mmpFocusWindow(const aWnd: HWND): boolean;
@@ -60,13 +61,37 @@ begin
   GV.autoCentre := TRUE;
 end;
 
-function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer): boolean;
+function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
 var
   dx:   integer;
   dy:   integer;
   newW: integer;
   newH: integer;
   vR:   TRect;
+
+  function calcDeltas: boolean;
+  begin
+    case aHostType of
+      htMPVHost:    begin
+                      dx := 50;
+                      dy := 30;
+                    end;
+      htThumbsHost: begin
+                      dx := aThumbSize + THUMB_MARGIN;
+                      dy := aThumbSize + THUMB_MARGIN;
+                    end;
+    end;
+  end;
+
+  function checkDesktop: boolean;
+  begin
+    case ssCtrl in aShiftState of  TRUE:  begin
+                                            case newW - dx < dx of TRUE: dx := 0; end;
+                                            case newH - dy < dy of TRUE: dy := 0; end;end;
+                                  FALSE:  begin
+                                            case newW + dx > mmpScreenWidth  of TRUE: dx := 0; end;
+                                            case newH + dy > mmpScreenHeight of TRUE: dy := 0; end;end;end;
+  end;
 
   function calcDimensions: boolean;
   begin
@@ -83,13 +108,13 @@ var
   end;
 
 begin
-  dx := aThumbSize + THUMB_MARGIN;
-  dy := aThumbSize + THUMB_MARGIN;
 
   getWindowRect(aWnd, vR);
   newW := vR.Width;
   newH := vR.height;
 
+  calcDeltas;
+  checkDesktop;
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window

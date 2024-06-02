@@ -89,7 +89,7 @@ uses
   mmpMPVFormatting,
   mmpConsts, mmpMarkDownUtils,
   formTimeline,
-  TMediaInfoClass,
+  TGlobalVarsClass, TMediaInfoClass,
   _debugWindow;
 
 var
@@ -112,17 +112,19 @@ begin
 
   screen.cursor := crDefault;
 
-  streamListForm.pageControl.pages[0].show;
+  case GV.showingStreamList of FALSE: streamListForm.pageControl.pages[0].show; end; // first time only
   streamListForm.show;
   streamListForm.onExport := aExportEvent;
 
   winAPI.Windows.setWindowPos(streamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  GV.showingStreamList := TRUE;
 end;
 
 function shutStreamList: boolean;
 begin
   case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
-  streamListForm := NIL;
+  streamListForm       := NIL;
+  GV.showingStreamList := FALSE;
 end;
 
 function applySegments(const aSegments: TObjectList<TSegment>): boolean;
