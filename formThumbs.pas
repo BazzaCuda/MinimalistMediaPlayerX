@@ -304,7 +304,7 @@ begin
 
   vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight));
   SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); // center window
-  application.ProcessMessages;
+  mmpProcessMessages;
   SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
 end;
 
@@ -735,7 +735,7 @@ begin
 
   case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin // has the thumbnail page been recreated starting at a different item Ix ?
                                                                             FThumbsHost.refresh;
-                                                                            application.processMessages; end;end;end;
+                                                                            mmpProcessMessages; end;end;end;
 
   result := TRUE; // key was processed
 end;

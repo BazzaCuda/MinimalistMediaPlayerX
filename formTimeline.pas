@@ -127,7 +127,7 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpImageUtils, mmpMPVFormatting,
+  mmpFileUtils, mmpImageUtils, mmpMPVFormatting, mmpUtils,
   formStreamList,
   TGlobalVarsClass, TMediaInfoClass, TPlaylistClass, TProgressBarClass,
   _debugWindow;
@@ -188,7 +188,7 @@ begin
                                                       case aRunType of
                                                         rtFFMpeg: begin
                                                                     repeat
-                                                                      case MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of  TRUE: application.processMessages;
+                                                                      case MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of  TRUE: mmpProcessMessages;
                                                                                                                                                                                   FALSE: BREAK; end;
                                                                     until gCancelled;
                                                                     getExitCodeProcess(execInfo.hProcess, exitCode);

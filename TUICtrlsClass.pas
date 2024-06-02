@@ -29,10 +29,12 @@ uses
 type
   TUI = class(TObject)
   strict private
-    FMainForm: TForm;
+    FMainForm:      TForm;
     FFormattedTime: string;
-    FInitialized: boolean;
-    FVideoPanel: TPanel;
+    FForcedResize:  boolean;
+    FGreatering:    boolean;
+    FInitialized:   boolean;
+    FVideoPanel:    TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
     function delayedHide: boolean;
@@ -77,7 +79,7 @@ type
     function renameFile(const aFilePath: string): boolean;
     function resetColor: boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
-    function setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
+    function setWindowSize(const aStartingHeight: integer; const aShiftState: TShiftState): boolean;
     function showThumbnails: boolean;
     function showWindow: boolean;
     function showXY: boolean;
@@ -105,7 +107,7 @@ uses
   winApi.messages,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpShellUtils, mmpUtils,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpMPVFormatting, mmpShellUtils, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
   _debugWindow;
@@ -149,6 +151,7 @@ begin
 
 
   case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
+  mmpProcessMessages;
 
   postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
 
@@ -175,7 +178,7 @@ begin
     else     SA.postToAllEx(WIN_RESIZE, point(0, mmpScreenWidth div vCount), TRUE);
   end;
 
-  application.processMessages; // make sure this window has resized before continuing
+  mmpProcessMessages; // make sure this window has resized before continuing
   SA.postToAll(WM_PROCESS_MESSAGES, TRUE);
 
   mmpWndWidthHeight(UI.handle, vWidth, vHeight);
@@ -210,13 +213,14 @@ begin
 
   SA.postToAll(WM_PROCESS_MESSAGES, TRUE);
 
-  SA.postToAll(WIN_GREATER, TRUE); // force an update
+//  SA.postToAll(WIN_GREATER, TRUE); // force an update
 
   case vHWND <> 0 of TRUE: begin mmpDelay(500); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
+  debug('autoCentreWindow');
   case GV.autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
 end;
@@ -248,7 +252,7 @@ begin
 
   case (vHPos > 0) and (vVPos > 0) of TRUE: SetWindowPos(aWnd, HWND_TOP, vHPos, vVPos, 0, 0, SWP_NOSIZE); end;
 
-  application.processMessages;
+  mmpProcessMessages;
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
   moveTimelineWindow(FALSE);
@@ -269,7 +273,7 @@ begin
   case (vWidth > aWidth) or (vHeight > aHeight) of  TRUE: postMessage(GV.appWnd, WM_SMALLER_WINDOW, 0, 0);
                                                    FALSE: postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
 
-  application.processMessages;
+  mmpProcessMessages;
 end;
 
 function TUI.darker: boolean;
@@ -370,7 +374,12 @@ begin
   case ST.initialized and PB.initialized   of FALSE: EXIT; end;
   case FMainForm.WindowState = wsMaximized of TRUE:  EXIT; end;
 
-  mmpDelay(100); adjustAspectRatio(FMainForm.handle, MP.videoWidth, MP.videoHeight);
+  mmpDelay(100);
+
+  case FForcedResize of TRUE: begin FForcedResize := FALSE; EXIT; end;end;
+
+  case FGreatering of  TRUE: FGreatering := FALSE;
+                      FALSE: setWindowSize(FMainForm.height, []); end; //  adjustAspectRatio(FMainForm.handle, MI.X, MI.Y);
 
   ST.formResize(UI.width);
   PB.formResize;
@@ -426,6 +435,12 @@ begin
   newW := vR.Width;
   newH := vR.height;
 
+  FGreatering := TRUE;
+  case ssCtrl in aShiftState of  TRUE: setWindowSize(vR.height - dy, aShiftState);
+                                FALSE: setWindowSize(vR.height + dy, aShiftState); end;
+
+  EXIT;
+
   calcDimensions; // do what the user requested
 
   case mmpWithinScreenLimits(newW, newH) of FALSE:  begin
@@ -435,7 +450,7 @@ begin
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 
   postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-  application.processMessages;
+  mmpProcessMessages;
 end;
 
 function TUI.handle: HWND;
@@ -456,7 +471,7 @@ begin
   GV.altKeyDown := NOT (key = VK_MENU);
   case key in [VK_F10] of TRUE: begin
                                postMessage(GV.appWnd, WM_KEY_UP, key, 0);
-                               application.processMessages; end;end;
+                               mmpProcessMessages; end;end;
 end;
 
 function TUI.initUI(const aForm: TForm): boolean;
@@ -505,7 +520,7 @@ end;
 
 function TUI.maximize: boolean;
 begin
-  setWindowSize(mtVideo);
+  setWindowSize(-1, []);
   GV.autoCentre := TRUE;
   centreCursor;
 end;
@@ -580,9 +595,11 @@ begin
                             vWidth  := trunc(pt.y / vRatio);
                             vHeight := pt.y; end;end;
 
+  FForcedResize := TRUE;
   sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0); // in case it was minimized
   SetWindowPos(aWnd, HWND_TOPMOST, 0, 0, vWidth, vHeight, SWP_NOMOVE);      // Both SWPs achieve HWND_TOP as HWND_TOP itself doesn't work.
   SetWindowPos(aWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE); // resize the window. Triggers adjustAspectRatio
+//  setWindowSize(vHeight);
 end;
 
 function TUI.setCustomTitleBar(const aForm: TForm): boolean;
@@ -612,22 +629,58 @@ begin
   FMainForm.width := value;
 end;
 
-function TUI.setWindowSize(const aMediaType: TMediaType; hasCoverArt: boolean = FALSE): boolean;
+function TUI.setWindowSize(const aStartingHeight: integer; const aShiftState: TShiftState): boolean;
+var
+  vWidth:   integer;
+  vHeight:  integer;
+  dy:       integer;
+
+  function adjustWidthForAspectRatio: boolean;
+  begin
+    vWidth := trunc(vHeight / MP.videoHeight * MP.videoWidth);
+  end;
+
+  function withinScreenLimits: boolean;
+  begin
+    result := (vWidth <= mmpScreenWidth) and (vHeight <= mmpScreenHeight);
+  end;
+
 begin
-  case aMediaType of  mtAudio: begin  case hasCoverArt of  TRUE: FMainForm.width  := 600;
-                                                          FALSE: FMainForm.width  := 600; end;
-                                      case hasCoverArt of  TRUE: FMainForm.height := 400;
-                                                          FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;end;
-                      mtVideo: begin  var vWidth  := trunc((mmpScreenHeight - 50) / mmpAspectRatio(MI.X, MI.Y));
-                                      var VHeight := mmpScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
-                                      application.ProcessMessages;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
-                      mtImage: begin  var vWidth  := trunc((mmpScreenHeight + 500)); //  / CU.getAspectRatio(MI.imageWidth, MI.imageHeight));
-                                      var VHeight := mmpScreenHeight - 50;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
-                                      application.ProcessMessages;
-                                      SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+  case MP.mediaType of  mtAudio:  begin case MI.hasCoverArt of  TRUE: FMainForm.width  := 600;
+                                                               FALSE: FMainForm.width  := 600; end;
+                                        case MI.hasCoverArt of  TRUE: FMainForm.height := 400;
+                                                               FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;end;
+                        mtVideo:  begin
+                                        case ssCtrl in aShiftState of  TRUE: dy := -30;
+                                                                      FALSE: dy := +30; end;
+
+                                        case aStartingHeight = -1 of
+                                                                       TRUE: vHeight := mmpScreenHeight - 30;
+                                                                      FALSE: vHeight := aStartingHeight; end;
+
+                                        while (MP.videoWidth = 0) or (MP.videoHeight = 0) do mmpDelay(100);
+
+                                        adjustWidthForAspectRatio;
+
+                                        while NOT withinScreenLimits do
+                                        begin
+                                          dy := -30;
+                                          vHeight := vHeight + dy;
+                                          adjustWidthForAspectRatio;
+                                        end;
+
+                                        case GV.autoCentre of TRUE:
+                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); end; // center window
+                                        mmpProcessMessages;
+                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+                                        mmpProcessMessages;
+                                  end;
+
+                        mtImage:  begin vWidth  := trunc((mmpScreenHeight + 500));
+                                        VHeight := mmpScreenHeight - 50;
+                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE);      // center window
+                                        mmpProcessMessages;
+                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
   end;
 end;
 
@@ -692,8 +745,9 @@ end;
 
 function TUI.showXY: boolean;
 begin
-////  ST.opInfo := CU.formattedWidthHeight(FMainForm.width, FMainForm.height);
+//  ST.opInfo := mmpformatWidthHeight(FMainForm.width, FMainForm.height);
 ////  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
+
   // On modern large, wide screens, it's useful to have this displayed both top left and bottom right, depending on how you're sat/slumped :D
   case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
 end;

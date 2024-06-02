@@ -275,7 +275,7 @@ begin
     koSaturationDn:      ST.opInfo := MP.saturationDn;
     koSaturationReset:   ST.opInfo := MP.saturationReset;
     koSaturationUp:      ST.opInfo := MP.saturationUp;
-    koScreenshot:        begin ST.opInfo := 'Screenshot...'; application.processMessages; ST.opInfo := MP.takeScreenshot; end;
+    koScreenshot:        begin ST.opInfo := 'Screenshot...'; mmpProcessMessages; ST.opInfo := MP.takeScreenshot; end;
     koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0), TRUE);
     koThumbnails:        UI.showThumbnails;
     koToggleBlackout:    UI.toggleBlackout;

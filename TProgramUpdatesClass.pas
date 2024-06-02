@@ -53,7 +53,7 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils,
+  mmpConsts, mmpFileUtils, mmpUtils,
   formDownload,
   TConfigFileClass, TProgressBarClass,
   _debugWindow;
@@ -149,7 +149,7 @@ begin
   gProgressBar.position := aWorkCount;
   gDownloadForm.byteLabel.caption := format('%n of %n', [gProgressBar.position * 1.0, gProgressBar.max * 1.0]);
   gDownloadForm.byteLabel.Refresh;
-  application.processMessages;
+  mmpProcessMessages;
 end;
 
 procedure TWorkProgress.idHTTPWorkBegin(aSender: TObject; aWorkMode: TWorkMode; aWorkCountMax: int64);

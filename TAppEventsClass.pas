@@ -150,10 +150,10 @@ begin
   case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
   // these four messages trigger each other in a loop until the video fits on the screen
-  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin mmpDelay(1000);   UI.adjustAspectRatio(UI.handle, MP.videoWidth, MP.videoHeight); end;end; // the delay is vital!
-  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin mmpDelay(05);     UI.autoCentreWindow(UI.handle); end;end;
-  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin mmpDelay(05);     UI.checkScreenLimits(UI.handle, mmpScreenWidth, mmpScreenHeight); end;end;
-  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin mmpDelay(05);     UI.smallerWindow(UI.handle); end;end;
+//  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin {mmpDelay(1000);}   UI.adjustAspectRatio(UI.handle, MI.X, MI.Y); end;end; // the delay is vital!
+//  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin {mmpDelay(05);}     UI.autoCentreWindow(UI.handle); end;end;
+//  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin {mmpDelay(05);}     UI.checkScreenLimits(UI.handle, mmpScreenWidth, mmpScreenHeight); end;end;
+//  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin {mmpDelay(05);}     UI.smallerWindow(UI.handle); end;end;
 
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
@@ -172,7 +172,7 @@ begin
   case msgIs(WIN_SYNC_MEDIA)          of TRUE: begin MP.position := msg.wParam; ST.opInfo := 'Synced'; end;end;
 
   case msgIs(WM_USER_CENTRE_WINDOW)   of TRUE: UI.centreWindow(UI.handle); end;
-  case msgIs(WM_PROCESS_MESSAGES)     of TRUE: application.processMessages; end;
+  case msgIs(WM_PROCESS_MESSAGES)     of TRUE: mmpProcessMessages; end;
   case msgIs(WIN_TWEAK_SIZE)          of TRUE: UI.tweakWindow; end;
 
   case msgIs(WM_CENTRE_CURSOR)        of TRUE: PB.centreCursor; end;

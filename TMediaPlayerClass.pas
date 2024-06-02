@@ -336,7 +336,7 @@ begin
 
   case (FMediaType <> mtImage) of TRUE:
   case eState of
-    mpsPlay: begin FLocked := FALSE; postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0); end;
+    mpsPlay: begin FLocked := FALSE; {postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);} end;
     mpsEnd:  begin FLocked := FALSE;
                    case FDontPlayNext of FALSE: playNext; end;end;
   end;
@@ -471,24 +471,29 @@ begin
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
   // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-  case GV.autoCentre OR (FMediaType = mtAudio) of TRUE: UI.setWindowSize(FMediaType, MI.hasCoverArt); end;
-  UI.centreCursor;
+//  {case GV.autoCentre OR (FMediaType = mtAudio) of TRUE:} UI.setWindowSize(stMax); {end;}
 
   case FMediaType of mtImage: blankOutTimeCaption;
                          else resetTimeCaption; end;
 
   FLocked := FMediaType = mtImage; // EXPERIMENTAL
 
+  mmpProcessMessages;
+
   openURL(aURL);
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
+
+  case GV.autoCentre of  TRUE: UI.setWindowSize(-1, []); // must be done after MPV has opened the video
+                        FALSE: UI.setWindowSize(UI.height, []); end;
+  UI.centreCursor;
 
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
   case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
 
-  application.processMessages;
+  mmpProcessMessages;
 
   SA.postToAll(WM_PROCESS_MESSAGES, KBNumLock);
 

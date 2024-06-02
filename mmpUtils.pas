@@ -49,7 +49,7 @@ begin
   iStart := GetTickCount;
   repeat
     iStop  := GetTickCount;
-    application.processMessages;
+    mmpProcessMessages;
   until gCancel or ((iStop  -  iStart) >= dwMilliseconds);
 end;
 
