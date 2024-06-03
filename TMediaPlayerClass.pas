@@ -332,25 +332,19 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FImagePaused AND (FMediaType = mtImage) and (eState in [mpsPlay, mpsEnd]) of TRUE: begin FLocked := FALSE; mmpProcessMessages; EXIT; end;end;
+  case (FMediaType = mtImage) and FImagePaused and FLocked of TRUE:
+         case eState of mpsPlay: begin FLocked := FALSE; EXIT; end;end;end;
+
+  case (FMediaType = mtImage) and NOT FImagePaused of TRUE:
+        case  eState of mpsPlay, mpsEnd:  begin FLocked := FALSE;
+                                                case FDontPlayNext of FALSE:  begin
+                                                                                mmpDelay(trunc(FImageDisplayDurationMs)); // code-controlled slideshow
+                                                                                case FMediaType = mtImage of TRUE: playNext; end;end;end;end;end;end;
 
   case (FMediaType <> mtImage) of TRUE:
-  case eState of
-    mpsPlay: begin FLocked := FALSE; end;
-    mpsEnd:  begin FLocked := FALSE;
-                   case FDontPlayNext of FALSE: playNext; end;end;
-  end;
-  end;
-
-  case (FMediaType = mtImage) of TRUE:
-  case eState of
-    mpsPlay,
-    mpsEnd:  begin FLocked := FALSE;
-                   case FDontPlayNext of FALSE: begin
-                                                  mmpDelay(trunc(FImageDisplayDurationMs)); // code-controlled slideshow
-                                                  case FMediaType = mtImage of TRUE: playNext; end;end;end;end;
-  end;
-  end;
+        case eState of  mpsPlay:        FLocked := FALSE;
+                         mpsEnd: begin  FLocked := FALSE;
+                                        case FDontPlayNext of FALSE: playNext; end;end;end;end;
 
 end;
 
@@ -474,11 +468,11 @@ begin
   case FMediaType of mtImage: blankOutTimeCaption;
                          else resetTimeCaption; end;
 
-  FLocked := FMediaType = mtImage;
 
   mmpProcessMessages;
 
   openURL(aURL);
+
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
@@ -534,6 +528,8 @@ end;
 function TMediaPlayer.playNext: boolean;
 begin
   pause;
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
 
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
@@ -547,6 +543,8 @@ end;
 function TMediaPlayer.playPrev: boolean;
 begin
   pause;
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
 
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
