@@ -149,12 +149,6 @@ begin
   case msgIs(WM_RBUTTONUP) and (msg.hwnd = UI.videoPanel.handle)                     of TRUE: postMessage(msg.hwnd, WIN_PAUSE_PLAY, 0, 0); end;
   case msgIs(WM_LBUTTONDBLCLK) and NOT GV.showingPlaylist and NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;
 
-  // these four messages trigger each other in a loop until the video fits on the screen
-//  case msgIs(WM_ADJUST_ASPECT_RATIO)  of TRUE: begin {mmpDelay(1000);}   UI.adjustAspectRatio(UI.handle, MI.X, MI.Y); end;end; // the delay is vital!
-//  case msgIs(WM_AUTO_CENTRE_WINDOW)   of TRUE: begin {mmpDelay(05);}     UI.autoCentreWindow(UI.handle); end;end;
-//  case msgIs(WM_CHECK_SCREEN_LIMITS)  of TRUE: begin {mmpDelay(05);}     UI.checkScreenLimits(UI.handle, mmpScreenWidth, mmpScreenHeight); end;end;
-//  case msgIs(WM_SMALLER_WINDOW)       of TRUE: begin {mmpDelay(05);}     UI.smallerWindow(UI.handle); end;end;
-
   case msgIs(WM_PLAY_CURRENT_ITEM)    of TRUE: MP.play(PL.currentItem);  end;
   case msgIs(WM_SHOW_WINDOW)          of TRUE: UI.showWindow; end;
 
