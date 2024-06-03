@@ -386,7 +386,7 @@ begin
   moveHelpWindow(FALSE);
   movePlaylistWindow(FALSE);
   moveTimelineWindow(FALSE);
-  showXY;
+  case MP.mediaType = mtImage of TRUE: showXY; end;
 end;
 
 function TUI.getHeight: integer;
