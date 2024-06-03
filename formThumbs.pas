@@ -235,6 +235,7 @@ begin
   mpvGetPropertyString(mpv, 'image-display-duration', vImageDisplayDuration);
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
   FSlideshowDirection     := sdForwards;
+  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.  // EXPERIMENTAL
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);

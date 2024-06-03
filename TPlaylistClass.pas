@@ -366,9 +366,6 @@ function TPlaylist.sort: boolean;
 begin
   result := FALSE;
 
-//  FPlaylist.Sort; // EXPERIMENTAL
-//  EXIT;
-
   FPlaylist.Sort(
                  TComparer<string>.construct(
                                               function(const a, b: string): integer
