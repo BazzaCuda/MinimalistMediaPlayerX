@@ -6,8 +6,10 @@ Ctrl-**G**, un[G]reater window size, hold<br />
 **H** centre window [H]orizontally and V<br />
 **N** mi[N]imize window to taskbar<br />
 **M** maximize video for the aspect ratio<br />
-Ctrl-**9** auto-arrange up to 4 videos<br />
+Ctrl-**9** auto-arrange up to 4 videos\*<br />
 Ctrl-**0**  close all instances of MMP<br />
+
+\* turn NumLock ON to control all video windows simultaneously<br />
 
 **Zoom**<br />
 **I** zoom [I]n, hold for repeat<br />
@@ -24,6 +26,8 @@ _(add SHIFT for quicker zooming)_<br />
 **F10** open media file in PotPlayer\*<br />
 **F11** open in LosslessCut\*<br />
 **F12** open in ShotCut editor\*<br />
+
+\* can be overridden in MinimalistMediaPlayer.conf<br />
 
 **Resets**<br />
 **1** = reset speed to normal<br />
@@ -43,6 +47,4 @@ Ctrl-**S** = toggle [S]ubtitles<br />
 **Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows<br />
 **X** = e[X]it fullscreen or app<br />
-
-\* can be overridden in MinimalistMediaPlayer.conf
 
