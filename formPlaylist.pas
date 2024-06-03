@@ -158,13 +158,18 @@ end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
-  case LB.count > 0 of TRUE:  begin
-                                LB.itemIndex := FPL.currentIx;
-                                LB.selected[LB.itemIndex] := TRUE;
-                                case isItemVisible of TRUE: EXIT; end;
-                                var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
-                                case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
-                                                       FALSE: LB.topIndex := 0; end;end;end;
+  LB.items.beginUpdate;
+  try
+    case LB.count > 0 of TRUE:  begin
+                                  LB.itemIndex := FPL.currentIx;
+                                  LB.selected[LB.itemIndex] := TRUE;
+                                  case isItemVisible of TRUE: EXIT; end;
+                                  var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
+                                  case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
+                                                         FALSE: LB.topIndex := 0; end;end;end;
+  finally
+    LB.items.endUpdate;
+  end;
 end;
 
 function TPlaylistForm.isItemVisible: boolean;

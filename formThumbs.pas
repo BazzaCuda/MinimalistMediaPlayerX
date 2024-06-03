@@ -262,7 +262,6 @@ begin
     timer.enabled := TRUE;
   finally
   end;
-  debugInteger('FThumbsHost.width', FThumbsHost.width);
   checkThumbsPerPage;
 
   setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
@@ -444,7 +443,7 @@ function TThumbsForm.playNext: boolean;
 begin
   case whichHost of
     htMPVHost:    begin result := FThumbs.playlist.next; FLocked := result; case FLocked of TRUE: playCurrentItem; end;end;
-    htThumbsHost: case NOT FThumbs.playlist.isLast of TRUE: playCurrentItem; end;
+    htThumbsHost: playCurrentItem;
   end;
 end;
 

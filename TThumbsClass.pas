@@ -117,7 +117,10 @@ var
 
   function adjustCurrentItem: boolean;  // guarantee a full page of thumbnails on the last page
   begin
-    case (FPlaylist.count - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(FPlaylist.count - thumbsPerPage); end;
+    var vEndIx := FPlaylist.count - 1;
+{    case FPlaylist.currentIx = vEndIx of
+        TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1));
+       FALSE:} case (vEndIx - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1)); end;{end;}
   end;
 
   function calcNextThumbPosition: integer;
@@ -137,9 +140,13 @@ var
     tpp   := thumbsPerPage;
     case FPlaylist.count mod tpp > 0 of  TRUE: extra := 1; // is there a remainder after fileCount div thumbsPerPage? If so, there's an extra page
                                         FALSE: extra := 0; end;
-    var vPageNo := ((FPlaylist.currentIx + tpp - 1) div tpp) + 1;
+    var vPageNo := (((FPlaylist.currentIx - 1) + tpp) div tpp) + 1;   // was tpp + 1
     case FPlaylist.isLast of TRUE: vPageNo := vPageNo + extra; end;
-    mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(vPageNo, (FPlaylist.count div tpp) + extra));
+
+    var vA := '';
+    case (FPlaylist.currentIx <> ((FPlaylist.count - 1) - (thumbsPerPage - 1))) and ((FPlaylist.currentIx mod thumbsPerPage) <> 0) of TRUE: vA := 'a'; end;
+
+    mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(vPageNo, (FPlaylist.count div tpp) + extra, vA));
   end;
 
 begin

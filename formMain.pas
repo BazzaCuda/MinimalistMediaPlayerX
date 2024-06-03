@@ -138,20 +138,34 @@ procedure TMMPUI.WMNCHitTest(var msg: TWMNCHitTest);
 begin
   inherited;
   // Prevent the cursor from changing when hovering over the bottom edge (HTBOTTOM)
-  if msg.result = HTBOTTOM then
+//  if msg.result = HTBOTTOM then
+//    msg.result := HTCLIENT;
+  if (msg.result = HTRIGHT) or (msg.result = HTLEFT) then
     msg.result := HTCLIENT;
 end;
 
 procedure TMMPUI.WMSizing(var msg: TMessage);
-// restricts the vertical resizing by modifying the bottom edge of the resizing rectangle to ensure that the window's height remains constant.
-// The user can control the width of a video - the app controls the height.
+// restricts the horizontal resizing by modifying the right edge of the resizing rectangle to ensure that the window's width remains constant.
+// The user can control the height of a video - the app controls the width.
 var
   newRect: PRect;
 begin
   inherited;
-  // Prevent vertical resizing by adjusting the rectangle's top and bottom edges
+  // Prevent horizontal resizing by adjusting the rectangle's left and right edges
   newRect := PRect(Msg.LParam);
-  newRect^.bottom := newRect^.top + height;
+  newRect^.right := newRect^.left + width;
 end;
+
+//procedure TMMPUI.WMSizing(var msg: TMessage);
+//// restricts the vertical resizing by modifying the bottom edge of the resizing rectangle to ensure that the window's height remains constant.
+//// The user can control the width of a video - the app controls the height.
+//var
+//  newRect: PRect;
+//begin
+//  inherited;
+//  // Prevent vertical resizing by adjusting the rectangle's top and bottom edges
+//  newRect := PRect(Msg.LParam);
+//  newRect^.bottom := newRect^.top + height;
+//end;
 
 end.

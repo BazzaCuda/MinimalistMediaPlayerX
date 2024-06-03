@@ -24,14 +24,14 @@ uses
   MPVBasePlayer,
   _debugWindow;
 
-function mmpFormatFileNumber(aFileNumber: integer; aFileCount: integer): string;
+function mmpFormatFileNumber(const aFileNumber: integer; const aFileCount: integer): string;
 function mmpFormatFileSize(const aSize: int64): string;
 function mmpFormatThumbFileSize(const aSize: int64): string;
-function mmpFormatPageNumber(aPageNumber: integer; aPageCount: integer): string;
+function mmpFormatPageNumber(const aPageNumber: integer; const aPageCount: integer; const aA: string): string;
 function mmpFormatSeconds(const seconds: integer): string;
-function mmpFormatTickCount(aTickCount: double): string;
+function mmpFormatTickCount(const aTickCount: double): string;
 function mmpFormatTime(const seconds: integer): string;
-function mmpFormatWidthHeight(const width, height: integer): string;
+function mmpFormatWidthHeight(const width: integer; const height: integer): string;
 
 function mpvFormattedBrightness(const mpv: TMPVBasePlayer): string;
 function mpvFormattedContrast(const mpv: TMPVBasePlayer): string;
@@ -47,14 +47,14 @@ implementation
 uses
   system.sysUtils;
 
-function mmpFormatFileNumber(aFileNumber: integer; aFileCount: integer): string;
+function mmpFormatFileNumber(const aFileNumber: integer; const aFileCount: integer): string;
 begin
-  result := format(' %d / %d ', [aFileNumber, aFileCount])
+  result := format(' %d / %d ', [aFileNumber, aFileCount]);
 end;
 
-function mmpFormatPageNumber(aPageNumber: integer; aPageCount: integer): string;
+function mmpFormatPageNumber(const aPageNumber: integer; const aPageCount: integer; const aA: string): string;
 begin
-  result := format('page %d / %d', [aPageNumber, aPageCount]);
+  result := format('page %d%s / %d', [aPageNumber, aA, aPageCount]);
 end;
 
 function mmpFormatFileSize(const aSize: int64): string;
@@ -78,7 +78,7 @@ begin
   end;
 end;
 
-function mmpFormatTickCount(aTickCount: double): string;
+function mmpFormatTickCount(const aTickCount: double): string;
 begin
   result := format('%.4fms', [aTickCount]);
 end;

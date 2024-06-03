@@ -213,7 +213,7 @@ begin
 
   SA.postToAll(WM_PROCESS_MESSAGES, TRUE);
 
-//  SA.postToAll(WIN_GREATER, TRUE); // force an update
+  SA.postToAll(WIN_TWEAK_SIZE, TRUE); // force an update
 
   case vHWND <> 0 of TRUE: begin mmpDelay(500); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
@@ -376,10 +376,10 @@ begin
 
   mmpDelay(100);
 
-  case FForcedResize of TRUE: begin FForcedResize := FALSE; EXIT; end;end;
+  case FForcedResize of TRUE: begin FForcedResize := FALSE; EXIT; end;end; // in response to Ctrl-[9], Arrange All
 
-  case FGreatering of  TRUE: FGreatering := FALSE;
-                      FALSE: setWindowSize(FMainForm.height, []); end; //  adjustAspectRatio(FMainForm.handle, MI.X, MI.Y);
+  case FGreatering of  TRUE: FGreatering := FALSE;                         // in responce to [G] or Ctrl-[G], Greater/unGreater window
+                      FALSE: setWindowSize(FMainForm.height, []); end;     //  adjustAspectRatio(FMainForm.handle, MI.X, MI.Y);
 
   ST.formResize(UI.width);
   PB.formResize;
@@ -492,8 +492,8 @@ begin
   aForm.color         := clBlack; // background color of the window's client area, so zooming-out doesn't show the design-time color
   createVideoPanel(aForm);
   GV.autoCentre       := TRUE;
-  aForm.width         := 800;
-  aForm.height        := 300;
+  aForm.width         := trunc((mmpScreenHeight - 100) * 1.5);
+  aForm.height        := mmpScreenHeight - 100;
   MP.onBeforeNew      := onMPBeforeNew;
   MP.onPlayNew        := onMPPlayNew;
   MP.onPlayNext       := onMPPlayNext;
@@ -678,10 +678,10 @@ begin
 
                         mtImage:  begin
                                         case aStartingHeight = -1 of  TRUE: begin
-                                                                              vWidth  := mmpScreenHeight + 500;
-                                                                              vHeight := mmpScreenHeight - 30; end;
+                                                                              vWidth  := trunc(mmpScreenHeight * 1.5);
+                                                                              vHeight := mmpScreenHeight - 100; end;
                                                                      FALSE: begin
-                                                                              vWidth  := aStartingHeight + 500;
+                                                                              vWidth  := trunc(aStartingHeight * 1.5);
                                                                               vHeight := aStartingHeight; end;end;
 
                                         while NOT withinScreenLimits do
@@ -731,11 +731,10 @@ end;
 
 function TUI.showXY: boolean;
 begin
-//  ST.opInfo := mmpformatWidthHeight(FMainForm.width, FMainForm.height);
-////  ST.opInfo := PL.formattedItem + ' ' + CU.formattedWidthHeight(FMainForm.width, FMainForm.height);;
+  ST.opInfo := mmpformatWidthHeight(FMainForm.width, FMainForm.height);
 
   // On modern large, wide screens, it's useful to have this displayed both top left and bottom right, depending on how you're sat/slumped :D
-  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
+//  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
 end;
 
 function TUI.shutTimeline: boolean;
@@ -836,6 +835,7 @@ begin
 end;
 
 function TUI.tweakWindow: boolean;
+// because sometimes, even application.processMessages needs a further kick for the window to repaint at its final designated size
 var vWidth: integer; vHeight: integer;
 begin
   mmpWndWidthHeight(FMainForm.handle, vWidth, vHeight);
