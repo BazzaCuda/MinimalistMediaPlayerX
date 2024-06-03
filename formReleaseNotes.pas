@@ -21,7 +21,7 @@ unit formReleaseNotes;
 interface
 
 uses
-  winApi.windows, winApi.messages,
+  winApi.messages, winApi.windows,
   system.classes, system.strUtils, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   HTMLUn2, HtmlView, MarkDownViewerComponents;

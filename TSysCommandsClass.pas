@@ -21,7 +21,7 @@ unit TSysCommandsClass;
 interface
 
 uses
-  winAPI.messages, winAPI.windows,
+  winApi.messages, winApi.windows,
   mmpConsts,
   formAboutBox;
 

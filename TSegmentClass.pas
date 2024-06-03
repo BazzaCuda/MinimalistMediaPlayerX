@@ -21,9 +21,8 @@ unit TSegmentClass;
 interface
 
 uses
-  winAPI.windows,
-  system.classes, System.Messaging,
-  generics.collections,
+  winApi.windows,
+  system.classes, system.generics.collections, system.messaging,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 const

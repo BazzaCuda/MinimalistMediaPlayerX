@@ -21,9 +21,9 @@ unit formMediaCaption;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, vcl.extCtrls, vcl.stdCtrls;
+  winApi.messages, winApi.windows,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 type
   TMediaCaptionForm = class(TForm) // single caption at the top of the window

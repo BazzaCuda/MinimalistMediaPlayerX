@@ -220,7 +220,6 @@ end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
 begin
-  debug('autoCentreWindow');
   case GV.autoCentre of FALSE: EXIT; end;
   centreWindow(aWnd);
 end;
@@ -646,10 +645,11 @@ var
   end;
 
 begin
-  case MP.mediaType of  mtAudio:  begin case MI.hasCoverArt of  TRUE: FMainForm.width  := 600;
-                                                               FALSE: FMainForm.width  := 600; end;
-                                        case MI.hasCoverArt of  TRUE: FMainForm.height := 400;
-                                                               FALSE: FMainForm.height := UI_DEFAULT_AUDIO_HEIGHT; end;end;
+  case MP.mediaType of  mtAudio:  begin case MI.hasCoverArt of  TRUE: vWidth  := 600;
+                                                               FALSE: vWidth  := 600; end;
+                                        case MI.hasCoverArt of  TRUE: vHeight := 400;
+                                                               FALSE: vHeight := UI_DEFAULT_AUDIO_HEIGHT; end;end;
+
                         mtVideo:  begin
                                         case ssCtrl in aShiftState of  TRUE: dy := -30;
                                                                       FALSE: dy := +30; end;
@@ -668,17 +668,11 @@ begin
                                           vHeight := vHeight + dy;
                                           adjustWidthForAspectRatio;
                                         end;
-
-                                        case GV.autoCentre of TRUE:
-                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); end; // center window
-                                        mmpProcessMessages;
-                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
-                                        mmpProcessMessages;
                                   end;
 
                         mtImage:  begin
                                         case aStartingHeight = -1 of  TRUE: begin
-                                                                              vWidth  := trunc(mmpScreenHeight * 1.5);
+                                                                              vWidth  := trunc((mmpScreenHeight - 100) * 1.5);
                                                                               vHeight := mmpScreenHeight - 100; end;
                                                                      FALSE: begin
                                                                               vWidth  := trunc(aStartingHeight * 1.5);
@@ -689,12 +683,13 @@ begin
                                           vWidth  := vWidth  - 30;
                                           vHeight := vHeight - 30;
                                         end;
-
-                                        case GV.autoCentre of TRUE:
-                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); end; // center window
-                                        mmpProcessMessages;
-                                        SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); end; // resize window
+                                  end;
   end;
+
+  case GV.autoCentre of TRUE: SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); end; // center window
+  mmpProcessMessages;
+  SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+  mmpProcessMessages;
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;
@@ -731,10 +726,10 @@ end;
 
 function TUI.showXY: boolean;
 begin
-  ST.opInfo := mmpformatWidthHeight(FMainForm.width, FMainForm.height);
-
-  // On modern large, wide screens, it's useful to have this displayed both top left and bottom right, depending on how you're sat/slumped :D
-//  case MT.mediaType(lowerCase(extractFileExt(PL.currentItem))) = mtVideo of TRUE: ST.opInfo := PL.formattedItem; end;
+  case MP.mediaType of
+    mtImage: ST.opInfo := mmpformatWidthHeight(FVideoPanel.width, FVideoPanel.height);
+    // On modern large, wide screens, it's useful to have this displayed both top left and bottom right, depending on how you're sat/slumped :D
+    mtVideo: ST.opInfo := PL.formattedItem; end;
 end;
 
 function TUI.shutTimeline: boolean;

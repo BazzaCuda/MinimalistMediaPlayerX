@@ -2,8 +2,8 @@ object DownloadForm: TDownloadForm
   Left = 0
   Top = 0
   Caption = 'Download'
-  ClientHeight = 90
-  ClientWidth = 381
+  ClientHeight = 86
+  ClientWidth = 379
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

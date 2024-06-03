@@ -95,7 +95,7 @@ uses
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := TRUE;
+  ReportMemoryLeaksOnShutdown := FALSE;
   debugClear;
 
   Application.Initialize;
@@ -104,5 +104,7 @@ begin
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   application.title := 'MMP - Minimalist Media Player';
   Application.CreateForm(TMMPUI, MMPUI);
-  Application.Run;
+  try
+    Application.Run;
+  except end;
 end.

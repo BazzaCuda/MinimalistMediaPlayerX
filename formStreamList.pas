@@ -22,8 +22,7 @@ interface
 
 uses
   winApi.messages, winapi.Windows,
-  system.classes, system.imageList, system.sysUtils, system.variants,
-  generics.collections,
+  system.classes, system.generics.collections, system.imageList, system.sysUtils, system.variants,
   vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
   HTMLUn2, HtmlView, MarkDownViewerComponents,
   TSegmentClass;

@@ -28,11 +28,11 @@ uses
   mmpConsts;
 
 function initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
-function loadMarkDownFromResource(const aMD: TMarkDownViewer; aResourceName: string): boolean;
+function loadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 
 implementation
 
-function loadMarkDownFromResource(const aMD: TMarkDownViewer; aResourceName: string): boolean;
+function loadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 begin
   var vRS := TResourceStream.create(hInstance, aResourceName, RT_RCDATA);
   var vSS := TStringStream.create;

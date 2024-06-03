@@ -2,8 +2,8 @@ object ProgressForm: TProgressForm
   Left = 0
   Top = 0
   Caption = 'ProgressForm'
-  ClientHeight = 98
-  ClientWidth = 325
+  ClientHeight = 94
+  ClientWidth = 323
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,16 +15,14 @@ object ProgressForm: TProgressForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 325
-    Height = 98
+    Width = 323
+    Height = 94
     Margins.Left = 10
     Margins.Top = 10
     Margins.Right = 10
     Margins.Bottom = 10
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 323
-    ExplicitHeight = 94
     object FSubHeading: TLabel
       Left = 6
       Top = 35

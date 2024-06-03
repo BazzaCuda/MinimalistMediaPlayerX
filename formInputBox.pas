@@ -21,9 +21,9 @@ unit formInputBox;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+  winApi.messages, winApi.windows,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 type
   TInputBoxForm = class(TForm)
@@ -34,7 +34,7 @@ type
   public
   end;
 
-function mmpInputBoxForm(const APrompt: string): string;
+function mmpInputBoxForm(const aPrompt: string): string;
 
 implementation
 
@@ -47,7 +47,7 @@ uses
 
 { TInputBoxForm }
 
-function mmpInputBoxForm(const APrompt: string): string;
+function mmpInputBoxForm(const aPrompt: string): string;
 var
   vInputBoxForm: TInputBoxForm;
 begin
@@ -55,8 +55,8 @@ begin
   vInputBoxForm := TInputBoxForm.Create(NIL);
   try
     with vInputBoxForm do begin
-      edtInputBox.Text  := APrompt;
-      result            := APrompt;
+      edtInputBox.Text  := aPrompt;
+      result            := aPrompt;
       case showModal = mrOK of TRUE: result := edtInputBox.Text; end;
     end;
   finally

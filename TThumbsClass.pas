@@ -21,8 +21,7 @@ unit TThumbsClass;
 interface
 
 uses
-  generics.collections,
-  system.classes,
+  system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
   mmpConsts,
   TMPVHostClass, TPlaylistClass, TThumbClass;
@@ -72,7 +71,7 @@ implementation
 uses
   winApi.windows,
   system.sysUtils,
-  {vcl.controls,} vcl.graphics,
+  vcl.graphics,
   mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
   TGlobalVarsClass, TMediaInfoClass,

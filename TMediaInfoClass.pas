@@ -21,7 +21,8 @@ unit TMediaInfoClass;
 interface
 
 uses
-  generics.collections, vcl.stdCtrls;
+  system.generics.collections,
+  vcl.stdCtrls;
 
 type
   TMediaStream = class(TObject)

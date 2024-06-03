@@ -332,11 +332,11 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case FImagePaused AND (FMediaType = mtImage) of TRUE: begin FLocked := FALSE; EXIT; end;end;
+  case FImagePaused AND (FMediaType = mtImage) and (eState in [mpsPlay, mpsEnd]) of TRUE: begin FLocked := FALSE; mmpProcessMessages; EXIT; end;end;
 
   case (FMediaType <> mtImage) of TRUE:
   case eState of
-    mpsPlay: begin FLocked := FALSE; {postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);} end;
+    mpsPlay: begin FLocked := FALSE; end;
     mpsEnd:  begin FLocked := FALSE;
                    case FDontPlayNext of FALSE: playNext; end;end;
   end;
@@ -470,13 +470,11 @@ begin
   MI.initMediaInfo(aURL);
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
-  // reset the window size for an audio file in case the previous file was a video, or the previous audio had an image but this one doesn't
-//  {case GV.autoCentre OR (FMediaType = mtAudio) of TRUE:} UI.setWindowSize(stMax); {end;}
 
   case FMediaType of mtImage: blankOutTimeCaption;
                          else resetTimeCaption; end;
 
-  FLocked := FMediaType = mtImage; // EXPERIMENTAL
+  FLocked := FMediaType = mtImage;
 
   mmpProcessMessages;
 
@@ -509,6 +507,7 @@ end;
 function TMediaPlayer.playCurrent: boolean;
 begin
   pause;
+
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := TRUE;
@@ -517,6 +516,7 @@ end;
 function TMediaPlayer.playFirst: boolean;
 begin
   pause;
+
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.first;
@@ -525,6 +525,7 @@ end;
 function TMediaPlayer.playLast: boolean;
 begin
   pause;
+
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.last;
@@ -539,14 +540,13 @@ begin
   FTimer.enabled  := PL.next;
   case FTimer.enabled of FALSE: begin
                                   FTimerEvent    := teClose;
-                                  FTimer.enabled := TRUE; end;end;
-  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
+                                  FTimer.enabled := TRUE; end;
+                          TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end;
 end;
 
 function TMediaPlayer.playPrev: boolean;
 begin
   pause;
-  case FImagePaused of FALSE: pauseUnpauseImages; end;
 
   FTimer.interval := 100;
   FTimerEvent     := tePlay;

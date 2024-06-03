@@ -21,7 +21,7 @@ unit TUndoMoveClass;
 interface
 
 uses
-  generics.collections;
+  system.generics.collections;
 
 type
   TUndoRec = class(TObject)

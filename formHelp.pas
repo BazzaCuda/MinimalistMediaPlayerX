@@ -21,7 +21,7 @@ unit formHelp;
 interface
 
 uses
-  winApi.windows, winApi.messages,
+  winApi.messages, winApi.windows,
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
   HTMLUn2, HtmlView, MarkDownViewerComponents;

@@ -29,11 +29,9 @@ uses
 
 function mmpAspectRatio(const X: integer; const Y: integer): double;
 begin
-  debugFormat('mmpAspectRatio: X:%d, Y:%d', [X, Y]);
   result := 1;
   case (X = 0) or (Y = 0) of TRUE: EXIT; end;
   result := Y / X;
-  debugFormat('mmpAspectRatio = %f', [result]);
 end;
 
 end.

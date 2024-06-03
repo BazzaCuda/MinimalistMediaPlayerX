@@ -21,7 +21,7 @@ unit formPlaylist;
 interface
 
 uses
-  winApi.windows, WinApi.messages,
+  winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   TPlaylistClass;
@@ -61,8 +61,11 @@ function shutPlaylist: boolean;
 implementation
 
 uses
-  ShellAPI, system.strUtils,
-  mmpconsts, TUICtrlsClass, TGlobalVarsClass, TMediaPlayerClass, _debugWindow;
+  winApi.shellApi,
+  system.strUtils,
+  mmpconsts,
+  TGlobalVarsClass, TMediaPlayerClass, TUICtrlsClass,
+  _debugWindow;
 
 var
   playlistForm: TPlaylistForm;

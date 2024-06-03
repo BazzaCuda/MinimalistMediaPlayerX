@@ -85,7 +85,7 @@ end;
 
 function mmpFormatWidthHeight(const width, height: integer): string;
 begin
-  result := format('%dx%d', [width, height]);
+  result := format('%d x %d', [width, height]);
 end;
 
 function mmpFormatTime(const seconds: integer): string;

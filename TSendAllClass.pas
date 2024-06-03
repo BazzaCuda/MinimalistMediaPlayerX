@@ -32,7 +32,8 @@ uses
   system.sysUtils, system.classes,
   vcl.forms,
   mmpConsts,
-  TGlobalVarsClass, _debugWindow;
+  TGlobalVarsClass,
+  _debugWindow;
 
 var
   gSendAll: TSendAll;

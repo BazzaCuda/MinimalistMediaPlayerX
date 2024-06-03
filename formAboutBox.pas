@@ -21,7 +21,7 @@ unit formAboutBox;
 interface
 
 uses
-  winApi.windows, winApi.messages,
+  winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls;
 

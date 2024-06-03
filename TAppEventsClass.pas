@@ -21,7 +21,8 @@ unit TAppEventsClass;
 interface
 
 uses
-  vcl.appEvnts, winAPI.windows, vcl.forms;
+  winAPI.windows,
+  vcl.appEvnts, vcl.forms;
 
 type
   TAppEvents = class(TObject)
@@ -40,7 +41,7 @@ implementation
 
 uses
   winAPI.messages,
-  system.classes, system.sysUtils, system.types,
+  system.classes, system.types, system.sysUtils,
   vcl.controls,
   mmpConsts, mmpDesktopUtils, mmpKeyboard, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,

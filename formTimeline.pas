@@ -22,8 +22,7 @@ interface
 
 uses
   winApi.messages, winApi.Windows,
-  system.classes, system.sysUtils, system.variants,
-  generics.collections,
+  system.classes, system.generics.collections, system.sysUtils, system.variants,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   formProgress,
   TSegmentClass;
