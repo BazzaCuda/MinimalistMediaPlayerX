@@ -246,6 +246,9 @@ begin
 
   case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
+
+  FStatusBar.refresh;
+  mmpProcessMessages;
 end;
 
 function TThumbs.thumbColCount: integer;

@@ -219,8 +219,8 @@ end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
-  FMPVHost := TMPVHost.create(SELF);
-  FMPVHost.parent := SELF;
+  FMPVHost            := TMPVHost.create(SELF);
+  FMPVHost.parent     := SELF;
   FMPVHost.OnOpenFile := onOpenFile;
 
   mmpInitStatusBar(FStatusBar);
@@ -364,28 +364,26 @@ begin
 
   showHost(htMPVHost);
 
-  FThumbs.setPanelText(aURL, tickerTotalMs);
+  FThumbs.setPanelText(aURL, tickerTotalMs, TRUE);
 end;
 
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
-//var vState: string;
 begin
-//  vState := TRttiEnumerationType.getName(eState);
-//  debugString('onStateChange', vState);
+  case  GV.playingSlideshow of FALSE:
+        case eState of mpsPlay: begin case FLocked of TRUE: mmpDelay(250); end; FLocked := FALSE; EXIT; end;end;end;
 
-//  case GV.playingSlideshow of FALSE: EXIT; end; // ?? Do we still need this ??
-
+  case GV.playingSlideshow of TRUE:
   case eState of
-    mpsLoading: {FLocked := TRUE}; // ignore rapid keystrokes like held down left and right arrows until mpv has finished displaying each image, then continue
-    mpsPlay,  {: FLocked := FALSE;} // EXPERIMENTAL COMBINE THE TWO
+    mpsPlay,
     mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
-    {mpsEnd , mpsStop:} case GV.playingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
+                  case GV.playingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
                                                                 case GV.playingSlideshow of
                                                                   TRUE: case FSlideshowDirection of
                                                                                sdForwards:  case playNext of FALSE: playFirst; end;
                                                                                sdBackwards: case playPrev of FALSE: playLast;  end;
                                                                         end;end;end;end;end;
             end;
+  end;
   mmpProcessMessages;
 end;
 
@@ -416,7 +414,7 @@ end;
 function TThumbsForm.playCurrentItem: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin FLocked := TRUE; FThumbs.playCurrentItem; FThumbs.setPanelText(FThumbs.playlist.currentItem, -1, TRUE); end;
+    htMPVHost:    begin FThumbs.playCurrentItem; {FThumbs.setPanelText(FThumbs.playlist.currentItem, -1, TRUE);} end;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
@@ -442,7 +440,10 @@ end;
 function TThumbsForm.playNext: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin result := FThumbs.playlist.next; FLocked := result; case FLocked of TRUE: playCurrentItem; end;end;
+    htMPVHost:    begin case FLocked of TRUE: EXIT; end;
+                        FLocked := TRUE;
+                        result := FThumbs.playlist.next;
+                        playCurrentItem; end;
     htThumbsHost: playCurrentItem;
   end;
 end;
@@ -460,7 +461,10 @@ end;
 function TThumbsForm.playPrev: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin result := FThumbs.playlist.prev; FLocked := result; case FLocked of TRUE: playCurrentItem; end;end;
+    htMPVHost:    begin case FLocked of TRUE: EXIT; end;
+                        FLocked := TRUE;
+                        result := FThumbs.playlist.prev;
+                        playCurrentItem; end;
     htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: FThumbs.playPrevThumbsPage; end;
   end;
 end;
@@ -651,8 +655,6 @@ procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftS
 begin
   case whichHost of htMPVHost: mmpResetPanelHelp(FStatusBar); end; // don't obliterate thumbnail page numbers
 
-  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end;
-
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
   case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
@@ -665,7 +667,6 @@ end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  case (key in [VK_LEFT, VK_RIGHT]) and FLocked of TRUE: begin key := 0; EXIT; end;end;
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
   case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10

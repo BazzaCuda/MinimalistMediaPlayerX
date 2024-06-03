@@ -132,7 +132,6 @@ type
     property formattedDuration:   string       read getFormattedDuration;
     property formattedTime:       string       read getFormattedTime;
     property ImagesPaused:        boolean      read FImagePaused;
-    property isLocked:            boolean      read FLocked;
     property keepOpen:            boolean                         write setKeepOpen;
     property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
@@ -332,7 +331,7 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   FPlaying := eState = mpsPlay;
 
-  case (FMediaType = mtImage) and FImagePaused and FLocked of TRUE:
+  case (FMediaType = mtImage) and FImagePaused of TRUE:
          case eState of mpsPlay: begin FLocked := FALSE; EXIT; end;end;end;
 
   case (FMediaType = mtImage) and NOT FImagePaused of TRUE:

@@ -108,6 +108,7 @@ begin
     pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;
   end;
   aStatusBar.refresh;
+  mmpProcessMessages;
 end;
 
 end.
