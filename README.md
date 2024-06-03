@@ -1,6 +1,9 @@
 MMP - Minimalist Media Player
 =====================
 
+N.B. Some users have reported issues with the main window resizing itself several times on normal-size monitors, e.g. 1920 x 1080, until it eventually fits.
+These issues have been fixed and will be available in v3.
+
 MMP - Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
