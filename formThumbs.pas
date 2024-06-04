@@ -371,7 +371,7 @@ end;
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case  GV.playingSlideshow of FALSE:
-        case eState of mpsPlay: begin case FLocked of TRUE: mmpDelay(250); end; FLocked := FALSE; EXIT; end;end;end;
+        case eState of mpsPlay: begin case FLocked of TRUE: mmpDelay(100); end; FLocked := FALSE; EXIT; end;end;end;
 
   case GV.playingSlideshow of TRUE:
   case eState of
@@ -511,7 +511,7 @@ begin
   case mmpCopyFile(aFilePath, mmpUserDstFolder('Copied'), FALSE, FALSE) of
                                                    TRUE:  begin
                                                             mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
-                                                            mmpSetPanelText(FStatusBar, pnSave, 'Copied to: ' + extractFilePath(aFilePath));
+                                                            mmpSetPanelText(FStatusBar, pnSave, 'Copied to: ' + mmpUserDstFolder('Copied'));
                                                           end;
                                                   FALSE:  begin
                                                             mmpSetPanelOwnerDraw(FStatusBar, pnHelp, TRUE);
@@ -523,7 +523,8 @@ function TThumbsForm.saveMoveFile(const aFilePath, aFolder, aOpText: string): bo
 begin
   case saveMoveFileToFolder(aFilePath, aFolder, aOpText) of FALSE: EXIT; end;
   FThumbs.playlist.delete(FThumbs.playlist.currentIx);
-  playCurrentItem;
+  case FThumbs.playlist.isFirst of  TRUE: playCurrentItem;
+                                   FALSE: playNext; end; // because playlist.delete decrements FPlayIx
 end;
 
 function TThumbsForm.saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
