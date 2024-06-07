@@ -1,10 +1,10 @@
-MMP - Minimalist Media Player
+MMP: Minimalist Media Player
 =====================
 
 _N.B. Some v2 users have reported issues with the main window resizing itself several times on normal-sized monitors, e.g. 1920 x 1080, until it eventually fits.
 These issues have been fixed in v3._
 
-MMP - Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
 THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
 
@@ -27,15 +27,15 @@ Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, 
 
 **TIP**: You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It really doesn't get much easier than that!!
 
-**MMP - Minimalist Media Player**
+**MMP: Minimalist Media Player**
 
 A powerful and ``very`` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
 
-``Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
+``MMP: Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
 
-Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
+Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``MMP: Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
 
-This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of ``Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
+This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of ``MMP: Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
 ![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
 
 
@@ -52,15 +52,15 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - Full-resolution screenshots can be saved for individual frames and for a displayed image.
 
-- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-[H]. The full functionality of ``Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-[H]. The full functionality of ``MMP: Minimalist Media Player`` can be used while this panel is showing so you can try things out.
 
-- ``Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
+- ``MMP: Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
 - You can quickly bookmark the current position of a media file and restart from that point at a later time.
 
 - You can quickly resize the video by holding down the [G] key to enlarge it. Or quickly reduce it by holding down Ctrl-[G].
 
-- ``Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
+- ``MMP: Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
 
 - MPV playback can be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
 
@@ -320,13 +320,13 @@ Control | Action
 
 Media File Formats
 ------------------
-``Minimalist Media Player`` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
+``MMP: Minimalist Media Player`` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
 Dependencies
 ------------
-1. ``Minimalist Media Player`` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
+1. ``MMP: Minimalist Media Player`` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
 
-2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV); although, having said that, MPV seems to be much better behaved in that regard than Windows Media Player on which the previous incarnation of ``Minimalist Media Player`` was based. If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``Minimalist Media Player`` will still ask for confirmation, nothing will happen.
+2. Each release comes with a program called "rot.exe". When deleting a file or the contents of a folder from within ``MMP: Minimalist Media Player``, it is actually rot.exe that carries out the deletion. This allows the deletion to be done in a separate process which results (in my experience) in less chances of Windows complaining that the file is in use (by MPV); although, having said that, MPV seems to be much better behaved in that regard than Windows Media Player on which the previous incarnation of ``MMP: Minimalist Media Player`` was based. If you wish, you can checkout rot.exe's many features by running it from the command line. Many of you will recognize it, I'm sure ;) If you want to completely disable the ability to delete files, simply delete rot.exe. Although ``MMP: Minimalist Media Player`` will still ask for confirmation, nothing will happen.
 
 3. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
 
