@@ -21,6 +21,7 @@ unit mmpMPVProperties;
 interface
 
 uses
+  system.types,
   MPVBasePlayer,
   _debugWindow;
 
@@ -31,6 +32,7 @@ function mpvPosition(const mpv: TMPVBasePlayer): integer;
 function mpvState(const mpv: TMPVBasePlayer): TMPVPlayerState;
 function mpvVideoHeight(const mpv: TMPVBasePlayer): int64;
 function mpvVideoWidth(const mpv: TMPVBasePlayer): int64;
+function mpvXY(const mpv: TMPVBasePlayer): TPoint;
 
 //==========
 
@@ -105,6 +107,12 @@ function mpvVideoWidth(const mpv: TMPVBasePlayer): int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.videoWidth;
+end;
+
+function mpvXY(const mpv: TMPVBasePlayer): TPoint;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  result := point(mpvVideoWidth(mpv), mpvVideoHeight(mpv));
 end;
 
 //==========

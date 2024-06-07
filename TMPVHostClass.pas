@@ -27,7 +27,7 @@ type
   TOpenFileEvent = procedure(const aURL: string) of object;
 
   TMPVHost = class(TPanel)
-  private
+  strict private
     FOnOpenFile: TOpenFileEvent;
   public
     function openFile(const aURL: string): string;

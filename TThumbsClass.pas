@@ -254,7 +254,6 @@ end;
 function TThumbs.thumbColCount: integer;
 var
   vWorkingWidth: integer;
-  vReqdWidth: integer;
   vRemainingWidth: integer;
 begin
   result := 1;
@@ -268,7 +267,6 @@ end;
 function TThumbs.thumbRowCount: integer;
 var
   vWorkingHeight: integer;
-  vReqdHeight: integer;
   vRemainingHeight: integer;
 begin
   result := 1;

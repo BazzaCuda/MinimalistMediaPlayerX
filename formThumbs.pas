@@ -131,15 +131,18 @@ function TThumbsForm.adjustAspectRatio: boolean;
 var
   vWidth:  integer;
   vHeight: integer;
-begin
-  case (MI.imageWidth <= 0) OR (MI.imageHeight <= 0) of TRUE: EXIT; end;
 
-  var vRatio := MI.imageHeight / MI.imageWidth;
+  function adjustWidthForAspectRatio: boolean;
+  begin
+    vWidth := trunc(vHeight / mpvVideoHeight(mpv) * mpvVideoWidth(mpv));
+  end;
+
+begin
+  case (mpvVideoWidth(mpv) <= 0) OR (mpvVideoHeight(mpv) <= 0) of TRUE: EXIT; end;
 
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
 
-  vWidth  := trunc(vHeight / mmpAspectRatio(MI.imageWidth, MI.imageHeight));
-  vHeight := trunc(vWidth * vRatio) + 2;
+  adjustWidthForAspectRatio;
 
   SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
 
@@ -361,8 +364,6 @@ begin
   except end;
   tickerStop;
 
-  MI.initMediaInfo(aURL);
-
   showHost(htMPVHost);
 
   FThumbs.setPanelText(aURL, tickerTotalMs, TRUE);
@@ -415,7 +416,7 @@ end;
 function TThumbsForm.playCurrentItem: boolean;
 begin
   case whichHost of
-    htMPVHost:    begin FThumbs.playCurrentItem; {FThumbs.setPanelText(FThumbs.playlist.currentItem, -1, TRUE);} end;
+    htMPVHost:    FThumbs.playCurrentItem;
     htThumbsHost: FThumbs.playThumbs;
   end;
 end;
