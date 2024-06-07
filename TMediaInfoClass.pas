@@ -378,7 +378,6 @@ begin
   try
     case aURL <> '' of TRUE: FURL := aURL; end;
     mediaInfo_Open(FHandle, PWideChar(FURL));
-    debug(FURL);
     FMediaStreams.clear;
 
     FOverallFrameRate := mediaInfo_Get(FHandle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);

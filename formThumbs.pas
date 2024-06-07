@@ -134,17 +134,22 @@ var
 
   function adjustWidthForAspectRatio: boolean;
   begin
-    vWidth := trunc(vHeight / mpvVideoHeight(mpv) * mpvVideoWidth(mpv));
+    vWidth := round(vHeight / MI.imageHeight * MI.imageWidth);
   end;
 
 begin
-  case (mpvVideoWidth(mpv) <= 0) OR (mpvVideoHeight(mpv) <= 0) of TRUE: EXIT; end;
+  case (MI.imageWidth <= 0) OR (MI.imageWidth <= 0) of TRUE: EXIT; end;
 
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
 
+  vHeight := FMPVHost.height;
+
   adjustWidthForAspectRatio;
 
+  vHeight := vHeight + mmpCaptionHeight + FStatusBar.height + (mmpBorderWidth * 2);
+
   SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+  mmpProcessMessages;
 
   case GV.autoCentre of TRUE: autoCentre; end;
 end;
