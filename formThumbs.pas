@@ -134,11 +134,11 @@ var
 
   function adjustWidthForAspectRatio: boolean;
   begin
-    vWidth := round(vHeight / MI.imageHeight * MI.imageWidth);
+    vWidth := round(vHeight / mpvVideoHeight(mpv) * mpvVideoWidth(mpv));
   end;
 
 begin
-  case (MI.imageWidth <= 0) OR (MI.imageWidth <= 0) of TRUE: EXIT; end;
+  case (mpvVideoWidth(mpv) <= 0) OR (mpvVideoHeight(mpv) <= 0) of TRUE: EXIT; end;
 
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
 

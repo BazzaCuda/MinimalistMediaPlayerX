@@ -1,7 +1,7 @@
 object ThumbsForm: TThumbsForm
   Left = 0
   Top = 0
-  Caption = 'MMP Image Browser'
+  Caption = 'MMP Image & Thumbnail Browser'
   ClientHeight = 445
   ClientWidth = 626
   Color = clBtnFace

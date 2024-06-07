@@ -32,7 +32,7 @@ type
             koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave, koBookmarkLoad, koBookmarkDelete, koRotateReset,
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
-            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails);
+            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -130,6 +130,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(H) and     ctrl                                              of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(H) and NOT ctrl                                              of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I)                         and NOT GV.showingTimeline        of TRUE: result := koZoomIn; end;
+    case keyUp and keyIs(J)                                                           of TRUE: result := koAdjustAspectRatio; end;
     case keyUp and keyIs(K)                                                           of TRUE: result := koKeep; end;
     case keyUp and keyIs(L)                         and NOT GV.showingTimeline        of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(M)                         and NOT GV.showingTimeline        of TRUE: result := koMaximize; end;
@@ -199,7 +200,6 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
 
     // spare keys
     case keyUp and keyIs(D)                                                           of TRUE: result := koNone; end;
-    case keyUp and keyIs(J)                                                           of TRUE: result := koNone; end;
     case keyUp and keyIs(P) and ctrl                                                  of TRUE: result := koNone; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
   end;
@@ -211,6 +211,7 @@ begin
     koNone:       EXIT; // key not processed. bypass setting result to TRUE
 
     koAboutBox:          showAboutBox;
+    koAdjustAspectRatio: case MP.mediaType = mtImage of TRUE: UI.adjustAspectRatio; end;
     koAllReset:          ST.opInfo := MP.allReset;
     koArrangeAll:        UI.arrangeAll;
     koBookmarkDelete:    ST.opInfo := BM.delete(PL.currentItem);

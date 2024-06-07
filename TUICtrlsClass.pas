@@ -29,6 +29,7 @@ uses
 type
   TUI = class(TObject)
   strict private
+    FDontAutoSize:  boolean;
     FMainForm:      TForm;
     FFormattedTime: string;
     FForcedResize:  boolean;
@@ -56,7 +57,7 @@ type
     procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
   public
     procedure formResize(sender: TObject);
-    function adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
+    function adjustAspectRatio: boolean;
     function arrangeAll: boolean;
     function autoCentreWindow(const aWnd: HWND): boolean;
     function centreCursor: boolean;
@@ -131,31 +132,35 @@ begin
   AppendMenu(vSysMenu, MF_STRING, MENU_HELP_ID, 'Show &Keyboard functions');
 end;
 
-function TUI.adjustAspectRatio(const aWnd: HWND; const X: int64; const Y: int64): boolean;
+function TUI.adjustAspectRatio: boolean;
 var
-  vRatio: double;
-  vWidth, vHeight: integer;
+  vWidth:  integer;
+  vHeight: integer;
+
+  function adjustWidthForAspectRatio: boolean;
+  begin
+    vWidth := round(vHeight / MP.videoHeight * MP.videoWidth);
+  end;
+
 begin
-  case MP.mediaType = mtImage of TRUE: begin postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0); EXIT; end;end;
-  case (MP.mediaType = mtAudio) AND (NOT MI.hasCoverArt) of TRUE: EXIT; end;
-  case GV.closeApp of TRUE: EXIT; end;
-  case FMainForm.WindowState = wsMaximized of TRUE: EXIT; end;
+  case (MP.videoWidth <= 0) OR (MP.videoHeight <= 0) of TRUE: EXIT; end;
+  FDontAutoSize := TRUE;
 
-  case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
+  mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
 
-  vRatio := Y / X;
+  vHeight := FVideoPanel.height;
 
-  mmpWndWidthHeight(aWnd, vWidth, vHeight);
-  case GV.autoCentre of  TRUE: vWidth := trunc(vHeight / vRatio);
-                        FALSE: vHeight := trunc(vWidth * vRatio) + 2; end;
+  adjustWidthForAspectRatio;
 
+  vWidth  := vWidth  + 2;   // allow for the mysterious 1-pixel border that Windows insists on drawing around a borderless window
+  vHeight := vHeight + 2;
 
-  case (UI.width <> vWidth) or (UI.height <> vHeight) of TRUE: setWindowPos(aWnd, HWND_TOP, 0, 0, vWidth, vHeight, SWP_NOMOVE); end; // don't add SWP_SHOWWINDOW
+  FGreatering := TRUE;
+
+  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
   mmpProcessMessages;
 
-  postMessage(GV.appWnd, WM_AUTO_CENTRE_WINDOW, 0, 0);
-
-  case MP.playing and mmpWithinScreenLimits(vWidth, vHeight) of TRUE: postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0); end;
+  case GV.autoCentre of TRUE: autoCentreWindow(GV.appWnd); end;
 end;
 
 function TUI.arrangeAll: boolean;
@@ -244,6 +249,7 @@ var
 
 begin
   getWindowRect(aWnd, vR);
+  GV.autoCentre := TRUE; // user pressing [H] re-instates autoCentre
 
   case alreadyCentred of TRUE: EXIT; end;
 
@@ -378,7 +384,7 @@ begin
   case FForcedResize of TRUE: begin FForcedResize := FALSE; EXIT; end;end; // in response to Ctrl-[9], Arrange All
 
   case FGreatering of  TRUE: FGreatering := FALSE;                         // in responce to [G] or Ctrl-[G], Greater/unGreater window
-                      FALSE: setWindowSize(FMainForm.height, []); end;     //  adjustAspectRatio(FMainForm.handle, MI.X, MI.Y);
+                      FALSE: case FDontAutoSize of FALSE: setWindowSize(FMainForm.height, []); end;end;
 
   ST.formResize(UI.width);
   PB.formResize;
@@ -519,6 +525,7 @@ end;
 
 function TUI.maximize: boolean;
 begin
+  FDontAutoSize := FALSE;
   setWindowSize(-1, []);
   GV.autoCentre := TRUE;
   centreCursor;
@@ -833,8 +840,11 @@ function TUI.tweakWindow: boolean;
 // because sometimes, even application.processMessages needs a further kick for the window to repaint at its final designated size
 var vWidth: integer; vHeight: integer;
 begin
+  FGreatering := TRUE;
   mmpWndWidthHeight(FMainForm.handle, vWidth, vHeight);
   SetWindowPos(FMainForm.handle, 0, 0, 0, vWidth + 1, vHeight, SWP_NOMOVE); // don't use VCL FMainForm.width!
+  FGreatering := TRUE;
+  SetWindowPos(FMainForm.handle, 0, 0, 0, vWidth - 1, vHeight, SWP_NOMOVE); // don't use VCL FMainForm.width!
 end;
 
 initialization
