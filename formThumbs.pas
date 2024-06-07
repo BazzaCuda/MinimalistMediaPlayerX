@@ -252,6 +252,9 @@ begin
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   case whichHost of htThumbsHost: playCurrentItem; end;
   moveHelpWindow;
+
+  case whichHost of htMPVHost:    FThumbs.showDisplayDimensions(htMPVHost);
+                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);

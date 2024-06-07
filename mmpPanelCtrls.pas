@@ -26,7 +26,7 @@ uses
   _debugWindow;
 
 type
-  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnTick, pnSave, pnHelp);
+  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnSave, pnHelp);
 
 function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
 function mmpResetPanelHelp    (const aStatusBar: TStatusBar): boolean;
@@ -41,9 +41,10 @@ const
   PANEL_NUMB = 1;
   PANEL_SIZE = 2;
   PANEL_XXYY = 3;
-  PANEL_HINT = 4;
-  PANEL_SAVE = 5;
-  PANEL_HELP = 6;
+  PANEL_DDXY = 4;
+  PANEL_HINT = 5;
+  PANEL_SAVE = 6;
+  PANEL_HELP = 7;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
@@ -54,6 +55,7 @@ begin
   mmpSetPanelText(aStatusBar, pnNumb, '');
   mmpSetPanelText(aStatusBar, pnSize, '');
   mmpSetPanelText(aStatusBar, pnXXYY, '');
+  mmpSetPanelText(aStatusBar, pnDDXY, '');
   mmpSetPanelText(aStatusBar, pnTick, '');
   mmpSetPanelText(aStatusBar, pnSave, '');
   mmpSetPanelText(aStatusBar, pnHelp, '');
@@ -75,6 +77,7 @@ begin
   fixedWidths := aStatusBar.panels[PANEL_NUMB].width
                + aStatusBar.panels[PANEL_SIZE].width
                + aStatusBar.panels[PANEL_XXYY].width
+               + aStatusBar.panels[PANEL_DDXY].width
                + aStatusBar.panels[PANEL_HINT].width
                + aStatusBar.panels[PANEL_HELP].width;
 
@@ -103,6 +106,7 @@ begin
     pnNumb: aStatusBar.panels[PANEL_NUMB].text := aText;
     pnSize: aStatusBar.panels[PANEL_SIZE].text := aText;
     pnXXYY: aStatusBar.panels[PANEL_XXYY].text := aText;
+    pnDDXY: aStatusBar.panels[PANEL_DDXY].text := aText;
     pnTick: aStatusBar.panels[PANEL_HINT].text := aText;
     pnSave: aStatusBar.panels[PANEL_SAVE].text := aText;
     pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;

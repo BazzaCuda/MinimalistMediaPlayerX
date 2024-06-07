@@ -3060,6 +3060,12 @@ object ThumbsForm: TThumbsForm
       end
       item
         Alignment = taCenter
+        Text = '1024 x 1024'
+        Width = 80
+      end
+      item
+        Alignment = taCenter
+        Bevel = pbRaised
         Text = '0.0000ms'
         Width = 70
       end

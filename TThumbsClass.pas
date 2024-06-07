@@ -45,6 +45,7 @@ type
     function  fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function  generateThumbs(const aItemIx: integer): integer;
     function  getCurrentIx: integer;
+    function  getWhichHost: THostType;
   public
     constructor create;
     destructor destroy; override;
@@ -54,6 +55,7 @@ type
     function playPrevThumbsPage: boolean;
     function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
+    function showDisplayDimensions(const aHost: THostType): boolean;
     function thumbColCount: integer;
     function thumbsPerPage: integer;
     function thumbRowCount: integer;
@@ -64,6 +66,7 @@ type
     property playlist:          TPlaylist     read FPlaylist;
     property thumbSize:         integer       read FThumbSize       write FThumbSize;
     property statusBar:         TStatusBar                          write FStatusBar;
+    property whichHost:         THostType     read getWhichHost;
   end;
 
 implementation
@@ -188,6 +191,12 @@ begin
   result := FPlaylist.currentIx;
 end;
 
+function TThumbs.getWhichHost: THostType;
+begin
+  case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
+  case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
+end;
+
 function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
 begin
   FMPVHost    := aMPVHost;
@@ -242,6 +251,9 @@ begin
                                                                FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
                              FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
 
+  case whichHost of htMPVHost:    showDisplayDimensions(htMPVHost);
+                    htThumbsHost: showDisplayDimensions(htThumbsHost); end;
+
   case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
 
   case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
@@ -249,6 +261,13 @@ begin
 
   FStatusBar.refresh;
   mmpProcessMessages;
+end;
+
+function TThumbs.showDisplayDimensions(const aHost: THostType): boolean;
+begin
+  case FPlaylist.hasItems of  TRUE: case aHost of htMPVHost:    mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FMPVHost.width, FMPVHost.height]));
+                                                  htThumbsHost: mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FThumbsHost.width, FThumbsHost.height])); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnDDXY, ''); end;
 end;
 
 function TThumbs.thumbColCount: integer;
