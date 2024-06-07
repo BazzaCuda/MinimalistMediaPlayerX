@@ -106,7 +106,7 @@
         <DCC_ExeOutput>.\$(Platform)\$(Config)\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.1.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.1.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
@@ -114,6 +114,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <Debugger_RunParams>&quot;B:\Images\zTest\from mobile\Dylan_Original_Model.JPG.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
+        <VerInfo_Release>1</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
