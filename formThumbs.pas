@@ -81,7 +81,7 @@ type
     function renameFile(const aFilePath: string): boolean;
     function reverseSlideshow: boolean;
     function saveCopyFile(const aFilePath: string): boolean;
-    function saveMoveFile(const aFilePath: string; const aFolder: string; const aOpText: string): boolean;
+    function saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showPlaylist: boolean;
@@ -519,9 +519,9 @@ begin
                                                             end;end;
 end;
 
-function TThumbsForm.saveMoveFile(const aFilePath, aFolder, aOpText: string): boolean;
+function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
 begin
-  case saveMoveFileToFolder(aFilePath, aFolder, aOpText) of FALSE: EXIT; end;
+  case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
   FThumbs.playlist.delete(FThumbs.playlist.currentIx);
   case FThumbs.playlist.isFirst of  TRUE: playCurrentItem;
                                    FALSE: playNext; end; // because playlist.delete decrements FPlayIx

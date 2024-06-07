@@ -74,8 +74,10 @@ end;
 
 function TConfigFile.deleteName(const aName: string): boolean;
 begin
-  FFileContents.delete(FFileContents.indexOfName(aName));
-  saveConfigFile;
+  var vIx := FFileContents.indexOfName(aName);
+  case vIx <> -1 of TRUE: begin
+                            FFileContents.delete(vIx);
+                            saveConfigFile; end;end;
 end;
 
 destructor TConfigFile.destroy;
