@@ -316,7 +316,8 @@ begin
   vNewName := mmpRenameFile(aFilePath, '_' + mmpFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of  TRUE: begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
-                                        mmpSetPanelText(FStatusBar, pnHelp, 'Kept'); end;
+                                        mmpSetPanelText(FStatusBar, pnHelp, 'Kept');
+                                        mmpSetPanelText(FStatusBar, pnName, extractFileName(FThumbs.playlist.currentItem)); end;
                                 FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Kept'); end;
 end;
 
