@@ -441,8 +441,8 @@ begin
   case vLoop = 'no' of  TRUE: mpv.setPropertyString('loop-file', 'yes');
                        FALSE: mpv.setPropertyString('loop-file', 'no'); end;
   mpv.GetPropertyString('loop-file', vLoop);
-  case vLoop = 'no' of  TRUE: result := 'repeat on';
-                       FALSE: result := 'repeat off'; end;
+  case vLoop = 'no' of  TRUE: result := 'repeat off';
+                       FALSE: result := 'repeat on'; end;
 end;
 
 function mpvToggleSubtitles(const mpv: TMPVBasePlayer): string;

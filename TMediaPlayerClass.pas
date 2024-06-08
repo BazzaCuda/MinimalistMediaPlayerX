@@ -369,13 +369,14 @@ begin
     mpvInitPlayer(mpv, UI.handle, mmpExePath, mmpExePath);  // THIS RECREATES THE INTERNAL MPV OBJECT IN TMVPBasePlayer
     mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
 
-    mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
-    case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
+    case FImageDisplayDurationMs = 0 of TRUE: begin
+                                                mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
+                                                case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
 
-    FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
+                                                FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
 
-    FImageDisplayDuration := 'autoPlayNext'; // anything except 'inf'
-    mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.
+                                                FImageDisplayDuration := 'autoPlayNext'; // anything except 'inf'
+                                                mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;end; // get the user's duration setting, if any, then override it.
   end;end;
 
   mpvOpenFile(mpv, aURL);
