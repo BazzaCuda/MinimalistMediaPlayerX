@@ -32,7 +32,7 @@ type
             koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave, koBookmarkLoad, koBookmarkDelete, koRotateReset,
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
-            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio);
+            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -42,7 +42,7 @@ function KBProcessKeyStroke(const aKey: word; const aShiftState: TShiftState; co
 implementation
 
 uses
-  winApi.windows,
+  winApi.shellApi, winApi.windows,
   system.sysUtils,
   vcl.forms,
   mmpConsts, mmpFileUtils, mmpPlaylistUtils, mmpUtils,
@@ -146,7 +146,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(T)                         and (MP.mediaType <> mtImage)     of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;
     case keyUp and keyIs(V)                                                           of TRUE: result := koSyncMedia; end;
-    case keyUp and keyIs(W)                                                           of TRUE: result := koPlayNext; end;
+    case keyUp and keyIs(W) and     ctrl                                              of TRUE: result := koWiki; end;
+    case keyUp and keyIs(W) and NOT ctrl                                              of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(X)                                                           of TRUE: result := koCloseApp; end;
     case keyDn and keyIs(Y)                                                           of TRUE: result := koThumbnails; end;
     case keyUp and keyIs(Z)                                                           of TRUE: result := koPlayLast; end;
@@ -286,6 +287,7 @@ begin
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
     koVolDn:             ST.opInfo := MP.volDown;
     koVolUp:             ST.opInfo := MP.volUp;
+    koWiki:              shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
     koZoomIn:            ST.opInfo := MP.zoomIn;
     koZoomOut:           ST.opInfo := MP.zoomOut;
     koZoomReset:         ST.opInfo := MP.zoomReset;

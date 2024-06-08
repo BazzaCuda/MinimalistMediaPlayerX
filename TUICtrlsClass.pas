@@ -161,6 +161,7 @@ begin
   mmpProcessMessages;
 
   case GV.autoCentre of TRUE: autoCentreWindow(GV.appWnd); end;
+  showXY;
 end;
 
 function TUI.arrangeAll: boolean;
