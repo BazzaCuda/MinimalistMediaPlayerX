@@ -4,7 +4,7 @@ object AboutBoxForm: TAboutBoxForm
   BorderStyle = bsDialog
   Caption = 'About'
   ClientHeight = 272
-  ClientWidth = 628
+  ClientWidth = 618
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object AboutBoxForm: TAboutBoxForm
   object Bevel1: TBevel
     Left = 120
     Top = 8
-    Width = 489
-    Height = 232
+    Width = 509
+    Height = 225
   end
   object Image1: TImage
     Left = 8
@@ -2289,9 +2289,9 @@ object AboutBoxForm: TAboutBoxForm
   object Label5: TLabel
     Left = 136
     Top = 167
-    Width = 198
+    Width = 126
     Height = 25
-    Caption = 'Website: (latest release)'
+    Caption = 'Latest Release: '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
@@ -2300,15 +2300,15 @@ object AboutBoxForm: TAboutBoxForm
     ParentFont = False
   end
   object lblWebsiteURL: TLabel
-    Left = 136
-    Top = 197
-    Width = 466
+    Left = 268
+    Top = 168
+    Width = 59
     Height = 25
     Cursor = crHandPoint
-    Caption = 'https://github.com/BazzaCuda/MinimalistMediaPlayerX'
+    Caption = 'GitHub'
     Color = clBtnFace
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlue
+    Font.Color = clSkyBlue
     Font.Height = -19
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -2319,10 +2319,10 @@ object AboutBoxForm: TAboutBoxForm
     OnMouseLeave = lblWebsiteURLMouseLeave
   end
   object Bevel2: TBevel
-    Left = 4
-    Top = 237
-    Width = 628
-    Height = 2
+    Left = -2
+    Top = 232
+    Width = 624
+    Height = 33
   end
   object Label6: TLabel
     Left = 136
@@ -2378,9 +2378,41 @@ object AboutBoxForm: TAboutBoxForm
     Font.Style = []
     ParentFont = False
   end
+  object Label3: TLabel
+    Left = 136
+    Top = 197
+    Width = 46
+    Height = 25
+    Caption = 'Wiki: '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lblWikiURL: TLabel
+    Left = 188
+    Top = 197
+    Width = 293
+    Height = 25
+    Cursor = crHandPoint
+    Caption = 'https://MinimalistMediaPlayer.com'
+    Color = clBtnFace
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clSkyBlue
+    Font.Height = -19
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    OnClick = lblWikiURLClick
+    OnMouseEnter = lblWikiURLMouseEnter
+    OnMouseLeave = lblWikiURLMouseLeave
+  end
   object btnClose: TButton
     Left = 281
-    Top = 246
+    Top = 236
     Width = 75
     Height = 25
     Caption = '&Close'
@@ -2389,7 +2421,7 @@ object AboutBoxForm: TAboutBoxForm
   end
   object btnWhatsNew: TButton
     Left = 504
-    Top = 245
+    Top = 235
     Width = 105
     Height = 25
     Caption = 'What'#39's New?'

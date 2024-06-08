@@ -43,12 +43,17 @@ type
     lblLatestReleaseVersion: TLabel;
     Label7: TLabel;
     btnWhatsNew: TButton;
+    Label3: TLabel;
+    lblWikiURL: TLabel;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
     procedure lblWebsiteURLMouseLeave(Sender: TObject);
     procedure btnWhatsNewClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure lblWikiURLClick(Sender: TObject);
+    procedure lblWikiURLMouseEnter(Sender: TObject);
+    procedure lblWikiURLMouseLeave(Sender: TObject);
   private
   public
     function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -56,6 +61,7 @@ type
     function setCopyrightYear(const aYear: WORD): boolean;
     function setLatestReleaseVersion(const aRelease: string): boolean;
     function setReleaseVersion(const aRelease: string): boolean;
+    function setNoStyle: boolean;
     function setWhatsNew(const aHasReleaseNotes: boolean): boolean;
   end;
 
@@ -78,6 +84,7 @@ begin
   GV.userInput := TRUE;
   with TAboutBoxForm.create(NIL) do
   try
+    setNoStyle;
     setCopyrightYear(currentYear);
     setReleaseVersion(thisVersion);
     setBuildVersion(buildVersion);
@@ -134,6 +141,21 @@ begin
   lblWebsiteURL.font.style := [];
 end;
 
+procedure TAboutBoxForm.lblWikiURLClick(Sender: TObject);
+begin
+  shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
+end;
+
+procedure TAboutBoxForm.lblWikiURLMouseEnter(Sender: TObject);
+begin
+  lblWikiURL.font.style := [fsUnderline];
+end;
+
+procedure TAboutBoxForm.lblWikiURLMouseLeave(Sender: TObject);
+begin
+  lblWikiURL.font.style := [];
+end;
+
 function TAboutBoxForm.setBuildVersion(const aBuild: string): boolean;
 begin
   lblBuildVersion.Caption := aBuild;
@@ -147,6 +169,12 @@ end;
 function TAboutBoxForm.setLatestReleaseVersion(const aRelease: string): boolean;
 begin
   lblLatestReleaseVersion.caption := aRelease;
+end;
+
+function TAboutBoxForm.setNoStyle: boolean;
+begin
+  lblWebsiteURL.styleElements := [seClient, seBorder];
+  lblWikiURL.styleElements    := [seClient, seBorder];
 end;
 
 function TAboutBoxForm.setReleaseVersion(const aRelease: string): boolean;
