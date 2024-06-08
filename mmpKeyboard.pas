@@ -32,7 +32,8 @@ type
             koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave, koBookmarkLoad, koBookmarkDelete, koRotateReset,
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
-            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki);
+            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
+            koToggleNumlock);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -45,7 +46,7 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpPlaylistUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpUtils,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
   TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
   _debugWindow;
@@ -134,7 +135,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(K)                                                           of TRUE: result := koKeep; end;
     case keyUp and keyIs(L)                         and NOT GV.showingTimeline        of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(M)                         and NOT GV.showingTimeline        of TRUE: result := koMaximize; end;
-    case keyUp and keyIs(N)                         and NOT GV.showingTimeline        of TRUE: result := koMinimizeWindow; end;
+    case keyUp and keyIs(N) and     ctrl            and NOT GV.showingTimeline        of TRUE: result := koToggleNumlock; end;
+    case keyUp and keyIs(N) and NOT ctrl            and NOT GV.showingTimeline        of TRUE: result := koMinimizeWindow; end;
     case keyDn and keyIs(O)                         and NOT GV.showingTimeline        of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(P)                                                           of TRUE: result := koTogglePlaylist; end;
     case keyUp and keyIs(Q)                                                           of TRUE: result := koPlayPrev; end;
@@ -282,6 +284,7 @@ begin
     koToggleControls:    SA.postToAll(WIN_CONTROLS, KBNumLock);
     koToggleEditMode:    UI.toggleTimeline;
     koToggleHelp:        UI.toggleHelpWindow;
+    koToggleNumlock:     mmpToggleNumlock;
     koTogglePlaylist:    UI.togglePlaylist;
     koToggleRepeat:      ST.opInfo := MP.toggleRepeat;
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;

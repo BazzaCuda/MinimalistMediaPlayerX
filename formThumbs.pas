@@ -108,7 +108,7 @@ implementation
 uses
   winApi.shellApi,
   mmpMPVCtrls, mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow;
@@ -747,6 +747,7 @@ begin
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
     koToggleHelp:         case GV.showingHelp of TRUE: shutHelp; FALSE: moveHelpWindow(TRUE); end;
+    koToggleNumlock:      mmpToggleNumlock;
     koUndoMove:           undoMove;
     koWiki:               shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
     koZoomIn:             mpvZoomIn(mpv);

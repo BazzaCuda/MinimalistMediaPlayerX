@@ -90,7 +90,8 @@ uses
   mmpWindowCtrls in 'mmpWindowCtrls.pas',
   mmpUserFolders in 'mmpUserFolders.pas',
   mmpFolderUtils in 'mmpFolderUtils.pas',
-  TUndoMoveClass in 'TUndoMoveClass.pas';
+  TUndoMoveClass in 'TUndoMoveClass.pas',
+  mmpKeyboardUtils in 'mmpKeyboardUtils.pas';
 
 {$R *.res}
 
