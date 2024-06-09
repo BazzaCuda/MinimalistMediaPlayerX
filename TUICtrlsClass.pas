@@ -38,23 +38,23 @@ type
     FVideoPanel:    TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
+    function createVideoPanel(const aForm: TForm): boolean;
     function delayedHide: boolean;
     function setCustomTitleBar(const aForm: TForm): boolean;
     function setGlassFrame(const aForm: TForm): boolean;
     function setWindowStyle(const aForm: TForm): boolean;
-    function createVideoPanel(const aForm: TForm): boolean;
     function getHeight: integer;
     function getWidth: integer;
+    function getXY: TPoint;
+    procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
+    procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
     procedure onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure onMPBeforeNew(sender: TObject);
     procedure onMPPlayNew(sender: TObject);
     procedure onMPPlayNext(sender: TObject);
     procedure onMPPosition(const aMax: integer; const aPosition: integer);
-    function getXY: TPoint;
     procedure setHeight(const Value: integer);
     procedure setWidth(const Value: integer);
-    procedure formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
-    procedure formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio: boolean;
@@ -287,32 +287,6 @@ begin
   CF.value['progressBar'] := CF.toHex(PB.darker);
 end;
 
-procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-// doesn't work in TAppEventsClass. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
-begin
-  case screen <> NIL of TRUE: screen.cursor := crDefault; end;
-end;
-
-procedure TUI.onMPBeforeNew(sender: TObject);
-begin
-  case GV.showingTimeline of TRUE: TL.clear; end;
-end;
-
-procedure TUI.onMPPlayNew(sender: TObject);
-begin
-  case GV.showingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
-end;
-
-procedure TUI.onMPPlayNext(sender: TObject);
-begin
-  movePlaylistWindow(FALSE);
-end;
-
-procedure TUI.onMPPosition(const aMax: integer; const aPosition: integer);
-begin
-  case GV.showingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
-end;
-
 function TUI.createVideoPanel(const aForm: TForm): boolean;
 begin
   FVideoPanel             := TPanel.create(aForm);
@@ -367,6 +341,22 @@ begin
   movePlaylistWindow(FALSE);
   moveTimelineWindow(FALSE);
   case MP.mediaType = mtImage of TRUE: showXY; end;
+end;
+
+procedure TUI.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  GV.altKeyDown := ssAlt in shift;
+  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT, KBNumLock); end;
+end;
+
+procedure TUI.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
+// keys that don't generate a standard WM_KEYUP message
+begin
+  GV.altKeyDown := NOT (key = VK_MENU);
+  case key in [VK_F10] of TRUE: begin
+                               postMessage(GV.appWnd, WM_KEY_UP, key, 0);
+                               mmpProcessMessages; end;end;
 end;
 
 function TUI.getHeight: integer;
@@ -437,22 +427,6 @@ begin
   result := FMainForm.handle;
 end;
 
-procedure TUI.formKeyDn(sender: TObject; var key: WORD; shift: TShiftState);
-// keys that don't generate a standard WM_KEYUP message
-begin
-  GV.altKeyDown := ssAlt in shift;
-  case GV.altKeyDown of TRUE: SA.postToAll(WIN_TABALT, KBNumLock); end;
-end;
-
-procedure TUI.formKeyUp(sender: TObject; var key: WORD; shift: TShiftState);
-// keys that don't generate a standard WM_KEYUP message
-begin
-  GV.altKeyDown := NOT (key = VK_MENU);
-  case key in [VK_F10] of TRUE: begin
-                               postMessage(GV.appWnd, WM_KEY_UP, key, 0);
-                               mmpProcessMessages; end;end;
-end;
-
 function TUI.initUI(const aForm: TForm): boolean;
 begin
   FMainForm           := aForm;
@@ -509,6 +483,50 @@ function TUI.minimizeWindow: boolean;
 
 begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+end;
+
+function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
+  showHelp(SELF.handle, vPt, htHelp, create);
+end;
+
+function TUI.movePlaylistWindow(const createNew: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
+  showPlaylist(PL, vPt, videoPanel.height, createNew);
+end;
+
+function TUI.moveTimelineWindow(const createNew: boolean = TRUE): boolean;
+begin
+  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
+  showTimeline(vPt, FVideoPanel.width, createNew);
+end;
+
+procedure TUI.onMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+// doesn't work in TAppEventsClass. Spurious WM_MOUSEMOVE events are generated even with no mouse connected!
+begin
+  case screen <> NIL of TRUE: screen.cursor := crDefault; end;
+end;
+
+procedure TUI.onMPBeforeNew(sender: TObject);
+begin
+  case GV.showingTimeline of TRUE: TL.clear; end;
+end;
+
+procedure TUI.onMPPlayNew(sender: TObject);
+begin
+  case GV.showingTimeline of TRUE: TL.initTimeline(PL.currentItem, MP.duration); end;
+end;
+
+procedure TUI.onMPPlayNext(sender: TObject);
+begin
+  movePlaylistWindow(FALSE);
+end;
+
+procedure TUI.onMPPosition(const aMax: integer; const aPosition: integer);
+begin
+  case GV.showingTimeline of TRUE: begin TL.max := aMax; TL.position := aPosition; end;end;
 end;
 
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
@@ -706,24 +724,6 @@ end;
 function TUI.toggleBlackout: boolean;
 begin
   PB.showProgressBar := NOT PB.showProgressBar;
-end;
-
-function TUI.moveHelpWindow(const create: boolean = TRUE): boolean;
-begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  showHelp(SELF.handle, vPt, htHelp, create);
-end;
-
-function TUI.movePlaylistWindow(const createNew: boolean = TRUE): boolean;
-begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  showPlaylist(PL, vPt, videoPanel.height, createNew);
-end;
-
-function TUI.moveTimelineWindow(const createNew: boolean = TRUE): boolean;
-begin
-  var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
-  showTimeline(vPt, FVideoPanel.width, createNew);
 end;
 
 function TUI.resetColor: boolean;
