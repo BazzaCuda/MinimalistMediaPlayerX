@@ -230,7 +230,11 @@ begin
   result := FALSE;
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
 
-  var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.* ??';
+  var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
+  vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
+  vMsg := vMsg + 'that doesn''t start with an underscore character _'#13#10#13#10;
+  vMsg := vMsg + 'Only click OK if you are ABSOLUTELY SURE'#13#10#13#10;
+  vMsg := vMsg + 'Once they''re gone, they are GONE!';
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of  TRUE:;
                                              FALSE: EXIT; end;
 
