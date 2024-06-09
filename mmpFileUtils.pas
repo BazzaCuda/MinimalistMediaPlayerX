@@ -42,7 +42,7 @@ uses
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
   mmpDialogs, mmpShellUtils, mmpUserFolders, mmpUtils,
-  TUndoMoveClass,
+  TConfigFileClass, TUndoMoveClass,
   formInputBox,
   _debugWindow;
 
@@ -199,7 +199,7 @@ begin
 
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
-                                                              FALSE: ShowMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
+                                                              FALSE: showMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
 function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
@@ -229,6 +229,12 @@ var
 begin
   result := FALSE;
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
+  case lowerCase(CF.value['keepDelete']) = 'yes' of FALSE:  begin
+                                                              var vMsg := 'keepDelete=no'#13#10#13#10;
+                                                              vMsg := vMsg + 'To use this functionality, you must explicitly'#13#10;
+                                                              vMsg := vMsg + 'enable it in MinimalistMediaPlayer.conf with keepDelete=yes';
+                                                              mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
+                                                              EXIT; end;end;
 
   var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
   vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
