@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -46,9 +46,9 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpSysCommands, mmpUtils,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
-  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TUICtrlsClass,
   _debugWindow;
 
 const
@@ -124,6 +124,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(B) and NOT ctrl                                              of TRUE: result := koToggleBlackout; end;
     case keyDn and keyIs(B) and     ctrl and shift                                    of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(C)                         and NOT GV.showingTimeline        of TRUE: result := koToggleControls; end;
+    case keyUp and keyIs(D)                                                           of TRUE: result := koNextFolder; end; // EXPERIMENTAL
     case keyUp and keyIs(E) and ctrl                                                  of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
     case keyUp and keyIs(F)                                                           of TRUE: result := koFullscreen; end;
@@ -132,7 +133,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(H) and NOT ctrl                                              of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I)                         and NOT GV.showingTimeline        of TRUE: result := koZoomIn; end;
     case keyUp and keyIs(J)                                                           of TRUE: result := koAdjustAspectRatio; end;
-    case keyUp and keyIs(K)                                                           of TRUE: result := koKeep; end;
+    case keyUp and keyIs(K) and     ctrl                                              of TRUE: result := koKeepDelete; end;
+    case keyUp and keyIs(K) and NOT ctrl                                              of TRUE: result := koKeep; end;
     case keyUp and keyIs(L)                         and NOT GV.showingTimeline        of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(M)                         and NOT GV.showingTimeline        of TRUE: result := koMaximize; end;
     case keyUp and keyIs(N) and     ctrl            and NOT GV.showingTimeline        of TRUE: result := koToggleNumlock; end;
@@ -170,6 +172,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(VK_DELETE)                                                   of TRUE: result := koDeleteCurrentItem; end;
     case keyDn and keyIs(VK_DOWN)   and     ctrl                                      of TRUE: result := koPanDn; end;
     case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GV.showingPlaylist        of TRUE: result := koVolDn; end;
+    case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koNextFolder; end; // EXPERIMENTAL
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
     case keyUp and keyIs(VK_ESCAPE)                                                   of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F5)                                                       of TRUE: result := koScreenshot; end;
@@ -193,6 +196,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl    and (MP.mediaType <> mtVideo)     of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_UP)     and     ctrl                                      of TRUE: result := koPanUp; end;
     case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GV.showingPlaylist        of TRUE: result := koVolUp; end;
+    case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koPrevFolder; end; // EXPERIMENTAL
     case keyUp and keyIs(VK_PRIOR)                  and NOT GV.showingPlaylist        of TRUE: result := koRotateL; end;
     case keyUp and keyIs(VK_SPACE)                                                    of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT)                                                 of TRUE: result := koSpeedDn; end;
@@ -202,7 +206,6 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(VK_VOLUME_UP)                                                of TRUE: result := koVolUp; end;
 
     // spare keys
-    case keyUp and keyIs(D)                                                           of TRUE: result := koNone; end;
     case keyUp and keyIs(P) and ctrl                                                  of TRUE: result := koNone; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
   end;
@@ -227,7 +230,7 @@ begin
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koClipboard:         PL.copyToClipboard;
     koCloseAll:          begin mmpCancelDelay; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
-    koCloseApp:          begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; sendSysCommandClose(UI.handle); end;
+    koCloseApp:          begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; mmpSendSysCommandClose(UI.handle); end;
     koContrastDn:        ST.opInfo := MP.contrastDn;
     koContrastUp:        ST.opInfo := MP.contrastUp;
     koContrastReset:     ST.opInfo := MP.contrastReset;
@@ -244,10 +247,12 @@ begin
     koGammaUp:           ST.opInfo := MP.gammaUp;
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
+    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: begin ST.opInfo := 'Kept/Deleted'; mmpSendSysCommandClose(UI.handle); end;end;end;  // EXPERIMENTAL ONLY
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;
     koNextChapter:       MP.chapterNext;
+    koNextFolder:        MP.playNextFolder;
     koPanDn:             ST.opInfo := MP.panDn;
     koPanLeft:           ST.opInfo := MP.panLeft;
     koPanReset:          ST.opInfo := MP.panReset;
@@ -256,6 +261,7 @@ begin
     koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
     koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
     koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
+    koPrevFolder:        MP.playPrevFolder;
     koRenameFile:        UI.renameFile(PL.currentItem);
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koRotateR:           ST.opInfo := MP.rotateRight;

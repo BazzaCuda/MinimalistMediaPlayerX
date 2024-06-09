@@ -30,6 +30,7 @@ type
 
   TPlaylist = class(TObject)
   strict private
+    FCurrentFolder: string;
     FPlayIx: integer;
     FPlaylist: TList<string>;
   private
@@ -79,7 +80,7 @@ uses
   vcl.clipbrd,
   mmpFileUtils,
   formCaptions,
-  TGlobalVarsClass, TMediaTypesClass, TSysCommandsClass,
+  TGlobalVarsClass, TMediaTypesClass,
   _debugWindow;
 
 function PL: TPlaylist;
@@ -123,7 +124,7 @@ end;
 
 function TPlaylist.currentFolder: string;
 begin
-  result := extractFilePath(currentItem);
+  result := FCurrentFolder;
 end;
 
 function TPlaylist.currentItem: string;
@@ -181,6 +182,7 @@ begin
   result := FALSE;
   clear;
   case directoryExists(aFolder) of FALSE: EXIT; end;
+  FCurrentFolder := aFolder;
 
   case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat

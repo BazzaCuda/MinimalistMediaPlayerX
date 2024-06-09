@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit TSysCommandsClass;
+unit mmpSysCommands;
 
 interface
 
@@ -25,21 +25,21 @@ uses
   mmpConsts,
   formAboutBox;
 
-function doSysCommand(var Message: TWMSysCommand): boolean;
-function sendSysCommandClose(const aHWND: HWND): boolean;
+function mmpDoSysCommand(var Message: TWMSysCommand): boolean;
+function mmpSendSysCommandClose(const aHWND: HWND): boolean;
 
 implementation
 
 uses
   TGlobalVarsClass, TUICtrlsClass;
 
-function doSysCommand(var Message: TWMSysCommand): boolean;
+function mmpDoSysCommand(var Message: TWMSysCommand): boolean;
 begin
   case Message.CmdType of MENU_ABOUT_ID:  showAboutBox; end;
   case Message.CmdType of MENU_HELP_ID:   UI.toggleHelpWindow; end;
 end;
 
-function sendSysCommandClose(const aHWND: HWND): boolean;
+function mmpSendSysCommandClose(const aHWND: HWND): boolean;
 begin
   GV.closeApp := TRUE;
   case UI.initialized of TRUE: postMessage(aHWND, WM_CLOSE, 0, 0); end;

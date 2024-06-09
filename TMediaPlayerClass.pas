@@ -101,7 +101,9 @@ type
     function playFirst: boolean;
     function playLast: boolean;
     function playNext: boolean;
+    function playNextFolder: boolean;
     function playPrev: boolean;
+    function playPrevFolder: boolean;
     function releasePlayer: boolean;
     function resetTimeCaption: boolean;
     function resume: boolean;
@@ -153,9 +155,9 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
-  mmpFileUtils, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpUtils,
+  mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass, TUICtrlsClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TUICtrlsClass,
   _debugWindow;
 
 var
@@ -352,7 +354,7 @@ begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
     tePlay:  play(PL.currentItem);
-    teClose: sendSysCommandClose(UI.handle);
+    teClose: mmpSendSysCommandClose(UI.handle);
   end;
 end;
 
@@ -528,6 +530,9 @@ end;
 function TMediaPlayer.playNext: boolean;
 begin
   pause;
+
+  case PL.isLast and (FMediaType = mtImage) of TRUE: EXIT; end; // EXPERIMENTAL - DON'T exit if last item is an image
+
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
@@ -540,15 +545,40 @@ begin
                           TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end;
 end;
 
+function TMediaPlayer.playNextFolder: boolean;  // EXPERIMENTAL
+// reload playlist from nextFolder and play first item
+var
+  nextFolder: string;
+begin
+  nextFolder := mmpNextFolder(PL.currentFolder, nfForwards);
+  ST.opInfo := nextFolder;
+  case nextFolder = '' of FALSE: PL.fillPlaylist(nextFolder) end;
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  case PL.hasItems of TRUE: play(PL.currentItem); end;
+end;
+
 function TMediaPlayer.playPrev: boolean;
 begin
   pause;
+
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
   FTimer.interval := 100;
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.prev;
+end;
+
+function TMediaPlayer.playPrevFolder: boolean; // EXPERIMENTAL
+// reload playlist from prevFolder and play first item
+var
+  prevFolder: string;
+begin
+  prevFolder := mmpNextFolder(PL.currentFolder, nfBackwards);
+  ST.opInfo := prevFolder;
+  case prevFolder = '' of FALSE: PL.fillPlaylist(prevFolder); end;
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  case PL.hasItems of TRUE: play(PL.currentItem); end;
 end;
 
 function TMediaPlayer.resume: boolean;

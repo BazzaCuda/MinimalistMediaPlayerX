@@ -44,9 +44,9 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
   formCaptions, formMediaCaption,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TParamStringsClass, TProgressBarClass, TSysCommandsClass, TUICtrlsClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TParamStringsClass, TProgressBarClass, TUICtrlsClass,
   _debugWindow;
 
 {$R *.dfm}
@@ -88,7 +88,7 @@ begin
 
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
 
-  case GV.closeApp of TRUE: sendSysCommandClose(UI.handle); end; // pending since user tried to exit during initialization
+  case GV.closeApp of TRUE: mmpSendSysCommandClose(UI.handle); end; // pending since user tried to exit during initialization
 end;
 
 procedure TMMPUI.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);

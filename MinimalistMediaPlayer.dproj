@@ -202,7 +202,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TProgressBarClass.pas"/>
         <DCCReference Include="TSegmentClass.pas"/>
         <DCCReference Include="TSendAllClass.pas"/>
-        <DCCReference Include="TSysCommandsClass.pas"/>
+        <DCCReference Include="mmpSysCommands.pas"/>
         <DCCReference Include="TTickTimerClass.pas"/>
         <DCCReference Include="TUICtrlsClass.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>

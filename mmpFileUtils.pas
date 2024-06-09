@@ -32,6 +32,7 @@ function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
+function mmpKeepDelete(const aFolderPath: string): boolean; // EXPERIMENTAL ONLY
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 
 implementation
@@ -211,6 +212,36 @@ begin
   result := hFile = INVALID_HANDLE_VALUE;
   case result of  TRUE: aSysErrorMessage := sysErrorMessage(getLastError);
                  FALSE: closeHandle(hFile); end;
+end;
+
+function mmpKeepDelete(const aFolderPath: string): boolean; // EXPERIMENTAL ONLY
+const
+  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
+var
+  vSR: TSearchRec;
+  vExt: string;
+
+  function fileOK: boolean;
+  begin
+    result := vSR.name[1] <> '_';
+  end;
+
+begin
+  result := FALSE;
+  case directoryExists(aFolderPath) of FALSE: EXIT; end;
+
+  var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.* ??';
+  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of  TRUE:;
+                                             FALSE: EXIT; end;
+
+  case FindFirst(aFolderPath + '*.*', faFile, vSR) = 0 of  TRUE:
+    repeat
+      case fileOK of TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + aFolderPath + vSR.Name +  '"'); end;
+    until FindNext(vSR) <> 0;
+  end;
+
+  system.sysUtils.FindClose(vSR);
+  result := TRUE;
 end;
 
 end.

@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koTogglePlaylist, koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder,
             koThumbsUp, koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki,
-            koToggleNumlock
+            koToggleNumlock, koKeepDelete
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -109,7 +109,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(H) and NOT ctrl                                  of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I)                                               of TRUE: result := koZoomIn; end;
     case keyUp and keyIs(J)                                               of TRUE: result := koAdjustAspectRatio; end;
-    case keyUp and keyIs(K)                                               of TRUE: result := koKeep; end;
+    case keyUp and keyIs(K) and     ctrl                                  of TRUE: result := koKeepDelete; end;
+    case keyUp and keyIs(K) and NOT ctrl                                  of TRUE: result := koKeep; end;
     case keyUp and keyIs(M)                                               of TRUE: result := koMaximize; end;
     case keyUp and keyIs(L)                                               of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(N) and     ctrl                                  of TRUE: result := koToggleNumlock; end;
@@ -170,8 +171,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 // TO DO
 //    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
 //    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
-
-
 
 //    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;
 //    case keyUp and keyIs(B) and NOT ctrl                                  of TRUE: result := koToggleBlackout; end;

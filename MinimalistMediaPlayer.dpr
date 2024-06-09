@@ -60,7 +60,7 @@ uses
   TProgressBarClass in 'TProgressBarClass.pas',
   TSegmentClass in 'TSegmentClass.pas',
   TSendAllClass in 'TSendAllClass.pas',
-  TSysCommandsClass in 'TSysCommandsClass.pas',
+  mmpSysCommands in 'mmpSysCommands.pas',
   TTickTimerClass in 'TTickTimerClass.pas',
   TUICtrlsClass in 'TUICtrlsClass.pas',
   _debugWindow in '..\DebugWindow\_debugWindow.pas',

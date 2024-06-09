@@ -63,7 +63,6 @@ type
     function adjustAspectRatio: boolean;
     function autoCentre: boolean;
     function checkThumbsPerPage: boolean;
-    function checkWindowSize(const aCtrlKeyDown: boolean): boolean;
     function deleteCurrentItem: boolean;
     function keepFile(const aFilePath: string): boolean;
     function maximizeWindow: boolean;
@@ -108,7 +107,7 @@ implementation
 uses
   winApi.shellApi,
   mmpMPVCtrls, mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow;
@@ -181,13 +180,6 @@ begin
   case vBlankHeight  >  vThumbsSize div 3 of  TRUE: SELF.height := SELF.height + (vThumbsSize - vBlankHeight);
                                              FALSE: SELF.height := SELF.height - vBlankHeight; end;
   case (SELF.width > mmpScreenWidth) or (SELF.height > mmpScreenHeight) of TRUE: mmpGreaterWindow(SELF.handle, [ssCtrl], vThumbsSize, htThumbsHost); end;
-end;
-
-function TThumbsForm.checkWindowSize(const aCtrlKeyDown: boolean): boolean;
-begin
-  result := TRUE; EXIT; // EXPERIMENTAL
-  case aCtrlKeyDown of FALSE: EXIT; end;
-  result := NOT ((FThumbs.thumbColCount = 1) or (FThumbs.thumbRowCount = 1))
 end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
@@ -711,8 +703,9 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      case checkWindowSize(ssCtrl in aShiftState) of TRUE: begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCentre; end;end;
+    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCentre; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
+    koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;  // EXPERIMENTAL ONLY
     koMaximize:           maximizeWindow;
     koMinimizeWindow:     minimizeWindow;
     koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder(mmpFolderFromFKey(aKey)), 'Moved'); end;

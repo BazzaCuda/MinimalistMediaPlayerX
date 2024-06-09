@@ -108,9 +108,9 @@ uses
   winApi.messages,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpMPVFormatting, mmpShellUtils, mmpUtils,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpMPVFormatting, mmpShellUtils, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TSysCommandsClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass,
   _debugWindow;
 
 var
@@ -359,7 +359,7 @@ begin
                                                       case mmpDeleteThisFile(PL.currentItem, vShiftState) of FALSE: EXIT; end;
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
-                                                                                                      TRUE: sendSysCommandClose(FMainForm.handle);
+                                                                                                      TRUE: mmpSendSysCommandClose(FMainForm.handle);
                                                                                                      FALSE: begin
                                                                                                               loadPlaylistWindow(TRUE);
                                                                                                               case vIx = 0 of  TRUE: MP.playCurrent;
@@ -369,7 +369,7 @@ end;
 function TUI.doEscapeKey: boolean;
 begin
   case FMainForm.WindowState = wsMaximized of  TRUE: toggleMaximized;
-                                              FALSE: sendSysCommandClose(FMainForm.handle); end;
+                                              FALSE: mmpSendSysCommandClose(FMainForm.handle); end;
 end;
 
 procedure TUI.formResize(sender: TObject);
