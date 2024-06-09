@@ -39,7 +39,6 @@ type
   private
     function addMenuItems(const aForm: TForm): boolean;
     function createVideoPanel(const aForm: TForm): boolean;
-    function delayedHide: boolean;
     function setCustomTitleBar(const aForm: TForm): boolean;
     function setGlassFrame(const aForm: TForm): boolean;
     function setWindowStyle(const aForm: TForm): boolean;
@@ -295,22 +294,6 @@ begin
   FVideoPanel.color       := clBlack;
   FVideoPanel.BevelOuter  := bvNone;
   FVideoPanel.OnMouseMove := onMouseMove;
-end;
-
-          // executed in a separate thread
-          function hideForm(parameter: pointer): integer;
-          var formPtr: TForm;
-          begin
-            mmpDelay(2000);        // this delay might be being optimized out
-            formPtr := parameter;
-            formPtr.hide;
-          end;
-function TUI.delayedHide: boolean;
-var
-  i1: LONGWORD;
-  t1: integer;
-begin
-  t1 := beginThread(NIL, 0, addr(hideForm), FMainForm, 0, i1);
 end;
 
 function TUI.doEscapeKey: boolean;
