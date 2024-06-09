@@ -124,8 +124,9 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(B) and NOT ctrl                                              of TRUE: result := koToggleBlackout; end;
     case keyDn and keyIs(B) and     ctrl and shift                                    of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(C)                         and NOT GV.showingTimeline        of TRUE: result := koToggleControls; end;
-    case keyUp and keyIs(D)                                                           of TRUE: result := koNextFolder; end; // EXPERIMENTAL
-    case keyUp and keyIs(E) and ctrl                                                  of TRUE: result := koToggleEditMode; end;
+    case keyUp and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end; // EXPERIMENTAL
+    case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end; // EXPERIMENTAL
+    case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
     case keyUp and keyIs(F)                                                           of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;

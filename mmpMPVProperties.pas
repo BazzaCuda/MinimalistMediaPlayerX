@@ -180,7 +180,7 @@ begin
     setPropertyString('osd-margin-y', '24');
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
-    setPropertyString('sid', '1');
+//    setPropertyString('sid', '1');
     setPropertyString('image-display-duration', 'inf');
 //    SetPropertyDouble('sub-delay', -00.99);
   end;

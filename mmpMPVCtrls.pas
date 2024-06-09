@@ -448,10 +448,10 @@ end;
 function mpvToggleSubtitles(const mpv: TMPVBasePlayer): string;
 var vSid: string;
 begin
-  mpv.GetPropertyString('sid', vSid);
-  case vSid = 'no' of  TRUE: mpv.setPropertyString('sid', '1');
-                      FALSE: mpv.setPropertyString('sid', 'no'); end;
-  mpv.GetPropertyString('sid', vSid);
+  mpv.GetPropertyString('sub', vSid);
+  case vSid = 'no' of  TRUE: mpv.setPropertyString('sub', 'auto');
+                      FALSE: mpv.setPropertyString('sub', 'no'); end;
+  mpv.GetPropertyString('sub', vSid);
   case vSid = 'no' of  TRUE: result := 'subtitles off';
                       FALSE: result := 'subtitles on'; end;
 end;
