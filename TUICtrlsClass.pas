@@ -64,7 +64,6 @@ type
     function centreWindow(const aWnd: HWND): boolean;
     function checkScreenLimits(const aWnd: HWND; const aWidth: integer; const aHeight: integer): boolean;
     function darker: boolean;
-    function deleteCurrentItem: boolean;
     function doEscapeKey: boolean;
     function greaterWindow(const aWnd: HWND; aShiftState: TShiftState): boolean;
     function handle: HWND;
@@ -339,31 +338,6 @@ var
   t1: integer;
 begin
   t1 := beginThread(NIL, 0, addr(hideForm), FMainForm, 0, i1);
-end;
-
-function TUI.deleteCurrentItem: boolean;
-begin
-  case PL.hasItems of FALSE: EXIT; end;
-  MP.pause;
-
-  var vShiftState := mmpShiftState;
-
-  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(PL.currentItem);
-  case ssCtrl in mmpShiftState of  TRUE: vMsg := vMsg + '*.*';
-                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
-
-  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
-                                                      var vIx := PL.currentIx;
-                                                      MP.dontPlayNext := TRUE;  // because...
-                                                      MP.stop;                  // this would have automatically done MP.playNext
-                                                      case mmpDeleteThisFile(PL.currentItem, vShiftState) of FALSE: EXIT; end;
-                                                      PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
-                                                                                                      TRUE: mmpSendSysCommandClose(FMainForm.handle);
-                                                                                                     FALSE: begin
-                                                                                                              loadPlaylistWindow(TRUE);
-                                                                                                              case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                                                              FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function TUI.doEscapeKey: boolean;

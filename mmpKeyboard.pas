@@ -237,7 +237,7 @@ begin
     koCycleAudio:        MP.cycleAudio;
     koCycleSubs:         MP.cycleSubs;
     koDarkerPB:          UI.darker;
-    koDeleteCurrentItem: UI.deleteCurrentItem;
+    koDeleteCurrentItem: mmpDeleteCurrentItem;
     koEscape:            UI.doEscapeKey;
     koFrameBackwards:    MP.frameBackwards;
     koFrameForwards:     MP.frameForwards;
