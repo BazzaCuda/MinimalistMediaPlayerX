@@ -20,7 +20,11 @@ unit mmpShellUtils;
 
 interface
 
+uses
+  mmpConsts;
+
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
+function mmpOpenExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 function mmpShellExec(const anExePath: string; const aParams: string): boolean;
 
 implementation
@@ -28,7 +32,8 @@ implementation
 uses
   winApi.windows, winApi.shellApi,
   system.sysUtils,
-  mmpFileUtils;
+  mmpFileUtils,
+  TConfigFileClass, TMediaPlayerClass;
 
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
 // Create a cmd.exe process to execute any command line
@@ -52,6 +57,27 @@ begin
   result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
                           CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(mmpExePath), vStartInfo, vProcInfo);
 end;
+
+function mmpOpenExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
+begin
+  MP.pause;
+
+  var vAppPath := '';
+
+  case FnnKeyApp of                             // has the user overridden the default app in the config file?
+    F10_APP: vAppPath := CF.value['F10'];
+    F11_APP: vAppPath := CF.value['F11'];
+    F12_APP: vAppPath := CF.value['F12'];
+  end;
+
+  case vAppPath = '' of TRUE: case FnnKeyApp of // No
+                                F10_APP: vAppPath := POT_PLAYER;
+                                F11_APP: vAppPath := LOSSLESS_CUT;
+                                F12_APP: vAppPath := SHOTCUT; end;end;
+
+  mmpShellExec(vAppPath, aParams);
+end;
+
 
 function mmpShellExec(const anExePath: string; const aParams: string): boolean;
 begin

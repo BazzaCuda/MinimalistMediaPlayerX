@@ -74,7 +74,6 @@ type
     function moveHelpWindow(const create: boolean = TRUE): boolean;
     function movePlaylistWindow(const createNew: boolean = TRUE): boolean;
     function moveTimelineWindow(const createNew: boolean = TRUE): boolean;
-    function openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
     function posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
     function renameFile(const aFilePath: string): boolean;
     function resetColor: boolean;
@@ -510,26 +509,6 @@ function TUI.minimizeWindow: boolean;
 
 begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-end;
-
-function TUI.openExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
-begin
-  MP.pause;
-
-  var vAppPath := '';
-
-  case FnnKeyApp of                             // has the user overridden the default app in the config file?
-    F10_APP: vAppPath := CF.value['F10'];
-    F11_APP: vAppPath := CF.value['F11'];
-    F12_APP: vAppPath := CF.value['F12'];
-  end;
-
-  case vAppPath = '' of TRUE: case FnnKeyApp of // No
-                                F10_APP: vAppPath := POT_PLAYER;
-                                F11_APP: vAppPath := LOSSLESS_CUT;
-                                F12_APP: vAppPath := SHOTCUT; end;end;
-
-  mmpShellExec(vAppPath, aParams);
 end;
 
 function TUI.posWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
