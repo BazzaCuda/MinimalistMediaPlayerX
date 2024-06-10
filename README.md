@@ -66,6 +66,8 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - N.B. Many keys can be held down for rapid repitition.
 
+The following list is slightly out of date - see the [https://minimalistmediaplayer.com](Wiki) for an up to date and detailed description of all of `MMP`'s many controls and features.
+
 ### Keyboard Controls
 ---------------------
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
