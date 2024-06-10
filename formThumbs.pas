@@ -48,6 +48,7 @@ type
   strict private
     mpv: TMPVBasePlayer;
     FImageDisplayDurationMs:  double;
+    FDurationResetSpeed:      double;
     FInitialFilePath:         string;
     FLocked:                  boolean;
     FProgressForm:            TProgressForm;
@@ -235,6 +236,7 @@ begin
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, 'image-display-duration', vImageDisplayDuration);
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
+  FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
   mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.  // EXPERIMENTAL
 end;
@@ -566,7 +568,7 @@ end;
 
 function TThumbsForm.speedReset: boolean;
 begin
-  FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION * 1000;
+  FImageDisplayDurationMs := FDurationResetSpeed;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
 end;
 
