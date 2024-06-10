@@ -293,7 +293,7 @@ begin
   case result <> '' of TRUE: EXIT; end;
 
   result := '(autoUpdate=no)';
-  case lowerCase(CF.value['autoUpdate']) = 'yes' of FALSE: EXIT; end;
+  case CF.asBoolean['autoUpdate'] of FALSE: EXIT; end;
 
   result := '(not available)';
   FReleaseTag := getJSONReleaseTag;

@@ -23,9 +23,10 @@ interface
 uses
   system.classes;
 
+function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const deleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
-function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
@@ -41,10 +42,25 @@ uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
-  mmpDialogs, mmpShellUtils, mmpUserFolders, mmpUtils,
-  TConfigFileClass, TUndoMoveClass,
+  mmpConsts, mmpDialogs, mmpShellUtils, mmpUserFolders, mmpUtils,
+  TConfigFileClass, TMediaTypesClass, TUndoMoveClass,
   formInputBox,
   _debugWindow;
+
+function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
+begin
+  result := FALSE;
+
+  var vExt := lowerCase(extractFileExt(aFilePath));
+  var vMT  := MT.mediaType(vExt);
+
+  case ssCtrl in aShiftState of TRUE:   case CF.asBoolean['folderDelete'] of FALSE: EXIT; end;end;
+  case ssCtrl in aShiftState of FALSE:  case vMT of
+                                          mtAudio: case CF.asBoolean['audioDelete'] of FALSE: EXIT; end;
+                                          mtImage: case CF.asBoolean['imageDelete'] of FALSE: EXIT; end;
+                                          mtVideo: case CF.asBoolean['videoDelete'] of FALSE: EXIT; end;end;end;
+  result := TRUE;
+end;
 
 function mmpConfigFilePath: string;
 begin
@@ -85,7 +101,7 @@ begin
   end;
 end;
 
-function mmpDeleteThisFile(const aFilePath: string; aShiftState: TShiftState): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState): boolean;
 // performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
 var vSysMessage: string;
 begin
@@ -96,6 +112,10 @@ begin
                                                                                 'This file won''t be deleted'#13#10#13#10 +
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
+
+  case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
+                                                            mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
+                                                            EXIT; end;end;
 
   case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
                                 FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
@@ -229,12 +249,12 @@ var
 begin
   result := FALSE;
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
-  case lowerCase(CF.value['keepDelete']) = 'yes' of FALSE:  begin
-                                                              var vMsg := 'keepDelete=no'#13#10#13#10;
-                                                              vMsg := vMsg + 'To use this functionality, you must explicitly'#13#10;
-                                                              vMsg := vMsg + 'enable it in MinimalistMediaPlayer.conf with keepDelete=yes';
-                                                              mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
-                                                              EXIT; end;end;
+  case CF.asBoolean['keepDelete'] of FALSE: begin
+                                              var vMsg := 'keepDelete=no'#13#10#13#10;
+                                              vMsg := vMsg + 'To use this functionality, you must explicitly'#13#10;
+                                              vMsg := vMsg + 'enable it in MinimalistMediaPlayer.conf with keepDelete=yes';
+                                              mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
+                                              EXIT; end;end;
 
   var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
   vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
