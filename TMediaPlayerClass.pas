@@ -552,8 +552,8 @@ begin
   nextFolder := mmpNextFolder(PL.currentFolder, nfForwards);
   ST.opInfo := nextFolder;
   case nextFolder = '' of FALSE: PL.fillPlaylist(nextFolder) end;
-  mpvStop(mpv); // if the folder is empty we want a blank screen
-  case PL.hasItems of TRUE: play(PL.currentItem); end;
+  case PL.hasItems of  TRUE: play(PL.currentItem);
+                      FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -576,8 +576,8 @@ begin
   prevFolder := mmpNextFolder(PL.currentFolder, nfBackwards);
   ST.opInfo := prevFolder;
   case prevFolder = '' of FALSE: PL.fillPlaylist(prevFolder); end;
-  mpvStop(mpv); // if the folder is empty we want a blank screen
-  case PL.hasItems of TRUE: play(PL.currentItem); end;
+  case PL.hasItems of  TRUE: play(PL.currentItem);
+                      FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
 end;
 
 function TMediaPlayer.resume: boolean;
