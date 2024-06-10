@@ -47,8 +47,8 @@ type
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
   strict private
     mpv: TMPVBasePlayer;
-    FImageDisplayDurationMs:  double;
     FDurationResetSpeed:      double;
+    FImageDisplayDurationMs:  double;
     FInitialFilePath:         string;
     FLocked:                  boolean;
     FProgressForm:            TProgressForm;
