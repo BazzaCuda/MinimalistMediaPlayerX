@@ -386,7 +386,6 @@ begin
 //  mpvSetPropertyString(mpv, 'start', '#9');
 
   result := TRUE;
-//  ST.opInfo := format('%d x %d', [videoWidth, videoHeight]);
 end;
 
 function TMediaPlayer.panDn: string;

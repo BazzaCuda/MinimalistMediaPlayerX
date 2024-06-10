@@ -90,14 +90,14 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     result := koNone;
 
     case keyUp and keyIs(_1)                                              of TRUE: result := koSpeedReset; end;
-    case keyUp and keyIs(_2)                                              of TRUE: result := koBrightnessReset; end;
+    case keyUp and keyIs(_2)                                              of TRUE: result := koContrastReset; end;
     case keyUp and keyIs(_3)                                              of TRUE: result := koPanReset; end;
     case keyUp and keyIs(_4)                                              of TRUE: result := koRotateReset; end;
-    case keyDn and keyIs(_8)                                              of TRUE: result := koBrightnessDn; end;
-    case keyDn and keyIs(_9) and NOT ctrl                                 of TRUE: result := koBrightnessUp; end;
+    case keyDn and keyIs(_8)                                              of TRUE: result := koContrastDn; end;
+    case keyDn and keyIs(_9) and NOT ctrl                                 of TRUE: result := koContrastUp; end;
     case keyUp and keyIs(_0) and     ctrl                                 of TRUE: result := koCloseAll; end;
-    case keyUp and keyIs(_0) and NOT ctrl                                 of TRUE: result := koContrastReset; end;
-    case keyDn and keyIs(_EQUALS)                                         of TRUE: result := koContrastUp; end;
+    case keyUp and keyIs(_0) and NOT ctrl                                 of TRUE: result := koBrightnessReset; end;
+    case keyDn and keyIs(_EQUALS)                                         of TRUE: result := koBrightnessUp; end;
 
     case keyUp and keyIs(A) and     ctrl                                  of TRUE: result := koAboutBox; end;
     case keyUp and keyIs(A) and NOT ctrl                                  of TRUE: result := koPlayFirst; end;
@@ -134,7 +134,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(BACKSPACE)                                       of TRUE: result := koAllReset; end;
     case keyDn and keyIs(CLOSE_BRACKET) and     shift                     of TRUE: result := koSaturationUp; end; // close curly brace
     case keyDn and keyIs(CLOSE_BRACKET) and NOT shift                     of TRUE: result := koGammaUp; end;
-    case keyDn and keyIs(HYPHEN)                                          of TRUE: result := koContrastDn; end;
+    case keyDn and keyIs(HYPHEN)                                          of TRUE: result := koBrightnessDn; end;
     case keyDn and keyIs(OPEN_BRACKET)  and     shift                     of TRUE: result := koSaturationDn; end; // open curly brace
     case keyDn and keyIs(OPEN_BRACKET)  and NOT shift                     of TRUE: result := koGammaDn; end;
     case keyUp and keyIs(SEMICOLON)                                       of TRUE: result := koSaturationReset; end;
