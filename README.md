@@ -66,7 +66,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - N.B. Many keys can be held down for rapid repitition.
 
-The following list is slightly out of date - see the [Wiki]([Wiki](https://minimalistmediaplayer.com)) for an up to date and detailed description of all of `MMP`'s many controls and features.
+The following list is slightly out of date - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features.
 
 ### Keyboard Controls
 ---------------------
