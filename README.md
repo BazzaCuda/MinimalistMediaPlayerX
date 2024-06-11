@@ -18,7 +18,7 @@ VERSION 3 is HERE!! Now with image and thumbnail browsing and image manipulation
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
-Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif). If you set an image display duration, a slideshow of consecutive image files will be shown.
+Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif, .jfif). If you set an image display duration, a slideshow of consecutive image files will be shown.
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
 
 **NEW**: Now supports .AVIF and .JFIF image files which will be included automatically in the playlist and the slideshow.
@@ -66,7 +66,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - N.B. Many keys can be held down for rapid repitition.
 
-The following list is slightly out of date - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features.
+The following list will be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features.
 
 ### Keyboard Controls
 ---------------------
@@ -102,12 +102,12 @@ Control | Action
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
-`8`                     | decrease brightness. Can be held down for rapid decrease
-`9`                     | increase brightness. Can be held down for rapid increase
-`2`                     | reset brightness to normal
-`0`                     | reset contrast to normal
-`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
-`=`                     | increase contrast. Can be held down for rapid increase  
+`8`                     | decrease contrast. Can be held down for rapid decrease
+`9`                     | increase contrast. Can be held down for rapid increase
+`2`                     | reset contrast to normal
+`0`                     | reset brightness to normal
+`-` (Hyphen)            | decrease brighntess. Can be held down for rapid decrease
+`=`                     | increase brightness. Can be held down for rapid increase  
 `{`                     | decrease saturation setting. Can be held down for rapid decrease
 `}`                     | increase saturation setting. Can be held down for rapid increase
 `[`                     | decrease gamma setting. Can be held down for rapid decrease
@@ -175,13 +175,13 @@ Control | Action
 Control | Action
 ------- | ------
 **Brightness** || 
-`8`                     | decrease brightness. Can be held down for rapid decrease
-`9`                     | increase brightness. Can be held down for rapid increase
-`2`                     | reset brightness to normal
+`-`                     | decrease brightness. Can be held down for rapid decrease
+`=`                     | increase brightness. Can be held down for rapid increase
+`0`                     | reset brightness to normal
 **Contrast** | 
-`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
-`=`                     | increase contrast. Can be held down for rapid increase
-`0`                     | reset contrast to normal 
+`8` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
+`9`                     | increase contrast. Can be held down for rapid increase
+`2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
 `C`                     | [C]ut the segment under the cursor into two segments
 `Ctrl-C`                | same as above but mark the left-hand segment as e[X]cluded (same as [I])
