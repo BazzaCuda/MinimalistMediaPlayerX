@@ -18,7 +18,7 @@ VERSION 3 is HERE!! Now with image and thumbnail browsing and image manipulation
 VERSION 2 RELEASED: Fast, lossless audio/video editing 
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
-Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif). If you set an image display duration, a slideshow of consecutive image files will be shown.
+Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif, .jfif). If you set an image display duration, a slideshow of consecutive image files will be shown.
 - https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
 
 **NEW**: Now supports .AVIF and .JFIF image files which will be included automatically in the playlist and the slideshow.
