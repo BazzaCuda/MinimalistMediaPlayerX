@@ -496,6 +496,8 @@ begin
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
 
+  case (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails; end; // EXPERIMENTAL
+
   result := TRUE;
 end;
 

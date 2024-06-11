@@ -768,7 +768,7 @@ function TTimeline.segmentAtCursor: TSegment;
 begin
   result := NIL;
   for var vSegment in segments do
-    case (vSegment.left <= timelineForm.cursorPos) and (vSegment.left + vSegment.width >= timelineForm.cursorPos) of TRUE: result := vSegment; end;
+    case (timelineForm.cursorPos >= vSegment.left) and (timelineForm.cursorPos <= vSegment.left + vSegment.width) of TRUE: result := vSegment; end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);
