@@ -124,8 +124,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(B) and NOT ctrl                                              of TRUE: result := koToggleBlackout; end;
     case keyDn and keyIs(B) and     ctrl and shift                                    of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(C)                         and NOT GV.showingTimeline        of TRUE: result := koToggleControls; end;
-    case keyUp and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end; // EXPERIMENTAL
-    case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end; // EXPERIMENTAL
+    case keyUp and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end;
+    case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
     case keyUp and keyIs(F)                                                           of TRUE: result := koFullscreen; end;
@@ -173,7 +173,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(VK_DELETE)                                                   of TRUE: result := koDeleteCurrentItem; end;
     case keyDn and keyIs(VK_DOWN)   and     ctrl                                      of TRUE: result := koPanDn; end;
     case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GV.showingPlaylist        of TRUE: result := koVolDn; end;
-    case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koNextFolder; end; // EXPERIMENTAL
+    case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
     case keyUp and keyIs(VK_ESCAPE)                                                   of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F5)                                                       of TRUE: result := koScreenshot; end;
@@ -197,7 +197,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl    and (MP.mediaType <> mtVideo)     of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_UP)     and     ctrl                                      of TRUE: result := koPanUp; end;
     case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GV.showingPlaylist        of TRUE: result := koVolUp; end;
-    case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koPrevFolder; end; // EXPERIMENTAL
+    case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GV.showingPlaylist and NOT (MP.mediaType in [mtAudio, mtVideo]) of TRUE: result := koPrevFolder; end;
     case keyUp and keyIs(VK_PRIOR)                  and NOT GV.showingPlaylist        of TRUE: result := koRotateL; end;
     case keyUp and keyIs(VK_SPACE)                                                    of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT)                                                 of TRUE: result := koSpeedDn; end;
@@ -248,7 +248,7 @@ begin
     koGammaUp:           ST.opInfo := MP.gammaUp;
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
-    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: begin ST.opInfo := 'Kept/Deleted'; mmpSendSysCommandClose(UI.handle); end;end;end;  // EXPERIMENTAL ONLY
+    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: begin ST.opInfo := 'Kept/Deleted'; mmpSendSysCommandClose(UI.handle); end;end;end;
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;

@@ -78,7 +78,7 @@ type
     function resetColor: boolean;
     function resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
     function setWindowSize(const aStartingHeight: integer; const aShiftState: TShiftState): boolean;
-    function showThumbnails: boolean;
+    function showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
     function showWindow: boolean;
     function showXY: boolean;
     function shutTimeline: boolean;
@@ -659,7 +659,7 @@ begin
   SetWindowLong(aForm.handle, GWL_STYLE, GetWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
 end;
 
-function TUI.showThumbnails: boolean;
+function TUI.showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
   function mainFormDimensions: TRect;
   begin
     result.top    := FMainForm.top;
@@ -674,7 +674,7 @@ begin
   case MP.ImagesPaused of FALSE: MP.pausePlay; end;
   MP.pause;
 
-  formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
+  formThumbs.showThumbs(PL.currentItem, mainFormDimensions, aHostType); // showModal;
 
   mmpProcessMessages;
   case GV.closeApp of FALSE:  begin

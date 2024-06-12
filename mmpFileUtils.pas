@@ -33,7 +33,7 @@ function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
-function mmpKeepDelete(const aFolderPath: string): boolean; // EXPERIMENTAL ONLY
+function mmpKeepDelete(const aFolderPath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 
 implementation
@@ -234,7 +234,7 @@ begin
                  FALSE: closeHandle(hFile); end;
 end;
 
-function mmpKeepDelete(const aFolderPath: string): boolean; // EXPERIMENTAL ONLY
+function mmpKeepDelete(const aFolderPath: string): boolean;
 const
   faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
 var

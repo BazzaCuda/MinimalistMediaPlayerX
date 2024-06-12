@@ -496,7 +496,7 @@ begin
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
 
-  case (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails; end; // EXPERIMENTAL
+  case (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
 
   result := TRUE;
 end;
@@ -532,7 +532,7 @@ function TMediaPlayer.playNext: boolean;
 begin
   pause;
 
-  case PL.isLast and (FMediaType = mtImage) of TRUE: EXIT; end; // EXPERIMENTAL - DON'T exit if last item is an image
+  case PL.isLast and (FMediaType = mtImage) of TRUE: EXIT; end; // DON'T exit if last item is an image
 
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -546,7 +546,7 @@ begin
                           TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end;
 end;
 
-function TMediaPlayer.playNextFolder: boolean;  // EXPERIMENTAL
+function TMediaPlayer.playNextFolder: boolean;
 // reload playlist from nextFolder and play first item
 var
   nextFolder: string;
@@ -570,7 +570,7 @@ begin
   FTimer.enabled  := PL.prev;
 end;
 
-function TMediaPlayer.playPrevFolder: boolean; // EXPERIMENTAL
+function TMediaPlayer.playPrevFolder: boolean;
 // reload playlist from prevFolder and play first item
 var
   prevFolder: string;

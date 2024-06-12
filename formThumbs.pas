@@ -50,10 +50,11 @@ type
     FDurationResetSpeed:      double;
     FImageDisplayDurationMs:  double;
     FInitialFilePath:         string;
-    FLocked:                  boolean;
-    FProgressForm:            TProgressForm;
+    FInitialHost:             THostType;
     FKeyHandled:              boolean;
+    FLocked:                  boolean;
     FMPVHost:                 TMPVHost;
+    FProgressForm:            TProgressForm;
     FShowing:                 boolean;
     FSlideshowDirection:      TSlideshowDirection;
     FThumbs:                  TThumbs;
@@ -98,10 +99,10 @@ type
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage) ; message WM_MOVE;
   public
-    function initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
+    function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
   end;
 
-function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
 
 implementation
 
@@ -113,11 +114,11 @@ uses
   TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow;
 
-function showThumbs(const aFilePath: string; const aRect: TRect): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
 begin
   var vTF := TThumbsForm.create(NIL);
   try
-    vTF.initThumbnails(aFilePath, aRect);
+    vTF.initThumbnails(aFilePath, aRect, aHostType);
     GV.showingThumbs := TRUE;
     vTF.showModal;
   finally
@@ -238,7 +239,7 @@ begin
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
-  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.  // EXPERIMENTAL
+  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -263,7 +264,7 @@ begin
     FProgressForm.buttons             := FALSE;
     FProgressForm.heading.caption     := 'MMP Image Browser';
     FProgressForm.subHeading.caption  := 'Creating Thumbnails';
-    FProgressForm.show;
+    case FInitialHost of htThumbsHost: FProgressForm.show; end;
     mmpProcessMessages;
     setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
     timer.enabled := TRUE;
@@ -274,7 +275,7 @@ begin
   setWindowPos(GV.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes
 end;
 
-function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect): boolean;
+function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
 begin
   FInitialFilePath := aFilePath;
 
@@ -293,8 +294,11 @@ begin
   FMPVHost.align      := alClient;
   FThumbsHost.align   := alClient;
 
-  FMPVHost.visible    := FALSE;
-  FThumbsHost.visible := TRUE;
+  FInitialHost        := aHostType;
+  FMPVHost.visible    := FInitialHost = htMPVHost;
+  FThumbsHost.visible := FInitialHost = htThumbsHost;
+
+  case FInitialHost of htMPVHost: timer.interval := 1; end;
 
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
@@ -612,7 +616,12 @@ begin
   case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // UI.delayedHide doesn't always work - the delay might be being optimized out
   FShowing := TRUE;
   freeAndNIL(FProgressForm);
-  FThumbs.playThumbs(FInitialFilePath);
+
+  case FInitialHost of
+    htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
+    htMPVHost:    begin
+                    FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
+                    playCurrentItem; end;end;
 end;
 
 function TThumbsForm.undoMove: string;
@@ -707,7 +716,7 @@ begin
     koGammaReset:         mpvGammaReset(mpv);
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCentre; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
-    koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;  // EXPERIMENTAL ONLY
+    koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;
     koMaximize:           maximizeWindow;
     koMinimizeWindow:     minimizeWindow;
     koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder(mmpFolderFromFKey(aKey)), 'Moved'); end;
