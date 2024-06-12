@@ -463,8 +463,6 @@ function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
 
-  debugBoolean('play ' + aURL, FAllowBrowser);
-
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
   MI.initMediaInfo(aURL);
