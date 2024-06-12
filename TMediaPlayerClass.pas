@@ -501,7 +501,7 @@ begin
 
   case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
 
-  FAllowBrowser := TRUE;
+  FAllowBrowser := FALSE; // only allow the launch image
 
   result := TRUE;
 end;

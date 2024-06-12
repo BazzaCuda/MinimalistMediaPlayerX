@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -132,7 +132,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;
     case keyUp and keyIs(H) and     ctrl                                              of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(H) and NOT ctrl                                              of TRUE: result := koCentreWindow; end;
-    case keyDn and keyIs(I)                         and NOT GV.showingTimeline        of TRUE: result := koZoomIn; end;
+    case keyDn and keyIs(I) and     ctrl            and (MP.mediaType = mtImage)      of TRUE: result := koImageInBrowser; end;
+    case keyDn and keyIs(I) and NOT ctrl            and NOT GV.showingTimeline        of TRUE: result := koZoomIn; end;
     case keyUp and keyIs(J)                                                           of TRUE: result := koAdjustAspectRatio; end;
     case keyUp and keyIs(K) and     ctrl                                              of TRUE: result := koKeepDelete; end;
     case keyUp and keyIs(K) and NOT ctrl                                              of TRUE: result := koKeep; end;
@@ -249,6 +250,7 @@ begin
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
     koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: begin ST.opInfo := 'Kept/Deleted'; mmpSendSysCommandClose(UI.handle); end;end;end;
+    koImageInBrowser:    UI.showThumbnails(htMPVHost);
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;
     koMuteUnmute:        ST.opInfo := MP.muteUnmute;
