@@ -675,8 +675,11 @@ begin
   MP.pause;
 
   formThumbs.showThumbs(PL.currentItem, mainFormDimensions); // showModal;
-  FMainForm.show;
-  setActiveWindow(FMainForm.handle);
+
+  mmpProcessMessages;
+  case GV.closeApp of FALSE:  begin
+                                FMainForm.show;
+                                setActiveWindow(FMainForm.handle); end;end;
 end;
 
 function TUI.showWindow: boolean;
