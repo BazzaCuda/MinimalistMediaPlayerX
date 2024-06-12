@@ -33,6 +33,7 @@ type
   TMediaPlayer = class(TObject)
   strict private
     mpv: TMPVBasePlayer;
+    FAllowBrowser: boolean;
     FTimer: TTimer;
     FTimerEvent: TTimerEvent;
 
@@ -129,6 +130,7 @@ type
     function zoomIn: string;
     function zoomOut: string;
     function zoomReset: string;
+    property allowBrowser:        boolean                         write FAllowBrowser;
     property dontPlayNext:        boolean      read FDontPlayNext write FDontPlayNext;
     property duration:            integer      read getDuration;
     property formattedDuration:   string       read getFormattedDuration;
@@ -238,6 +240,7 @@ begin
   FTimer          := TTimer.create(NIL);
   FTimer.enabled  := FALSE;
   FTimer.OnTimer  := onTimerEvent;
+  FAllowBrowser   := TRUE;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
@@ -460,6 +463,8 @@ function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
 
+  debugBoolean('play ' + aURL, FAllowBrowser);
+
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
   MI.initMediaInfo(aURL);
@@ -496,7 +501,9 @@ begin
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
 
-  case (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
+  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
+
+  FAllowBrowser := TRUE;
 
   result := TRUE;
 end;
@@ -532,7 +539,7 @@ function TMediaPlayer.playNext: boolean;
 begin
   pause;
 
-  case PL.isLast and (FMediaType = mtImage) of TRUE: EXIT; end; // DON'T exit if last item is an image
+  var vDontExit := PL.isLast and (FMediaType = mtImage);
 
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -541,9 +548,10 @@ begin
   FTimerEvent     := tePlay;
   FTimer.enabled  := PL.next;
   case FTimer.enabled of FALSE: begin
+                                  case vDontExit of TRUE: EXIT; end; // ah, the irony!
                                   FTimerEvent    := teClose;
                                   FTimer.enabled := TRUE; end;
-                          TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end;
+                          TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end; // currently just updates the playlist window
 end;
 
 function TMediaPlayer.playNextFolder: boolean;

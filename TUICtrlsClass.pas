@@ -105,7 +105,7 @@ uses
   winApi.messages,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpMPVFormatting, mmpShellUtils, mmpSysCommands, mmpUtils,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpPlaylistUtils, mmpMPVFormatting, mmpShellUtils, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass,
   _debugWindow;
@@ -679,7 +679,15 @@ begin
   mmpProcessMessages;
   case GV.closeApp of FALSE:  begin
                                 FMainForm.show;
-                                setActiveWindow(FMainForm.handle); end;end;
+                                setActiveWindow(FMainForm.handle);
+                                case fileExists(PL.currentItem) of FALSE: begin // was the original image deleted in the browser?
+                                                                            MP.allowBrowser := FALSE;
+                                                                            PL.delete(PL.currentIx);
+                                                                            case PL.isFirst of   TRUE: MP.play(PL.currentItem);   // don't call any of the timed events like MP.playCurrent
+                                                                                                FALSE: begin
+                                                                                                         PL.next;
+                                                                                                         MP.play(PL.currentItem); end;end; // ditto
+                                                                          end;end;end;end;
 end;
 
 function TUI.showWindow: boolean;

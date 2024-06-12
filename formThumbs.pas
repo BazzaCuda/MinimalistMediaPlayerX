@@ -204,7 +204,8 @@ begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       case mmpDeleteThisFile(FThumbs.playlist.currentItem, vShiftState) of FALSE: EXIT; end;
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
+                                                      case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
+                                                                                                      TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
                                                                                                      FALSE: begin
                                                                                                               loadPlaylistWindow;
                                                                                                               case vIx = 0 of  TRUE: playCurrentItem;
