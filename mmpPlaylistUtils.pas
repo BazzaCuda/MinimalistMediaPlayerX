@@ -20,7 +20,13 @@ unit mmpPlaylistUtils;
 
 interface
 
-function mmpDeleteCurrentItem: boolean;
+uses
+  TMediaPlayerClass, TPlaylistClass;
+
+function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpReloadPlaylist(const aFolder: string): string;
 
 implementation
@@ -30,32 +36,48 @@ uses
   system.classes, system.sysUtils,
   mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
   formMediaCaption, formPlaylist,
-  TConfigFileClass, TGlobalVarsClass, TMediaPlayerClass, TPlaylistClass,
+  TConfigFileClass, TGlobalVarsClass,
   _debugWindow;
 
-function mmpDeleteCurrentItem: boolean;
+function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
 begin
-  case PL.hasItems of FALSE: EXIT; end;
-  MP.pause;
+  result := FALSE;
 
-  var vShiftState := mmpShiftState;
-
-  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(PL.currentItem);
+  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(aFilePath);
   case ssCtrl in mmpShiftState of  TRUE: vMsg := vMsg + '*.*';
-                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(PL.currentItem); end;
+                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(aFilePath); end;
 
-  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
-                                                      var vIx := PL.currentIx;
-                                                      MP.dontPlayNext := TRUE;  // because...
-                                                      MP.stop;                  // this would have automatically done MP.playNext
-                                                      case mmpDeleteThisFile(PL.currentItem, vShiftState) of FALSE: EXIT; end;
-                                                      PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
-                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND MP.playNextFolder of FALSE: mmpSendSysCommandClose(GV.appWnd); end; // shortcut logic!
-                                                        FALSE:  begin
-                                                                  loadPlaylistWindow(TRUE);
-                                                                  case (vIx = 0) or PL.isLast of  TRUE: MP.playCurrent;
-                                                                                                 FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
+  result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
+end;
+
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+begin
+ aMP.pause;
+ case mmpCanDeleteCurrentItem(aPL.currentItem) of TRUE: begin
+                                                          aMP.dontPlayNext := TRUE; // dontPlayNext because MP.stop would have done MP.playNext
+                                                          aMP.stop;
+                                                          case mmpDoDeleteCurrentItem(aPL, aMP) of TRUE: loadPlaylistWindow(TRUE); end;end;end;
+end;
+
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+begin
+  result := FALSE;
+  case aPL.hasItems of FALSE: EXIT; end;
+
+  var vIx := aPL.currentIx;
+  case mmpDeleteThisFile(aPL.currentItem, mmpShiftState) of FALSE: EXIT; end;
+  aPL.delete(aPL.currentIx);  // this decrements PL's FPlayIx...
+  case (ssCtrl in mmpShiftState) or (NOT aPL.hasItems) of
+     TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND aMP.playNextFolder of FALSE: mmpSendSysCommandClose(GV.appWnd); end; // shortcut logic!
+    FALSE:  mmpPlaySomething(vIx, aPL, aMP); end;
+
+  result := TRUE;
+end;
+
+function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+begin
+  case (aIx = 0) or aPL.isLast of  TRUE: aMP.playCurrent;   // aIx = 0 is not the same as .isFirst
+                                  FALSE: aMP.playnext; end; // ...hence, playNext
 end;
 
 function mmpReloadPlaylist(const aFolder: string): string;

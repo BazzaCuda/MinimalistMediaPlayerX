@@ -201,14 +201,14 @@ begin
                                 FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
 
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
-                                                      var vIx := FThumbs.playlist.currentIx;
                                                       case mmpDeleteThisFile(FThumbs.playlist.currentItem, vShiftState) of FALSE: EXIT; end;
+                                                      var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose(GV.appWnd); end;end; // shortcut logic!
                                                         FALSE:  begin
                                                                   loadPlaylistWindow;
-                                                                  case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem;
+                                                                  case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
                                                                                                                FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
