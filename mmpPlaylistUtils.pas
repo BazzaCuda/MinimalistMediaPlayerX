@@ -28,9 +28,10 @@ implementation
 uses
   winApi.windows,
   system.classes, system.sysUtils,
-  mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
   formMediaCaption, formPlaylist,
-  TGlobalVarsClass, TMediaPlayerClass, TPlaylistClass;
+  TConfigFileClass, TGlobalVarsClass, TMediaPlayerClass, TPlaylistClass,
+  _debugWindow;
 
 function mmpDeleteCurrentItem: boolean;
 begin
@@ -50,11 +51,11 @@ begin
                                                       case mmpDeleteThisFile(PL.currentItem, vShiftState) of FALSE: EXIT; end;
                                                       PL.delete(PL.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT PL.hasItems) of
-                                                                                                      TRUE: mmpSendSysCommandClose(GV.appWnd);
-                                                                                                     FALSE: begin
-                                                                                                              loadPlaylistWindow(TRUE);
-                                                                                                              case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                                                              FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
+                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND MP.playNextFolder of FALSE: mmpSendSysCommandClose(GV.appWnd); end; // shortcut logic!
+                                                        FALSE:  begin
+                                                                  loadPlaylistWindow(TRUE);
+                                                                  case vIx = 0 of  TRUE: MP.playCurrent;
+                                                                                  FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function mmpReloadPlaylist(const aFolder: string): string;

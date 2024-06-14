@@ -111,7 +111,7 @@ uses
   mmpMPVCtrls, mmpMPVProperties,
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
-  TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
+  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
@@ -197,7 +197,7 @@ begin
   var vShiftState := mmpShiftState;
 
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem);
-  case ssCtrl in vshiftState of  TRUE: vMsg := vMsg + '*.*';
+  case ssCtrl in vShiftState of  TRUE: vMsg := vMsg + '*.*';
                                 FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
 
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
@@ -205,11 +205,12 @@ begin
                                                       case mmpDeleteThisFile(FThumbs.playlist.currentItem, vShiftState) of FALSE: EXIT; end;
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
-                                                                                                      TRUE: begin close; SA.postToAll(WIN_CLOSEAPP); end;
-                                                                                                     FALSE: begin
-                                                                                                              loadPlaylistWindow;
-                                                                                                              case vIx = 0 of  TRUE: playCurrentItem;
-                                                                                                                              FALSE: playNext; end;end;end;end;end; // ...hence, playNext
+                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose(GV.appWnd); end;end; // shortcut logic!
+                                                        FALSE:  begin
+                                                                  debug('FALSE');
+                                                                  loadPlaylistWindow;
+                                                                  case vIx = 0 of  TRUE: playCurrentItem;
+                                                                                  FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -236,11 +237,11 @@ begin
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
 
   var vImageDisplayDuration: string;
-  mpvGetPropertyString(mpv, 'image-display-duration', vImageDisplayDuration);
+  mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
-  mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); // get the user's duration setting, if any, then override it.
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it.
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -413,8 +414,8 @@ begin
 
   case NOT GV.playingSlideshow of TRUE: mmpCancelDelay; end;
 
-  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, 'image-display-duration', intToStr(trunc(FImageDisplayDurationMs) div 1000)); // doesn't really matter as long as it's valid and not 'inf'
-                              FALSE: mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;
+  case GV.playingSlideshow of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, intToStr(trunc(FImageDisplayDurationMs) div 1000)); // doesn't really matter as long as it's valid and not 'inf'
+                              FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;
 
   case GV.playingSlideshow of  TRUE: showSlideshowDirection;
                               FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'PAUSED'); end;
@@ -461,12 +462,14 @@ end;
 
 function TThumbsForm.playNextFolder: boolean;
 var
-  nextFolder: string;
+  vNextFolder: string;
 begin
-  nextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
-  case NextFolder = '' of FALSE: FThumbs.playThumbs(NextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
+  debug(vNextFolder);
+  case vNextFolder = '' of FALSE: FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
+  result := vNextFolder <> '';
 end;
 
 function TThumbsForm.playPrev: boolean;
@@ -482,12 +485,13 @@ end;
 
 function TThumbsForm.playPrevFolder: boolean;
 var
-  prevFolder: string;
+  vPrevFolder: string;
 begin
-  prevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
-  case prevFolder = '' of FALSE: FThumbs.playThumbs(prevFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
+  case vPrevFolder = '' of FALSE: FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
+  result := vPrevFolder <> '';
 end;
 
 function TThumbsForm.showHost(const aHostType: THostType): boolean;

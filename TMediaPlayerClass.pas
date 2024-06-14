@@ -375,13 +375,13 @@ begin
     mpvGetPropertyString(mpv, 'screenshot-directory', FScreenshotDirectory);
 
     case FImageDisplayDurationMs = 0 of TRUE: begin
-                                                mpvGetPropertyString(mpv, 'image-display-duration', FImageDisplayDuration);
+                                                mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration);
                                                 case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
 
                                                 FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
 
                                                 FImageDisplayDuration := 'autoPlayNext'; // anything except 'inf'
-                                                mpvSetPropertyString(mpv, 'image-display-duration', 'inf'); end;end; // get the user's duration setting, if any, then override it.
+                                                mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;end; // get the user's duration setting, if any, then override it.
   end;end;
 
   mpvOpenFile(mpv, aURL);
@@ -553,15 +553,16 @@ begin
 end;
 
 function TMediaPlayer.playNextFolder: boolean;
-// reload playlist from nextFolder and play first item
+// reload playlist from vNextFolder and play first item
 var
-  nextFolder: string;
+  vNextFolder: string;
 begin
-  nextFolder := mmpNextFolder(PL.currentFolder, nfForwards);
-  ST.opInfo := nextFolder;
-  case nextFolder = '' of FALSE: PL.fillPlaylist(nextFolder) end;
+  vNextFolder := mmpNextFolder(PL.currentFolder, nfForwards);
+  ST.opInfo := vNextFolder;
+  case vNextFolder = '' of FALSE: PL.fillPlaylist(vNextFolder) end;
   case PL.hasItems of  TRUE: play(PL.currentItem);
                       FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
+  result := vNextFolder <> '';
 end;
 
 function TMediaPlayer.playPrev: boolean;
@@ -577,15 +578,16 @@ begin
 end;
 
 function TMediaPlayer.playPrevFolder: boolean;
-// reload playlist from prevFolder and play first item
+// reload playlist from vPrevFolder and play first item
 var
-  prevFolder: string;
+  vPrevFolder: string;
 begin
-  prevFolder := mmpNextFolder(PL.currentFolder, nfBackwards);
-  ST.opInfo := prevFolder;
-  case prevFolder = '' of FALSE: PL.fillPlaylist(prevFolder); end;
+  vPrevFolder := mmpNextFolder(PL.currentFolder, nfBackwards);
+  ST.opInfo := vPrevFolder;
+  case vPrevFolder = '' of FALSE: PL.fillPlaylist(vPrevFolder); end;
   case PL.hasItems of  TRUE: play(PL.currentItem);
                       FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
+  result := vPrevFolder <> '';
 end;
 
 function TMediaPlayer.resume: boolean;
