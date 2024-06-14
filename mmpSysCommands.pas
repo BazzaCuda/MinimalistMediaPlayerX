@@ -21,9 +21,7 @@ unit mmpSysCommands;
 interface
 
 uses
-  winApi.messages, winApi.windows,
-  mmpConsts,
-  formAboutBox;
+  winApi.messages, winApi.windows;
 
 function mmpDoSysCommand(var Message: TWMSysCommand): boolean;
 function mmpSendSysCommandClose(const aHWND: HWND): boolean;
@@ -31,7 +29,9 @@ function mmpSendSysCommandClose(const aHWND: HWND): boolean;
 implementation
 
 uses
-  TGlobalVarsClass, TUICtrlsClass;
+  mmpConsts, mmpSingletons,
+  formAboutBox,
+  _debugWindow;
 
 function mmpDoSysCommand(var Message: TWMSysCommand): boolean;
 begin

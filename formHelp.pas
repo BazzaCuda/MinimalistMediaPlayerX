@@ -38,7 +38,6 @@ type
     md1: TMarkdownViewer;
     md2: TMarkdownViewer;
     md3: TMarkdownViewer;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
   protected
     constructor create(const aHelpType: THelpType);
@@ -53,8 +52,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpConsts, mmpMarkDownUtils,
-  TGlobalVarsClass;
+  mmpConsts, mmpMarkDownUtils, mmpSingletons;
 
 var
   helpForm: THelpForm;
@@ -74,7 +72,6 @@ end;
 function shutHelp: boolean;
 begin
   case helpForm <> NIL of TRUE: begin helpForm.close; helpForm.free; helpForm := NIL; end;end;
-  helpForm := NIL;
   GV.showingHelp := FALSE;
 end;
 
@@ -125,11 +122,6 @@ begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
   Params.WndParent  := SELF.Handle; // normally application.handle
-end;
-
-procedure THelpForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  helpForm.free; helpForm := NIL;
 end;
 
 initialization

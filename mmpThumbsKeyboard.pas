@@ -43,7 +43,7 @@ implementation
 
 uses
   winApi.windows,
-  TGlobalVarsClass,
+  mmpSingletons,
   _debugWindow;
 
 const

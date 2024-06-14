@@ -14,7 +14,6 @@ object PlaylistForm: TPlaylistForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
-  OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 13
   object backPanel: TPanel

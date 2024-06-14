@@ -32,8 +32,7 @@ implementation
 uses
   winApi.windows, winApi.shellApi,
   system.sysUtils,
-  mmpFileUtils,
-  TConfigFileClass, TMediaPlayerClass;
+  mmpFileUtils, mmpSingletons;
 
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
 // Create a cmd.exe process to execute any command line

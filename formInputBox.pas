@@ -40,8 +40,7 @@ implementation
 
 uses
   vcl.styles, vcl.themes,
-  mmpUtils,
-  TGlobalVarsClass;
+  mmpSingletons, mmpUtils;
 
 {$R *.dfm}
 

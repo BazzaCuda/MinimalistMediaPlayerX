@@ -50,7 +50,6 @@ type
     FPlaying: boolean;
     FScreenshotDirectory: string;
   private
-    constructor create;
     procedure onInitMPV(sender: TObject);
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
@@ -68,6 +67,7 @@ type
     procedure setKeepOpen(const value: boolean);
     procedure setPosition(const value: integer);
   public
+    constructor create;
     destructor  Destroy; override;
     function allReset: string;
     function autoPlayNext: boolean;
@@ -148,8 +148,6 @@ type
     property videoWidth:          int64        read getVideoWidth;
   end;
 
-function MP: TMediaPlayer;
-
 implementation
 
 uses
@@ -157,19 +155,9 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
-  mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSysCommands, mmpUtils,
+  mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSingletons, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TUICtrlsClass,
   _debugWindow;
-
-var
-  gMP: TMediaPlayer;
-
-function MP: TMediaPlayer;
-begin
-  case gMP = NIL of TRUE: gMP := TMediaPlayer.create; end;
-  result := gMP;
-end;
 
 { TMediaPlayer }
 
@@ -535,6 +523,7 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
+  case GV.closeApp of TRUE: EXIT; end; // EXPERIMENTAL
   pause;
 
   var vDontExit := PL.isLast and (FMediaType = mtImage);
@@ -750,11 +739,5 @@ function TMediaPlayer.zoomReset: string;
 begin
   result := mpvZoomReset(mpv);
 end;
-
-initialization
-  gMP := NIL;
-
-finalization
-  case gMP <> NIL of TRUE: gMP.free; end;
 
 end.

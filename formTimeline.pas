@@ -73,7 +73,7 @@ type
     procedure setPosition(const Value: integer);
   private
     constructor create;
-    destructor  destroy; override;
+    destructor  Destroy; override;
     function addUndo(const aAction: string): string;
     function cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
     function defaultSegment: string;
@@ -126,9 +126,8 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpImageUtils, mmpMPVFormatting, mmpUtils,
+  mmpFileUtils, mmpImageUtils, mmpMPVFormatting, mmpSingletons, mmpUtils,
   formStreamList,
-  TGlobalVarsClass, TMediaInfoClass, TPlaylistClass, TProgressBarClass,
   _debugWindow;
 
 var
@@ -424,8 +423,7 @@ begin
   result := aSegment.delete;
 end;
 
-
-destructor TTimeline.destroy;
+destructor TTimeline.Destroy;
 begin
   segments.clear;
   FUndoList.free;

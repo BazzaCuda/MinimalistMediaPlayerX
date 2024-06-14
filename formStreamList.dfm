@@ -14,7 +14,6 @@ object StreamListForm: TStreamListForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
-  OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 13
   object Label1: TLabel

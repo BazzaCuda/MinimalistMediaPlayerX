@@ -28,8 +28,8 @@ uses
 type
   TMediaCaptionForm = class(TForm) // single caption at the top of the window
   strict private
-    FVideoPanel: TPanel;
-    FCaption: TLabel;
+    FVideoPanel:  TPanel;
+    FCaption:     TLabel;
     FInitialized: boolean;
     FOpInfoTimer: TTimer;
   private
@@ -37,7 +37,6 @@ type
     procedure setCaption(const Value: string);
   public
     constructor create;
-    destructor Destroy; override;
     procedure formResize(Sender: TObject);
     function brighter: integer;
     function darker: integer;
@@ -47,23 +46,11 @@ type
     property caption: string write setCaption;
   end;
 
-function MC: TMediaCaptionForm; // Media Caption
-
 implementation
 
 uses
-  mmpConsts, mmpTransparentUtils,
-  TConfigFileClass, TMediaPlayerClass,
+  mmpConsts, mmpSingletons, mmpTransparentUtils,
   _debugWindow;
-
-var
-  gMC: TMediaCaptionForm;
-
-function MC: TMediaCaptionForm;
-begin
-  case gMC = NIL of TRUE: gMC := TMediaCaptionForm.create; end;
-  result := gMC;
-end;
 
 {$R *.dfm}
 
@@ -79,11 +66,11 @@ end;
 
 constructor TMediaCaptionForm.create;
 begin
-  inherited create(NIL);
+  inherited create(APPLICATION);
   height := 80;
-  FCaption := TLabel.create(NIL);
+  FCaption := TLabel.create(SELF);
 
-  FOpInfoTimer := TTimer.create(NIL);
+  FOpInfoTimer := TTimer.create(SELF);
   FOpInfoTimer.interval := 5000;
   FOpInfoTimer.enabled  := FALSE;
   FOpInfoTimer.onTimer  := timerEvent;
@@ -95,13 +82,6 @@ begin
   case FCaption.font.color = $010101 of TRUE: EXIT; end;
   FCaption.font.color := FCaption.font.color - $010101;
   result := FCaption.font.color;
-end;
-
-destructor TMediaCaptionForm.Destroy;
-begin
-  case FCaption       <> NIL of TRUE: FCaption.free; end;
-  case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
-  inherited;
 end;
 
 procedure TMediaCaptionForm.formResize(Sender: TObject);
@@ -174,11 +154,5 @@ function TMediaCaptionForm.toggleCaption: boolean;
 begin
   FCaption.visible := NOT FCaption.visible;
 end;
-
-initialization
-  gMC := NIL;
-
-finalization
-  case gMC <> NIL of TRUE: gMC.free; end;
 
 end.

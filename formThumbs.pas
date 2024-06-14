@@ -109,9 +109,8 @@ implementation
 uses
   winApi.shellApi,
   mmpMPVCtrls, mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpSingletons, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TSendAllClass, TUndoMoveClass,
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;

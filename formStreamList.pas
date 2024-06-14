@@ -54,7 +54,6 @@ type
     lblTitle: TLabel;
     md: TMarkdownViewer;
     procedure formCreate(Sender: TObject);
-    procedure formClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clStreamsItemClick(Sender: TObject);
@@ -86,9 +85,9 @@ implementation
 uses
   system.generics.defaults,
   mmpMPVFormatting,
-  mmpConsts, mmpMarkDownUtils,
+  mmpConsts, mmpMarkDownUtils, mmpSingletons,
   formTimeline,
-  TGlobalVarsClass, TMediaInfoClass,
+  TMediaStreamClass,
   _debugWindow;
 
 var
@@ -122,7 +121,6 @@ end;
 function shutStreamList: boolean;
 begin
   case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
-  streamListForm       := NIL;
   GV.showingStreamList := FALSE;
 end;
 
@@ -215,11 +213,6 @@ begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
   Params.WndParent  := SELF.Handle; // normally application.handle
-end;
-
-procedure TStreamListForm.formClose(Sender: TObject; var Action: TCloseAction);
-begin
-  streamListForm.free; streamListForm := NIL;
 end;
 
 procedure TStreamListForm.formCreate(Sender: TObject);

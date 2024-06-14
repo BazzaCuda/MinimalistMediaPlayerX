@@ -36,7 +36,7 @@ type
     function getAsInteger(const aName: string): integer;
   public
     constructor create;
-    destructor destroy; override;
+    destructor Destroy; override;
     function deleteName(const aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
     function toHex(const aInteger: integer): string;
@@ -45,22 +45,12 @@ type
     property value[const aName: string]: string read getValue write setValue;
   end;
 
-function CF: TConfigFile;
 
 implementation
 
 uses
   system.sysUtils,
   _debugWindow;
-
-var
-  gCF: TConfigFile;
-
-function CF: TConfigFile;
-begin
-  case gCF = NIL of TRUE: gCF := TConfigFile.create; end;
-  result := gCF;
-end;
 
 { TConfigFile }
 
@@ -80,7 +70,7 @@ begin
                             saveConfigFile; end;end;
 end;
 
-destructor TConfigFile.destroy;
+destructor TConfigFile.Destroy;
 begin
   case FFileContents <> NIL of TRUE: FFileContents.free; end;
   inherited;
@@ -125,11 +115,5 @@ function TConfigFile.toHex(const aInteger: integer): string;
 begin
   result := '$' + intToHex(aInteger);
 end;
-
-initialization
-  gCF := NIL;
-
-finalization
-  case gCF <> NIL of TRUE: gCF.free; end;
 
 end.

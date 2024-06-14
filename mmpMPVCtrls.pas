@@ -80,8 +80,7 @@ implementation
 uses
   system.sysUtils,
   vcl.forms,
-  mmpMPVProperties, mmpUtils,
-  TConfigFileClass,
+  mmpMPVProperties, mmpSingletons, mmpUtils,
   _debugWindow;
 
 function mpvCreate(var mpv: TMPVBasePlayer): boolean;

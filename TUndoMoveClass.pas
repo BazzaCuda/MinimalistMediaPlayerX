@@ -33,29 +33,18 @@ type
   strict private
     FUndoRecs: TObjectStack<TUndoRec>;
   protected
-    constructor create;
-    destructor  destroy; override;
   public
+    constructor create;
+    destructor  Destroy; override;
     function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
     function undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
     property undoRecs: TObjectStack<TUndoRec> read FUndoRecs;
   end;
 
-function UM: TUndoMove;
-
 implementation
 
 uses
   _debugWindow;
-
-var
-  gUM: TUndoMove;
-
-function UM: TUndoMove;
-begin
-  case gUM = NIL of TRUE: gUM := TUndoMove.create; end;
-  result := gUM;
-end;
 
 { TUndoMove }
 
@@ -66,7 +55,7 @@ begin
   FUndoRecs.OwnsObjects := TRUE;
 end;
 
-destructor TUndoMove.destroy;
+destructor TUndoMove.Destroy;
 begin
   case FUndoRecs <> NIL of TRUE: FUndoRecs.free; end;
   inherited;
@@ -94,11 +83,5 @@ begin
 
   result        := TRUE;
 end;
-
-initialization
-  gUM := NIL;
-
-finalization
-  case gUM <> NIL of TRUE: begin gUM.undoRecs.clear; gUM.free; end;end;
 
 end.

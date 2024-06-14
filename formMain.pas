@@ -44,9 +44,8 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpSingletons, mmpSysCommands, mmpUtils,
   formCaptions, formMediaCaption,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TParamStringsClass, TProgressBarClass, TUICtrlsClass,
   _debugWindow;
 
 {$R *.dfm}

@@ -8,12 +8,12 @@ type
   TSendAll = class(TObject)
   strict private
     FHWNDs: array of HWND;
-  constructor Create;
-  destructor  Destroy;  override;
   protected
   private
     function getHWND(index: integer): HWND;
   public
+    constructor Create;
+    destructor  Destroy;  override;
     function add(const aHWND: HWND): boolean;
     function clear: boolean;
     function count: integer;
@@ -24,25 +24,13 @@ type
     property HWNDs[index: integer]: HWND read getHWND;
   end;
 
-function SA: TSendAll;
-
 implementation
 
 uses
   system.sysUtils, system.classes,
   vcl.forms,
-  mmpConsts,
-  TGlobalVarsClass,
+  mmpConsts, mmpSingletons,
   _debugWindow;
-
-var
-  gSendAll: TSendAll;
-
-function SA: TSendAll;
-begin
-  case gSendAll = NIL of TRUE: gSendAll := TSendAll.Create; end;
-  result := gSendAll;
-end;
 
 function enumAllWindows(handle: HWND; lparam: LPARAM): BOOL; stdcall;
 var
@@ -134,11 +122,5 @@ begin
   clear;
   result := TRUE;
 end;
-
-initialization
-  gSendAll := NIL;
-
-finalization
-  case gSendAll <> NIL of TRUE: gSendAll.free; end;
 
 end.

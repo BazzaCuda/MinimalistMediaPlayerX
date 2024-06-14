@@ -60,8 +60,6 @@ type
     FUserInput: boolean;
   private
   public
-    constructor create;
-    destructor  destroy;
     property altKeyDown:        boolean read FAltKeyDown        write FAltKeyDown;
     property appWnd:            HWND    read FAppWnd            write FAppWnd;
     property autoCentre:        boolean read FAutoCentre        write FAutoCentre;
@@ -77,38 +75,9 @@ type
     property userInput:         boolean read FUserInput         write FUserInput;
   end;
 
-function GV: TGlobalVars;
-
 implementation
 
 uses
   vcl.controls;
-
-var
-  gGV: TGlobalVars;
-
-function GV: TGlobalVars;
-begin
-  case gGV = NIL of TRUE: gGV := TGlobalVars.create; end;
-  result := gGV;
-end;
-
-{ TGlobalVars }
-
-constructor TGlobalVars.create;
-begin
-  inherited;
-end;
-
-destructor TGlobalVars.destroy;
-begin
-  inherited;
-end;
-
-initialization
-  gGV := NIL;
-
-finalization
-  case gGV <> NIL of TRUE: gGV.free; end;
 
 end.

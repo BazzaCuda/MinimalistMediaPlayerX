@@ -97,27 +97,15 @@ type
     property width: integer read getWidth write setWidth;
   end;
 
-function UI: TUI;
-
 implementation
 
 uses
   winApi.messages,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpPlaylistUtils, mmpMPVFormatting, mmpShellUtils, mmpSysCommands, mmpUtils,
-  formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
-  TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TPlaylistClass, TProgressBarClass, TSendAllClass,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpKeyboard, mmpMathUtils, mmpPlaylistUtils, mmpMPVFormatting, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpUtils,
+  formHelp, formPlaylist, formThumbs, formTimeline,
   _debugWindow;
-
-var
-  gUI: TUI;
-
-function UI: TUI;
-begin
-  case gUI = NIL of TRUE: gUI := TUI.create; end;
-  result := gUI;
-end;
 
 { TUI }
 
@@ -794,11 +782,5 @@ begin
   FGreatering := TRUE;
   SetWindowPos(FMainForm.handle, 0, 0, 0, vWidth - 1, vHeight, SWP_NOMOVE); // don't use VCL FMainForm.width!
 end;
-
-initialization
-  gUI := NIL;
-
-finalization
-  case gUI <> NIL of TRUE: gUI.free; end;
 
 end.

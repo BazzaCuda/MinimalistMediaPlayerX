@@ -43,9 +43,8 @@ uses
   winAPI.messages,
   system.classes, system.types, system.sysUtils,
   vcl.controls,
-  mmpConsts, mmpDesktopUtils, mmpKeyboard, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpDesktopUtils, mmpKeyboard, mmpSingletons, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
-  TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TUICtrlsClass,
   _debugWindow;
 
 var gAE: TAppEvents;

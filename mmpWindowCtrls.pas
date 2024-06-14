@@ -31,8 +31,7 @@ function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; cons
 implementation
 
 uses
-  mmpDesktopUtils,
-  TGlobalVarsClass;
+  mmpDesktopUtils, mmpSingletons;
 
 function mmpFocusWindow(const aWnd: HWND): boolean;
 begin

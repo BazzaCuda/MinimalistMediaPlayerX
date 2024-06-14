@@ -2,8 +2,8 @@ object ReleaseNotesForm: TReleaseNotesForm
   Left = 0
   Top = 0
   Caption = 'Release Notes'
-  ClientHeight = 430
-  ClientWidth = 1233
+  ClientHeight = 422
+  ClientWidth = 1229
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object ReleaseNotesForm: TReleaseNotesForm
   object md: TMarkdownViewer
     Left = 3
     Top = 3
-    Width = 1227
-    Height = 383
+    Width = 1223
+    Height = 375
     DefFontName = 'Tahoma'
     MarginWidth = 0
     PrintMarginBottom = 2.000000000000000000
@@ -826,14 +826,18 @@ object ReleaseNotesForm: TReleaseNotesForm
         '3. Massive credit and thanks are due to Edward Guo for his excel' +
         'lent port of the MPV API (libmpv) to Delphi, https://github.com/' +
         'nbuyer/libmpvdelphi.')
+    ExplicitWidth = 1227
+    ExplicitHeight = 383
   end
   object Panel1: TPanel
     Left = 0
-    Top = 389
-    Width = 1233
+    Top = 381
+    Width = 1229
     Height = 41
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 389
+    ExplicitWidth = 1233
     object Label1: TLabel
       Left = 16
       Top = 13

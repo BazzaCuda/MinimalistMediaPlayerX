@@ -14,7 +14,6 @@ object HelpForm: THelpForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
-  OnClose = FormClose
   TextHeight = 13
   object backPanel: TPanel
     Left = 0

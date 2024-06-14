@@ -72,9 +72,8 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpUtils,
+  mmpFileUtils, mmpSingletons, mmpUtils,
   formReleaseNotes,
-  TGlobalVarsClass, TProgramUpdatesClass,
   _debugWindow;
 
 {$R *.dfm}

@@ -45,17 +45,15 @@ type
     property releaseTag:   string read getReleaseTag; // has a couple of side-effects ;)
   end;
 
-function PU: TProgramUpdates;
-
 implementation
 
 uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpSingletons, mmpUtils,
+  TProgressBarClass,
   formDownload,
-  TConfigFileClass, TProgressBarClass,
   _debugWindow;
 
 type
@@ -66,17 +64,9 @@ type
   end;
 
 var
-  gPU: TProgramUpdates;
-
   gWP: TWorkProgress;
   gProgressBar: TProgressBar;
   gDownloadForm: TDownloadForm;
-
-function PU: TProgramUpdates;
-begin
-  case gPU = NIL of TRUE: gPU := TProgramUpdates.create; end;
-  result := gPU;
-end;
 
 function cleanTag(const aReleaseTag: string): string;
 begin
@@ -329,12 +319,8 @@ begin
 end;
 
 initialization
-  gPU := NIL;
   gWP            := NIL;
   gProgressBar   := NIL;
   gDownloadForm  := NIL;
-
-finalization
-  case gPU <> NIL of TRUE: gPU.free; end;
 
 end.

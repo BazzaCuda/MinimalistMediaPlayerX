@@ -32,31 +32,20 @@ type
   protected
   private
   public
-    constructor Create;
+    constructor create;
     destructor  Destroy;  override;
     function mediaType(const aExt: string): TMediaType;
     property mediaExts: string read FMediaExts;
   end;
-
-function MT: TMediaTypes;
 
 implementation
 
 uses
   system.sysUtils;
 
-var
-  gMT: TMediaTypes;
-
-function MT: TMediaTypes;
-begin
-  case gMT = NIL of TRUE: gMT := TMediaTypes.Create; end;
-  result := gMT;
-end;
-
 { TMediaType }
 
-constructor TMediaTypes.Create;
+constructor TMediaTypes.create;
 begin
   inherited;
   getMediaExts;
@@ -90,9 +79,4 @@ begin
                                                       EXIT; end;end;
 end;
 
-initialization
-  gMT := NIL;
-
-finalization
-  case gMT <> NIL of TRUE: gMT.free; end;
 end.

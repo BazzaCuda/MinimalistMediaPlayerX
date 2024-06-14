@@ -36,7 +36,7 @@ implementation
 
 uses
   vcl.forms,
-  TGlobalVarsClass,
+  mmpSingletons,
   _debugWindow;
 
 function mmpBorderWidth: integer;

@@ -22,43 +22,10 @@ interface
 
 uses
   system.generics.collections,
-  vcl.stdCtrls;
+  vcl.stdCtrls,
+  TMediaStreamClass;
 
 type
-  TMediaStream = class(TObject)
-  strict private
-  private
-    FID:          string;
-    FBitRate:     string;
-    FDuration:    string;
-    FFormat:      string;
-    FLanguage:    string;
-    FStreamType:  string;
-    FTitle:       string;
-    FVideoWidth:  string;
-    FVideoHeight: string;
-
-    FIconIx:      integer;
-    FInfo:        string;
-    FSelected:    boolean;
-  protected
-    constructor create(const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string; const aInfo: string; const aIconIx: integer);
-  public
-    property ID:          string read FID          write FID;
-    property streamType:  string read FStreamType  write FStreamType;
-    property duration:    string read FDuration    write FDuration;
-    property bitRate:     string read FBitRate     write FBitRate;
-    property format:      string read FFormat      write FFormat;
-    property title:       string read FTitle       write FTitle;
-    property language:    string read FLanguage    write FLanguage;
-    property videoHeight: string read FVideoHeight write FVideoHeight;
-    property videoWidth:  string read FVideoWidth  write FVideoWidth;
-
-    property iconIx:      integer read FIconIx   write FIconIx;
-    property info:        string  read FInfo     write FInfo;
-    property selected:    boolean read FSelected write FSelected;
-  end;
-
   TMediaChapter = class(TObject)
   private
     FChapterTitle:   string;
@@ -111,10 +78,9 @@ type
     function getVideoBitRate: string;
     function getXY: string;
     procedure setURL(const aValue: string);
-  protected
-    constructor create;
-    destructor destroy; override;
   public
+    constructor create;
+    destructor Destroy; override;
     function getData(const aMemo: TMemo): boolean;
     function initMediaInfo(const aURL: string = ''): boolean;
     property audioBitRate:      string  read getAudioBitRate;
@@ -146,8 +112,6 @@ type
     property selectedCount:     integer read getSelectedCount;
   end;
 
-function MI: TMediaInfo;
-
 implementation
 
 uses
@@ -156,15 +120,6 @@ uses
   mmpMPVFormatting,
   mmpFileUtils,
   _debugWindow;
-
-var
-  gMI: TMediaInfo;
-
-function MI: TMediaInfo;
-begin
-  case gMI = NIL of TRUE: gMI := TMediaInfo.create; end;
-  result := gMI;
-end;
 
 { TMediaInfo }
 
@@ -177,7 +132,7 @@ begin
   FMediaChapters.ownsObjects := TRUE;
 end;
 
-destructor TMediaInfo.destroy;
+destructor TMediaInfo.Destroy;
 begin
   FMediaStreams.free;
   FMediaChapters.free;
@@ -425,28 +380,5 @@ begin
   FNeedInfo := aValue <> FURL;
   FURL      := aValue;
 end;
-
-{ TMediaStream }
-
-constructor TMediaStream.create(const aID, aStreamType, aDuration, aFormat, aBitRate, aTitle, aLanguage, aInfo: string; const aIconIx: integer);
-begin
-  FID         := aID;
-  FStreamType := aStreamType;
-  FDuration   := aDuration;
-  FFormat     := aFormat;
-  FBitRate    := aBitRate;
-  FTitle      := aTitle;
-  FLanguage   := aLanguage;
-  FInfo       := aInfo;
-
-  FIconIx     := aIconIx;
-  FSelected   := TRUE;
-end;
-
-initialization
-  gMI := NIL;
-
-finalization
-  case gMI <> NIL of TRUE: gMI.free; end;
 
 end.

@@ -42,8 +42,7 @@ uses
   winApi.windows,
   system.sysUtils, system.IOUtils,
   vcl.dialogs, vcl.forms,
-  mmpConsts, mmpDialogs, mmpShellUtils, mmpUserFolders, mmpUtils,
-  TConfigFileClass, TMediaTypesClass, TUndoMoveClass,
+  mmpConsts, mmpDialogs, mmpShellUtils, mmpSingletons, mmpUserFolders, mmpUtils,
   formInputBox,
   _debugWindow;
 

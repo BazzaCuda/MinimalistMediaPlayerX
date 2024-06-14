@@ -48,8 +48,7 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, mmpFileUtils, mmpMarkDownUtils,
-  TProgramUpdatesClass,
+  mmpConsts, mmpFileUtils, mmpMarkDownUtils, mmpSingletons,
   _debugWindow;
 
 function showReleaseNotes(const aReleaseTag: string): boolean;

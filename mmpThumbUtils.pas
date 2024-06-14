@@ -20,9 +20,10 @@ unit mmpThumbUtils;
 
 interface
 
-uses ShlObj, ActiveX, ComObj, Windows, SysUtils, Graphics;
+uses
+  system.sysUtils, system.win.comObj, vcl.graphics, winApi.activeX, winApi.shlObj, winApi.windows;
 
-procedure ExtractThumb(const aBitmap: TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+procedure ExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 
 
 implementation
@@ -38,7 +39,7 @@ type
     function extract(var phBmpThumbnail: HBITMAP): HResult; stdcall;
   end;
 
-procedure ExtractThumb(const aBitmap: TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+procedure ExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 var
   malloc:         IMalloc;
   desktopFolder:  IShellFolder;

@@ -47,9 +47,6 @@ type
     property onCancel:      TNotifyEvent read FOnCancel     write FOnCancel;
   end;
 
-var
-  progressForm: TProgressForm;
-
 implementation
 
 uses

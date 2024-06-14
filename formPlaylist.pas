@@ -34,7 +34,6 @@ type
     moveLabel: TLabel;
     LB: TListBox;
     procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure LBDblClick(Sender: TObject);
     procedure LBKeyPress(Sender: TObject; var Key: Char);
     procedure LBKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -63,8 +62,7 @@ implementation
 uses
   winApi.shellApi,
   system.strUtils,
-  mmpconsts,
-  TGlobalVarsClass, TMediaPlayerClass, TUICtrlsClass,
+  mmpconsts, mmpSingletons,
   _debugWindow;
 
 var
@@ -123,11 +121,6 @@ begin
   inherited;
   Params.ExStyle    := Params.ExStyle OR (WS_EX_APPWINDOW);
   Params.WndParent  := SELF.Handle; // normally application.handle
-end;
-
-procedure TPlaylistForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  playlistForm.free; playlistForm := NIL;
 end;
 
 procedure TPlaylistForm.FormCreate(Sender: TObject);

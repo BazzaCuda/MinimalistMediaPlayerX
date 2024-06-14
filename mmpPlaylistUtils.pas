@@ -27,16 +27,15 @@ function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
 function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
-function mmpReloadPlaylist(const aFolder: string): string;
+function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
 
 implementation
 
 uses
   winApi.windows,
   system.classes, system.sysUtils,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpSingletons, mmpSysCommands, mmpUtils,
   formMediaCaption, formPlaylist,
-  TConfigFileClass, TGlobalVarsClass,
   _debugWindow;
 
 function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
@@ -80,17 +79,17 @@ begin
                                   FALSE: aMP.playnext; end; // ...hence, playNext
 end;
 
-function mmpReloadPlaylist(const aFolder: string): string;
+function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
 begin
-  var vCurrentItem     := PL.currentItem;
+  var vCurrentItem     := aPL.currentItem;
   var vCurrentPosition := MP.position;
 
-  PL.fillPlaylist(aFolder);
-  case PL.find(vCurrentItem) of  TRUE: MP.position := vCurrentPosition;
-                                FALSE: begin
-                                         PL.first;
-                                         MP.play(PL.currentItem); end;end;
-  MC.caption := PL.formattedItem;
+  aPL.fillPlaylist(extractFilePath(vCurrentItem));
+  case aPL.find(vCurrentItem) of   TRUE: MP.position := vCurrentPosition;
+                                  FALSE: begin
+                                          aPL.first;
+                                          aMP.play(aPL.currentItem); end;end;
+  MC.caption := aPL.formattedItem;
   result := 'Playlist reloaded';
 end;
 

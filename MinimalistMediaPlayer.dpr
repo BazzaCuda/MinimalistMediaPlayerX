@@ -21,9 +21,11 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
+  FastMM5 in '..\..\3P\FastMM5\FastMM5.pas',
   Vcl.Forms,
   Vcl.Styles,
   Vcl.Themes,
+  mmpSingletons in 'mmpSingletons.pas',
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
   MPVClient in 'libMPVDelphi\MPVClient.pas',
   MPVConst in 'libMPVDelphi\MPVConst.pas',
@@ -91,12 +93,12 @@ uses
   mmpUserFolders in 'mmpUserFolders.pas',
   mmpFolderUtils in 'mmpFolderUtils.pas',
   TUndoMoveClass in 'TUndoMoveClass.pas',
-  mmpKeyboardUtils in 'mmpKeyboardUtils.pas';
-
+  mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
+  TMediaStreamClass in 'TMediaStreamClass.pas';
 {$R *.res}
 
 begin
-  ReportMemoryLeaksOnShutdown := FALSE;
+  ReportMemoryLeaksOnShutdown := TRUE;
   debugClear;
 
   Application.Initialize;

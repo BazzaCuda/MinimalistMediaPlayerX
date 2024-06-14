@@ -59,25 +59,13 @@ type
     property showProgressBar: boolean read FShowProgressBar write setShowProgressBar;
   end;
 
-function PB: TProgressBar;
-
 implementation
 
 uses
   system.sysUtils,
   vcl.graphics,
-  mmpConsts, mmpKeyboard, mmpMPVFormatting,
-  TConfigFileClass, TGlobalVarsClass, TMediaPlayerClass,
+  mmpConsts, mmpKeyboard, mmpMPVFormatting, mmpSingletons,
   _debugWindow;
-
-var
-  gPB: TProgressBar;
-
-function PB: TProgressBar;
-begin
-  case gPB = NIL of TRUE: gPB := TProgressBar.create; end;
-  result := gPB;
-end;
 
 { TProgressBar }
 
@@ -220,11 +208,5 @@ begin
   FShowProgressBar := Value;
   FPB.Visible := FShowProgressBar;
 end;
-
-initialization
-  gPB := NIL;
-
-finalization
-  case gPB <> NIL of TRUE: gPB.free; end;
 
 end.

@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -91,6 +91,7 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -111,10 +112,11 @@
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
 $(PostBuildEvent)]]></PostBuildEvent>
-        <Debugger_RunParams>&quot;B:\Images\zTest\from mobile\Dylan_Original_Model.JPG.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Images\zTest\large\SampleJPGImage_20MB.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
         <VerInfo_Release>3</VerInfo_Release>
+        <DCC_Define>FastMM_FullDebugMode;FastMM_ClearLogFileOnStartup;PurePascal;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -130,7 +132,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <DCC_DcpOutput>.\$(Platform)\$(Config)</DCC_DcpOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -138,12 +139,18 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;X:\testfolder\7-Inch-Vinyl-Single-John-Lennon-and-Imagine-All-The-People.jpg&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\jon.richardson.funny.magnet.2012.dvdrip.xvid-haggis [c].mp4&quot;</Debugger_RunParams>
+        <DCC_Define>FastMM_FullDebugMode;FastMM_ClearLogFileOnStartup;PurePascal;$(DCC_Define)</DCC_Define>
+        <DCC_MapFile>3</DCC_MapFile>
+        <PostBuildEvent><![CDATA[copy /Y B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release 
+$(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\..\3P\FastMM5\FastMM5.pas"/>
+        <DCCReference Include="mmpSingletons.pas"/>
         <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
         <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
@@ -209,11 +216,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TThumbsClass.pas"/>
         <DCCReference Include="formThumbs.pas">
             <Form>ThumbsForm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="formReleaseNotes.pas">
             <Form>ReleaseNotesForm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="mmpMarkDownUtils.pas"/>
         <DCCReference Include="mmpMPVCtrls.pas"/>
@@ -240,6 +245,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpFolderUtils.pas"/>
         <DCCReference Include="TUndoMoveClass.pas"/>
         <DCCReference Include="mmpKeyboardUtils.pas"/>
+        <DCCReference Include="TMediaStreamClass.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -1192,6 +1198,14 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
         <PostBuildEvent>rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\</PostBuildEvent>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
+        <PreBuildEvent/>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent>copy /Y B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release </PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

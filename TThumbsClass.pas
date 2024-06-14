@@ -23,7 +23,7 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
-  mmpConsts,
+  mmpConsts, mmpSingletons,
   TMPVHostClass, TPlaylistClass, TThumbClass;
 
 type
@@ -48,7 +48,7 @@ type
     function  getWhichHost: THostType;
   public
     constructor create;
-    destructor destroy; override;
+    destructor Destroy; override;
     function cancel: boolean;
     function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function playCurrentItem: boolean;
@@ -77,7 +77,6 @@ uses
   vcl.graphics,
   mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
-  TGlobalVarsClass, TMediaInfoClass,
   _debugWindow;
 
 { TThumbs }
@@ -96,7 +95,7 @@ begin
   FThumbSize := THUMB_DEFAULT_SIZE;
 end;
 
-destructor TThumbs.destroy;
+destructor TThumbs.Destroy;
 begin
   case FPlaylist  = NIL of FALSE: FPlaylist.free; end;
   case FThumbs    = NIL of FALSE: FThumbs.free;   end;

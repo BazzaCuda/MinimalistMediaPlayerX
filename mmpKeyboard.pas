@@ -46,9 +46,8 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpShellUtils, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpUtils,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
-  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TPlaylistClass, TProgressBarClass, TSendAllClass, TUICtrlsClass,
   _debugWindow;
 
 const
@@ -279,7 +278,7 @@ begin
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
     koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
     koPrevChapter:       MP.chapterPrev;
-    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(extractFilePath(PL.currentItem)); loadPlaylistWindow(TRUE); end;
+    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(PL, MP); loadPlaylistWindow(TRUE); end;
     koRunCut:            mmpOpenExternalApp(F11_APP, PL.currentItem);
     koRunPot:            mmpOpenExternalApp(F10_APP, PL.currentItem);
     koRunShot:           mmpOpenExternalApp(F12_APP, PL.currentItem);

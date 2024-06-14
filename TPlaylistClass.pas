@@ -67,27 +67,15 @@ type
     function validIx(const ix: integer): boolean;
   end;
 
-function PL: TPlaylist;
-
-var
-  gPL: TPlaylist;
-
 implementation
 
 uses
   winApi.windows,
   system.math, system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
-  mmpFileUtils,
+  mmpFileUtils, mmpSingletons,
   formCaptions,
-  TGlobalVarsClass, TMediaTypesClass,
   _debugWindow;
-
-function PL: TPlaylist;
-begin
-  case gPL = NIL of TRUE: gPL := TPlaylist.create; end;
-  result := gPL;
-end;
 
 { TPlaylist }
 
@@ -394,11 +382,5 @@ begin
   case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
   result := TRUE;
 end;
-
-initialization
-  gPL := NIL;
-
-finalization
-  case gPL <> NIL of TRUE: gPL.free; end;
 
 end.

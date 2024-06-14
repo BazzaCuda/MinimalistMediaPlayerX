@@ -23,7 +23,6 @@ interface
 type
   TBookmark = class(TObject)
   strict private
-    function release: boolean;
   protected
   private
   public
@@ -32,22 +31,12 @@ type
     function save(const aURL: string; const aPosition: integer): string;
   end;
 
-function BM: TBookmark;
-
 implementation
 
 uses
   system.sysUtils,
-  TConfigFileClass;
-
-var
-  gBM: TBookmark;
-
-function BM: TBookmark;
-begin
-  case gBM = NIL of TRUE: gBM := TBookmark.Create; end;
-  result := gBM;
-end;
+  mmpSingletons,
+  _debugWindow;
 
 { TBookmark }
 
@@ -62,23 +51,11 @@ begin
   result := 'Bookmark deleted';
 end;
 
-function TBookmark.release: boolean;
-begin
-  freeAndNIL(gBM);
-end;
-
 function TBookmark.save(const aURL: string; const aPosition: integer): string;
 begin
   CF.value[aURL] := intToStr(aPosition);
   result := 'Bookmarked';
   release;
 end;
-
-initialization
-  gBM := NIL;
-
-finalization
-  case gBM <> NIL of TRUE: gBM.free; end;
-
 
 end.

@@ -2,8 +2,8 @@ object ThumbsForm: TThumbsForm
   Left = 0
   Top = 0
   Caption = 'MMP Image & Thumbnail Browser'
-  ClientHeight = 445
-  ClientWidth = 626
+  ClientHeight = 437
+  ClientWidth = 622
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3026,8 +3026,8 @@ object ThumbsForm: TThumbsForm
   TextHeight = 15
   object FStatusBar: TStatusBar
     Left = 0
-    Top = 425
-    Width = 626
+    Top = 417
+    Width = 622
     Height = 20
     Color = clMedGray
     Font.Charset = DEFAULT_CHARSET

@@ -36,7 +36,7 @@ implementation
 
 uses
   winApi.windows,
-  mmpConsts, TGlobalVarsClass;
+  mmpConsts, mmpSingletons;
 
 var
   gTT: TTickTimer;

@@ -29,8 +29,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpFolderUtils,
-  TConfigFileClass;
+  mmpFolderUtils, mmpSingletons;
 
 function mmpUserBaseFolder(const aFolder: string): string;
 begin

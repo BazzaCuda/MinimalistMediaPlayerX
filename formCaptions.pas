@@ -41,7 +41,6 @@ type
     FShowData: boolean;
     FUIWidth: integer;
 
-    constructor create;
     function  getHWND: HWND;
     function  startOpInfoTimer: boolean;
     procedure setDisplayTime(const value: string);
@@ -52,7 +51,7 @@ type
     function getColor: TColor;
     procedure setColor(const Value: TColor);
   public
-    destructor Destroy; override;
+    constructor create;
     procedure  formResize(aUIWidth: integer = 0);
     function   initCaptions(const aVideoPanel: TPanel): boolean;
     function brighter: integer;
@@ -68,26 +67,14 @@ type
     property showTime:      boolean read FShowTime  write setShowTime;
   end;
 
-function ST: TCaptionsForm; // was originally for SubTitles, hence ST
-
 implementation
 
 uses
-  mmpConsts, mmpTransparentUtils,
-  TConfigFileClass, TMediaPlayerClass,
+  mmpConsts, mmpSingletons, mmpTransparentUtils,
   _debugWindow;
 
 const
   DEFAULT_WINDOW_HEIGHT = 150;
-
-var
-  gST: TCaptionsForm;
-
-function ST: TCaptionsForm;
-begin
-  case gST = NIL of TRUE: gST := TCaptionsForm.create; end;
-  result := gST;
-end;
 
 {$R *.dfm}
 
@@ -121,13 +108,13 @@ constructor TCaptionsForm.create;
     aLabel.styleElements  := [];
   end;
 begin
-  inherited create(NIL);
+  inherited create(APPLICATION);
 
   SELF.height := DEFAULT_WINDOW_HEIGHT;
 
   FShowTime := TRUE;
 
-  FInfoPanel := TPanel.create(NIL);
+  FInfoPanel := TPanel.create(SELF);
   FInfoPanel.parent := SELF;
   FInfoPanel.align  := alClient;   // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
   FInfoPanel.bevelOuter := bvNone;
@@ -182,13 +169,6 @@ begin
   FOpInfo.font.color      := FOpInfo.font.color     - $010101;
   FDataMemo.font.color    := FDataMemo.font.color   - $010101;
   result := FTimeLabel.font.color;
-end;
-
-destructor TCaptionsForm.Destroy;
-begin
-  case FInfoPanel     <> NIL of TRUE: FInfoPanel.free; end;
-  case FOpInfoTimer   <> NIL of TRUE: FOpInfoTimer.free; end;
-  inherited;
 end;
 
 procedure TCaptionsForm.formResize(aUIWidth: integer = 0);
@@ -272,7 +252,7 @@ end;
 
 function TCaptionsForm.startOpInfoTimer: boolean;
 begin
-  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(NIL); end;
+  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(SELF); end;
   FOpInfoTimer.enabled  := FALSE;
   FOpInfoTimer.interval := 2000;
   FOpInfoTimer.onTimer  := timerEvent;
@@ -286,11 +266,5 @@ begin
   FOpInfoTimer.free;
   FOpInfoTimer := NIL;
 end;
-
-initialization
-  gST := NIL;
-
-finalization
-  case gST <> NIL of TRUE: gST.free; end;
 
 end.
