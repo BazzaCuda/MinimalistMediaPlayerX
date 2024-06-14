@@ -207,10 +207,9 @@ begin
                                                       case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose(GV.appWnd); end;end; // shortcut logic!
                                                         FALSE:  begin
-                                                                  debug('FALSE');
                                                                   loadPlaylistWindow;
-                                                                  case vIx = 0 of  TRUE: playCurrentItem;
-                                                                                  FALSE: playNext; end;end;end;end;end; // ...hence, playNext
+                                                                  case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem;
+                                                                                                               FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -465,7 +464,6 @@ var
   vNextFolder: string;
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
-  debug(vNextFolder);
   case vNextFolder = '' of FALSE: FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;

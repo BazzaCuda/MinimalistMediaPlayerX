@@ -54,8 +54,8 @@ begin
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND MP.playNextFolder of FALSE: mmpSendSysCommandClose(GV.appWnd); end; // shortcut logic!
                                                         FALSE:  begin
                                                                   loadPlaylistWindow(TRUE);
-                                                                  case vIx = 0 of  TRUE: MP.playCurrent;
-                                                                                  FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
+                                                                  case (vIx = 0) or PL.isLast of  TRUE: MP.playCurrent;
+                                                                                                 FALSE: MP.playnext; end;end;end;end;end; // ...hence, playNext
 end;
 
 function mmpReloadPlaylist(const aFolder: string): string;
