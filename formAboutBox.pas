@@ -72,7 +72,7 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpSingletons, mmpUtils,
+  mmpFileUtils, mmpShellUtils, mmpSingletons, mmpUtils,
   formReleaseNotes,
   _debugWindow;
 
@@ -127,7 +127,7 @@ end;
 
 procedure TAboutBoxForm.lblWebsiteURLClick(Sender: TObject);
 begin
-  shellExecute(0, 'open', 'https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest', '', '', SW_SHOW);
+  mmpShellExec('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest');
 end;
 
 procedure TAboutBoxForm.lblWebsiteURLMouseEnter(Sender: TObject);
@@ -142,7 +142,7 @@ end;
 
 procedure TAboutBoxForm.lblWikiURLClick(Sender: TObject);
 begin
-  shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
+  mmpShellExec('https://minimalistmediaplayer.com');
 end;
 
 procedure TAboutBoxForm.lblWikiURLMouseEnter(Sender: TObject);

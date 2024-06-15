@@ -300,7 +300,7 @@ begin
     koToggleSubtitles:   ST.opInfo := MP.toggleSubtitles;
     koVolDn:             ST.opInfo := MP.volDown;
     koVolUp:             ST.opInfo := MP.volUp;
-    koWiki:              shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
+    koWiki:              mmpShellExec('https://minimalistmediaplayer.com');
     koZoomIn:            ST.opInfo := MP.zoomIn;
     koZoomOut:           ST.opInfo := MP.zoomOut;
     koZoomReset:         ST.opInfo := MP.zoomReset;

@@ -48,7 +48,7 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpConsts, mmpFileUtils, mmpMarkDownUtils, mmpSingletons,
+  mmpConsts, mmpFileUtils, mmpMarkDownUtils, mmpShellUtils, mmpSingletons,
   _debugWindow;
 
 function showReleaseNotes(const aReleaseTag: string): boolean;
@@ -95,7 +95,7 @@ end;
 
 procedure TReleaseNotesForm.mdHotSpotClick(Sender: TObject; const SRC: string; var Handled: Boolean);
 begin
-  shellExecute(0, 'open', PWideChar(SRC), '', '', SW_SHOW);
+  mmpShellExec(PWideChar(SRC));
   handled := TRUE;
 end;
 

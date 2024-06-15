@@ -771,7 +771,7 @@ begin
     koToggleHelp:         case GV.showingHelp of TRUE: shutHelp; FALSE: moveHelpWindow(TRUE); end;
     koToggleNumlock:      mmpToggleNumlock;
     koUndoMove:           undoMove;
-    koWiki:               shellExecute(0, 'open', 'https://minimalistmediaplayer.com', '', '', SW_SHOW);
+    koWiki:               mmpShellExec('https://minimalistmediaplayer.com');
     koZoomIn:             mpvZoomIn(mpv);
     koZoomOut:            mpvZoomOut(mpv);
     koZoomReset:          mpvZoomReset(mpv);

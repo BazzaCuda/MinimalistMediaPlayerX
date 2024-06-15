@@ -25,7 +25,7 @@ uses
 
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
 function mmpOpenExternalApp(const FnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
-function mmpShellExec(const anExePath: string; const aParams: string): boolean;
+function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 
 implementation
 
@@ -78,7 +78,7 @@ begin
 end;
 
 
-function mmpShellExec(const anExePath: string; const aParams: string): boolean;
+function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 begin
   shellExecute(0, 'open', pchar(anExePath), pchar('"' + aParams + '"'), '', SW_SHOW);
 end;
