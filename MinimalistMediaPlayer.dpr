@@ -95,6 +95,7 @@ uses
   TUndoMoveClass in 'TUndoMoveClass.pas',
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
   TMediaStreamClass in 'TMediaStreamClass.pas';
+
 {$R *.res}
 
 begin
@@ -107,7 +108,5 @@ begin
   TStyleManager.TrySetStyle('Charcoal Dark Slate');
   application.title := 'MMP - Minimalist Media Player';
   Application.CreateForm(TMMPUI, MMPUI);
-  try
-    Application.Run;
-  except end;
+  Application.Run;
 end.

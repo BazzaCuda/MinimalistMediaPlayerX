@@ -22,6 +22,7 @@ interface
 
 uses
   winAPI.windows,
+  system.sysUtils,
   vcl.appEvnts, vcl.forms;
 
 type
@@ -30,6 +31,7 @@ type
     FAppEvents: TApplicationEvents;
   private
     procedure appEventsMessage(var msg: tagMSG; var handled: boolean);
+    procedure appException(sender: TObject; e: exception);
   protected
     property appEvents: TApplicationEvents read FAppEvents write FAppEvents;
   public
@@ -41,9 +43,9 @@ implementation
 
 uses
   winAPI.messages,
-  system.classes, system.types, system.sysUtils,
-  vcl.controls,
-  mmpConsts, mmpDesktopUtils, mmpKeyboard, mmpSingletons, mmpSysCommands, mmpUtils,
+  system.classes, system.types, system.typInfo,
+  vcl.controls, vcl.dialogs,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpKeyboard, mmpSingletons, mmpSysCommands, mmpUtils,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formThumbs, formTimeline,
   _debugWindow;
 
@@ -172,11 +174,30 @@ begin
   case msgIs(WM_CENTRE_CURSOR)        of TRUE: PB.centreCursor; end;
 end;
 
+procedure TAppEvents.appException(sender: TObject; e: exception);
+  function splitMessage: string;
+  begin
+    result := e.message;
+    var vPos := pos('. ', result);
+    case vPos > 0 of TRUE: result := copy(result, 1, vPos) + #13#10 + copy(result, vPos + 2, length(result)); end;
+  end;
+
+begin
+  var vMsg := 'Well that''s unfortunate.'#13#10#13#10;
+  vMsg := vMsg + format('%s%s', [splitMessage, #13#10#13#10]);
+  vMsg := vMsg + format('class: %s%s', [sender.toString, #13#10]);
+  vMsg := vMsg + format('address: $%p%s', [exceptAddr, #13#10]);
+  mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK],  mbOK);
+  mmpSendSysCommandClose(GV.appWnd); // attempt an elegant withdrawal
+  halt;                              // if not
+end;
+
 constructor TAppEvents.create;
 begin
   inherited;
-  FAppEvents := TApplicationEvents.create(NIL);
-  FAppEvents.onMessage := appEventsMessage;
+  FAppEvents              := TApplicationEvents.create(NIL);
+  FAppEvents.onMessage    := appEventsMessage;
+  FAppEvents.OnException  := appException;
 end;
 
 destructor TAppEvents.Destroy;
