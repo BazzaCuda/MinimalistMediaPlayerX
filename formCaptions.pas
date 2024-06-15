@@ -108,7 +108,7 @@ constructor TCaptionsForm.create;
     aLabel.styleElements  := [];
   end;
 begin
-  inherited create(APPLICATION);
+  inherited create(GV.mainForm);
 
   SELF.height := DEFAULT_WINDOW_HEIGHT;
 
@@ -159,6 +159,8 @@ begin
   FDataMemo.styleElements  := [];
   FDataMemo.clear;
   FDataMemo.visible        := FALSE;
+
+  FOpInfoTimer             := NIL;
 end;
 
 function TCaptionsForm.darker: integer;

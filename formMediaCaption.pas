@@ -66,7 +66,7 @@ end;
 
 constructor TMediaCaptionForm.create;
 begin
-  inherited create(APPLICATION);
+  inherited create(GV.mainForm);
   height := 80;
   FCaption := TLabel.create(SELF);
 

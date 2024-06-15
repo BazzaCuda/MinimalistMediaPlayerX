@@ -114,7 +114,7 @@ begin
   streamListForm.show;
   streamListForm.onExport := aExportEvent;
 
-  winAPI.Windows.setWindowPos(streamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winApi.windows.setWindowPos(streamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   GV.showingStreamList := TRUE;
 end;
 

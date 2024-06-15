@@ -33,6 +33,7 @@ type
     btnIgnore: TButton;
     btnCancel: TButton;
     btnRerun: TButton;
+    FTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
   private
@@ -45,6 +46,7 @@ type
     property subHeading:    TLabel       read FSubHeading;
     property modal:         boolean                         write setModal;
     property onCancel:      TNotifyEvent read FOnCancel     write FOnCancel;
+    property timer:         TTimer       read FTimer;
   end;
 
 implementation
@@ -67,6 +69,8 @@ begin
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
   position          := poScreenCenter;
+
+  FTimer.enabled    := FALSE;
 
   with panel1 do begin
     styleElements    := []; // don't allow any theme alterations

@@ -40,9 +40,9 @@ type
     procedure pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure pnlCursorMouseEnter(Sender: TObject);
     procedure pnlCursorMouseLeave(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormResize(Sender: TObject);
     procedure lblPositionClick(Sender: TObject);
   strict private
     FDragging: boolean;
@@ -102,18 +102,18 @@ type
   public
     function clear: boolean;
     function delSegment(const aSegment: TSegment): boolean;
-    function keyHandled(key: WORD): boolean;
     function initTimeline(const aMediaFilePath: string; const aMax: integer): string;
-    function undo(const aPrevAction: string): boolean;
-    property max: integer read getMax write setMax;
-    property mediaFilePath: string read FMediaFilePath;
-    property position: integer read getPosition write setPosition;
-    property prevAction: string read FPrevAction write FPrevAction;
     function redo: boolean;
-    property segCount: integer read getSegCount;
-    property segments: TObjectList<TSegment> read getSegments;
-    property lengthenCount:  integer read FLengthenCount write FLengthenCount;
-    property shortenCount:   integer read FShortenCount  write FShortenCount;
+    function undo(const aPrevAction: string): boolean;
+    function validKey(key: WORD): boolean;
+    property lengthenCount: integer               read FLengthenCount write FLengthenCount;
+    property max:           integer               read getMax         write setMax;
+    property mediaFilePath: string                read FMediaFilePath;
+    property position:      integer               read getPosition    write setPosition;
+    property prevAction:    string                read FPrevAction    write FPrevAction;
+    property segCount:      integer               read getSegCount;
+    property segments:      TObjectList<TSegment> read getSegments;
+    property shortenCount:  integer               read FShortenCount  write FShortenCount;
   end;
 
 function focusTimeline: boolean;
@@ -292,14 +292,17 @@ begin
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
   pnlCursor.left   := -1;
+  keyPreview       := TRUE;
 end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
+// e.g. key:char here may be x or X, but keyUp:word will always be 88
 begin
-  case TL.keyHandled(ord(key)) of FALSE: EXIT; end; // ignore irrelevant keystrokes
+  key := upCase(key);
+  case key in ['L', 'S'] of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
-  case key in ['l', 'L'] of TRUE: begin TL.lengthenCount := TL.lengthenCount + 1; TL.lengthenSegment(TSegment.selSeg); TL.drawSegments; end;end;
-  case key in ['s', 'S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
+  case key in ['L'] of TRUE: begin TL.lengthenCount := TL.lengthenCount + 1; TL.lengthenSegment(TSegment.selSeg); TL.drawSegments; end;end;
+  case key in ['S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
 
   var vAction := TL.saveSegments;
   TL.drawSegments;
@@ -308,11 +311,12 @@ begin
 end;
 
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+// For VK_ keys we only get a formKeyDown event
 var
   vOK: boolean;
   vAction: string;
 begin
-  case TL.keyHandled(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes
+  case TL.validKey(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
   vOK := FALSE;
   vAction := '';
@@ -325,8 +329,8 @@ begin
   case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                              TL.drawSegments; end;end;
   case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                               TL.drawSegments; end;end;
 
-  case key in [ord('l'), ord('L')] of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;
-  case key in [ord('s'), ord('S')] of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;
+  case key = ord('L') of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;  // user has stopped holding down L
+  case key = ord('S') of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;  // user has stopped holding down S
 
   var vSaveUndo := vOK; // a change was made
 
@@ -338,7 +342,7 @@ begin
                             TL.drawSegments;
                             TL.addUndo(vAction); end;end;
 
-  case TL.keyHandled(key) of TRUE: key := 0; end;
+  case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
 
 procedure TTimelineForm.FormResize(Sender: TObject);
@@ -618,13 +622,6 @@ begin
   drawSegments;
 end;
 
-function TTimeline.keyHandled(key: WORD): boolean;
-const validKeys = 'CILMNORSXYZ';
-begin
-  case key in [97..122] of TRUE: key := key - 32; end; // convert a..z to A..Z
-  result := validKeys.contains(char(key));
-end;
-
 function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
 var
   vSL: TStringList;
@@ -809,6 +806,12 @@ begin
                                         drawSegments;
                                         FRedoList.push(FUndoList.extract);
                                       end;end;
+end;
+
+function TTimeline.validKey(key: WORD): boolean;
+const validKeys = 'CILMNORSXYZ';
+begin
+  result := validKeys.contains(char(key));
 end;
 
 initialization

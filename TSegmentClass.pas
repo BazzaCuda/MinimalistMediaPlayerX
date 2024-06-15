@@ -101,17 +101,17 @@ var
   darkerSoftColors: array of TColor;
 begin
   // Define an array of even darker soft colors
-  SetLength(darkerSoftColors, 6);
+  SetLength(darkerSoftColors, 5);
   darkerSoftColors[0] := RGB(80, 80, 80);   // Very Dark Gray
   darkerSoftColors[1] := RGB(70, 70, 70);   // Very Dark Silver
   darkerSoftColors[2] := RGB(60, 60, 60);   // Very Dark Platinum
   darkerSoftColors[3] := RGB(50, 50, 50);   // Very Dark Snow
   darkerSoftColors[4] := RGB(40, 40, 40);   // Very Dark Ivory
-  darkerSoftColors[5] := RGB(30, 30, 30);   // Extremely Dark Gray
+//  darkerSoftColors[5] := RGB(30, 30, 30);   // Extremely Dark Gray
 
   result := darkerSoftColors[nextColor];
   inc(nextColor);
-  case nextColor > 5 of TRUE: nextColor := 0; end;
+  case nextColor > 4 of TRUE: nextColor := 0; end;
 end;
 
 { TSegment }

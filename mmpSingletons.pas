@@ -171,7 +171,7 @@ finalization
   case gBM <> NIL of TRUE: gBM.free; end;
   case gCF <> NIL of TRUE: gCF.free; end;
   case gGV <> NIL of TRUE: gGV.free; end;
-//  case gMC <> NIL of TRUE: gMC.free; end;
+//  case gMC <> NIL of TRUE: gMC.free; end; // owned by GV.mainForm
   case gMI <> NIL of TRUE: gMI.free; end;
   case gMP <> NIL of TRUE: gMP.free; end;
   case gMT <> NIL of TRUE: gMT.free; end;
@@ -180,7 +180,7 @@ finalization
   case gPS <> NIL of TRUE: gPS.free; end;
   case gPU <> NIL of TRUE: gPU.free; end;
   case gSA <> NIL of TRUE: gSA.free; end;
-//  case gST <> NIL of TRUE: gST.free; end;
+//  case gST <> NIL of TRUE: gST.free; end; // owned by GV.mainForm
   case gUI <> NIL of TRUE: gUI.free; end;
   case gUM <> NIL of TRUE: gUM.free; end;
 

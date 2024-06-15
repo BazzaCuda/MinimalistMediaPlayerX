@@ -319,6 +319,11 @@ var
                                                           inc(FChapterCount); end;end;
 
     calcChapterEndSS;
+
+    case (FMediaChapters[0].chapterStartSS = 0) and (FMediaChapters[0].chapterEndSS = -1) of TRUE:  begin
+                                                                                                      FMediaChapters.delete(0);
+                                                                                                      dec(FChapterCount);
+                                                                                                    end;end; // delete initial bogus 0:00:00-0:00:00 chapter
   end;
 
 begin

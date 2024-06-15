@@ -154,7 +154,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(W) and     ctrl                                              of TRUE: result := koWiki; end;
     case keyUp and keyIs(W) and NOT ctrl                                              of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(X)                                                           of TRUE: result := koCloseApp; end;
-    case keyDn and keyIs(Y)                                                           of TRUE: result := koThumbnails; end;
+    case keyUp and keyIs(Y)                                                           of TRUE: result := koThumbnails; end;
     case keyUp and keyIs(Z)                                                           of TRUE: result := koPlayLast; end;
 
     case keyDn and keyIs(BACKSLASH)                                                   of TRUE: result := koSpeedDn; end;
@@ -248,7 +248,7 @@ begin
     koGammaUp:           ST.opInfo := MP.gammaUp;
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
-    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: begin ST.opInfo := 'Kept/Deleted'; mmpSendSysCommandClose(UI.handle); end;end;end;
+    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose(UI.handle); end;end;
     koImageInBrowser:    UI.showThumbnails(htMPVHost);
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;

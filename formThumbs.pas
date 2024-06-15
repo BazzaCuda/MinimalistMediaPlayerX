@@ -34,7 +34,6 @@ type
     FStatusBar: TStatusBar;
     FThumbsHost: TPanel;
     applicationEvents: TApplicationEvents;
-    timer: TTimer;
     procedure applicationEventsHint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -58,6 +57,7 @@ type
     FShowing:                 boolean;
     FSlideshowDirection:      TSlideshowDirection;
     FThumbs:                  TThumbs;
+    FTimerInterval:           integer;
   private
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
@@ -121,8 +121,8 @@ begin
     GV.showingThumbs := TRUE;
     vTF.showModal;
   finally
-    vTF.free;
     GV.showingThumbs := FALSE;
+    vTF.free;
   end;
 end;
 
@@ -267,7 +267,9 @@ begin
     case FInitialHost of htThumbsHost: FProgressForm.show; end;
     mmpProcessMessages;
     setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
-    timer.enabled := TRUE;
+    FProgressForm.timer.Interval := FTimerInterval;
+    FProgressForm.timer.OnTimer  := timerTimer;
+    FProgressForm.timer.enabled := TRUE;
   finally
   end;
   checkThumbsPerPage;
@@ -298,7 +300,8 @@ begin
   FMPVHost.visible    := FInitialHost = htMPVHost;
   FThumbsHost.visible := FInitialHost = htThumbsHost;
 
-  case FInitialHost of htMPVHost: timer.interval := 1; end;
+  case FInitialHost of     htMPVHost: FTimerInterval := 1;
+                        htThumbsHost: FTimerInterval := 1000; end;
 
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
@@ -613,9 +616,9 @@ end;
 
 procedure TThumbsForm.timerTimer(Sender: TObject);
 begin
-  timer.enabled := FALSE;
+  FProgressForm.timer.enabled := FALSE;
   case GV.mainForm <> NIL of TRUE: GV.mainForm.hide; end;
-  case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end; // UI.delayedHide doesn't always work - the delay might be being optimized out
+  case GV.mainForm <> NIL of TRUE: showWindow(GV.mainForm.handle, SW_HIDE); end;
   FShowing := TRUE;
   freeAndNIL(FProgressForm);
 

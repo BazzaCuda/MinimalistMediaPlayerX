@@ -3084,8 +3084,8 @@ object ThumbsForm: TThumbsForm
     UseSystemFont = False
     OnDrawPanel = FStatusBarDrawPanel
     OnResize = FStatusBarResize
-    ExplicitTop = 421
-    ExplicitWidth = 624
+    ExplicitTop = 413
+    ExplicitWidth = 620
   end
   object FThumbsHost: TPanel
     Left = 112
@@ -3099,11 +3099,5 @@ object ThumbsForm: TThumbsForm
     OnHint = applicationEventsHint
     Left = 80
     Top = 40
-  end
-  object timer: TTimer
-    Enabled = False
-    OnTimer = timerTimer
-    Left = 456
-    Top = 328
   end
 end
