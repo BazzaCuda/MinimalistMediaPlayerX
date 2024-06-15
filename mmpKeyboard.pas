@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -127,7 +127,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
-    case keyUp and keyIs(F)                                                           of TRUE: result := koFullscreen; end;
+    case keyUp and keyIs(F) and     ctrl                                              of TRUE: result := koExploreFolder; end;
+    case keyUp and keyIs(F) and NOT ctrl                                              of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;
     case keyUp and keyIs(H) and     ctrl                                              of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(H) and NOT ctrl                                              of TRUE: result := koCentreWindow; end;
@@ -240,6 +241,7 @@ begin
     koDarkerPB:          UI.darker;
     koDeleteCurrentItem: mmpDeleteCurrentItem(PL, MP);
     koEscape:            UI.doEscapeKey;
+    koExploreFolder:     mmpShellExec(PL.currentFolder, '');
     koFrameBackwards:    MP.frameBackwards;
     koFrameForwards:     MP.frameForwards;
     koFullscreen:        case NOT GV.showingPlaylist AND NOT GV.showingTimeline of TRUE: MP.toggleFullscreen; end;

@@ -181,7 +181,6 @@ procedure TAppEvents.appException(sender: TObject; e: exception);
     var vPos := pos('. ', result);
     case vPos > 0 of TRUE: result := copy(result, 1, vPos) + #13#10 + copy(result, vPos + 2, length(result)); end;
   end;
-
 begin
   var vMsg := 'Well that''s unfortunate.'#13#10#13#10;
   vMsg := vMsg + format('%s%s', [splitMessage, #13#10#13#10]);

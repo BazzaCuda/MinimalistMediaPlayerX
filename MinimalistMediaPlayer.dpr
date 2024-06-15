@@ -94,7 +94,8 @@ uses
   mmpFolderUtils in 'mmpFolderUtils.pas',
   TUndoMoveClass in 'TUndoMoveClass.pas',
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
-  TMediaStreamClass in 'TMediaStreamClass.pas';
+  TMediaStreamClass in 'TMediaStreamClass.pas',
+  TStatusBarHelperClass in 'TStatusBarHelperClass.pas';
 
 {$R *.res}
 

@@ -21,14 +21,17 @@ unit mmpPanelCtrls;
 interface
 
 uses
+  winApi.windows,
   vcl.comCtrls,
   mmpConsts, mmpUtils,
   _debugWindow;
 
 type
-  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnSave, pnHelp);
+  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnFold, pnHelp);
 
 function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
+
+function mmpIsFolderPanelAt   (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
 function mmpResetPanelHelp    (const aStatusBar: TStatusBar): boolean;
 function mmpResizeStatusBar   (const aStatusBar: TStatusBar): boolean;
 function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
@@ -36,14 +39,17 @@ function mmpSetPanelText      (const aStatusBar: TStatusBar; const aPanelName: T
 
 implementation
 
+uses
+  TStatusBarHelperClass;
+
 const
   PANEL_NAME = 0;
   PANEL_NUMB = 1;
   PANEL_SIZE = 2;
   PANEL_XXYY = 3;
   PANEL_DDXY = 4;
-  PANEL_HINT = 5;
-  PANEL_SAVE = 6;
+  PANEL_TICK = 5;
+  PANEL_FOLD = 6;
   PANEL_HELP = 7;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
@@ -57,8 +63,13 @@ begin
   mmpSetPanelText(aStatusBar, pnXXYY, '');
   mmpSetPanelText(aStatusBar, pnDDXY, '');
   mmpSetPanelText(aStatusBar, pnTick, '');
-  mmpSetPanelText(aStatusBar, pnSave, '');
+  mmpSetPanelText(aStatusBar, pnFold, '');
   mmpSetPanelText(aStatusBar, pnHelp, '');
+end;
+
+function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+begin
+  result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[PANEL_FOLD];
 end;
 
 function mmpResetPanelHelp(const aStatusBar: TStatusBar): boolean;
@@ -78,13 +89,13 @@ begin
                + aStatusBar.panels[PANEL_SIZE].width
                + aStatusBar.panels[PANEL_XXYY].width
                + aStatusBar.panels[PANEL_DDXY].width
-               + aStatusBar.panels[PANEL_HINT].width
+               + aStatusBar.panels[PANEL_TICK].width
                + aStatusBar.panels[PANEL_HELP].width;
 
   availWidth := aStatusBar.width - fixedWidths;
 
   aStatusBar.panels[PANEL_NAME].width := availWidth div 2;
-  aStatusBar.panels[PANEL_SAVE].width := availWidth div 2;
+  aStatusBar.panels[PANEL_FOLD].width := availWidth div 2;
 end;
 
 function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
@@ -107,8 +118,8 @@ begin
     pnSize: aStatusBar.panels[PANEL_SIZE].text := aText;
     pnXXYY: aStatusBar.panels[PANEL_XXYY].text := aText;
     pnDDXY: aStatusBar.panels[PANEL_DDXY].text := aText;
-    pnTick: aStatusBar.panels[PANEL_HINT].text := aText;
-    pnSave: aStatusBar.panels[PANEL_SAVE].text := aText;
+    pnTick: aStatusBar.panels[PANEL_TICK].text := aText;
+    pnFold: aStatusBar.panels[PANEL_FOLD].text := aText;
     pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;
   end;
   aStatusBar.refresh;

@@ -44,6 +44,7 @@ type
     procedure FStatusBarResize(Sender: TObject);
     procedure timerTimer(Sender: TObject);
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
+    procedure FStatusBarClick(Sender: TObject);
   strict private
     mpv: TMPVBasePlayer;
     FDurationResetSpeed:      double;
@@ -109,8 +110,9 @@ implementation
 uses
   winApi.shellApi,
   mmpMPVCtrls, mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpSingletons, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpMathUtils, mmpPanelCtrls, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpTicker, mmpUserFolders, mmpUtils, mmpWindowCtrls,
   formAboutBox, formHelp, formPlaylist,
+  TStatusBarHelperClass,
   _debugWindow;
 
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
@@ -509,7 +511,7 @@ begin
   vNewName := mmpRenameFile(aFilePath);
   case vNewName = aFilePath of FALSE: begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
-                                        mmpSetPanelText(FStatusBar, pnSave, 'Renamed: ' + aFilePath); end;end;
+                                        mmpSetPanelText(FStatusBar, pnFold, 'Renamed: ' + aFilePath); end;end;
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
 end;
 
@@ -525,7 +527,7 @@ begin
   case mmpCopyFile(aFilePath, mmpUserDstFolder('Copied'), FALSE, FALSE) of
                                                    TRUE:  begin
                                                             mmpSetPanelText(FStatusBar, pnHelp, 'Copied');
-                                                            mmpSetPanelText(FStatusBar, pnSave, 'Copied to: ' + mmpUserDstFolder('Copied'));
+                                                            mmpSetPanelText(FStatusBar, pnFold, 'Copied to: ' + mmpUserDstFolder('Copied'));
                                                           end;
                                                   FALSE:  begin
                                                             mmpSetPanelOwnerDraw(FStatusBar, pnHelp, TRUE);
@@ -546,7 +548,7 @@ begin
   result := mmpCopyFile(aFilePath, aFolder, TRUE, aRecordUndo);
   case result of  TRUE: begin
                           mmpSetPanelText(FStatusBar, pnHelp, aOpText);
-                          mmpSetPanelText(FStatusBar, pnSave, aOpText + ' to: ' + aFolder);
+                          mmpSetPanelText(FStatusBar, pnFold, aOpText + ' to: ' + aFolder);
                           FThumbs.savePanelReserved := TRUE;
                         end;
                 FALSE:  begin
@@ -586,6 +588,16 @@ begin
   case FImageDisplayDurationMs = 100 of TRUE: EXIT; end;
   FImageDisplayDurationMs := FImageDisplayDurationMs - 100;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
+end;
+
+procedure TThumbsForm.FStatusBarClick(Sender: TObject);
+var
+  vPt:    TPoint;
+begin
+  vPt := smallPointToPoint(TSmallPoint(getMessagePos()));
+  vPt := FStatusBar.screenToClient(vPt);
+
+  case mmpIsFolderPanelAt(FStatusBar, vPt) of TRUE: mmpShellExec(FThumbs.currentFolder, ''); end;
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -716,6 +728,7 @@ begin
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
+    koExploreFolder:      mmpShellExec(FThumbs.currentFolder, '');
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);

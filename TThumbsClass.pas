@@ -222,7 +222,7 @@ begin
   case aFilePath <> '' of TRUE: begin
                                   FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
                                   mmpInitStatusBar(FStatusBar);
-                                  mmpSetPanelText(FStatusBar, pnSave, FCurrentFolder);
+                                  mmpSetPanelText(FStatusBar, pnFold, FCurrentFolder);
                                   fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
   FCancel := FALSE;
@@ -256,7 +256,7 @@ begin
   case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
 
   case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
-                             FALSE: mmpSetPanelText(FStatusBar, pnSave, FPlaylist.currentFolder); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnFold, FPlaylist.currentFolder); end;
 
   FStatusBar.refresh;
   mmpProcessMessages;

@@ -3082,6 +3082,7 @@ object ThumbsForm: TThumbsForm
       end>
     SizeGrip = False
     UseSystemFont = False
+    OnClick = FStatusBarClick
     OnDrawPanel = FStatusBarDrawPanel
     OnResize = FStatusBarResize
     ExplicitTop = 413
