@@ -20,7 +20,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpMixer;
+unit TMixerClass;
 
 interface
 
@@ -28,16 +28,17 @@ type
 
   TMixer = class
   protected
-    function getMute: boolean; virtual; abstract;
-    function getVolume: integer; virtual; abstract;
-    procedure setVolume(Value: integer); virtual; abstract;
+    function  getMute: boolean; virtual; abstract;
+    function  getVolume: integer; virtual; abstract;
     procedure setMute(Value: boolean); virtual; abstract;
+    procedure setVolume(Value: integer); virtual; abstract;
   public
+    function setSysMaxVol: boolean; virtual; abstract;
+    property muted:  boolean read getMute   write setMute;
     property volume: integer read getVolume write setVolume;
-    property muted: boolean read getMute write setMute;
   end;
 
-function g_mixer: TMixer;
+function mmpMixer: TMixer;
 
 implementation
 
@@ -52,10 +53,11 @@ type
     FMixer: HMIXER;
     procedure chk(r: MMRESULT);
   protected
-    function getMute: boolean; override;
-    function getVolume: integer; override;
-    procedure setVolume(Value: integer); override;
+    function  getMute: boolean; override;
+    function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
+    procedure setVolume(Value: integer); override;
+    function  setSysMaxVol: boolean; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -67,10 +69,11 @@ type
     FmmDevEnum: IMMDeviceEnumerator;
     FmmEndpoint: IMMAudioEndpointVolume;
   protected
-    function getMute: boolean; override;
-    function getVolume: integer; override;
-    procedure setVolume(Value: integer); override;
+    function  getMute: boolean; override;
+    function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
+    procedure setVolume(Value: integer); override;
+    function  setSysMaxVol: boolean; override;
   public
     constructor Create;
   end;
@@ -78,7 +81,7 @@ type
 var
   _g_mixer: TMixer;
 
-function g_mixer: TMixer;
+function mmpMixer: TMixer;
 var
   VerInfo: TOSVersioninfo;
 begin
@@ -220,6 +223,12 @@ begin
   chk(mixerSetControlDetails(0, @Details, MIXER_SETCONTROLDETAILSF_VALUE));
 end;
 
+function TxpMixer.setSysMaxVol: boolean;
+begin
+  setMute(FALSE);
+  setVolume(65535);
+end;
+
 procedure TxpMixer.setVolume(Value: integer);
 var
   Line: TMixerLine;
@@ -286,6 +295,12 @@ begin
   FmmEndpoint.SetMute(integer(Value), nil);
 end;
 
+function TVistaMixer.setSysMaxVol: boolean;
+begin
+  setMute(FALSE);
+  setVolume(65535);
+end;
+
 procedure TVistaMixer.setVolume(Value: integer);
 var
   fValue: Single;
@@ -299,6 +314,7 @@ begin
 end;
 
 initialization
+  _g_mixer := NIL;
 
 finalization
   case assigned(_g_mixer) of TRUE: _g_mixer.Free; end;

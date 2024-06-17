@@ -96,7 +96,7 @@ uses
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
   TMediaStreamClass in 'TMediaStreamClass.pas',
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
-  mmpMixer in 'mmpMixer.pas',
+  TMixerClass in 'TMixerClass.pas',
   mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas';
 
 {$R *.res}

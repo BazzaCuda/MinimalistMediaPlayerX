@@ -278,6 +278,7 @@ begin
     koSpeedReset:        ST.opInfo := MP.speedReset;
     koSpeedUp:           ST.opInfo := MP.speedUp;
     koStartOver:         SA.postToAll(WIN_RESTART, KBNumLock);
+    koSysMaxVol:         MX.setSysMaxVol;
     koTab:               SA.postToAll(WIN_TAB, KBNumLock);
     koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;

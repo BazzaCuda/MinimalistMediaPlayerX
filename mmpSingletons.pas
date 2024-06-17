@@ -22,7 +22,7 @@ interface
 
 uses
   formCaptions, formMediaCaption,
-  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TParamStringsClass, TPlaylistClass, TProgramUpdatesClass, TProgressBarClass, TSendAllClass,
+  TBookmarkClass, TConfigFileClass, TGlobalVarsClass, TMediaInfoClass, TMediaPlayerClass, TMediaTypesClass, TMixerClass, TParamStringsClass, TPlaylistClass, TProgramUpdatesClass, TProgressBarClass, TSendAllClass,
   TUICtrlsClass, TUndoMoveClass;
 
 function BM: TBookmark;
@@ -32,6 +32,7 @@ function MC: TMediaCaptionForm;
 function MI: TMediaInfo;
 function MP: TMediaPlayer;
 function MT: TMediaTypes;
+function MX: TMixer;
 function PB: TProgressBar;
 function PL: TPlaylist;
 function PS: TPS;
@@ -100,6 +101,11 @@ function MT: TMediaTypes;
 begin
   case gMT = NIL of TRUE: gMT := TMediaTypes.Create; end;
   result := gMT;
+end;
+
+function MX: TMixer;
+begin
+  result := mmpMixer;
 end;
 
 function PB: TProgressBar;
@@ -185,3 +191,4 @@ finalization
   case gUM <> NIL of TRUE: gUM.free; end;
 
 end.
+

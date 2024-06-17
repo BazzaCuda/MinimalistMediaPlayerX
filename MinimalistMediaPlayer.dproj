@@ -245,7 +245,7 @@
         <DCCReference Include="mmpKeyboardUtils.pas"/>
         <DCCReference Include="TMediaStreamClass.pas"/>
         <DCCReference Include="TStatusBarHelperClass.pas"/>
-        <DCCReference Include="mmpMixer.pas"/>
+        <DCCReference Include="TMixerClass.pas"/>
         <DCCReference Include="mmpMMDevApi_tlb.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
