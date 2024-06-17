@@ -1,4 +1,4 @@
-{   Minimalist Media Player
+{   MMP: Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder, koPBReset);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysMaxVol);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -152,7 +152,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(T)                         and (MP.mediaType = mtImage)      of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T)                         and (MP.mediaType <> mtImage)     of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;
-    case keyUp and keyIs(V)                                                           of TRUE: result := koSyncMedia; end;
+    case keyUp and keyIs(V) and     ctrl                                              of TRUE: result := koSysMaxVol; end;
+    case keyUp and keyIs(V) and NOT ctrl                                              of TRUE: result := koSyncMedia; end;
     case keyUp and keyIs(W) and     ctrl                                              of TRUE: result := koWiki; end;
     case keyUp and keyIs(W) and NOT ctrl                                              of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(X)                                                           of TRUE: result := koCloseApp; end;

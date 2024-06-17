@@ -95,7 +95,9 @@ uses
   TUndoMoveClass in 'TUndoMoveClass.pas',
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
   TMediaStreamClass in 'TMediaStreamClass.pas',
-  TStatusBarHelperClass in 'TStatusBarHelperClass.pas';
+  TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
+  mmpMixer in 'mmpMixer.pas',
+  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas';
 
 {$R *.res}
 

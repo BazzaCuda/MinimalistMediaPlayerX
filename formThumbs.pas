@@ -1,4 +1,4 @@
-{   Minimalist Media Player
+{   MMP: Minimalist Media Player
     Copyright (C) 2021-2024 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
