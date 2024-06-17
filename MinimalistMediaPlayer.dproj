@@ -116,7 +116,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
         <VerInfo_Release>3</VerInfo_Release>
-        <DCC_Define>FastMM_FullDebugMode;FastMM_ClearLogFileOnStartup;PurePascal;$(DCC_Define)</DCC_Define>
+        <DCC_Define>FastMM_FullDebugMode;PurePascal;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -140,12 +140,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <Debugger_RunParams>&quot;B:\Downloads\jon.richardson.funny.magnet.2012.dvdrip.xvid-haggis [c].mp4&quot;</Debugger_RunParams>
-        <DCC_Define>FastMM_FullDebugMode;$(DCC_Define)</DCC_Define>
+        <DCC_Define>FastMM_FullDebugMode;purepascal;FastMM_EnableMemoryLeakReporting;$(DCC_Define)</DCC_Define>
         <DCC_MapFile>3</DCC_MapFile>
         <PostBuildEvent><![CDATA[copy /Y B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release 
 $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
+        <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

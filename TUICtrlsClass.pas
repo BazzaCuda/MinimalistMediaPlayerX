@@ -217,7 +217,7 @@ end;
 
 function TUI.centreCursor: boolean;
 begin
-  case GV.autoCentre AND (MP.MediaType <> mtImage) and NOT GV.showingTimeline of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
+//  case GV.autoCentre AND (MP.MediaType <> mtImage) and NOT GV.showingTimeline of TRUE: postMessage(GV.appWND, WM_CENTRE_CURSOR, 0, 0); end;
 end;
 
 function TUI.centreWindow(const aWnd: HWND): boolean;

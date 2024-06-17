@@ -97,7 +97,7 @@ type
   TSlideshowDirection = (sdForwards, sdBackwards);
 
 const
-  mediaTypes: array[0..89] of TMediaTypeRec = (
+  mediaTypes: array[0..87] of TMediaTypeRec = (
 
 // manually added image formats
 (mimeType: 'image/jpeg';            mediaType: mtImage; typeName: 'JPEG image';                 fileExts: '.jpg.jpeg'),
@@ -202,10 +202,10 @@ const
 (mimeType: '';                      mediaType: mtAudio; typeName: 'SAP audio';                  fileExts: '.sap'),
 (mimeType: '';                      mediaType: mtAudio; typeName: 'SPC audio';                  fileExts: '.spc'),
 (mimeType: '';                      mediaType: mtAudio; typeName: 'VGM audio';                  fileExts: '.vgm'),
-(mimeType: '';                      mediaType: mtAudio; typeName: 'VGZ audio';                  fileExts: '.vgz'),
+(mimeType: '';                      mediaType: mtAudio; typeName: 'VGZ audio';                  fileExts: '.vgz')
 // Playlist formats
-(mimeType: 'audio/x-mpegurl';       mediaType: mtAudio; typeName: 'M3U Playlist';               fileExts: '.m3u.m3u8'),
-(mimeType: 'audio/x-scpls';         mediaType: mtAudio; typeName: 'PLS Playlist';               fileExts: '.pls')
+//(mimeType: 'audio/x-mpegurl';       mediaType: mtAudio; typeName: 'M3U Playlist';               fileExts: '.m3u.m3u8'),
+//(mimeType: 'audio/x-scpls';         mediaType: mtAudio; typeName: 'PLS Playlist';               fileExts: '.pls')
 );
 
 implementation

@@ -171,7 +171,7 @@ uses
     saturationReset;
     speedReset;
     zoomReset;
-    UI.resetColor;
+//    UI.resetColor;
     result := 'All reset';
   end;
 
@@ -523,7 +523,7 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
-  case GV.closeApp of TRUE: EXIT; end; // EXPERIMENTAL
+  case GV.closeApp of TRUE: EXIT; end;
   pause;
 
   var vDontExit := PL.isLast and (FMediaType = mtImage);
@@ -536,6 +536,8 @@ begin
   FTimer.enabled  := PL.next;
   case FTimer.enabled of FALSE: begin
                                   case vDontExit of TRUE: EXIT; end; // ah, the irony!
+                                  FDontPlayNext := TRUE;
+                                  mpvStop(mpv);
                                   FTimerEvent    := teClose;
                                   FTimer.enabled := TRUE; end;
                           TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end; // currently just updates the playlist window

@@ -44,7 +44,7 @@ implementation
 
 uses
   winApi.shellApi, winApi.windows,
-  system.sysUtils,
+  system.sysUtils, system.types,
   vcl.forms,
   mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpUtils,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
