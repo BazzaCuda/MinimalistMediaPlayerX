@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysMaxVol);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -152,7 +152,7 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(T)                         and (MP.mediaType = mtImage)      of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T)                         and (MP.mediaType <> mtImage)     of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;
-    case keyUp and keyIs(V) and     ctrl                                              of TRUE: result := koSysMaxVol; end;
+    case keyUp and keyIs(V) and     ctrl                                              of TRUE: result := koSysVolMax; end;
     case keyUp and keyIs(V) and NOT ctrl                                              of TRUE: result := koSyncMedia; end;
     case keyUp and keyIs(W) and     ctrl                                              of TRUE: result := koWiki; end;
     case keyUp and keyIs(W) and NOT ctrl                                              of TRUE: result := koPlayNext; end;
@@ -278,7 +278,7 @@ begin
     koSpeedReset:        ST.opInfo := MP.speedReset;
     koSpeedUp:           ST.opInfo := MP.speedUp;
     koStartOver:         SA.postToAll(WIN_RESTART, KBNumLock);
-    koSysMaxVol:         MX.setSysMaxVol;
+    koSysVolMax:         MX.setSysVolMax;
     koTab:               SA.postToAll(WIN_TAB, KBNumLock);
     koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;

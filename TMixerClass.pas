@@ -33,7 +33,7 @@ type
     procedure setMute(Value: boolean); virtual; abstract;
     procedure setVolume(Value: integer); virtual; abstract;
   public
-    function setSysMaxVol: boolean; virtual; abstract;
+    function setSysVolMax: boolean; virtual; abstract;
     property muted:  boolean read getMute   write setMute;
     property volume: integer read getVolume write setVolume;
   end;
@@ -57,7 +57,7 @@ type
     function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
     procedure setVolume(Value: integer); override;
-    function  setSysMaxVol: boolean; override;
+    function  setSysVolMax: boolean; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -73,7 +73,7 @@ type
     function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
     procedure setVolume(Value: integer); override;
-    function  setSysMaxVol: boolean; override;
+    function  setSysVolMax: boolean; override;
   public
     constructor Create;
   end;
@@ -223,7 +223,7 @@ begin
   chk(mixerSetControlDetails(0, @Details, MIXER_SETCONTROLDETAILSF_VALUE));
 end;
 
-function TxpMixer.setSysMaxVol: boolean;
+function TxpMixer.setSysVolMax: boolean;
 begin
   setMute(FALSE);
   setVolume(65535);
@@ -295,7 +295,7 @@ begin
   FmmEndpoint.SetMute(integer(Value), nil);
 end;
 
-function TVistaMixer.setSysMaxVol: boolean;
+function TVistaMixer.setSysVolMax: boolean;
 begin
   setMute(FALSE);
   setVolume(65535);
