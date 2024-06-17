@@ -45,7 +45,7 @@ function mpvFrameForwards(const mpv: TMPVBasePlayer): boolean;
 function mpvGammaDn(const mpv: TMPVBasePlayer): string;
 function mpvGammaReset(const mpv: TMPVBasePlayer): string;
 function mpvGammaUp(const mpv: TMPVBasePlayer): string;
-function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string; // currently redundant - mpvSetMute is used instead
+function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string;
 function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
 function mpvPanDn(const mpv: TMPVBasePlayer): string;
 function mpvPanLeft(const mpv: TMPVBasePlayer): string;
@@ -219,7 +219,7 @@ begin
   result := mpvFormattedgamma(mpv);
 end;
 
-function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string; // currently redundant - mpvSetMute is used instead
+function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string;
 var vValue: boolean;
 begin
   case mpv = NIL of TRUE: EXIT; end;
@@ -458,6 +458,7 @@ end;
 function mpvVolDown(const mpv: TMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+  mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume - 1;
   CF.value['volume'] := intToStr(trunc(mpv.volume));
   result := mpvFormattedVol(mpv);
@@ -466,6 +467,7 @@ end;
 function mpvVolUp(const mpv: TMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
+  mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume + 1;
   CF.value['volume'] := intToStr(trunc(mpv.volume));
   result := mpvFormattedVol(mpv);
