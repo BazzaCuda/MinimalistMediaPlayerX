@@ -171,7 +171,6 @@ uses
     saturationReset;
     speedReset;
     zoomReset;
-//    UI.resetColor;
     result := 'All reset';
   end;
 

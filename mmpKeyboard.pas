@@ -33,7 +33,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseAll, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder);
+            koToggleNumlock, koKeepDelete, koNextFolder, koPrevFolder, koImageInBrowser, koExploreFolder, koPBReset);
   TKeyDirection = (kdDn, kdUp);
 
 function KBCapsLock: boolean;
@@ -119,9 +119,10 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
 
     case keyUp and keyIs(A) and     ctrl                                              of TRUE: result := koAboutBox; end;
     case keyUp and keyIs(A) and NOT ctrl                                              of TRUE: result := koPlayFirst; end;
-    case keyDn and keyIs(B) and     ctrl                                              of TRUE: result := koBrighterPB; end;
-    case keyUp and keyIs(B) and NOT ctrl                                              of TRUE: result := koToggleBlackout; end;
-    case keyDn and keyIs(B) and     ctrl and shift                                    of TRUE: result := koDarkerPB; end;
+    case keyDn and keyIs(B) and     ctrl and NOT shift                                of TRUE: result := koBrighterPB; end;
+    case keyDn and keyIs(B) and NOT ctrl and     shift                                of TRUE: result := koDarkerPB; end;
+    case keyUp and keyIs(B) and     ctrl and     shift                                of TRUE: result := koPBReset; end;
+    case keyUp and keyIs(B) and NOT ctrl and NOT shift                                of TRUE: result := koToggleBlackout; end;
     case keyUp and keyIs(C)                         and NOT GV.showingTimeline        of TRUE: result := koToggleControls; end;
     case keyUp and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end;
     case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end;
@@ -263,6 +264,7 @@ begin
     koPanRight:          ST.opInfo := MP.panRight;
     koPanUp:             ST.opInfo := MP.panUp;
     koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
+    koPBReset:           UI.resetColor;
     koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
     koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
     koPrevFolder:        MP.playPrevFolder;
