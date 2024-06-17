@@ -33,7 +33,7 @@ type
     procedure setMute(Value: boolean); virtual; abstract;
     procedure setVolume(Value: integer); virtual; abstract;
   public
-    function setSysVolMax: boolean; virtual; abstract;
+    function setSysVolMax: string; virtual; abstract;
     property muted:  boolean read getMute   write setMute;
     property volume: integer read getVolume write setVolume;
   end;
@@ -57,7 +57,7 @@ type
     function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
     procedure setVolume(Value: integer); override;
-    function  setSysVolMax: boolean; override;
+    function  setSysVolMax: string; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -73,7 +73,7 @@ type
     function  getVolume: integer; override;
     procedure setMute(Value: boolean); override;
     procedure setVolume(Value: integer); override;
-    function  setSysVolMax: boolean; override;
+    function  setSysVolMax: string; override;
   public
     constructor Create;
   end;
@@ -223,10 +223,12 @@ begin
   chk(mixerSetControlDetails(0, @Details, MIXER_SETCONTROLDETAILSF_VALUE));
 end;
 
-function TxpMixer.setSysVolMax: boolean;
+function TxpMixer.setSysVolMax: string;
 begin
+  result := '';
   setMute(FALSE);
   setVolume(65535);
+  result := 'Sys Vol Max';
 end;
 
 procedure TxpMixer.setVolume(Value: integer);
@@ -295,10 +297,12 @@ begin
   FmmEndpoint.SetMute(integer(Value), nil);
 end;
 
-function TVistaMixer.setSysVolMax: boolean;
+function TVistaMixer.setSysVolMax: string;
 begin
+  result := '';
   setMute(FALSE);
   setVolume(65535);
+  result := 'Sys Vol Max';
 end;
 
 procedure TVistaMixer.setVolume(Value: integer);

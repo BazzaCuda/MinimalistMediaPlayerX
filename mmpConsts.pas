@@ -78,6 +78,7 @@ const
   IMAGE_DISPLAY_DURATION = 3; // in seconds, to match the setting in mpv.conf
 
   CONF_NEXT_FOLDER_ON_EMPTY = 'nextFolderOnEmpty';
+  CONF_NEXT_FOLDER_ON_END   = 'nextFolderOnEnd';
 
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
