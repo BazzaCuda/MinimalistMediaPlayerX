@@ -75,6 +75,7 @@ type
     function brightnessDn: string;
     function brightnessReset: string;
     function brightnessUp: string;
+    function ceaseOps: boolean;
     function chapterNext: boolean;
     function chapterPrev: boolean;
     function contrastUp: string;
@@ -193,6 +194,13 @@ begin
 function TMediaPlayer.brightnessUp: string;
 begin
   result := mpvBrightnessUp(mpv);
+end;
+
+function TMediaPlayer.ceaseOps: boolean;
+begin
+  mmpCancelDelay;
+  FDontPlayNext := TRUE;
+  mpvPause(mpv);
 end;
 
 function TMediaPlayer.chapterNext: boolean;
@@ -344,7 +352,7 @@ begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
     tePlay:  play(PL.currentItem);
-    teClose: mmpSendSysCommandClose(UI.handle);
+    teClose: begin ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;
   end;
 end;
 
@@ -522,6 +530,7 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
+  debug('MP.playNext');
   case GV.closeApp of TRUE: EXIT; end;
   pause;
 
@@ -535,10 +544,9 @@ begin
   FTimer.enabled  := PL.next;
   case FTimer.enabled of FALSE: begin
                                   case vDontExit of TRUE: EXIT; end; // ah, the irony!
-                                  FDontPlayNext := TRUE;
-                                  mpvStop(mpv);
                                   FTimerEvent    := teClose;
-                                  FTimer.enabled := TRUE; end;
+                                  FTimer.enabled := TRUE;
+                                end;
                           TRUE: case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;end; // currently just updates the playlist window
 end;
 

@@ -110,13 +110,10 @@
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
-        <PostBuildEvent><![CDATA[rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\
-$(PostBuildEvent)]]></PostBuildEvent>
         <Debugger_RunParams>&quot;B:\Images\zTest\large\SampleJPGImage_20MB.jpg&quot; &quot;nofile&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
         <VerInfo_Release>3</VerInfo_Release>
-        <DCC_Define>FastMM_FullDebugMode;PurePascal;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -140,10 +137,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <Debugger_RunParams>&quot;B:\Downloads\jon.richardson.funny.magnet.2012.dvdrip.xvid-haggis [c].mp4&quot;</Debugger_RunParams>
-        <DCC_Define>FastMM_FullDebugMode;purepascal;FastMM_EnableMemoryLeakReporting;$(DCC_Define)</DCC_Define>
+        <DCC_Define>FastMM_FullDebugMode;FastMM_EnableMemoryLeakReporting;$(DCC_Define)</DCC_Define>
         <DCC_MapFile>3</DCC_MapFile>
-        <PostBuildEvent><![CDATA[copy /Y B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release 
-$(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
@@ -1244,20 +1239,4 @@ $(PostBuildEvent)]]></PostBuildEvent>
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
-    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
-        <PreBuildEvent/>
-        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
-        <PreLinkEvent/>
-        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>rem copy B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe  X:\Tools\NiftyPlayer64\</PostBuildEvent>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
-        <PreBuildEvent/>
-        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
-        <PreLinkEvent/>
-        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy /Y B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release </PostBuildEvent>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-    </PropertyGroup>
 </Project>

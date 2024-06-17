@@ -287,7 +287,7 @@ end;
 function TUI.doEscapeKey: boolean;
 begin
   case FMainForm.WindowState = wsMaximized of  TRUE: toggleMaximized;
-                                              FALSE: mmpSendSysCommandClose(FMainForm.handle); end;
+                                              FALSE: begin MP.ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;end;
 end;
 
 procedure TUI.formResize(sender: TObject);

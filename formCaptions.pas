@@ -235,6 +235,7 @@ end;
 
 procedure TCaptionsForm.setOpInfo(const value: string);
 begin
+  case FOpInfoTimer = NIL of FALSE: FOpInfoTimer.enabled := FALSE; end; // cancel any currently running timer
   FOpInfo.caption := value;
   startOpInfoTimer;
 end;
@@ -254,7 +255,7 @@ end;
 
 function TCaptionsForm.startOpInfoTimer: boolean;
 begin
-  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(SELF); end;
+  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(SELF); end; // SELF: if the timer is waiting to fire when we close the app, the form will free the timer
   FOpInfoTimer.enabled  := FALSE;
   FOpInfoTimer.interval := 2000;
   FOpInfoTimer.onTimer  := timerEvent;

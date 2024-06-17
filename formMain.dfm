@@ -2,7 +2,7 @@ object MMPUI: TMMPUI
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
-  Caption = 'MinimalistMediaPlayer'
+  Caption = 'MMP: Minimalist Media Player'
   ClientHeight = 368
   ClientWidth = 468
   Color = clGray

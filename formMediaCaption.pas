@@ -35,6 +35,7 @@ type
   private
     procedure timerEvent(sender: TObject);
     procedure setCaption(const Value: string);
+    function startOpInfoTimer: boolean;
   public
     constructor create;
     procedure formResize(Sender: TObject);
@@ -70,10 +71,7 @@ begin
   height := 80;
   FCaption := TLabel.create(SELF);
 
-  FOpInfoTimer := TTimer.create(SELF);
-  FOpInfoTimer.interval := 5000;
-  FOpInfoTimer.enabled  := FALSE;
-  FOpInfoTimer.onTimer  := timerEvent;
+  FOpInfoTimer := NIL;
 end;
 
 function TMediaCaptionForm.darker: integer;
@@ -138,15 +136,27 @@ end;
 
 procedure TMediaCaptionForm.setCaption(const Value: string);
 begin
-  FOpInfoTimer.enabled  := FALSE; // cancel any currently running timer
+  case FOpInfoTimer = NIL of FALSE: FOpInfoTimer.enabled := FALSE; end; // cancel any currently running timer
   FCaption.caption      := Value;
+  startOpInfoTimer;
+end;
+
+function TMediaCaptionForm.startOpInfoTimer: boolean;
+begin
+  case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(SELF); end; // SELF: if the timer is waiting to fire when we close the app, the form will free the timer
+  FOpInfoTimer.enabled  := FALSE;
+  FOpInfoTimer.interval := 5000;
+  FOpInfoTimer.onTimer  := timerEvent;
   FOpInfoTimer.enabled  := TRUE;
 end;
+
 
 procedure TMediaCaptionForm.timerEvent(sender: TObject);
 begin
   FOpInfoTimer.enabled := FALSE;
   FCaption.caption := '';
+  FOpInfoTimer.free;
+  FOpInfoTimer := NIL;
 end;
 
 

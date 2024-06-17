@@ -232,8 +232,8 @@ begin
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koClipboard:         PL.copyToClipboard;
-    koCloseAll:          begin mmpCancelDelay; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
-    koCloseApp:          begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; mmpSendSysCommandClose(UI.handle); end;
+    koCloseAll:          begin MP.ceaseOps; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
+    koCloseApp:          begin MP.ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;
     koContrastDn:        ST.opInfo := MP.contrastDn;
     koContrastUp:        ST.opInfo := MP.contrastUp;
     koContrastReset:     ST.opInfo := MP.contrastReset;
@@ -251,7 +251,7 @@ begin
     koGammaUp:           ST.opInfo := MP.gammaUp;
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
-    koKeepDelete:        begin mmpCancelDelay; MP.dontPlayNext := TRUE; MP.pause; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose(UI.handle); end;end;
+    koKeepDelete:        begin MP.ceaseOps; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;
     koImageInBrowser:    UI.showThumbnails(htMPVHost);
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;

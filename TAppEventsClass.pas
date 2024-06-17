@@ -157,7 +157,7 @@ begin
   case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: GV.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; {ST.opInfo := PL.formattedItem;} end;end;
-  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.dontPlayNext := TRUE; MP.stop; mmpSendSysCommandClose(msg.hwnd); end;end;
+  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.ceaseOps; mmpSendSysCommandClose(msg.hwnd); end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions; end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
   case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(KBCapsLock); end;
