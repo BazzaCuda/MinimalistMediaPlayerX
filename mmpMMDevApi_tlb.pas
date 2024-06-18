@@ -111,5 +111,6 @@ type
     Function RegisterEndpointNotificationCallback(pClient :IMMNotificationClient) :Hresult; stdcall;
   end;
 
-  implementation
+implementation
+
 end.

@@ -97,6 +97,8 @@ type
 
   TSlideshowDirection = (sdForwards, sdBackwards);
 
+  TAnonFunc = reference to function: boolean;
+
 const
   mediaTypes: array[0..87] of TMediaTypeRec = (
 

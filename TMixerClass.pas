@@ -1,6 +1,6 @@
 {   MMP: Minimalist Media Player
     Copyright (C) 2021 Baz Cuda
-    https://github.com/BazzaCuda/MinimalistMediaPlayer
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     NB: I didn't write this unit and I don't remember where I got it.
     As a courtesy, I have protected its use with this licence on behalf of the original author.

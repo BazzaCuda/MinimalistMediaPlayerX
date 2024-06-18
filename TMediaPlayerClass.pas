@@ -33,104 +33,107 @@ type
   TMediaPlayer = class(TObject)
   strict private
     mpv: TMPVBasePlayer;
-    FAllowBrowser: boolean;
-    FTimer: TTimer;
-    FTimerEvent: TTimerEvent;
+    FAllowBrowser:            boolean;
+    FTimer:                   TTimer;
+    FTimerEvent:              TTimerEvent;
 
-    FDontPlayNext: boolean;
-    FImageDisplayDuration: string;
-    FImageDisplayDurationMs: double;
-    FImagePaused: boolean;
-    FLocked: boolean;
-    FMediaType: TMediaType;
-    FOnBeforeNew: TNotifyEvent;
-    FOnPlayNew: TNotifyEvent;
-    FOnPlayNext: TNotifyEvent;
-    FOnPosition: TPositionNotifyEvent;
-    FPlaying: boolean;
-    FScreenshotDirectory: string;
+    FBlankOutTimeCaption:     TAnonFunc;
+    FResetTimeCaption:        TAnonFunc;
+
+    FDontPlayNext:            boolean;
+    FImageDisplayDuration:    string;
+    FImageDisplayDurationMs:  double;
+    FImagePaused:             boolean;
+    FLocked:                  boolean;
+    FMediaType:               TMediaType;
+    FOnBeforeNew:             TNotifyEvent;
+    FOnPlayNew:               TNotifyEvent;
+    FOnPlayNext:              TNotifyEvent;
+    FOnPosition:              TPositionNotifyEvent;
+    FPlaying:                 boolean;
+    FScreenshotDirectory:     string;
   private
+    function  createTimeCaptionClosures: boolean;
+
     procedure onInitMPV(sender: TObject);
     procedure onTimerEvent(sender: TObject);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
-    function getFormattedDuration: string;
-    function getFormattedTime: string;
+    function getFormattedDuration:  string;
+    function getFormattedTime:      string;
 
-    function pauseUnpauseImages: boolean;
+    function pauseUnpauseImages:    boolean;
 
     {property setters}
-    function  getDuration: integer;
-    function  getPosition: integer;
+    function  getDuration:    integer;
+    function  getPosition:    integer;
     function  getVideoHeight: int64;
-    function  getVideoWidth: int64;
+    function  getVideoWidth:  int64;
     procedure setKeepOpen(const value: boolean);
     procedure setPosition(const value: integer);
   public
     constructor create;
     destructor  Destroy; override;
-    function allReset: string;
-    function autoPlayNext: boolean;
-    function blankOutTimeCaption: boolean;
-    function brightnessDn: string;
-    function brightnessReset: string;
-    function brightnessUp: string;
-    function ceaseOps: boolean;
-    function chapterNext: boolean;
-    function chapterPrev: boolean;
-    function contrastUp: string;
-    function contrastDn: string;
-    function contrastReset: string;
-    function cycleAudio: boolean;
-    function cycleSubs: boolean;
-    function frameBackwards: boolean;
-    function frameForwards: boolean;
-    function gammaDn: string;
-    function gammaReset: string;
-    function gammaUp: string;
-    function initMediaPlayer: boolean;
-    function muteUnmute: string;
+    function allReset:            string;
+    function autoPlayNext:        boolean;
+    function brightnessDn:        string;
+    function brightnessReset:     string;
+    function brightnessUp:        string;
+    function ceaseOps:            boolean;
+    function chapterNext:         boolean;
+    function chapterPrev:         boolean;
+    function contrastUp:          string;
+    function contrastDn:          string;
+    function contrastReset:       string;
+    function cycleAudio:          boolean;
+    function cycleSubs:           boolean;
+    function frameBackwards:      boolean;
+    function frameForwards:       boolean;
+    function gammaDn:             string;
+    function gammaReset:          string;
+    function gammaUp:             string;
+    function initMediaPlayer:     boolean;
+    function muteUnmute:          string;
     function openURL(const aURL: string): boolean;
-    function panDn: string;
-    function panLeft: string;
-    function panReset: string;
-    function panRight: string;
-    function panUp: string;
-    function pause: boolean;
-    function pausePlay: boolean;
+    function panDn:               string;
+    function panLeft:             string;
+    function panReset:            string;
+    function panRight:            string;
+    function panUp:               string;
+    function pause:               boolean;
+    function pausePlay:           boolean;
     function play(const aURL: string): boolean;
-    function playCurrent: boolean;
-    function playFirst: boolean;
-    function playLast: boolean;
-    function playNext: boolean;
-    function playNextFolder: boolean;
-    function playPrev: boolean;
-    function playPrevFolder: boolean;
-    function releasePlayer: boolean;
-    function resetTimeCaption: boolean;
-    function resume: boolean;
-    function rotateLeft: string;
-    function rotateReset: string;
-    function rotateRight: string;
-    function saturationDn: string;
-    function saturationReset: string;
-    function saturationUp: string;
-    function setProgressBar: boolean;
-    function speedDn: string;
-    function speedReset: string;
-    function speedUp: string;
-    function startOver: string;
-    function stop: boolean;
+    function playCurrent:         boolean;
+    function playFirst:           boolean;
+    function playLast:            boolean;
+    function playNext:            boolean;
+    function playNextFolder:      boolean;
+    function playPrev:            boolean;
+    function playPrevFolder:      boolean;
+    function releasePlayer:       boolean;
+    function resume:              boolean;
+    function rotateLeft:          string;
+    function rotateReset:         string;
+    function rotateRight:         string;
+    function saturationDn:        string;
+    function saturationReset:     string;
+    function saturationUp:        string;
+    function setProgressBar:      boolean;
+    function speedDn:             string;
+    function speedReset:          string;
+    function speedUp:             string;
+    function startOver:           string;
+    function stop:                boolean;
     function tab(const capsLock: boolean; const aFactor: integer = 0): string;
-    function takeScreenshot: string;
-    function toggleFullscreen: boolean;
-    function toggleRepeat: string;
-    function toggleSubtitles: string;
-    function volDown: string;
-    function volUp: string;
-    function zoomIn: string;
-    function zoomOut: string;
-    function zoomReset: string;
+    function takeScreenshot:      string;
+    function toggleFullscreen:    boolean;
+    function toggleRepeat:        string;
+    function toggleSubtitles:     string;
+    function volDown:             string;
+    function volUp:               string;
+    function zoomIn:              string;
+    function zoomOut:             string;
+    function zoomReset:           string;
     property allowBrowser:        boolean                         write FAllowBrowser;
     property dontPlayNext:        boolean      read FDontPlayNext write FDontPlayNext;
     property duration:            integer      read getDuration;
@@ -236,6 +239,7 @@ begin
   FTimer.enabled  := FALSE;
   FTimer.OnTimer  := onTimerEvent;
   FAllowBrowser   := TRUE;
+  timeCaptionClosures;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
@@ -441,17 +445,20 @@ begin
   end;
 end;
 
-var gColor: TColor;
-function TMediaPlayer.blankOutTimeCaption: boolean;
+function TMediaPlayer.createTimeCaptionClosures: boolean;
+var
+  vColor: TColor;
 begin
-  case gColor = 0 of TRUE:  begin
-                              gColor := ST.color;
-                              ST.color := $00000000; end;end;
-end;
-function TMediaPlayer.resetTimeCaption: boolean;
-begin
-  case gColor = 0 of FALSE: begin ST.color := gColor;
-                                  gColor   := 0;     end;end;
+  vColor := 0;
+
+  FBlankOutTimeCaption  := function:boolean  begin
+                                              case vColor = 0 of TRUE:  begin
+                                                                          vColor := ST.color;
+                                                                          ST.color := $00000000; end;end;end;
+  FResetTimeCaption     := function:boolean begin
+                                              case vColor = 0 of FALSE: begin
+                                                                          ST.color := vColor;
+                                                                          vColor   := 0; end;end;end;
 end;
 
 function TMediaPlayer.play(const aURL: string): boolean;
@@ -464,8 +471,8 @@ begin
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
 
-  case FMediaType of mtImage: blankOutTimeCaption;
-                         else resetTimeCaption; end;
+  case FMediaType of mtImage: FBlankOutTimeCaption;
+                         else FResetTimeCaption; end;
 
 
   mmpProcessMessages;
