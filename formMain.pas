@@ -87,7 +87,7 @@ begin
 
   postMessage(GV.appWnd, WM_SHOW_WINDOW, 0, 0);
 
-  case GV.closeApp of TRUE: mmpSendSysCommandClose(UI.handle); end; // pending since user tried to exit during initialization
+  case GV.closeApp of TRUE: mmpSendSysCommandClose; end; // pending since user tried to exit during initialization
 end;
 
 procedure TMMPUI.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);

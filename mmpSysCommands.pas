@@ -24,7 +24,7 @@ uses
   winApi.messages, winApi.windows;
 
 function mmpDoSysCommand(var Message: TWMSysCommand): boolean;
-function mmpSendSysCommandClose(const aHWND: HWND): boolean;
+function mmpSendSysCommandClose: boolean;
 
 implementation
 
@@ -39,10 +39,10 @@ begin
   case Message.CmdType of MENU_HELP_ID:   UI.toggleHelpWindow; end;
 end;
 
-function mmpSendSysCommandClose(const aHWND: HWND): boolean;
+function mmpSendSysCommandClose: boolean;
 begin
   GV.closeApp := TRUE;
-  case UI.initialized of TRUE: postMessage(aHWND, WM_CLOSE, 0, 0); end;
+  case UI.initialized of TRUE: postMessage(GV.appWnd, WM_CLOSE, 0, 0); end;
 end;
 
 end.

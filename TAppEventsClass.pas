@@ -157,7 +157,7 @@ begin
   case msgIs(WIN_AUTOCENTRE_OFF)      of TRUE: GV.autoCentre := FALSE; end;
   case msgIs(WIN_RESTART)             of TRUE: ST.opInfo := MP.startOver; end;
   case msgIs(WIN_CAPTION)             of TRUE: begin UI.showXY; MC.caption := PL.formattedItem; end;end;
-  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.ceaseOps; mmpSendSysCommandClose(msg.hwnd); end;end;
+  case msgIs(WIN_CLOSEAPP)            of TRUE: begin MP.ceaseOps; mmpSendSysCommandClose; end;end;
   case msgIs(WIN_CONTROLS)            of TRUE: UI.toggleCaptions; end;
   case msgIs(WIN_PAUSE_PLAY)          of TRUE: MP.pausePlay; end;
   case msgIs(WIN_TAB)                 of TRUE: ST.opInfo := MP.tab(KBCapsLock); end;
@@ -187,8 +187,8 @@ begin
   vMsg := vMsg + format('class: %s%s', [sender.toString, #13#10]);
   vMsg := vMsg + format('address: $%p%s', [exceptAddr, #13#10]);
   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK],  mbOK);
-  mmpSendSysCommandClose(GV.appWnd); // attempt an elegant withdrawal
-  halt;                              // if not
+  mmpSendSysCommandClose; // attempt an elegant withdrawal
+  halt;                   // if not
 end;
 
 constructor TAppEvents.create;

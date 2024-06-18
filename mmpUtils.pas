@@ -48,6 +48,8 @@ end;
 
 function mmpCompareStr(aStr1: string; aStr2: string): integer;
 // implements "Natural Sort Order" - author: dinilud 16/01/2008 on experts-exchange.com
+// normal sort = image12.jpg, image2.jpg, image20.jpg
+// natural sort = image2.jpg, image12.jpg, image20.jpg
 var vNum1,
     vNum2:  double;
     pStr1,
@@ -91,12 +93,14 @@ begin
     begin
        case isNumber(pStr1^) and isNumber(pStr2^) of   TRUE:  begin
                                                                 vNum1 := getNumber(pStr1); vNum2 := getNumber(pStr2);
-                                                                case vNum1 < vNum2 of  TRUE: result := -1;
-                                                                                      FALSE: case vNum1 > vNum2 of TRUE: result := 1; end;end;
+                                                                case vNum1 < vNum2 of TRUE: result := -1; end;
+                                                                case vNum1 > vNum2 of TRUE: result :=  1; end;
                                                                 dec(pStr1); dec(pStr2);
                                                               end;
-                                                      FALSE:  case pStr1^ <> pStr2^ of TRUE: case pStr1^ < pStr2^ of  TRUE: result := -1;
-                                                                                                                     FALSE: result :=  1; end;end;end;
+                                                      FALSE:  begin
+                                                                case pStr1^ < pStr2^ of  TRUE: result := -1; end;
+                                                                case pStr1^ > pStr2^ of  TRUE: result :=  1; end;
+                                                              end;end;
 
        case result <> 0 of TRUE: BREAK; end;
        inc(pStr1); inc(pStr2);

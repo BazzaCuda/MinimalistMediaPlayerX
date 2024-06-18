@@ -24,8 +24,9 @@ uses
   TMediaPlayerClass, TPlaylistClass;
 
 function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
-function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
-function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
 
@@ -34,7 +35,7 @@ implementation
 uses
   winApi.windows,
   system.classes, system.sysUtils,
-  mmpConsts, mmpDialogs, mmpFileUtils, mmpSingletons, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
   formMediaCaption, formPlaylist,
   _debugWindow;
 
@@ -49,16 +50,27 @@ begin
   result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
 end;
 
-function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+begin
+  case fileExists(aPL.currentItem) of FALSE: begin // was the original image deleted in the browser?
+                                              aPL.delete(aPL.currentIx);
+                                              case aPL.isFirst of   TRUE: aMP.play(aPL.currentItem);   // don't call any of the timed events like MP.playCurrent
+                                                                  FALSE: begin
+                                                                           aPL.next;
+                                                                           aMP.play(aPL.currentItem); end;end; // ditto
+                                            end;end;
+end;
+
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 begin
  aMP.pause;
  case mmpCanDeleteCurrentItem(aPL.currentItem) of TRUE: begin
                                                           aMP.dontPlayNext := TRUE; // dontPlayNext because MP.stop would have done MP.playNext
                                                           aMP.stop;
-                                                          case mmpDoDeleteCurrentItem(aPL, aMP) of TRUE: loadPlaylistWindow(TRUE); end;end;end;
+                                                          case mmpDoDeleteCurrentItem(aPL, aMP, bNextFolderOnEmpty) of TRUE: loadPlaylistWindow(TRUE); end;end;end;
 end;
 
-function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 begin
   result := FALSE;
   case aPL.hasItems of FALSE: EXIT; end;
@@ -67,7 +79,7 @@ begin
   case mmpDeleteThisFile(aPL.currentItem, mmpShiftState) of FALSE: EXIT; end;
   aPL.delete(aPL.currentIx);  // this decrements PL's FPlayIx...
   case (ssCtrl in mmpShiftState) or (NOT aPL.hasItems) of
-     TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND aMP.playNextFolder of FALSE: mmpSendSysCommandClose(GV.appWnd); end; // shortcut logic!
+     TRUE:  case bNextFolderOnEmpty AND aMP.playNextFolder of FALSE: mmpSendSysCommandClose; end; // shortcut logic!
     FALSE:  mmpPlaySomething(vIx, aPL, aMP); end;
 
   result := TRUE;
@@ -82,14 +94,13 @@ end;
 function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
 begin
   var vCurrentItem     := aPL.currentItem;
-  var vCurrentPosition := MP.position;
+  var vCurrentPosition := aMP.position;
 
   aPL.fillPlaylist(extractFilePath(vCurrentItem));
-  case aPL.find(vCurrentItem) of   TRUE: MP.position := vCurrentPosition;
+  case aPL.find(vCurrentItem) of   TRUE: aMP.position := vCurrentPosition;
                                   FALSE: begin
                                           aPL.first;
                                           aMP.play(aPL.currentItem); end;end;
-  MC.caption := aPL.formattedItem;
   result := 'Playlist reloaded';
 end;
 

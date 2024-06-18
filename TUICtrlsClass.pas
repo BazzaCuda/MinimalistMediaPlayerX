@@ -287,7 +287,7 @@ end;
 function TUI.doEscapeKey: boolean;
 begin
   case FMainForm.WindowState = wsMaximized of  TRUE: toggleMaximized;
-                                              FALSE: begin MP.ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;end;
+                                              FALSE: begin MP.ceaseOps; mmpSendSysCommandClose; end;end;
 end;
 
 procedure TUI.formResize(sender: TObject);
@@ -659,23 +659,15 @@ begin
   shutHelp;
   shutPlaylist;
   shutTimeline;
-  case MP.ImagesPaused of FALSE: MP.pausePlay; end;
+  case MP.imagesPaused of FALSE: MP.pausePlay; end;
   MP.pause;
 
-  formThumbs.showThumbs(PL.currentItem, mainFormDimensions, aHostType); // showModal;
+  case formThumbs.showThumbs(PL.currentItem, mainFormDimensions, aHostType) of mrAll: EXIT; end; // showModal; user pressed Ctrl-[0]
 
-  mmpProcessMessages;
-  case GV.closeApp of FALSE:  begin
-                                FMainForm.show;
-                                setActiveWindow(FMainForm.handle);
-                                case fileExists(PL.currentItem) of FALSE: begin // was the original image deleted in the browser?
-                                                                            MP.allowBrowser := FALSE;
-                                                                            PL.delete(PL.currentIx);
-                                                                            case PL.isFirst of   TRUE: MP.play(PL.currentItem);   // don't call any of the timed events like MP.playCurrent
-                                                                                                FALSE: begin
-                                                                                                         PL.next;
-                                                                                                         MP.play(PL.currentItem); end;end; // ditto
-                                                                          end;end;end;end;
+  FMainForm.show;
+  setActiveWindow(FMainForm.handle);
+
+  mmpCheckPlaylistItemExists(PL, MP);
 end;
 
 function TUI.showWindow: boolean;

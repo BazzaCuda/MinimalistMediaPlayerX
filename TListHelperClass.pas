@@ -44,7 +44,7 @@ begin
             TComparer<string>.construct(
                                         function(const a, b: string): integer
                                         begin
-                                          result := mmpcompareStr(lowerCase(mmpFileNameWithoutExtension(extractFileName(a))), lowerCase(mmpFileNameWithoutExtension(extractFileName(b))));
+                                          result := mmpCompareStr(lowerCase(mmpFileNameWithoutExtension(extractFileName(a))), lowerCase(mmpFileNameWithoutExtension(extractFileName(b))));
                                         end
                                        )
            );

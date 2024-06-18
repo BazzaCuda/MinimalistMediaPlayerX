@@ -139,7 +139,7 @@ type
     property duration:            integer      read getDuration;
     property formattedDuration:   string       read getFormattedDuration;
     property formattedTime:       string       read getFormattedTime;
-    property ImagesPaused:        boolean      read FImagePaused;
+    property imagesPaused:        boolean      read FImagePaused;
     property keepOpen:            boolean                         write setKeepOpen;
     property mediaType:           TMediaType   read FMediaType;
     property onBeforeNew:         TNotifyEvent read FOnBeforeNew  write FOnBeforeNew;
@@ -356,7 +356,7 @@ begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
     tePlay:  play(PL.currentItem);
-    teClose: begin ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;
+    teClose: begin ceaseOps; mmpSendSysCommandClose; end;
   end;
 end;
 
@@ -501,9 +501,9 @@ begin
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
 
-  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
+  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF['openImage']) = 'browser') of TRUE: begin FAllowBrowser := FALSE; UI.showThumbnails(htMPVHost); end;end;
 
-  FAllowBrowser := FALSE; // only allow the launch image
+//  FAllowBrowser := FALSE; // only allow the launch image
 
   result := TRUE;
 end;

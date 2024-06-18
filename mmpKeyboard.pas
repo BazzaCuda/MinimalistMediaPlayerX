@@ -234,14 +234,14 @@ begin
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koClipboard:         PL.copyToClipboard;
     koCloseAll:          begin MP.ceaseOps; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
-    koCloseApp:          begin MP.ceaseOps; mmpSendSysCommandClose(GV.appWnd); end;
+    koCloseApp:          begin MP.ceaseOps; mmpSendSysCommandClose; end;
     koContrastDn:        ST.opInfo := MP.contrastDn;
     koContrastUp:        ST.opInfo := MP.contrastUp;
     koContrastReset:     ST.opInfo := MP.contrastReset;
     koCycleAudio:        MP.cycleAudio;
     koCycleSubs:         MP.cycleSubs;
     koDarkerPB:          UI.darker;
-    koDeleteCurrentItem: mmpDeleteCurrentItem(PL, MP);
+    koDeleteCurrentItem: mmpDeleteCurrentItem(PL, MP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
     koEscape:            UI.doEscapeKey;
     koExploreFolder:     mmpShellExec(PL.currentFolder, '');
     koFrameBackwards:    MP.frameBackwards;
@@ -252,7 +252,7 @@ begin
     koGammaUp:           ST.opInfo := MP.gammaUp;
     koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
-    koKeepDelete:        begin MP.ceaseOps; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;
+    koKeepDelete:        begin MP.ceaseOps; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose; end;end;
     koImageInBrowser:    UI.showThumbnails(htMPVHost);
     koMaximize:          UI.maximize;
     koMinimizeWindow:    UI.minimizeWindow;
@@ -284,7 +284,7 @@ begin
     koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
     koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
     koPrevChapter:       MP.chapterPrev;
-    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(PL, MP); loadPlaylistWindow(TRUE); end;
+    koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(PL, MP); MC.caption := PL.formattedItem; loadPlaylistWindow(TRUE); end;
     koRunCut:            mmpOpenExternalApp(F11_APP, PL.currentItem);
     koRunPot:            mmpOpenExternalApp(F10_APP, PL.currentItem);
     koRunShot:           mmpOpenExternalApp(F12_APP, PL.currentItem);

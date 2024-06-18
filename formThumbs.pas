@@ -103,7 +103,7 @@ type
     function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
   end;
 
-function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TModalResult;
 
 implementation
 
@@ -115,17 +115,18 @@ uses
   TStatusBarHelperClass,
   _debugWindow;
 
-function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
+function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TModalResult;
 begin
   var vTF := TThumbsForm.create(NIL);
   try
     vTF.initThumbnails(aFilePath, aRect, aHostType);
     GV.showingThumbs := TRUE;
-    vTF.showModal;
+    result := vTF.showModal;
   finally
     GV.showingThumbs := FALSE;
     vTF.free;
   end;
+  mmpProcessMessages;
 end;
 
 {$R *.dfm}
@@ -206,7 +207,7 @@ begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
-                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose(GV.appWnd); end;end; // shortcut logic!
+                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose; end;end; // shortcut logic!
                                                         FALSE:  begin
                                                                   loadPlaylistWindow;
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
@@ -722,8 +723,8 @@ begin
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; close; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
-    koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; close; end;
+    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
+    koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
@@ -734,7 +735,7 @@ begin
     koGammaReset:         mpvGammaReset(mpv);
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCentre; end;
     koKeep:               keepFile(FThumbs.playlist.currentItem);
-    koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: mmpSendSysCommandClose(GV.appWnd); end;end;
+    koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: mmpSendSysCommandClose; end;end;
     koMaximize:           maximizeWindow;
     koMinimizeWindow:     minimizeWindow;
     koMoveToKeyFolder:    case whichHost of htMPVHost: saveMoveFile(FThumbs.playlist.currentItem, mmpUserDstFolder(mmpFolderFromFKey(aKey)), 'Moved'); end;
