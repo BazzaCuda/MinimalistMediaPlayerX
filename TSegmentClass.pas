@@ -22,7 +22,7 @@ interface
 
 uses
   winApi.windows,
-  system.classes, system.generics.collections, system.messaging,
+  system.classes, system.generics.collections,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 const
@@ -116,24 +116,30 @@ end;
 
 { TSegment }
 
-procedure TSegment.doClick(Sender: TObject);
-begin
-  setAsSelSeg;
-end;
-
 class function TSegment.clearFocus: boolean;
 begin
   for var vSegment in FSegments do vSegment.selected := FALSE;
   FSelSeg := NIL;
 end;
 
-function TSegment.delete: boolean;
+class function TSegment.getIncludedCount: integer;
 begin
-  result     := FALSE;
-  deleted    := TRUE;
-  case color  = NEARLY_BLACK of FALSE: oldColor := color; end; // in case user tries to delete an already-deleted segment
-  color      := NEARLY_BLACK;
-  result     := TRUE;
+  result := 0;
+  for var vSegment in FSegments do
+    case vSegment.deleted of FALSE: inc(result); end;
+end;
+
+class function TSegment.getSegments: TObjectList<TSegment>;
+begin
+  case FSegments = NIL of TRUE: begin
+                                  FSegments := TObjectList<TSegment>.create;
+                                  FSegments.ownsObjects := TRUE; end;end;
+  result := FSegments;
+end;
+
+class destructor TSegment.freeSegments;
+begin
+  freeAndNil(FSegments);
 end;
 
 constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
@@ -184,21 +190,23 @@ begin
   case aDeleted of TRUE: SELF.delete; end;
 end;
 
+function TSegment.delete: boolean;
+begin
+  result     := FALSE;
+  deleted    := TRUE;
+  case color  = NEARLY_BLACK of FALSE: oldColor := color; end; // in case user tries to delete an already-deleted segment
+  color      := NEARLY_BLACK;
+  result     := TRUE;
+end;
+
+procedure TSegment.doClick(Sender: TObject);
+begin
+  setAsSelSeg;
+end;
+
 function TSegment.getDuration: integer;
 begin
   result := FEndSS - FStartSS;
-end;
-
-function TSegment.getIx: integer;
-begin
-  result := FSegments.indexOf(SELF);
-end;
-
-class function TSegment.getIncludedCount: integer;
-begin
-  result := 0;
-  for var vSegment in FSegments do
-    case vSegment.deleted of FALSE: inc(result); end;
 end;
 
 function TSegment.getIsFirst: boolean;
@@ -211,17 +219,14 @@ begin
   result := ix = FSegments.count - 1;
 end;
 
+function TSegment.getIx: integer;
+begin
+  result := FSegments.indexOf(SELF);
+end;
+
 function TSegment.getSegID: string;
 begin
   result := FSegID.caption;
-end;
-
-class function TSegment.getSegments: TObjectList<TSegment>;
-begin
-  case FSegments = NIL of TRUE: begin
-                                  FSegments := TObjectList<TSegment>.create;
-                                  FSegments.ownsObjects := TRUE; end;end;
-  result := FSegments;
 end;
 
 function TSegment.getTitle: string;
@@ -241,11 +246,6 @@ begin
                    FALSE: Frame3D(canvas, rect, color, color, 1); end;
 end;
 
-procedure TSegment.setDisplayDetails;
-begin
-  FSegDetails.caption := format('%ds - %ds', [startSS, endSS]);
-end;
-
 procedure TSegment.setSegID(const Value: string);
 begin
   FSegID.caption := value;
@@ -258,6 +258,11 @@ begin
   selected   := TRUE;
 end;
 
+procedure TSegment.setDisplayDetails;
+begin
+  FSegDetails.caption := format('%ds - %ds', [startSS, endSS]);
+end;
+
 procedure TSegment.setSelected(const Value: boolean);
 begin
   FSelected := Value;
@@ -267,11 +272,6 @@ end;
 procedure TSegment.setTitle(const Value: string);
 begin
   FTitle.caption := Value;
-end;
-
-class destructor TSegment.freeSegments;
-begin
-  freeAndNil(FSegments);
 end;
 
 end.

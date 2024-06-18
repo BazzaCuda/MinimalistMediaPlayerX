@@ -239,7 +239,7 @@ begin
   FTimer.enabled  := FALSE;
   FTimer.OnTimer  := onTimerEvent;
   FAllowBrowser   := TRUE;
-  timeCaptionClosures;
+  createTimeCaptionClosures;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
