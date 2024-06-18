@@ -21,19 +21,21 @@ unit TConfigFileClass;
 interface
 
 uses
-  system.classes;
+  system.classes, system.ioUtils;
 
 type
   TConfigFile = class(TObject)
   strict private
     FFileContents: TStringList;
     FFilePath: string;
+    FLastWriteTime: TDateTime;
     function saveConfigFile: boolean;
   private
     function getValue(const aName: string): string;
     procedure setValue(const aName: string; const aValue: string);
     function getAsBoolean(const aName: string): boolean;
     function getAsInteger(const aName: string): integer;
+    function checkForManualEdits: boolean;
   public
     constructor create;
     destructor Destroy; override;
@@ -62,8 +64,20 @@ begin
   FFileContents.CaseSensitive   := FALSE;
 end;
 
+function TConfigFile.checkForManualEdits: boolean;
+begin
+  case fileExists(FFilePath) of FALSE: EXIT; end;
+
+  var vLastWriteTime := TFile.getLastWriteTime(FFilePath);
+  case vLastWriteTime > FLastWriteTime of TRUE: begin
+                                                  FLastWriteTime := vLastWriteTime;
+                                                  FFileContents.loadFromFile(FFilePath);
+                                                end;end;
+end;
+
 function TConfigFile.deleteName(const aName: string): boolean;
 begin
+  checkForManualEdits;
   var vIx := FFileContents.indexOfName(aName);
   case vIx <> -1 of TRUE: begin
                             FFileContents.delete(vIx);
@@ -78,27 +92,30 @@ end;
 
 function TConfigFile.getAsBoolean(const aName: string): boolean;
 begin
+  checkForManualEdits;
   result := lowerCase(FFileContents.values[aName]) = 'yes';
 end;
 
 function TConfigFile.getAsInteger(const aName: string): integer;
 begin
+  checkForManualEdits;
   try result := strToIntDef(FFileContents.values[aName], 0); except result := 0; end;
 end;
 
 function TConfigFile.getValue(const aName: string): string;
 begin
+  checkForManualEdits;
   result := FFileContents.values[aName];
 end;
 
 function TConfigFile.initConfigFile(const aFilePath: string): boolean;
 begin
   FFilePath := aFilePath;
-  case fileExists(FFilePath) of TRUE: FFileContents.loadFromFile(FFilePath); end;
 end;
 
 function TConfigFile.saveConfigFile: boolean;
 begin
+  checkForManualEdits;
   try
     FFileContents.saveToFile(FFilePath);
   except // trap rapid-fire write errors, e.g. when user holds down ctrl-B
@@ -107,6 +124,7 @@ end;
 
 procedure TConfigFile.setValue(const aName: string; const aValue: string);
 begin
+  checkForManualEdits;
   FFileContents.values[aName] := aValue;
   saveConfigFile;
 end;
