@@ -39,12 +39,12 @@ type
   public
     constructor create;
     destructor Destroy; override;
-    function deleteName(const aName: string): boolean;
+    function deleteConfig(const aName: string): boolean;
     function initConfigFile(const aFilePath: string): boolean;
     function toHex(const aInteger: integer): string;
     property asBoolean[const aName: string]: boolean read getAsBoolean;
     property asInteger[const aName: string]: integer read getAsInteger;
-    property value[const aName: string]: string read getValue write setValue;
+    property value[const aName: string]: string read getValue write setValue; default;
   end;
 
 
@@ -75,7 +75,7 @@ begin
                                                 end;end;
 end;
 
-function TConfigFile.deleteName(const aName: string): boolean;
+function TConfigFile.deleteConfig(const aName: string): boolean;
 begin
   checkForManualEdits;
   var vIx := FFileContents.indexOfName(aName);

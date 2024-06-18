@@ -100,6 +100,7 @@ type
   TAnonFunc = reference to function: boolean;
 
 const
+  FnnKeyApps: array[F10_APP..F12_APP] of string = ('F10', 'F11', 'F12');
   mediaTypes: array[0..87] of TMediaTypeRec = (
 
 // manually added image formats

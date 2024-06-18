@@ -467,7 +467,7 @@ begin
 
   case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
 
-  MI.initMediaInfo(aURL);
+  MI.getMediaInfo(aURL);
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
 
@@ -491,7 +491,7 @@ begin
 
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
-  case ST.showData of TRUE: MI.getData(ST.dataMemo); end;
+  case ST.showData of TRUE: MI.getMetaData(ST.dataMemo); end;
   MC.caption := PL.formattedItem;
 
   mmpProcessMessages;
@@ -501,7 +501,7 @@ begin
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;
 
-  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF.value['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
+  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF['openImage']) = 'browser') of TRUE: UI.showThumbnails(htMPVHost); end;
 
   FAllowBrowser := FALSE; // only allow the launch image
 

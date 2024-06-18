@@ -227,8 +227,8 @@ begin
   mpvGetMute(mpv, vValue);
   case vValue of    TRUE: result := 'muted';
                    FALSE: result := 'unmuted'; end;
-  case vValue of    TRUE: CF.value['muted'] := 'yes';
-                   FALSE: CF.value['muted'] := 'no'; end;
+  case vValue of    TRUE: CF['muted'] := 'yes';
+                   FALSE: CF['muted'] := 'no'; end;
 end;
 
 function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
@@ -240,8 +240,8 @@ begin
   mpvGetMute(mpv, vValue);
   case vValue of    TRUE: result := 'muted';
                    FALSE: result := 'unmuted'; end;
-  case vValue of    TRUE: CF.value['muted'] := 'yes';
-                   FALSE: CF.value['muted'] := 'no'; end;
+  case vValue of    TRUE: CF['muted'] := 'yes';
+                   FALSE: CF['muted'] := 'no'; end;
 end;
 
 function mpvPanDn(const mpv: TMPVBasePlayer): string;
@@ -460,7 +460,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume - 1;
-  CF.value['volume'] := intToStr(trunc(mpv.volume));
+  CF['volume'] := intToStr(trunc(mpv.volume));
   result := mpvFormattedVol(mpv);
 end;
 
@@ -469,7 +469,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume + 1;
-  CF.value['volume'] := intToStr(trunc(mpv.volume));
+  CF['volume'] := intToStr(trunc(mpv.volume));
   result := mpvFormattedVol(mpv);
 end;
 

@@ -269,9 +269,9 @@ end;
 
 function TUI.darker: boolean;
 begin
-  CF.value['caption']     := CF.toHex(MC.darker);
-  CF.value['timeCaption'] := CF.toHex(ST.darker);
-  CF.value['progressBar'] := CF.toHex(PB.darker);
+  CF['caption']     := CF.toHex(MC.darker);
+  CF['timeCaption'] := CF.toHex(ST.darker);
+  CF['progressBar'] := CF.toHex(PB.darker);
 end;
 
 function TUI.createVideoPanel(const aForm: TForm): boolean;
@@ -710,19 +710,19 @@ end;
 
 function TUI.resetColor: boolean;
 begin
-  CF.value['caption']     := CF.toHex(MC.resetColor);
-  CF.value['timeCaption'] := CF.toHex(ST.resetColor);
-  CF.value['progressBar'] := CF.toHex(PB.resetColor);
+  CF['caption']     := CF.toHex(MC.resetColor);
+  CF['timeCaption'] := CF.toHex(ST.resetColor);
+  CF['progressBar'] := CF.toHex(PB.resetColor);
 end;
 
 function TUI.toggleCaptions: boolean;
 begin
   var vShiftState := mmpShiftState;
-  case (ssCtrl in vShiftState) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
+  case (ssCtrl in vShiftState) and ST.showTime and (NOT ST.showData) of TRUE: begin MI.getMetaData(ST.dataMemo); ST.showData := TRUE; EXIT; end;end;
 
   ST.showTime := NOT ST.showTime;
 
-  case (ssCtrl in vShiftState) and ST.showTime of  TRUE: begin MI.getData(ST.dataMemo); ST.showData := TRUE; end;
+  case (ssCtrl in vShiftState) and ST.showTime of  TRUE: begin MI.getMetaData(ST.dataMemo); ST.showData := TRUE; end;
                                                   FALSE: ST.showData := FALSE; end;
 end;
 

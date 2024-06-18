@@ -63,7 +63,6 @@ type
     FLowestID: integer;
     FMediaChapters: TObjectList<TMediaChapter>;
     FMediaStreams:  TObjectList<TMediaStream>;
-    FNeedInfo: boolean;
     FURL: string;
 
     function getAudioBitRate: string;
@@ -77,12 +76,13 @@ type
     function getOverallBitRate: string;
     function getVideoBitRate: string;
     function getXY: string;
-    procedure setURL(const aValue: string);
+    function loadDLL: boolean;
   public
     constructor create;
     destructor Destroy; override;
-    function getData(const aMemo: TMemo): boolean;
-    function initMediaInfo(const aURL: string = ''): boolean;
+    function getMediaInfo(const aURL: string = ''): boolean;
+    function getMetaData(const aMemo: TMemo): boolean;
+    function sortStreams: boolean;
     property audioBitRate:      string  read getAudioBitRate;
     property audioCount:        integer read FAudioCount;
     property chapterCount:      integer read FChapterCount;
@@ -101,7 +101,6 @@ type
     property stereoMono:        string  read getStereoMono;
     property streamCount:       integer read getStreamCount;
     property textCount:         integer read FTextCount;
-    property URL:               string  read FURL         write setURL;
     property videoBitRate:      string  read getVideoBitRate;
     property videoCount:        integer read FVideoCount;
     property X:                 integer read FWidth;
@@ -115,7 +114,7 @@ type
 implementation
 
 uses
-  system.sysUtils, system.timeSpan,
+  system.generics.defaults, system.sysUtils, system.timeSpan,
   mediaInfoDLL,
   mmpMPVFormatting,
   mmpFileUtils,
@@ -149,9 +148,18 @@ begin
   result := FHasCoverArt = 'Yes';
 end;
 
-function TMediaInfo.getData(const aMemo: TMemo): boolean;
+function TMediaInfo.getDuration: integer;
 begin
-  case FNeedInfo of TRUE: initMediaInfo(FURL); end;
+  result := FDuration div 1000;
+end;
+
+function TMediaInfo.getFileSize: string;
+begin
+  result := mmpFormatFileSize(mmpFileSize(FURL));
+end;
+
+function TMediaInfo.getMetaData(const aMemo: TMemo): boolean;
+begin
   aMemo.clear;
   aMemo.lines.add('');
   aMemo.lines.add(XY);
@@ -161,16 +169,6 @@ begin
   aMemo.lines.add(videoBitRate);
   aMemo.lines.add(stereoMono);
   aMemo.lines.add(fileSize);
-end;
-
-function TMediaInfo.getDuration: integer;
-begin
-  result := FDuration div 1000;
-end;
-
-function TMediaInfo.getFileSize: string;
-begin
-  result := mmpFormatFileSize(mmpFileSize(FURL));
 end;
 
 function TMediaInfo.getOverallBitRate: string;
@@ -210,7 +208,7 @@ begin
   result := format('XY:  %d x %d', [X, Y]);
 end;
 
-function TMediaInfo.initMediaInfo(const aURL: string = ''): boolean;
+function TMediaInfo.getMediaInfo(const aURL: string = ''): boolean;
 var
   vBitRate:     string;
   vDuration:    string;
@@ -328,16 +326,13 @@ var
 
 begin
   result := FALSE;
-  case FHandle = 0 of TRUE: begin
-                              case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
-                              mediaInfo_Option(0, 'Internet', 'No');
-                              FHandle := MediaInfo_New(); end;end;
 
-  case FHandle = 0 of TRUE: EXIT; end;
+  case loadDLL of FALSE: EXIT; end;
+
+  case aURL <> '' of TRUE: FURL := aURL; end;
+  mediaInfo_Open(FHandle, PWideChar(FURL));
 
   try
-    case aURL <> '' of TRUE: FURL := aURL; end;
-    mediaInfo_Open(FHandle, PWideChar(FURL));
     FMediaStreams.clear;
 
     FOverallFrameRate := mediaInfo_Get(FHandle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
@@ -374,16 +369,31 @@ begin
 
     createChapters;
 
-    FNeedInfo := FALSE;
   finally
     mediaInfo_close(FHandle);
   end;
 end;
 
-procedure TMediaInfo.setURL(const aValue: string);
+function TMediaInfo.loadDLL: boolean;
 begin
-  FNeedInfo := aValue <> FURL;
-  FURL      := aValue;
+  result := FALSE;
+  case FHandle = 0 of TRUE: begin
+                              case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
+                              mediaInfo_Option(0, 'Internet', 'No');
+                              FHandle := MediaInfo_New(); end;end;
+  result := FHandle <> 0;
+end;
+
+function TMediaInfo.sortStreams: boolean;
+begin
+  mediaStreams.sort(TComparer<TMediaStream>.construct(
+      function (const L, R: TMediaStream): integer
+      begin
+         case length(L.ID) = 1 of TRUE: L.ID := '0' + L.ID; end;
+         case length(R.ID) = 1 of TRUE: R.ID := '0' + R.ID; end;
+         result := compareText(L.ID, R.ID)
+      end
+      ));
 end;
 
 end.

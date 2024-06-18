@@ -244,7 +244,7 @@ begin
 
 
   case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: begin
-                                                                        MI.initMediaInfo(aURL);
+                                                                        MI.getMediaInfo(aURL);
                                                                         mmpSetPanelText(FStatusBar, pnXXYY, format('%d x %d', [MI.imageWidth, MI.imageHeight]));
                                                                       end;
                                                                FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;

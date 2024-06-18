@@ -4,7 +4,7 @@
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License, or
+    the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -16,45 +16,39 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit TBookmarkClass;
+unit TListHelperClass;
 
 interface
 
+uses
+  system.generics.collections, system.generics.defaults,
+  mmpUtils;
+
 type
-  TBookmark = class(TObject)
-  strict private
-  protected
-  private
+  TListHelper = class helper for TList<string>
   public
-    function asInteger(const aURL: string): integer;
-    function delete(const aURL: string): string;
-    function save(const aURL: string; const aPosition: integer): string;
+    function naturalSort: boolean;
   end;
 
 implementation
 
 uses
   system.sysUtils,
-  mmpSingletons,
-  _debugWindow;
+  mmpFileUtils;
 
-{ TBookmark }
+{ TListHelper }
 
-function TBookmark.asInteger(const aURL: string): integer;
+function TListHelper.naturalSort: boolean;
 begin
-  result := CF.asInteger[aURL];
-end;
+  SELF.sort(
+            TComparer<string>.construct(
+                                        function(const a, b: string): integer
+                                        begin
+                                          result := mmpcompareStr(lowerCase(mmpFileNameWithoutExtension(extractFileName(a))), lowerCase(mmpFileNameWithoutExtension(extractFileName(b))));
+                                        end
+                                       )
+           );
 
-function TBookmark.delete(const aURL: string): string;
-begin
-  CF.deleteConfig(aURL);
-  result := 'Bookmark deleted';
-end;
-
-function TBookmark.save(const aURL: string; const aPosition: integer): string;
-begin
-  CF[aURL] := intToStr(aPosition);
-  result := 'Bookmarked';
 end;
 
 end.

@@ -97,7 +97,8 @@ uses
   TMediaStreamClass in 'TMediaStreamClass.pas',
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
   TMixerClass in 'TMixerClass.pas',
-  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas';
+  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
+  TListHelperClass in 'TListHelperClass.pas';
 
 {$R *.res}
 

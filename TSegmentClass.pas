@@ -43,12 +43,14 @@ type
     FTrashCan:    TImage;
   private
     function  getDuration: integer;
-    procedure setSegID(const Value: string);
-    function  getSegID: string;
-    procedure setSelected(const Value: boolean);
-    function  getIx: integer;
-    function  getIsLast: boolean;
     function  getIsFirst: boolean;
+    function  getIsLast: boolean;
+    function  getIx: integer;
+    function  getSegID: string;
+    function  getTitle: string;
+    procedure setSegID(const Value: string);
+    procedure setSelected(const Value: boolean);
+    procedure setTitle(const Value: string);
 
     class var FParent: TWinControl;
     class var FSelSeg: TSegment;
@@ -56,8 +58,6 @@ type
     class destructor freeSegments;
     class function getSegments: TObjectList<TSegment>; static;
     class function getIncludedCount: integer; static;
-    function getTitle: string;
-    procedure setTitle(const Value: string);
 
   protected
     procedure doClick(Sender: TObject);

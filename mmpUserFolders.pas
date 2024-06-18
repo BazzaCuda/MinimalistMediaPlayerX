@@ -37,7 +37,7 @@ begin
 
   case pos(':', mmpUserOverride(aFolder)) > 0 of TRUE: EXIT; end; // don't use the base folder if an override is an absolute path, e.g. "C:\....."
 
-  result := CF.value['baseFolder'];
+  result := CF['baseFolder'];
   case result <> '' of TRUE: result := ITBS(result); end;
 end;
 
@@ -55,7 +55,7 @@ function mmpUserOverride(const aFolder: string): string;
 // destination folders can be absolute paths or relative to the base folder
 begin
   result := '';
-  var vValue := CF.value[aFolder];
+  var vValue := CF[aFolder];
   case vValue <> '' of  TRUE: result := vValue;
                        FALSE: result := aFolder; end;
   case result <> '' of TRUE: result := ITBS(result); end;

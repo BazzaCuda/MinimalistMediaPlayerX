@@ -45,19 +45,19 @@ uses
 type
   TGlobalVars = class(TObject)
   strict private
-    FAppWnd: HWND;
-    FAltKeyDown: boolean;
-    FAutoCentre: boolean;
-    FCloseApp: boolean;
-    FMainForm: TForm;
-    FPlayingSlideshow: boolean;
-    FShowingHelp: boolean;
-    FShowingPlaylist: boolean;
+    FAppWnd:            HWND;
+    FAltKeyDown:        boolean;
+    FAutoCentre:        boolean;
+    FCloseApp:          boolean;
+    FMainForm:          TForm;
+    FPlayingSlideshow:  boolean;
+    FShowingHelp:       boolean;
+    FShowingPlaylist:   boolean;
     FShowingStreamList: boolean;
-    FShowingThumbs: boolean;
-    FShowingTimeline: boolean;
-    FTimelineHeight: integer;
-    FUserInput: boolean;
+    FShowingThumbs:     boolean;
+    FShowingTimeline:   boolean;
+    FTimelineHeight:    integer;
+    FUserInput:         boolean;
   private
   public
     property altKeyDown:        boolean read FAltKeyDown        write FAltKeyDown;
@@ -76,8 +76,5 @@ type
   end;
 
 implementation
-
-uses
-  vcl.controls;
 
 end.

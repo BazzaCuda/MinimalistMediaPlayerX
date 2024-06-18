@@ -83,11 +83,9 @@ function shutStreamList: boolean;
 implementation
 
 uses
-  system.generics.defaults,
   mmpMPVFormatting,
   mmpConsts, mmpMarkDownUtils, mmpSingletons,
   formTimeline,
-  TMediaStreamClass,
   _debugWindow;
 
 var
@@ -101,6 +99,7 @@ end;
 function refreshStreamInfo(const aMediaFilePath: string): boolean;
 begin
   MI.lowestID := streamListForm.getStreamInfo(aMediaFilePath);
+  streamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
 function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
@@ -264,20 +263,11 @@ begin
 
   clStreams.itemCount  := 0;
 
-  MI.initMediaInfo(aMediaFilePath);
+  MI.getMediaInfo(aMediaFilePath);
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
-  MI.mediaStreams.sort(TComparer<TMediaStream>.construct(
-      function (const L, R: TMediaStream): integer
-      begin
-         case length(L.ID) = 1 of TRUE: L.ID := '0' + L.ID; end;
-         case length(R.ID) = 1 of TRUE: R.ID := '0' + R.ID; end;
-         result := compareText(L.ID, R.ID)
-      end
-      ));
+  MI.sortStreams;
   case MI.mediaStreams.count > 0 of TRUE: case tryStrToInt(MI.mediaStreams[0].ID, result) of FALSE: result := 0; end;end;
-
-  updateExportButton(MI.selectedCount > 0);
 end;
 
 function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;

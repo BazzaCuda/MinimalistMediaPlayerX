@@ -227,7 +227,7 @@ begin
     koBookmarkDelete:    ST.opInfo := BM.delete(PL.currentItem);
     koBookmarkLoad:      case BM.asInteger(PL.currentItem) <> 0 of TRUE: begin MP.position := BM.asInteger(PL.currentItem); ST.opInfo := 'From bookmark'; end;end;
     koBookmarkSave:      ST.opInfo := BM.save(PL.currentItem, MP.position);
-    koBrighterPB:        begin CF.value['caption'] := CF.toHex(MC.brighter); CF.value['timeCaption'] := CF.toHex(ST.brighter); CF.value['progressBar'] := CF.toHex(PB.brighter); end;
+    koBrighterPB:        begin CF['caption'] := CF.toHex(MC.brighter); CF['timeCaption'] := CF.toHex(ST.brighter); CF['progressBar'] := CF.toHex(PB.brighter); end;
     koBrightnessDn:      ST.opInfo := MP.brightnessDn;
     koBrightnessUp:      ST.opInfo := MP.brightnessUp;
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;

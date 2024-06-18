@@ -247,6 +247,7 @@
         <DCCReference Include="TStatusBarHelperClass.pas"/>
         <DCCReference Include="TMixerClass.pas"/>
         <DCCReference Include="mmpMMDevApi_tlb.pas"/>
+        <DCCReference Include="TListHelperClass.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

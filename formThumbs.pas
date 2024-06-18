@@ -779,7 +779,7 @@ begin
     koWindowShorter,
     koWindowTaller,
     koWindowNarrower,
-    koWindowWider:        {case whichHost of htMPVHost:} windowSize(aKeyOp); {end;}
+    koWindowWider:        windowSize(aKeyOp);
 
     koShowCaption:;
     koFullscreen:;
