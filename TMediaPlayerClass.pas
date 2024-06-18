@@ -530,7 +530,6 @@ end;
 
 function TMediaPlayer.playNext: boolean;
 begin
-  debug('MP.playNext');
   case GV.closeApp of TRUE: EXIT; end;
   pause;
 

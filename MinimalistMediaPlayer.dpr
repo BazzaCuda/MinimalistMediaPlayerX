@@ -21,7 +21,7 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-  FastMM5 in '..\..\3P\FastMM5\FastMM5.pas',
+  FastMM5 in 'FastMM5\FastMM5.pas',
   Vcl.Forms,
   Vcl.Styles,
   Vcl.Themes,
