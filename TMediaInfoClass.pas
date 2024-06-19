@@ -330,8 +330,11 @@ begin
   case loadDLL of FALSE: EXIT; end;
 
   case aURL <> '' of TRUE: FURL := aURL; end;
-  mediaInfo_Open(FHandle, PWideChar(FURL));
+  try
+    mediaInfo_Open(FHandle, PWideChar(FURL));
+  except EXIT; end;
 
+  try
   try
     FMediaStreams.clear;
 
@@ -372,15 +375,19 @@ begin
   finally
     mediaInfo_close(FHandle);
   end;
+    result := TRUE;
+  except end;
 end;
 
 function TMediaInfo.loadDLL: boolean;
 begin
   result := FALSE;
   case FHandle = 0 of TRUE: begin
-                              case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
-                              mediaInfo_Option(0, 'Internet', 'No');
-                              FHandle := MediaInfo_New(); end;end;
+                              try
+                                case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
+                                mediaInfo_Option(0, 'Internet', 'No');
+                                FHandle := MediaInfo_New();
+                              except end;end;end;
   result := FHandle <> 0;
 end;
 

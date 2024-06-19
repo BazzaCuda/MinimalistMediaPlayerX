@@ -503,7 +503,7 @@ begin
 
   case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF['openImage']) = 'browser') of TRUE: begin FAllowBrowser := FALSE; UI.showThumbnails(htMPVHost); end;end;
 
-//  FAllowBrowser := FALSE; // only allow the launch image
+  FAllowBrowser := FALSE; // only allow the initial launch image
 
   result := TRUE;
 end;
@@ -540,7 +540,7 @@ begin
   case GV.closeApp of TRUE: EXIT; end;
   pause;
 
-  var vDontExit := PL.isLast and (FMediaType = mtImage);
+  var vDontExit := PL.isLast and (FMediaType = mtImage) and NOT CF.asBoolean[CONF_NEXT_FOLDER_ON_END];
 
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -562,11 +562,15 @@ function TMediaPlayer.playNextFolder: boolean;
 var
   vNextFolder: string;
 begin
-  vNextFolder := mmpNextFolder(PL.currentFolder, nfForwards);
-  ST.opInfo := vNextFolder;
-  case vNextFolder = '' of FALSE: PL.fillPlaylist(vNextFolder) end;
+  vNextFolder := mmpNextFolder(PL.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  ST.opInfo   := vNextFolder;
+  mmpProcessMessages;
+  PL.fillPlaylist(vNextFolder);
   case PL.hasItems of  TRUE: play(PL.currentItem);
-                      FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
+                      FALSE: case (vNextFolder = '') of  TRUE: mmpSendSysCommandClose;
+                                                        FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: playNextFolder;
+                                                                                                              FALSE: mpvStop(mpv); end;end;end; // if the folder is empty we want a blank screen
+
   result := vNextFolder <> '';
 end;
 
@@ -587,7 +591,7 @@ function TMediaPlayer.playPrevFolder: boolean;
 var
   vPrevFolder: string;
 begin
-  vPrevFolder := mmpNextFolder(PL.currentFolder, nfBackwards);
+  vPrevFolder := mmpNextFolder(PL.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   ST.opInfo := vPrevFolder;
   case vPrevFolder = '' of FALSE: PL.fillPlaylist(vPrevFolder); end;
   case PL.hasItems of  TRUE: play(PL.currentItem);

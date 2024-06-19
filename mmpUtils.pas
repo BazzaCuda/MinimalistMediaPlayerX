@@ -86,29 +86,31 @@ var vNum1,
   end;
 
 begin
-    pStr1 := @aStr1[1]; pStr2 := @aStr2[1];
-    result := 0;
+  case (length(aStr1) = 0) or (length(aStr2) = 0) of TRUE: begin result := -1; EXIT; end;end;  // e.g. files with just an extension and no name
 
-    while NOT ((pStr1^ = #0) or (pStr2^ = #0)) do
-    begin
-       case isNumber(pStr1^) and isNumber(pStr2^) of   TRUE:  begin
-                                                                vNum1 := getNumber(pStr1); vNum2 := getNumber(pStr2);
-                                                                case vNum1 < vNum2 of TRUE: result := -1; end;
-                                                                case vNum1 > vNum2 of TRUE: result :=  1; end;
-                                                                dec(pStr1); dec(pStr2);
-                                                              end;
-                                                      FALSE:  begin
-                                                                case pStr1^ < pStr2^ of  TRUE: result := -1; end;
-                                                                case pStr1^ > pStr2^ of  TRUE: result :=  1; end;
-                                                              end;end;
+  result := 0;
+  pStr1 := @aStr1[1]; pStr2 := @aStr2[1];
 
-       case result <> 0 of TRUE: BREAK; end;
-       inc(pStr1); inc(pStr2);
-    end;
+  while NOT ((pStr1^ = #0) or (pStr2^ = #0)) do
+  begin
+     case isNumber(pStr1^) and isNumber(pStr2^) of   TRUE:  begin
+                                                              vNum1 := getNumber(pStr1); vNum2 := getNumber(pStr2);
+                                                              case vNum1 < vNum2 of TRUE: result := -1; end;
+                                                              case vNum1 > vNum2 of TRUE: result :=  1; end;
+                                                              dec(pStr1); dec(pStr2);
+                                                            end;
+                                                    FALSE:  begin
+                                                              case pStr1^ < pStr2^ of  TRUE: result := -1; end;
+                                                              case pStr1^ > pStr2^ of  TRUE: result :=  1; end;
+                                                            end;end;
 
-    vNum1 := length(aStr1); vNum2 := length(aStr2);
-    case (result = 0) and (vNum1 <> vNum2) of TRUE: case vNum1 < vNum2 of  TRUE: result := -1;
-                                                                          FALSE: result :=  1; end;end;
+     case result <> 0 of TRUE: BREAK; end;
+     inc(pStr1); inc(pStr2);
+  end;
+
+  vNum1 := length(aStr1); vNum2 := length(aStr2);
+  case (result = 0) and (vNum1 <> vNum2) of TRUE: case vNum1 < vNum2 of  TRUE: result := -1;
+                                                                        FALSE: result :=  1; end;end;
 end;
 
 function mmpDelay(const dwMilliseconds: DWORD): boolean;

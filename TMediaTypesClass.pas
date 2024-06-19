@@ -69,9 +69,9 @@ function TMediaTypes.mediaType(const aExt: string): TMediaType;
 begin
   result := mtUnk;
 
-  var vExt: string := aExt;
+  var vExt: string := aExt + ' ';
 
-  case vExt = '.avi' of TRUE: vExt := '.avii'; end; // fudge because of the ambiguity that .avi and .avif now cause. should have been .av1f !!
+  case trim(vExt) = '' of TRUE: EXIT; end;
 
   for var mediaType: TMediaTypeRec in mediaTypes do
     case mediaType.fileExts.contains(vExt) of TRUE: begin

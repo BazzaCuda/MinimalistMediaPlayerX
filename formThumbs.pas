@@ -468,7 +468,7 @@ function TThumbsForm.playNextFolder: boolean;
 var
   vNextFolder: string;
 begin
-  vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards);
+  vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   case vNextFolder = '' of FALSE: FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
@@ -490,7 +490,7 @@ function TThumbsForm.playPrevFolder: boolean;
 var
   vPrevFolder: string;
 begin
-  vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards);
+  vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   case vPrevFolder = '' of FALSE: FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
