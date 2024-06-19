@@ -369,12 +369,12 @@ begin
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OtherCount',      Info_Text, Info_Name), FMD.mdOtherCount)        of FALSE: FMD.mdOtherCount       := 0; end;
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'ImageCount',      Info_Text, Info_Name), FMD.mdImageCount)        of FALSE: FMD.mdImageCount       := 0; end;
 
-    FMD.mdHasCoverArt := mediaInfo_Get(FHandle, Stream_General,  0, 'Cover',           Info_Text, Info_Name);
+    FMD.mdHasCoverArt := mediaInfo_Get(FHandle, Stream_General,     0, 'Cover',           Info_Text, Info_Name);
 
     for var vStreamIx := 0 to streamCount - 1 do begin
-      case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
-      case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
-      case mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createTextStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createTextStream (vStreamIx); end;
     end;
 
     createChapters;
