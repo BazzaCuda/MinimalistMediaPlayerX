@@ -240,6 +240,7 @@ begin
   FTimer.OnTimer  := onTimerEvent;
   FAllowBrowser   := TRUE;
   createTimeCaptionClosures;
+  GV.maxSize      := TRUE;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
@@ -482,7 +483,7 @@ begin
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
-  case GV.autoCentre of  TRUE: case FMediaType of          mtVideo: UI.setWindowSize(-1, []); // must be done after MPV has opened the video
+  case GV.maxSize of     TRUE: case FMediaType of          mtVideo: UI.setWindowSize(-1, []); // must be done after MPV has opened the video
                                                   mtAudio, mtImage: UI.setWindowSize(UI.height, []); end;
                         FALSE: UI.setWindowSize(UI.height, []); end;
   UI.centreCursor;

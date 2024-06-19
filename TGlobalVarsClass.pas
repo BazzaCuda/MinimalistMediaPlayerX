@@ -50,6 +50,7 @@ type
     FAutoCentre:        boolean;
     FCloseApp:          boolean;
     FMainForm:          TForm;
+    FMaxSize:           boolean;
     FPlayingSlideshow:  boolean;
     FShowingHelp:       boolean;
     FShowingPlaylist:   boolean;
@@ -65,6 +66,7 @@ type
     property autoCentre:        boolean read FAutoCentre        write FAutoCentre;
     property closeApp:          boolean read FCloseApp          write FCloseApp;
     property mainForm:          TForm   read FMainForm          write FMainForm;
+    property maxSize:           boolean read FMaxSize           write FMaxSize;
     property playingSlideshow:  boolean read FPlayingSlideshow  write FPlayingSlideshow;
     property showingHelp:       boolean read FShowingHelp       write FShowingHelp;
     property showingPlaylist:   boolean read FShowingPlaylist   write FShowingPlaylist;

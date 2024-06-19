@@ -379,6 +379,8 @@ begin
   case ssCtrl in aShiftState of  TRUE: setWindowSize(vR.height - dy, aShiftState);
                                 FALSE: setWindowSize(vR.height + dy, aShiftState); end;
 
+  GV.maxSize := FALSE;
+
   EXIT;
 
   calcDimensions; // do what the user requested
@@ -447,6 +449,7 @@ begin
   FDontAutoSize := FALSE;
   setWindowSize(-1, []);
   GV.autoCentre := TRUE;
+  GV.maxSize    := TRUE;
   centreCursor;
 end;
 
