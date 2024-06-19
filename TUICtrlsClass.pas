@@ -357,7 +357,8 @@ const
 var
   vR: TRect;
 begin
-  case FSettingSize of TRUE: EXIT; end;
+  case FSettingSize and (GV.showingPlaylist or GV.showingTimeline) of TRUE: EXIT; end; // limit keyboard keystroke repetitions for held down Ctrl-[G]
+
   getWindowRect(aWnd, vR);
 
   FGreatering := TRUE;
@@ -419,9 +420,9 @@ end;
 function TUI.maximize: boolean;
 begin
   FDontAutoSize := FALSE;
-  setWindowSize(-1, []);
   GV.autoCentre := TRUE;
   GV.maxSize    := TRUE;
+  setWindowSize(-1, []);
   centreCursor;
 end;
 
@@ -579,8 +580,8 @@ begin
 
                         mtVideo:  begin
                                         vStartingHeight := aStartingHeight;
-                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := FPrevVideoHeight; end;
-                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := -1; end;
+                                        case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := FPrevVideoHeight; end;
+                                        case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := -1; end;
 
                                         case ssCtrl in aShiftState of  TRUE: dy := -30;
                                                                       FALSE: dy := +30; end;
@@ -605,8 +606,8 @@ begin
 
                         mtImage:  begin
                                              vStartingHeight := aStartingHeight;
-                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := FPrevImageHeight; end;
-                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := -1; end;
+                                        case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := FPrevImageHeight; end;
+                                        case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := -1; end;
 
                                         case vStartingHeight = -1 of  TRUE: begin
                                                                               vWidth  := trunc((mmpScreenHeight - 100) * 1.5);
