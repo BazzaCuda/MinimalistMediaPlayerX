@@ -29,13 +29,16 @@ uses
 type
   TUI = class(TObject)
   strict private
-    FDontAutoSize:  boolean;
-    FMainForm:      TForm;
-    FFormattedTime: string;
-    FForcedResize:  boolean;
-    FGreatering:    boolean;
-    FInitialized:   boolean;
-    FVideoPanel:    TPanel;
+    FDontAutoSize:    boolean;
+    FMainForm:        TForm;
+    FFormattedTime:   string;
+    FForcedResize:    boolean;
+    FGreatering:      boolean;
+    FInitialized:     boolean;
+    FPrevImageHeight: integer;
+    FPrevVideoHeight: integer;
+    FSettingSize:     boolean;
+    FVideoPanel:      TPanel;
   private
     function addMenuItems(const aForm: TForm): boolean;
     function createVideoPanel(const aForm: TForm): boolean;
@@ -352,47 +355,16 @@ const
   dx = 50;
   dy = 30;
 var
-  newW:         integer;
-  newH:         integer;
-  vR:           TRect;
-
-  function calcDimensions: boolean;
-  begin
-    case ssCtrl in aShiftState of
-      TRUE: begin
-              newW := newW - dx;
-              newH := newH - dy;
-            end;
-     FALSE: begin
-              newW := newW + dx;
-              newH := newH + dy;
-            end;
-    end;
-  end;
-
+  vR: TRect;
 begin
+  case FSettingSize of TRUE: EXIT; end;
   getWindowRect(aWnd, vR);
-  newW := vR.Width;
-  newH := vR.height;
 
   FGreatering := TRUE;
   case ssCtrl in aShiftState of  TRUE: setWindowSize(vR.height - dy, aShiftState);
                                 FALSE: setWindowSize(vR.height + dy, aShiftState); end;
 
   GV.maxSize := FALSE; // pressing [M] reinstates maxSize
-
-  EXIT;
-
-  calcDimensions; // do what the user requested
-
-  case mmpWithinScreenLimits(newW, newH) of FALSE:  begin
-                                                      newH      := mmpScreenHeight - dy;
-                                                      try newW  := trunc(newH / mmpAspectRatio(MP.videoWidth, MP.videoHeight)); except newW := 800; end;end;end;
-
-  SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
-
-  postMessage(GV.appWnd, WM_ADJUST_ASPECT_RATIO, 0, 0);
-  mmpProcessMessages;
 end;
 
 function TUI.handle: HWND;
@@ -583,9 +555,10 @@ end;
 
 function TUI.setWindowSize(const aStartingHeight: integer; const aShiftState: TShiftState): boolean;
 var
-  vWidth:   integer;
-  vHeight:  integer;
-  dy:       integer;
+  vWidth:           integer;
+  vHeight:          integer;
+  dy:               integer;
+  vStartingHeight:  integer;
 
   function adjustWidthForAspectRatio: boolean;
   begin
@@ -598,18 +571,23 @@ var
   end;
 
 begin
+  FSettingSize := TRUE;
   case MP.mediaType of  mtAudio:  begin case MI.hasCoverArt of  TRUE: vWidth  := 600;
                                                                FALSE: vWidth  := 600; end;
                                         case MI.hasCoverArt of  TRUE: vHeight := 400;
                                                                FALSE: vHeight := UI_DEFAULT_AUDIO_HEIGHT; end;end;
 
                         mtVideo:  begin
+                                        vStartingHeight := aStartingHeight;
+                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := FPrevVideoHeight; end;
+                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := -1; end;
+
                                         case ssCtrl in aShiftState of  TRUE: dy := -30;
                                                                       FALSE: dy := +30; end;
 
-                                        case aStartingHeight = -1 of
+                                        case vStartingHeight = -1 of
                                                                        TRUE: vHeight := mmpScreenHeight - 30;
-                                                                      FALSE: vHeight := aStartingHeight; end;
+                                                                      FALSE: vHeight := vStartingHeight; end;
 
                                         while (MP.videoWidth = 0) or (MP.videoHeight = 0) do mmpDelay(100);
 
@@ -621,21 +599,29 @@ begin
                                           vHeight := vHeight + dy;
                                           adjustWidthForAspectRatio;
                                         end;
+
+                                        FPrevVideoHeight := vHeight;
                                   end;
 
                         mtImage:  begin
-                                        case aStartingHeight = -1 of  TRUE: begin
+                                             vStartingHeight := aStartingHeight;
+                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := FPrevImageHeight; end;
+                                        case vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT of TRUE: vStartingHeight := -1; end;
+
+                                        case vStartingHeight = -1 of  TRUE: begin
                                                                               vWidth  := trunc((mmpScreenHeight - 100) * 1.5);
                                                                               vHeight := mmpScreenHeight - 100; end;
                                                                      FALSE: begin
-                                                                              vWidth  := trunc(aStartingHeight * 1.5);
-                                                                              vHeight := aStartingHeight; end;end;
+                                                                              vWidth  := trunc(vStartingHeight * 1.5);
+                                                                              vHeight := vStartingHeight; end;end;
 
                                         while NOT withinScreenLimits do
                                         begin
                                           vWidth  := vWidth  - 30;
                                           vHeight := vHeight - 30;
                                         end;
+
+                                        FPrevImageHeight := vHeight;
                                   end;
   end;
 
@@ -643,6 +629,7 @@ begin
   mmpProcessMessages;
   SetWindowPos(FMainForm.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
   mmpProcessMessages;
+  FSettingSize := FALSE;
 end;
 
 function TUI.setWindowStyle(const aForm: TForm): boolean;

@@ -160,7 +160,7 @@ uses
   vcl.controls, vcl.graphics,
   mpvConst,
   mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSingletons, mmpSysCommands, mmpUtils,
-  formCaptions, formHelp, formMediaCaption,
+  formCaptions, formHelp, formMediaCaption, formPlaylist, formTimeline,
   _debugWindow;
 
 { TMediaPlayer }
@@ -204,6 +204,9 @@ begin
   mmpCancelDelay;
   FDontPlayNext := TRUE;
   mpvPause(mpv);
+  shutPlaylist;
+  shutTimeline;
+  shutHelp;
 end;
 
 function TMediaPlayer.chapterNext: boolean;
@@ -356,8 +359,8 @@ procedure TMediaPlayer.onTimerEvent(sender: TObject);
 begin
   FTimer.enabled := FALSE;
   case FTimerEvent of
-    tePlay:  play(PL.currentItem);
-    teClose: begin ceaseOps; mmpSendSysCommandClose; end;
+    tePlay:           play(PL.currentItem);
+    teClose:          begin ceaseOps; mmpSendSysCommandClose; end;
   end;
 end;
 
@@ -506,6 +509,8 @@ begin
 
   FAllowBrowser := FALSE; // only allow the initial launch image
 
+  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
+
   result := TRUE;
 end;
 
@@ -567,11 +572,12 @@ begin
   ST.opInfo   := vNextFolder;
   mmpProcessMessages;
   PL.fillPlaylist(vNextFolder);
-  case PL.hasItems of  TRUE: play(PL.currentItem);
+  loadPlaylistWindow(TRUE);
+  UI.movePlaylistWindow(FALSE);
+  case PL.hasItems of  TRUE: begin FTimerEvent := tePlay; FTimer.enabled := TRUE; loadPlaylistWindow(TRUE);  end;
                       FALSE: case (vNextFolder = '') of  TRUE: mmpSendSysCommandClose;
                                                         FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: playNextFolder;
                                                                                                               FALSE: mpvStop(mpv); end;end;end; // if the folder is empty we want a blank screen
-
   result := vNextFolder <> '';
 end;
 
@@ -593,10 +599,12 @@ var
   vPrevFolder: string;
 begin
   vPrevFolder := mmpNextFolder(PL.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  ST.opInfo := vPrevFolder;
-  case vPrevFolder = '' of FALSE: PL.fillPlaylist(vPrevFolder); end;
-  case PL.hasItems of  TRUE: play(PL.currentItem);
-                      FALSE: mpvStop(mpv); end; // if the folder is empty we want a blank screen
+  ST.opInfo   := vPrevFolder;
+  PL.fillPlaylist(vPrevFolder);
+  loadPlaylistWindow(TRUE);
+  UI.movePlaylistWindow(FALSE);
+  case PL.hasItems of  TRUE: begin FTimerEvent := tePlay; FTimer.enabled := TRUE; end;
+                      FALSE: begin FDontPlayNext := TRUE; mpvStop(mpv); end;end; // if the folder is empty we want a blank screen
   result := vPrevFolder <> '';
 end;
 

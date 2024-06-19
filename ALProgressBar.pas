@@ -121,6 +121,7 @@ procedure Register;
 implementation
 
 uses
+  math,
   _debugWindow;
 
 procedure Register;
@@ -252,7 +253,7 @@ begin
   end;
 
   if (fPosition > Min) and (fMax-fMin <> 0) then
-    BarLength := Round(((fPosition-fMin) / Abs(fMax-fMin)) * BarPixelLength)
+    BarLength := ceil(((fPosition-fMin) / Abs(fMax-fMin)) * BarPixelLength) // BAZ - changed from round
   else
     BarLength := 0;
   EmptySpaceLength := BarPixelLength - BarLength;

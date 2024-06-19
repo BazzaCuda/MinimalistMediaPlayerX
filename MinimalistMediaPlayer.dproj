@@ -147,7 +147,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="FastMM5\FastMM5.pas"/>
         <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
         <DCCReference Include="libMPVDelphi\MPVConst.pas"/>

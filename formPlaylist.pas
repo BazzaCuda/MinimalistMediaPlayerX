@@ -46,6 +46,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams);
   public
+    function  clearPlaylistBox: boolean;
     function  highlightCurrentItem: boolean;
     function  loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
     property  playlist: TPlaylist read FPL write FPL;
@@ -62,7 +63,7 @@ implementation
 uses
   winApi.shellApi,
   system.strUtils,
-  mmpconsts, mmpSingletons,
+  mmpconsts, mmpSingletons, mmpUtils,
   _debugWindow;
 
 var
@@ -95,13 +96,14 @@ begin
 
   playlistForm.playlist := aPL;
 
-  playlistForm.loadPlaylistBox;
+  case aPL.hasItems of  TRUE: playlistForm.loadPlaylistBox;
+                       FALSE: playlistForm.clearPlaylistBox; end;
   playlistForm.show;
 
   winAPI.Windows.setWindowPos(playlistForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   focusPlaylist;
 
-  playlistForm.highlightCurrentItem;
+  case aPL.hasItems of TRUE: playlistForm.highlightCurrentItem; end;
 
   GV.showingPlaylist := TRUE;
 end;
@@ -114,6 +116,12 @@ begin
 end;
 
 {$R *.dfm}
+
+function TPlaylistForm.clearPlaylistBox: boolean;
+begin
+  playlistForm.LB.items.clear;
+  mmpProcessMessages;
+end;
 
 procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
@@ -199,6 +207,8 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
+  case FPL.hasItems of FALSE: begin clearPlaylistBox; EXIT; end;end;
+
   playlistForm.LB.items.beginUpdate; // prevent flicker when moving the window
 
   try

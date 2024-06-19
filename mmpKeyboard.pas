@@ -124,8 +124,8 @@ function KBProcessKeyStroke(const aKey: word;  const aShiftState: TShiftState; c
     case keyUp and keyIs(B) and     ctrl and     shift                                of TRUE: result := koPBReset; end;
     case keyUp and keyIs(B) and NOT ctrl and NOT shift                                of TRUE: result := koToggleBlackout; end;
     case keyUp and keyIs(C)                         and NOT GV.showingTimeline        of TRUE: result := koToggleControls; end;
-    case keyUp and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end;
-    case keyUp and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end;
+    case keyDn and keyIs(D) and     ctrl                                              of TRUE: result := koPrevFolder; end;
+    case keyDn and keyIs(D) and NOT ctrl                                              of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
     case keyUp and keyIs(F) and     ctrl                                              of TRUE: result := koExploreFolder; end;
@@ -266,8 +266,8 @@ begin
     koPanUp:             ST.opInfo := MP.panUp;
     koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
     koPBReset:           UI.resetColor;
-    koPlayNext:          begin MP.playNext; UI.movePlaylistWindow(FALSE); end;
-    koPlayPrev:          begin MP.playPrev; UI.movePlaylistWindow(FALSE); end;
+    koPlayNext:          MP.playNext;
+    koPlayPrev:          MP.playPrev;
     koPrevFolder:        MP.playPrevFolder;
     koRenameFile:        UI.renameFile(PL.currentItem);
     koRotateL:           ST.opInfo := MP.rotateLeft;
@@ -281,8 +281,8 @@ begin
     koSysVolMax:         ST.opInfo := MX.setSysVolMax;
     koTab:               SA.postToAll(WIN_TAB, KBNumLock);
     koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
-    koPlayFirst:         begin MP.playFirst; UI.movePlaylistWindow(FALSE); end;
-    koPlayLast:          begin MP.playLast;  UI.movePlaylistWindow(FALSE); end;
+    koPlayFirst:         MP.playFirst;
+    koPlayLast:          MP.playLast;
     koPrevChapter:       MP.chapterPrev;
     koReloadPlaylist:    begin ST.opInfo := mmpReloadPlaylist(PL, MP); MC.caption := PL.formattedItem; loadPlaylistWindow(TRUE); end;
     koRunCut:            mmpOpenExternalApp(F11_APP, PL.currentItem);
