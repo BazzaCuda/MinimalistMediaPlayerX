@@ -227,15 +227,17 @@ var
   begin
 //    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
 
-    vBitRate    := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'BitRate/String',         Info_Text, Info_Name);
-    vDuration   := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Duration/String5',       Info_Text, Info_Name);
-    vFormat     := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Format',                 Info_Text, Info_Name);
-    vID         := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'ID',                     Info_Text, Info_Name);
-    vLanguage   := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Language/String',        Info_Text, Info_Name);
-    vTitle      := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Title',                  Info_Text, Info_Name);
+    vBitRate    := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'BitRate/String',          Info_Text, Info_Name);
+    vDuration   := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Duration/String5',        Info_Text, Info_Name);
+    vFormat     := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Format',                  Info_Text, Info_Name);
+    vID         := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'ID',                      Info_Text, Info_Name);
+    vLanguage   := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Language/String',         Info_Text, Info_Name);
+    vTitle      := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Title',                   Info_Text, Info_Name);
 
-    vStreamType := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'StreamKind',             Info_Text, Info_Name);
-    vInfo       := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Width',                  Info_Text, Info_Name) + 'x' + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Height', Info_Text, Info_Name) + ' ' + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'FrameRate', Info_Text, Info_Name) + ' fps';
+    vStreamType := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'StreamKind',              Info_Text, Info_Name);
+    vInfo       := mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Width',                   Info_Text, Info_Name) + 'x'
+                 + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Height',                  Info_Text, Info_Name) + ' '
+                 + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'FrameRate',               Info_Text, Info_Name) + ' fps';
 
     vBitRate := stringReplace(vBitRate, ' ', ',', []);
     case pos(' (', vDuration) > 1 of TRUE: vDuration := copy(vDuration, 1, pos(' (', vDuration) - 1); end;
@@ -245,29 +247,29 @@ var
 
   function createAudioStream(aStreamIx: integer): boolean;
   begin
-    vBitRate    := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'BitRate/String',         Info_Text, Info_Name);
-    vDuration   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Duration/String5',       Info_Text, Info_Name);
-    vFormat     := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Format',                 Info_Text, Info_Name);
-    vID         := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'ID',                     Info_Text, Info_Name);
-    vLanguage   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Language/String',        Info_Text, Info_Name);
-    vTitle      := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Title',                  Info_Text, Info_Name);
+    vBitRate    := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'BitRate/String',          Info_Text, Info_Name);
+    vDuration   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Duration/String5',        Info_Text, Info_Name);
+    vFormat     := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Format',                  Info_Text, Info_Name);
+    vID         := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'ID',                      Info_Text, Info_Name);
+    vLanguage   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Language/String',         Info_Text, Info_Name);
+    vTitle      := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Title',                   Info_Text, Info_Name);
 
-    vStreamType := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'StreamKind',             Info_Text, Info_Name);
-    vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',    Info_Text, Info_Name);
+    vStreamType := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'StreamKind',              Info_Text, Info_Name);
+    vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',     Info_Text, Info_Name);
 
     FMediaStreams.add(TMediaStream.create(vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
   function createTextStream(aStreamIx: integer): boolean;
   begin
-    vBitRate    := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'BitRate/String',          Info_Text, Info_Name);
-    vDuration   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Duration/String5',        Info_Text, Info_Name);
-    vFormat     := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Format',                  Info_Text, Info_Name);
-    vID         := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'ID',                      Info_Text, Info_Name);
-    vLanguage   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Language/String',         Info_Text, Info_Name);
-    vTitle      := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Title',                   Info_Text, Info_Name);
+    vBitRate    := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'BitRate/String',           Info_Text, Info_Name);
+    vDuration   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Duration/String5',         Info_Text, Info_Name);
+    vFormat     := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Format',                   Info_Text, Info_Name);
+    vID         := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'ID',                       Info_Text, Info_Name);
+    vLanguage   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Language/String',          Info_Text, Info_Name);
+    vTitle      := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Title',                    Info_Text, Info_Name);
 
-    vStreamType := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'StreamKind',              Info_Text, Info_Name);
+    vStreamType := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'StreamKind',               Info_Text, Info_Name);
     vInfo       := '';
 
     FMediaStreams.add(TMediaStream.create(vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
@@ -354,7 +356,7 @@ begin
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Width',           Info_Text, Info_Name), FMD.mdImageWidth)        of FALSE: FMD.mdImageWidth       := 0; end;
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Height',          Info_Text, Info_Name), FMD.mdImageHeight)       of FALSE: FMD.mdImageHeight      := 0; end;
 
-    case (FMD.mdImageWidth = 0) and (FMD.mdImageHeight = 0) and (FMD.mdWidth <> 0) and (FMD.mdHeight <> 0) of TRUE: begin                            // MediaInfo reports some images as video streams!
+    case (FMD.mdImageWidth = 0) and (FMD.mdImageHeight = 0) and (FMD.mdWidth <> 0) and (FMD.mdHeight <> 0) of TRUE: begin                 // MediaInfo reports some images as video streams!
                                                                                                   FMD.mdImageWidth   := FMD.mdWidth;
                                                                                                   FMD.mdImageHeight  := FMD.mdHeight; end;end;
 
