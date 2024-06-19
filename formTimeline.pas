@@ -528,12 +528,15 @@ function TTimeline.exportSegments: boolean;
 const
   STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
 var
-  cmdLine: string;
-  vMaps:   string;
-  vID:     integer;
+  cmdLine:    string;
+  vMaps:      string;
+  vID:        integer;
+  vSegOneFN:  string;
 begin
   result     := TRUE;
   gCancelled := FALSE;
+
+  vSegOneFN  := '';
 
   var vProgressForm := TProgressForm.create(NIL);
   vProgressForm.onCancel := onCancelButton;
@@ -568,6 +571,7 @@ begin
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
           var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
+          case segments.count = 1 of TRUE: vSegOneFN := segFile; end;
           cmdLine := cmdLine + ' -y "' + segFile + '"';
           log(cmdLine);
 
@@ -588,6 +592,8 @@ begin
       end;end;end;
 
     case result of FALSE: EXIT; end;
+
+    case vSegOneFN <> '' of TRUE: begin renameFile(vSegOneFN, filePathOUT); EXIT; end;end;
 
   // concatenate exported segments
   vProgressForm.subHeading.caption := 'Joining segments';
