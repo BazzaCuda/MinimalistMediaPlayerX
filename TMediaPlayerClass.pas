@@ -550,6 +550,7 @@ begin
   FTimer.enabled  := PL.next;
   case FTimer.enabled of FALSE: begin
                                   case vDontExit of TRUE: EXIT; end; // ah, the irony!
+                                  case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of TRUE: begin playNextFolder; EXIT; end;end;
                                   FTimerEvent    := teClose;
                                   FTimer.enabled := TRUE;
                                 end;

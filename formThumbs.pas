@@ -540,8 +540,9 @@ function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: s
 begin
   case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
   FThumbs.playlist.delete(FThumbs.playlist.currentIx);
-  case FThumbs.playlist.isFirst of  TRUE: playCurrentItem;
-                                   FALSE: playNext; end; // because playlist.delete decrements FPlayIx
+  case FThumbs.playlist.hasItems of FALSE: begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar); end;
+                                     TRUE: case FThumbs.playlist.isFirst of  TRUE: playCurrentItem;
+                                                                            FALSE: playNext; end;end; // because playlist.delete decrements FPlayIx
 end;
 
 function TThumbsForm.saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
