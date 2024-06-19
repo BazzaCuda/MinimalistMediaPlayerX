@@ -379,7 +379,7 @@ begin
   case ssCtrl in aShiftState of  TRUE: setWindowSize(vR.height - dy, aShiftState);
                                 FALSE: setWindowSize(vR.height + dy, aShiftState); end;
 
-  GV.maxSize := FALSE;
+  GV.maxSize := FALSE; // pressing [M] reinstates maxSize
 
   EXIT;
 

@@ -37,74 +37,77 @@ type
     property chapterEndSS:   integer read FChapterEndSS   write FChapterEndSS;
   end;
 
+  TMetaData = record
+    mdAudioBitRate:      integer;
+    mdAudioCount:        integer;
+    mdChapterCount:      integer;
+    mdDuration:          integer;
+    mdFrameRate:         string;
+    mdGeneralCount:      integer;
+    mdHasCoverArt:       string;
+    mdHeight:            integer;
+    mdImageCount:        integer;
+    mdImageHeight:       integer;
+    mdImageWidth:        integer;
+    mdOtherCount:        integer;
+    mdOverallBitRate:    integer;
+    mdStereoMono:        string;
+    mdTextCount:         integer;
+    mdVideoBitRate:      integer;
+    mdVideoCount:        integer;
+    mdWidth:             integer;
+  end;
+
   TMediaInfo = class(TObject)
   private
-    FAudioBitRate: integer;
-    FAudioCount: integer;
-    FFileSize: int64;
-    FGeneralCount: integer;
-    FHandle: THandle;
-    FHasCoverArt: string;
-    FHeight: integer;
-    FImageCount: integer;
-    FImageHeight: integer;
-    FImageWidth: integer;
-    FOtherCount: integer;
-    FOverallBitRate: integer;
-    FOverallFrameRate: string;
-    FStereoMono: string;
-    FTextCount: integer;
-    FVideoBitRate: integer;
-    FVideoCount: integer;
-    FWidth: integer;
+    FMD:                TMetaData;
+    FHandle:            THandle;
 
-    FChapterCount: integer;
-    FDuration: integer;
-    FLowestID: integer;
-    FMediaChapters: TObjectList<TMediaChapter>;
-    FMediaStreams:  TObjectList<TMediaStream>;
-    FURL: string;
+    FLowestID:          integer;
+    FMediaChapters:     TObjectList<TMediaChapter>;
+    FMediaStreams:      TObjectList<TMediaStream>;
+    FURL:               string;
 
-    function getAudioBitRate: string;
-    function getDuration: integer;
-    function getFileSize: string;
-    function getHasCoverArt: boolean;
-    function getSelectedCount: integer;
-    function getStereoMono: string;
-    function getStreamCount: integer;
+    function getAudioBitRate:     string;
+    function getDuration:         integer;
+    function getFileSize:         string;
+    function getHasCoverArt:      boolean;
+    function getSelectedCount:    integer;
+    function getStereoMono:       string;
+    function getStreamCount:      integer;
     function getOverallFrameRate: string;
-    function getOverallBitRate: string;
-    function getVideoBitRate: string;
-    function getXY: string;
-    function loadDLL: boolean;
+    function getOverallBitRate:   string;
+    function getVideoBitRate:     string;
+    function getXY:               string;
+    function loadDLL:             boolean;
   public
     constructor create;
     destructor Destroy; override;
     function getMediaInfo(const aURL: string = ''): boolean;
-    function getMetaData(const aMemo: TMemo): boolean;
+    function getMetaData(const aMemo: TMemo):       boolean;
     function sortStreams: boolean;
     property audioBitRate:      string  read getAudioBitRate;
-    property audioCount:        integer read FAudioCount;
-    property chapterCount:      integer read FChapterCount;
+    property audioCount:        integer read FMD.mdAudioCount;
+    property chapterCount:      integer read FMD.mdChapterCount;
     property duration:          integer read getDuration;
     property fileSize:          string  read getFileSize;
-    property generalCount:      integer read FGeneralCount;
+    property generalCount:      integer read FMD.mdGeneralCount;
     property hasCoverArt:       boolean read getHasCoverArt;
-    property imageCount:        integer read FImageCount;
-    property imageHeight:       integer read FImageHeight;
-    property imageWidth:        integer read FImageWidth;
+    property imageCount:        integer read FMD.mdImageCount;
+    property imageHeight:       integer read FMD.mdImageHeight;
+    property imageWidth:        integer read FMD.mdImageWidth;
     property mediaChapters:     TObjectList<TMediaChapter> read FMediaChapters;
     property mediaStreams:      TObjectList<TMediaStream>  read FMediaStreams;
-    property otherCount:        integer read FOtherCount;
+    property otherCount:        integer read FMD.mdOtherCount;
     property overallBitRate:    string  read getOverallBitRate;
     property overallFrameRate:  string  read getOverallFrameRate;
     property stereoMono:        string  read getStereoMono;
     property streamCount:       integer read getStreamCount;
-    property textCount:         integer read FTextCount;
+    property textCount:         integer read FMD.mdTextCount;
     property videoBitRate:      string  read getVideoBitRate;
-    property videoCount:        integer read FVideoCount;
-    property X:                 integer read FWidth;
-    property Y:                 integer read FHeight;
+    property videoCount:        integer read FMD.mdVideoCount;
+    property X:                 integer read FMD.mdWidth;
+    property Y:                 integer read FMD.mdHeight;
     property XY:                string  read getXY;
 
     property lowestID:          integer read FLowestID write FLowestID;
@@ -140,17 +143,17 @@ end;
 
 function TMediaInfo.getAudioBitRate: string;
 begin
-  result := format('AR:  %d Kb/s', [round(FAudioBitRate / 1000)]);
+  result := format('AR:  %d Kb/s', [round(FMD.mdAudioBitRate / 1000)]);
 end;
 
 function TMediaInfo.getHasCoverArt: boolean;
 begin
-  result := FHasCoverArt = 'Yes';
+  result := FMD.mdHasCoverArt = 'Yes';
 end;
 
 function TMediaInfo.getDuration: integer;
 begin
-  result := FDuration div 1000;
+  result := FMD.mdDuration div 1000;
 end;
 
 function TMediaInfo.getFileSize: string;
@@ -173,13 +176,13 @@ end;
 
 function TMediaInfo.getOverallBitRate: string;
 begin
-  result := format('BR:  %d Kb/s', [round(FOverallBitRate / 1000)]);
+  result := format('BR:  %d Kb/s', [round(FMD.mdOverallBitRate / 1000)]);
 end;
 
 function TMediaInfo.getOverallFrameRate: string;
 begin
-  case FOverallFrameRate = '' of  TRUE: result := 'FR:';
-                                 FALSE: result := format('FR:  %s fps', [FOverallFrameRate]); end;
+  case FMD.mdFrameRate = '' of   TRUE: result := 'FR:';
+                                FALSE: result := format('FR:  %s fps', [FMD.mdFrameRate]); end;
 end;
 
 function TMediaInfo.getSelectedCount: integer;
@@ -190,17 +193,17 @@ end;
 
 function TMediaInfo.getStereoMono: string;
 begin
-  result := 'SM:  ' + FStereoMono;
+  result := 'SM:  ' + FMD.mdStereoMono;
 end;
 
 function TMediaInfo.getStreamCount: integer;
 begin
-  result := FGeneralCount + FVideoCount + FAudioCount + FTextCount + FOtherCount + FImageCount;
+  result := FMD.mdGeneralCount + FMD.mdVideoCount + FMD.mdAudioCount + FMD.mdTextCount + FMD.mdOtherCount + FMD.mdImageCount;
 end;
 
 function TMediaInfo.getVideoBitRate: string;
 begin
-  result := format('VR:  %d Kb/s', [round(FVideoBitRate / 1000)]);
+  result := format('VR:  %d Kb/s', [round(FMD.mdVideoBitRate / 1000)]);
 end;
 
 function TMediaInfo.getXY: string;
@@ -300,11 +303,10 @@ var
     case tryStrToInt(mediaInfo_Get(FHandle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
     case tryStrToInt(mediaInfo_Get(FHandle, Stream_Menu,         0, 'Chapters_Pos_End',    Info_Text, Info_Name), chapterEnd)   of FALSE: chapterEnd   := 0; end;
 
-    case chapterEnd > chapterBegin of  TRUE: FChapterCount := chapterEnd - chapterBegin;
-                                      FALSE: FChapterCount := 0; end;
+    case chapterEnd > chapterBegin of  TRUE: FMD.mdChapterCount := chapterEnd - chapterBegin;
+                                      FALSE: FMD.mdChapterCount := 0; end;
     case chapterCount = 0 of TRUE: EXIT; end;
 
-    FMediaChapters.clear;
     for var i := chapterBegin to chapterEnd - 1 do begin
       var vChapter := TMediaChapter.create;
       FMediaChapters.add(vChapter);
@@ -314,13 +316,13 @@ var
 
     case FMediaChapters[0].chapterStartSS <> 0 of TRUE: begin
                                                           FMediaChapters.insert(0, TMediaChapter.create);
-                                                          inc(FChapterCount); end;end;
+                                                          inc(FMD.mdChapterCount); end;end;
 
     calcChapterEndSS;
 
     case (FMediaChapters[0].chapterStartSS = 0) and (FMediaChapters[0].chapterEndSS = -1) of TRUE:  begin
                                                                                                       FMediaChapters.delete(0);
-                                                                                                      dec(FChapterCount);
+                                                                                                      dec(FMD.mdChapterCount);
                                                                                                     end;end; // delete initial bogus 0:00:00-0:00:00 chapter
   end;
 
@@ -329,40 +331,43 @@ begin
 
   case loadDLL of FALSE: EXIT; end;
 
-  case aURL <> '' of TRUE: FURL := aURL; end;
+  FMD := default(TMetaData);
+  FMediaStreams.clear;
+  FMediaChapters.clear;
+
+  FURL := aURL;
+
   try
     mediaInfo_Open(FHandle, PWideChar(FURL));
   except EXIT; end;
 
-  try
-  try
-    FMediaStreams.clear;
+  try try
 
-    FOverallFrameRate := mediaInfo_Get(FHandle, Stream_General,  0, 'FrameRate',       Info_Text, Info_Name);
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FOverallBitRate)    of FALSE: FOverallBitRate   := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name), FDuration)          of FALSE: FDuration         := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FAudioBitRate)      of FALSE: FAudioBitRate     := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FWidth)             of FALSE: FWidth            := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FHeight)            of FALSE: FHeight           := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'BitRate',         Info_Text, Info_Name), FVideoBitRate)      of FALSE: FVideoBitRate     := 0; end;
+    FMD.mdFrameRate :=  mediaInfo_Get(FHandle, Stream_General,      0, 'FrameRate',       Info_Text, Info_Name);
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FMD.mdOverallBitRate)    of FALSE: FMD.mdOverallBitRate   := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name), FMD.mdDuration)          of FALSE: FMD.mdDuration         := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdAudioBitRate)      of FALSE: FMD.mdAudioBitRate     := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FMD.mdWidth)             of FALSE: FMD.mdWidth            := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Height',          Info_Text, Info_Name), FMD.mdHeight)            of FALSE: FMD.mdHeight           := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdVideoBitRate)      of FALSE: FMD.mdVideoBitRate     := 0; end;
 
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Width',           Info_Text, Info_Name), FImageWidth)        of FALSE: FImageWidth       := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Height',          Info_Text, Info_Name), FImageHeight)       of FALSE: FImageHeight      := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Width',           Info_Text, Info_Name), FMD.mdImageWidth)        of FALSE: FMD.mdImageWidth       := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Image,        0, 'Height',          Info_Text, Info_Name), FMD.mdImageHeight)       of FALSE: FMD.mdImageHeight      := 0; end;
 
-    case (FImageWidth = 0) and (FImageHeight = 0) and (FWidth <> 0) and (FHeight <> 0) of TRUE: begin                            // MediaInfo reports some images as video streams!
-                                                                                                  FImageWidth   := FWidth;
-                                                                                                  FImageHeight  := FHeight; end;end;
+    case (FMD.mdImageWidth = 0) and (FMD.mdImageHeight = 0) and (FMD.mdWidth <> 0) and (FMD.mdHeight <> 0) of TRUE: begin                            // MediaInfo reports some images as video streams!
+                                                                                                  FMD.mdImageWidth   := FMD.mdWidth;
+                                                                                                  FMD.mdImageHeight  := FMD.mdHeight; end;end;
 
-    FStereoMono := mediaInfo_Get(FHandle, Stream_Audio,    0, 'Title',        Info_Text, Info_Name);
+    FMD.mdStereoMono :=    mediaInfo_Get(FHandle, Stream_Audio,     0, 'Title',           Info_Text, Info_Name);
 
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'GeneralCount',    Info_Text, Info_Name), FGeneralCount)      of FALSE: FGeneralCount     := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'VideoCount',      Info_Text, Info_Name), FVideoCount)        of FALSE: FVideoCount       := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'AudioCount',      Info_Text, Info_Name), FAudioCount)        of FALSE: FAudioCount       := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'TextCount',       Info_Text, Info_Name), FTextCount)         of FALSE: FTextCount        := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OtherCount',      Info_Text, Info_Name), FOtherCount)        of FALSE: FOtherCount       := 0; end;
-    case tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'ImageCount',      Info_Text, Info_Name), FImageCount)        of FALSE: FImageCount       := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'GeneralCount',    Info_Text, Info_Name), FMD.mdGeneralCount)      of FALSE: FMD.mdGeneralCount     := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'VideoCount',      Info_Text, Info_Name), FMD.mdVideoCount)        of FALSE: FMD.mdVideoCount       := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'AudioCount',      Info_Text, Info_Name), FMD.mdAudioCount)        of FALSE: FMD.mdAudioCount       := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'TextCount',       Info_Text, Info_Name), FMD.mdTextCount)         of FALSE: FMD.mdTextCount        := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OtherCount',      Info_Text, Info_Name), FMD.mdOtherCount)        of FALSE: FMD.mdOtherCount       := 0; end;
+    case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'ImageCount',      Info_Text, Info_Name), FMD.mdImageCount)        of FALSE: FMD.mdImageCount       := 0; end;
 
-    FHasCoverArt := mediaInfo_Get(FHandle, Stream_General, 0, 'Cover',        Info_Text, Info_Name);
+    FMD.mdHasCoverArt := mediaInfo_Get(FHandle, Stream_General,  0, 'Cover',           Info_Text, Info_Name);
 
     for var vStreamIx := 0 to streamCount - 1 do begin
       case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
@@ -372,9 +377,7 @@ begin
 
     createChapters;
 
-  finally
-    mediaInfo_close(FHandle);
-  end;
+  finally mediaInfo_close(FHandle); end;
     result := TRUE;
   except end;
 end;
