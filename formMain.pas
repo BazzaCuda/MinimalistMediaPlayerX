@@ -131,6 +131,7 @@ procedure TMMPUI.WMEnterSizeMove(var Message: TMessage);
 // the user manually starts to resize the window
 begin
   GV.autoCentre := FALSE;
+  GV.maxSize    := FALSE;
 end;
 
 procedure TMMPUI.WMNCHitTest(var msg: TWMNCHitTest);

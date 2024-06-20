@@ -6,7 +6,7 @@
 **3** reset panning<br />
 
 **Playlist**<br />
-**A** play fiirst in playlist\*<br />
+**A** play first in playlist\*<br />
 **HOME** play first in playlist\*<br />
 **Z** play last in playlist\*<br />
 **END** play last in playlist\*<br />
@@ -19,7 +19,9 @@ Numpad **ENTER**, play next\*<br />
 &darr; **Dn arrow**, next folder<br />
 **L** re[L]oad playlist from folder<br />
 **D** next [D]irectory/folder<br />
+ctrl-**D** previous director/folder<br />
 **E** previous directory/folder<br />
+ctrl-**F** open folder in File Explorer<br />
 
 _\* or next/previous/first/last thumbnail page_<br />
 

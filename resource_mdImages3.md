@@ -5,7 +5,7 @@ Ctrl-**0** close all instances of MMP
 **F** show/cancel [F]ullscreen<br />
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
-**H** centre window [H]orizontally and V<br />
+**H** center window [H]orizontally and V<br />
 **J** ad[J]ust to image aspect ratio<br />
 **M** [M]aximize maintaining aspect ratio<br />
 **N** mi[N]imize window to taskbar<br />

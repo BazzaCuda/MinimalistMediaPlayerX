@@ -3,7 +3,7 @@
 **F** show/cancel [F]ullscreen<br />
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
-**H** centre window [H]orizontally and V<br />
+**H** center window [H]orizontally and V<br />
 **N** mi[N]imize window to taskbar<br />
 **M** maximize video for the aspect ratio<br />
 Ctrl-**9** auto-arrange up to 4 videos\*<br />

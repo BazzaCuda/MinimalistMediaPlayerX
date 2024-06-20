@@ -1,7 +1,7 @@
 Control | Action
 ------- | ------
 **Exit** ||
-`ESCape`                | exit MMP
+`ESCape`                    | exit MMP
 **`Ctrl-E`**                | show/hide the media timeline [E]diting tools for lossless editing
 **`Ctrl-0`**                | close all running instances of MMP
 **`X`**                     | see below

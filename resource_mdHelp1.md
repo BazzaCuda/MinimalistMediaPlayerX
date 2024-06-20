@@ -4,14 +4,14 @@
 **7** delete bookmark<br />
 
 **Brightness**<br />
-**8** decrease  :hold to repeat<br />
-**9** increase  :hold to repeat<br />
-**2** reset brightness<br />
+**\-** decrease  :hold to repeat<br />
+**=** increase  :hold to repeat<br />
+**0** reset brightness<br />
 
 **Contrast**<br />
-**\-** decrease :hold to repeat<br />
-**=** increase  :hold to repeat<br />
-**0** reset contrast<br />
+**8** decrease :hold to repeat<br />
+**9** increase  :hold to repeat<br />
+**2** reset contrast<br />
 
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />

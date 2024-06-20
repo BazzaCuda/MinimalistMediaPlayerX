@@ -17,6 +17,9 @@ Numpad **ENTER**, watch next<br />
 **S** re[S]tart current media file<br />
 **L** re[L]oad playlist from folder<br />
 **P** toggle the [P]llaylist panel<br />
+**D** navigate to next folder<br />
+Ctrl-**D** navigate to previous folder<br />
+Ctrl-**F** open current folder in File Explorer<br />
 
 **Rotating**<br />
 **Pg Up**, rotate left<br />
@@ -53,3 +56,4 @@ Vol **mute** media key, mute<br />
 **E** [E]ars, mute / unmute<br />
 Mouse wheel **Up**, vol up<br />
 Mouse wheel **Dn**, vol down<br />
+Ctrl-**V** set Sys Vol Max<br />

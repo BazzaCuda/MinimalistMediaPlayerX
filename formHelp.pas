@@ -95,8 +95,8 @@ begin
   md3.align := alRight;
   md2.align := alClient;
 
-  SELF.width  := 740;
-  SELF.height := 960;
+  SELF.width  :=  740;
+  SELF.height := 1040;
 
   md1.width := SELF.width div 3;
   md2.width := SELF.width div 3;

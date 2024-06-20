@@ -45,6 +45,8 @@ type
     procedure timerTimer(Sender: TObject);
     procedure FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
     procedure FStatusBarClick(Sender: TObject);
+    procedure FStatusBarMouseLeave(Sender: TObject);
+    procedure FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   strict private
     mpv: TMPVBasePlayer;
     FDurationResetSpeed:      double;
@@ -593,13 +595,8 @@ begin
 end;
 
 procedure TThumbsForm.FStatusBarClick(Sender: TObject);
-var
-  vPt:    TPoint;
 begin
-  vPt := smallPointToPoint(TSmallPoint(getMessagePos()));
-  vPt := FStatusBar.screenToClient(vPt);
-
-  case mmpIsFolderPanelAt(FStatusBar, vPt) of TRUE: mmpShellExec(FThumbs.currentFolder, ''); end;
+  case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder, ''); end;
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -611,6 +608,17 @@ begin
   var vCenterX: integer := (rect.right - rect.left - statusBar.canvas.textWidth(panel.text)) div 2;
   var vCenterY: integer := (rect.bottom - rect.top - statusBar.canvas.textHeight(panel.text)) div 2;
   textOut(statusBar.canvas.handle, rect.left + vCenterX, rect.top + vCenterY, PChar(panel.text), length(panel.text));
+end;
+
+procedure TThumbsForm.FStatusBarMouseLeave(Sender: TObject);
+begin
+  screen.cursor := crDefault;
+end;
+
+procedure TThumbsForm.FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+  case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of  TRUE: screen.cursor := crHandPoint;
+                                                                    FALSE: screen.cursor := crDefault; end;
 end;
 
 procedure TThumbsForm.FStatusBarResize(Sender: TObject);

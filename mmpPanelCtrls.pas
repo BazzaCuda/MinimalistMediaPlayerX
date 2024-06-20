@@ -32,6 +32,7 @@ type
 function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
 
 function mmpIsFolderPanelAt   (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+function mmpMousePoint        (const aStatusBar: TStatusBar): TPoint;
 function mmpPartClearStatusBar(const aStatusBar: TStatusBar): boolean;
 function mmpResetPanelHelp    (const aStatusBar: TStatusBar): boolean;
 function mmpResizeStatusBar   (const aStatusBar: TStatusBar): boolean;
@@ -70,6 +71,12 @@ end;
 function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
 begin
   result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[PANEL_FOLD];
+end;
+
+function mmpMousePoint(const aStatusBar: TStatusBar): TPoint;
+begin
+  result := smallPointToPoint(TSmallPoint(getMessagePos()));
+  result := aStatusBar.screenToClient(result);
 end;
 
 function mmpResetPanelHelp(const aStatusBar: TStatusBar): boolean;
