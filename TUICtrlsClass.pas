@@ -55,8 +55,6 @@ type
     procedure onMPPlayNew(sender: TObject);
     procedure onMPPlayNext(sender: TObject);
     procedure onMPPosition(const aMax: integer; const aPosition: integer);
-    procedure setHeight(const Value: integer);
-    procedure setWidth(const Value: integer);
   public
     procedure formResize(sender: TObject);
     function adjustAspectRatio: boolean;
@@ -92,11 +90,11 @@ type
     function toggleHelpWindow: boolean;
     function toggleMaximized: boolean;
     function togglePlaylist: boolean;
-    property height: integer read getHeight write setHeight;
+    property height: integer read getHeight;
     property initialized: boolean read FInitialized write FInitialized;
     property XY: TPoint read getXY;
     property videoPanel: TPanel read FVideoPanel;
-    property width: integer read getWidth write setWidth;
+    property width: integer read getWidth;
   end;
 
 implementation
@@ -160,13 +158,15 @@ begin
   vCount     := SA.count;
 
   GV.autoCentre := vCount = 1;
-  case GV.autoCentre of FALSE: mmpPostToAll(WIN_AUTOCENTRE_OFF, TRUE); end;
+  case GV.autoCentre of FALSE:  begin
+                                  mmpPostToAll(WIN_AUTOCENTRE_OFF, TRUE);
+                                  mmpPostToAll(WIN_MAX_SIZE_OFF, TRUE); end;end;
 
   case vCount of
     1:       mmpPostToAllEx(WIN_RESIZE, point(mmpScreenWidth, 0), TRUE);
     2:       mmpPostToAllEx(WIN_RESIZE, point(mmpScreenWidth div 2, 0), TRUE);
     3, 4:    mmpPostToAllEx(WIN_RESIZE, point(0, mmpScreenHeight div 2), TRUE);
-    else     mmpPostToAllEx(WIN_RESIZE, point(0, mmpScreenWidth div vCount), TRUE);
+    else     mmpPostToAllEx(WIN_RESIZE, point(mmpScreenWidth div vCount, 0), TRUE);
   end;
 
   mmpProcessMessages; // make sure this window has resized before continuing
@@ -191,20 +191,20 @@ begin
                            end;end;
 
   case vCount in [3, 4] of TRUE: begin
-                             posWinXY(SA.HWNDs[1], vZero,  0);
-                             posWinXY(SA.HWNDs[2], vHMiddle, 0); end;end;
+                             posWinXY(SA.HWNDs[1], vZero,  0 + 40);
+                             posWinXY(SA.HWNDs[2], vHMiddle, 0 + 40); end;end;
 
-  case vCount = 3 of TRUE: posWinXY(SA.HWNDs[3], vHMiddle - (vWidth div 2), vHeight); end;
+  case vCount = 3 of TRUE: posWinXY(SA.HWNDs[3], vHMiddle - (vWidth div 2), vHeight + 40); end;
 
   case vCount = 4 of TRUE: begin
-                              posWinXY(SA.HWNDs[3], vZero,  vHeight);
-                              posWinXY(SA.HWNDs[4], vHMiddle, vHeight); end;end;
+                              posWinXY(SA.HWNDs[3], vZero,  vHeight + 40);
+                              posWinXY(SA.HWNDs[4], vHMiddle, vHeight + 40); end;end;
 
-  case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], 100 + (50 * (i - 1)), 100 + (50 * (i - 1))); end;
+  case vCount > 4 of TRUE: for var i := 1 to vCount do posWinXY(SA.HWNDs[i], ((mmpScreenWidth div vCount) * (i - 1)), 100); end;
 
   mmpPostToAll(WM_PROCESS_MESSAGES, TRUE);
 
-  case vHWND <> 0 of TRUE: begin mmpDelay(500); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
+  case vHWND <> 0 of TRUE: begin mmpDelay(100); posWinXY(vHWND, mmpScreenCentre - UI.width, UI.XY.Y); end;end; // hack for tall, narrow, TikTok-type windows
 end;
 
 function TUI.autoCentreWindow(const aWnd: HWND): boolean;
@@ -334,16 +334,14 @@ function TUI.getHeight: integer;
 var vWidth: integer; vHeight: integer;
 begin
   mmpWndWidthHeight(UI.handle, vWidth, vHeight);
-  result := vHeight; // EXPERIMENTAL
-//  result := FMainForm.height;
+  result := vHeight;
 end;
 
 function TUI.getWidth: integer;
 var vWidth: integer; vHeight: integer;
 begin
   mmpWndWidthHeight(UI.handle, vWidth, vHeight);
-  result := vWidth; // EXPERIMENTAL
-//  result := FMainForm.width;
+  result := vWidth;
 end;
 
 function TUI.getXY: TPoint;
@@ -507,21 +505,37 @@ begin
 end;
 
 function TUI.resize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
+// X and Y are the video dimensions
+// pt.x is the designated width, or...
+// py.y is the designated height
 var
   vRatio: double;
   vWidth, vHeight: integer;
+
+  function adjustWidthForAspectRatio: boolean;
+  begin
+    vWidth := trunc(vHeight / Y * X);
+  end;
+
+  function adjustHeightForAspectRatio: boolean;
+  begin
+    vHeight := trunc(Y * (vWidth / X));
+  end;
+
+  function withinScreenLimits: boolean;
+  begin
+    result := (vWidth <= mmpScreenWidth) and (vHeight <= mmpScreenHeight);
+  end;
+
 begin
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
-  vRatio := Y / X;
+  vWidth  := pt.x;
+  vHeight := pt.y;
 
-  case pt.x <> 0 of TRUE: begin
-                            vWidth  := pt.x;
-                            vHeight := trunc(pt.x * vRatio); end;end;
+  case pt.x <> 0 of TRUE: repeat vWidth  := vWidth  - 50; adjustHeightForAspectRatio; until withinScreenLimits; end;
 
-  case pt.y <> 0 of TRUE: begin
-                            vWidth  := trunc(pt.y / vRatio);
-                            vHeight := pt.y; end;end;
+  case pt.y <> 0 of TRUE: repeat vHeight := vHeight - 50; adjustWidthForAspectRatio;  until withinScreenLimits; end;
 
   FForcedResize := TRUE;
   sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0); // in case it was minimized
@@ -544,16 +558,6 @@ function TUI.setGlassFrame(const aForm: TForm): boolean;
 begin
   aForm.glassFrame.enabled  := TRUE;
   aForm.glassFrame.top      := 1;
-end;
-
-procedure TUI.setHeight(const Value: integer);
-begin
-  FMainForm.height := value;
-end;
-
-procedure TUI.setWidth(const Value: integer);
-begin
-  FMainForm.width := value;
 end;
 
 function TUI.setWindowSize(const aStartingHeight: integer; const aShiftState: TShiftState): boolean;

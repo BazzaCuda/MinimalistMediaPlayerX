@@ -42,7 +42,10 @@ begin
   while rc = 0 do begin
     case (sr.attr and faDirectory) <> 0 of TRUE: begin
       case (sr.name = 'Windows') and bAllowIntoWindows of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;
-      case (sr.name <> '.') and (sr.name <> '..') and (sr.name <> 'Windows') and (pos('WinSxS', sr.name) = 0) of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;end;end;
+      case (sr.name <> '.') and (sr.name <> '..') and (sr.name <> 'Windows') and (pos('WinSxS', sr.name) = 0)
+                            and (sr.name <> 'System Volume Information')
+                            and (sr.name <> '$RECYCLE.BIN') and (sr.name <> '$Recycle.Bin')
+                            and (sr.name <> '$SysReset') of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;end;end;
     rc := findNext(sr);
   end;
   findClose(sr);
