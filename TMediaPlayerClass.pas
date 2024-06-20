@@ -41,6 +41,7 @@ type
     FResetTimeCaption:        TAnonFunc;
 
     FDontPlayNext:            boolean;
+    FFileOpen:                boolean;
     FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
     FImagePaused:             boolean;
@@ -57,6 +58,7 @@ type
 
     procedure onInitMPV(sender: TObject);
     procedure onTimerEvent(sender: TObject);
+    procedure onFileOpen(Sender: TObject; const aFilePath: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
 
     function getFormattedDuration:  string;
@@ -159,7 +161,7 @@ uses
   system.sysUtils,
   vcl.controls, vcl.graphics,
   mpvConst,
-  mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSingletons, mmpSysCommands, mmpUtils,
+  mmpFileUtils, mmpFolderNavigation, mmpKeyboard, mmpMPVCtrls, mmpMPVFormatting, mmpMPVProperties, mmpSingletons, mmpSysCommands, mmpUtils, mmpWindowCtrls,
   formCaptions, formHelp, formMediaCaption, formPlaylist, formTimeline,
   _debugWindow;
 
@@ -243,7 +245,22 @@ begin
   FTimer.OnTimer  := onTimerEvent;
   FAllowBrowser   := TRUE;
   createTimeCaptionClosures;
-  GV.maxSize      := TRUE;
+end;
+
+function TMediaPlayer.createTimeCaptionClosures: boolean;
+var
+  vColor: TColor;
+begin
+  vColor := 0;
+
+  FBlankOutTimeCaption  := function:boolean  begin
+                                              case vColor = 0 of TRUE:  begin
+                                                                          vColor := ST.color;
+                                                                          ST.color := $00000000; end;end;end;
+  FResetTimeCaption     := function:boolean begin
+                                              case vColor = 0 of FALSE: begin
+                                                                          ST.color := vColor;
+                                                                          vColor   := 0; end;end;end;
 end;
 
 function TMediaPlayer.cycleAudio: boolean;
@@ -328,6 +345,11 @@ begin
   result := mpvMuteUnmute(mpv);
 end;
 
+procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
+begin
+  FFileOpen := TRUE;
+end;
+
 procedure TMediaPlayer.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
@@ -371,6 +393,7 @@ begin
   case mpv = NIL of TRUE: begin
     mpvCreate(mpv);
 
+    mpv.OnFileOpen   := onFileOpen;
     mpv.OnStateChged := onStateChange;
     mpv.onInitMPV    := onInitMPV;
 
@@ -449,22 +472,6 @@ begin
   end;
 end;
 
-function TMediaPlayer.createTimeCaptionClosures: boolean;
-var
-  vColor: TColor;
-begin
-  vColor := 0;
-
-  FBlankOutTimeCaption  := function:boolean  begin
-                                              case vColor = 0 of TRUE:  begin
-                                                                          vColor := ST.color;
-                                                                          ST.color := $00000000; end;end;end;
-  FResetTimeCaption     := function:boolean begin
-                                              case vColor = 0 of FALSE: begin
-                                                                          ST.color := vColor;
-                                                                          vColor   := 0; end;end;end;
-end;
-
 function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
@@ -478,20 +485,18 @@ begin
   case FMediaType of mtImage: FBlankOutTimeCaption;
                          else FResetTimeCaption; end;
 
-
   mmpProcessMessages;
 
+  FFileOpen := FALSE;
   openURL(aURL);
 
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
-  case GV.maxSize of     TRUE: case FMediaType of          mtVideo: UI.setWindowSize(-1, []); // must be done after MPV has opened the video
-                                                  mtAudio, mtImage: UI.setWindowSize(UI.height, []); end;
-                        FALSE: UI.setWindowSize(UI.height, []); end;
-  UI.centreCursor;
+  while NOT FFileOpen do mmpDelay(50); // wait for the correct video dimensions from MPV
 
-  case FMediaType = mtVideo of TRUE: UI.tweakWindow; end;
+  UI.setWindowSize(UI.height, []); // must be done after MPV has opened the video
+  UI.centreCursor;
 
   FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
 
@@ -500,7 +505,7 @@ begin
 
   mmpProcessMessages;
 
-  SA.postToAll(WM_PROCESS_MESSAGES, KBNumLock);
+  mmpPostToAll(WM_PROCESS_MESSAGES, KBNumLock);
 
   case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end;
   UI.centreCursor;

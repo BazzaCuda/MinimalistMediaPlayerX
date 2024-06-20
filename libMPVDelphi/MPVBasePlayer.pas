@@ -1269,6 +1269,10 @@ end;
 
 function TMPVBasePlayer.OpenFile(const sFullName: string): TMPVErrorCode;
 begin
+  m_clock.enter;
+  m_nX := 0; // Video width
+  m_nY := 0; // Video height
+  m_clock.leave;
   SetState(mpsLoading);
   Result := Command([CMD_LOAD_FILE, sFullName]);
   SetPropertyBool(STR_PAUSE, False);

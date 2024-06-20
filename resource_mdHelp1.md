@@ -42,7 +42,8 @@ Wheel down, volume down<br />
 **\#** show media caption and playlist \#<br />
 **B** [B]lackout progress [B]ar<br />
 Ctrl-**B** [B]righten progress [B]ar, hold<br />
-Ctrl-SHIFT-**B** darken progress [B]ar, hold<br />
+Shift-**B** darken progress [B]ar, hold<br />
+Ctrl-Shift-**B** reset to default<br />
 **C** show/hide time [C]aptions<br />
 Ctrl-**C **show/hide all [C]aptions<br />
 

@@ -27,6 +27,8 @@ uses
 function mmpCentreWindow(const aWnd: HWND): boolean;
 function mmpFocusWindow(const aWnd: HWND): boolean;
 function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
+function mmpPostToAll(const aCmd: WORD; const aPostToAll: boolean = FALSE): boolean;
+function mmpPostToAllEx(const aCmd: WORD; const pt: TPoint; const aPostToAll: boolean = FALSE): boolean;
 
 implementation
 
@@ -117,6 +119,16 @@ begin
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
+end;
+
+function mmpPostToAll(const aCmd: WORD; const aPostToAll: boolean = FALSE): boolean;
+begin
+  result := SA.postToAll(aCmd, aPostToAll);
+end;
+
+function mmpPostToAllEx(const aCmd: WORD; const pt: TPoint; const aPostToAll: boolean = FALSE): boolean;
+begin
+  result := SA.postToAllEx(aCmd, pt, aPostToAll);
 end;
 
 end.

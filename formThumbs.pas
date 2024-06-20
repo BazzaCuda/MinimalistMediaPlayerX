@@ -732,7 +732,7 @@ begin
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCentreWindow(SELF.handle);
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
+    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmpPostToAll(WIN_CLOSEAPP, TRUE); end;
     koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);

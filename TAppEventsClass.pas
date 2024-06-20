@@ -169,7 +169,6 @@ begin
 
   case msgIs(WM_USER_CENTRE_WINDOW)   of TRUE: UI.centreWindow(UI.handle); end;
   case msgIs(WM_PROCESS_MESSAGES)     of TRUE: mmpProcessMessages; end;
-  case msgIs(WIN_TWEAK_SIZE)          of TRUE: UI.tweakWindow; end;
 
   case msgIs(WM_CENTRE_CURSOR)        of TRUE: PB.centreCursor; end;
 end;

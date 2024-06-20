@@ -46,7 +46,7 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils, system.types,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpKeyboardUtils, mmpPlaylistUtils, mmpShellUtils, mmpSingletons, mmpSysCommands, mmpUtils, mmpWindowCtrls,
   formAboutBox, formCaptions, formMediaCaption, formPlaylist, formThumbs,
   _debugWindow;
 
@@ -233,7 +233,7 @@ begin
     koBrightnessReset:   ST.opInfo := MP.brightnessReset;
     koCentreWindow:      begin GV.autoCentre := TRUE; postMessage(GV.appWnd, WM_USER_CENTRE_WINDOW, 0, 0); end;
     koClipboard:         PL.copyToClipboard;
-    koCloseAll:          begin MP.ceaseOps; SA.postToAll(WIN_CLOSEAPP, TRUE); end;
+    koCloseAll:          begin MP.ceaseOps; mmpPostToAll(WIN_CLOSEAPP, TRUE); end;
     koCloseApp:          begin MP.ceaseOps; mmpSendSysCommandClose; end;
     koContrastDn:        ST.opInfo := MP.contrastDn;
     koContrastUp:        ST.opInfo := MP.contrastUp;
@@ -250,7 +250,7 @@ begin
     koGammaDn:           ST.opInfo := MP.gammaDn;
     koGammaReset:        ST.opInfo := MP.gammaReset;
     koGammaUp:           ST.opInfo := MP.gammaUp;
-    koGreaterWindow:     SA.postToAll(WIN_GREATER, KBNumLock);
+    koGreaterWindow:     mmpPostToAll(WIN_GREATER, KBNumLock);
     koKeep:              UI.keepFile(PL.currentItem);
     koKeepDelete:        begin MP.ceaseOps; case mmpKeepDelete(PL.currentFolder) of TRUE: mmpSendSysCommandClose; end;end;
     koImageInBrowser:    UI.showThumbnails(htMPVHost);
@@ -264,7 +264,7 @@ begin
     koPanReset:          ST.opInfo := MP.panReset;
     koPanRight:          ST.opInfo := MP.panRight;
     koPanUp:             ST.opInfo := MP.panUp;
-    koPausePlay:         SA.postToAll(WIN_PAUSE_PLAY, KBNumlock);
+    koPausePlay:         mmpPostToAll(WIN_PAUSE_PLAY, KBNumlock);
     koPBReset:           UI.resetColor;
     koPlayNext:          MP.playNext;
     koPlayPrev:          MP.playPrev;
@@ -273,14 +273,14 @@ begin
     koRotateL:           ST.opInfo := MP.rotateLeft;
     koRotateR:           ST.opInfo := MP.rotateRight;
     koRotateReset:       ST.opInfo := MP.rotateReset;
-    koShowCaption:       SA.postToAll(WIN_CAPTION, KBNumLock);
+    koShowCaption:       mmpPostToAll(WIN_CAPTION, KBNumLock);
     koSpeedDn:           ST.opInfo := MP.speedDn;
     koSpeedReset:        ST.opInfo := MP.speedReset;
     koSpeedUp:           ST.opInfo := MP.speedUp;
-    koStartOver:         SA.postToAll(WIN_RESTART, KBNumLock);
+    koStartOver:         mmpPostToAll(WIN_RESTART, KBNumLock);
     koSysVolMax:         ST.opInfo := MX.setSysVolMax;
-    koTab:               SA.postToAll(WIN_TAB, KBNumLock);
-    koTabTab:            SA.postToAll(WIN_TABTAB, KBNumLock);
+    koTab:               mmpPostToAll(WIN_TAB, KBNumLock);
+    koTabTab:            mmpPostToAll(WIN_TABTAB, KBNumLock);
     koPlayFirst:         MP.playFirst;
     koPlayLast:          MP.playLast;
     koPrevChapter:       MP.chapterPrev;
@@ -292,10 +292,10 @@ begin
     koSaturationReset:   ST.opInfo := MP.saturationReset;
     koSaturationUp:      ST.opInfo := MP.saturationUp;
     koScreenshot:        begin ST.opInfo := 'Screenshot...'; mmpProcessMessages; ST.opInfo := MP.takeScreenshot; end;
-    koSyncMedia:         SA.postToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0), TRUE);
+    koSyncMedia:         mmpPostToAllEx(WIN_SYNC_MEDIA, point(MP.position, 0), TRUE);
     koThumbnails:        UI.showThumbnails;
     koToggleBlackout:    UI.toggleBlackout;
-    koToggleControls:    SA.postToAll(WIN_CONTROLS, KBNumLock);
+    koToggleControls:    mmpPostToAll(WIN_CONTROLS, KBNumLock);
     koToggleEditMode:    UI.toggleTimeline;
     koToggleHelp:        UI.toggleHelpWindow;
     koToggleNumlock:     mmpToggleNumlock;

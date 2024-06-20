@@ -4,8 +4,9 @@
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
 **H** center window [H]orizontally and V<br />
+**J** ad[J]ust to aspect ratio of image<br />
 **N** mi[N]imize window to taskbar<br />
-**M** maximize video for the aspect ratio<br />
+**M** [M]aximize video for the aspect ratio<br />
 Ctrl-**9** auto-arrange up to 4 videos\*<br />
 Ctrl-**0**  close all instances of MMP<br />
 
@@ -31,13 +32,15 @@ _(add SHIFT for quicker zooming)_<br />
 
 **Resets**<br />
 **1** = reset speed to normal<br />
-**2** = reset panning<br />
-**3** = reset brightness<br />
+**2** = reset contrast<br />
+**3** = reset pan<br />
 **4** = reset rotation<br />
+**0** = reset brightness
 **'**  = reset gamma (single quote)<br />
 **;**  = reset saturation<br />
 **U** = reset  zoom i.e. [U]nzoom<br />
 **BACKSPACE** = reset all<br />
+Ctrl-Shift-**B** = reset caption color/brightness<br />
 
 **Other**<br />
 **Spacebar** = pause/play<br />

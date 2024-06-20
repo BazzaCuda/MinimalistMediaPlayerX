@@ -3,8 +3,8 @@ object MMPUI: TMMPUI
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
   Caption = 'MMP: Minimalist Media Player'
-  ClientHeight = 368
-  ClientWidth = 468
+  ClientHeight = 364
+  ClientWidth = 466
   Color = clGray
   CustomTitleBar.Height = 31
   CustomTitleBar.SystemHeight = False
