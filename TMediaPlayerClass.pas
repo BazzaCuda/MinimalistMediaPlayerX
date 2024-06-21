@@ -41,7 +41,7 @@ type
     FResetTimeCaption:        TAnonFunc;
 
     FDontPlayNext:            boolean;
-    FFileOpen:                boolean;
+    FFileLoading:             boolean;
     FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
     FImagePaused:             boolean;
@@ -65,6 +65,7 @@ type
     function getFormattedTime:      string;
 
     function pauseUnpauseImages:    boolean;
+    function playAfterLoad: boolean;
 
     {property setters}
     function  getDuration:    integer;
@@ -347,7 +348,8 @@ end;
 
 procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
-  FFileOpen := TRUE;
+  FFileLoading := FALSE;
+  // playAfterLoad; // this should work but bizarrely causes all sorts of issues.
 end;
 
 procedure TMediaPlayer.onInitMPV(sender: TObject);
@@ -359,13 +361,14 @@ end;
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 // no mpsStop event as yet
 begin
+//  TDebug.debugEnum<TMPVPlayerState>('eState', eState);
   FPlaying := eState = mpsPlay;
 
   case (FMediaType = mtImage) and FImagePaused of TRUE:
          case eState of mpsPlay: begin FLocked := FALSE; EXIT; end;end;end;
 
   case (FMediaType = mtImage) and NOT FImagePaused of TRUE:
-        case  eState of mpsPlay, mpsEnd:  begin FLocked := FALSE;
+        case  eState of mpsPlay, mpsEnd, mpsPause:  begin FLocked := FALSE;
                                                 case FDontPlayNext of FALSE:  begin
                                                                                 mmpDelay(trunc(FImageDisplayDurationMs)); // code-controlled slideshow
                                                                                 case FMediaType = mtImage of TRUE: playNext; end;end;end;end;end;end;
@@ -476,9 +479,19 @@ function TMediaPlayer.play(const aURL: string): boolean;
 begin
   result := FALSE;
 
-  case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end;
+  case assigned(FOnBeforeNew) of TRUE: FOnBeforeNew(SELF); end; // clears the timeline
 
   MI.getMediaInfo(aURL);
+
+  FFileLoading := TRUE;
+  result := openURL(aURL);
+
+  // EXIT; for when playAfterLoad is activated
+
+  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
+  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
+
+  while FFileLoading do mmpDelay(20); // wait for the correct video dimensions from MPV
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
 
@@ -486,14 +499,6 @@ begin
                          else FResetTimeCaption; end;
 
   mmpProcessMessages;
-
-  FFileOpen := FALSE;
-  openURL(aURL);
-
-  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
-  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
-
-  while NOT FFileOpen do mmpDelay(50); // wait for the correct video dimensions from MPV
 
   UI.setWindowSize(UI.height, []); // must be done after MPV has opened the video
   UI.centreCursor;
@@ -515,6 +520,41 @@ begin
   FAllowBrowser := FALSE; // only allow the initial launch image
 
   case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
+end;
+
+function TMediaPlayer.playAfterLoad: boolean;
+begin
+  debug('playAfterLoad');
+  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
+  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
+
+  FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
+
+  case FMediaType of mtImage: FBlankOutTimeCaption;
+                         else FResetTimeCaption; end;
+
+  mmpProcessMessages;
+
+  UI.setWindowSize(UI.height, []); // must be done after MPV has opened the video
+  UI.centreCursor;
+
+  FDontPlayNext := (FMediaType = mtImage) and (FImageDisplayDuration = 'inf');
+
+  case ST.showData of TRUE: MI.getMetaData(ST.dataMemo); end;
+  MC.caption := PL.formattedItem;
+
+  mmpProcessMessages;
+
+  mmpPostToAll(WM_PROCESS_MESSAGES, KBNumLock);
+
+  case assigned(FOnPlayNew) of  TRUE: FOnPlayNew(SELF); end; // re-inits timeline
+  UI.centreCursor;
+
+  case FAllowBrowser and (FMediaType = mtImage) and (lowerCase(CF['openImage']) = 'browser') of TRUE: begin FAllowBrowser := FALSE; UI.showThumbnails(htMPVHost); end;end;
+
+  FAllowBrowser := FALSE; // only allow the initial launch image
+
+  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;  // moves the playlist window
 
   result := TRUE;
 end;
@@ -553,7 +593,7 @@ begin
 
   var vDontExit := PL.isLast and (FMediaType = mtImage) and NOT CF.asBoolean[CONF_NEXT_FOLDER_ON_END];
 
-  case FLocked of TRUE: EXIT; end;
+  case FLocked of TRUE: EXIT; end; // limit repeating keys
   FLocked := TRUE;
 
   FTimer.interval := 100;
@@ -590,7 +630,7 @@ function TMediaPlayer.playPrev: boolean;
 begin
   pause;
 
-  case FLocked of TRUE: EXIT; end;
+  case FLocked of TRUE: EXIT; end; // limit repeating keys
   FLocked := TRUE;
 
   FTimer.interval := 100;

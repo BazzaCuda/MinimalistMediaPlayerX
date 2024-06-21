@@ -280,7 +280,6 @@ begin
   FVideoPanel.color       := clBlack;
   FVideoPanel.BevelOuter  := bvNone;
   FVideoPanel.OnMouseMove := onMouseMove;
-  FVideoPanel.doubleBuffered := TRUE; // EXPERIMENTAL
 end;
 
 function TUI.doEscapeKey: boolean;

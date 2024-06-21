@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-  mmpConsts, mmpSingletons, mmpTransparentUtils,
+  mmpConsts, mmpSingletons, mmpTransparentUtils, mmpUtils,
   _debugWindow;
 
 {$R *.dfm}
@@ -136,12 +136,13 @@ end;
 
 procedure TMediaCaptionForm.setCaption(const Value: string);
 begin
-  case FOpInfoTimer = NIL of FALSE: FOpInfoTimer.enabled := FALSE; end; // cancel any currently running timer
-  FCaption.caption      := Value;
+  case FOpInfoTimer <> NIL of TRUE: timerEvent(NIL); end; // cancel any currently running timer
+  FCaption.caption      := Value; // show the new caption immediately
+  mmpProcessMessages;
   startOpInfoTimer;
 end;
 
-function TMediaCaptionForm.startOpInfoTimer: boolean;
+function TMediaCaptionForm.startOpInfoTimer: boolean; // hide the caption again after timer interval has expired
 begin
   case FOpInfoTimer = NIL of TRUE: FOpInfoTimer := TTimer.create(SELF); end; // SELF: if the timer is waiting to fire when we close the app, the form will free the timer
   FOpInfoTimer.enabled  := FALSE;
