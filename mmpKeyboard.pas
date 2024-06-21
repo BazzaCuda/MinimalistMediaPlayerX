@@ -241,7 +241,7 @@ begin
     koCycleAudio:        MP.cycleAudio;
     koCycleSubs:         MP.cycleSubs;
     koDarkerPB:          UI.darker;
-    koDeleteCurrentItem: mmpDeleteCurrentItem(PL, MP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
+    koDeleteCurrentItem: mmpDeleteCurrentItem(PL, MP, aShiftState, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
     koEscape:            UI.doEscapeKey;
     koExploreFolder:     mmpShellExec(PL.currentFolder, '');
     koFrameBackwards:    MP.frameBackwards;

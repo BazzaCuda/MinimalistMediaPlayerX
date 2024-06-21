@@ -21,12 +21,13 @@ unit mmpPlaylistUtils;
 interface
 
 uses
+  system.classes,
   TMediaPlayerClass, TPlaylistClass;
 
-function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
+function mmpCanDeleteCurrentItem(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
-function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
-function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
 function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
 
@@ -34,18 +35,20 @@ implementation
 
 uses
   winApi.windows,
-  system.classes, system.sysUtils,
+  system.sysUtils,
   mmpConsts, mmpDialogs, mmpFileUtils, mmpSysCommands, mmpUtils,
   formMediaCaption, formPlaylist,
   _debugWindow;
 
-function mmpCanDeleteCurrentItem(const aFilePath: string): boolean;
+function mmpCanDeleteCurrentItem(const aFilePath: string; const aShiftState: TShiftState): boolean;
 begin
   result := FALSE;
 
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(aFilePath);
-  case ssCtrl in mmpShiftState of  TRUE: vMsg := vMsg + '*.*';
+  case ssCtrl in aShiftState of  TRUE: vMsg := 'DELETE folder contents '#13#10#13#10'Folder: ' + extractFilePath(aFilePath) + '*.*';
                                   FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(aFilePath); end;
+
+  case ssCtrl in aShiftState of TRUE: vMsg := vMsg + #13#10#13#10'(doesn''t affect the contents of subfolders)'; end;
 
   result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
 end;
@@ -61,24 +64,24 @@ begin
                                             end;end;
 end;
 
-function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
 begin
  aMP.pause;
- case mmpCanDeleteCurrentItem(aPL.currentItem) of TRUE: begin
-                                                          aMP.dontPlayNext := TRUE; // dontPlayNext because MP.stop would have done MP.playNext
-                                                          aMP.stop;
-                                                          case mmpDoDeleteCurrentItem(aPL, aMP, bNextFolderOnEmpty) of TRUE: loadPlaylistWindow(TRUE); end;end;end;
+ case mmpCanDeleteCurrentItem(aPL.currentItem, aShiftState) of TRUE:  begin
+                                                                        aMP.dontPlayNext := TRUE; // dontPlayNext because MP.stop would have done MP.playNext
+                                                                        aMP.stop;
+                                                                        case mmpDoDeleteCurrentItem(aPL, aMP, aShiftState, bNextFolderOnEmpty) of TRUE: loadPlaylistWindow(TRUE); end;end;end;
 end;
 
-function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
 begin
   result := FALSE;
   case aPL.hasItems of FALSE: EXIT; end;
 
   var vIx := aPL.currentIx;
-  case mmpDeleteThisFile(aPL.currentItem, mmpShiftState) of FALSE: EXIT; end;
+  case mmpDeleteThisFile(aPL.currentItem, aShiftState) of FALSE: EXIT; end;
   aPL.delete(aPL.currentIx);  // this decrements PL's FPlayIx...
-  case (ssCtrl in mmpShiftState) or (NOT aPL.hasItems) of
+  case (ssCtrl in aShiftState) or (NOT aPL.hasItems) of
      TRUE:  case bNextFolderOnEmpty AND aMP.playNextFolder of FALSE: mmpSendSysCommandClose; end; // shortcut logic!
     FALSE:  mmpPlaySomething(vIx, aPL, aMP); end;
 

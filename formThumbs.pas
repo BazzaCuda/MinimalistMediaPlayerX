@@ -67,8 +67,9 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio: boolean;
     function autoCentre: boolean;
+    function canDeleteCurrentItem(const aFilePath: string; const aShiftState: TShiftState): boolean;
     function checkThumbsPerPage: boolean;
-    function deleteCurrentItem: boolean;
+    function deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function keepFile(const aFilePath: string): boolean;
     function maximizeWindow: boolean;
     function minimizeWindow: boolean;
@@ -172,6 +173,17 @@ begin
   case GV.autoCentre of TRUE: mmpCentreWindow(SELF.handle); end;
 end;
 
+function TThumbsForm.canDeleteCurrentItem(const aFilePath: string; const aShiftState: TShiftState): boolean;
+begin
+  result := FALSE;
+  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem);
+  case ssCtrl in aShiftState of  TRUE: vMsg := 'DELETE folder contents '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem) + '*.*';
+                                FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
+
+  case ssCtrl in aShiftState of TRUE: vMsg := vMsg + #13#10#13#10'(doesn''t affect the contents of subfolders)'; end;
+  result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
+end;
+
 function TThumbsForm.checkThumbsPerPage: boolean;
 begin
   var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
@@ -194,21 +206,16 @@ begin
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
-function TThumbsForm.deleteCurrentItem: boolean;
+function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): boolean;
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
-  var vShiftState := mmpShiftState;
-
-  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(FThumbs.playlist.currentItem);
-  case ssCtrl in vShiftState of  TRUE: vMsg := vMsg + '*.*';
-                                FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(FThumbs.playlist.currentItem); end;
-
-  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of TRUE:  begin
-                                                      case mmpDeleteThisFile(FThumbs.playlist.currentItem, vShiftState) of FALSE: EXIT; end;
+  case canDeleteCurrentItem(FThumbs.playlist.currentItem, aShiftState)
+                                          of TRUE:  begin
+                                                      case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState) of FALSE: EXIT; end;
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.delete(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
-                                                      case (ssCtrl in vShiftState) or (NOT FThumbs.playlist.hasItems) of
+                                                      case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpSendSysCommandClose; end;end; // shortcut logic!
                                                         FALSE:  begin
                                                                   loadPlaylistWindow;
@@ -737,7 +744,7 @@ begin
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
-    koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem; end;
+    koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
     koExploreFolder:      mmpShellExec(FThumbs.currentFolder, '');
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);

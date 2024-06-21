@@ -349,7 +349,9 @@ end;
 procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   FFileLoading := FALSE;
-  // playAfterLoad; // this should work but bizarrely causes all sorts of issues.
+{$IFDEF playAfterLoad}
+  playAfterLoad; // this should work but bizarrely causes all sorts of issues.
+{$ENDIF}
 end;
 
 procedure TMediaPlayer.onInitMPV(sender: TObject);
@@ -486,8 +488,7 @@ begin
   FFileLoading := TRUE;
   result := openURL(aURL);
 
-  // EXIT; for when playAfterLoad is activated
-
+{$IFNDEF playAfterLoad}
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
@@ -520,10 +521,12 @@ begin
   FAllowBrowser := FALSE; // only allow the initial launch image
 
   case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
+{$ENDIF}
 end;
 
 function TMediaPlayer.playAfterLoad: boolean;
 begin
+{$IFDEF playAfterLoad}
   debug('playAfterLoad');
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
@@ -557,6 +560,7 @@ begin
   case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;  // moves the playlist window
 
   result := TRUE;
+{$ENDIF}
 end;
 
 function TMediaPlayer.playCurrent: boolean;
