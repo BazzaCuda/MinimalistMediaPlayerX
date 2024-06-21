@@ -358,7 +358,7 @@ begin
                     htThumbsHost: vHostPanel := FThumbsHost; end;
 
   var vPt := FThumbsHost.ClientToScreen(point(vHostPanel.left + vHostPanel.width + 1, vHostPanel.top - 2 - mmpCaptionHeight - mmpBorderWidth)); // screen position of the top right corner of the application window, roughly.
-  showHelp(SELF.handle, vPt, htImages, aCreateNew);
+  showHelp(SELF.handle, vPt, FThumbsHost.height, htImages, aCreateNew);
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);

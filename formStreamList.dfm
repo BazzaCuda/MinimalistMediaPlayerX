@@ -5,7 +5,7 @@ object StreamListForm: TStreamListForm
   BorderStyle = bsNone
   Caption = 'Playlist'
   ClientHeight = 585
-  ClientWidth = 556
+  ClientWidth = 460
   Color = 2829099
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWhite
@@ -33,7 +33,7 @@ object StreamListForm: TStreamListForm
   object backPanel: TPanel
     Left = 0
     Top = 0
-    Width = 556
+    Width = 460
     Height = 585
     Align = alClient
     BevelOuter = bvNone
@@ -41,11 +41,12 @@ object StreamListForm: TStreamListForm
     ParentBackground = False
     TabOrder = 0
     StyleElements = []
+    ExplicitWidth = 556
     object pageControl: TPageControl
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 550
+      Width = 454
       Height = 538
       ActivePage = tsSegments
       Align = alClient
@@ -57,12 +58,13 @@ object StreamListForm: TStreamListForm
       ParentFont = False
       TabHeight = 24
       TabOrder = 0
+      ExplicitWidth = 550
       object tsSegments: TTabSheet
         Caption = '          Segments          '
         object clSegments: TControlList
           Left = 0
           Top = 0
-          Width = 542
+          Width = 446
           Height = 504
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
@@ -79,10 +81,11 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
           OnBeforeDrawItem = clSegmentsBeforeDrawItem
           OnItemClick = clSegmentsItemClick
+          ExplicitWidth = 542
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 538
+            Width = 442
             Height = 70
             Align = alClient
             Brush.Color = 2302755
@@ -131,9 +134,9 @@ object StreamListForm: TStreamListForm
             ParentFont = False
           end
           object imgTrashCan: TImage
-            Left = 464
+            Left = 352
             Top = 8
-            Width = 66
+            Width = 81
             Height = 49
             Anchors = [akLeft, akTop, akRight, akBottom]
             Center = True
@@ -2165,7 +2168,7 @@ object StreamListForm: TStreamListForm
         object clStreams: TControlList
           Left = 0
           Top = 0
-          Width = 542
+          Width = 446
           Height = 504
           Align = alClient
           ItemMargins.Left = 0
@@ -2176,11 +2179,12 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
           OnBeforeDrawItem = clStreamsBeforeDrawItem
           OnItemClick = clStreamsItemClick
+          ExplicitWidth = 542
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2289,7 +2293,7 @@ object StreamListForm: TStreamListForm
         end
       end
       object tsOptions: TTabSheet
-        Caption = 'Options'
+        Caption = 'Help'
         ImageIndex = 2
         object md: TMarkdownViewer
           Left = 168
@@ -2301,19 +2305,16 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
         end
       end
-      object tsLog: TTabSheet
-        Caption = 'Log'
-        ImageIndex = 3
-      end
     end
     object pnlButtons: TPanel
       Left = 0
       Top = 544
-      Width = 556
+      Width = 460
       Height = 41
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitWidth = 556
       object btnExport: TBitBtn
         Left = 209
         Top = -1

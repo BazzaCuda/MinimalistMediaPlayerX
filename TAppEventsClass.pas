@@ -138,6 +138,7 @@ begin
   case msgIs(WM_TICK) of TRUE: MP.setProgressBar; end;
   case msgIs(WM_TICK) of TRUE: ST.displayTime := MP.formattedTime + ' / ' + MP.formattedDuration; end;
   case msgIs(WM_TICK) of TRUE: case (screen <> NIL) and NOT GV.userInput and NOT GV.showingPlaylist and ((screen.cursor <> crHandPoint) AND NOT GV.showingTimeline
+                                                                                                                                        AND NOT GV.showingHelp
                                                                                                                                         AND NOT GV.showingThumbs) of TRUE: screen.cursor := crNone; end;end;
 
   case msg.hwnd = UI.videoPanel.handle of TRUE: begin

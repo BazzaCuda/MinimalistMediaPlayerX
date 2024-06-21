@@ -35,7 +35,7 @@ _(add SHIFT for quicker zooming)_<br />
 **2** = reset contrast<br />
 **3** = reset pan<br />
 **4** = reset rotation<br />
-**0** = reset brightness
+**0** = reset brightness<br />
 **'**  = reset gamma (single quote)<br />
 **;**  = reset saturation<br />
 **U** = reset  zoom i.e. [U]nzoom<br />

@@ -50,7 +50,6 @@ type
     pnlButtons: TPanel;
     btnExport: TBitBtn;
     tsOptions: TTabSheet;
-    tsLog: TTabSheet;
     lblTitle: TLabel;
     md: TMarkdownViewer;
     procedure formCreate(Sender: TObject);
@@ -172,6 +171,7 @@ begin
   shape1.margins.bottom   := 1;
   shape1.alignWithMargins := TRUE;
   imgTrashCan.visible     := FSegments[aIndex].deleted;
+  imgTrashCan.left        := clSegments.width - imgTrashCan.width - 8;
 end;
 
 procedure TStreamListForm.clSegmentsItemClick(Sender: TObject);
@@ -229,15 +229,15 @@ begin
   clStreams.itemSelectionOptions.hotColor      := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
 
-  SELF.width  := 556;
-  SELF.height := 600;
+  SELF.width  := 460;
+  SELF.height := 400;
 
   pageControl.tabWidth := 0; // tab widths are controlled by the width of the captions
-  tsSegments.caption := '          Segments          ';
-  tsStreams.caption  := '          Streams          ';
-  tsOptions.caption  := '           Help            ';
-  tsLog.caption      := '      Log      ';
+  tsSegments.caption := '        Segments        ';
+  tsStreams.caption  := '        Streams        ';
+  tsOptions.caption  := '         Help          ';
 
+  btnExport.left := (pnlButtons.width div 2) - (btnExport.width div 2);
 
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
