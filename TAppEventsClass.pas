@@ -55,17 +55,16 @@ var gAE: TAppEvents;
 
 // Mouse Drag Control
 var
-  mouseDown: Boolean;
+  mouseDown:  Boolean;
   mouseStart: TPoint;
+  rectStart:  TRect;
 
 procedure setStartPoint;
-var
-  wndRect: TRect;
 begin
   GetCursorPos(mouseStart);
-  getWindowRect(UI.handle, wndRect);
-  mouseStart.X := mouseStart.X - wndRect.left;
-  mouseStart.Y := mouseStart.Y - wndRect.top;
+  getWindowRect(UI.handle, rectStart);
+  mouseStart.X := mouseStart.X - rectStart.left;
+  mouseStart.Y := mouseStart.Y - rectStart.top;
 end;
 
 procedure dragUI;
@@ -74,13 +73,13 @@ var
   wndRect: TRect;
   dx, dy: integer;
 begin
-  GV.autoCentre := FALSE;
-
   getCursorPos(newMouse);
   dx := newMouse.X - mouseStart.X;
   dy := newMouse.Y - mouseStart.Y;
 
   getWindowRect(UI.handle, wndRect);
+
+  case (abs(wndRect.left - rectStart.left) > 10) or (abs(wndRect.top - rectStart.top) > 10) of TRUE: GV.autoCentre := FALSE; end;
 
   moveWindow(UI.handle, dx, dy, wndRect.width, wndRect.height, FALSE);
   UI.moveHelpWindow(FALSE);

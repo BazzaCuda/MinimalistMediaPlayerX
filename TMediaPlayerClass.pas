@@ -491,7 +491,7 @@ begin
   mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
   mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
-  while FFileLoading do mmpDelay(20); // wait for the correct video dimensions from MPV
+  while FFileLoading do mmpDelay(10); // wait for the correct video dimensions from MPV
 
   FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
 
