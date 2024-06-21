@@ -69,7 +69,7 @@ begin
                           FALSE:  case aPL.validIx(vIx) of   TRUE:  begin // play first remaining item that was after the original item's position in the playlist
                                                                       aPL.setIx(vIx);
                                                                       aMP.play(aPL.currentItem); end;  // don't call any of the timed events like MP.playCurrent
-                                                            FALSE:  case aPL.validIx(vIx - 1) of   TRUE:  begin
+                                                            FALSE:  case aPL.validIx(vIx - 1) of   TRUE:  begin // otherwise play the nearest before its position
                                                                                                             aPL.setIx(vIx - 1);
                                                                                                             aMP.play(aPL.currentItem); end;
                                                                                                   FALSE:  aMP.play(aPL.currentItem); end;end;end;
