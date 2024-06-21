@@ -55,13 +55,14 @@ end;
 
 function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 begin
-  case fileExists(aPL.currentItem) of FALSE: begin // was the original image deleted in the browser?
-                                              aPL.delete(aPL.currentIx);
-                                              case aPL.isFirst of   TRUE: aMP.play(aPL.currentItem);   // don't call any of the timed events like MP.playCurrent
-                                                                  FALSE: begin
-                                                                           aPL.next;
-                                                                           aMP.play(aPL.currentItem); end;end; // ditto
-                                            end;end;
+  var vIx := aPL.currentIx;
+  case fileExists(aPL.currentItem) of FALSE:  begin // was the original image deleted in the browser?
+                                                aPL.delete(aPL.currentIx);
+                                                case (vIx = 0) or aPL.isLast of  TRUE:  aMP.play(aPL.currentItem);   // don't call any of the timed events like MP.playCurrent
+                                                                                FALSE:  begin
+                                                                                          aPL.next;
+                                                                                          aMP.play(aPL.currentItem); end;end; // ditto
+                                              end;end;
 end;
 
 function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
