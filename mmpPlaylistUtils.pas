@@ -25,11 +25,12 @@ uses
   TMediaPlayerClass, TPlaylistClass;
 
 function mmpCanDeleteCurrentItem(const aFilePath: string; const aShiftState: TShiftState): boolean;
-function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
 function mmpDoDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
 function mmpPlaySomething(const aIx: integer; const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
 function mmpReloadPlaylist(const aPL: TPlaylist; const aMP: TMediaPlayer): string;
+function mmpValidatePlaylist(const aPL: TPlaylist): boolean;
 
 implementation
 
@@ -53,16 +54,26 @@ begin
   result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
 end;
 
-function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer): boolean;
+function mmpCheckPlaylistItemExists(const aPL: TPlaylist; const aMP: TMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 begin
   var vIx := aPL.currentIx;
-  case fileExists(aPL.currentItem) of FALSE:  begin // was the original image deleted in the browser?
-                                                aPL.delete(aPL.currentIx);
-                                                case (vIx = 0) or aPL.isLast of  TRUE:  aMP.play(aPL.currentItem);   // don't call any of the timed events like MP.playCurrent
-                                                                                FALSE:  begin
-                                                                                          aPL.next;
-                                                                                          aMP.play(aPL.currentItem); end;end; // ditto
-                                              end;end;
+  var vCI := aPL.currentItem;
+
+  case mmpValidatePlaylist(aPL) of FALSE: case bNextFolderOnEmpty of   TRUE: case aMP.playNextFolder of  TRUE: EXIT;
+                                                                                                        FALSE: begin mmpSendSysCommandClose; EXIT; end;end;
+                                                                      FALSE: begin mmpSendSysCommandClose; EXIT; end;end;end;
+
+  case fileExists(vCI) of  TRUE:  begin
+                                    aPL.find(vCI);
+                                    aMP.play(aPL.currentItem); end;
+                          FALSE:  case aPL.validIx(vIx) of   TRUE:  begin // play first remaining item that was after the original item's position in the playlist
+                                                                      aPL.setIx(vIx);
+                                                                      aMP.play(aPL.currentItem); end;  // don't call any of the timed events like MP.playCurrent
+                                                            FALSE:  case aPL.validIx(vIx - 1) of   TRUE:  begin
+                                                                                                            aPL.setIx(vIx - 1);
+                                                                                                            aMP.play(aPL.currentItem); end;
+                                                                                                  FALSE:  aMP.play(aPL.currentItem); end;end;end;
+
 end;
 
 function mmpDeleteCurrentItem(const aPL: TPlaylist; const aMP: TMediaPlayer; const aShiftState: TShiftState; const bNextFolderOnEmpty: boolean): boolean;
@@ -106,6 +117,19 @@ begin
                                           aPL.first;
                                           aMP.play(aPL.currentItem); end;end;
   result := 'Playlist reloaded';
+end;
+
+function mmpValidatePlaylist(const aPL: TPlaylist): boolean;
+begin
+  result := FALSE;
+
+  for var i := aPL.count - 1 downto 0 do case fileExists(aPL.thisItem(i)) of FALSE: aPL.delete(i); end;
+
+  aPL.first;
+
+  loadPlaylistWindow(TRUE);
+
+  result := aPL.hasItems;
 end;
 
 end.

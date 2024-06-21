@@ -669,7 +669,7 @@ begin
   FMainForm.show;
   setActiveWindow(FMainForm.handle);
 
-  mmpCheckPlaylistItemExists(PL, MP);
+  mmpCheckPlaylistItemExists(PL, MP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
 end;
 
 function TUI.showWindow: boolean;
