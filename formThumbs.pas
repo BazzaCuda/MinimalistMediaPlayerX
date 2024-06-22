@@ -358,7 +358,7 @@ begin
                     htThumbsHost: vHostPanel := FThumbsHost; end;
 
   var vPt := FThumbsHost.ClientToScreen(point(vHostPanel.left + vHostPanel.width + 1, vHostPanel.top - 2 - mmpCaptionHeight - mmpBorderWidth)); // screen position of the top right corner of the application window, roughly.
-  showHelp(SELF.handle, vPt, FThumbsHost.height, htImages, aCreateNew);
+  showHelp(SELF.handle, vPt, SELF.height, htImages, aCreateNew);
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
@@ -596,7 +596,7 @@ begin
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
-// only called for panelVers which has style set to psOwnerDraw at app launch. This is changed in TPanelCtrl.ShowThumbsPageNo
+// only called for panelHelp when it has to highlight its contents, e.g. "NOT Moved".
 begin
   statusBar.canvas.font.style   := [fsBold];
   statusBar.canvas.brush.color  := clMaroon;
@@ -645,6 +645,7 @@ begin
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
                     playCurrentItem; end;end;
+  setForegroundWindow(SELF.handle);
 end;
 
 function TThumbsForm.undoMove: string;

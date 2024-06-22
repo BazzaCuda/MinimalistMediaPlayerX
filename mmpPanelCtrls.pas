@@ -113,6 +113,9 @@ begin
 
   aStatusBar.panels[PANEL_NAME].width := availWidth div 2;
   aStatusBar.panels[PANEL_FOLD].width := availWidth div 2;
+
+  aStatusBar.invalidate;
+  mmpProcessMessages;
 end;
 
 function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;

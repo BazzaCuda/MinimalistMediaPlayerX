@@ -109,6 +109,8 @@ var
   end;
 
 begin
+  case GV.greatering and GV.showingHelp of TRUE: EXIT; end;
+  GV.greatering := TRUE;
 
   getWindowRect(aWnd, vR);
   newW := vR.Width;
@@ -119,6 +121,7 @@ begin
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
+  GV.greatering := FALSE;
 end;
 
 function mmpPostToAll(const aCmd: WORD; const aPostToAll: boolean = FALSE): boolean;

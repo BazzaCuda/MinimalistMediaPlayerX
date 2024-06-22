@@ -34,10 +34,10 @@ type
     buttonPanel: TPanel;
     shiftLabel: TLabel;
     helpLabel: TLabel;
-    Panel1: TPanel;
     md1: TMarkdownViewer;
     md2: TMarkdownViewer;
     md3: TMarkdownViewer;
+    procedure FormResize(Sender: TObject);
   protected
     constructor create(const aHeight: integer; const aHelpType: THelpType);
     procedure CreateParams(var Params: TCreateParams);
@@ -67,7 +67,6 @@ begin
 
   helpForm.show;
   winAPI.Windows.setWindowPos(helpForm.handle, HWND_TOP, Pt.X - 1, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-//  enableWindow(helpForm.handle, FALSE);    // this window won't get any keyboard or mouse messages, etc.
   setForegroundWindow(aHWND); // so the UI keyboard functions can still be used when this form is open.
   GV.showingHelp := TRUE;
 end;
@@ -114,6 +113,12 @@ begin
   md2.width := SELF.width div 3;
   md3.width := SELF.width div 3;
 
+  md1.margins.top := 6;
+  md2.margins.top := 6;
+  md3.margins.top := 6;
+
+  buttonPanel.margins.bottom := 4;
+
   case aHelpType of   htHelp: begin
                                 loadMarkDownFromResource(md1, 'resource_mdHelp1');
                                 loadMarkDownFromResource(md2, 'resource_mdHelp2');
@@ -134,6 +139,12 @@ begin
   inherited;
   Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
   Params.WndParent  := SELF.Handle; // normally application.handle
+end;
+
+procedure THelpForm.FormResize(Sender: TObject);
+begin
+  helpLabel.invalidate;
+  buttonPanel.invalidate;
 end;
 
 initialization

@@ -357,7 +357,9 @@ const
 var
   vR: TRect;
 begin
+  case GV.greatering and GV.showingHelp of TRUE: EXIT; end;
   case FSettingSize and (GV.showingPlaylist or GV.showingTimeline) of TRUE: EXIT; end; // limit keyboard keystroke repetitions for held down Ctrl-[G]
+  GV.greatering := TRUE;
 
   getWindowRect(aWnd, vR);
 
@@ -365,6 +367,8 @@ begin
 
   case ssCtrl in aShiftState of  TRUE: setWindowSize(vR.height - dy, aShiftState);
                                 FALSE: setWindowSize(vR.height + dy, aShiftState); end;
+
+  GV.greatering := FALSE;
 end;
 
 function TUI.handle: HWND;

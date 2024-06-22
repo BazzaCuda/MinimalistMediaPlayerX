@@ -48,3 +48,12 @@ Ctrl-Shift-**B** reset to default<br />
 Ctrl-**C **show/hide all [C]aptions<br />
 
 \*\* doesn't touch the contents of subfolders<br />
+
+**Panning**<br />
+&uarr; Ctrl-**Up** arrow, pan up<br />
+&darr; Ctrl-**Dn** arrow, pan down<br />
+&larr; Ctrl-**Left** arrow, pan left<br />
+&rarr; Ctrl-**Right** arrow, pan right<br />
+**3** reset panning<br />
+_(add SHIFT for quicker panning)_<br />
+

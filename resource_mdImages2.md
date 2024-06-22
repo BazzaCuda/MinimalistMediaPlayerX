@@ -1,10 +1,3 @@
-**Panning**<br />
-&uarr; Ctrl-**Up arrow**, pan up<br />
-&darr; Ctrl-**Dn arrow**, pan down<br />
-&larr; Ctrl-**Left arrow**, pan left<br />
-&rarr; Ctrl-**Right arrow**, pan right<br />
-**3** reset panning<br />
-
 **Playlist**<br />
 **A** play first in playlist\*<br />
 **HOME** play first in playlist\*<br />

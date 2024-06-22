@@ -49,6 +49,7 @@ type
     FAltKeyDown:        boolean;
     FAutoCentre:        boolean;
     FCloseApp:          boolean;
+    FGreatering: boolean;
     FMainForm:          TForm;
     FMaxSize:           boolean;
     FPlayingSlideshow:  boolean;
@@ -65,6 +66,7 @@ type
     property appWnd:            HWND    read FAppWnd            write FAppWnd;
     property autoCentre:        boolean read FAutoCentre        write FAutoCentre;
     property closeApp:          boolean read FCloseApp          write FCloseApp;
+    property greatering:        boolean read FGreatering        write FGreatering;
     property mainForm:          TForm   read FMainForm          write FMainForm;
     property maxSize:           boolean read FMaxSize           write FMaxSize;
     property playingSlideshow:  boolean read FPlayingSlideshow  write FPlayingSlideshow;

@@ -33,4 +33,10 @@ _**&loz;** doesn't touch the contents of subfolders_<br />
 Left click hold window caption, drag window<br />
 Left click thumbnail, display image<br />
 
+**Panning**<br />
+&uarr; Ctrl-**Up arrow**, pan up<br />
+&darr; Ctrl-**Dn arrow**, pan down<br />
+&larr; Ctrl-**Left arrow**, pan left<br />
+&rarr; Ctrl-**Right arrow**, pan right<br />
+**3** reset panning<br />
 

@@ -14,6 +14,7 @@ object HelpForm: THelpForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
+  OnResize = FormResize
   TextHeight = 13
   object backPanel: TPanel
     Left = 0
@@ -32,6 +33,7 @@ object HelpForm: THelpForm
       BevelOuter = bvNone
       Color = 2302755
       TabOrder = 0
+      ExplicitTop = 409
       object shiftLabel: TLabel
         Left = 0
         Top = 18
@@ -41,8 +43,8 @@ object HelpForm: THelpForm
         Alignment = taCenter
         AutoSize = False
         Caption = 
-          'press Ctrl-[H] to close this panel.   If the window is resized o' +
-          'r moved, this help panel will stay attached to it'
+          'Ctrl-[H] to close.   If the window is resized or moved, this hel' +
+          'p panel will stay attached to it'
         Color = 4079166
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
@@ -63,8 +65,8 @@ object HelpForm: THelpForm
         Align = alBottom
         Alignment = taCenter
         Caption = 
-          'The keyboard and mouse functions can all be used while this help' +
-          ' panel is open.'
+          'Keyboard and mouse functions can all be used while this help pan' +
+          'el is open.'
         Color = 2302755
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWhite
@@ -74,20 +76,8 @@ object HelpForm: THelpForm
         ParentColor = False
         ParentFont = False
         Transparent = False
-        ExplicitWidth = 591
+        ExplicitWidth = 561
       end
-    end
-    object Panel1: TPanel
-      Left = 0
-      Top = 0
-      Width = 742
-      Height = 6
-      Align = alTop
-      BevelOuter = bvNone
-      Color = 2302755
-      ParentBackground = False
-      TabOrder = 1
-      StyleElements = [seFont, seBorder]
     end
     object md1: TMarkdownViewer
       Left = 40
@@ -96,7 +86,7 @@ object HelpForm: THelpForm
       PrintMarginLeft = 2.000000000000000000
       PrintMarginRight = 2.000000000000000000
       PrintMarginTop = 2.000000000000000000
-      TabOrder = 2
+      TabOrder = 1
     end
     object md2: TMarkdownViewer
       Left = 232
@@ -105,7 +95,7 @@ object HelpForm: THelpForm
       PrintMarginLeft = 2.000000000000000000
       PrintMarginRight = 2.000000000000000000
       PrintMarginTop = 2.000000000000000000
-      TabOrder = 3
+      TabOrder = 2
     end
     object md3: TMarkdownViewer
       Left = 424
@@ -114,7 +104,7 @@ object HelpForm: THelpForm
       PrintMarginLeft = 2.000000000000000000
       PrintMarginRight = 2.000000000000000000
       PrintMarginTop = 2.000000000000000000
-      TabOrder = 4
+      TabOrder = 3
     end
   end
 end
