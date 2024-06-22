@@ -370,7 +370,7 @@ begin
          case eState of mpsPlay: begin FLocked := FALSE; EXIT; end;end;end;
 
   case (FMediaType = mtImage) and NOT FImagePaused of TRUE:
-        case  eState of mpsPlay, mpsEnd, mpsPause:  begin FLocked := FALSE;
+        case  eState of mpsPlay, mpsEnd:      begin FLocked := FALSE;
                                                 case FDontPlayNext of FALSE:  begin
                                                                                 mmpDelay(trunc(FImageDisplayDurationMs)); // code-controlled slideshow
                                                                                 case FMediaType = mtImage of TRUE: playNext; end;end;end;end;end;end;
@@ -485,21 +485,21 @@ begin
 
   MI.getMediaInfo(aURL);
 
+  FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem))); // Must be done before opening the URL because onStateChange assumes it's using the new value
+
   FFileLoading := TRUE;
   result := openURL(aURL);
 
 {$IFNDEF playAfterLoad}
-  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
-  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
-
-  while FFileLoading do mmpDelay(10); // wait for the correct video dimensions from MPV
-
-  FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
-
   case FMediaType of mtImage: FBlankOutTimeCaption;
                          else FResetTimeCaption; end;
 
   mmpProcessMessages;
+
+  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
+  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
+
+  while FFileLoading do mmpDelay(10); // wait for the correct video dimensions from MPV
 
   UI.setWindowSize(UI.height, []); // must be done after MPV has opened the video
   UI.centreCursor;
@@ -527,16 +527,13 @@ end;
 function TMediaPlayer.playAfterLoad: boolean;
 begin
 {$IFDEF playAfterLoad}
-  debug('playAfterLoad');
-  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
-  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
-
-  FMediaType := MT.mediaType(lowerCase(extractFileExt(PL.currentItem)));
-
   case FMediaType of mtImage: FBlankOutTimeCaption;
                          else FResetTimeCaption; end;
 
   mmpProcessMessages;
+
+  mpvSetVolume(mpv, CF.asInteger['volume']);  // really only affects the first audio/video played
+  mpvSetMute(mpv, CF.asBoolean['muted']);     // ditto
 
   UI.setWindowSize(UI.height, []); // must be done after MPV has opened the video
   UI.centreCursor;
@@ -557,7 +554,7 @@ begin
 
   FAllowBrowser := FALSE; // only allow the initial launch image
 
-  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;  // moves the playlist window
+  case assigned(FOnPlayNext) of TRUE: FOnPlayNext(SELF); end;
 
   result := TRUE;
 {$ENDIF}
