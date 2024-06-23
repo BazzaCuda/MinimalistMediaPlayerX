@@ -54,7 +54,7 @@ type
     FPlaying:                 boolean;
     FScreenshotDirectory:     string;
   private
-    function  createTimeCaptionClosures: boolean;
+    function  defineTimeCaptionClosures: boolean;
 
     procedure onInitMPV(sender: TObject);
     procedure onTimerEvent(sender: TObject);
@@ -245,10 +245,20 @@ begin
   FTimer.enabled  := FALSE;
   FTimer.OnTimer  := onTimerEvent;
   FAllowBrowser   := TRUE;
-  createTimeCaptionClosures;
+  defineTimeCaptionClosures;
 end;
 
-function TMediaPlayer.createTimeCaptionClosures: boolean;
+function TMediaPlayer.cycleAudio: boolean;
+begin
+  mpvCycleAudio(mpv);
+end;
+
+function TMediaPlayer.cycleSubs: boolean;
+begin
+  mpvCycleSubs(mpv);
+end;
+
+function TMediaPlayer.defineTimeCaptionClosures: boolean;
 var
   vColor: TColor;
 begin
@@ -262,16 +272,6 @@ begin
                                               case vColor = 0 of FALSE: begin
                                                                           ST.color := vColor;
                                                                           vColor   := 0; end;end;end;
-end;
-
-function TMediaPlayer.cycleAudio: boolean;
-begin
-  mpvCycleAudio(mpv);
-end;
-
-function TMediaPlayer.cycleSubs: boolean;
-begin
-  mpvCycleSubs(mpv);
 end;
 
 destructor TMediaPlayer.Destroy;

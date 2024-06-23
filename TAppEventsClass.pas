@@ -189,8 +189,8 @@ begin
   vMsg := vMsg + format('class: %s%s', [sender.toString, #13#10]);
   vMsg := vMsg + format('address: $%p%s', [exceptAddr, #13#10]);
   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK],  mbOK);
-//  mmpSendSysCommandClose; // attempt an elegant withdrawal
-//  halt;                   // if not
+  mmpSendSysCommandClose; // attempt an elegant withdrawal
+  halt;                   // if not
 end;
 
 constructor TAppEvents.create;
