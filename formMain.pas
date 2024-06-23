@@ -45,7 +45,6 @@ implementation
 uses
   winApi.shellApi,
   mmpConsts, mmpDialogs, mmpFileUtils, mmpSingletons, mmpSysCommands, mmpUtils,
-  formCaptions, formMediaCaption,
   _debugWindow;
 
 {$R *.dfm}
