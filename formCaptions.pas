@@ -237,6 +237,7 @@ procedure TCaptionsForm.setOpInfo(const value: string);
 begin
   case FOpInfoTimer = NIL of FALSE: FOpInfoTimer.enabled := FALSE; end; // cancel any currently running timer
   FOpInfo.caption := value;
+  FOpInfo.repaint; // !!!
   startOpInfoTimer;
 end;
 

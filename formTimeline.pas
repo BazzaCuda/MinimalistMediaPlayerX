@@ -571,7 +571,7 @@ begin
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
           var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
-          case segments.count = 1 of TRUE: vSegOneFN := segFile; end;
+          case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
           cmdLine := cmdLine + ' -y "' + segFile + '"';
           log(cmdLine);
 

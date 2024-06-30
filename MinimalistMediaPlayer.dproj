@@ -137,7 +137,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Downloads\.mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\AudioLibrary\Enya - Orinoco Flow (Official 4K Music Video).m4a&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
         <DCC_Define>FastMM_FullDebugMode;FastMM_EnableMemoryLeakReporting;purePascal;$(DCC_Define)</DCC_Define>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>

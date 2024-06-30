@@ -77,5 +77,7 @@ MinimalistMediaPlayer_release_v1_0_/
 MinimalistMediaPlayer_v*
 old/
 docs/
+*.json
+
 
 
