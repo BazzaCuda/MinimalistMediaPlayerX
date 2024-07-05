@@ -30,13 +30,14 @@ function mmpCancelDelay: boolean;
 function mmpCompareStr(aStr1: string; aStr2: string): integer;
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
+function mmpIfThenElse(const aBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
+function mmpIfThenElse(const aBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 function mmpProcessMessages: boolean;
-function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit just for this
 
 implementation
 
 uses
-  system.math;
+  system.math, system.sysUtils;
 
 var
   gCancel: boolean;
@@ -44,6 +45,7 @@ var
 function mmpCancelDelay: boolean;
 begin
   gCancel := TRUE;
+  result := gCancel;
 end;
 
 function mmpCompareStr(aStr1: string; aStr2: string): integer;
@@ -55,7 +57,7 @@ var vNum1,
     pStr1,
     pStr2:  PChar;
 
-  function isNumber(ch:Char):Boolean;
+  function isNumber(ch: char):Boolean;
   begin
      result := ch in ['0'..'9'];
   end;
@@ -67,6 +69,7 @@ var vNum1,
   begin
     vFoundPeriod := FALSE;
     result := 0;
+    vCount := 0;
 
     while (pch^ <> #0) and (isNumber(pch^) or ((NOT vFoundPeriod) and (pch^ = '.'))) do
     begin
@@ -118,12 +121,14 @@ function mmpDelay(const dwMilliseconds: DWORD): boolean;
 var
   iStart, iStop: DWORD;
 begin
+  result := FALSE;
   gCancel := FALSE;
   iStart := GetTickCount;
   repeat
     iStop  := GetTickCount;
     mmpProcessMessages;
   until gCancel or ((iStop  -  iStart) >= dwMilliseconds);
+  result := TRUE;
 end;
 
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
@@ -131,18 +136,23 @@ begin
   result := FnnKeyApps[aFnnKeyApp];
 end;
 
-function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit that needs this
-var
-  vKeyState: TKeyBoardState;
+function mmpIfThenElse(const aBoolean: boolean; aTrue: string; aFalse: string): string;
 begin
-  getKeyboardState(vKeyState);
-  result := keyboardStateToShiftState(vKeyState);
+  case aBoolean of   TRUE: result := aTrue;
+                    FALSE: result := aFalse; end;
+end;
+
+function mmpIfThenElse(const aBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
+begin
+  case aBoolean of   TRUE: result := aTrue;
+                    FALSE: result := aFalse; end;
 end;
 
 function mmpProcessMessages: boolean;
 begin
+  result := FALSE;
   application.processMessages;
+  result := TRUE;
 end;
-
 
 end.

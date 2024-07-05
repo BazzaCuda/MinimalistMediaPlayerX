@@ -21,7 +21,8 @@ unit mmpDialogs;
 interface
 
 uses
-  vcl.controls, vcl.dialogs;
+  vcl.controls, vcl.dialogs,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
@@ -33,7 +34,7 @@ implementation
 uses
   winApi.activeX,
   vcl.forms, vcl.stdCtrls,
-  mmpSingletons;
+  viewModel.mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
@@ -48,7 +49,7 @@ begin
   coInitialize(NIL);
   with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
-    GV.userInput := TRUE;
+    notifyApp(newNotice(evGSUserInput, TRUE));
     font.name := 'Segoe UI';
     font.size := 12;
     height    := height + 50;
@@ -64,7 +65,7 @@ begin
     result := ShowModal;
   finally
     free;
-    GV.userInput := FALSE;
+    notifyApp(newNotice(evGSUserInput, FALSE));
     coUninitialize;
   end;
 end;

@@ -107,14 +107,16 @@
         <DCC_ExeOutput>.\$(Platform)\$(Config)\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.6.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.5.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.5.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Movies\Bourne 1 - The Bourne Identity (2002).mp4&quot;</Debugger_RunParams>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
-        <Icon_MainIcon>MinimalistMediaPlayer_Icon.ico</Icon_MainIcon>
-        <VerInfo_Release>6</VerInfo_Release>
+        <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
+        <VerInfo_Release>5</VerInfo_Release>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
+        <Debugger_RunParams>&quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
+        <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -137,17 +139,31 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\AudioLibrary\Enya - Orinoco Flow (Official 4K Music Video).m4a&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
-        <DCC_Define>FastMM_FullDebugMode;FastMM_EnableMemoryLeakReporting;purePascal;$(DCC_Define)</DCC_Define>
+        <Debugger_RunParams>&quot;B:\Movies\Bourne 1 - The Bourne Identity (2002).mp4&quot; &quot;B:\Images\zTest\048.jpg&quot; &quot;B:\Downloads\_testMMP\HostDash (12).jpg&quot; &quot;B:\AudioLibrary\Enya - Orinoco Flow (Official 4K Music Video).m4a&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
+        <Icon_MainIcon>MMP_Icon1.ico</Icon_MainIcon>
+        <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
+        <DCCReference Include="view.mmpFormMain.pas"/>
+        <DCCReference Include="mmpNotify.notices.pas"/>
+        <DCCReference Include="mmpNotify.notifier.pas"/>
+        <DCCReference Include="mmpNotify.subscriber.pas"/>
+        <DCCReference Include="viewModel.mmpGlobalState.pas"/>
+        <DCCReference Include="view.mmpThemeUtils.pas"/>
+        <DCCReference Include="mmpDesktopUtils.pas"/>
+        <DCCReference Include="view.mmpFormCaptions.pas"/>
+        <DCCReference Include="view.mmpFormMainCaption.pas"/>
+        <DCCReference Include="mmpUtils.pas"/>
+        <DCCReference Include="mmpPostToAllUtils.pas"/>
         <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
         <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
@@ -156,132 +172,95 @@
         <DCCReference Include="libMPVDelphi\MPVRenderGL.pas"/>
         <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
         <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
-        <DCCReference Include="mmpSingletons.pas"/>
-        <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="mmpConsts.pas"/>
-        <DCCReference Include="MediaInfoDLL.pas"/>
-        <DCCReference Include="formAboutBox.pas">
-            <Form>AboutBoxForm</Form>
-        </DCCReference>
-        <DCCReference Include="formMediaCaption.pas">
-            <Form>MediaCaptionForm</Form>
-        </DCCReference>
-        <DCCReference Include="formCaptions.pas">
-            <Form>CaptionsForm</Form>
-        </DCCReference>
-        <DCCReference Include="formDownload.pas">
-            <Form>DownloadForm</Form>
-        </DCCReference>
-        <DCCReference Include="formHelp.pas">
-            <Form>HelpForm</Form>
-        </DCCReference>
-        <DCCReference Include="formInputBox.pas">
-            <Form>InputBoxForm</Form>
-        </DCCReference>
-        <DCCReference Include="formMain.pas">
-            <Form>MMPUI</Form>
-        </DCCReference>
-        <DCCReference Include="formPlaylist.pas">
-            <Form>PlaylistForm</Form>
-        </DCCReference>
-        <DCCReference Include="formProgress.pas">
-            <Form>ProgressForm</Form>
-        </DCCReference>
-        <DCCReference Include="formStreamList.pas">
-            <Form>StreamListForm</Form>
-        </DCCReference>
-        <DCCReference Include="formTimeline.pas">
-            <Form>TimelineForm</Form>
-        </DCCReference>
-        <DCCReference Include="TAppEventsClass.pas"/>
-        <DCCReference Include="TBookmarkClass.pas"/>
-        <DCCReference Include="TConfigFileClass.pas"/>
-        <DCCReference Include="TGlobalVarsClass.pas"/>
-        <DCCReference Include="mmpKeyboard.pas"/>
-        <DCCReference Include="TMediaInfoClass.pas"/>
-        <DCCReference Include="TMediaPlayerClass.pas"/>
-        <DCCReference Include="TMediaTypesClass.pas"/>
-        <DCCReference Include="TParamStringsClass.pas"/>
-        <DCCReference Include="TPlaylistClass.pas"/>
-        <DCCReference Include="TProgramUpdatesClass.pas"/>
-        <DCCReference Include="TProgressBarClass.pas"/>
-        <DCCReference Include="TSegmentClass.pas"/>
-        <DCCReference Include="TSendAllClass.pas"/>
-        <DCCReference Include="mmpSysCommands.pas"/>
-        <DCCReference Include="TTickTimerClass.pas"/>
-        <DCCReference Include="TUICtrlsClass.pas"/>
-        <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
-        <DCCReference Include="TThumbsClass.pas"/>
-        <DCCReference Include="formThumbs.pas">
-            <Form>ThumbsForm</Form>
-        </DCCReference>
-        <DCCReference Include="formReleaseNotes.pas">
-            <Form>ReleaseNotesForm</Form>
-        </DCCReference>
-        <DCCReference Include="mmpMarkDownUtils.pas"/>
-        <DCCReference Include="mmpMPVCtrls.pas"/>
-        <DCCReference Include="mmpMPVFormatting.pas"/>
-        <DCCReference Include="mmpMPVProperties.pas"/>
-        <DCCReference Include="mmpThumbsKeyboard.pas"/>
-        <DCCReference Include="TThumbClass.pas"/>
+        <DCCReference Include="model.mmpMediaPlayer.pas"/>
+        <DCCReference Include="model.mmpConfigFile.pas"/>
+        <DCCReference Include="viewModel.mmpVM.pas"/>
         <DCCReference Include="mmpFileUtils.pas"/>
-        <DCCReference Include="mmpShellUtils.pas"/>
-        <DCCReference Include="mmpDesktopUtils.pas"/>
-        <DCCReference Include="mmpImageUtils.pas"/>
-        <DCCReference Include="mmpTransparentUtils.pas"/>
-        <DCCReference Include="mmpMathUtils.pas"/>
+        <DCCReference Include="ALProgressBar.pas"/>
+        <DCCReference Include="view.mmpProgressBar.pas"/>
+        <DCCReference Include="viewModel.mmpMPVFormatting.pas"/>
+        <DCCReference Include="model.mmpParamStrings.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
-        <DCCReference Include="mmpPlaylistUtils.pas"/>
-        <DCCReference Include="mmpUtils.pas"/>
+        <DCCReference Include="model.mmpPlaylist.pas"/>
+        <DCCReference Include="TlistHelperClass.pas"/>
+        <DCCReference Include="model.mmpMediaTypes.pas"/>
+        <DCCReference Include="model.mmpMPVCtrls.pas"/>
+        <DCCReference Include="model.mmpMPVProperties.pas"/>
+        <DCCReference Include="mmpTickTimer.pas"/>
+        <DCCReference Include="viewModel.mmpKeyboard.pas"/>
+        <DCCReference Include="mmpConsts.pas"/>
+        <DCCReference Include="mmpShellUtils.pas"/>
+        <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
+        <DCCReference Include="mmpMMDevApi_tlb.pas"/>
+        <DCCReference Include="model.mmpMixer.pas"/>
+        <DCCReference Include="view.mmpFormHelp.pas"/>
+        <DCCReference Include="mmpMarkDownUtils.pas"/>
+        <DCCReference Include="MediaInfoDLL.pas"/>
+        <DCCReference Include="model.mmpMediaInfo.pas"/>
+        <DCCReference Include="TMediaStreamClass.pas"/>
+        <DCCReference Include="view.mmpFormPlaylist.pas"/>
+        <DCCReference Include="viewModel.mmpSnapshot.pas"/>
+        <DCCReference Include="model.mmpPlaylistUtils.pas"/>
+        <DCCReference Include="model.mmpBookmark.pas"/>
+        <DCCReference Include="view.mmpFormReleaseNotes.pas"/>
+        <DCCReference Include="mmpProgramUpdates.pas"/>
+        <DCCReference Include="view.mmpFormDownload.pas"/>
+        <DCCReference Include="mmpFormInputBox.pas"/>
+        <DCCReference Include="view.mmpFormProgress.pas"/>
+        <DCCReference Include="mmpKeyboardUtils.pas"/>
+        <DCCReference Include="view.mmpFormAbout.pas"/>
+        <DCCReference Include="mmpWindowUtils.pas"/>
+        <DCCReference Include="mmpFolderNavigation.pas"/>
+        <DCCReference Include="mmpFolderUtils.pas"/>
+        <DCCReference Include="model.mmpUndoMove.pas"/>
+        <DCCReference Include="view.mmpFormTimeline.pas"/>
+        <DCCReference Include="TSegmentClass.pas"/>
+        <DCCReference Include="view.mmpFormStreamList.pas"/>
+        <DCCReference Include="mmpImageUtils.pas"/>
+        <DCCReference Include="view.mmpFormThumbs.pas"/>
+        <DCCReference Include="mmpThumbsKeyboard.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
+        <DCCReference Include="TThumbsClass.pas"/>
+        <DCCReference Include="TThumbClass.pas"/>
         <DCCReference Include="mmpThumbUtils.pas"/>
         <DCCReference Include="mmpPanelCtrls.pas"/>
-        <DCCReference Include="mmpTicker.pas"/>
-        <DCCReference Include="mmpFolderNavigation.pas"/>
-        <DCCReference Include="mmpWindowCtrls.pas"/>
-        <DCCReference Include="mmpUserFolders.pas"/>
-        <DCCReference Include="mmpFolderUtils.pas"/>
-        <DCCReference Include="TUndoMoveClass.pas"/>
-        <DCCReference Include="mmpKeyboardUtils.pas"/>
-        <DCCReference Include="TMediaStreamClass.pas"/>
         <DCCReference Include="TStatusBarHelperClass.pas"/>
-        <DCCReference Include="TMixerClass.pas"/>
-        <DCCReference Include="mmpMMDevApi_tlb.pas"/>
-        <DCCReference Include="TListHelperClass.pas"/>
+        <DCCReference Include="mmpUserFolders.pas"/>
+        <DCCReference Include="mmpTicker.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdEditing</ResourceId>
+            <ResourceId>resource_mdEditing</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdHelp1.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdHelp1</ResourceId>
+            <ResourceId>resource_mdHelp1</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdHelp2.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdHelp2</ResourceId>
+            <ResourceId>resource_mdHelp2</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdHelp3.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdHelp3</ResourceId>
+            <ResourceId>resource_mdHelp3</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdImages1.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdImages1</ResourceId>
+            <ResourceId>resource_mdImages1</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdImages2.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdImages2</ResourceId>
+            <ResourceId>resource_mdImages2</ResourceId>
         </RcItem>
         <RcItem Include="resource_mdImages3.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_mdImages3</ResourceId>
+            <ResourceId>resource_mdImages3</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -314,6 +293,20 @@
                 <Platform value="Win64">True</Platform>
             </Platforms>
             <Deployment Version="4">
+                <DeployFile LocalName="B:\Images\BazzaCuda_IDs\_Cap'n Cuda 128x128.png" Configuration="Debug" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="B:\Images\BazzaCuda_IDs\_Cap'n Cuda 128x128.png" Configuration="Release" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="MinimalistMediaPlayer.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win64\Debug\MinimalistMediaPlayer.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">

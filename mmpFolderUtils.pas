@@ -20,20 +20,22 @@ unit mmpFolderUtils;
 
 interface
 
-function ITBS(aFolderPath: string): string;
-function RTBS(aFolderPath: string): string;
+function mmpITBS(aFolderPath: string): string;
+function mmpRTBS(aFolderPath: string): string;
 
 implementation
 
 uses
-  system.sysUtils;
+  system.sysUtils,
+  mmpConsts;
 
-function ITBS(aFolderPath: string): string;
+function mmpITBS(aFolderPath: string): string;
 begin
-  result := includeTrailingBackslash(aFolderPath);
+  result := aFolderPath;
+  case result[high(result)] = BACKSLASH of FALSE: result := result + BACKSLASH; end;
 end;
 
-function RTBS(aFolderPath: string): string;
+function mmpRTBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
   case (length(result) > 1) and

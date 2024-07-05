@@ -23,8 +23,9 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
-  mmpConsts, mmpSingletons,
-  TMPVHostClass, TPlaylistClass, TThumbClass;
+  mmpConsts,
+  model.mmpPlaylist,
+  TMPVHostClass, TThumbClass;
 
 type
   TPlayType = (ptGenerateThumbs, ptPlaylistOnly);
@@ -35,14 +36,14 @@ type
     FCurrentFolder:     string;
     FMPVHost:           TMPVHost;
     FOnThumbClick:      TNotifyEvent;
-    FPlaylist:          TPlaylist;
+    FPlaylist:          IPlaylist;
     FSavePanelReserved: boolean;
     FStatusBar:         TStatusBar;
     FThumbsHost:        TWinControl;
     FThumbs:            TObjectList<TThumb>;
     FThumbSize:         integer;
   private
-    function  fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+    function  fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function  generateThumbs(const aItemIx: integer): integer;
     function  getCurrentIx: integer;
     function  getWhichHost: THostType;
@@ -63,7 +64,7 @@ type
     property currentIx:         integer       read getCurrentIx;
     property onThumbClick:      TNotifyEvent  read FOnThumbClick    write FOnThumbClick;
     property savePanelReserved: boolean                             write FSavePanelReserved;
-    property playlist:          TPlaylist     read FPlaylist;
+    property playlist:          IPlaylist     read FPlaylist;
     property thumbSize:         integer       read FThumbSize       write FThumbSize;
     property statusBar:         TStatusBar                          write FStatusBar;
     property whichHost:         THostType     read getWhichHost;
@@ -75,8 +76,9 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.graphics,
-  mmpMPVFormatting,
   mmpFileUtils, mmpPanelCtrls, mmpUtils,
+  viewModel.mmpMPVFormatting,
+  model.mmpMediaInfo,
   _debugWindow;
 
 { TThumbs }
@@ -89,7 +91,7 @@ end;
 constructor TThumbs.create;
 begin
   inherited;
-  FPlaylist := TPlaylist.create;
+  FPlaylist := newPlaylist;
   FThumbs := TObjectList<TThumb>.create;
   FThumbs.ownsObjects := TRUE;
   FThumbSize := THUMB_DEFAULT_SIZE;
@@ -97,12 +99,13 @@ end;
 
 destructor TThumbs.Destroy;
 begin
-  case FPlaylist  = NIL of FALSE: FPlaylist.free; end;
+//  case FPlaylist  = NIL of FALSE: FPlaylist.free; end;
+  FPlaylist := NIL;
   case FThumbs    = NIL of FALSE: FThumbs.free;   end;
   inherited;
 end;
 
-function TThumbs.fillPlaylist(const aPlaylist: TPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+function TThumbs.fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
 begin
   case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
   case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(aCurrentFolder, [mtImage]); end;
@@ -244,7 +247,7 @@ begin
 
 
   case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: begin
-                                                                        MI.getMediaInfo(aURL);
+                                                                        MI.getMediaInfo(aURL, mtImage);
                                                                         mmpSetPanelText(FStatusBar, pnXXYY, format('%d x %d', [MI.imageWidth, MI.imageHeight]));
                                                                       end;
                                                                FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;

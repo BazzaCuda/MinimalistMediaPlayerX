@@ -1,5 +1,5 @@
-{   Minimalist Media Player
-    Copyright (C) 2021 Baz Cuda <bazzacuda@gmx.com>
+{   MMP: Minimalist Media Player
+    Copyright (C) 2021-2024 Baz Cuda <bazzacuda@gmx.com>
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
@@ -18,12 +18,29 @@
 }
 program MinimalistMediaPlayer;
 
+{$R *.res}
+
 {$R *.dres}
 
 uses
-  Vcl.Forms,
-  Vcl.Styles,
-  Vcl.Themes,
+  system.sysUtils,
+  vcl.dialogs,
+  vcl.extCtrls,
+  vcl.forms,
+  vcl.styles,
+  vcl.themes,
+  _debugWindow in '..\DebugWindow\_debugWindow.pas',
+  view.mmpFormMain in 'view.mmpFormMain.pas',
+  mmpNotify.notices in 'mmpNotify.notices.pas',
+  mmpNotify.notifier in 'mmpNotify.notifier.pas',
+  mmpNotify.subscriber in 'mmpNotify.subscriber.pas',
+  viewModel.mmpGlobalState in 'viewModel.mmpGlobalState.pas',
+  view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
+  mmpDesktopUtils in 'mmpDesktopUtils.pas',
+  view.mmpFormCaptions in 'view.mmpFormCaptions.pas',
+  view.mmpFormMainCaption in 'view.mmpFormMainCaption.pas',
+  mmpUtils in 'mmpUtils.pas',
+  mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
   MPVClient in 'libMPVDelphi\MPVClient.pas',
   MPVConst in 'libMPVDelphi\MPVConst.pas',
@@ -32,84 +49,133 @@ uses
   MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
   MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
   MPVTrack in 'libMPVDelphi\MPVTrack.pas',
-  mmpSingletons in 'mmpSingletons.pas',
-  ALProgressBar in 'ALProgressBar.pas',
-  mmpConsts in 'mmpConsts.pas',
-  MediaInfoDLL in 'MediaInfoDLL.pas',
-  formAboutBox in 'formAboutBox.pas' {AboutBoxForm},
-  formMediaCaption in 'formMediaCaption.pas' {MediaCaptionForm},
-  formCaptions in 'formCaptions.pas' {CaptionsForm},
-  formDownload in 'formDownload.pas' {DownloadForm},
-  formHelp in 'formHelp.pas' {HelpForm},
-  formInputBox in 'formInputBox.pas' {InputBoxForm},
-  formMain in 'formMain.pas' {MMPUI},
-  formPlaylist in 'formPlaylist.pas' {PlaylistForm},
-  formProgress in 'formProgress.pas' {ProgressForm},
-  formStreamList in 'formStreamList.pas' {StreamListForm},
-  formTimeline in 'formTimeline.pas' {TimelineForm},
-  TAppEventsClass in 'TAppEventsClass.pas',
-  TBookmarkClass in 'TBookmarkClass.pas',
-  TConfigFileClass in 'TConfigFileClass.pas',
-  TGlobalVarsClass in 'TGlobalVarsClass.pas',
-  mmpKeyboard in 'mmpKeyboard.pas',
-  TMediaInfoClass in 'TMediaInfoClass.pas',
-  TMediaPlayerClass in 'TMediaPlayerClass.pas',
-  TMediaTypesClass in 'TMediaTypesClass.pas',
-  TParamStringsClass in 'TParamStringsClass.pas',
-  TPlaylistClass in 'TPlaylistClass.pas',
-  TProgramUpdatesClass in 'TProgramUpdatesClass.pas',
-  TProgressBarClass in 'TProgressBarClass.pas',
-  TSegmentClass in 'TSegmentClass.pas',
-  TSendAllClass in 'TSendAllClass.pas',
-  mmpSysCommands in 'mmpSysCommands.pas',
-  TTickTimerClass in 'TTickTimerClass.pas',
-  TUICtrlsClass in 'TUICtrlsClass.pas',
-  _debugWindow in '..\DebugWindow\_debugWindow.pas',
-  TThumbsClass in 'TThumbsClass.pas',
-  formThumbs in 'formThumbs.pas' {ThumbsForm},
-  formReleaseNotes in 'formReleaseNotes.pas' {ReleaseNotesForm},
-  mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
-  mmpMPVCtrls in 'mmpMPVCtrls.pas',
-  mmpMPVFormatting in 'mmpMPVFormatting.pas',
-  mmpMPVProperties in 'mmpMPVProperties.pas',
-  mmpThumbsKeyboard in 'mmpThumbsKeyboard.pas',
-  TThumbClass in 'TThumbClass.pas',
+  model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
+  model.mmpConfigFile in 'model.mmpConfigFile.pas',
+  viewModel.mmpVM in 'viewModel.mmpVM.pas',
   mmpFileUtils in 'mmpFileUtils.pas',
-  mmpShellUtils in 'mmpShellUtils.pas',
-  mmpDesktopUtils in 'mmpDesktopUtils.pas',
-  mmpImageUtils in 'mmpImageUtils.pas',
-  mmpTransparentUtils in 'mmpTransparentUtils.pas',
-  mmpMathUtils in 'mmpMathUtils.pas',
+  ALProgressBar in 'ALProgressBar.pas',
+  view.mmpProgressBar in 'view.mmpProgressBar.pas',
+  viewModel.mmpMPVFormatting in 'viewModel.mmpMPVFormatting.pas',
+  model.mmpParamStrings in 'model.mmpParamStrings.pas',
   mmpDialogs in 'mmpDialogs.pas',
-  mmpPlaylistUtils in 'mmpPlaylistUtils.pas',
-  mmpUtils in 'mmpUtils.pas',
+  model.mmpPlaylist in 'model.mmpPlaylist.pas',
+  TlistHelperClass in 'TlistHelperClass.pas',
+  model.mmpMediaTypes in 'model.mmpMediaTypes.pas',
+  model.mmpMPVCtrls in 'model.mmpMPVCtrls.pas',
+  model.mmpMPVProperties in 'model.mmpMPVProperties.pas',
+  mmpTickTimer in 'mmpTickTimer.pas',
+  viewModel.mmpKeyboard in 'viewModel.mmpKeyboard.pas',
+  mmpConsts in 'mmpConsts.pas',
+  mmpShellUtils in 'mmpShellUtils.pas',
+  viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
+  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
+  model.mmpMixer in 'model.mmpMixer.pas',
+  view.mmpFormHelp in 'view.mmpFormHelp.pas',
+  mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
+  MediaInfoDLL in 'MediaInfoDLL.pas',
+  model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
+  TMediaStreamClass in 'TMediaStreamClass.pas',
+  view.mmpFormPlaylist in 'view.mmpFormPlaylist.pas',
+  viewModel.mmpSnapshot in 'viewModel.mmpSnapshot.pas',
+  model.mmpPlaylistUtils in 'model.mmpPlaylistUtils.pas',
+  model.mmpBookmark in 'model.mmpBookmark.pas',
+  view.mmpFormReleaseNotes in 'view.mmpFormReleaseNotes.pas',
+  mmpProgramUpdates in 'mmpProgramUpdates.pas',
+  view.mmpFormDownload in 'view.mmpFormDownload.pas',
+  mmpFormInputBox in 'mmpFormInputBox.pas',
+  view.mmpFormProgress in 'view.mmpFormProgress.pas',
+  mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
+  view.mmpFormAbout in 'view.mmpFormAbout.pas',
+  mmpWindowUtils in 'mmpWindowUtils.pas',
+  mmpFolderNavigation in 'mmpFolderNavigation.pas',
+  mmpFolderUtils in 'mmpFolderUtils.pas',
+  model.mmpUndoMove in 'model.mmpUndoMove.pas',
+  view.mmpFormTimeline in 'view.mmpFormTimeline.pas',
+  TSegmentClass in 'TSegmentClass.pas',
+  view.mmpFormStreamList in 'view.mmpFormStreamList.pas',
+  mmpImageUtils in 'mmpImageUtils.pas',
+  view.mmpFormThumbs in 'view.mmpFormThumbs.pas',
+  mmpThumbsKeyboard in 'mmpThumbsKeyboard.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
+  TThumbsClass in 'TThumbsClass.pas',
+  TThumbClass in 'TThumbClass.pas',
   mmpThumbUtils in 'mmpThumbUtils.pas',
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
-  mmpTicker in 'mmpTicker.pas',
-  mmpFolderNavigation in 'mmpFolderNavigation.pas',
-  mmpWindowCtrls in 'mmpWindowCtrls.pas',
-  mmpUserFolders in 'mmpUserFolders.pas',
-  mmpFolderUtils in 'mmpFolderUtils.pas',
-  TUndoMoveClass in 'TUndoMoveClass.pas',
-  mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
-  TMediaStreamClass in 'TMediaStreamClass.pas',
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
-  TMixerClass in 'TMixerClass.pas',
-  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
-  TListHelperClass in 'TListHelperClass.pas';
+  mmpUserFolders in 'mmpUserFolders.pas',
+  mmpTicker in 'mmpTicker.pas';
 
-{$R *.res}
+function checkParam: boolean;
+begin
+  result := FALSE;
+  case PS.noFile of TRUE:  begin
+                                mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
+                                                    + 'or to permanently associate media file types with this application.'#13#10#13#10
+                                                    + 'Alternatively, you can drag and drop a media file onto the window.',
+                                                      mtInformation, [MBOK]); end;end;
+  result := TRUE;
+
+end;
+
+function initUI(const aMainForm: TForm): boolean;
+var
+  vVideoPanel: TPanel;
+begin
+  result := FALSE;
+  mmpThemeInitForm(aMainForm);
+  vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
+  MMPUI.viewModel               := newViewModel;
+  MMPUI.viewModel.mediaPlayer   := newMediaPlayer;
+  MMPUI.viewModel.initUI(aMainForm, vVideoPanel);
+
+  MC(aMainForm).initCaption(vVideoPanel, CF.asInteger['caption']);      // single caption at the top of the window
+  ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger['timeCaption']); // multiple captions at the bottom of the window
+
+  MMPUI.viewModel.progressBar   := newProgressBar.initProgressBar(ST.captionsForm, CF.asInteger['progressBar'], 0);
+  result := TRUE;
+end;
+
+function checkBrowser: boolean;
+begin
+  result := FALSE;
+
+  case (lowerCase(CF['openImage']) = 'browser') of FALSE: EXIT; end;
+
+  var vMediaType := MT.mediaType(notifyApp(newNotice(evPLReqCurrentItem)).text);
+
+  case vMediaType of mtImage: notifyApp(newNotice(evVMImageInBrowser)); end;
+
+  result := TRUE;
+end;
 
 begin
-  ReportMemoryLeaksOnShutdown := FALSE;
+  reportMemoryLeaksOnShutdown   := TRUE;
   debugClear;
 
-  Application.Initialize;
-  Application.ShowMainForm := FALSE;
-  Application.MainFormOnTaskbar := TRUE;
-  TStyleManager.TrySetStyle('Charcoal Dark Slate');
-  application.title := 'MMP: Minimalist Media Player';
+  application.initialize;
+  application.showMainForm      := FALSE;
+  application.mainFormOnTaskbar := TRUE;
+  TStyleManager.trySetStyle('Charcoal Dark Slate');
+  application.title             := 'MMP: Minimalist Media Player';
+
+  checkParam;
+
+  CF.initConfigFile(mmpConfigFilePath);
+
   Application.CreateForm(TMMPUI, MMPUI);
-  Application.Run;
+  notifyApp(newNotice(evGSMainForm, MMPUI));
+
+  initUI(MMPUI);
+
+  MMPUI.viewModel.playlist      := newPlaylist;
+
+  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder));
+
+  case notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
+
+  MMPUI.viewModel.showUI;
+
+  checkBrowser;
+
+  application.Run;
 end.

@@ -55,6 +55,8 @@ type
     TiledBarBitmap: TBitmap;
     fPercentage: Boolean;
     FOnHintShow: TShowHintEvent; // BAZ
+    FPainting: boolean; // BAZ
+    FPaintingBar: boolean; // BAZ
     procedure PaintBorder;
     procedure PaintPosText;
     procedure SetBorderColor1(const Value: TColor);
@@ -86,33 +88,33 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property BackgroundColor: TColor        read fBackgroundColor       write SetBackgroundColor      default clBtnFace;
-    property BarBitmap: TBitmap             read fBarBitmap             write SetBarBitmap;
-    property BarColor1: TColor              read fBarColor1             write SetBarColor1            default clGreen;
-    property BarColor2: TColor              read fBarColor2             write SetBarColor2            default clYellow;
-    property BarColor3: TColor              read fBarColor3             write SetBarColor3            default clRed;
-    property BarColorStyle: TBarColorStyle  read fBarColorStyle         write SetBarColorStyle        default cs3Colors;
-    property BorderColor1: TColor           read fBorderColor1          write SetBorderColor1         default clBtnShadow;
-    property BorderColor2: TColor           read fBorderColor2          write SetBorderColor2         default clBtnHighlight;
+    property backgroundColor: TColor        read fBackgroundColor       write SetBackgroundColor      default clBtnFace;
+    property barBitmap: TBitmap             read fBarBitmap             write SetBarBitmap;
+    property barColor1: TColor              read fBarColor1             write SetBarColor1            default clGreen;
+    property barColor2: TColor              read fBarColor2             write SetBarColor2            default clYellow;
+    property barColor3: TColor              read fBarColor3             write SetBarColor3            default clRed;
+    property barColorStyle: TBarColorStyle  read fBarColorStyle         write SetBarColorStyle        default cs3Colors;
+    property borderColor1: TColor           read fBorderColor1          write SetBorderColor1         default clBtnShadow;
+    property borderColor2: TColor           read fBorderColor2          write SetBorderColor2         default clBtnHighlight;
     property Direction: TProgressDirection  read fDirection             write SetDirection            default pdLeftToRight;
-    property Max: Integer                   read fMax                   write SetMax                  default 100;
-    property Min: Integer                   read fMin                   write SetMin                  default 0;
-    property Percentage: Boolean            read fPercentage            write SetPercentage           default False;
-    property Position: Integer              read fPosition              write SetPosition             default 0;
-    property PosTextPrefix: String          read fPosTextPrefix         write SetPosTextPrefix;
-    property PosTextSuffix: String          read fPosTextSuffix         write SetPosTextSuffix;
-    property ShowBorder: Boolean            read fShowBorder            write SetShowBorder           default True;
-    property ShowPosText: Boolean           read fShowPosText           write SetShowPosText          default True;
-    property Align;
-    property Font;
-    property ParentShowHint;
-    property ShowHint;
-    property Visible;
-    property OnClick;
-    property OnDblClick;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
+    property max: Integer                   read fMax                   write SetMax                  default 100;
+    property min: Integer                   read fMin                   write SetMin                  default 0;
+    property percentage: Boolean            read fPercentage            write SetPercentage           default False;
+    property position: Integer              read fPosition              write SetPosition             default 0;
+    property posTextPrefix: String          read fPosTextPrefix         write SetPosTextPrefix;
+    property posTextSuffix: String          read fPosTextSuffix         write SetPosTextSuffix;
+    property showBorder: Boolean            read fShowBorder            write SetShowBorder           default True;
+    property showPosText: Boolean           read fShowPosText           write SetShowPosText          default True;
+    property align;
+    property font;
+    property parentShowHint;
+    property showHint;
+    property visible;
+    property onClick;
+    property onDblClick;
+    property onMouseDown;
+    property onMouseMove;
+    property onMouseUp;
     property onHintShow: TShowHintEvent read FOnHintShow write FOnHintShow; // BAZ
   end;
 
@@ -175,12 +177,14 @@ end;
 procedure TALProgressBar.Paint;
 begin
   inherited;
+  case FPainting of TRUE: EXIT; end;  // BAZ - prevent Out of Resources error
+  FPainting := TRUE;                  // BAZ
 
   MainBitmap.Width := Width;
   MainBitmap.Height := Height;
 
   if not(csReading in ComponentState) then
-    PaintBar(RegenerateBitmap);
+    PaintBar(RegenerateBitmap);       // BAZ - causes Out of Resources loop
 
   if fShowBorder then
     PaintBorder;
@@ -189,6 +193,8 @@ begin
     PaintPosText;
 
   Canvas.Draw(0, 0, MainBitmap);
+
+  FPainting := FALSE;                 // BAZ
 end;
 
 procedure TALProgressBar.PaintBar(RegenerateBitmap: Boolean);
@@ -196,6 +202,9 @@ var
   BarLength, BarPixelLength, EmptySpaceLength: Integer;
   AreaTop, AreaBottom, AreaLeft, AreaRight: Integer;
 begin
+  case FPaintingBar of TRUE: EXIT; end;  // BAZ - prevent Out of Resources error
+  FPaintingBar := TRUE;                  // BAZ
+
   if (fBarBitmap <> nil) and NOT fBarBitmap.Empty then
   begin
     if RegenerateBitmap then
@@ -267,6 +276,8 @@ begin
     MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaBottom-EmptySpaceLength, AreaRight, AreaBottom))
   else if fDirection = pdBottomToTop then
     MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaTop, AreaRight, AreaTop+EmptySpaceLength));
+
+  FPaintingBar := FALSE;                 // BAZ
 end;
 
 procedure TALProgressBar.DrawColorBlending;

@@ -21,40 +21,26 @@ unit mmpConsts; // and Types
 interface
 
 uses
-  winApi.messages,
+  winApi.messages, winApi.windows,
+  system.classes,
   vcl.extCtrls;
 
 const
-  MENU_ABOUT_ID   = WM_USER + 2001;
-  MENU_HELP_ID    = WM_USER + 2002;
+  BACKSLASH           = '\';
+  MPV_ERROR_SUCCESS   = 0;
 
-  WIN_CLOSEAPP       = WM_APP + 2003;
-  WIN_RESIZE         = WM_APP + 2004;
-  WIN_POSITION       = WM_APP + 2005;
-  WIN_CONTROLS       = WM_APP + 2006;
-  WIN_RESTART        = WM_APP + 2007;
-  WIN_TAB            = WM_APP + 2008;
-  WIN_TABTAB         = WM_APP + 2009;
-  WIN_TABALT         = WM_APP + 2010;
-  WIN_CAPTION        = WM_APP + 2011;
-  WIN_PAUSE_PLAY     = WM_APP + 2012;
-  WIN_GREATER        = WM_APP + 2013;
-  WIN_AUTOCENTRE_OFF = WM_APP + 2014;
-  WIN_MAX_SIZE_OFF   = WM_APP + 2015;
-  WIN_SYNC_MEDIA     = WM_APP + 2016;
-
-  WM_PROGRESSBAR_CLICK   = WM_USER + 2101;
-  WM_TICK                = WM_USER + 2102;
-  WM_ADJUST_ASPECT_RATIO = WM_USER + 2103;
-  WM_USER_CENTRE_WINDOW  = WM_USER + 2104;
-  WM_AUTO_CENTRE_WINDOW  = WM_USER + 2105;
-  WM_KEY_UP              = WM_USER + 2106;
-  WM_CHECK_SCREEN_LIMITS = WM_USER + 2107;
-  WM_SMALLER_WINDOW      = WM_USER + 2108;
-  WM_PLAY_CURRENT_ITEM   = WM_USER + 2109;
-  WM_SHOW_WINDOW         = WM_USER + 2110;
-  WM_PROCESS_MESSAGES    = WM_USER + 2111;
-  WM_CENTRE_CURSOR       = WM_USER + 2112;
+  WIN_AUTOCENTER_OFF  = WM_APP + 2001;
+  WIN_CAPTION         = WM_APP + 2002;
+  WIN_CLOSEAPP        = WM_APP + 2003;
+  WIN_GREATER         = WM_APP + 2004;
+  WIN_MAX_SIZE_OFF    = WM_APP + 2005;
+  WIN_PAUSE_PLAY      = WM_APP + 2006;
+  WIN_RESIZE          = WM_APP + 2007;
+  WIN_START_OVER      = WM_APP + 2008;
+  WIN_SYNC_MEDIA      = WM_APP + 2009;
+  WIN_TAB             = WM_APP + 2010;
+  WIN_TABTAB          = WM_APP + 2011;
+  WIN_TOGGLE_CONTROLS = WM_APP + 2012;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
@@ -83,13 +69,47 @@ const
 
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
+var
+  nopoint: TPoint;
+
 type
+  TKeyOp = (koNone,
+            koCloseApp, koVolUp, koVolDn, koTab, koTabTab, koPausePlay, koFrameForwards, koFrameBackwards, koBrightnessUp, koBrightnessDn,
+            koZoomIn, koZoomOut, koStartOver, koShowCaption, koMuteUnmute, koPlayFirst, koPlayNext, koPlayPrev, koPlayLast, koPanLeft,
+            koPanRight, koPanUp, koPanDn, koRotateR, koRotateL, koFullscreen, koZoomReset, koGreaterWindow, koToggleControls, koRunPot,
+            koRunCut, koRunShot, koToggleProgressBar, koCentreWindow, koMinimizeWindow, koDeleteCurrentItem, koRenameFile, koSpeedUp, koSpeedDn, koSpeedReset,
+            koEscape, koClipboard, koKeep, koReloadPlaylist, koPanReset, koBrightnessReset, koBookmarkSave, koBookmarkLoad, koBookmarkDelete, koRotateReset,
+            koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koResetAll,
+            koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
+            koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
+            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax);
+
+  TKeyDirection = (kdDn, kdUp);
+  TRenameType   = (rtUser, rtKeep);
+
+  TSnapshot = record
+    key:              WORD;
+    shiftState:       TShiftState;
+    keyDirection:     TKeyDirection;
+    keyOp:            TKeyOp;
+    handled:          boolean;
+  end;
+
   TMediaType = (mtUnk, mtAudio, mtVideo, mtImage);
   TMediaTypeRec = record
     mimeType: string;
     mediaType: TMediaType;
     typeName: string;
     fileExts: string;
+  end;
+
+  THelpType = (htMain, htImages);
+  TWndRec = record
+    HWND:       HWND;
+    pt:         TPoint;
+    height:     integer;
+    helpType:   THelpType;
+    createNew:  boolean;
   end;
 
   TFnnKeyApp = (F10_APP, F11_APP, F12_APP);
@@ -214,5 +234,11 @@ const
 );
 
 implementation
+
+uses
+  system.types;
+
+initialization
+  noPoint := point(0, 0);
 
 end.

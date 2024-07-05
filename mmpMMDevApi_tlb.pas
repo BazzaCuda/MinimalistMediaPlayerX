@@ -99,7 +99,7 @@ type
   ['{0BD7A1BE-7A1A-44DB-8397-CC5392387B5E}']
   end;
 
-  IMMNotificationClient = interface (IUnknown)
+  IMMNoticeClient = interface (IUnknown)
   ['{7991EEC9-7E89-4D85-8390-6C703CEC60C0}']
   end;
 
@@ -108,7 +108,7 @@ type
     Function EnumAudioEndpoints( dataFlow: EDataFlow; deviceState: SYSUINT; DevCollection:IMMDeviceCollection ): Hresult ; stdcall;
     Function GetDefaultAudioEndpoint(EDF: SYSUINT; ER: SYSUINT; out Dev :IMMDevice ): Hresult ; stdcall;
     Function GetDevice( pwstrId: pointer ; out Dev :IMMDevice) : HResult; stdcall;
-    Function RegisterEndpointNotificationCallback(pClient :IMMNotificationClient) :Hresult; stdcall;
+    Function RegisterEndpointNoticeCallback(pClient :IMMNoticeClient) :Hresult; stdcall;
   end;
 
 implementation

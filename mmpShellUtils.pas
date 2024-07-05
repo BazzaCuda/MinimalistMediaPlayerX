@@ -21,7 +21,8 @@ unit mmpShellUtils;
 interface
 
 uses
-  mmpConsts;
+  mmpConsts, mmpUtils,
+  model.mmpConfigFile;
 
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
@@ -32,7 +33,7 @@ implementation
 uses
   winApi.windows, winApi.shellApi,
   system.sysUtils,
-  mmpFileUtils, mmpSingletons, mmpUtils;
+  mmpFileUtils;
 
 function mmpDoCommandLine(const aCommandLIne: string): boolean;
 // Create a cmd.exe process to execute any command line
@@ -59,8 +60,6 @@ end;
 
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 begin
-  MP.pause;
-
   var vAppPath := CF[mmpFnnKeyAppToString(aFnnKeyApp)]; // has the user overridden the default app in the config file?
 
   case vAppPath = '' of TRUE: case aFnnKeyApp of // No
@@ -70,7 +69,6 @@ begin
 
   mmpShellExec(vAppPath, aParams);
 end;
-
 
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 begin

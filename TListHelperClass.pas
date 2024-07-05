@@ -40,6 +40,7 @@ uses
 
 function TListHelper.naturalSort: boolean;
 begin
+  result := FALSE;
   SELF.sort(
             TComparer<string>.construct(
                                         function(const a, b: string): integer
@@ -48,7 +49,7 @@ begin
                                         end
                                        )
            );
-
+  result := TRUE;
 end;
 
 end.

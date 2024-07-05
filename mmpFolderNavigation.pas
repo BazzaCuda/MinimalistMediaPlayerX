@@ -89,21 +89,21 @@ begin
                     ix := folderList.indexOf(aPrevFolderPath); //  ... otherwise find the previous used in the list of subfolders...
                     case ix + 1 <= folderList.Count - 1 of    //  ... and return the next one if there is one...
                       TRUE: result := folderList[ix + 1];
-                     FALSE: result := mmpNextFolder(extractFilePath(RTBS(aFolderPath)), aDirection, bAllowIntoWindows, aFolderPath); end;  //  ...if this is the end of the subfolders go back up a level
+                     FALSE: result := mmpNextFolder(extractFilePath(mmpRTBS(aFolderPath)), aDirection, bAllowIntoWindows, aFolderPath); end;  //  ...if this is the end of the subfolders go back up a level
                   end;
           end;
                 end;
-         FALSE: result := mmpNextFolder(extractFilePath(RTBS(aFolderPath)), aDirection, bAllowIntoWindows, aFolderPath); end; // no subfolders so go back up a level
+         FALSE: result := mmpNextFolder(extractFilePath(mmpRTBS(aFolderPath)), aDirection, bAllowIntoWindows, aFolderPath); end; // no subfolders so go back up a level
             end;
 
      FALSE:
 
       case aDirection = nfBackwards of TRUE: begin
-        findSubFolders(folderList, extractFilePath(RTBS(aFolderPath)), bAllowIntoWindows);  //  get this subfolder's siblings
+        findSubFolders(folderList, extractFilePath(mmpRTBS(aFolderPath)), bAllowIntoWindows);  //  get this subfolder's siblings
         ix := folderList.indexOf(aFolderPath);                           //  find this subfolder's position in the list
         case ix - 1 >= 0 of                                              //  if there is a previous sibling, get its deepest subfolder
           TRUE: result := deepestSubFolder(FolderList[ix - 1]);
-         FALSE: result := extractFilePath(RTBS(AFolderPath)); end;       //  otherwise just go up one level
+         FALSE: result := extractFilePath(mmpRTBS(AFolderPath)); end;       //  otherwise just go up one level
       end;end;
     end;
 

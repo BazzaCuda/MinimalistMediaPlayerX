@@ -21,12 +21,13 @@ unit mmpFileUtils;
 interface
 
 uses
-  system.classes;
+  system.classes, system.sysUtils,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpConfigFilePath: string;
-function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const deleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState): boolean;
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
@@ -40,11 +41,11 @@ implementation
 
 uses
   winApi.windows,
-  system.sysUtils, system.IOUtils,
-  vcl.dialogs, vcl.forms,
-  mmpConsts, mmpDialogs, mmpShellUtils, mmpSingletons, mmpUserFolders, mmpUtils,
-  formInputBox,
-  _debugWindow;
+  system.ioUtils,
+  vcl.dialogs,
+  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpShellUtils, mmpUtils,
+  model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
+
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 begin
@@ -66,7 +67,20 @@ begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
 end;
 
-function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const deleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
+function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState): boolean;
+begin
+  result := FALSE;
+
+  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(aFilePath);
+  case ssCtrl in aShiftState of  TRUE: vMsg := 'DELETE folder contents '#13#10#13#10'Folder: ' + extractFilePath(aFilePath) + '*.*';
+                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(aFilePath); end;
+
+  case ssCtrl in aShiftState of TRUE: vMsg := vMsg + #13#10#13#10'(doesn''t affect the contents of subfolders)'; end;
+
+  result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
+end;
+
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
 var
   vDestFile: string;
   vDestFolder: string;
@@ -91,8 +105,8 @@ begin
       end;
 
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
-      case result and DeleteIt of TRUE: begin
-                                          mmpDeleteThisFile(aFilePath, []);
+      case result and bDeleteIt of TRUE: begin
+                                          mmpDeleteThisFile(aFilePath, [], bDeleteIt);
                                           case aRecordUndo of TRUE: UM.recordUndo(aFilePath, vDestFile); end;
                                         end;end;
     end;end;
@@ -100,31 +114,9 @@ begin
   end;
 end;
 
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState): boolean;
-// performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
-var vSysMessage: string;
-begin
-  result := FALSE;
-
-  case mmpIsFileInUse(aFilePath, vSysMessage) of TRUE:  begin
-                                                          mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 +
-                                                                                'This file won''t be deleted'#13#10#13#10 +
-                                                                                vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
-                                                          EXIT; end;end;
-
-  case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
-                                                            mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
-                                                            EXIT; end;end;
-
-  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
-                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
-
-  result := TRUE;
-end;
-
 function mmpExePath: string;
 begin
-  result := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
+  result := mmpITBS(extractFilePath(paramStr(0)));
 end;
 
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
@@ -132,11 +124,38 @@ begin
   result := TPath.getFileNameWithoutExtension(aFilePath);
 end;
 
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
+// performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
+var vSysMessage: string;
+begin
+  result := FALSE;
+
+  case bDeleteIt of FALSE: begin
+    case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
+                                                              mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
+                                                              EXIT; end;end;
+
+    case mmpConfirmDelete(aFilePath, aShiftState) of FALSE: EXIT; end;
+  end;end;
+
+  case mmpIsFileInUse(aFilePath, vSysMessage) of TRUE:  begin
+                                                          mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 +
+                                                                                'This file won''t be deleted or moved'#13#10#13#10 +
+                                                                                vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
+                                                          EXIT; end;end;
+
+  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
+                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
+
+  result := TRUE;
+end;
+
 function mmpFileSize(const aFilePath: string): int64;
 var
   vHandle:  THandle;
   vRec:     TWin32FindData;
 begin
+  result := -1;
   vHandle := findFirstFile(PChar(aFilePath), vRec);
   case vHandle <> INVALID_HANDLE_VALUE of TRUE: begin
                                                   winAPI.windows.findClose(vHandle);
@@ -185,40 +204,9 @@ begin
                                   end;end;
 end;
 
-
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 begin
   result := NOT aFilePath.contains('''') AND NOT aFilePath.contains('&');
-end;
-
-function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
-// the user gets to edit the filename part without the path and the extension
-var
-  vOldFileNamePart: string;
-  vExt:             string;
-  s:                string;
-  vNewFilePath:     string;
-begin
-  result := aFilePath; // indicates failure
-  try
-    vOldFileNamePart  := extractFileName(aFilePath);
-    vExt              := extractFileExt(vOldFileNamePart);
-    vOldFileNamePart  := mmpFileNameWithoutExtension(vOldFileNamePart);
-
-    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
-                                   FALSE: begin
-                                            try
-                                              s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
-                                            finally
-                                            end;end;end;
-  except
-    s := '';   // any funny business, force the rename to be abandoned
-  end;
-  case (s = '') OR (s = vOldFileNamePart) of TRUE: EXIT; end; // nothing to do
-
-  vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
-  case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
-                                                              FALSE: showMessage('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror)); end;
 end;
 
 function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
@@ -250,8 +238,8 @@ begin
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
   case CF.asBoolean['keepDelete'] of FALSE: begin
                                               var vMsg := 'keepDelete=no'#13#10#13#10;
-                                              vMsg := vMsg + 'To use this functionality, you must explicitly'#13#10;
-                                              vMsg := vMsg + 'enable it in MinimalistMediaPlayer.conf with keepDelete=yes';
+                                              vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
+                                              vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
                                               mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                               EXIT; end;end;
 
@@ -272,5 +260,36 @@ begin
   system.sysUtils.FindClose(vSR);
   result := TRUE;
 end;
+
+function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+// the user gets to edit the filename part without the path and the extension
+var
+  vOldFileNamePart: string;
+  vExt:             string;
+  s:                string;
+  vNewFilePath:     string;
+begin
+  result := aFilePath; // indicates failure
+  try
+    vOldFileNamePart  := extractFileName(aFilePath);
+    vExt              := extractFileExt(vOldFileNamePart);
+    vOldFileNamePart  := mmpFileNameWithoutExtension(vOldFileNamePart);
+
+    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
+                                   FALSE: begin
+                                            try
+                                              s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
+                                            finally
+                                            end;end;end;
+  except
+    s := '';   // any funny business, force the rename to be abandoned
+  end;
+  case (s = '') OR (s = vOldFileNamePart) of TRUE: EXIT; end; // nothing to do
+
+  vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
+  case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
+                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror), mtError, [mbOK]); end;
+end;
+
 
 end.

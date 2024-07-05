@@ -106,8 +106,8 @@ type
     m_sCurVTrk, m_sCurATrk, m_sCurSTrk: string;  // Current track IDs
 
   protected
-    procedure MPVGetMem(var P: Pointer; nSize: Integer); inline;
-    procedure MPVFreeMem(P: Pointer); inline;
+    procedure MPVGetMem(var P: Pointer; nSize: Integer);
+    procedure MPVFreeMem(P: Pointer);
     function HandleError(nCode: Integer; const sFunc: string;
       bRaise: Boolean=False): TMPVErrorCode;
 
@@ -142,8 +142,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure Lock; inline;
-    procedure Unlock; inline;
+    procedure Lock;
+    procedure Unlock;
     procedure NotifyFree; virtual; // Only notify to free, no wait
 
     // Initialize player, bind MPV with window handle
@@ -181,7 +181,7 @@ type
     // Open file/URL to play
     function OpenFile(const sFullName: string): TMPVErrorCode;
     // Get MPV current state
-    function GetState: TMPVPlayerState; inline;
+    function GetState: TMPVPlayerState;
     // Pause video
     function Pause: TMPVErrorCode;
     // Resume play
@@ -383,10 +383,11 @@ end;
 
 constructor TMPVBasePlayer.Create;
 begin
+  inherited Create; // BAZ
   m_cLock := SyncObjs.TCriticalSection.Create;
   m_cTrackList := TMPVTrackList.Create();
   m_eState := mpsUnk;
-  inherited Create;
+//  inherited Create;
 end;
 
 destructor TMPVBasePlayer.Destroy;

@@ -36,7 +36,7 @@ implementation
 
 uses
   vcl.forms,
-  mmpSingletons,
+  viewModel.mmpGlobalState,
   _debugWindow;
 
 function mmpBorderWidth: integer;
@@ -65,7 +65,7 @@ end;
 function mmpScreenHeight: integer;
 begin
   var vRect := screen.WorkAreaRect; // the screen minus the taskbar
-  result := vRect.height - GV.timelineHeight;
+  result := vRect.height - GS.timelineHeight;
 end;
 
 function mmpScreenWidth: integer;
@@ -75,8 +75,9 @@ end;
 
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 begin
+  result := FALSE;
   var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
-  vR.height := vR.height - GV.timelineHeight;
+  vR.height := vR.height - GS.timelineHeight;
   result := (aWidth <= vR.width) AND (aHeight <= vR.height);
 end;
 
@@ -84,9 +85,11 @@ function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: i
 var
   vR: TRect;
 begin
+  result := FALSE;
   getWindowRect(aWnd, vR);
   aWidth  := vR.width;
-  aHeight := vR.height;
+  aHeight := vR.height - GS.timelineHeight;
+  result := TRUE;
 end;
 
 end.
