@@ -431,7 +431,6 @@ begin
 end;
 
 function TUI.minimizeWindow: boolean;
-
 begin
    postMessage(UI.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
@@ -572,6 +571,7 @@ var
 
   function adjustWidthForAspectRatio: boolean;
   begin
+//    debugFormat('getMediaInfo MP.x:%d, MP.y:%d', [MP.videoWidth, MP.videoHeight]);
     case (MP.videoWidth = 0) or (MP.videoHeight = 0) of TRUE: EXIT; end;
     vWidth := trunc(vHeight / MP.videoHeight * MP.videoWidth);
   end;

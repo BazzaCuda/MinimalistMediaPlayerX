@@ -267,14 +267,14 @@ end;
 
 procedure TTimelineForm.pnlCursorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  if FDragging then cursorPos := cursorPos + (X - pnlCursor.Width div 2);
-  if FDragging then PB.setNewPosition(cursorPos);
+  case FDragging of TRUE: begin
+                            cursorPos := cursorPos + (X - pnlCursor.Width div 2);
+                            PB.setNewPosition(cursorPos); end;end;
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FDragging := FALSE;
-  PB.setNewPosition(cursorPos);
 end;
 
 procedure TTimelineForm.setCursorPos(const Value: integer);
