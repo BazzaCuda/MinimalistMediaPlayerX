@@ -383,7 +383,9 @@ begin
   notifyApp(newNotice(evHelpMoveHelp, wr));
 
   // FormResize calls moveHelp so this will get called repeatedly until both windows fit the desktop
-  case mmpWithinScreenLimits(SELF.width + GS.widthHelp, SELF.height) of FALSE: mmpGreaterWindow(SELF.handle, [ssCtrl], FThumbs.thumbSize, whichHost); end; // ssCtrl makes the window smaller
+  case mmpWithinScreenLimits(SELF.width + GS.widthHelp, SELF.height) of FALSE:  begin
+                                                                                  mmpGreaterWindow(SELF.handle, [ssCtrl], FThumbs.thumbSize, whichHost); // ssCtrl makes the window smaller
+                                                                                  mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;end; // ignore GS.autoCenter
 end;
 
 function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;

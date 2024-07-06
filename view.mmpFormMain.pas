@@ -98,7 +98,7 @@ begin
   case msg.message = WM_LBUTTONUP   of TRUE: FViewModel.onMouseUp(mbLeft, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_RBUTTONDOWN of TRUE: FViewModel.onMouseDown(mbRight, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_RBUTTONUP   of TRUE: FViewModel.onMouseUp(mbRight, mmpShiftState, msg.pt.x, msg.pt.Y); end;
-  case msg.message = WM_MOUSEMOVE   of TRUE: FViewModel.onMouseMove(mmpShiftState, msg.pt.x, msg.pt.Y); end;
+  case msg.message = WM_MOUSEMOVE   of TRUE: FViewModel.onMouseMove(msg.hwnd, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_KEYDOWN     of TRUE: FViewModel.onKeyDown(WORD(msg.WParam), mmpShiftState); end;
   case msg.message = WM_KEYUP       of TRUE: FViewModel.onKeyUp(WORD(msg.WParam), mmpShiftState); end;
 end;

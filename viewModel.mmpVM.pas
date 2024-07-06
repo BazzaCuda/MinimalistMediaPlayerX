@@ -50,7 +50,7 @@ type
     procedure   onKeyDown(Key: Word; Shift: TShiftState);
     procedure   onKeyUp(Key: Word; Shift: TShiftState);
     procedure   onMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure   onMouseMove(Shift: TShiftState; X, Y: Integer);
+    procedure   onMouseMove(aHWND: HWND; Shift: TShiftState; X, Y: Integer);
     procedure   onMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure   onMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure   onMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
@@ -139,7 +139,7 @@ type
     procedure   onKeyDown(key: Word; Shift: TShiftState);
     procedure   onKeyUp(key: Word; Shift: TShiftState);
     procedure   onMouseDown(button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure   onMouseMove(shift: TShiftState; X, Y: Integer);
+    procedure   onMouseMove(aHWND: HWND; shift: TShiftState; X, Y: Integer);
     procedure   onMouseUp(button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure   onMouseWheelDown(shift: TShiftState; mousePos: TPoint; var Handled: Boolean);
     procedure   onMouseWheelUp(shift: TShiftState; mousePos: TPoint; var Handled: Boolean);
@@ -438,11 +438,11 @@ begin
   case button = mbLeft of TRUE: begin mouseDown := TRUE; setStartPoint(GS.mainForm.handle); end;end;
 end;
 
-procedure TVM.onMouseMove(shift: TShiftState; X, Y: Integer);
+procedure TVM.onMouseMove(aHWND: HWND; shift: TShiftState; X, Y: Integer);
 begin
   screen.cursor := crDefault;
-  case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
-  case mouseDown of TRUE: dragUI(GS.mainForm.handle); end;
+//  case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
+  case mouseDown and (aHWND = FVideoPanel.handle) of TRUE: dragUI(GS.mainForm.handle); end;
 end;
 
 procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer);
