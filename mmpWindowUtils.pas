@@ -252,7 +252,7 @@ var
   function alreadyCentred: boolean;
   begin
     result  := FALSE;
-    var vDelta := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist);
+    var vDelta := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
     vHPos   := (mmpScreenWidth  - vR.width - vDelta) div 2;
     vVPos   := (mmpScreenHeight - vR.height) div 2;
     result  := (vR.left = vHPos) and (vR.top = vVPos);

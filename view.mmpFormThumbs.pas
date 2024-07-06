@@ -381,6 +381,9 @@ begin
   wr.createNew  := bCreateNew;
 
   notifyApp(newNotice(evHelpMoveHelp, wr));
+
+  // FormResize calls moveHelp so this will get called repeatedly until both windows fit the desktop
+  case mmpWithinScreenLimits(SELF.width + GS.widthHelp, SELF.height) of FALSE: mmpGreaterWindow(SELF.handle, [ssCtrl], FThumbs.thumbSize, whichHost); end; // ssCtrl makes the window smaller
 end;
 
 function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
@@ -824,7 +827,7 @@ begin
     koSpeedUp:            speedUp;
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
-    koToggleHelp:         case GS.showingHelp of TRUE: notifyApp(newNotice(evHelpShutHelp)); FALSE: moveHelpWindow(TRUE); end;
+    koToggleHelp:         begin case GS.showingHelp of TRUE: notifyApp(newNotice(evHelpShutHelp)); FALSE: moveHelpWindow(TRUE); end; autoCenter; end;
     koToggleNumlock:      mmpToggleNumlock;
     koUndoMove:           undoMove;
     koWiki:               mmpShellExec('https://minimalistmediaplayer.com');
