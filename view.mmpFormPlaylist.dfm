@@ -24,6 +24,15 @@ object PlaylistForm: TPlaylistForm
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    object lblFolder: TLabel
+      Left = 0
+      Top = 559
+      Width = 556
+      Height = 13
+      Align = alBottom
+      Caption = 'Folder:'
+      ExplicitWidth = 34
+    end
     object buttonPanel: TPanel
       Left = 0
       Top = 572

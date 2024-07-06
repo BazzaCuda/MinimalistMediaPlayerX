@@ -39,6 +39,7 @@ type
     moveLabel: TLabel;
     LB: TListBox;
     ApplicationEvents: TApplicationEvents;
+    lblFolder: TLabel;
     procedure FormCreate(sender: TObject);
     procedure LBDblClick(sender: TObject);
     procedure LBKeyPress(sender: TObject; var key: Char);
@@ -137,6 +138,12 @@ begin
   borderStyle       := bsNone;
   LB.onDblClick     := LBDblClick;
   LB.onKeyUp        := LBKeyUp;
+
+  lblFolder.margins.bottom    := 4;
+  lblFolder.alignWithMargins  := TRUE;
+  lblFolder.font.color        := DARK_MODE_SILVER;
+  lblFolder.font.style        := [fsBold];
+  lblFolder.autoSize          := FALSE;
 end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
@@ -198,6 +205,7 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
+  lblFolder.caption := 'Folder: ';
   LB.items.beginUpdate; // prevent flicker when moving the window
 
   try
@@ -207,6 +215,7 @@ begin
   finally
     LB.items.endUpdate;
   end;
+  case LB.items.count > 0 of TRUE: lblFolder.caption := format('Folder: %s', [notifyApp(newNotice(evPLReqCurrentFolder)).text]); end;
 end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
@@ -250,7 +259,8 @@ begin
   FPlaylistForm := createForm(wr.createNew);
   case FPlaylistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
   GS.notify(newNotice(evGSShowingPlaylist, TRUE));
-  case wr.height > UI_DEFAULT_AUDIO_HEIGHT of TRUE: FPlaylistForm.height := wr.height; end;
+  case wr.height > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: FPlaylistForm.height := wr.height;
+                                              FALSE: FPlaylistForm.height := 400; end;
   screen.cursor := crDefault;
 
   notifyApp(newNotice(evPLFormLoadBox));
