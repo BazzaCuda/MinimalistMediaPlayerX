@@ -2224,9 +2224,9 @@ object AboutForm: TAboutForm
   object Label1: TLabel
     Left = 136
     Top = 16
-    Width = 344
+    Width = 402
     Height = 25
-    Caption = 'Minimalist Media Player (MPV version)'
+    Caption = 'MMP: Minimalist Media Player (MPV version)'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19

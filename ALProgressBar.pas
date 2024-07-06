@@ -164,14 +164,14 @@ begin
   RegenerateBitmap := True;
 
   mainBitmap                    := TBitmap.Create;
-  mainBitmap.handleType         := bmDIB;
-  mainBitmap.pixelFormat        := pf24bit;
+//  mainBitmap.handleType         := bmDIB;
+//  mainBitmap.pixelFormat        := pf24bit;
   mainBitmap.height             := 10;
   mainBitmap.width              := 5000; // don't need to resize now
 
   tiledBarBitmap                := TBitmap.Create;
-  tiledBarBitmap.handleType     := bmDIB;
-  tiledBarBitmap.pixelFormat    := pf24bit;
+//  tiledBarBitmap.handleType     := bmDIB;
+//  tiledBarBitmap.pixelFormat    := pf24bit;
   tiledBarBitmap.height         := 10;
   tiledBarBitmap.width          := 5000;
 
@@ -485,7 +485,7 @@ end;
 procedure TALProgressBar.SetBarBitmap(const Value: TBitmap);
 begin
   fBarBitmap.Assign(Value);
-//  Paint; BAZ
+  Paint;
 end;
 
 procedure TALProgressBar.SetBackgroundColor(const Value: TColor);
