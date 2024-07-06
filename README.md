@@ -124,24 +124,30 @@ Control | Action
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
 `Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `B`                     | [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent
-`Ctrl-Shift-B`          | Make the progress [B]ar darker/less prominent
+`Ctrl-B`                | Make the progress [B]ar and captions [B]righter/more prominent
+`Shift-B`               | Make the progress [B]ar and captions darker/less prominent
+`Ctrl-Shift-B`          | Reset the progress [B]ar and captions to default color
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
 `DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
+`D`                     | navigate to the next [D]irectory aka Folder
+`Ctrl-D`                | navigate to the previous [D]irectory akak Folder 
 `E`                     | [E]ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `F`                     | show/cancel [F]ullScreen mode
+`Ctrl-F`                | open your File Explorer at the current folder
 `G`                     | [G]reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `I`                     | zoom [I]n. Can be held down for rapid zooming
-`J`                     | [J]ust waiting to be assigned an action
+`Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
+`J`                     | ad[J]ust the aspect ratio of the window to fit the aspect ratio of an image
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`Ctrl-K`                | keep/delete: keep the `Kept` files in a folder, delete the others 
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
-`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio. Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio.
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
 `P`                     | show/hide the [P]laylist
@@ -150,25 +156,27 @@ Control | Action
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `Ctrl-S`                | toggle subtitles on/off
-`T`                     | Tab through the media file. See below in Category section
+`T`                     | Tab through the audio or video file. See below in Category section
+`T`                     | if viewing an image, open the `Image & Thumbnail Browser` 
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
+`Ctrl-V`                | set System Vol to Max
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
 `X`                     | e[X]it the application
-`Y`                     | [Y]et to be assigned an action
+`Y`                     | open the `Image & Thumbnail Browser`
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
-`2`                     | reset Brightness to normal
+`2`                     | reset Contrast to normal
 `3`                     | reset Panning to normal
 `4`                     | reset Rotation to normal/not rotated
 `5`                     | bookmark the current media file timestamp to the configuration file
 `6`                     | retrieve a bookmarked media file timestamp from the configuration file and continue playback from that point
 `7`                     | delete any previously saved/bookmarked media file timestamp for the current media file
-`8`                     | decrease brightness. Can be held down for rapid decrease
-`9`                     | increase brightness. Can be held down for rapid increase
-`0`                     | reset contrast to normal
-`-` (Hyphen)            | decrease contrast. Can be held down for rapid decrease
-`=`                     | increase contrast. Can be held down for rapid increase  
+`8`                     | decrease contrast. Can be held down for rapid decrease
+`9`                     | increase contrast. Can be held down for rapid increase
+`0`                     | reset brightness to normal
+`-` (Hyphen)            | decrease brightness. Can be held down for rapid decrease
+`=`                     | increase brightness. Can be held down for rapid increase  
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 
@@ -200,6 +208,7 @@ Control | Action
 `DEL`                   | [D]elete current media file (after confirmation)
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
 **Freeze Frame** | 
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
@@ -286,6 +295,7 @@ Control | Action
 `Vol-mute media key`    | mute/unmute sound
 `E`                     | [E]ars - mute/unmute sound
 `F6`                    | cycle through all audio tracks in the media file
+`Ctrl-V`                | set System Volume to Max
 **Window Control** | 
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `F`                     | show/cancel [F]ullScreen mode
@@ -297,8 +307,8 @@ Control | Action
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
-`Left button down`      | drag the media window around the screen, but not when Playlist panel is open
-`Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
+`Left button down`      | drag the media window around the screen
+`Ctrl+Left button down` | drag the media window around the screen
 **Zoom** | 
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
@@ -314,13 +324,15 @@ Control | Action
 `F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
 `Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
+`Ctrl-F`                | open your File Explorer at the current folder
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
+`Ctrl-V`                | set System Volume to Max.
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
-`T`                     | on an image, display the Image/Thumbnails Browser. On an audio or video file, Tab as normal
-`Y`                     | display the Image/Thumbnails Browser regardless of what type of media file is currently showing
+`T`                     | on an image, display the `Image & Thumbnail Browser`; on an audio or video file, Tab as normal
+`Y`                     | display the `Image & Thumbnail Browser` regardless of what type of media file is currently showing
 
 Media File Formats
 ------------------

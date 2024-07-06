@@ -485,7 +485,7 @@ end;
 procedure TALProgressBar.SetBarBitmap(const Value: TBitmap);
 begin
   fBarBitmap.Assign(Value);
-  Paint;
+//  Paint; BAZ
 end;
 
 procedure TALProgressBar.SetBackgroundColor(const Value: TColor);
