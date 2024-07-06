@@ -33,6 +33,9 @@ function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): 
 
 implementation
 
+uses
+  _debugWindow;
+
 type
  TNotifier = class (TInterfacedObject, INotifier)
   private
@@ -62,6 +65,7 @@ function notifyApp(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice  = NIL of TRUE: EXIT; end;
+//  TDebug.debugEnum<TNoticeEvent>('notifyApp', aNotice.event);
   appNotifier.notifySubscribers(aNotice);
 end;
 
@@ -93,6 +97,8 @@ procedure TNotifier.notifySubscribers(const aNotice: INotice);
 var
   vSubscriber: ISubscriber;
 begin
+//  result := aNotice;
+  case aNotice  = NIL of TRUE: EXIT; end;
   for vSubscriber in FSubscribers do vSubscriber.notifySubscriber(aNotice);
 end;
 

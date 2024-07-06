@@ -55,8 +55,6 @@ type
     TiledBarBitmap: TBitmap;
     fPercentage: Boolean;
     FOnHintShow: TShowHintEvent; // BAZ
-    FPainting: boolean; // BAZ
-    FPaintingBar: boolean; // BAZ
     procedure PaintBorder;
     procedure PaintPosText;
     procedure SetBorderColor1(const Value: TColor);
@@ -81,7 +79,8 @@ type
     procedure SetBarColorStyle(const Value: TBarColorStyle);
     procedure DrawColorBlending;
     procedure SetPercentage(const Value: Boolean);
-    procedure CMHintShow(var message: TCMHintShow); message CM_HINTSHOW; // BAZ
+    procedure CMHintShow(var message: TCMHintShow); message CM_HINTSHOW;
+    procedure doResize(sender: TObject); // BAZ
     protected
     procedure Paint; override;
   public
@@ -137,32 +136,58 @@ constructor TALProgressBar.Create(AOwner: TComponent);
 begin
   inherited;
 
-  Height := 20;
+  height := 10;
 
-  fBorderColor1 := clBtnShadow;
-  fBorderColor2 := clBtnHighLight;
-  fBackgroundColor := clBtnFace;
+  fBorderColor1     := clBtnShadow;
+  fBorderColor2     := clBtnHighLight;
+  fBackgroundColor  := clBtnFace;
+
   fBarBitmap := TBitmap.Create;
-  fBarColor1 := clGreen;
-  fBarColor2 := clYellow;
-  fBarColor3 := clRed;
-  fBarColorStyle := cs3Colors;
-  fPosition := 0;
-  fMin := 0;
-  fMax := 100;
-  fShowBorder := True;
-  fDirection := pdLeftToRight;
-  fShowPosText := True;
-  fPosTextSuffix := '';
-  fPosTextPrefix := '';
-  fPercentage := False;
-  
+  fBarBitmap.handleType         := bmDIB;
+  fBarBitmap.pixelFormat        := pf24bit;
+  fBarBitmap.height             := 10;
+
+  fBarColor1      := clGreen;
+  fBarColor2      := clYellow;
+  fBarColor3      := clRed;
+  fBarColorStyle  := cs3Colors;
+  fPosition       := 0;
+  fMin            := 0;
+  fMax            := 100;
+  fShowBorder     := True;
+  fDirection      := pdLeftToRight;
+  fShowPosText    := True;
+  fPosTextSuffix  := '';
+  fPosTextPrefix  := '';
+  fPercentage     := False;
+
   RegenerateBitmap := True;
 
-  MainBitmap := TBitmap.Create;
-  TiledBarBitmap := TBitmap.Create;
+  mainBitmap                    := TBitmap.Create;
+  mainBitmap.handleType         := bmDIB;
+  mainBitmap.pixelFormat        := pf24bit;
+  mainBitmap.height             := 10;
+  mainBitmap.width              := 5000; // don't need to resize now
 
-  cursor := crHandPoint; // BAZ
+  tiledBarBitmap                := TBitmap.Create;
+  tiledBarBitmap.handleType     := bmDIB;
+  tiledBarBitmap.pixelFormat    := pf24bit;
+  tiledBarBitmap.height         := 10;
+  tiledBarBitmap.width          := 5000;
+
+  cursor        := crHandPoint; // BAZ
+//  SELF.OnResize := doResize;
+end;
+
+procedure TALProgressBar.doResize(sender: TObject);
+begin
+  try
+//    mainBitmap.width  := SELF.width; // THIS! causes the Out of Resources error.
+  except on e:EOutOfResources do  begin
+                                    debug('EOR');
+                                    debugFormat('mb.w:%d width:%d', [mainBitmap.width, width]);
+                                    debugFormat('mb.h:%d height:%d', [mainBitmap.height, height]);
+                                  end;end;
 end;
 
 destructor TALProgressBar.Destroy;
@@ -176,25 +201,19 @@ end;
 
 procedure TALProgressBar.Paint;
 begin
+  case visible of FALSE: EXIT; end;
   inherited;
-  case FPainting of TRUE: EXIT; end;  // BAZ - prevent Out of Resources error
-  FPainting := TRUE;                  // BAZ
-
-  MainBitmap.Width := Width;
-  MainBitmap.Height := Height;
 
   if not(csReading in ComponentState) then
-    PaintBar(RegenerateBitmap);       // BAZ - causes Out of Resources loop
+    PaintBar(RegenerateBitmap);
 
-  if fShowBorder then
-    PaintBorder;
+//  if fShowBorder then
+//    PaintBorder;
 
-  if fShowPosText then
-    PaintPosText;
+//  if fShowPosText then
+//    PaintPosText;
 
   Canvas.Draw(0, 0, MainBitmap);
-
-  FPainting := FALSE;                 // BAZ
 end;
 
 procedure TALProgressBar.PaintBar(RegenerateBitmap: Boolean);
@@ -202,9 +221,6 @@ var
   BarLength, BarPixelLength, EmptySpaceLength: Integer;
   AreaTop, AreaBottom, AreaLeft, AreaRight: Integer;
 begin
-  case FPaintingBar of TRUE: EXIT; end;  // BAZ - prevent Out of Resources error
-  FPaintingBar := TRUE;                  // BAZ
-
   if (fBarBitmap <> nil) and NOT fBarBitmap.Empty then
   begin
     if RegenerateBitmap then
@@ -276,8 +292,6 @@ begin
     MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaBottom-EmptySpaceLength, AreaRight, AreaBottom))
   else if fDirection = pdBottomToTop then
     MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaTop, AreaRight, AreaTop+EmptySpaceLength));
-
-  FPaintingBar := FALSE;                 // BAZ
 end;
 
 procedure TALProgressBar.DrawColorBlending;

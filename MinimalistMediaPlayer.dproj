@@ -152,6 +152,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="B:\Downloads\FastMM4-master\FastMM4.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
         <DCCReference Include="view.mmpFormMain.pas"/>
         <DCCReference Include="mmpNotify.notices.pas"/>

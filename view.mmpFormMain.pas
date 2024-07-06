@@ -105,7 +105,7 @@ end;
 
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
-//
+  position := poScreenCenter;
 end;
 
 procedure TMMPUI.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

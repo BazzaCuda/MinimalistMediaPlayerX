@@ -59,22 +59,23 @@ type
   private
     procedure   onFileOpen(Sender: TObject; const aFilePath: string);
     procedure   onInitMPV(sender: TObject);
-    function    onNotify(const aNotice: INotice): INotice;
     procedure   onStateChange(cSender: TObject; eState: TMPVPlayerState);
-    function    onTickTimer(const aNotice: INotice): INotice;
+    function    onTickTimer(const aNotice: INotice):  INotice;
 
     procedure   setPosition(const aValue: integer);
 
-    function    openURL(const aURL: string): boolean;
-    function    pausePlay: string;
-    function    pausePlayImages: string;
-    function    sendOpInfo(const aOpInfo: string): boolean;
+    function    openURL(const aURL: string):          boolean;
+    function    pausePlay:                            string;
+    function    pausePlayImages:                      string;
+    function    sendOpInfo(const aOpInfo: string):    boolean;
   protected
+    function    getNotifier:                          INotifier;
+    function    initMediaPlayer(const aHWND: HWND):   boolean;
+    function    notify(const aNotice: INotice):       INotice;
+    function    onNotify(const aNotice: INotice):     INotice;
+  public
     constructor create;
     destructor  Destroy; override;
-    function    getNotifier: INotifier;
-    function    initMediaPlayer(const aHWND: HWND): boolean;
-    function    notify(const aNotice: INotice): INotice;
   end;
 
 function newMediaPlayer: IMediaPlayer;
@@ -215,10 +216,10 @@ begin
   notifyApp(newNotice(evVMResizeWindow));
 
   var vNotice     := newNotice;
-  vNotice.event   := evVMOnOpen;
+  vNotice.event   := evVMMPOnOpen;
   vNotice.text    := aFilePath;
   vNotice.integer := mpvDuration(mpv);
-  notifyApp(vNotice);
+  FNotifier.notifySubscribers(vNotice);
 end;
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 // no mpsStop event as yet
@@ -235,7 +236,7 @@ function TMediaPlayer.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case FNotifier = NIL of TRUE: EXIT; end;
-  FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv)));
+  case FMediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
   case FDimensionsDone of FALSE:  begin
                                     notifyApp(newNotice(evVMResizeWindow));
                                     FDimensionsDone := TRUE; end;end;
@@ -247,6 +248,8 @@ begin
   FDimensionsDone := FALSE;
   mpvOpenFile(mpv, aURL);
   FMediaType := MT.mediaType(ExtractFileExt(aURL));
+  case FMediaType of mtAudio, mtVideo: notifyApp(newNotice(evMPKeepOpen, FALSE));
+                              mtImage: notifyApp(newNotice(evMPKeepOpen, FImagesPaused)); end;
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));

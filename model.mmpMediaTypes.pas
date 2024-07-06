@@ -26,7 +26,6 @@ uses
 type
   IMediaTypes = interface
     ['{DE35A42E-3D19-4DBF-9491-8E6D8A175CE1}']
-    function isSpecialImage(const aExt: string): boolean;
     function mediaType(const aExt: string): TMediaType;
   end;
 
@@ -47,7 +46,6 @@ type
   public
     constructor create;
     destructor  Destroy;  override;
-    function isSpecialImage(const aExt: string): boolean;
     function mediaType(const aExt: string): TMediaType;
     property mediaExts: string read FMediaExts;
   end;
@@ -81,13 +79,6 @@ begin
   for var i := 0 to high(mediaTypes) do
     FMediaExts := FMediaExts + mediaTypes[i].fileExts;
   result := FMediaExts;
-end;
-
-function TMediaTypes.isSpecialImage(const aExt: string): boolean;
-begin
-  result := FALSE;
-  var vExt: string := lowerCase(aExt) + ' ';
-  result := (aExt = '.avif') or (aExt = '.png') or (aExt = '.webp');
 end;
 
 function TMediaTypes.mediaType(const aExt: string): TMediaType;

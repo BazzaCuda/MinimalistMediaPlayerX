@@ -135,7 +135,7 @@ end;
 function TProgressBar.formResize: boolean;
 begin
   result := FALSE;
-  FPB.Repaint;
+  FPB.repaint;
   result := TRUE;
 end;
 
@@ -169,7 +169,7 @@ begin
   case aColor <> 0 of TRUE: FPB.barColor1 := aColor end;
 
   FPB.max      := 100;
-  FPB.Position := 0;
+  FPB.position := 0;
   FInitialized := TRUE;
 end;
 
@@ -200,7 +200,7 @@ begin
     evSTBlankInTimeCaption:   setShowProgressBar(TRUE);
     evSTBlankOutTimeCaption:  setShowProgressBar(FALSE);
 
-    evWndResize:            formResize;
+    evWndResize:              formResize;
   end;
 end;
 

@@ -112,7 +112,6 @@ type
     FResizingWindow:        boolean;
   private
     function    adjustAspectRatio:  boolean;
-    function    checkForDelay:      boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doEscapeKey:        boolean;
     function    forcedResize(const aWnd: HWND; const pt: TPoint; const X, Y: int64): boolean;
@@ -121,7 +120,7 @@ type
     function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
     function    moveTimeline(const createNew: boolean = FALSE): boolean;
-    function    onOpen(const aNotice: INotice): boolean;
+    function    nextWithDelay:      boolean;
     function    playNextFolder:     boolean;
     function    playPrevFolder:     boolean;
     function    playSomething(const aIx: integer): boolean;
@@ -163,6 +162,7 @@ type
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
 
     function    onMPNotify(const aNotice: INotice):   INotice;
+    function    onMPOpen(const aNotice: INotice): boolean;
     function    onPLNotify(const aNotice: INotice):   INotice;
     function    onNotify(const aNotice: INotice):     INotice;
     function    onTickTimer(const aNotice: INotice):  INotice;
@@ -234,19 +234,6 @@ begin
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   notifyApp(newNotice(evSTDisplayXY));
   FResizingWindow := FALSE;
-end;
-
-function TVM.checkForDelay: boolean;
-begin
-  result := FALSE;
-
-  // if .png or .webp or .avif, delay by imageDisplayDuration before playing next
-
-  var vExt := extractFileExt(notifyApp(newNotice(evPLReqCurrentItem)).text);
-
-  result := MT.isSpecialImage(vExt);
-
-  case result of TRUE: mmpDelay(notifyApp(newNotice(evMPReqIDD)).integer); end;
 end;
 
 constructor TVM.create;
@@ -400,6 +387,14 @@ begin
   showTimeline(vPt, FVideoPanel.width, createNew);
 end;
 
+function TVM.nextWithDelay: boolean;
+begin
+  case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: begin
+                                                                                                      notifyApp(newNotice(evVMMPPlayNext));
+                                                                                                      case GS.mediaType of mtImage: mmpDelay(notifyApp(newNotice(evMPReqIDD)).integer - 1); end;
+                                                                                                    end;end;
+end;
+
 procedure TVM.onFormResize;
 begin
   case FResizingWindow of TRUE: EXIT; end; // EXPERIMENTAL
@@ -472,14 +467,13 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
 
   case aNotice.event of
+    evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
                                                     FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
 
-    evMPStateEnd:   case GS.mediaType in [mtAudio, mtVideo] of   TRUE:  case NOT GS.showingTimeline of TRUE: notifyApp(newNotice(evVMMPPlayNext)); end;
-                                                                FALSE:  case notifyApp(newNotice(evMPReqImagesPaused)).tf of   TRUE: ; // ignore fake end for .png and .webp image types
-                                                                                                                              FALSE:  begin
-                                                                                                                                        checkForDelay;
-                                                                                                                                        notifyApp(newNotice(evVMMPPlayNext)); end;end;end;
+    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case NOT GS.showingTimeline of TRUE: notifyApp(newNotice(evVMMPPlayNext)); end;
+                                                  mtImage:  case notifyApp(newNotice(evMPReqImagesPaused)).tf of   TRUE: ; // ignore fake end for .png and .webp image types
+                                                                                                                  FALSE:  notifyApp(newNotice(evVMNextWithDelay)); end;end;
     evMPDuration:   notifyApp(newNotice(evPBMax, aNotice.integer));
     evMPPosition:   notifyApp(newNotice(evPBPosition, aNotice.integer));
   end;
@@ -492,6 +486,11 @@ begin
                       notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)));
                       case GS.showingTimeline of TRUE: TL.position := aNotice.integer; end;end;
   end;
+end;
+
+function TVM.onMPOpen(const aNotice: INotice): boolean;
+begin
+//  TDebug.debugEnum<TMediaType>('onMPOpen', GS.mediaType);
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -518,12 +517,12 @@ begin
     evVMMoveHelp:           movehelp(aNotice.tf);
     evVMMovePlaylist:       movePlaylist(aNotice.tf);
     evVMMoveTimeline:       moveTimeline(aNotice.tf);
-    evVMOnOpen:             onOpen(aNotice);
     evVMMPPlayCurrent:      mmpPlayCurrent;
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
     evVMMPPlayNext:         case NOT mmpPlayNext and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playNextFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
     evVMMPPlayPrev:         case NOT mmpPlayPrev and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playPrevFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
+    evVMNextWithDelay:      nextWithDelay;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
     evVMPlaySomething:      playSomething(aNotice.integer);
@@ -541,11 +540,6 @@ begin
   end;
 end;
 
-function TVM.onOpen(const aNotice: INotice): boolean;
-begin
-//
-end;
-
 function TVM.onPLNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
@@ -555,11 +549,9 @@ end;
 function TVM.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
-  case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
-  case aNotice.event of
-    evTickTimer:  screen.cursor := crNone;
-  end;
+  case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
+  screen.cursor := crNone;
 end;
 
 procedure TVM.onWINAutoCenterOff(var msg: TMessage);
@@ -603,6 +595,7 @@ end;
 procedure TVM.onWINPausePlay(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPPausePlay));
+  notifyApp(newNotice(evVMNextWithDelay));
 end;
 
 procedure TVM.onWinResize(var msg: TMessage);
