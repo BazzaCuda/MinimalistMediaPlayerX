@@ -77,12 +77,10 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 Control | Action
 ------- | ------
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
-`ALT-SPACEBAR`          | activate the system menu to get to the About Box and the Keyboard help panel
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
-`Numlock and mouse`     | with NumLock on, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
-`Ctrl and mouse`        | alternatively, hold a Ctrl key down to temporarily "scrub" along the progress bar with the mouse
+`Ctrl and mouse`        | with a Ctrl key down, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
@@ -91,8 +89,8 @@ Control | Action
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
-`Left button down`      | drag the media window around the screen, but not when Playlist panel is open
-`Ctrl+Left button down` | drag the media window around the screen, even when the Playlist panel is open
+`Left button down`      | drag the media window around the screen
+`Ctrl+Left button down` | drag the media window around the screen
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
@@ -184,6 +182,10 @@ Control | Action
 ---------------
 Control | Action
 ------- | ------
+**Bookmarks** ||
+`5`                     | bookmark the current media file timestamp to the configuration file
+`6`                     | retrieve a bookmarked media file timestamp from the configuration file and continue playback from that point
+`7`                     | delete any previously saved/bookmarked media file timestamp for the current media file
 **Brightness** || 
 `-`                     | decrease brightness. Can be held down for rapid decrease
 `=`                     | increase brightness. Can be held down for rapid increase
@@ -326,6 +328,7 @@ Control | Action
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-F`                | open your File Explorer at the current folder
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
+`Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `Ctrl-V`                | set System Volume to Max.
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12

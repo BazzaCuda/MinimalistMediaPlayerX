@@ -186,6 +186,8 @@ begin
   FOpInfo.top           := FTimeLabel.top - FOpInfo.height;
   formResize;
 
+  FTimeLabel.caption    := ' ';
+
   FDataMemo := TMemo.create(SELF);
   FDataMemo.parent         := SELF;
   FDataMemo.align          := alLeft;
