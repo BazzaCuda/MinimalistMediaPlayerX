@@ -6945,6 +6945,9 @@ object InputBoxForm: TInputBoxForm
     0000FE070000F8030000F0030000E0070000C007000080030000800100000000
     0000000000000000000000000000E0070000E0070000F00F0000F81F0000}
   Position = poScreenCenter
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
   TextHeight = 21
   object edtInputBox: TEdit
     Left = 8

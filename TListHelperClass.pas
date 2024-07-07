@@ -22,7 +22,8 @@ interface
 
 uses
   system.generics.collections, system.generics.defaults,
-  mmpUtils;
+  mmpUtils,
+  _debugWindow;
 
 type
   TListHelper = class helper for TList<string>
@@ -45,7 +46,11 @@ begin
             TComparer<string>.construct(
                                         function(const a, b: string): integer
                                         begin
-                                          result := mmpCompareStr(lowerCase(mmpFileNameWithoutExtension(extractFileName(a))), lowerCase(mmpFileNameWithoutExtension(extractFileName(b))));
+                                          var aa := lowerCase(mmpFileNameWithoutExtension(extractFileName(a)));
+                                          var bb := lowerCase(mmpFileNameWithoutExtension(extractFileName(b)));
+                                          case aa[1] = '_' of TRUE: aa[1] := #01; end;
+                                          case bb[1] = '_' of TRUE: bb[1] := #01; end;
+                                          result := mmpCompareStr(aa, bb);
                                         end
                                        )
            );

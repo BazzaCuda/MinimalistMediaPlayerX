@@ -197,6 +197,7 @@ begin
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
     evMPReqIDD:           aNotice.integer := trunc(FImageDisplayDurationMs);
     evMPReqImagesPaused:  aNotice.tf      := FImagesPaused;
+    evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
     evMPReqPosition:      aNotice.integer := mpvPosition(mpv);
     evMPReqVideoHeight:   aNotice.integer := mpvVideoHeight(mpv);
     evMPReqVideoWidth:    aNotice.integer := mpvVideoWidth(mpv);

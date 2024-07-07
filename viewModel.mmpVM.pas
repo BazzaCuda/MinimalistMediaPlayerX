@@ -246,6 +246,9 @@ end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
 begin
+  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and notifyApp(newNotice(evMPReqPlaying)).tf;
+  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPausePlay)); end;
+
   var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
@@ -423,7 +426,6 @@ begin
   case GS.userInput                             of TRUE: EXIT; end;
   case GS.showingTimeline and TL.validKey(key)  of TRUE: begin focusTimeline; EXIT; end;end;
   case GS.showingThumbs                         of TRUE: begin focusThumbs;   EXIT; end;end;
-  debugBoolean('onKeyUp', GS.userInput);
 
   SS.key              := key;
   SS.shiftState       := shift;
@@ -732,19 +734,20 @@ function TVM.renameCurrentItem(const aRenameType: TRenameType): string;
 var
   vOldName:         string;
   vNewName:         string;
-//  vShowingPlaylist: boolean;
+  vWasPlaying:      boolean;
 begin
   result := '';
   case notifyApp(newNotice(evPLReqHasItems)).tf of FALSE: EXIT; end;
-  notifyApp(newNotice(evMPPause)); // otherwise we'll rename the wrong file if this one ends and the next one plays
-//  vShowingPlaylist := GS.showingPlaylist;
-//  notifyApp(newNotice(evPLFormShutForm));
+  vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and notifyApp(newNotice(evMPReqPlaying)).tf;
+  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPausePlay)); end; // otherwise we'll rename the wrong file if this one ends and the next one plays
 
   vOldName := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case aRenameType of
     rtUser: vNewName := mmpRenameFile(vOldName);
     rtKeep: vNewName := mmpRenameFile(vOldName, '_' + mmpFileNameWithoutExtension(vOldName));
   end;
+
+  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPausePlay)); end;
 
   case vNewName = vOldName of TRUE: EXIT; end;
 

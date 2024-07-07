@@ -57,7 +57,7 @@ type
 
     evMPStateEnd, evMPStatePlay,
 
-    evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqImagesPaused, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
+    evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqImagesPaused, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
 
     evMXSysVolMax,
 

@@ -37,7 +37,8 @@ function mmpProcessMessages: boolean;
 implementation
 
 uses
-  system.math, system.sysUtils;
+  system.math, system.sysUtils,
+  _debugWindow;
 
 var
   gCancel: boolean;
@@ -57,7 +58,7 @@ var vNum1,
     pStr1,
     pStr2:  PChar;
 
-  function isNumber(ch: char):Boolean;
+  function isDigit(ch: char):Boolean;
   begin
      result := ch in ['0'..'9'];
   end;
@@ -71,7 +72,7 @@ var vNum1,
     result := 0;
     vCount := 0;
 
-    while (pch^ <> #0) and (isNumber(pch^) or ((NOT vFoundPeriod) and (pch^ = '.'))) do
+    while (pch^ <> #0) and (isDigit(pch^) or ((NOT vFoundPeriod) and (pch^ = '.'))) do
     begin
       case pch^ = '.' of   TRUE:  begin
                                     vFoundPeriod  := TRUE;
@@ -96,7 +97,8 @@ begin
 
   while NOT ((pStr1^ = #0) or (pStr2^ = #0)) do
   begin
-     case isNumber(pStr1^) and isNumber(pStr2^) of   TRUE:  begin
+
+     case isDigit(pStr1^) and isDigit(pStr2^) of     TRUE:  begin
                                                               vNum1 := getNumber(pStr1); vNum2 := getNumber(pStr2);
                                                               case vNum1 < vNum2 of TRUE: result := -1; end;
                                                               case vNum1 > vNum2 of TRUE: result :=  1; end;

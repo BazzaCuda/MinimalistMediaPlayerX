@@ -31,7 +31,12 @@ type
     edtInputBox: TEdit;
     btnModalResultmrOK: TButton;
     btnModalResultmrCancel: TButton;
+    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
+    FSubscriber: ISubscriber;
+    function onNotify(const aNotice: INotice): INotice;
   public
   end;
 
@@ -41,7 +46,7 @@ implementation
 
 uses
   vcl.styles, vcl.themes,
-  mmpUtils,
+  mmpTickTimer, mmpUtils,
   viewModel.mmpGlobalState,
   _debugWindow;
 
@@ -66,6 +71,27 @@ begin
     mmpDelay(500); // Vital. It prevents the VK_ENTER keyUp going to the playlist form and restarting the audio/video being renamed
     notifyApp(newNotice(evGSUserInput, FALSE));
   end;
+end;
+
+procedure TInputBoxForm.FormActivate(Sender: TObject);
+begin
+  setForegroundWindow(SELF.handle);
+end;
+
+procedure TInputBoxForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  TT.notifier.unsubscribe(FSubscriber);
+end;
+
+procedure TInputBoxForm.FormCreate(Sender: TObject);
+begin
+  FSubscriber := newSubscriber(onNotify);
+  TT.notifier.subscribe(FSubscriber);
+end;
+
+function TInputBoxForm.onNotify(const aNotice: INotice): INotice;
+begin
+  setForegroundWindow(SELF.handle);
 end;
 
 end.
