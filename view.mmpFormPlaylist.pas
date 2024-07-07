@@ -190,6 +190,7 @@ end;
 
 procedure TPlaylistForm.LBKeyUp(sender: TObject; var key: Word; Shift: TShiftState);
 begin
+  case GS.userInput of TRUE: EXIT; end;
   case (key = VK_RETURN) and NOT mmpCtrlKeyDown of TRUE: playItemIndex(LB.itemIndex); end;
 end;
 

@@ -18,119 +18,70 @@
     v1.03 02-Sep-2001 Fixed problem with background color not being persisted
                       if the color is black.
     v1.04 Jul-2023    Added Hint.
+    v1.05 Jul-2024    Stripped out everything not used to track down problem with bar suddenly not being drawn
 }
-
 unit ALProgressBar;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls;
+  winApi.windows,
+  system.classes,
+  vcl.controls, vcl.graphics;
 
 type
-  TProgressDirection = (pdLeftToRight, pdRightToLeft, pdBottomToTop, pdTopToBottom);
-  TBarColorStyle = (cs1Color, cs2Colors, cs3Colors);
   TShowHintEvent = procedure(var Message: TCMHintShow) of object; // BAZ
 
   TALProgressBar = class(TGraphicControl)
   private
-    MainBitmap: TBitmap;
-    fBorderColor1: TColor;
-    fBorderColor2: TColor;
-    fBackgroundColor: TColor;
-    fPosition: Integer;
-    fBarBitmap: TBitmap;
-    fMin: Integer;
-    fMax: Integer;
-    fShowBorder: Boolean;
-    fDirection: TProgressDirection;
-    fShowPosText: Boolean;
-    fPosTextSuffix: String;
-    fPosTextPrefix: String;
-    fBarColorStyle: TBarColorStyle;
-    fBarColor1: TColor;
-    fBarColor2: TColor;
-    fBarColor3: TColor;
-    RegenerateBitmap: Boolean;
-    TiledBarBitmap: TBitmap;
-    fPercentage: Boolean;
-    FOnHintShow: TShowHintEvent; // BAZ
-    procedure PaintBorder;
-    procedure PaintPosText;
-    procedure SetBorderColor1(const Value: TColor);
-    procedure SetBorderColor2(const Value: TColor);
-    procedure SetBarBitmap(const Value: TBitmap);
-    procedure SetBackgroundColor(const Value: TColor);
-    procedure SetPosition(const Value: Integer);
-    procedure SetMax(const Value: Integer);
-    procedure SetMin(const Value: Integer);
-    procedure SetShowBorder(const Value: Boolean);
-    procedure PaintBar(RegenerateBitmap: Boolean);
-    procedure TileBitmap(TiledBitmap: TBitmap; var DestBitmap: TBitmap);
-    procedure SetDirection(const Value: TProgressDirection);
-    procedure SetBarColor1(const Value: TColor);
-    procedure SetBarColor2(const Value: TColor);
-    procedure SetBarColor3(const Value: TColor);
-    procedure SetShowPosText(const Value: Boolean);
-    procedure SetPosTextSuffix(const Value: String);
-    procedure CMFontChanged(var Message :TMessage); message CM_FontChanged;
-    procedure SetPosTextPrefix(const Value: String);
-    function CalcColorIndex(StartColor, EndColor: TColor; Steps, ColorIndex: Integer): TColor;
-    procedure SetBarColorStyle(const Value: TBarColorStyle);
-    procedure DrawColorBlending;
-    procedure SetPercentage(const Value: Boolean);
-    procedure CMHintShow(var message: TCMHintShow); message CM_HINTSHOW;
-    procedure doResize(sender: TObject); // BAZ
-    protected
-    procedure Paint; override;
+    mainBitmap:       TBitmap;
+    FBackgroundColor: TColor;
+    FPosition:        integer;
+    FMin:             integer;
+    FMax:             integer;
+    FBarColor:        TColor;
+    FOnHintShow:      TShowHintEvent; // BAZ
+    procedure   adjustBitmap;
+    procedure   setBackgroundColor(const aValue: TColor);
+    procedure   setBarColor(const aValue: TColor);
+    procedure   setMax(const aValue: Integer);
+    procedure   setPosition(const aValue: Integer);
+  protected
+    procedure   CMHintShow(var message: TCMHintShow); message CM_HINTSHOW;
+    procedure   Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    destructor  Destroy; override;
+    function    clear: boolean;
   published
-    property backgroundColor: TColor        read fBackgroundColor       write SetBackgroundColor      default clBtnFace;
-    property barBitmap: TBitmap             read fBarBitmap             write SetBarBitmap;
-    property barColor1: TColor              read fBarColor1             write SetBarColor1            default clGreen;
-    property barColor2: TColor              read fBarColor2             write SetBarColor2            default clYellow;
-    property barColor3: TColor              read fBarColor3             write SetBarColor3            default clRed;
-    property barColorStyle: TBarColorStyle  read fBarColorStyle         write SetBarColorStyle        default cs3Colors;
-    property borderColor1: TColor           read fBorderColor1          write SetBorderColor1         default clBtnShadow;
-    property borderColor2: TColor           read fBorderColor2          write SetBorderColor2         default clBtnHighlight;
-    property Direction: TProgressDirection  read fDirection             write SetDirection            default pdLeftToRight;
-    property max: Integer                   read fMax                   write SetMax                  default 100;
-    property min: Integer                   read fMin                   write SetMin                  default 0;
-    property percentage: Boolean            read fPercentage            write SetPercentage           default False;
-    property position: Integer              read fPosition              write SetPosition             default 0;
-    property posTextPrefix: String          read fPosTextPrefix         write SetPosTextPrefix;
-    property posTextSuffix: String          read fPosTextSuffix         write SetPosTextSuffix;
-    property showBorder: Boolean            read fShowBorder            write SetShowBorder           default True;
-    property showPosText: Boolean           read fShowPosText           write SetShowPosText          default True;
-    property align;
-    property font;
-    property parentShowHint;
-    property showHint;
-    property visible;
-    property onClick;
-    property onDblClick;
-    property onMouseDown;
-    property onMouseMove;
-    property onMouseUp;
-    property onHintShow: TShowHintEvent read FOnHintShow write FOnHintShow; // BAZ
+    property    backgroundColor:  TColor          read FBackgroundColor       write setBackgroundColor;
+    property    barColor:         TColor          read FBarColor              write setBarColor;
+    property    max:              integer         read FMax                   write setMax;
+    property    onHintShow:       TShowHintEvent  read FOnHintShow            write FOnHintShow; // BAZ
+    property    onMouseDown;
+    property    onMouseMove;
+    property    onMouseUp;
+    property    position:         integer         read FPosition              write setPosition;
   end;
-
-procedure Register;
 
 implementation
 
 uses
   math,
+  mmpConsts,
   _debugWindow;
 
-procedure Register;
+{ TALProgressBar }
+
+function TALProgressBar.clear: boolean;
 begin
-  RegisterComponents('ALComps', [TALProgressBar]);
+
 end;
 
-{ TALProgressBar }
+procedure TALProgressBar.CMHintShow(var message: TCMHintShow); // BAZ
+begin
+  case assigned(FOnHintShow) of TRUE: FOnHintShow(message); end;
+end;
 
 constructor TALProgressBar.Create(AOwner: TComponent);
 begin
@@ -138,63 +89,23 @@ begin
 
   height := 10;
 
-  fBorderColor1     := clBtnShadow;
-  fBorderColor2     := clBtnHighLight;
-  fBackgroundColor  := clBtnFace;
+  FBackgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
 
-  fBarBitmap := TBitmap.Create;
-  fBarBitmap.handleType         := bmDIB;
-  fBarBitmap.pixelFormat        := pf24bit;
-  fBarBitmap.height             := 10;
+  FBarColor         := PB_DEFAULT_COLOR;
+  FPosition         := 0;
+  FMin              := 0;
+  FMax              := 100;
 
-  fBarColor1      := clGreen;
-  fBarColor2      := clYellow;
-  fBarColor3      := clRed;
-  fBarColorStyle  := cs3Colors;
-  fPosition       := 0;
-  fMin            := 0;
-  fMax            := 100;
-  fShowBorder     := True;
-  fDirection      := pdLeftToRight;
-  fShowPosText    := True;
-  fPosTextSuffix  := '';
-  fPosTextPrefix  := '';
-  fPercentage     := False;
+  mainBitmap        := TBitmap.Create;
+  mainBitmap.height := 10;
+  mainBitmap.width  := 5000; // don't need to resize now
 
-  RegenerateBitmap := True;
-
-  mainBitmap                    := TBitmap.Create;
-//  mainBitmap.handleType         := bmDIB;
-//  mainBitmap.pixelFormat        := pf24bit;
-  mainBitmap.height             := 10;
-  mainBitmap.width              := 5000; // don't need to resize now
-
-  tiledBarBitmap                := TBitmap.Create;
-//  tiledBarBitmap.handleType     := bmDIB;
-//  tiledBarBitmap.pixelFormat    := pf24bit;
-  tiledBarBitmap.height         := 10;
-  tiledBarBitmap.width          := 5000;
-
-  cursor        := crHandPoint; // BAZ
-//  SELF.OnResize := doResize;
-end;
-
-procedure TALProgressBar.doResize(sender: TObject);
-begin
-  try
-//    mainBitmap.width  := SELF.width; // THIS! causes the Out of Resources error.
-  except on e:EOutOfResources do  begin
-                                    debug('EOR');
-                                    debugFormat('mb.w:%d width:%d', [mainBitmap.width, width]);
-                                    debugFormat('mb.h:%d height:%d', [mainBitmap.height, height]);
-                                  end;end;
+  cursor            := crHandPoint; // BAZ
 end;
 
 destructor TALProgressBar.Destroy;
 begin
-  MainBitmap.Free;
-  fBarBitmap.Free;
-  TiledBarBitmap.Free;
+  mainBitmap.Free;
 
   inherited;
 end;
@@ -204,400 +115,45 @@ begin
   case visible of FALSE: EXIT; end;
   inherited;
 
-  if not(csReading in ComponentState) then
-    PaintBar(RegenerateBitmap);
+  adjustBitmap;
 
-//  if fShowBorder then
-//    PaintBorder;
-
-//  if fShowPosText then
-//    PaintPosText;
-
-  Canvas.Draw(0, 0, MainBitmap);
+  canvas.draw(0, 0, mainBitmap);
 end;
 
-procedure TALProgressBar.PaintBar(RegenerateBitmap: Boolean);
+procedure TALProgressBar.adjustBitmap;
 var
-  BarLength, BarPixelLength, EmptySpaceLength: Integer;
-  AreaTop, AreaBottom, AreaLeft, AreaRight: Integer;
+  barLength: integer;
 begin
-  if (fBarBitmap <> nil) and NOT fBarBitmap.Empty then
-  begin
-    if RegenerateBitmap then
-    begin
-      TiledBarBitmap.Height := Height;
-      TiledBarBitmap.Width := Width;
-      TileBitmap(fBarBitmap, TiledBarBitmap);
-    end;
-    MainBitmap.Canvas.Draw(0, 0, TiledBarBitmap);
-  end
-  else if fBarColorStyle = cs1Color then
-  begin
-    MainBitmap.Canvas.Brush.Color := fBarColor1;
-    MainBitmap.Canvas.FillRect(Rect(0, 0, Width, Height));
-  end
-  else if fBarColorStyle in [cs2Colors, cs3Colors] then
-  begin
-    if RegenerateBitmap then
-    begin
-      TiledBarBitmap.Height := Height;
-      TiledBarBitmap.Width := Width;
-      DrawColorBlending;
-    end;
-    MainBitmap.Canvas.Draw(0, 0, TiledBarBitmap);
-  end;
+  mainBitmap.canvas.brush.color := FBackgroundColor;
+  mainBitmap.canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
-  if (fDirection = pdLeftToRight) or (fDirection = pdRightToLeft) then
-  begin
-    if fShowBorder then
-      BarPixelLength := Width - 2
-    else
-      BarPixelLength := Width;
-  end
-  else
-  begin
-    if fShowBorder then
-      BarPixelLength := Height - 2
-    else
-      BarPixelLength := Height;
-  end;
+  case (FPosition > 0) of  TRUE: barLength := ceil((FPosition / FMax) * SELF.width); // BAZ - changed from round
+                          FALSE: barLength := 0; end;
 
-  if fShowBorder then
-  begin
-    AreaTop := 1;
-    AreaLeft := 1;
-    AreaBottom := Height - 1;
-    AreaRight := Width - 1;
-  end
-  else
-  begin
-    AreaTop := 0;
-    AreaLeft := 0;
-    AreaBottom := Height;
-    AreaRight := Width;
-  end;
-
-  if (fPosition > Min) and (fMax-fMin <> 0) then
-    BarLength := ceil(((fPosition-fMin) / Abs(fMax-fMin)) * BarPixelLength) // BAZ - changed from round
-  else
-    BarLength := 0;
-  EmptySpaceLength := BarPixelLength - BarLength;
-
-  MainBitmap.Canvas.Brush.Color := fBackgroundColor;
-  if fDirection = pdLeftToRight then
-    MainBitmap.Canvas.FillRect(Rect(AreaRight-EmptySpaceLength, AreaTop, AreaRight, AreaBottom))
-  else if fDirection = pdRightToLeft then
-    MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaTop, AreaLeft+EmptySpaceLength, AreaBottom))
-  else if fDirection = pdTopToBottom then
-    MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaBottom-EmptySpaceLength, AreaRight, AreaBottom))
-  else if fDirection = pdBottomToTop then
-    MainBitmap.Canvas.FillRect(Rect(AreaLeft, AreaTop, AreaRight, AreaTop+EmptySpaceLength));
+  mainBitmap.canvas.brush.color := FBarColor;
+  mainBitmap.canvas.fillRect(rect(0, 0, barLength, 10));
 end;
 
-procedure TALProgressBar.DrawColorBlending;
-var
-  IndexCount, MaxWidth, MaxHeight, StartPoint: Integer;
-  FirstColor, SecondColor: TColor;
+procedure TALProgressBar.SetBackgroundColor(const aValue: TColor);
 begin
-  if fBarColorStyle = cs2Colors then
-  begin
-    MaxWidth := TiledBarBitmap.Width;
-    MaxHeight := TiledBarBitmap.Height;
-  end
-  else
-  begin
-    MaxWidth := TiledBarBitmap.Width div 2;
-    MaxHeight := TiledBarBitmap.Height div 2;
-  end;
-
-  StartPoint := 1;
-  if fDirection in [pdLeftToRight, pdRightToLeft] then
-  begin
-    if fDirection = pdLeftToRight then
-    begin
-      FirstColor := fBarColor1;
-      SecondColor := fBarColor2;
-    end
-    else
-    begin
-      if fBarColorStyle = cs2Colors then
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor1;
-      end
-      else
-      begin
-        FirstColor := fBarColor3;
-        SecondColor := fBarColor2;
-      end;
-    end;
-    for IndexCount := StartPoint to MaxWidth do
-    begin
-      TiledBarBitmap.Canvas.Pen.Color := CalcColorIndex(FirstColor, SecondColor, MaxWidth, IndexCount);
-      TiledBarBitmap.Canvas.MoveTo(IndexCount-1, 0);
-      TiledBarBitmap.Canvas.LineTo(IndexCount-1, TiledBarBitmap.Height);
-    end;
-    if fBarColorStyle = cs3Colors then
-    begin
-      if fDirection = pdLeftToRight then
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor3;
-      end
-      else
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor1;
-      end;
-      for IndexCount := MaxWidth+1 to TiledBarBitmap.Width do
-      begin
-        TiledBarBitmap.Canvas.Pen.Color := CalcColorIndex(FirstColor, SecondColor, TiledBarBitmap.Width-MaxWidth, IndexCount-MaxWidth);
-        TiledBarBitmap.Canvas.MoveTo(IndexCount-1, 0);
-        TiledBarBitmap.Canvas.LineTo(IndexCount-1, TiledBarBitmap.Height);
-      end;
-    end;
-  end
-  else {if fDirection in [pdTopToBottom, pdBottomToTop] then}
-  begin
-    if fDirection = pdTopToBottom then
-    begin
-      FirstColor := fBarColor1;
-      SecondColor := fBarColor2;
-    end
-    else
-    begin
-      if fBarColorStyle = cs2Colors then
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor1;
-      end
-      else
-      begin
-        FirstColor := fBarColor3;
-        SecondColor := fBarColor2;
-      end;
-    end;
-    for IndexCount := StartPoint to MaxHeight do
-    begin
-      TiledBarBitmap.Canvas.Pen.Color := CalcColorIndex(FirstColor, SecondColor, MaxHeight, IndexCount);
-      TiledBarBitmap.Canvas.MoveTo(0, IndexCount-1);
-      TiledBarBitmap.Canvas.LineTo(TiledBarBitmap.Width, IndexCount-1);
-    end;
-    if fBarColorStyle = cs3Colors then
-    begin
-      if fDirection = pdTopToBottom then
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor3;
-      end
-      else
-      begin
-        FirstColor := fBarColor2;
-        SecondColor := fBarColor1;
-      end;
-      for IndexCount := MaxHeight+1 to TiledBarBitmap.Height do
-      begin
-        TiledBarBitmap.Canvas.Pen.Color := CalcColorIndex(FirstColor, SecondColor, TiledBarBitmap.Height-MaxHeight, IndexCount-MaxHeight);
-        TiledBarBitmap.Canvas.MoveTo(0, IndexCount-1);
-        TiledBarBitmap.Canvas.LineTo(TiledBarBitmap.Width, IndexCount-1);
-      end;
-    end;
-  end
+  FBackgroundColor := aValue;
+  paint;
 end;
 
-procedure TALProgressBar.TileBitmap(TiledBitmap: TBitmap; var DestBitmap: TBitmap);
-var
-  NoOfImagesX, NoOfImagesY, ix, iy, XPos, YPos: Integer;
+procedure TALProgressBar.SetPosition(const aValue: Integer);
 begin
-  NoOfImagesX := (Width div TiledBitmap.Width) + 1;
-  NoOfImagesY := (Height div TiledBitmap.Height) + 1;
-  XPos := 0;
-  YPos := 0;
-  for iy := 1 to NoOfImagesY do
-  begin
-    for ix := 1 to NoOfImagesX do
-    begin
-      DestBitmap.Canvas.Draw(XPos, YPos, TiledBitmap);
-      XPos := XPos + TiledBitmap.Width;
-    end;
-    YPos := YPos + TiledBitmap.Height;
-    XPos := 0;
-  end;
+  FPosition := aValue;
+  paint;
 end;
 
-procedure TALProgressBar.PaintPosText;
-var
-  Text: String;
-  TextPosX, TextPosY: Integer;
+procedure TALProgressBar.setMax(const aValue: Integer);
 begin
-  if NOT fPercentage then
-    Text := fPosTextPrefix + IntToStr(fPosition) + fPosTextSuffix
-  else
-    Text := fPosTextPrefix + IntToStr(Round((fPosition / fMax) * 100)) + fPosTextSuffix;
-
-  TextPosX := (Width div 2) - (MainBitmap.Canvas.TextWidth(Text) div 2);
-  TextPosY := (Height div 2) - (MainBitmap.Canvas.TextHeight(Text) div 2);
-
-  MainBitmap.Canvas.Brush.Style := bsClear;
-  MainBitmap.Canvas.TextOut(TextPosX, TextPosY, Text);
+  case FMax > 0 of TRUE: FMax := aValue; end;
 end;
 
-procedure TALProgressBar.PaintBorder;
+procedure TALProgressBar.setBarColor(const aValue: TColor);
 begin
-  with MainBitmap.Canvas do
-  begin
-    Pen.Color := fBorderColor1;
-    MoveTo(Width-1, 0);
-    LineTo(0, 0);
-    LineTo(0, Height);
-    Pen.Color := fBorderColor2;
-    MoveTo(1, Height-1);
-    LineTo(Width-1, Height-1);
-    LineTo(Width-1, 0);
-  end;
-end;
-
-function TALProgressBar.CalcColorIndex(StartColor, EndColor: TColor; Steps, ColorIndex: Integer): TColor;
-var
-  BeginRGBValue: Array[0..2] of Byte;
-  RGBDifference: Array[0..2] of Integer;
-  Red, Green, Blue: Byte;
-  NumColors: Integer;
-begin
-  if (ColorIndex < 1) or (ColorIndex > Steps) then
-    raise ERangeError.Create('ColorIndex can''t be less than 1 or greater than ' + IntToStr(Steps));
-  NumColors := Steps;
-  Dec(ColorIndex);
-  BeginRGBValue[0] := GetRValue(ColorToRGB(StartColor));
-  BeginRGBValue[1] := GetGValue(ColorToRGB(StartColor));
-  BeginRGBValue[2] := GetBValue(ColorToRGB(StartColor));
-  RGBDifference[0] := GetRValue(ColorToRGB(EndColor)) - BeginRGBValue[0];
-  RGBDifference[1] := GetGValue(ColorToRGB(EndColor)) - BeginRGBValue[1];
-  RGBDifference[2] := GetBValue(ColorToRGB(EndColor)) - BeginRGBValue[2];
-
-  // Calculate the bands color
-  Red := BeginRGBValue[0] + MulDiv(ColorIndex, RGBDifference[0], NumColors - 1);
-  Green := BeginRGBValue[1] + MulDiv(ColorIndex, RGBDifference[1], NumColors - 1);
-  Blue := BeginRGBValue[2] + MulDiv(ColorIndex, RGBDifference[2], NumColors - 1);
-  Result := RGB(Red, Green, Blue);
-end;
-
-procedure TALProgressBar.SetBarBitmap(const Value: TBitmap);
-begin
-  fBarBitmap.Assign(Value);
-  Paint;
-end;
-
-procedure TALProgressBar.SetBackgroundColor(const Value: TColor);
-begin
-  fBackgroundColor := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetBorderColor1(const Value: TColor);
-begin
-  fBorderColor1 := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetBorderColor2(const Value: TColor);
-begin
-  fBorderColor2 := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetPosition(const Value: Integer);
-begin
-  if (fPosition <> Value) and (Value <= fMax) and (Value >= fMin) then
-  begin
-    fPosition := Value;
-    RegenerateBitmap := False;
-    Paint;
-    RegenerateBitmap := True;
-  end;
-end;
-
-procedure TALProgressBar.SetMax(const Value: Integer);
-begin
-  fMax := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetMin(const Value: Integer);
-begin
-  fMin := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetShowBorder(const Value: Boolean);
-begin
-  fShowBorder := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetDirection(const Value: TProgressDirection);
-begin
-  fDirection := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetBarColor1(const Value: TColor);
-begin
-  fBarColor1 := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetBarColor2(const Value: TColor);
-begin
-  fBarColor2 := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetBarColor3(const Value: TColor);
-begin
-  fBarColor3 := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetShowPosText(const Value: Boolean);
-begin
-  fShowPosText := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetPosTextSuffix(const Value: String);
-begin
-  fPosTextSuffix := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetPosTextPrefix(const Value: String);
-begin
-  fPosTextPrefix := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.CMFontChanged(var Message: TMessage);
-begin
-  MainBitmap.Canvas.Font.Assign(Self.Font);
-  Paint;
-end;
-
-procedure TALProgressBar.CMHintShow(var message: TCMHintShow); // BAZ
-begin
-  case assigned(FOnHintShow) of TRUE: FOnHintShow(message); end;
-end;
-
-procedure TALProgressBar.SetBarColorStyle(const Value: TBarColorStyle);
-begin
-  fBarColorStyle := Value;
-  Paint;
-end;
-
-procedure TALProgressBar.SetPercentage(const Value: Boolean);
-begin
-  fPercentage := Value;
-  Paint;
+  FBarColor := aValue;
 end;
 
 end.

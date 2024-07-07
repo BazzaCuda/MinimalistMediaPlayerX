@@ -94,6 +94,7 @@ procedure TMMPUI.ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean)
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   case GS.showingAbout  of TRUE: EXIT; end;
+//  case GS.userInput     of TRUE: EXIT; end;
   case msg.message = WM_LBUTTONDOWN of TRUE: FViewModel.onMouseDown(mbLeft, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_LBUTTONUP   of TRUE: FViewModel.onMouseUp(mbLeft, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_RBUTTONDOWN of TRUE: FViewModel.onMouseDown(mbRight, mmpShiftState, msg.pt.x, msg.pt.Y); end;
@@ -110,12 +111,14 @@ end;
 
 procedure TMMPUI.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+//  case GS.userInput of TRUE: EXIT; end;
   case FViewModel = NIL of TRUE: EXIT; end;
   case key = VK_F10 of TRUE:  FViewModel.onKeyDown(key, shift); end;
 end;
 
 procedure TMMPUI.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+//  case GS.userInput of TRUE: EXIT; end;
   case FViewModel = NIL of TRUE: EXIT; end;
   case key = VK_F10 of TRUE:  FViewModel.onKeyUp(key, shift); end;
 end;

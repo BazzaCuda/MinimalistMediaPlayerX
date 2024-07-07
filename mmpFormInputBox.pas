@@ -41,7 +41,9 @@ implementation
 
 uses
   vcl.styles, vcl.themes,
-  mmpUtils;
+  mmpUtils,
+  viewModel.mmpGlobalState,
+  _debugWindow;
 
 {$R *.dfm}
 
@@ -51,19 +53,17 @@ function mmpInputBoxForm(const aPrompt: string): string;
 var
   vInputBoxForm: TInputBoxForm;
 begin
-  notifyApp(newNotice(evGSUserInput, TRUE));
   vInputBoxForm := TInputBoxForm.Create(NIL);
   try
+    notifyApp(newNotice(evGSUserInput, TRUE));
     with vInputBoxForm do begin
       edtInputBox.Text  := aPrompt;
       result            := aPrompt;
-      notifyApp(newNotice(evGSUserInput, TRUE));
       case showModal = mrOK of TRUE: result := edtInputBox.Text; end;
-      notifyApp(newNotice(evGSUserInput, FALSE));
     end;
   finally
     vInputBoxForm.free;
-//    mmpDelay(500); // CHECK THIS
+    mmpDelay(500); // Vital. It prevents the VK_ENTER keyUp going to the playlist form and restarting the audio/video being renamed
     notifyApp(newNotice(evGSUserInput, FALSE));
   end;
 end;

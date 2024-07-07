@@ -165,7 +165,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
                                                     and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE)                                                   of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_ESCAPE)                 and NOT GS.userInput              of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F5)                                                       of TRUE: result := koScreenshot; end;
     case keyUp and keyIs(VK_F6)                                                       of TRUE: result := koCycleAudio; end;
     case keyUp and keyIs(VK_F7)                                                       of TRUE: result := koCycleSubs; end;

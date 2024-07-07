@@ -423,6 +423,7 @@ begin
   case GS.userInput                             of TRUE: EXIT; end;
   case GS.showingTimeline and TL.validKey(key)  of TRUE: begin focusTimeline; EXIT; end;end;
   case GS.showingThumbs                         of TRUE: begin focusThumbs;   EXIT; end;end;
+  debugBoolean('onKeyUp', GS.userInput);
 
   SS.key              := key;
   SS.shiftState       := shift;
@@ -465,6 +466,7 @@ function TVM.onMPNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+//  TDebug.debugEnum<TNoticeEvent>('onMPNotify', aNotice.event);
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
@@ -490,7 +492,7 @@ end;
 
 function TVM.onMPOpen(const aNotice: INotice): boolean;
 begin
-//  TDebug.debugEnum<TMediaType>('onMPOpen', GS.mediaType);
+//  TDebug.debugEnum<TNoticeEvent>('onMPOpen', aNotice.event);
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -504,6 +506,7 @@ var msg: TMessage;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+//  TDebug.debugEnum<TNoticeEvent>('onNotify', aNotice.event);
   case aNotice.event of
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
@@ -729,13 +732,13 @@ function TVM.renameCurrentItem(const aRenameType: TRenameType): string;
 var
   vOldName:         string;
   vNewName:         string;
-  vShowingPlaylist: boolean;
+//  vShowingPlaylist: boolean;
 begin
   result := '';
   case notifyApp(newNotice(evPLReqHasItems)).tf of FALSE: EXIT; end;
   notifyApp(newNotice(evMPPause)); // otherwise we'll rename the wrong file if this one ends and the next one plays
-  vShowingPlaylist := GS.showingPlaylist;
-  notifyApp(newNotice(evPLFormShutForm));
+//  vShowingPlaylist := GS.showingPlaylist;
+//  notifyApp(newNotice(evPLFormShutForm));
 
   vOldName := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case aRenameType of
@@ -747,7 +750,7 @@ begin
 
   notifyApp(newNotice(evPLReplaceCurrentItem, vNewName));
   notifyApp(newNotice(evMCCaption, notifyApp(newNotice(evPLReqFormattedItem)).text));
-  case vShowingPlaylist of TRUE: notifyApp(newNotice(evVMMovePlaylist, TRUE)); end;
+  case GS.showingPlaylist of TRUE: notifyApp(newNotice(evVMMovePlaylist, FALSE)); end;
 
   case aRenameType of
     rtUser: result := 'Renamed';

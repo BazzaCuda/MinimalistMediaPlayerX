@@ -89,10 +89,10 @@ end;
 
 function TProgressBar.brighter: integer;
 begin
-  result            := FPB.barColor1;
-  case FPB.barColor1 = $FFFFFF of TRUE: EXIT; end;
-  FPB.barColor1     := FPB.barColor1 + $010101;
-  result            := FPB.barColor1;
+  result            := FPB.barColor;
+  case FPB.barColor = $FFFFFF of TRUE: EXIT; end;
+  FPB.barColor      := FPB.barColor + $010101;
+  result            := FPB.barColor;
   CF['progressBar'] := CF.toHex(result);
 end;
 
@@ -118,10 +118,10 @@ end;
 
 function TProgressBar.darker: integer;
 begin
-  result            := FPB.barColor1;
-  case FPB.barColor1 = $010101 of TRUE: EXIT; end;
-  FPB.barColor1     := FPB.barColor1 - $010101;
-  result            := FPB.barColor1;
+  result            := FPB.barColor;
+  case FPB.barColor = $010101 of TRUE: EXIT; end;
+  FPB.barColor      := FPB.barColor - $010101;
+  result            := FPB.barColor;
   CF['progressBar'] := CF.toHex(result);
 end;
 
@@ -157,16 +157,11 @@ begin
   FPB.align            := alBottom;
   FPB.height           := 10;
   FPB.backgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
-  FPB.borderColor1     := clBlack + 1;
-  FPB.borderColor2     := clBlack + 1;
-  FPB.showBorder       := FALSE;
-  FPB.showPosText      := FALSE;
-  FPB.barColor1        := PB_DEFAULT_COLOR + aColorDelta;
-  FPB.barColorStyle    := cs1Color;
+  FPB.barColor         := PB_DEFAULT_COLOR + aColorDelta;
   FPB.onHintShow       := onHintShow;
   FPB.showHint         := TRUE;
 
-  case aColor <> 0 of TRUE: FPB.barColor1 := aColor end;
+  case aColor <> 0 of TRUE: FPB.barColor := aColor end;
 
   FPB.max      := 100;
   FPB.position := 0;
@@ -240,8 +235,8 @@ end;
 
 function TProgressBar.resetColor: integer;
 begin
-  FPB.barColor1 := PB_DEFAULT_COLOR;
-  result        := PB_DEFAULT_COLOR;
+  FPB.barColor := PB_DEFAULT_COLOR;
+  result       := PB_DEFAULT_COLOR;
   CF['progressBar'] := CF.toHex(result);
 end;
 

@@ -23,7 +23,7 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-  FastMM4 in 'B:\Downloads\FastMM4-master\FastMM4.pas',
+//  FastMM4 in 'B:\Downloads\FastMM4-master\FastMM4.pas',
   system.sysUtils,
   vcl.dialogs,
   vcl.extCtrls,
