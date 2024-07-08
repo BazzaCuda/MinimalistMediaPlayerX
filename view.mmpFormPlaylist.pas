@@ -33,18 +33,19 @@ type
   {$REGION}
   // this should be in the implementation section but that would cause problems with the IDE
   TPlaylistForm = class(TForm)
-    backPanel: TPanel;
-    buttonPanel: TPanel;
-    shiftLabel: TLabel;
-    moveLabel: TLabel;
-    LB: TListBox;
+    backPanel:    TPanel;
+    buttonPanel:  TPanel;
+    shiftLabel:   TLabel;
+    moveLabel:    TLabel;
+    LB:           TListBox;
     ApplicationEvents: TApplicationEvents;
-    lblFolder: TLabel;
+    lblFolder:    TLabel;
+    procedure ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean);
     procedure FormCreate(sender: TObject);
     procedure LBDblClick(sender: TObject);
+    procedure LBKeyDn(sender: TObject; var key: Word; Shift: TShiftState);
     procedure LBKeyPress(sender: TObject; var key: Char);
     procedure LBKeyUp(sender: TObject; var key: Word; shift: TShiftState);
-    procedure ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean);
     procedure LBMouseEnter(Sender: TObject);
     procedure LBMouseLeave(Sender: TObject);
   private
@@ -53,7 +54,7 @@ type
     function    playItemIndex(const aItemIndex: integer): boolean;
     function    visibleItemCount: integer;
   protected
-    procedure   CreateParams(var Params: TCreateParams);
+    procedure   createParams(var params: TCreateParams);
   public
     function    highlightCurrentItem: boolean;
     function    loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
@@ -108,7 +109,7 @@ begin
                                               end;
 end;
 
-procedure TPlaylistForm.CreateParams(var Params: TCreateParams);
+procedure TPlaylistForm.createParams(var params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
@@ -138,6 +139,7 @@ begin
   borderStyle       := bsNone;
   LB.onDblClick     := LBDblClick;
   LB.onKeyUp        := LBKeyUp;
+  LB.onKeyDown      := LBKeyDn;
 
   lblFolder.margins.bottom    := 4;
   lblFolder.alignWithMargins  := TRUE;
@@ -188,9 +190,16 @@ begin
   key := #0;
 end;
 
+procedure TPlaylistForm.LBKeyDn(sender: TObject; var key: Word; Shift: TShiftState);
+begin
+  case GS.userInput of TRUE: EXIT; end;
+  case key in [VK_LEFT, VK_RIGHT] of TRUE: key := 0; end;
+end;
+
 procedure TPlaylistForm.LBKeyUp(sender: TObject; var key: Word; Shift: TShiftState);
 begin
   case GS.userInput of TRUE: EXIT; end;
+  case key in [VK_LEFT, VK_RIGHT] of TRUE: key := 0; end;
   case (key = VK_RETURN) and NOT mmpCtrlKeyDown of TRUE: playItemIndex(LB.itemIndex); end;
 end;
 
@@ -222,12 +231,9 @@ end;
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
   notifyApp(newNotice(evVMShutTimeline));
-  var vThisItem     := notifyApp(newNotice(evPLReqThisItem, aItemIndex)).text;
+  var vThisItem := notifyApp(newNotice(evPLReqThisItem, aItemIndex)).text;
   notifyApp(newNotice(evPLFind, vThisItem));       // set as current
-//  var vCurrentItem  := notifyApp(newNotice(evPLReqCurrentItem)).text;
-//  notifyApp(newNotice(evMPOpenUrl, vCurrentItem)); // open
-  notifyApp(newNotice(evVMMPPlayCurrent)); // EXPERIMENTAL
-//  notifyApp(newNotice(evVMMovePlaylist));
+  notifyApp(newNotice(evVMMPPlayCurrent));
 end;
 
 function TPlaylistForm.visibleItemCount: integer;

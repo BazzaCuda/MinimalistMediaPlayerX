@@ -574,7 +574,6 @@ begin
  // after a drag don't process the button up as a click
   case FDragged of FALSE: begin notifyApp(newNotice(evMPPausePlay));
                                 case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: notifyApp(newNotice(evVMNextWithDelay)); end;end;end;
-
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
