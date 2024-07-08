@@ -26,15 +26,15 @@ uses
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   view.mmpFormProgress,
-  TSegmentClass, Vcl.AppEvnts;
+  TSegmentClass;
 
 type
   TRunType = (rtFFMpeg, rtCMD);
 
   TTimelineForm = class(TForm)
-    pnlCursor: TPanel;
-    lblPosition: TPanel;
-    imgTrashCan: TImage;
+    pnlCursor:          TPanel;
+    lblPosition:        TPanel;
+    imgTrashCan:        TImage;
     procedure FormCreate(Sender: TObject);
     procedure pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure pnlCursorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -48,73 +48,77 @@ type
   strict private
     FDragging: boolean;
   private
-    function getCursorPos: integer;
+    function  getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
-    function updatePositionDisplay(const aPosition: integer = -1): boolean;
+    function  updatePositionDisplay(const aPosition: integer = -1): boolean;
   protected
-    procedure CreateParams(var Params: TCreateParams);
+    procedure createParams(var Params: TCreateParams);
     procedure exportSegments(sender: TObject);
   public
-    property cursorPos: integer read getCursorPos write setCursorPos;
+    property  cursorPos: integer read getCursorPos write setCursorPos;
   end;
 
   TTimeline = class(TObject)
   strict private
-    FLengthenCount: integer;
-    FMax: integer;
-    FMediaFilePath: string;
-    FPosition: integer;
-    FPrevAction: string;
-    FShortenCount: integer;
-    FUndoList: TObjectStack<TStringList>;
-    FRedoList: TObjectStack<TStringList>;
-    function getMax: integer;
-    function getPosition: integer;
-    procedure setMax(const Value: integer);
-    procedure setPosition(const Value: integer);
+    FLengthenCount:           integer;
+    FMax:                     integer;
+    FMediaFilePath:           string;
+    FPosition:                integer;
+    FPrevAction:              string;
+    FShortenCount:            integer;
+    FUndoList:                TObjectStack<TStringList>;
+    FRedoList:                TObjectStack<TStringList>;
   private
     constructor create;
     destructor  Destroy; override;
-    function addUndo(const aAction: string): string;
-    function cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
-    function defaultSegment: string;
-    function drawSegments: boolean;
-    function filePathLOG: string;
-    function filePathMMP: string;
-    function filePathOUT: string;
-    function filePathSEG: string;
-    function getSegCount: integer;
-    function lengthenSegment(const aSegment: TSegment): boolean;
-    function loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
-    function log(const aLogEntry: string): boolean;
-    function mergeLeft(const aSegment: TSegment): boolean;
-    function mergeRight(const aSegment: TSegment): boolean;
-    function restoreSegment(const aSegment: TSegment): boolean;
-    function saveSegments: string;
-    function segFileEntry(const aSegFile: string): string;
-    function segmentAtCursor: TSegment;
-    function shortenSegment(const aSegment: TSegment): boolean;
-    function exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
-    function getSegments: TObjectList<TSegment>;
-    procedure onCancelButton(sender: TObject);
-    function loadChapters: TStringList;
+
+    function    getMax:       integer;
+    function    getPosition:  integer;
+    function    getSegCount:  integer;
+    function    getSegments:  TObjectList<TSegment>;
+
+    procedure   setMax(const Value: integer);
+    procedure   setPosition(const Value: integer);
+
+    function    addUndo(const aAction: string): string;
+    function    cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
+    function    defaultSegment: string;
+    function    drawSegments: boolean;
+    function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
+    function    filePathLOG: string;
+    function    filePathMMP: string;
+    function    filePathOUT: string;
+    function    filePathSEG: string;
+    function    lengthenSegment(const aSegment: TSegment): boolean;
+    function    loadChapters: TStringList;
+    function    loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
+    function    log(const aLogEntry: string): boolean;
+    function    mergeLeft(const aSegment: TSegment): boolean;
+    function    mergeRight(const aSegment: TSegment): boolean;
+    function    restoreSegment(const aSegment: TSegment): boolean;
+    function    saveSegments: string;
+    function    segFileEntry(const aSegFile: string): string;
+    function    segmentAtCursor: TSegment;
+    function    shortenSegment(const aSegment: TSegment): boolean;
   protected
-    function exportSegments: boolean;
+    function    exportSegments: boolean;
+    procedure   onCancelButton(sender: TObject);
   public
-    function clear: boolean;
-    function delSegment(const aSegment: TSegment): boolean;
-    function initTimeline(const aMediaFilePath: string; const aMax: integer): string;
-    function redo: boolean;
-    function undo(const aPrevAction: string): boolean;
-    function validKey(key: WORD): boolean;
-    property lengthenCount: integer               read FLengthenCount write FLengthenCount;
-    property max:           integer               read getMax         write setMax;
-    property mediaFilePath: string                read FMediaFilePath;
-    property position:      integer               read getPosition    write setPosition;
-    property prevAction:    string                read FPrevAction    write FPrevAction;
-    property segCount:      integer               read getSegCount;
-    property segments:      TObjectList<TSegment> read getSegments;
-    property shortenCount:  integer               read FShortenCount  write FShortenCount;
+    function    clear:          boolean;
+    function    delSegment(const aSegment: TSegment): boolean;
+    function    initTimeline(const aMediaFilePath: string; const aMax: integer): string;
+    function    redo:           boolean;
+    function    undo(const aPrevAction: string):  boolean;
+    function    validKey(key: WORD):              boolean;
+
+    property    lengthenCount:  integer               read FLengthenCount write FLengthenCount;
+    property    max:            integer               read getMax         write setMax;
+    property    mediaFilePath:  string                read FMediaFilePath;
+    property    position:       integer               read getPosition    write setPosition;
+    property    prevAction:     string                read FPrevAction    write FPrevAction;
+    property    segCount:       integer               read getSegCount;
+    property    segments:       TObjectList<TSegment> read getSegments;
+    property    shortenCount:   integer               read FShortenCount  write FShortenCount;
   end;
 
 function focusTimeline: boolean;
@@ -248,7 +252,7 @@ end;
 
 { TTimelineForm }
 
-procedure TTimelineForm.CreateParams(var Params: TCreateParams);
+procedure TTimelineForm.createParams(var Params: TCreateParams);
 // no taskbar icon for this window
 begin
   inherited;
@@ -272,7 +276,14 @@ begin
 end;
 
 procedure TTimelineForm.pnlCursorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  vCursorPt:  TPoint;
+  vRect:      TRect;
 begin
+  winApi.windows.getCursorPos(vCursorPt);
+  getWindowRect(SELF.handle, vRect);
+  case (vCursorPt.x <= vRect.location.x) or (vCursorPt.x >= vRect.bottomRight.x) of TRUE: EXIT; end;
+
   case FDragging of TRUE: begin
                             cursorPos := cursorPos + (X - pnlCursor.Width div 2);
                             var vNewPos := notifyApp(newNotice(evPBSetNewPosition, cursorPos)).integer;
