@@ -290,6 +290,8 @@ begin
                             notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max)));
                             updatePositionDisplay(vNewPos);
                           end;end;
+
+  TL.segmentAtCursor.repaint;
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -389,6 +391,7 @@ begin
   var vPosition := mmpIfThenElse(aPosition = -1, TL.position, aPosition);
   case lblPosition.tag = 0 of  TRUE: timelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
                               FALSE: timelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
+  lblPosition.repaint;
 end;
 
 { TTimeline }
