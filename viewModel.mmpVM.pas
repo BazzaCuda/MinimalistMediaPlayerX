@@ -409,7 +409,7 @@ end;
 
 procedure TVM.onFormResize;
 begin
-  case FResizingWindow of TRUE: EXIT; end; // EXPERIMENTAL
+  case FResizingWindow of TRUE: EXIT; end;
   resizeWindow;
 end;
 
@@ -475,6 +475,7 @@ end;
 function TVM.onMPNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
+
   case aNotice = NIL of TRUE: EXIT; end;
 //  TDebug.debugEnum<TNoticeEvent>('onMPNotify', aNotice.event);
 
@@ -503,6 +504,7 @@ end;
 function TVM.onMPOpen(const aNotice: INotice): boolean;
 begin
 //  TDebug.debugEnum<TNoticeEvent>('onMPOpen', aNotice.event);
+//  notifyApp(newNotice(evSTForceCaptions));
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -835,8 +837,7 @@ function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
 begin
   notifyApp(newNotice(evHelpShutHelp));
   notifyApp(newNotice(evPLFormShutForm));
-  notifyApp(newNotice(evVMShutTimeline)); // EXPERIMENTAL
-//  shutTimeline;
+  notifyApp(newNotice(evVMShutTimeline));
 
   case notifyApp(newNotice(evMPReqImagesPaused)).tf of FALSE: notifyApp(newNotice(evMPPausePlay)); end;
   notifyApp(newNotice(evMPPause));

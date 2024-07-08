@@ -126,8 +126,8 @@ begin
 
   pausePlayImages; // default is paused;
 
-  mpvSetVolume(mpv, CF.asInteger['volume']);
-  mpvSetMute(mpv, CF.asBoolean['muted']);
+  mpvSetVolume(mpv, CF.asInteger[CONF_VOLUME]);
+  mpvSetMute(mpv, CF.asBoolean[CONF_MUTED]);
 
   result := TRUE;
 end;

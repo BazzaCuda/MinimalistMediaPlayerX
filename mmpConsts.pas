@@ -64,8 +64,22 @@ const
   IMAGE_DISPLAY_DURATION = 3; // in seconds, to match the setting in mpv.conf
 
   CONF_ALLOW_INTO_WINDOWS   = 'allowIntoWindows';
+  CONF_AUDIO_DELETE         = 'audioDelete';
+  CONF_AUTO_UPDATE          = 'autoUpdate';
+  CONF_BASE_FOLDER          = 'baseFolder';
+  CONF_FOLDER_DELETE        = 'folderDelete';
+  CONF_KEEP_DELETE          = 'keepDelete';
+  CONF_IMAGE_DELETE         = 'imageDelete';
+  CONF_MAIN_CAPTION         = 'caption';
+  CONF_MUTED                = 'muted';
   CONF_NEXT_FOLDER_ON_EMPTY = 'nextFolderOnEmpty';
   CONF_NEXT_FOLDER_ON_END   = 'nextFolderOnEnd';
+  CONF_OPEN_IMAGE           = 'openImage';
+  CONF_PROGRESS_BAR         = 'progressBar';
+  CONF_SHOW_METADATA        = 'showMetaData';
+  CONF_TIME_CAPTION         = 'timeCaption';
+  CONF_VIDEO_DELETE         = 'videoDelete';
+  CONF_VOLUME               = 'volume';
 
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 

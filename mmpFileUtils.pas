@@ -54,11 +54,11 @@ begin
   var vExt := lowerCase(extractFileExt(aFilePath));
   var vMT  := MT.mediaType(vExt);
 
-  case ssCtrl in aShiftState of TRUE:   case CF.asBoolean['folderDelete'] of FALSE: EXIT; end;end;
+  case ssCtrl in aShiftState of TRUE:   case CF.asBoolean[CONF_FOLDER_DELETE] of FALSE: EXIT; end;end;
   case ssCtrl in aShiftState of FALSE:  case vMT of
-                                          mtAudio: case CF.asBoolean['audioDelete'] of FALSE: EXIT; end;
-                                          mtImage: case CF.asBoolean['imageDelete'] of FALSE: EXIT; end;
-                                          mtVideo: case CF.asBoolean['videoDelete'] of FALSE: EXIT; end;end;end;
+                                          mtAudio: case CF.asBoolean[CONF_AUDIO_DELETE] of FALSE: EXIT; end;
+                                          mtImage: case CF.asBoolean[CONF_IMAGE_DELETE] of FALSE: EXIT; end;
+                                          mtVideo: case CF.asBoolean[CONF_VIDEO_DELETE] of FALSE: EXIT; end;end;end;
   result := TRUE;
 end;
 
@@ -236,12 +236,12 @@ var
 begin
   result := FALSE;
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
-  case CF.asBoolean['keepDelete'] of FALSE: begin
-                                              var vMsg := 'keepDelete=no'#13#10#13#10;
-                                              vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
-                                              vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
-                                              mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
-                                              EXIT; end;end;
+  case CF.asBoolean[CONF_KEEP_DELETE] of FALSE: begin
+                                                  var vMsg := 'keepDelete=no'#13#10#13#10;
+                                                  vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
+                                                  vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
+                                                  mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
+                                                  EXIT; end;end;
 
   var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
   vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;

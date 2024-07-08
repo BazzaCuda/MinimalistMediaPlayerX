@@ -134,7 +134,7 @@ begin
   FOpInfo.font.color      := FOpInfo.font.color     + $010101;
   FDataMemo.font.color    := FDataMemo.font.color   + $010101;
   result := FTimeLabel.font.color;
-  CF['timeCaption']       := CF.toHex(result);
+  CF[CONF_TIME_CAPTION]       := CF.toHex(result);
 end;
 
 constructor TCaptionsForm.create(aOwner: TComponent);
@@ -209,7 +209,8 @@ begin
   FDataMemo.font.style     := [fsBold];
   FDataMemo.styleElements  := [];
   FDataMemo.clear;
-  FDataMemo.visible        := FALSE;
+  FDataMemo.visible        := CF.asBoolean[CONF_SHOW_METADATA];
+  FShowData                := CF.asBoolean[CONF_SHOW_METADATA];
 end;
 
 function TCaptionsForm.darker: integer;
@@ -220,7 +221,7 @@ begin
   FOpInfo.font.color      := FOpInfo.font.color     - $010101;
   FDataMemo.font.color    := FDataMemo.font.color   - $010101;
   result := FTimeLabel.font.color;
-  CF['timeCaption'] := CF.toHex(result);
+  CF[CONF_TIME_CAPTION] := CF.toHex(result);
 end;
 
 destructor TCaptionsForm.Destroy;
@@ -282,7 +283,7 @@ begin
   FOpInfo.font.color      := ST_DEFAULT_COLOR;
   FDataMemo.font.color    := ST_DEFAULT_COLOR;
   result                  := ST_DEFAULT_COLOR;
-  CF['timeCaption']       := CF.toHex(result);
+  CF[CONF_TIME_CAPTION]       := CF.toHex(result);
 end;
 
 procedure TCaptionsForm.setColor(const Value: TColor);
@@ -307,9 +308,16 @@ end;
 procedure TCaptionsForm.setShowData(const aValue: boolean);
 begin
   FShowData := aValue;
+
   case FShowData of FALSE: FDataMemo.clear;
                      TRUE: notifyApp(newNotice(evMIFillMetaData, FDataMemo)); end;
-  FDataMemo.visible := FShowData and (SELF.width > 360);
+
+  FDataMemo.visible := FShowData and (SELF.width > 336);
+
+  case FShowData of  TRUE: CF[CONF_SHOW_METADATA] := 'yes';
+                    FALSE: CF[CONF_SHOW_METADATA] := 'no'; end;
+
+  FDataMemo.repaint; // EXPERIMENTAL
 end;
 
 procedure TCaptionsForm.setShowTime(const aValue: boolean);
@@ -389,6 +397,7 @@ begin
     evSTOpInfo:               FCaptionsForm.setOpInfo(aNotice.text);
     evSTDisplayTime:          FCaptionsForm.setDisplayTime(aNotice.text);
     evSTDisplayXY:            FCaptionsForm.setOpInfo(format('%d x %d', [FCaptionsForm.FVideoPanel.width, FCaptionsForm.FVideoPanel.height]));
+    evSTForceCaptions:        FCaptionsForm.setShowData(CF.asBoolean[CONF_SHOW_METADATA]);
     evSTToggleCaptions:       FCaptionsForm.toggleCaptions(mmpShiftState);
     evWndResize:              FCaptionsForm.formResize(600);
     evMCReshowCaption:        FCaptionsForm.setOpInfo(notifyApp(newNotice(evPLReqFormattedItem)).text);

@@ -102,7 +102,7 @@ begin
   case FCaption.font.color = $FFFFFF of TRUE: EXIT; end;
   FCaption.font.color := FCaption.font.color + $010101;
   result              := FCaption.font.color;
-  CF['caption']       := CF.toHex(result);
+  CF[CONF_MAIN_CAPTION]       := CF.toHex(result);
 end;
 
 constructor TMainCaptionForm.create(const aOwner: TForm);
@@ -118,7 +118,7 @@ begin
   case FCaption.font.color = $010101 of TRUE: EXIT; end;
   FCaption.font.color := FCaption.font.color - $010101;
   result              := FCaption.font.color;
-  CF['caption']       := CF.toHex(result);
+  CF[CONF_MAIN_CAPTION]       := CF.toHex(result);
 end;
 
 procedure TMainCaptionForm.formResize(Sender: TObject);
@@ -187,7 +187,7 @@ function TMainCaptionForm.resetColor: integer;
 begin
   FCaption.font.color   := ST_DEFAULT_COLOR;
   result                := ST_DEFAULT_COLOR;
-  CF['caption']         := CF.toHex(result);
+  CF[CONF_MAIN_CAPTION]         := CF.toHex(result);
 end;
 
 function TMainCaptionForm.reshowCaption: boolean;

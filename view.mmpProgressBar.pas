@@ -93,7 +93,7 @@ begin
   case FPB.barColor = $FFFFFF of TRUE: EXIT; end;
   FPB.barColor      := FPB.barColor + $010101;
   result            := FPB.barColor;
-  CF['progressBar'] := CF.toHex(result);
+  CF[CONF_PROGRESS_BAR] := CF.toHex(result);
 end;
 
 function TProgressBar.centerCursor: boolean;
@@ -122,7 +122,7 @@ begin
   case FPB.barColor = $010101 of TRUE: EXIT; end;
   FPB.barColor      := FPB.barColor - $010101;
   result            := FPB.barColor;
-  CF['progressBar'] := CF.toHex(result);
+  CF[CONF_PROGRESS_BAR] := CF.toHex(result);
 end;
 
 destructor TProgressBar.Destroy;
@@ -237,7 +237,7 @@ function TProgressBar.resetColor: integer;
 begin
   FPB.barColor := PB_DEFAULT_COLOR;
   result       := PB_DEFAULT_COLOR;
-  CF['progressBar'] := CF.toHex(result);
+  CF[CONF_PROGRESS_BAR] := CF.toHex(result);
 end;
 
 procedure TProgressBar.setMax(const aValue: integer);

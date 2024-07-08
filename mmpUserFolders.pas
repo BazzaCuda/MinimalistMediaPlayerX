@@ -29,7 +29,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpFolderUtils, mmpFileUtils,
+  mmpConsts, mmpFolderUtils, mmpFileUtils,
   model.mmpConfigFile;
 
 function mmpUserBaseFolder(const aFolder: string): string;
@@ -38,7 +38,7 @@ begin
 
   case pos(':', mmpUserOverride(aFolder)) > 0 of TRUE: EXIT; end; // don't use the base folder if an override is an absolute path, e.g. "C:\....."
 
-  result := CF['baseFolder'];
+  result := CF[CONF_BASE_FOLDER];
   case result <> '' of TRUE: result := mmpITBS(result); end;
 end;
 

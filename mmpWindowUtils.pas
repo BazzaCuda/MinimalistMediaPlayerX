@@ -334,9 +334,6 @@ var
   end;
 
 begin
-//  case GV.greatering and GS.showingHelp of TRUE: EXIT; end;
-//  GV.greatering := TRUE; EXPERIMENTALL COMMENTED OUT
-
   getWindowRect(aWnd, vR);
   newW := vR.Width;
   newH := vR.height;
@@ -346,7 +343,6 @@ begin
   calcDimensions; // do what the user requested
 
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
-//  GV.greatering := FALSE;
 end;
 
 
