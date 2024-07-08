@@ -109,6 +109,8 @@ type
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
     FPB:                    IProgressBar;
+
+    FDragged:               boolean;
     FResizingWindow:        boolean;
   private
     function    adjustAspectRatio:  boolean;
@@ -147,6 +149,8 @@ type
     procedure   onWMDropFiles(var msg: TWMDropFiles);
     procedure   onWMEnterSizeMove(var msg: TMessage);
     procedure   onWMSizing(var msg: TMessage);
+    procedure   onVideoPanelClick(sender: TObject);
+    procedure   onVideoPanelDblClick(sender: TObject);
 
     procedure   onWINAutoCenterOff(var msg: TMessage);
     procedure   onWINCaption(var msg: TMessage);
@@ -162,20 +166,20 @@ type
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
 
     function    onMPNotify(const aNotice: INotice):   INotice;
-    function    onMPOpen(const aNotice: INotice): boolean;
-    function    onPLNotify(const aNotice: INotice):   INotice;
+    function    onMPOpen(const aNotice: INotice):     boolean;
     function    onNotify(const aNotice: INotice):     INotice;
+    function    onPLNotify(const aNotice: INotice):   INotice;
     function    onTickTimer(const aNotice: INotice):  INotice;
-
-    procedure   setMediaPlayer(const aValue: IMediaPlayer);
-    procedure   setPlaylist(const aValue: IPlaylist);
-    procedure   setProgressBar(const aValue: IProgressBar);
 
     function    getMediaPlayer:         IMediaPlayer;
     function    getNotifier:            INotifier;
     function    getPlaylist:            IPlaylist;
     function    getProgressBar:         IProgressBar;
     function    getVideoPanel:          TPanel;
+
+    procedure   setMediaPlayer(const aValue: IMediaPlayer);
+    procedure   setPlaylist(const aValue: IPlaylist);
+    procedure   setProgressBar(const aValue: IProgressBar);
   public
     constructor create;
     destructor  Destroy; override;
@@ -204,7 +208,7 @@ begin
   mouseStart.Y := mouseStart.Y - rectStart.top;
 end;
 
-procedure dragUI(aHWND: HWND);
+function dragUI(aHWND: HWND): boolean;
 var
   newMouse: TPoint;
   wndRect: TRect;
@@ -216,7 +220,8 @@ begin
 
   getWindowRect(aHWND, wndRect);
 
-  case (abs(wndRect.left - rectStart.left) > 10) or (abs(wndRect.top - rectStart.top) > 10) of TRUE: begin notifyApp(newNotice(evGSAutoCenter, FALSE)); notifyApp(newNotice(evGSMaxSize, FALSE));end;end;
+  result := (abs(wndRect.left - rectStart.left) > 10) or (abs(wndRect.top - rectStart.top) > 10);
+  case result of TRUE: begin notifyApp(newNotice(evGSAutoCenter, FALSE)); notifyApp(newNotice(evGSMaxSize, FALSE));end;end;
 
   moveWindow(aHWND, dx, dy, wndRect.width, wndRect.height, FALSE);
   notifyApp(newNotice(evVMMoveHelp));
@@ -336,7 +341,10 @@ end;
 
 function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
 begin
-  FVideoPanel := aVideoPanel;
+  FVideoPanel             := aVideoPanel;
+  FVideoPanel.OnClick     := onVideoPanelClick;
+  FVideoPanel.OnDblClick  := onVideoPanelDblClick;
+
   mmpThemeInitForm(aForm);
 
   case FMP = NIL of FALSE:  begin
@@ -438,14 +446,13 @@ end;
 procedure TVM.onMouseDown(button: TMouseButton; shift: TShiftState; X, Y: Integer);
 begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
-  case button = mbLeft of TRUE: begin mouseDown := TRUE; setStartPoint(GS.mainForm.handle); end;end;
+  case button = mbLeft of TRUE: begin FDragged := FALSE; mouseDown := TRUE; setStartPoint(GS.mainForm.handle); end;end;
 end;
 
 procedure TVM.onMouseMove(aHWND: HWND; shift: TShiftState; X, Y: Integer);
 begin
   screen.cursor := crDefault;
-//  case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
-  case mouseDown and (aHWND = FVideoPanel.handle) of TRUE: dragUI(GS.mainForm.handle); end;
+  case mouseDown and (aHWND = FVideoPanel.handle) of TRUE: FDragged := dragUI(GS.mainForm.handle); end;
 end;
 
 procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer);
@@ -557,6 +564,19 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
+end;
+
+procedure TVM.onVideoPanelClick(sender: TObject);
+begin
+ // don't process button up after a drag as a click
+  case FDragged of FALSE: begin notifyApp(newNotice(evMPPausePlay));
+                                case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: notifyApp(newNotice(evVMNextWithDelay)); end;end;end;
+
+end;
+
+procedure TVM.onVideoPanelDblClick(sender: TObject);
+begin
+  case FDragged of FALSE: notifyApp(newNotice(evVMToggleFullscreen)); end; // don't process button up after a drag as a click
 end;
 
 procedure TVM.onWINAutoCenterOff(var msg: TMessage);

@@ -33,7 +33,7 @@ type
   TShowHintEvent = procedure(var Message: TCMHintShow) of object; // BAZ
 
   TALProgressBar = class(TGraphicControl)
-  private
+  strict private
     mainBitmap:       TBitmap;
     FBackgroundColor: TColor;
     FPosition:        integer;
@@ -41,6 +41,7 @@ type
     FMax:             integer;
     FBarColor:        TColor;
     FOnHintShow:      TShowHintEvent; // BAZ
+  private
     procedure   adjustBitmap;
     procedure   setBackgroundColor(const aValue: TColor);
     procedure   setBarColor(const aValue: TColor);
@@ -127,6 +128,8 @@ begin
   mainBitmap.canvas.brush.color := FBackgroundColor;
   mainBitmap.canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
+  case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
+
   case (FPosition > 0) of  TRUE: barLength := ceil((FPosition / FMax) * SELF.width); // BAZ - changed from round
                           FALSE: barLength := 0; end;
 
@@ -148,7 +151,7 @@ end;
 
 procedure TALProgressBar.setMax(const aValue: Integer);
 begin
-  case FMax > 0 of TRUE: FMax := aValue; end;
+  case aValue > 0 of TRUE: FMax := aValue; end;
 end;
 
 procedure TALProgressBar.setBarColor(const aValue: TColor);
