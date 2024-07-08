@@ -110,6 +110,7 @@ type
     FPlaylist:              IPlaylist;
     FPB:                    IProgressBar;
 
+    FDoubleClick:           boolean;
     FDragged:               boolean;
     FResizingWindow:        boolean;
   private
@@ -568,7 +569,9 @@ end;
 
 procedure TVM.onVideoPanelClick(sender: TObject);
 begin
- // don't process button up after a drag as a click
+  mmpDelay(250); // wait to see if the user is actually double-clicking rather than single-clicking
+  case FDoubleClick of TRUE: begin FDoubleClick := FALSE; EXIT; end;end;
+ // after a drag don't process the button up as a click
   case FDragged of FALSE: begin notifyApp(newNotice(evMPPausePlay));
                                 case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: notifyApp(newNotice(evVMNextWithDelay)); end;end;end;
 
@@ -576,6 +579,7 @@ end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
 begin
+  FDoubleClick := TRUE;
   case FDragged of FALSE: notifyApp(newNotice(evVMToggleFullscreen)); end; // don't process button up after a drag as a click
 end;
 
