@@ -96,6 +96,7 @@ type
     function insert(const anItem: string): boolean;
     function isFirst: boolean;
     function isLast: boolean;
+    function isSpecialImage: boolean;
     function last: boolean;
     function next: boolean;
     function onNotify(const aNotice: INotice): INotice;
@@ -252,6 +253,7 @@ begin
                    FALSE: FPlayIx := -1; end;
 
   result := hasItems;
+  notifyApp(newNotice(evPLNewPlaylist));
 end;
 
 function TPlaylist.find(const anItem: string): boolean;
@@ -284,9 +286,12 @@ function TPlaylist.getPlaylist(aListBox: TListBox): boolean;
 var i: integer;
 begin
   result := FALSE;
+
   aListBox.clear;
+
   for i := 0 to FPlaylist.count - 1 do
     aListBox.items.add(extractFileName(FPlaylist[i]));
+
   result := aListBox.count > 0;
 end;
 
@@ -317,6 +322,13 @@ end;
 function TPlaylist.isLast: boolean;
 begin
   result := FPlayIx = FPlaylist.count - 1;
+end;
+
+function TPlaylist.isSpecialImage: boolean;
+begin
+  result := FALSE;
+  var vExt := lowerCase(extractFileExt(currentItem)) + ' ';
+  result := '.avif .webp .png '.contains(vExt);
 end;
 
 function TPlaylist.last: boolean;
@@ -361,6 +373,7 @@ begin
     evPLReqCurrentIx:       aNotice.integer := FPlayIx;
     evPLReqHasItems:        aNotice.tf      := hasItems;
     evPLReqIsLast:          aNotice.tf      := isLast;
+    evPLReqIsSpecialImage:  aNotice.tf      := isSpecialImage;
     evPLReqThisItem:        aNotice.text    := thisItem(aNotice.integer);
     evPLReqCurrentItem:     aNotice.text    := currentItem;
     evPLReqFormattedItem:   aNotice.text    := formattedItem; // return to sender

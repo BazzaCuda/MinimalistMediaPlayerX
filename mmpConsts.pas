@@ -196,7 +196,7 @@ const
 (mimeType: 'video/webm';            mediaType: mtVideo; typeName: 'WebM video';                 fileExts: '.webm '),
 (mimeType: 'audio/webm';            mediaType: mtAudio; typeName: 'WebM audio';                 fileExts: '.weba '),
 // Misc formats
-(mimeType: 'video/avi';             mediaType: mtVideo; typeName: 'video Clip';                 fileExts: '.avi .vfw '),   // .avii = .avi; fudge because of the ambiguity that .avi and .avif now cause. should have been .av1f !!
+(mimeType: 'video/avi';             mediaType: mtVideo; typeName: 'video Clip';                 fileExts: '.avi .vfw '),
 (mimeType: '';                      mediaType: mtVideo; typeName: 'DivX video';                 fileExts: '.divx '),
 (mimeType: '';                      mediaType: mtVideo; typeName: '3ivx video';                 fileExts: '.3iv '),
 (mimeType: '';                      mediaType: mtVideo; typeName: 'XVID video';                 fileExts: '.xvid '),

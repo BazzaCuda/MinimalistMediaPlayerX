@@ -55,7 +55,7 @@ type
     evMPToggleRepeat, evMPToggleSubtitles,
     evMPVolDn, evMPVolUp, evMPZoomIn, evMPZoomOut, evMPZoomReset,
 
-    evMPStateEnd, evMPStatePlay,
+    evMPStateEnd, evMPStateLoading, evMPStatePlay,
 
     evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqImagesPaused, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
 
@@ -66,8 +66,8 @@ type
     evPBBrighter, evPBClick, evPBDarker, evPBMax, evPBPosition, evPBReset, evPBSetNewPosition, evPBToggleProgressBar,
     evPBReqMax, evPBReqPosition,
 
-    evPLCopyToClipboard, evPLDeleteIx, evPLFillListBox, evPLFillPlaylist, evPLFind, evPLFirst, evPLLast, evPLNext, evPLPrev, evPLReplaceCurrentItem,
-    evPLReqCurrentFolder, evPLReqCurrentItem, evPLReqCurrentIx, evPLReqFormattedItem, evPLReqHasItems, evPLReqIsLast, evPLReqThisItem,
+    evPLCopyToClipboard, evPLDeleteIx, evPLFillListBox, evPLFillPlaylist, evPLFind, evPLFirst, evPLLast, evPLNewPlaylist, evPLNext, evPLPrev, evPLReplaceCurrentItem,
+    evPLReqCurrentFolder, evPLReqCurrentItem, evPLReqCurrentIx, evPLReqFormattedItem, evPLReqHasItems, evPLReqIsLast, evPLReqIsSpecialImage, evPLReqThisItem,
 
     evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm,
 

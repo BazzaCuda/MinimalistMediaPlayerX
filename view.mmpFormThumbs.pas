@@ -102,7 +102,9 @@ type
     function whichHost: THostType;
     function windowSize(const aKeyOp: TKeyOp): boolean;
   protected
-    procedure CreateParams(var params: TCreateParams); override;
+    procedure createParams(var params: TCreateParams); override;
+    procedure onDoubleClick(sender: TObject);
+    procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage) ; message WM_MOVE;
   public
@@ -203,7 +205,7 @@ begin
   case (SELF.width > mmpScreenWidth) or (SELF.height > mmpScreenHeight) of TRUE: mmpGreaterWindow(SELF.handle, [ssCtrl], vThumbsSize, htThumbsHost); end;
 end;
 
-procedure TThumbsForm.CreateParams(var params: TCreateParams);
+procedure TThumbsForm.createParams(var params: TCreateParams);
 begin
   inherited;
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
@@ -220,7 +222,8 @@ begin
                                                       case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; notifyApp(newNotice(evAppClose)); end;end; // shortcut logic!
                                                         FALSE:  begin
-                                                                  notifyApp(newNotice(evPLFormMove));
+//                                                                  notifyApp(newNotice(evPLFormMove));
+                                                                  notifyApp(newNotice(evPLFormLoadBox)); // EXPERIMENTAL
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
                                                                                                                FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
@@ -238,7 +241,9 @@ procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
   FMPVHost            := TMPVHost.create(SELF);
   FMPVHost.parent     := SELF;
-  FMPVHost.OnOpenFile := onOpenFile;
+  FMPVHost.onDblClick := onDoubleClick;
+  FMPVHost.onOpenFile := onOpenFile;
+  FMPVHost.onMouseUp  := onMouseUp;
 
   mmpInitStatusBar(FStatusBar);
 
@@ -413,6 +418,18 @@ begin
   notifyApp(newNotice(evPLFormMove, wr));
 end;
 
+procedure TThumbsForm.onDoubleClick(sender: TObject);
+begin
+  case SELF.windowState = wsMaximized of   TRUE:  SELF.windowState := wsNormal;
+                                          FALSE:  SELF.windowState := wsMaximized; end;
+end;
+
+procedure TThumbsForm.onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
+begin
+//  case button = mbRight of TRUE:  case ssCtrl in shift of  TRUE:  processKeyOp(koReverseSlideshow, [], 0);
+//                                                          FALSE:  processKeyOp(koPausePlay, [], 0); end;end;
+end;
+
 procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
@@ -469,10 +486,10 @@ begin
   case NOT FPlayingSlideshow of TRUE: mmpCancelDelay; end;
 
   case FPlayingSlideshow of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, intToStr(trunc(FImageDisplayDurationMs) div 1000)); // doesn't really matter as long as it's valid and not 'inf'
-                              FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;
+                            FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;
 
   case FPlayingSlideshow of  TRUE: showSlideshowDirection;
-                              FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'PAUSED'); end;
+                            FALSE: mmpSetPanelText(FStatusBar, pnHelp, 'PAUSED'); end;
 
   case FPlayingSlideshow of  TRUE: FThumbs.playCurrentItem; end;
 end;
@@ -601,7 +618,7 @@ begin
   case result of  TRUE: begin
                           mmpSetPanelText(FStatusBar, pnHelp, aOpText);
                           mmpSetPanelText(FStatusBar, pnFold, aOpText + ' to: ' + aFolder);
-                          FThumbs.savePanelReserved := TRUE;
+                          FThumbs.foldPanelReserved := TRUE;
                         end;
                 FALSE:  begin
                           mmpSetPanelOwnerDraw(FStatusBar, pnHelp, TRUE);

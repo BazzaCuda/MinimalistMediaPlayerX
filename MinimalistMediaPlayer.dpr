@@ -129,7 +129,7 @@ begin
   MMPUI.viewModel.mediaPlayer   := newMediaPlayer;
   MMPUI.viewModel.initUI(aMainForm, vVideoPanel);
 
-  MC(aMainForm).initCaption(vVideoPanel, CF.asInteger[CONF_MAIN_CAPTION]);      // single caption at the top of the window
+  MC(aMainForm).initCaption(vVideoPanel, CF.asInteger[CONF_MAIN_CAPTION]);  // single caption at the top of the window
   ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger[CONF_TIME_CAPTION]); // multiple captions at the bottom of the window
 
   MMPUI.viewModel.progressBar   := newProgressBar.initProgressBar(ST.captionsForm, CF.asInteger[CONF_PROGRESS_BAR], 0);
@@ -142,9 +142,7 @@ begin
 
   case (lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') of FALSE: EXIT; end;
 
-  var vMediaType := MT.mediaType(notifyApp(newNotice(evPLReqCurrentItem)).text);
-
-  case vMediaType of mtImage: notifyApp(newNotice(evVMImageInBrowser)); end;
+  case GS.mediaType of mtImage: notifyApp(newNotice(evVMImageInBrowser)); end;
 
   result := TRUE;
 end;
@@ -175,6 +173,8 @@ begin
   case notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
 
   MMPUI.viewModel.showUI;
+
+  notifyApp(newNotice(evSTForceCaptions));
 
   checkBrowser;
 

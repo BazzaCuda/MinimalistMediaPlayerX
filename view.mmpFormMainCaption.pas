@@ -98,32 +98,32 @@ end;
 
 function TMainCaptionForm.brighter: integer;
 begin
-  result              := FCaption.font.color;
+  result                := FCaption.font.color;
   case FCaption.font.color = $FFFFFF of TRUE: EXIT; end;
-  FCaption.font.color := FCaption.font.color + $010101;
-  result              := FCaption.font.color;
-  CF[CONF_MAIN_CAPTION]       := CF.toHex(result);
+  FCaption.font.color   := FCaption.font.color + $010101;
+  result                := FCaption.font.color;
+  CF[CONF_MAIN_CAPTION] := CF.toHex(result);
 end;
 
 constructor TMainCaptionForm.create(const aOwner: TForm);
 begin
   inherited create(aOwner);
-  height := 80;
-  FCaption := TLabel.create(SELF);
+  height    := 80;
+  FCaption  := TLabel.create(SELF);
 end;
 
 function TMainCaptionForm.darker: integer;
 begin
-  result              := FCaption.font.color;
+  result                := FCaption.font.color;
   case FCaption.font.color = $010101 of TRUE: EXIT; end;
-  FCaption.font.color := FCaption.font.color - $010101;
-  result              := FCaption.font.color;
-  CF[CONF_MAIN_CAPTION]       := CF.toHex(result);
+  FCaption.font.color   := FCaption.font.color - $010101;
+  result                := FCaption.font.color;
+  CF[CONF_MAIN_CAPTION] := CF.toHex(result);
 end;
 
 procedure TMainCaptionForm.formResize(Sender: TObject);
 begin
-  SELF.HEIGHT := 80;
+  SELF.HEIGHT   := 80;
   FCaption.left := SELF.width - FCaption.width;
   FCaption.top  := SELF.height - FCaption.height;
 end;
@@ -131,18 +131,18 @@ end;
 function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
   function copiedFromDFM: boolean;
   begin
-    SELF.Left := 0;
-    SELF.Top := 0;
-    SELF.BorderIcons := [];
-    SELF.Caption := 'captionForm';
+    SELF.Left         := 0;
+    SELF.Top          := 0;
+    SELF.BorderIcons  := [];
+    SELF.Caption      := 'captionForm';
     SELF.ClientHeight := 75;
-    SELF.ClientWidth := 1136;
-    SELF.Color := clGray;
+    SELF.ClientWidth  := 1136;
+    SELF.Color        := clGray;
     SELF.Font.Charset := DEFAULT_CHARSET;
-    SELF.Font.Color := clWindowText;
-    SELF.Font.Height := -11;
-    SELF.Font.Name := 'Tahoma';
-    SELF.Font.Style := [];
+    SELF.Font.Color   := clWindowText;
+    SELF.Font.Height  := -11;
+    SELF.Font.Name    := 'Tahoma';
+    SELF.Font.Style   := [];
   end;
 
   function defaultFontEtc(aLabel: TLabel): boolean;
@@ -187,7 +187,7 @@ function TMainCaptionForm.resetColor: integer;
 begin
   FCaption.font.color   := ST_DEFAULT_COLOR;
   result                := ST_DEFAULT_COLOR;
-  CF[CONF_MAIN_CAPTION]         := CF.toHex(result);
+  CF[CONF_MAIN_CAPTION] := CF.toHex(result);
 end;
 
 function TMainCaptionForm.reshowCaption: boolean;

@@ -37,7 +37,7 @@ type
     FMPVHost:           TMPVHost;
     FOnThumbClick:      TNotifyEvent;
     FPlaylist:          IPlaylist;
-    FSavePanelReserved: boolean;
+    FFoldPanelReserved: boolean;
     FStatusBar:         TStatusBar;
     FThumbsHost:        TWinControl;
     FThumbs:            TObjectList<TThumb>;
@@ -62,8 +62,8 @@ type
     function thumbRowCount: integer;
     property currentFolder:     string        read FCurrentFolder;
     property currentIx:         integer       read getCurrentIx;
+    property foldPanelReserved: boolean                             write FFoldPanelReserved;
     property onThumbClick:      TNotifyEvent  read FOnThumbClick    write FOnThumbClick;
-    property savePanelReserved: boolean                             write FSavePanelReserved;
     property playlist:          IPlaylist     read FPlaylist;
     property thumbSize:         integer       read FThumbSize       write FThumbSize;
     property statusBar:         TStatusBar                          write FStatusBar;
@@ -258,7 +258,7 @@ begin
 
   case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
 
-  case FSavePanelReserved of  TRUE: FSavePanelReserved := FALSE;
+  case FFoldPanelReserved of  TRUE: FFoldPanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnFold, FPlaylist.currentFolder); end;
 
   FStatusBar.refresh;

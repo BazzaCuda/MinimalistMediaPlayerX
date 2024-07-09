@@ -316,8 +316,6 @@ begin
 
   case FShowData of  TRUE: CF[CONF_SHOW_METADATA] := 'yes';
                     FALSE: CF[CONF_SHOW_METADATA] := 'no'; end;
-
-  FDataMemo.repaint; // EXPERIMENTAL
 end;
 
 procedure TCaptionsForm.setShowTime(const aValue: boolean);

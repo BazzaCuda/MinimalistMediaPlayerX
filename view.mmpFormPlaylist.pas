@@ -75,7 +75,8 @@ type
   // can't implement IPlaylistForm with the TForm so we use an intermediary
   TPlayListFormProxy = class(TInterfacedObject, IPlaylistForm)
   strict private
-    FPlaylistForm: TPlaylistForm;
+    FAlreadyDone:   boolean;
+    FPlaylistForm:  TPlaylistForm;
   private
     function    createForm(const bCreateNew: boolean): TPlaylistForm;
     function    moveForm(const wr: TWndRec): boolean;
@@ -232,7 +233,7 @@ function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
   notifyApp(newNotice(evVMShutTimeline));
   var vThisItem := notifyApp(newNotice(evPLReqThisItem, aItemIndex)).text;
-  notifyApp(newNotice(evPLFind, vThisItem));       // set as current
+  notifyApp(newNotice(evPLFind, vThisItem)); // set as current
   notifyApp(newNotice(evVMMPPlayCurrent));
 end;
 
@@ -270,7 +271,9 @@ begin
                                               FALSE: FPlaylistForm.height := 400; end;
   screen.cursor := crDefault;
 
-  notifyApp(newNotice(evPLFormLoadBox));
+  case FAlreadyDone of FALSE: notifyApp(newNotice(evPLFormLoadBox)); end;
+  FAlreadyDone := TRUE;
+
   notifyApp(newNotice(evPLFormShow));
   notifyApp(newNotice(evPLFormHighlight));
 
@@ -293,6 +296,7 @@ begin
     evPLFormLoadBox:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox; end;
     evPLFormHighlight:  case FPlaylistForm = NIL of FALSE: FPlaylistForm.highlightCurrentItem; end;
     evPLFormShow:       showForm;
+    evPLNewPlaylist:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox; end;
   end;
 end;
 
@@ -309,6 +313,7 @@ begin
   FPlaylistForm := NIL;
   notifyApp(newNotice(evGSWidthHelp, 0));
   GS.notify(newNotice(evGSShowingPlaylist, FALSE));
+  FAlreadyDone := FALSE;
 end;
 
 initialization

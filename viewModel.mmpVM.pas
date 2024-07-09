@@ -150,7 +150,6 @@ type
     procedure   onWMDropFiles(var msg: TWMDropFiles);
     procedure   onWMEnterSizeMove(var msg: TMessage);
     procedure   onWMSizing(var msg: TMessage);
-    procedure   onVideoPanelClick(sender: TObject);
     procedure   onVideoPanelDblClick(sender: TObject);
 
     procedure   onWINAutoCenterOff(var msg: TMessage);
@@ -225,6 +224,7 @@ begin
   case result of TRUE: begin notifyApp(newNotice(evGSAutoCenter, FALSE)); notifyApp(newNotice(evGSMaxSize, FALSE));end;end;
 
   moveWindow(aHWND, dx, dy, wndRect.width, wndRect.height, FALSE);
+  case result of FALSE: EXIT; end;
   notifyApp(newNotice(evVMMoveHelp));
   notifyApp(newNotice(evVMMovePlaylist));
   notifyApp(newNotice(evVMMoveTimeline));
@@ -343,7 +343,7 @@ end;
 function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
 begin
   FVideoPanel             := aVideoPanel;
-  FVideoPanel.OnClick     := onVideoPanelClick;
+//  FVideoPanel.OnClick     := onVideoPanelClick; // deprecated - it's annoying
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
 
   mmpThemeInitForm(aForm);
@@ -401,10 +401,10 @@ end;
 
 function TVM.nextWithDelay: boolean;
 begin
-  case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: begin
-                                                                                                      notifyApp(newNotice(evVMMPPlayNext));
-                                                                                                      case GS.mediaType of mtImage: mmpDelay(notifyApp(newNotice(evMPReqIDD)).integer - 1); end;
-                                                                                                    end;end;
+  case GS.mediaType of
+    mtImage: case notifyApp(newNotice(evMPReqImagesPaused)).tf of FALSE:  begin
+                                                                            case notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: mmpDelay(notifyApp(newNotice(evMPReqIDD)).integer - 1); end;
+                                                                            notifyApp(newNotice(evVMMPPlayNext)); end;end;end;
 end;
 
 procedure TVM.onFormResize;
@@ -475,16 +475,18 @@ end;
 function TVM.onMPNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
-
   case aNotice = NIL of TRUE: EXIT; end;
-//  TDebug.debugEnum<TNoticeEvent>('onMPNotify', aNotice.event);
+
+//  var vExt := extractFileExt(notifyApp(newNotice(evPLReqCurrentItem)).text);
+//  TDebug.debugEnum<TMediaType>(vExt + ': ', GS.mediaType);
+//  TDebug.debugEnum<TNoticeEvent>(vExt + ': onMPNotify', aNotice.event);
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
                                                     FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
 
-    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case NOT GS.showingTimeline of TRUE: notifyApp(newNotice(evVMMPPlayNext)); end;
+    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
                                                   mtImage:  case notifyApp(newNotice(evMPReqImagesPaused)).tf of   TRUE: ; // ignore fake end for .png and .webp image types
                                                                                                                   FALSE:  notifyApp(newNotice(evVMNextWithDelay)); end;end;
     evMPDuration:   notifyApp(newNotice(evPBMax, aNotice.integer));
@@ -503,6 +505,8 @@ end;
 
 function TVM.onMPOpen(const aNotice: INotice): boolean;
 begin
+//  vPlay := FALSE;
+//  debug(notifyApp(newNotice(evPLReqCurrentItem)).text);
 //  TDebug.debugEnum<TNoticeEvent>('onMPOpen', aNotice.event);
 //  notifyApp(newNotice(evSTForceCaptions));
 end;
@@ -565,17 +569,9 @@ function TVM.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
-end;
-
-procedure TVM.onVideoPanelClick(sender: TObject);
-begin
-  mmpDelay(250); // wait to see if the user is actually double-clicking rather than single-clicking
-  case FDoubleClick of TRUE: begin FDoubleClick := FALSE; EXIT; end;end;
- // after a drag don't process the button up as a click
-  case FDragged of FALSE: begin notifyApp(newNotice(evMPPausePlay));
-                                case (GS.mediaType = mtImage) and (notifyApp(newNotice(evMPReqImagesPaused)).tf = FALSE) of TRUE: notifyApp(newNotice(evVMNextWithDelay)); end;end;end;
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
@@ -798,7 +794,7 @@ begin
   case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
   mmpSetWindowSize(GS.mainForm.handle, vPt);
 
-  notifyApp(newNotice(evWndResize)); // reposition the help and playlist windows
+  notifyApp(newNotice(evWndResize)); // reposition the help, playlist and timeline windows
 
   FResizingWindow := FALSE;
   result          := TRUE;
