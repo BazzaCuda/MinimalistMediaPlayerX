@@ -358,7 +358,8 @@ end;
 function TVM.keepDelete: boolean;
 begin
   var vCurrentFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
-  case mmpKeepDelete(vCurrentFolder) and CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and (playNextFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
+  case mmpKeepDelete(vCurrentFolder) of TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                                                              FALSE: notifyApp(newNotice(evMPStop)); end;end;
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -621,7 +622,7 @@ end;
 procedure TVM.onWINPausePlay(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPPausePlay));
-  notifyApp(newNotice(evVMNextWithDelay));
+  notifyApp(newNotice(evVMNextWithDelay)); // only effects an image if the slideshow is active
 end;
 
 procedure TVM.onWinResize(var msg: TMessage);

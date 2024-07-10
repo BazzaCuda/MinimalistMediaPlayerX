@@ -227,7 +227,7 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
 //  TDebug.debugEnum<TMPVPlayerState>('eState ' + extractFileName(mpvFileName(mpv)), eState);
   case eState of
-    mpsLoading:   ; // FNotifier.notifySubscribers(newNotice(evMPStateLoading));
+    mpsLoading:   ; // FNotifier.notifySubscribers(newNotice(evMPStateLoading)); {not currently used}
     mpsEnd:       FNotifier.notifySubscribers(newNotice(evMPStateEnd));
     mpsPlay:      FNotifier.notifySubscribers(newNotice(evMPStatePlay));
   end;
@@ -247,10 +247,11 @@ function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result := FALSE;
   FDimensionsDone := FALSE;
-  mpvOpenFile(mpv, aURL);
   FMediaType := MT.mediaType(extractFileExt(aURL));
-  case FMediaType of mtAudio, mtVideo: notifyApp(newNotice(evMPKeepOpen, FALSE));  // WAS FALSE
-                              mtImage: notifyApp(newNotice(evMPKeepOpen, FImagesPaused)); end;
+  case FMediaType = mtImage of TRUE: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
+  mpvOpenFile(mpv, aURL);
+  case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE);
+                              mtImage: mpvSetKeepOpen(mpv, FImagesPaused); end;
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));

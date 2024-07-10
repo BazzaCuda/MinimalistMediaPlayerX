@@ -92,7 +92,6 @@ type
     function saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
     function showHost(const aHostType: THostType): boolean;
-    function showPlaylist: boolean;
     function showSlideshowDirection: boolean;
     function speedDn: boolean;
     function speedReset: boolean;
@@ -222,8 +221,7 @@ begin
                                                       case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of
                                                          TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; notifyApp(newNotice(evAppClose)); end;end; // shortcut logic!
                                                         FALSE:  begin
-//                                                                  notifyApp(newNotice(evPLFormMove));
-                                                                  notifyApp(newNotice(evPLFormLoadBox)); // EXPERIMENTAL
+                                                                  notifyApp(newNotice(evPLFormLoadBox));
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
                                                                                                                FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
@@ -626,13 +624,6 @@ begin
                         end;end;
 end;
 
-function TThumbsForm.showPlaylist: boolean;
-begin
-  EXIT; // EXPERIMENTAL
-  var vPt := FThumbsHost.ClientToScreen(point(FThumbsHost.left + FThumbsHost.width, FThumbsHost.top - 2)); // screen position of the top right corner of the application window, roughly.
-  movePlaylist(TRUE);
-end;
-
 function TThumbsForm.showSlideshowDirection: boolean;
 begin
   case FSlideshowDirection of
@@ -865,7 +856,6 @@ begin
     koToggleBlackout:;
     koBrighterPB:;
     koDarkerPB:;
-    koTogglePlaylist:     showPlaylist;
   end;
 
   case whichHost of htThumbsHost: case vIx = FThumbs.currentIx of FALSE:  begin // has the thumbnail page been recreated starting at a different item Ix ?

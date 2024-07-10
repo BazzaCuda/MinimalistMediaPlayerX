@@ -75,7 +75,7 @@ type
   // can't implement IPlaylistForm with the TForm so we use an intermediary
   TPlayListFormProxy = class(TInterfacedObject, IPlaylistForm)
   strict private
-    FAlreadyDone:   boolean;
+    FListBoxLoaded: boolean;
     FPlaylistForm:  TPlaylistForm;
   private
     function    createForm(const bCreateNew: boolean): TPlaylistForm;
@@ -153,7 +153,7 @@ function TPlaylistForm.highlightCurrentItem: boolean;
 begin
   var vCurrentIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case vCurrentIx = -1 of TRUE: EXIT; end;
-  LB.items.beginUpdate;
+//  LB.items.beginUpdate;
   try
     case LB.count > 0 of TRUE:  begin
                                   LB.itemIndex := vCurrentIx;
@@ -163,7 +163,7 @@ begin
                                   case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
                                                          FALSE: LB.topIndex := 0; end;end;end;
   finally
-    LB.items.endUpdate;
+//    LB.items.endUpdate;
   end;
 end;
 
@@ -271,8 +271,8 @@ begin
                                               FALSE: FPlaylistForm.height := 400; end;
   screen.cursor := crDefault;
 
-  case FAlreadyDone of FALSE: notifyApp(newNotice(evPLFormLoadBox)); end;
-  FAlreadyDone := TRUE;
+  case FListBoxLoaded of FALSE: notifyApp(newNotice(evPLFormLoadBox)); end; // do once when the playlist is first opened
+  FListBoxLoaded := TRUE;
 
   notifyApp(newNotice(evPLFormShow));
   notifyApp(newNotice(evPLFormHighlight));
@@ -290,6 +290,7 @@ function TPlayListFormProxy.onNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+//  TDebug.debugEnum<TNoticeEvent>('PLForm.onNotify', aNotice.event);
   case aNotice.event of
     evPLFormMove:       moveForm(aNotice.wndRec);
     evPLFormShutForm:   shutForm;
@@ -313,7 +314,7 @@ begin
   FPlaylistForm := NIL;
   notifyApp(newNotice(evGSWidthHelp, 0));
   GS.notify(newNotice(evGSShowingPlaylist, FALSE));
-  FAlreadyDone := FALSE;
+  FListBoxLoaded := FALSE;
 end;
 
 initialization
