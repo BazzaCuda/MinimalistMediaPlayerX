@@ -105,6 +105,7 @@ type
     FNotifier:              INotifier;
 
     FMPDuration:            integer;
+    FMPPosition:            integer;
 
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
@@ -113,30 +114,31 @@ type
     FDoubleClick:           boolean;
     FDragged:               boolean;
     FResizingWindow:        boolean;
+    FSlideshowTimer:        TTimer;
   private
-    function    adjustAspectRatio:  boolean;
+    function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
-    function    doEscapeKey:        boolean;
+    function    doEscapeKey:          boolean;
     function    forcedResize(const aWnd: HWND; const pt: TPoint; const X, Y: int64): boolean;
-    function    keepDelete:         boolean;
-    function    minimizeWindow:     boolean;
+    function    keepDelete:           boolean;
+    function    minimizeWindow:       boolean;
     function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
     function    moveTimeline(const createNew: boolean = FALSE): boolean;
-    function    nextWithDelay:      boolean;
-    function    playNextFolder:     boolean;
-    function    playPrevFolder:     boolean;
+    function    playNextFolder:       boolean;
+    function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
-    function    reloadPlaylist:     boolean;
+    function    reloadPlaylist:       boolean;
     function    renameCurrentItem(const aRenameType: TRenameType): string;
     function    resizeWindow: boolean;
     function    sendOpInfo(const aOpInfo: string): boolean;
+    function    setupSlideshowTimer:  boolean;
     function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
-    function    tab(const bCapsLock: boolean; const aFactor: integer = 0): string;
-    function    toggleEditMode:     boolean;
-    function    toggleFullscreen:   boolean;
-    function    toggleHelp:         boolean;
-    function    togglePlaylist:     boolean;
+    function    tab(const bCapsLock:  boolean; const aFactor: integer = 0): string;
+    function    toggleEditMode:       boolean;
+    function    toggleFullscreen:     boolean;
+    function    toggleHelp:           boolean;
+    function    togglePlaylist:       boolean;
   protected
     procedure   onFormResize;
     procedure   onKeyDown(key: Word; Shift: TShiftState);
@@ -147,6 +149,7 @@ type
     procedure   onMouseWheelDown(shift: TShiftState; mousePos: TPoint; var Handled: Boolean);
     procedure   onMouseWheelUp(shift: TShiftState; mousePos: TPoint; var Handled: Boolean);
     procedure   onNCHitTest(var msg: TWMNCHitTest);
+    procedure   onSlideshowTimer(sender: TObject);
     procedure   onWMDropFiles(var msg: TWMDropFiles);
     procedure   onWMEnterSizeMove(var msg: TMessage);
     procedure   onWMSizing(var msg: TMessage);
@@ -267,6 +270,7 @@ end;
 
 destructor TVM.Destroy;
 begin
+  case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
   inherited;
 end;
 
@@ -400,14 +404,6 @@ begin
   showTimeline(vPt, FVideoPanel.width, createNew);
 end;
 
-function TVM.nextWithDelay: boolean;
-begin
-  case GS.mediaType of
-    mtImage: case notifyApp(newNotice(evMPReqImagesPaused)).tf of FALSE:  begin
-                                                                            case notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: mmpDelay(notifyApp(newNotice(evMPReqIDD)).integer - 1); end;
-                                                                            notifyApp(newNotice(evVMMPPlayNext)); end;end;end;
-end;
-
 procedure TVM.onFormResize;
 begin
   case FResizingWindow of TRUE: EXIT; end;
@@ -478,18 +474,23 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
 
-//  var vExt := extractFileExt(notifyApp(newNotice(evPLReqCurrentItem)).text);
-//  TDebug.debugEnum<TMediaType>(vExt + ': ', GS.mediaType);
-//  TDebug.debugEnum<TNoticeEvent>(vExt + ': onMPNotify', aNotice.event);
+//  TDebug.debugEnum<TNoticeEvent>('onMPNotify: ', aNotice.event);
+////  var vExt := extractFileExt(notifyApp(newNotice(evPLReqCurrentItem)).text);
+//  TDebug.debugEnum<TMediaType>({vExt + ': '}'GS.mediaType', GS.mediaType);
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
                                                     FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
 
-    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
-                                                  mtImage:  case notifyApp(newNotice(evMPReqImagesPaused)).tf of   TRUE: ; // ignore fake end for .png and .webp image types
-                                                                                                                  FALSE:  notifyApp(newNotice(evVMNextWithDelay)); end;end;
+    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  begin
+                                                              case FMPPosition = 0 of TRUE: EXIT; end; // ignore fake end
+                                                              case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
+                                                            end;
+                                                  mtImage:  case GS.imagesPaused    of  TRUE: ; // ignore fake end for .png, .avif and .webp image types
+                                                                                       FALSE: begin
+                                                                                                case notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: mmpDelay(GS.IDD * 1000); end;
+                                                                                                notifyApp(newNotice(evVMMPPlayNext)); end;end;end;
     evMPDuration:   notifyApp(newNotice(evPBMax, aNotice.integer));
     evMPPosition:   notifyApp(newNotice(evPBPosition, aNotice.integer));
   end;
@@ -497,8 +498,11 @@ begin
   case aNotice.event of
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
+                      // debugInteger('Duration: ', FMPDuration);
                       case GS.showingTimeline of TRUE: TL.max := aNotice.integer; end;end;
     evMPPosition:   begin
+                      FMPPosition := aNotice.integer;
+                      // debugInteger('Position: ', FMPPosition);
                       notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)));
                       case GS.showingTimeline of TRUE: TL.position := aNotice.integer; end;end;
   end;
@@ -542,7 +546,6 @@ begin
     evVMMPPlayLast:         mmpPlayLast;
     evVMMPPlayNext:         case NOT mmpPlayNext and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playNextFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
     evVMMPPlayPrev:         case NOT mmpPlayPrev and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playPrevFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
-    evVMNextWithDelay:      nextWithDelay;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
     evVMPlaySomething:      playSomething(aNotice.integer);
@@ -564,6 +567,13 @@ function TVM.onPLNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+end;
+
+procedure TVM.onSlideshowTimer(sender: TObject);
+begin
+  case (GS.mediaType = mtImage) and NOT notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: begin
+                                                                                                  // debug('fake evMPStateEnd');
+                                                                                                  FMP.notifier.notifySubscribers(newNotice(evMPStateEnd)); end;end;
 end;
 
 function TVM.onTickTimer(const aNotice: INotice): INotice;
@@ -622,7 +632,7 @@ end;
 procedure TVM.onWINPausePlay(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPPausePlay));
-  notifyApp(newNotice(evVMNextWithDelay)); // only effects an image if the slideshow is active
+  setupSlideshowTimer;
 end;
 
 procedure TVM.onWinResize(var msg: TMessage);
@@ -821,6 +831,21 @@ end;
 procedure TVM.setProgressBar(const aValue: IProgressBar);
 begin
   FPB := aValue;
+end;
+
+function TVM.setupSlideshowTimer: boolean;
+begin
+  case GS.imagesPaused and (FSlideshowTimer <> NIL) of   TRUE:  begin
+                                                                  FSlideshowTimer.enabled := FALSE;
+                                                                  FSlideshowTimer.free;
+                                                                  FSlideshowTimer         := NIL;
+                                                                  EXIT; end;end;
+
+  case GS.imagesPaused of FALSE:  begin
+                                    FSlideshowTimer           := TTimer.create(NIL);
+                                    FSlideshowTimer.interval  := GS.IDD * 1000;
+                                    FSlideshowTimer.OnTimer   := onSlideshowTimer;
+                                    FSlideshowTimer.enabled   := TRUE; end;end;
 end;
 
 function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): boolean;

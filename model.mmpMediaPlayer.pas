@@ -41,6 +41,7 @@ uses
   system.sysUtils,
   MPVBasePlayer,
   mmpConsts, mmpFileUtils, mmpUtils,
+  viewModel.mmpGlobalState,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties, mmpTickTimer,
   _debugWindow;
 
@@ -122,7 +123,9 @@ begin
 
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration);
   case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
+  notifyApp(newNotice(evGSIDD, trunc(FImageDisplayDurationMs)));
   FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // EXPERIMENTAL
 
   pausePlayImages; // default is paused;
 
@@ -213,7 +216,8 @@ end;
 procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   case FNotifier = NIL of TRUE: EXIT; end;
-  FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
+  case GS.mediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv))); end;
+  case GS.mediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end; // EXPERIMENTAL
   notifyApp(newNotice(evVMResizeWindow));
 
   var vNotice     := newNotice;
@@ -247,11 +251,12 @@ function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result := FALSE;
   FDimensionsDone := FALSE;
+  mpvOpenFile(mpv, aURL); // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
+
   FMediaType := MT.mediaType(extractFileExt(aURL));
   case FMediaType = mtImage of TRUE: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
-  mpvOpenFile(mpv, aURL);
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE);
-                              mtImage: mpvSetKeepOpen(mpv, FImagesPaused); end;
+                              mtImage: mpvSetKeepOpen(mpv, TRUE); end; // EXPERIMENTAL FImagesPaused); end;
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));
@@ -271,9 +276,11 @@ end;
 function TMediaPlayer.pausePlayImages: string;
 begin
   FImagesPaused := NOT FImagesPaused;
+  notifyApp(newNotice(evGSImagesPaused, FImagesPaused));
 
   case FImagesPaused of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
-                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration); end;
+                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // EXPERIMENTAL, this should now always be inf
+//                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration); end;   // EXPERIMENTAL, this should now always be inf
 
   case FImagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;

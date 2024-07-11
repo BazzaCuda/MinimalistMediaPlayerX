@@ -29,7 +29,7 @@ type
   TNoticeEvent = (evNone,
     evAboutFormShow, evAboutReleaseNotesFormShow,
 
-    evGSAppWnd, evGSAutoCenter, evGSHasCoverArt,
+    evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
@@ -81,7 +81,7 @@ type
     evVMAdjustAspectRatio, evVMArrangeAll, evVMCenterWindow, evVMDeleteCurrentItem, evVMDoEscapeKey, evVMImageInBrowser, evVMKeepCurrentItem, evVMKeepDelete,
     evVMMinimize, evVMMoveHelp, evVMMovePlaylist, evVMMoveTimeline, evVMShowThumbs,
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
-    evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMNextWithDelay, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem,
+    evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem,
 
     evAppClose, evAppCloseAll,
 

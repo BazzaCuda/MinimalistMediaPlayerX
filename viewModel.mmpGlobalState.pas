@@ -48,6 +48,8 @@ type
   IGlobalState = interface
     ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
     function getAutoCenter:               boolean;
+    function getIDD:                      integer;
+    function getImagesPaused:             boolean;
     function getMainForm:                 TForm;
     function getMaxSize:                  boolean;
     function getMediaType:                TMediaType;
@@ -69,6 +71,8 @@ type
     function notify(const aNotice: INotice): INotice;
 
     property autoCenter:                boolean             read getAutoCenter;
+    property IDD:                       integer             read getIDD;
+    property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
     property mediaType:                 TMediaType          read getMediaType;
@@ -98,6 +102,8 @@ type
   TGlobalState = class(TInterfacedObject, IGlobalState)
   strict private
     FAutoCenter:              boolean;
+    FIDD:                     integer;
+    FImagesPaused:            boolean;
     FMainForm:                TForm;
     FMaxSize:                 boolean;
     FMediaType:               TMediaType;
@@ -120,6 +126,8 @@ type
     constructor create;
     destructor  Destroy; override;
     function    getAutoCenter:               boolean;
+    function    getIDD:                      integer;
+    function    getImagesPaused:             boolean;
     function    getMainForm:                 TForm;
     function    getMaxSize:                  boolean;
     function    getMediaType:                TMediaType;
@@ -163,6 +171,16 @@ end;
 function TGlobalState.getAutoCenter: boolean;
 begin
   result := FAutoCenter;
+end;
+
+function TGlobalState.getIDD: integer;
+begin
+  result := FIDD;
+end;
+
+function TGlobalState.getImagesPaused: boolean;
+begin
+  result := FImagesPaused;
 end;
 
 function TGlobalState.getMainForm: TForm;
@@ -251,6 +269,8 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
+    evGSIDD:                      FIDD                    := aNotice.integer;
+    evGSImagesPaused:             FImagesPaused           := aNotice.tf;
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;
     evGSMaxSize:                  FMaxSize                := aNotice.tf;
     evGSMediaType:                FMediaType              := aNotice.mediaType;
