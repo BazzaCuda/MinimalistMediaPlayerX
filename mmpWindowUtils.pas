@@ -197,6 +197,7 @@ begin
                                   notifyApp(newNotice(evPAPostToEvery, WIN_AUTOCENTER_OFF));
                                   notifyApp(newNotice(evPAPostToEvery, WIN_MAX_SIZE_OFF)); end;end;
   var vMsg: TMessage;
+  vMsg := default(TMessage);
   case vCount of
     1:       vMsg.WParam := mmpScreenWidth;
     2:       vMsg.WParam := mmpScreenWidth  div 2;
