@@ -23,7 +23,6 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-//  FastMM4 in 'B:\Downloads\FastMM4-master\FastMM4.pas',
   system.sysUtils,
   vcl.dialogs,
   vcl.extCtrls,
@@ -35,7 +34,7 @@ uses
   mmpNotify.notices in 'mmpNotify.notices.pas',
   mmpNotify.notifier in 'mmpNotify.notifier.pas',
   mmpNotify.subscriber in 'mmpNotify.subscriber.pas',
-  viewModel.mmpGlobalState in 'viewModel.mmpGlobalState.pas',
+  mmpGlobalState in 'mmpGlobalState.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   view.mmpFormCaptions in 'view.mmpFormCaptions.pas',
@@ -77,7 +76,6 @@ uses
   model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
   TMediaStreamClass in 'TMediaStreamClass.pas',
   view.mmpFormPlaylist in 'view.mmpFormPlaylist.pas',
-  viewModel.mmpSnapshot in 'viewModel.mmpSnapshot.pas',
   model.mmpPlaylistUtils in 'model.mmpPlaylistUtils.pas',
   model.mmpBookmark in 'model.mmpBookmark.pas',
   view.mmpFormReleaseNotes in 'view.mmpFormReleaseNotes.pas',

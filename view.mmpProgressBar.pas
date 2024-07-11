@@ -43,8 +43,8 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpConsts,
-  viewModel.mmpGlobalState, viewModel.mmpMPVFormatting,
+  mmpConsts, mmpGlobalState,
+  viewModel.mmpMPVFormatting,
   _debugWindow;
 
 type

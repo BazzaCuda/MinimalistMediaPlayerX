@@ -24,8 +24,7 @@ uses
   winApi.windows,
   system.classes, system.SyncObjs,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
-  viewModel.mmpGlobalState;
+  mmpConsts, mmpGlobalState;
 
 function mmpArrangeAll(const aWnd: HWND): boolean;
 function mmpAdjustAspectRatio(const aWnd: HWND; const aHeight: integer): TPoint;

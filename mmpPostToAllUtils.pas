@@ -28,8 +28,6 @@ type
     ['{CBB88DF1-32F6-4669-8F3A-CCE148884AF9}']
   end;
 
-  TWnds = array of HWND;
-
 function mmpHWND(index: integer): HWND;
 
 implementation
@@ -37,8 +35,7 @@ implementation
 uses
   system.classes, system.sysUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpKeyboardUtils,
-  viewModel.mmpGlobalState,
+  mmpGlobalState, mmpKeyboardUtils,
   _debugWindow;
 
   type TPostToAll = class(TInterfacedObject, IPostToAll)
@@ -48,6 +45,9 @@ uses
     constructor create;
     function notify(const aNotice: INotice): INotice;
   end;
+
+type
+  TWnds = array of HWND;
 
 var
   gPA: IPostToAll;

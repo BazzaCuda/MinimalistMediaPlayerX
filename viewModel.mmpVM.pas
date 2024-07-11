@@ -91,9 +91,9 @@ uses
   winApi.shellApi,
   system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpThemeUtils,
-  viewModel.mmpGlobalState, viewModel.mmpKeyboard, viewModel.mmpKeyboardOps, viewModel.mmpMPVFormatting,
+  viewModel.mmpKeyboard, viewModel.mmpKeyboardOps, viewModel.mmpMPVFormatting,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   _debugWindow;
 

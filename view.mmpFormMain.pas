@@ -80,9 +80,8 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpDesktopUtils, mmpKeyboardUtils,
+  mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils,
   view.mmpFormTimeline,
-  viewModel.mmpGlobalState,
   _debugWindow;
 
 {$R *.dfm}

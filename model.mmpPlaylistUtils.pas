@@ -23,7 +23,7 @@ interface
 uses
   system.sysUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  viewModel.mmpGlobalState,
+  mmpGlobalState,
   model.mmpMediaPlayer, model.mmpPlaylist;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;

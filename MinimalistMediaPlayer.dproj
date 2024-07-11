@@ -157,7 +157,7 @@
         <DCCReference Include="mmpNotify.notices.pas"/>
         <DCCReference Include="mmpNotify.notifier.pas"/>
         <DCCReference Include="mmpNotify.subscriber.pas"/>
-        <DCCReference Include="viewModel.mmpGlobalState.pas"/>
+        <DCCReference Include="mmpGlobalState.pas"/>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="view.mmpFormCaptions.pas"/>
@@ -199,7 +199,6 @@
         <DCCReference Include="model.mmpMediaInfo.pas"/>
         <DCCReference Include="TMediaStreamClass.pas"/>
         <DCCReference Include="view.mmpFormPlaylist.pas"/>
-        <DCCReference Include="viewModel.mmpSnapshot.pas"/>
         <DCCReference Include="model.mmpPlaylistUtils.pas"/>
         <DCCReference Include="model.mmpBookmark.pas"/>
         <DCCReference Include="view.mmpFormReleaseNotes.pas"/>

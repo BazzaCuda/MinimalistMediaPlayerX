@@ -53,8 +53,7 @@ implementation
 uses
   winApi.shellAPI, system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpMarkDownUtils,
-  viewModel.mmpGlobalState,
+  mmpGlobalState, mmpMarkDownUtils,
   _debugWindow;
 
 type

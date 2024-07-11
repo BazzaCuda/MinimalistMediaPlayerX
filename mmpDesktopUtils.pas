@@ -36,7 +36,7 @@ implementation
 
 uses
   vcl.forms,
-  viewModel.mmpGlobalState,
+  mmpGlobalState,
   _debugWindow;
 
 function mmpBorderWidth: integer;

@@ -83,9 +83,9 @@ function shutStreamList: boolean;
 implementation
 
 uses
-  mmpConsts, mmpMarkDownUtils,
+  mmpConsts, mmpGlobalState, mmpMarkDownUtils,
   view.mmpFormTimeline,
-  viewModel.mmpGlobalState, viewModel.mmpMPVFormatting,
+  viewModel.mmpMPVFormatting,
   model.mmpMediaInfo,
   _debugWindow;
 

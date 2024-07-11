@@ -295,7 +295,8 @@ end;
 
 function TMediaInfo.getXY: string;
 begin
-  result := format('XY:  %d x %d', [X, Y]);
+  case (X <> 0) and (Y <> 0) of  TRUE: result := format('XY:  %d x %d', [X, Y]);
+                                FALSE: result := format('XY:  %d x %d', [FMD.mdImageWidth, FMD.mdImageHeight]); end;
 end;
 
 function TMediaInfo.getMediaChapters: TObjectList<TMediaChapter>;

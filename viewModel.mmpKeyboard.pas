@@ -22,8 +22,7 @@ interface
 
 uses
   system.classes,
-  mmpConsts,
-  viewModel.mmpGlobalState;
+  mmpConsts, mmpGlobalState;
 
 function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
 

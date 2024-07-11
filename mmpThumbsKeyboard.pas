@@ -43,7 +43,7 @@ implementation
 
 uses
   winApi.windows,
-  viewModel.mmpGlobalState,
+  mmpGlobalState,
   _debugWindow;
 
 const

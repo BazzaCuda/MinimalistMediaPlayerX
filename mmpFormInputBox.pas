@@ -47,7 +47,7 @@ implementation
 uses
   vcl.styles, vcl.themes,
   mmpTickTimer, mmpUtils,
-  viewModel.mmpGlobalState,
+  mmpGlobalState,
   _debugWindow;
 
 {$R *.dfm}
