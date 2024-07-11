@@ -264,7 +264,8 @@ begin
   var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case notifyApp(newNotice(evPLDeleteIx, vIx)).tf of FALSE: EXIT; end; // unlikely
   case (ssCtrl in aShiftState) or NOT notifyApp(newNotice(evPLReqHasItems)).tf of
-     TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and NOT notifyApp(newNotice(evVMPlayNextFolder)).tf of TRUE: notifyApp(newNotice(evAppClose)); end;
+     TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: case notifyApp(newNotice(evVMPlayNextFolder)).tf of  FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                            FALSE: notifyApp(newNotice(evAppClose)); end;
     FALSE: notifyApp(newNotice(evVMPlaySomething, vIx)); end;
 end;
 
@@ -363,7 +364,7 @@ function TVM.keepDelete: boolean;
 begin
   var vCurrentFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
   case mmpKeepDelete(vCurrentFolder) of TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                                                              FALSE: notifyApp(newNotice(evMPStop)); end;end;
+                                                                                              FALSE: notifyApp(newNotice(evAppClose)); end;end;
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -532,8 +533,10 @@ begin
     evVMMPPlayCurrent:      mmpPlayCurrent;
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
-    evVMMPPlayNext:         case NOT mmpPlayNext and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playNextFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
-    evVMMPPlayPrev:         case NOT mmpPlayPrev and CF.asBoolean[CONF_NEXT_FOLDER_ON_END] and (playPrevFolder = FALSE) of TRUE: notifyApp(newNotice(evAppClose)); end;
+    evVMMPPlayNext:         case mmpPlayNext of FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                                                                      FALSE: notifyApp(newNotice(evAppClose)); end;end;
+    evVMMPPlayPrev:         case mmpPlayPrev of FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playPrevFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                                                                      FALSE: notifyApp(newNotice(evAppClose)); end;end;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
     evVMPlaySomething:      playSomething(aNotice.integer);

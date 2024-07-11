@@ -30,14 +30,13 @@ implementation
 function mmpCopyPNGImage(SourceImage, DestImage: TImage): boolean;
 begin
   // Check if the source image has a picture to copy
-  if Assigned(SourceImage.Picture) and Assigned(SourceImage.Picture.Graphic) then
-  begin
-    // Clear the destination image
-    DestImage.Picture := nil;
+  case assigned(sourceImage.picture) and assigned(sourceImage.picture.graphic) of FALSE: EXIT; end;
 
-    // Assign the graphic content from the source to the destination
-    DestImage.Picture.Assign(SourceImage.Picture.Graphic);
-  end;
+  // Clear the destination image
+  destImage.picture := nil;
+
+  // Assign the graphic content from the source to the destination
+  destImage.picture.assign(sourceImage.picture.graphic);
 end;
 
 

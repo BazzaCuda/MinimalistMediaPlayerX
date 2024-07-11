@@ -54,7 +54,7 @@ begin
   var vExt := lowerCase(extractFileExt(aFilePath));
   var vMT  := MT.mediaType(vExt);
 
-  case ssCtrl in aShiftState of TRUE:   case CF.asBoolean[CONF_FOLDER_DELETE] of FALSE: EXIT; end;end;
+  case ssCtrl in aShiftState of  TRUE:  case CF.asBoolean[CONF_FOLDER_DELETE] of FALSE: EXIT; end;end;
   case ssCtrl in aShiftState of FALSE:  case vMT of
                                           mtAudio: case CF.asBoolean[CONF_AUDIO_DELETE] of FALSE: EXIT; end;
                                           mtImage: case CF.asBoolean[CONF_IMAGE_DELETE] of FALSE: EXIT; end;
@@ -144,8 +144,8 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
-  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + ExtractFilePath(AFilePath) + '*.* "'); // folder contents but not subfolders
-                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + AFilePath + '"'); end;                 // one individual file
+  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + extractFilePath(aFilePath) + '*.* "'); // folder contents but not subfolders [unless they're empty]
+                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + aFilePath + '"'); end;                 // one individual file
 
   result := TRUE;
 end;
