@@ -422,7 +422,6 @@ begin
   SS.shiftState       := shift;
   SS.keyDirection     := kdDn;
   SS.keyOp            := KBProcessKeyStroke(SS);
-//  TDebug.debugEnum<TKeyOp>('keyOp', SS.keyOp);
   mmpProcessKeyOp(FMP, SS);
 end;
 
@@ -437,7 +436,6 @@ begin
   SS.shiftState       := shift;
   SS.keyDirection     := kdUp;
   SS.keyOp            := KBProcessKeyStroke(SS);
-//  TDebug.debugEnum<TKeyOp>('keyOp', SS.keyOp);
   mmpProcessKeyOp(FMP, SS);
 end;
 
@@ -474,10 +472,6 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
 
-//  TDebug.debugEnum<TNoticeEvent>('onMPNotify: ', aNotice.event);
-////  var vExt := extractFileExt(notifyApp(newNotice(evPLReqCurrentItem)).text);
-//  TDebug.debugEnum<TMediaType>({vExt + ': '}'GS.mediaType', GS.mediaType);
-
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
@@ -498,11 +492,9 @@ begin
   case aNotice.event of
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
-                      // debugInteger('Duration: ', FMPDuration);
                       case GS.showingTimeline of TRUE: TL.max := aNotice.integer; end;end;
     evMPPosition:   begin
                       FMPPosition := aNotice.integer;
-                      // debugInteger('Position: ', FMPPosition);
                       notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)));
                       case GS.showingTimeline of TRUE: TL.position := aNotice.integer; end;end;
   end;
@@ -510,10 +502,6 @@ end;
 
 function TVM.onMPOpen(const aNotice: INotice): boolean;
 begin
-//  vPlay := FALSE;
-//  debug(notifyApp(newNotice(evPLReqCurrentItem)).text);
-//  TDebug.debugEnum<TNoticeEvent>('onMPOpen', aNotice.event);
-//  notifyApp(newNotice(evSTForceCaptions));
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -527,7 +515,7 @@ var msg: TMessage;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
-//  TDebug.debugEnum<TNoticeEvent>('onNotify', aNotice.event);
+
   case aNotice.event of
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
@@ -571,9 +559,7 @@ end;
 
 procedure TVM.onSlideshowTimer(sender: TObject);
 begin
-  case (GS.mediaType = mtImage) and NOT notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: begin
-                                                                                                  // debug('fake evMPStateEnd');
-                                                                                                  FMP.notifier.notifySubscribers(newNotice(evMPStateEnd)); end;end;
+  case (GS.mediaType = mtImage) and NOT notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: FMP.notifier.notifySubscribers(newNotice(evMPStateEnd)); end;
 end;
 
 function TVM.onTickTimer(const aNotice: INotice): INotice;

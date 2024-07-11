@@ -290,7 +290,7 @@ function TPlayListFormProxy.onNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
-//  TDebug.debugEnum<TNoticeEvent>('PLForm.onNotify', aNotice.event);
+
   case aNotice.event of
     evPLFormMove:       moveForm(aNotice.wndRec);
     evPLFormShutForm:   shutForm;

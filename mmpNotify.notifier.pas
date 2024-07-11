@@ -65,7 +65,6 @@ function notifyApp(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice  = NIL of TRUE: EXIT; end;
-//  TDebug.debugEnum<TNoticeEvent>('notifyApp', aNotice.event);
   appNotifier.notifySubscribers(aNotice);
 end;
 
