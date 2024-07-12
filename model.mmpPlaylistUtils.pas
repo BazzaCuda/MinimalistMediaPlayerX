@@ -79,6 +79,7 @@ end;
 function mmpPlayNext: boolean;
 begin
   result := notifyApp(newNotice(evPLNext)).tf;
+
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
@@ -102,7 +103,7 @@ begin
 
   aPL.first;
 
-  notifyApp(newNotice(evVMMovePlaylist));
+  notifyApp(newNotice(evPLFormLoadBox));
 
   result := aPL.hasItems;
 end;

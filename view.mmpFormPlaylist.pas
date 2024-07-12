@@ -68,7 +68,8 @@ uses
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
-  viewModel.mmpKeyboard, viewModel.mmpKeyboardOps,
+  view.mmpKeyboard,
+  viewModel.mmpKeyboardOps,
   _debugWindow;
 
 type
@@ -153,7 +154,7 @@ function TPlaylistForm.highlightCurrentItem: boolean;
 begin
   var vCurrentIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case vCurrentIx = -1 of TRUE: EXIT; end;
-//  LB.items.beginUpdate;
+
   try
     case LB.count > 0 of TRUE:  begin
                                   LB.itemIndex := vCurrentIx;
@@ -163,7 +164,7 @@ begin
                                   case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
                                                          FALSE: LB.topIndex := 0; end;end;end;
   finally
-//    LB.items.endUpdate;
+
   end;
 end;
 
@@ -216,17 +217,9 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
-  lblFolder.caption := 'Folder: ';
-  LB.items.beginUpdate; // prevent flicker when moving the window
-
-  try
-    notifyApp(newNotice(evPLFillListBox, LB));
-
-    highlightCurrentItem;
-  finally
-    LB.items.endUpdate;
-  end;
-  case LB.items.count > 0 of TRUE: lblFolder.caption := format('Folder: %s', [notifyApp(newNotice(evPLReqCurrentFolder)).text]); end;
+  lblFolder.caption := format('Folder: %s', [notifyApp(newNotice(evPLReqCurrentFolder)).text]);
+  notifyApp(newNotice(evPLFillListBox, LB));
+  highlightCurrentItem;
 end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
@@ -269,6 +262,7 @@ begin
   GS.notify(newNotice(evGSShowingPlaylist, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: FPlaylistForm.height := wr.height;
                                               FALSE: FPlaylistForm.height := 400; end;
+  notifyApp(newNotice(evGSWidthHelp, FPlaylistForm.width));
   screen.cursor := crDefault;
 
   case FListBoxLoaded of FALSE: notifyApp(newNotice(evPLFormLoadBox)); end; // do once when the playlist is first opened
@@ -277,8 +271,11 @@ begin
   notifyApp(newNotice(evPLFormShow));
   notifyApp(newNotice(evPLFormHighlight));
 
-  winAPI.windows.setWindowPos(FPlaylistForm.handle, HWND_TOP, wr.pt.X, wr.pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-  notifyApp(newNotice(evGSWidthHelp, FPlaylistForm.width));
+  var vRect: TRect;
+  getWindowRect(FPlaylistForm.handle, vRect);
+
+  case (vRect.location.X <> wr.pt.X) or (vRect.location.Y <> wr.pt.Y) of TRUE:
+    winAPI.windows.setWindowPos(FPlaylistForm.handle, HWND_TOP, wr.pt.X, wr.pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE); end;
 end;
 
 function TPlayListFormProxy.notify(const aNotice: INotice): INotice;

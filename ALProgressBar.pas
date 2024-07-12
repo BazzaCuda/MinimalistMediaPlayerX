@@ -106,14 +106,12 @@ end;
 
 destructor TALProgressBar.Destroy;
 begin
-  mainBitmap.Free;
-
+  mainBitmap.free;
   inherited;
 end;
 
 procedure TALProgressBar.Paint;
 begin
-  case visible of FALSE: EXIT; end;
   inherited;
 
   adjustBitmap;

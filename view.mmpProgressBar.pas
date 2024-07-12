@@ -256,8 +256,8 @@ end;
 
 procedure TProgressBar.setShowProgressBar(const aValue: boolean);
 begin
-  FShowProgressBar := aValue;
-  FPB.visible := FShowProgressBar;
+  FShowProgressBar  := aValue;
+  FPB.visible       := FShowProgressBar;
 end;
 
 end.

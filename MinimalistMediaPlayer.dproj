@@ -187,7 +187,7 @@
         <DCCReference Include="model.mmpMPVCtrls.pas"/>
         <DCCReference Include="model.mmpMPVProperties.pas"/>
         <DCCReference Include="mmpTickTimer.pas"/>
-        <DCCReference Include="viewModel.mmpKeyboard.pas"/>
+        <DCCReference Include="view.mmpKeyboard.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
@@ -217,7 +217,7 @@
         <DCCReference Include="view.mmpFormStreamList.pas"/>
         <DCCReference Include="mmpImageUtils.pas"/>
         <DCCReference Include="view.mmpFormThumbs.pas"/>
-        <DCCReference Include="mmpThumbsKeyboard.pas"/>
+        <DCCReference Include="view.mmpThumbsKeyboard.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
         <DCCReference Include="TThumbsClass.pas"/>
         <DCCReference Include="TThumbClass.pas"/>

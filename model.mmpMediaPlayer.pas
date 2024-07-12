@@ -124,7 +124,7 @@ begin
   case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
   notifyApp(newNotice(evGSIDD, trunc(FImageDisplayDurationMs)));
   FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
-  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // EXPERIMENTAL
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
 
   pausePlayImages; // default is paused;
 
@@ -215,8 +215,9 @@ end;
 procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   case FNotifier = NIL of TRUE: EXIT; end;
-  case GS.mediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv))); end;
-  case GS.mediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end; // EXPERIMENTAL
+  case GS.mediaType of mtAudio, mtVideo:  begin
+                                            FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
+                                            FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end; // EXPERIMENTAL
   notifyApp(newNotice(evVMResizeWindow));
 
   var vNotice     := newNotice;
@@ -225,6 +226,7 @@ begin
   vNotice.integer := mpvDuration(mpv);
   FNotifier.notifySubscribers(vNotice);
 end;
+
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 // no mpsStop event as yet
 begin
@@ -242,7 +244,7 @@ begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case FMediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
   case FDimensionsDone of FALSE:  begin
-                                    notifyApp(newNotice(evVMResizeWindow));
+                                    notifyApp(newNotice(evVMResizeWindow)); // this causes the playlist form window flicker
                                     FDimensionsDone := TRUE; end;end;
 end;
 
@@ -253,9 +255,9 @@ begin
   mpvOpenFile(mpv, aURL); // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
   FMediaType := MT.mediaType(extractFileExt(aURL));
-  case FMediaType = mtImage of TRUE: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
+//  case FMediaType = mtImage of TRUE: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE);
-                              mtImage: mpvSetKeepOpen(mpv, TRUE); end; // EXPERIMENTAL FImagesPaused); end;
+                              mtImage: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));
@@ -278,8 +280,7 @@ begin
   notifyApp(newNotice(evGSImagesPaused, FImagesPaused));
 
   case FImagesPaused of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
-                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // EXPERIMENTAL, this should now always be inf
-//                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration); end;   // EXPERIMENTAL, this should now always be inf
+                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // this should now always be inf
 
   case FImagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;

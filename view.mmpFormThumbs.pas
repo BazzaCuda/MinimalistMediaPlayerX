@@ -26,8 +26,8 @@ uses
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   MPVBasePlayer,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpThumbsKeyboard,
-  view.mmpFormProgress,
+  mmpConsts,
+  view.mmpFormProgress, view.mmpThumbsKeyboard,
   TMPVHostClass, TThumbsClass;
 
 type

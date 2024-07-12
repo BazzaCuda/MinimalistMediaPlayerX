@@ -34,7 +34,7 @@ var
 
 function tickerStart: boolean;
 begin
-  gStopwatch := TStopwatch.StartNew;
+  gStopwatch := TStopwatch.startNew;
 end;
 
 function tickerStop: boolean;

@@ -92,8 +92,8 @@ uses
   system.sysUtils, system.types,
   vcl.dialogs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormTimeline, view.mmpThemeUtils,
-  viewModel.mmpKeyboard, viewModel.mmpKeyboardOps, viewModel.mmpMPVFormatting,
+  view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
+  viewModel.mmpKeyboardOps, viewModel.mmpMPVFormatting,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   _debugWindow;
 
@@ -267,6 +267,7 @@ begin
      TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: case notifyApp(newNotice(evVMPlayNextFolder)).tf of  FALSE: notifyApp(newNotice(evAppClose)); end;
                                                             FALSE: notifyApp(newNotice(evAppClose)); end;
     FALSE: notifyApp(newNotice(evVMPlaySomething, vIx)); end;
+  notifyApp(newNotice(evPLFormLoadBox));
 end;
 
 destructor TVM.Destroy;
@@ -706,7 +707,7 @@ begin
   vNextFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   notifyApp(newNotice(evSTOpInfo, vNextFolder));
   notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
-  notifyApp(newNotice(evVMMovePlaylist));
+  notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
                       FALSE: case (vNextFolder = '') of  TRUE: notifyApp(newNotice(evAppClose));
@@ -723,7 +724,7 @@ begin
   vPrevFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   notifyApp(newNotice(evSTOpInfo, vPrevFolder));
   notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
-  notifyApp(newNotice(evVMMovePlaylist));
+  notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
                       FALSE: case (vPrevFolder = '') of  TRUE: notifyApp(newNotice(evAppClose));
@@ -747,7 +748,7 @@ begin
   var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
   notifyApp(newNotice(evPLFillPlaylist, notifyApp(newNotice(evPLReqCurrentFolder)).text));
   case notifyApp(newNotice(evPLFind, vCurrentItem)).tf of FALSE: notifyApp(newNotice(evPLFirst)); end;
-  notifyApp(newNotice(evVMMovePlaylist));
+  notifyApp(newNotice(evPLFormLoadBox));
   result := TRUE;
 end;
 
@@ -774,7 +775,7 @@ begin
 
   notifyApp(newNotice(evPLReplaceCurrentItem, vNewName));
   notifyApp(newNotice(evMCCaption, notifyApp(newNotice(evPLReqFormattedItem)).text));
-  case GS.showingPlaylist of TRUE: notifyApp(newNotice(evVMMovePlaylist, FALSE)); end;
+  notifyApp(newNotice(evPLFormLoadBox));
 
   case aRenameType of
     rtUser: result := 'Renamed';

@@ -287,10 +287,15 @@ var i: integer;
 begin
   result := FALSE;
 
-  aListBox.clear;
+  aListBox.items.beginUpdate; // prevent flicker when moving the window
+  try
+    aListBox.clear;
 
-  for i := 0 to FPlaylist.count - 1 do
-    aListBox.items.add(extractFileName(FPlaylist[i]));
+    for i := 0 to FPlaylist.count - 1 do
+      aListBox.items.add(extractFileName(FPlaylist[i]));
+  finally
+    aListBox.items.endUpdate;
+  end;
 
   result := aListBox.count > 0;
 end;
