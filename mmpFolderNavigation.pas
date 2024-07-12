@@ -29,7 +29,12 @@ implementation
 
 uses
   system.classes, system.sysUtils,
-  mmpFolderUtils;
+  mmpFolderUtils, mmpUtils;
+
+function naturalSort(aList: TStringList; index1: integer; index2: integer): integer;
+begin
+  result := mmpCompareStr(lowerCase(aList[index1]), lowerCase(aList[index2])); // lowercase: sort aFolder with AFolder, not after ZFolder
+end;
 
 procedure findSubFolders(const aFolderList: TStringList; const aFolderPath: string; const bAllowIntoWindows: boolean);
 var
@@ -40,7 +45,7 @@ begin
   aFolderList.sorted := FALSE;
   rc := findFirst(aFolderPath + '*.*', faDirectory, sr);
   while rc = 0 do begin
-    case (sr.attr and faDirectory) <> 0 of TRUE: begin
+    case ((sr.attr and faDirectory) <> 0) and ((sr.attr and faSysFile) = 0) of TRUE: begin
       case (sr.name = 'Windows') and bAllowIntoWindows of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;
       case (sr.name <> '.') and (sr.name <> '..') and (sr.name <> 'Windows') and (pos('WinSxS', sr.name) = 0)
                             and (sr.name <> 'System Volume Information')
@@ -49,7 +54,7 @@ begin
     rc := findNext(sr);
   end;
   findClose(sr);
-  aFolderList.sorted := TRUE;
+  aFolderList.CustomSort(naturalSort);
 end;
 
 function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderDirection; const bAllowIntoWindows: boolean; const aPrevFolderPath: string = ''): string;
