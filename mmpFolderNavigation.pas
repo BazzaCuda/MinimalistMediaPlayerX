@@ -84,14 +84,14 @@ begin
     case aDirection = nfForwards of
       TRUE: begin
 
-        findSubFolders(folderList, aFolderPath, bAllowIntoWindows);      //  does this folder have subfolders ?
-        case folderList.count <> 0 of                 //  if it does.....
+        findSubFolders(folderList, aFolderPath, bAllowIntoWindows);       //  does this folder have subfolders ?
+        case folderList.count <> 0 of                                     //  if it does.....
           TRUE: begin
-                  case aPrevFolderPath = '' of                 //  ... and we haven't used any so far....
-                    TRUE: result := folderList[0];            //  ... just return the first in the list
+                  case aPrevFolderPath = '' of                            //  ... and we haven't used any so far....
+                    TRUE: result := folderList[0];                        //  ... just return the first in the list
                    FALSE: begin
-                            ix := folderList.indexOf(aPrevFolderPath); //  ... otherwise find the previous used in the list of subfolders...
-                            case ix + 1 <= folderList.Count - 1 of    //  ... and return the next one if there is one...
+                            ix := folderList.indexOf(aPrevFolderPath);    //  ... otherwise find the previous used in the list of subfolders...
+                            case ix + 1 <= folderList.Count - 1 of        //  ... and return the next one if there is one...
                               TRUE: result := folderList[ix + 1];
                              FALSE: result := mmpNextFolder(extractFilePath(mmpRTBS(aFolderPath)), aDirection, bAllowIntoWindows, aFolderPath); end;  //  ...if this is the end of the subfolders go back up a level
                           end;
@@ -104,10 +104,10 @@ begin
 
         case aDirection = nfBackwards of TRUE: begin
           findSubFolders(folderList, extractFilePath(mmpRTBS(aFolderPath)), bAllowIntoWindows);  //  get this subfolder's siblings
-          ix := folderList.indexOf(aFolderPath);                           //  find this subfolder's position in the list
-          case ix - 1 >= 0 of                                              //  if there is a previous sibling, get its deepest subfolder
+          ix := folderList.indexOf(aFolderPath);                          //  find this subfolder's position in the list
+          case ix - 1 >= 0 of                                             //  if there is a previous sibling, get its deepest subfolder
             TRUE: result := deepestSubFolder(folderList[ix - 1]);
-           FALSE: result := extractFilePath(mmpRTBS(aFolderPath)); end;    //  otherwise just go up one level
+           FALSE: result := extractFilePath(mmpRTBS(aFolderPath)); end;   //  otherwise just go up one level
         end;end;
 
     end;
