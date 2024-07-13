@@ -27,7 +27,7 @@ uses
   mmpConsts;
 
 function mmpCancelDelay: boolean;
-function mmpCompareStr(aStr1: string; aStr2: string): integer;
+function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const aBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
@@ -49,7 +49,7 @@ begin
   result := gCancel;
 end;
 
-function mmpCompareStr(aStr1: string; aStr2: string): integer;
+function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
 // implements "Natural Sort Order" - author: dinilud 16/01/2008 on experts-exchange.com
 // normal sort = image12.jpg, image2.jpg, image20.jpg
 // natural sort = image2.jpg, image12.jpg, image20.jpg
