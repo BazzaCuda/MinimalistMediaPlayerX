@@ -98,7 +98,7 @@ type
     function    restoreSegment(const aSegment: TSegment): boolean;
     function    saveSegments: string;
     function    segFileEntry(const aSegFile: string): string;
-    function    segmentAtCursor: TSegment;
+    function    segmentAt(const aCursorPos: integer): TSegment;
     function    shortenSegment(const aSegment: TSegment): boolean;
   protected
     function    exportSegments: boolean;
@@ -291,7 +291,8 @@ begin
                             updatePositionDisplay(vNewPos);
                           end;end;
 
-  TL.segmentAtCursor.repaint;
+  var vSeg := TL.segmentAt(cursorPos);
+  case vSeg = NIL of FALSE: vSeg.repaint; end;
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -329,7 +330,7 @@ begin
   var vAction := TL.saveSegments;
   TL.drawSegments;
 
-  case (TL.lengthenCount = 1) OR (TL.shortenCount = 1) of TRUE: TL.addUndo(vAction); end;
+  case (TL.lengthenCount = 1) OR (TL.shortenCount = 1) of TRUE: TL.addUndo(vAction); end; // record undo starting point
 end;
 
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -343,13 +344,13 @@ begin
   vOK := FALSE;
   vAction := '';
 
-  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position);              TL.drawSegments; end;end;
-  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);                          TL.drawSegments; end;end;
-  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                              TL.drawSegments; end;end;
-  case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position, TRUE);        TL.drawSegments; end;end;
-  case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAtCursor, TL.position, FALSE, TRUE); TL.drawSegments; end;end;
-  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                              TL.drawSegments; end;end;
-  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                               TL.drawSegments; end;end;
+  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              TL.drawSegments; end;end;
+  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);                               TL.drawSegments; end;end;
+  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                                   TL.drawSegments; end;end;
+  case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        TL.drawSegments; end;end;
+  case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); TL.drawSegments; end;end;
+  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                                   TL.drawSegments; end;end;
+  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                                    TL.drawSegments; end;end;
 
   case key = ord('L') of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;  // user has stopped holding down L
   case key = ord('S') of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;  // user has stopped holding down S
@@ -789,11 +790,11 @@ begin
   result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
 
-function TTimeline.segmentAtCursor: TSegment;
+function TTimeline.segmentAt(const aCursorPos: integer): TSegment;
 begin
   result := NIL;
   for var vSegment in segments do
-    case (timelineForm.cursorPos >= vSegment.left) and (timelineForm.cursorPos <= vSegment.left + vSegment.width) of TRUE: result := vSegment; end;
+    case (aCursorPos >= vSegment.left) and (aCursorPos <= vSegment.left + vSegment.width) of TRUE: begin result := vSegment; BREAK; end;end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);
