@@ -32,7 +32,7 @@ uses
 type
   TShowHintEvent = procedure(var Message: TCMHintShow) of object; // BAZ
 
-  TALProgressBar = class(TGraphicControl)
+  TALProgressBar = class(TCustomControl)
   strict private
     FBackgroundColor: TColor;
     FPosition:        integer;
@@ -87,7 +87,8 @@ constructor TALProgressBar.Create(AOwner: TComponent);
 begin
   inherited;
 
-  height := 10;
+  height            := 10;
+  doubleBuffered    := TRUE;
 
   FBackgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
 
@@ -130,25 +131,25 @@ end;
 procedure TALProgressBar.SetBackgroundColor(const aValue: TColor);
 begin
   FBackgroundColor := aValue;
-  paint;
+  invalidate;
 end;
 
 procedure TALProgressBar.SetPosition(const aValue: Integer);
 begin
   FPosition := aValue;
-  paint;
+  invalidate;
 end;
 
 procedure TALProgressBar.setMax(const aValue: Integer);
 begin
   case aValue > 0 of TRUE: FMax := aValue; end;
-  paint;
+  invalidate;
 end;
 
 procedure TALProgressBar.setBarColor(const aValue: TColor);
 begin
   FBarColor := aValue;
-  paint;
+  invalidate;
 end;
 
 end.
