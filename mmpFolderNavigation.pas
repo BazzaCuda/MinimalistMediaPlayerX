@@ -112,7 +112,6 @@ begin
 
     end;
 
-
   finally
     folderList.Free;
   end;

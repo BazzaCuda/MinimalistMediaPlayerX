@@ -825,11 +825,7 @@ end;
 
 function TVM.setupSlideshowTimer: boolean;
 begin
-  case GS.imagesPaused and (FSlideshowTimer <> NIL) of   TRUE:  begin
-                                                                  FSlideshowTimer.enabled := FALSE;
-                                                                  FSlideshowTimer.free;
-                                                                  FSlideshowTimer         := NIL;
-                                                                  EXIT; end;end;
+  case FSlideshowTimer = NIL of FALSE: freeAndNIL(FSlideshowTimer); end;
 
   case GS.imagesPaused of FALSE:  begin
                                     FSlideshowTimer           := TTimer.create(NIL);

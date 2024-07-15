@@ -34,7 +34,6 @@ type
 
   TALProgressBar = class(TGraphicControl)
   strict private
-    mainBitmap:       TBitmap;
     FBackgroundColor: TColor;
     FPosition:        integer;
     FMin:             integer;
@@ -42,7 +41,7 @@ type
     FBarColor:        TColor;
     FOnHintShow:      TShowHintEvent; // BAZ
   private
-    procedure   adjustBitmap;
+    procedure   adjustBarLength;
     procedure   setBackgroundColor(const aValue: TColor);
     procedure   setBarColor(const aValue: TColor);
     procedure   setMax(const aValue: Integer);
@@ -97,16 +96,11 @@ begin
   FMin              := 0;
   FMax              := 100;
 
-  mainBitmap        := TBitmap.Create;
-  mainBitmap.height := 10;
-  mainBitmap.width  := 5000; // don't need to resize now
-
   cursor            := crHandPoint; // BAZ
 end;
 
 destructor TALProgressBar.Destroy;
 begin
-  mainBitmap.free;
   inherited;
 end;
 
@@ -114,25 +108,23 @@ procedure TALProgressBar.Paint;
 begin
   inherited;
 
-  adjustBitmap;
-
-  canvas.draw(0, 0, mainBitmap);
+  adjustBarLength;
 end;
 
-procedure TALProgressBar.adjustBitmap;
+procedure TALProgressBar.adjustBarLength;
 var
   barLength: integer;
 begin
-  mainBitmap.canvas.brush.color := FBackgroundColor;
-  mainBitmap.canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
+  canvas.brush.color := FBackgroundColor;
+  canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
   case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
 
   case (FPosition > 0) of  TRUE: barLength := ceil((FPosition / FMax) * SELF.width); // BAZ - changed from round
                           FALSE: barLength := 0; end;
 
-  mainBitmap.canvas.brush.color := FBarColor;
-  mainBitmap.canvas.fillRect(rect(0, 0, barLength, 10));
+  canvas.brush.color := FBarColor;
+  canvas.fillRect(rect(0, 0, barLength, 10));
 end;
 
 procedure TALProgressBar.SetBackgroundColor(const aValue: TColor);
@@ -150,11 +142,13 @@ end;
 procedure TALProgressBar.setMax(const aValue: Integer);
 begin
   case aValue > 0 of TRUE: FMax := aValue; end;
+  paint;
 end;
 
 procedure TALProgressBar.setBarColor(const aValue: TColor);
 begin
   FBarColor := aValue;
+  paint;
 end;
 
 end.

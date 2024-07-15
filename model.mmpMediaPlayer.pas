@@ -52,10 +52,10 @@ type
     FDimensionsDone:          boolean;
     FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
+    FImagesPaused:            boolean;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
     FNotifier:                INotifier;
-    FImagesPaused:            boolean;
   private
     procedure   onFileOpen(Sender: TObject; const aFilePath: string);
     procedure   onInitMPV(sender: TObject);
@@ -255,7 +255,6 @@ begin
   mpvOpenFile(mpv, aURL); // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
   FMediaType := MT.mediaType(extractFileExt(aURL));
-//  case FMediaType = mtImage of TRUE: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE);
                               mtImage: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
   notifyApp(newNotice(evGSMediaType, FMediaType));
