@@ -244,9 +244,8 @@ begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case FMediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
   case FDimensionsDone of FALSE:  begin
-                                    case FMediaType of mtAudio, mtImage: EXIT; end;
-                                    notifyApp(newNotice(evVMResizeWindow)); // this causes the playlist form window flicker
-                                    FDimensionsDone := TRUE; end;end;
+                                    FDimensionsDone := TRUE;
+                                    case FMediaType of mtVideo: notifyApp(newNotice(evVMResizeWindow)); end;end;end; // this causes the playlist form window flicker
 end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
