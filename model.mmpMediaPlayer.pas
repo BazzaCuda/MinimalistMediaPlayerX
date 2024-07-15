@@ -252,11 +252,11 @@ function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result          := FALSE;
   FDimensionsDone := FALSE;
-  mpvOpenFile(mpv, aURL); // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
+  mpvSetKeepOpen(mpv, TRUE);  // VITAL! Prevents the slideshow from going haywire - so the next line won't immediately issue an mpsEnd for an image
+  mpvOpenFile(mpv, aURL);     // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
   FMediaType := MT.mediaType(extractFileExt(aURL));
-  case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE);
-                              mtImage: mpvSetKeepOpen(mpv, TRUE); end; // VITAL! Prevents the slideshow from going haywire.
+  case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE); end; // ideally, we only want audio and video files to issue mpsEnd events at end of playback
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));
