@@ -670,7 +670,6 @@ begin
       notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath)));
       notifyApp(newNotice(evPLFind, vFilePath));
       case notifyApp(newNotice(evPLReqHasItems)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
-      notifyApp(newNotice(evVMResizeWindow));
 
       BREAK; // we only process the first file if multiple files are dropped
     end;

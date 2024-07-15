@@ -49,13 +49,17 @@ type
   strict private
     mpv: TMPVBasePlayer;
 
+    FCheckCount:              integer;
     FDimensionsDone:          boolean;
+    FIgnoreTicks:             boolean;
     FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
     FImagesPaused:            boolean;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
     FNotifier:                INotifier;
+    FVideoHeight:             integer;
+    FVideoWidth:              integer;
   private
     procedure   onFileOpen(Sender: TObject; const aFilePath: string);
     procedure   onInitMPV(sender: TObject);
@@ -215,10 +219,11 @@ end;
 procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   case FNotifier = NIL of TRUE: EXIT; end;
-  case GS.mediaType of mtAudio, mtVideo:  begin
-                                            FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
-                                            FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end;
-  notifyApp(newNotice(evVMResizeWindow));
+  case FMediaType of mtAudio, mtVideo:  begin
+                                          FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
+                                          FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end;
+
+  case FMediaType of mtAudio, mtImage: notifyApp(newNotice(evVMResizeWindow)); end; // for mtImage, do it in onTickTimer
 
   var vNotice     := newNotice;
   vNotice.event   := evVMMPOnOpen;
@@ -241,22 +246,37 @@ end;
 function TMediaPlayer.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
-  case FNotifier = NIL of TRUE: EXIT; end;
-  case FMediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
-  case FDimensionsDone of FALSE:  begin
-                                    FDimensionsDone := TRUE;
-                                    case FMediaType of mtVideo: notifyApp(newNotice(evVMResizeWindow)); end;end;end; // this causes the playlist form window flicker
+  case FNotifier = NIL  of TRUE: EXIT; end;
+  case FIgnoreTicks     of TRUE: EXIT; end;
+  case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
+
+  case FDimensionsDone of FALSE:  begin // only ever false for videos
+    inc(FCheckCount);
+    FDimensionsDone := FCheckCount >= 3; // that's quite enough of that!
+    case (mpvVideoWidth(mpv) <> FVideoWidth) or (mpvVideoHeight(mpv) <> FVideoHeight) of TRUE:  begin
+                                                                                                  FVideoWidth     := mpvVideoWidth(mpv);
+                                                                                                  FVideoHeight    := mpvVideoHeight(mpv);
+                                                                                                  notifyApp(newNotice(evVMResizeWindow)); end;end;end;
+  end;
 end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result          := FALSE;
+  FIgnoreTicks    := TRUE;
   FDimensionsDone := FALSE;
   mpvSetKeepOpen(mpv, TRUE);  // VITAL! Prevents the slideshow from going haywire - so the next line won't immediately issue an mpsEnd for an image
   mpvOpenFile(mpv, aURL);     // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
-  FMediaType := MT.mediaType(extractFileExt(aURL));
+  FMediaType      := MT.mediaType(extractFileExt(aURL));
+  FDimensionsDone := FMediaType in [mtAudio, mtImage]; // only applies to video
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE); end; // ideally, we only want audio and video files to issue mpsEnd events at end of playback
+
+  FVideoWidth   := 0;
+  FVideoHeight  := 0;
+  FIgnoreTicks  := FALSE;
+  FCheckCount   := 0;
+
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
   notifyApp(newNotice(evSTUpdateMetaData));
