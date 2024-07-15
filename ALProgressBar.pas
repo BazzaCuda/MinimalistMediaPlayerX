@@ -52,7 +52,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
-    function    clear: boolean;
   published
     property    backgroundColor:  TColor          read FBackgroundColor       write setBackgroundColor;
     property    barColor:         TColor          read FBarColor              write setBarColor;
@@ -72,11 +71,6 @@ uses
   _debugWindow;
 
 { TALProgressBar }
-
-function TALProgressBar.clear: boolean;
-begin
-
-end;
 
 procedure TALProgressBar.CMHintShow(var message: TCMHintShow); // BAZ
 begin

@@ -217,7 +217,7 @@ begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case GS.mediaType of mtAudio, mtVideo:  begin
                                             FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
-                                            FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end; // EXPERIMENTAL
+                                            FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end;
   notifyApp(newNotice(evVMResizeWindow));
 
   var vNotice     := newNotice;
@@ -244,13 +244,14 @@ begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case FMediaType of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
   case FDimensionsDone of FALSE:  begin
+                                    case FMediaType of mtAudio, mtImage: EXIT; end;
                                     notifyApp(newNotice(evVMResizeWindow)); // this causes the playlist form window flicker
                                     FDimensionsDone := TRUE; end;end;
 end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
-  result := FALSE;
+  result          := FALSE;
   FDimensionsDone := FALSE;
   mpvOpenFile(mpv, aURL); // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
@@ -278,8 +279,8 @@ begin
   FImagesPaused := NOT FImagesPaused;
   notifyApp(newNotice(evGSImagesPaused, FImagesPaused));
 
-  case FImagesPaused of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
-                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // this should now always be inf
+//  case FImagesPaused of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
+//                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // this should now always be inf
 
   case FImagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;
