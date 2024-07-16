@@ -264,7 +264,6 @@ function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result          := FALSE;
   FIgnoreTicks    := TRUE;
-  FDimensionsDone := FALSE;
   mpvSetKeepOpen(mpv, TRUE);  // VITAL! Prevents the slideshow from going haywire - so the next line won't immediately issue an mpsEnd for an image
   mpvOpenFile(mpv, aURL);     // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
@@ -274,8 +273,8 @@ begin
 
   FVideoWidth   := 0;
   FVideoHeight  := 0;
-  FIgnoreTicks  := FALSE;
   FCheckCount   := 0;
+  FIgnoreTicks  := FALSE;
 
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));

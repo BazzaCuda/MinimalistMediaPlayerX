@@ -479,10 +479,7 @@ begin
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
                                                     FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
 
-    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  begin
-                                                              case FMPPosition = 0 of TRUE: EXIT; end; // ignore fake end
-                                                              case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
-                                                            end;
+    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
                                                   mtImage:  case GS.imagesPaused    of  TRUE: ; // ignore fake end for .png, .avif and .webp image types
                                                                                        FALSE: begin
                                                                                                 case notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: mmpDelay(GS.IDD * 1000); end;
