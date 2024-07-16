@@ -26,9 +26,12 @@ uses
 type
   IPostToAll = interface
     ['{CBB88DF1-32F6-4669-8F3A-CCE148884AF9}']
+    function  addWnd(const aHWND: HWND): boolean;
+    function  getHWND(ix: integer): HWND;
+    property  HWND[ix: integer]:    HWND read getHWND; default;
   end;
 
-function mmpHWND(index: integer): HWND;
+function PA: IPostToAll;
 
 implementation
 
@@ -38,59 +41,100 @@ uses
   mmpGlobalState, mmpKeyboardUtils,
   _debugWindow;
 
-  type TPostToAll = class(TInterfacedObject, IPostToAll)
+type
+  TPostToAll = class(TInterfacedObject, IPostToAll)
+  strict private
+    FSubscriber:  ISubscriber;
+    FWNDs:        array of HWND;
   private
-    function onNotify(const aNotice: INotice): INotice;
-  protected
+    function    clear: boolean;
+    function    onNotify(const aNotice: INotice): INotice;
+    function    postToAllCount: integer;
+    function    postToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;
+  public
     constructor create;
-    function notify(const aNotice: INotice): INotice;
+    destructor  Destroy; override;
+
+    function    addWnd(const aHWND: HWND): boolean;
+    function    getHWND(ix: integer): HWND;
+    function    notify(const aNotice: INotice): INotice;
   end;
 
-type
-  TWnds = array of HWND;
-
-var
-  gPA: IPostToAll;
-  HWNDs: TWnds;
-
+var gPA: IPostToAll = NIL;
 function PA: IPostToAll;
 begin
   case gPA = NIL of TRUE: gPA := TPostToAll.create; end;
   result := gPA;
 end;
 
-function addWnd(const aHWND: HWND): boolean;
-begin
-  setLength(HWNDs, length(HWNDs) + 1);
-  HWNDs[high(HWNDs)] := aHWND;
-  result := TRUE;
-end;
-
-function clear: boolean;
-begin
-  setLength(HWNDs, 0);
-  result := TRUE;
-end;
-
-function enumAllWindows(handle: HWND; lparam: LPARAM): BOOL; stdcall;
+function enumAllWindows(handle: HWND; LParam: LPARAM): BOOL; stdcall;
 var
   windowName : array[0..255] of char;
   className  : array[0..255] of char;
 begin
-  case getClassName(handle, className, sizeOf(className)) > 0 of TRUE:
-    case strComp(className, 'TMMPUI') = 0 of TRUE: addWnd(handle); end;end;
-
+  case getClassName(handle, className, sizeOf(className)) > 0
+    of TRUE: case strComp(className, 'TMMPUI') = 0 of TRUE: PA.addWnd(handle); end;end;
   result := TRUE;
 end;
 
-function mmpPostToAllCount: integer;
+{ TPostToAll }
+
+function TPostToAll.addWnd(const aHWND: HWND): boolean;
+begin
+  setLength(FWNDs, length(FWNDs) + 1);
+  FWNDs[high(FWNDs)] := aHWND;
+  result := TRUE;
+end;
+
+function TPostToAll.clear: boolean;
+begin
+  setLength(FWNDs, 0);
+  result := TRUE;
+end;
+
+constructor TPostToAll.create;
+begin
+  inherited;
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
+end;
+
+destructor TPostToAll.Destroy;
+begin
+  appNotifier.unsubscribe(FSubscriber);
+  inherited;
+end;
+
+function TPostToAll.getHWND(ix: integer): HWND;
+begin
+  result := FWNDs[ix - 1];  // for simplicity in mmpWindowUtils.mmpArrangeAll, the ix parameter is 1-based
+end;
+
+function TPostToAll.notify(const aNotice: INotice): INotice;
+begin
+  result := onNotify(aNotice);
+end;
+
+function TPostToAll.onNotify(const aNotice: INotice): INotice;
+begin
+  result := aNotice;
+  case aNotice = NIL of TRUE: EXIT; end;
+  case aNotice.event of
+    evPAPostToAll:      postToAllEx(aNotice.integer, 0, 0, mmpNumLockOn);
+    evPAPostToAllEx:    postToAllEx(aNotice.msg.msg, aNotice.msg.WParam, aNotice.msg.LParam, mmpNumLockOn);
+    evPAPostToEvery:    postToAllEx(aNotice.integer, 0, 0, TRUE); // Chambers Thesaurus was no help at all!
+    evPAPostToEveryEx:  postToAllEx(aNotice.msg.msg, aNotice.msg.WParam, aNotice.msg.LParam, TRUE);
+    evPAReqCount:       aNotice.integer := postToAllCount;
+  end;
+end;
+
+function TPostToAll.postToAllCount: integer;
 begin
   clear;
   enumWindows(@enumAllWindows, 0);
-  result := length(HWNDs);
+  result := length(FWNDs);
 end;
 
-function mmpPostToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;
+function TPostToAll.postToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;
 var
   i: integer;
 begin
@@ -104,46 +148,17 @@ begin
   clear;
   enumWindows(@enumAllWindows, 0);
 
-  for i := low(HWNDs) to high(HWNDs) do
-    postMessage(HWNDs[i], aCmd, WParam, LParam);
+  for i := low(FWNDs) to high(FWNDs) do
+    postMessage(FWNDs[i], aCmd, WParam, LParam);
 
   clear;
   result := TRUE;
 end;
 
-function mmpHWND(index: integer): HWND;
-begin
-  result := HWNDS[index - 1]; // for simplicity in mmpWindowUtils.mmpArrangeAll, index parameter is 1-based
-end;
-
-{ TPostToAll }
-
-constructor TPostToAll.create;
-begin
-  inherited;
-  appNotifier.subscribe(newSubscriber(onNotify));
-end;
-
-function TPostToAll.notify(const aNotice: INotice): INotice;
-begin
-  result := onNotify(aNotice);
-end;
-
-function TPostToAll.onNotify(const aNotice: INotice): INotice;
-begin
-  result := aNotice;
-  case aNotice = NIL of TRUE: EXIT; end;
-  case aNotice.event of
-    evPAPostToAll:      mmpPostToAllEx(aNotice.integer, 0, 0, mmpNumLockOn);
-    evPAPostToAllEx:    mmpPostToAllEx(aNotice.msg.msg, aNotice.msg.WParam, aNotice.msg.LParam, mmpNumLockOn);
-    evPAPostToEvery:    mmpPostToAllEx(aNotice.integer, 0, 0, TRUE); // Chambers Thesaurus was no help at all!
-    evPAPostToEveryEx:  mmpPostToAllEx(aNotice.msg.msg, aNotice.msg.WParam, aNotice.msg.LParam, TRUE);
-    evPAReqCount:       aNotice.integer := mmpPostToAllCount;
-  end;
-end;
-
 initialization
-  gPA := NIL;
   PA; // create a subscription to appNotifier
+
+finalization
+  gPA := NIL;
 
 end.

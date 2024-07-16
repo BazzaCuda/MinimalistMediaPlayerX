@@ -19,7 +19,12 @@
 unit mmpMMDevApi_tlb;
 
 interface
-  uses Windows, ActiveX, Classes, Graphics, OleServer, OleCtrls, StdVCL,ComObj;
+
+uses
+  winApi.activeX, winApi.windows,
+  system.classes, system.win.comObj, system.win.stdVCL,
+  vcl.graphics, vcl.oleCtrls, vcl.oleServer;
+
 const
   // TypeLibrary Major and minor versions
 

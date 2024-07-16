@@ -26,14 +26,14 @@ uses
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpConfigFilePath: string;
-function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
-function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
+function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpKeepDelete(const aFolderPath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 
@@ -49,17 +49,17 @@ uses
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 begin
-  result := FALSE;
+  result    := FALSE;
 
-  var vExt := lowerCase(extractFileExt(aFilePath));
-  var vMT  := MT.mediaType(vExt);
+  var vExt  := lowerCase(extractFileExt(aFilePath));
+  var vMT   := MT.mediaType(vExt);
 
   case ssCtrl in aShiftState of  TRUE:  case CF.asBoolean[CONF_FOLDER_DELETE] of FALSE: EXIT; end;end;
   case ssCtrl in aShiftState of FALSE:  case vMT of
                                           mtAudio: case CF.asBoolean[CONF_AUDIO_DELETE] of FALSE: EXIT; end;
                                           mtImage: case CF.asBoolean[CONF_IMAGE_DELETE] of FALSE: EXIT; end;
                                           mtVideo: case CF.asBoolean[CONF_VIDEO_DELETE] of FALSE: EXIT; end;end;end;
-  result := TRUE;
+  result    := TRUE;
 end;
 
 function mmpConfigFilePath: string;
@@ -80,13 +80,13 @@ begin
   result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
 end;
 
-function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const aRecordUndo: boolean = TRUE): boolean;
+function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 var
-  vDestFile: string;
-  vDestFolder: string;
-  vCancel: PBOOL;
-  i: integer;
-  vExt: string;
+  vDestFile:    string;
+  vDestFolder:  string;
+  vCancel:      PBOOL;
+  i:            integer;
+  vExt:         string;
 begin
   result := FALSE;
   try
@@ -95,19 +95,22 @@ begin
     try
       forceDirectories(vDestFolder);
     except end;                        // this will get picked up by the failed directoryExists below
+
     vCancel := PBOOL(FALSE);
     i := 0;
+
     case directoryExists(vDestFolder) of TRUE: begin
       vExt := extractFileExt(aFilePath);
       while fileExists(vDestFile) do begin
         inc(i);
-        vDestFile := vDestFolder + TPath.getFileNameWithoutExtension(aFilePath) + ' ' + IntToStr(i) + vExt;
+        vDestFile := vDestFolder + TPath.getFileNameWithoutExtension(aFilePath) + ' ' + intToStr(i) + vExt;
       end;
 
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
+
       case result and bDeleteIt of TRUE: begin
                                           mmpDeleteThisFile(aFilePath, [], bDeleteIt);
-                                          case aRecordUndo of TRUE: UM.recordUndo(aFilePath, vDestFile); end;
+                                          case bRecordUndo of TRUE: UM.recordUndo(aFilePath, vDestFile); end;
                                         end;end;
     end;end;
   finally
@@ -173,7 +176,7 @@ var
   iVer:         array[1..4] of WORD;
 begin
   // set default value
-  result := '';
+  result    := '';
   // get filename of exe/dll if no filename is specified
   vFilePath := aFilePath;
   case vFilePath = '' of TRUE:  begin
@@ -206,13 +209,13 @@ end;
 
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 begin
-  result := NOT aFilePath.contains('''') AND NOT aFilePath.contains('&');
+  result := NOT aFilePath.contains('''') and NOT aFilePath.contains('&');
 end;
 
-function mmpIsFileInUse(const aFilePath: string; var aSysErrorMessage: string): boolean;
+function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 begin
-  result := FALSE;
-  aSysErrorMessage := '';
+  result            := FALSE;
+  aSysErrorMessage  := '';
   setLastError(ERROR_SUCCESS);
 
   var hFile := createFile(PWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ OR FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
@@ -223,7 +226,7 @@ end;
 
 function mmpKeepDelete(const aFolderPath: string): boolean;
 const
-  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
+  faFile = faAnyFile - faDirectory - faHidden - faSysFile;
 var
   vSR: TSearchRec;
   vExt: string;
@@ -236,28 +239,29 @@ var
 begin
   result := FALSE;
   case directoryExists(aFolderPath) of FALSE: EXIT; end;
+
   case CF.asBoolean[CONF_KEEP_DELETE] of FALSE: begin
                                                   var vMsg := 'keepDelete=no'#13#10#13#10;
-                                                  vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
-                                                  vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
+                                                      vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
+                                                      vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
                                                   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                                   EXIT; end;end;
 
   var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
-  vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
-  vMsg := vMsg + 'that doesn''t start with an underscore character _'#13#10#13#10;
-  vMsg := vMsg + 'Only click OK if you are ABSOLUTELY SURE'#13#10#13#10;
-  vMsg := vMsg + 'Once they''re gone, they are GONE!';
+      vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
+      vMsg := vMsg + 'that doesn''t start with an underscore character _'#13#10#13#10;
+      vMsg := vMsg + 'Only click OK if you are ABSOLUTELY SURE'#13#10#13#10;
+      vMsg := vMsg + 'Once they''re gone, they are GONE!';
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of  TRUE:;
                                              FALSE: EXIT; end;
 
-  case FindFirst(aFolderPath + '*.*', faFile, vSR) = 0 of  TRUE:
+  case findFirst(aFolderPath + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
       case fileOK of TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + aFolderPath + vSR.Name +  '"'); end;
-    until FindNext(vSR) <> 0;
+    until findNext(vSR) <> 0;
   end;
 
-  system.sysUtils.FindClose(vSR);
+  system.sysUtils.findClose(vSR);
   result := TRUE;
 end;
 
@@ -288,8 +292,7 @@ begin
 
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
-                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10 +  SysErrorMessage(getlasterror), mtError, [mbOK]); end;
+                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
 end;
-
 
 end.

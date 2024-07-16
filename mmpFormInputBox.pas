@@ -28,8 +28,8 @@ uses
 
 type
   TInputBoxForm = class(TForm)
-    edtInputBox: TEdit;
-    btnModalResultmrOK: TButton;
+    edtInputBox:            TEdit;
+    btnModalResultmrOK:     TButton;
     btnModalResultmrCancel: TButton;
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -46,8 +46,7 @@ implementation
 
 uses
   vcl.styles, vcl.themes,
-  mmpTickTimer, mmpUtils,
-  mmpGlobalState,
+  mmpGlobalState, mmpTickTimer, mmpUtils,
   _debugWindow;
 
 {$R *.dfm}

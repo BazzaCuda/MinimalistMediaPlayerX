@@ -23,11 +23,11 @@ interface
 uses
   vcl.extCtrls;
 
-function mmpCopyPNGImage(SourceImage, DestImage: TImage): boolean;
+function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): boolean;
 
 implementation
 
-function mmpCopyPNGImage(SourceImage, DestImage: TImage): boolean;
+function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): boolean;
 begin
   // Check if the source image has a picture to copy
   case assigned(sourceImage.picture) and assigned(sourceImage.picture.graphic) of FALSE: EXIT; end;

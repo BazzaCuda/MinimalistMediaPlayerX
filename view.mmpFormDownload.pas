@@ -3,9 +3,9 @@ unit view.mmpFormDownload;
 interface
 
 uses
-  Winapi.Messages, Winapi.Windows,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+  winApi.messages, winApi.windows,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 type
   TDownloadForm = class(TForm)
@@ -16,7 +16,6 @@ type
   public
     property byteLabel: TLabel read label1;
   end;
-
 
 implementation
 

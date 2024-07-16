@@ -65,7 +65,7 @@ end;
 function mmpScreenHeight: integer;
 begin
   var vRect := screen.WorkAreaRect; // the screen minus the taskbar
-  result := vRect.height - GS.timelineHeight;
+  result    := vRect.height - GS.timelineHeight;
 end;
 
 function mmpScreenWidth: integer;
@@ -75,21 +75,21 @@ end;
 
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 begin
-  result := FALSE;
-  var vR := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
+  result    := FALSE;
+  var vR    := screen.workAreaRect; // the screen minus the taskbar, which we assume is at the bottom of the desktop
   vR.height := vR.height - GS.timelineHeight;
-  result := (aWidth <= vR.width) AND (aHeight <= vR.height);
+  result    := (aWidth <= vR.width) AND (aHeight <= vR.height);
 end;
 
 function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
 var
   vR: TRect;
 begin
-  result := FALSE;
+  result    := FALSE;
   getWindowRect(aWnd, vR);
-  aWidth  := vR.width;
-  aHeight := vR.height - GS.timelineHeight;
-  result := TRUE;
+  aWidth    := vR.width;
+  aHeight   := vR.height - GS.timelineHeight;
+  result    := TRUE;
 end;
 
 end.

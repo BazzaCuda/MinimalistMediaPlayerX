@@ -149,7 +149,7 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gGS: IGlobalState;
+var gGS: IGlobalState = NIL;
 function GS: IGlobalState;
 begin
   case gGS = NIL of TRUE: gGS := TGlobalState.create; end;
@@ -160,11 +160,13 @@ end;
 
 constructor TGlobalState.create;
 begin
-  appNotifier.subscribe(newSubscriber(onNotify));
+  inherited;
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 destructor TGlobalState.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
   inherited;
 end;
 
@@ -295,7 +297,6 @@ begin
 end;
 
 initialization
-  gGS := NIL;
   GS;
 
 end.

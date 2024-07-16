@@ -47,7 +47,7 @@ var vControl: TControl;
 begin
   screen.cursor := crDefault;
   coInitialize(NIL);
-  with CreateMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
+  with createMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
     notifyApp(newNotice(evGSUserInput, TRUE));
     font.name := 'Segoe UI';
@@ -56,13 +56,13 @@ begin
     width     := width + 200;
 
     for var i := 0 to controlCount - 1 do begin
-      case controls[i] is TLabel  of   TRUE: with Controls[i] as TLabel do Width := Width + 200; end;
-      case controls[i] is TButton of   TRUE: with Controls[i] as TButton do begin
+      case controls[i] is TLabel  of   TRUE: with controls[i] as TLabel do width := width + 200; end;
+      case controls[i] is TButton of   TRUE: with controls[i] as TButton do begin
                                                                                 top  := top  + 60;
                                                                                 left := left + 100;
                                                                             end;end;
     end;
-    result := ShowModal;
+    result := showModal;
   finally
     free;
     notifyApp(newNotice(evGSUserInput, FALSE));

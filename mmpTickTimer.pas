@@ -29,7 +29,7 @@ type
   ITickTimer = interface
     ['{520972A9-0FDF-4557-A9A2-BE8B3D5B143A}']
     function getNotifier: INotifier;
-    property notifier: INotifier  read getNotifier;
+    property notifier:    INotifier  read getNotifier;
   end;
 
 function TT: ITickTimer;
@@ -46,15 +46,15 @@ type
     FNotifier:  INotifier;
     FTimer:     TTimer;
   private
-    procedure timerEvent(aSender: TObject);
-    function getNotifier: INotifier;
+    procedure   timerEvent(aSender: TObject);
+    function    getNotifier: INotifier;
   public
     constructor create;
     destructor  Destroy; override;
-    property notifier: INotifier  read getNotifier;
+    property    notifier: INotifier  read getNotifier;
   end;
 
-var gTT: ITickTimer;
+var gTT: ITickTimer = NIL;
 function TT: ITickTimer;
 begin
   case gTT = NIL of TRUE: gTT := TTickTimer.create; end;

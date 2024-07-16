@@ -23,29 +23,27 @@ interface
 uses
   system.diagnostics, system.timespan;
 
-function tickerStart: boolean;
-function tickerStop: boolean;
+function tickerStart:   boolean;
+function tickerStop:    boolean;
 function tickerTotalMs: double;
 
 implementation
 
-var
-  gStopWatch: TStopWatch;
-
+var rStopWatch: TStopWatch;
 function tickerStart: boolean;
 begin
-  gStopwatch := TStopwatch.startNew;
+  rStopwatch := TStopwatch.startNew;
 end;
 
 function tickerStop: boolean;
 begin
-  gStopWatch.stop;
+  rStopWatch.stop;
 end;
 
 function tickerTotalMs: double;
 var vTimeSpan: TTimeSpan;
 begin
-  vTimeSpan := gStopWatch.elapsed;
+  vTimeSpan := rStopWatch.elapsed;
   result := vTimeSpan.totalMilliseconds;
 end;
 

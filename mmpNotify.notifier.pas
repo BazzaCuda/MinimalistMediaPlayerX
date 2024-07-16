@@ -37,11 +37,11 @@ uses
   _debugWindow;
 
 type
- TNotifier = class (TInterfacedObject, INotifier)
+ TNotifier = class(TInterfacedObject, INotifier)
   private
     FSubscribers: TList<ISubscriber>;
   public
-    procedure   subscribe(const aSubscriber: ISubscriber);
+    function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure   unsubscribe(const aSubscriber: ISubscriber);
     procedure   notifySubscribers(const aNotice: INotice);
 
@@ -54,7 +54,7 @@ begin
   result := TNotifier.create;
 end;
 
-var gAppNotifier: INotifier;
+var gAppNotifier: INotifier = NIL;
 function appNotifier: INotifier;
 begin
   case gAppNotifier = NIL of TRUE: gAppNotifier := newNotifier; end;
@@ -101,8 +101,10 @@ begin
   for vSubscriber in FSubscribers do vSubscriber.notifySubscriber(aNotice);
 end;
 
-procedure TNotifier.subscribe(const aSubscriber: ISubscriber);
+function TNotifier.subscribe(const aSubscriber: ISubscriber): ISubscriber;
 begin
+  result := aSubscriber;
+  case aSubscriber = NIL of TRUE: EXIT; end;
   FSubscribers.add(aSubscriber);
 end;
 

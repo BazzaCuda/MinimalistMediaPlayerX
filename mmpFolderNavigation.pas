@@ -68,8 +68,8 @@ var
     folderList := TStringList.Create;
     try
       findSubFolders(folderList, aFolderPath, bAllowIntoWindows);
-      case folderList.Count > 0 of
-        TRUE: result := deepestSubFolder(folderList[folderList.Count - 1]);
+      case folderList.count > 0 of
+        TRUE: result := deepestSubFolder(folderList[folderList.count - 1]);
        FALSE: result := aFolderPath; end;
     finally
       folderList.Free;

@@ -24,18 +24,18 @@ uses
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
-function mmpDoCommandLine(const aCommandLIne: string): boolean;
+function mmpDoCommandLine(const aCommandLine: string): boolean;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 
 implementation
 
 uses
-  winApi.windows, winApi.shellApi,
+  winApi.shellApi, winApi.windows,
   system.sysUtils,
   mmpFileUtils;
 
-function mmpDoCommandLine(const aCommandLIne: string): boolean;
+function mmpDoCommandLine(const aCommandLine: string): boolean;
 // Create a cmd.exe process to execute any command line
 // "Current Directory" defaults to the folder containing this application's executable.
 var
@@ -45,17 +45,16 @@ begin
   result := FALSE;
   case trim(aCommandLIne) = ''  of TRUE: EXIT; end;
 
-  FillChar(vStartInfo,  SizeOf(TStartupInfo), #0);
-  FillChar(vProcInfo,   SizeOf(TProcessInformation), #0);
-  vStartInfo.cb          := SizeOf(TStartupInfo);
+  fillChar(vStartInfo,  sizeOf(TStartupInfo), #0);
+  fillChar(vProcInfo,   sizeOf(TProcessInformation), #0);
+  vStartInfo.cb          := sizeOf(TStartupInfo);
   vStartInfo.wShowWindow := SW_HIDE;
   vStartInfo.dwFlags     := STARTF_USESHOWWINDOW;
 
-  var vCmd := 'c:\windows\system32\cmd.exe';
+  var vCmd    := 'c:\windows\system32\cmd.exe';
   var vParams := '/c ' + aCommandLIne;
 
-  result := CreateProcess(PWideChar(vCmd), PWideChar(vParams), nil, nil, FALSE,
-                          CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, PWideChar(mmpExePath), vStartInfo, vProcInfo);
+  result := createProcess(pWideChar(vCmd), pWideChar(vParams), nil, nil, FALSE, CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, pWideChar(mmpExePath), vStartInfo, vProcInfo);
 end;
 
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
@@ -72,7 +71,7 @@ end;
 
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 begin
-  shellExecute(0, 'open', pchar(anExePath), pchar('"' + aParams + '"'), '', SW_SHOW);
+  shellExecute(0, 'open', pChar(anExePath), pChar('"' + aParams + '"'), '', SW_SHOW);
 end;
 
 end.

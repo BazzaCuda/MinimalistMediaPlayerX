@@ -26,17 +26,16 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState;
 
-function mmpArrangeAll(const aWnd: HWND): boolean;
-function mmpAdjustAspectRatio(const aWnd: HWND; const aHeight: integer): TPoint;
-function mmpCenterWindow(const aWnd: HWND; const aPt: TPoint): boolean;
-function mmpGreaterWindow(const aWnd: HWND; aShiftState: TShiftState): integer; overload;
-function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
-function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
-function mmpPosWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
-function mmpSetWindowPos(const aWnd: HWND; aPt: TPoint): boolean;
-function mmpSetWindowSize(const aWnd: HWND; aPt: TPoint): boolean;
-function mmpWinXY(const aWnd: HWND): TPoint;
-
+function mmpAdjustAspectRatio (const aWnd: HWND; const aHeight: integer): TPoint;
+function mmpArrangeAll        (const aWnd: HWND): boolean;
+function mmpCenterWindow      (const aWnd: HWND; const aPt: TPoint): boolean;
+function mmpGreaterWindow     (const aWnd: HWND; aShiftState: TShiftState): integer; overload;
+function mmpGreaterWindow     (const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
+function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
+function mmpPosWinXY          (const aHWND: HWND; const x: integer; const y: integer): boolean;
+function mmpSetWindowPos      (const aWnd: HWND; aPt: TPoint): boolean;
+function mmpSetWindowSize     (const aWnd: HWND; aPt: TPoint): boolean;
+function mmpWinXY             (const aWnd: HWND): TPoint;
 
 implementation
 
@@ -219,29 +218,28 @@ begin
   var vHWND := 0;
 
   case vCount = 2 of TRUE: begin
-                             mmpPosWinXY(mmpHwnd(1), vZero,    (vScreenHeight - vHeight) div 2);
-                             mmpPosWinXY(mmpHwnd(2), vHMiddle, (vScreenHeight - vHeight) div 2);
-                             case mmpOffScreen(mmpHwnd(1)) of TRUE: mmpPosWinXY(mmpHwnd(1), vZero,    0); end;
-                             case mmpOffScreen(mmpHwnd(2)) of TRUE: mmpPosWinXY(mmpHwnd(2), vHMiddle, 0); end;
-                             vHWND := mmpHwnd(1);
+                             mmpPosWinXY(PA[1], vZero,    (vScreenHeight - vHeight) div 2);
+                             mmpPosWinXY(PA[2], vHMiddle, (vScreenHeight - vHeight) div 2);
+                             case mmpOffScreen(PA[1]) of TRUE: mmpPosWinXY(PA[1], vZero,    0); end;
+                             case mmpOffScreen(PA[2]) of TRUE: mmpPosWinXY(PA[2], vHMiddle, 0); end;
+                             vHWND := PA[1];
                            end;end;
 
   case vCount in [3, 4] of TRUE: begin
-                             mmpPosWinXY(mmpHwnd(1), vZero,     0 + 40);
-                             mmpPosWinXY(mmpHwnd(2), vHMiddle,  0 + 40); end;end;
+                             mmpPosWinXY(PA[1], vZero,     0 + 40);
+                             mmpPosWinXY(PA[2], vHMiddle,  0 + 40); end;end;
 
-  case vCount = 3 of TRUE: mmpPosWinXY(mmpHwnd(3), vHMiddle - (vWidth div 2), vHeight + 40); end;
+  case vCount = 3 of TRUE: mmpPosWinXY(PA[3], vHMiddle - (vWidth div 2), vHeight + 40); end;
 
   case vCount = 4 of TRUE: begin
-                              mmpPosWinXY(mmpHwnd(3), vZero,  vHeight + 40);
-                              mmpPosWinXY(mmpHwnd(4), vHMiddle, vHeight + 40); end;end;
+                              mmpPosWinXY(PA[3], vZero,  vHeight + 40);
+                              mmpPosWinXY(PA[4], vHMiddle, vHeight + 40); end;end;
 
-  case vCount > 4 of TRUE: for var i := 1 to vCount do mmpPosWinXY(mmpHwnd(i), ((mmpScreenWidth div vCount) * (i - 1)), 100); end;
+  case vCount > 4 of TRUE: for var i := 1 to vCount do mmpPosWinXY(PA[i], ((mmpScreenWidth div vCount) * (i - 1)), 100); end;
 
   case vHWND <> 0 of TRUE: begin mmpDelay(100); mmpPosWinXY(vHWND, mmpScreenCentre - vWidth, mmpWinXY(vHWND).Y); end;end; // hack for tall, narrow, TikTok-type windows
   result := TRUE;
 end;
-
 
 function mmpCenterWindow(const aWnd: HWND; const aPt: TPoint): boolean;
 var
@@ -345,7 +343,6 @@ begin
   SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
 end;
 
-
 function mmpPosWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
 begin
   result := FALSE;
@@ -373,6 +370,5 @@ begin
   getWindowRect(aWnd, vR);
   result := vR.Location;
 end;
-
 
 end.

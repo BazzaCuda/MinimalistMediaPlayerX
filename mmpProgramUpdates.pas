@@ -21,15 +21,16 @@ unit mmpProgramUpdates;
 interface
 
 uses
-  system.zip;
+  system.zip,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
   IProgramUpdates = interface
     ['{6C5FC828-6B3A-49C5-A610-657C954953D0}']
-    function hasReleaseNotes(const aReleaseTag: string): boolean;
     function getReleaseNotesFilePath(const aReleaseTag: string): string;
     function getReleaseTag: string;
-    property releaseTag:   string read getReleaseTag; // has a couple of side-effects ;)
+    function hasReleaseNotes(const aReleaseTag: string): boolean;
+    property releaseTag:    string read getReleaseTag; // has a couple of side-effects ;)
   end;
 
 function newProgramUpdates: IProgramUpdates;
@@ -40,9 +41,8 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpFileUtils, mmpUtils,
-  view.mmpProgressBar, view.mmpFormDownload,
+  view.mmpFormDownload, view.mmpProgressBar,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -52,18 +52,18 @@ type
     FReleaseNotes: string;
     FReleaseTag: string;
   protected
-    function analyseReleaseNotes(const aReleaseTag: string): boolean;
-    function downloadAsset(const aURL, aFilePath: string; const aSuccess: string = ''): string;
-    function downloadRelease(const aReleaseTag: string): string;
-    function extractRelease(const aReleaseTag: string): boolean;
-    function getJSONReleaseTag: string;
-    function saveReleaseNotes(const aReleaseTag: string): boolean;
+    function  analyseReleaseNotes(const aReleaseTag: string): boolean;
+    function  downloadAsset(const aURL, aFilePath: string; const aSuccess: string = ''): string;
+    function  downloadRelease(const aReleaseTag: string): string;
+    function  extractRelease(const aReleaseTag: string): boolean;
+    function  getJSONReleaseTag: string;
+    function  saveReleaseNotes(const aReleaseTag: string): boolean;
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
-    function getReleaseNotesFilePath(const aReleaseTag: string): string;
-    function getReleaseNotesFolder: string;
-    function hasReleaseNotes(const aReleaseTag: string): boolean;
-    function getReleaseTag: string;
+    function  getReleaseNotesFilePath(const aReleaseTag: string): string;
+    function  getReleaseNotesFolder: string;
+    function  getReleaseTag: string;
+    function  hasReleaseNotes(const aReleaseTag: string): boolean;
   end;
 
   TWorkProgress = class(TObject)  // only because IdHttp requires these callbacks to be procedure of object

@@ -32,6 +32,7 @@ uses
 function mmpITBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
+  case length(result) = 0 of TRUE: EXIT; end;
   case result[high(result)] = BACKSLASH of FALSE: result := result + BACKSLASH; end;
 end;
 

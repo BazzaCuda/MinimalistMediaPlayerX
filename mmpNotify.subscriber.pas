@@ -43,7 +43,7 @@ end;
 
 function newSubscriber(const aNotifyMethod: TNotifyMethod): ISubscriber;
 begin
-  result := newSubscriber;
+  result              := newSubscriber;
   result.notifyMethod := aNotifyMethod;
 end;
 { TSubscriber }

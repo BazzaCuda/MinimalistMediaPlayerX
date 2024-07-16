@@ -27,6 +27,7 @@ uses
 
 type
   TNoticeEvent = (evNone,
+
     evAboutFormShow, evAboutReleaseNotesFormShow,
 
     evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
@@ -140,7 +141,7 @@ type
 
   INotifier = interface
     ['{DD326AE1-5049-43AA-9215-DF53DB5FC958}']
-    procedure subscribe(const aSubscriber: ISubscriber);
+    function  subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure unsubscribe(const aSubscriber: ISubscriber);
     procedure notifySubscribers(const aNotice: INotice);
   end;
@@ -163,6 +164,7 @@ type
   TNotice = class(TInterfacedObject, INotice)
   private
     FEvent:         TNoticeEvent;
+
     FBoolean:       boolean;
     FComponent:     TComponent;
     FInteger:       integer;
@@ -174,6 +176,7 @@ type
     FWndRec:        TWndRec;
   protected
     function  getEvent:       TNoticeEvent;
+
     function  getBoolean:     boolean;
     function  getComponent:   TComponent;
     function  getInteger:     integer;
@@ -184,16 +187,17 @@ type
     function  getText:        string;
     function  getWndRec:      TWndRec;
 
-    procedure setEvent(const aValue: TNoticeEvent);
-    procedure setBoolean(const aValue: boolean);
-    procedure setComponent(const aValue: TComponent);
-    procedure setInteger(const aValue: integer);
-    procedure setMediaType(const aValue: TMediaType);
-    procedure setMessage(const aValue: TMessage);
-    procedure setPoint(const aValue: TPoint);
-    procedure setShiftState(const aValue: TShiftState);
-    procedure setText(const aValue: string);
-    procedure setWndRec(const aValue: TWndRec);
+    procedure setEvent      (const aValue: TNoticeEvent);
+
+    procedure setBoolean    (const aValue: boolean);
+    procedure setComponent  (const aValue: TComponent);
+    procedure setInteger    (const aValue: integer);
+    procedure setMediaType  (const aValue: TMediaType);
+    procedure setMessage    (const aValue: TMessage);
+    procedure setPoint      (const aValue: TPoint);
+    procedure setShiftState (const aValue: TShiftState);
+    procedure setText       (const aValue: string);
+    procedure setWndRec     (const aValue: TWndRec);
   public
   end;
 
@@ -209,7 +213,7 @@ begin
   result.text   := aText;
 end;
 
-function newNotice(const aEvent: TNoticeEvent; const aText: string; aMediaType: TMediaType):  INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aText: string; aMediaType: TMediaType): INotice; overload;
 begin
   result            := newNotice;
   result.event      := aEvent;

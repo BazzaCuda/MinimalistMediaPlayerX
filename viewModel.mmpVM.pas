@@ -260,13 +260,17 @@ begin
 
   var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
+
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
+
   var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case notifyApp(newNotice(evPLDeleteIx, vIx)).tf of FALSE: EXIT; end; // unlikely
+
   case (ssCtrl in aShiftState) or NOT notifyApp(newNotice(evPLReqHasItems)).tf of
      TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: case notifyApp(newNotice(evVMPlayNextFolder)).tf of  FALSE: notifyApp(newNotice(evAppClose)); end;
                                                             FALSE: notifyApp(newNotice(evAppClose)); end;
     FALSE: notifyApp(newNotice(evVMPlaySomething, vIx)); end;
+
   notifyApp(newNotice(evPLFormLoadBox));
 end;
 

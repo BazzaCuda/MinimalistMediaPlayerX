@@ -38,7 +38,7 @@ uses
 
 function mmpCapsLockOn: boolean;
 begin
-  result := GetKeyState(VK_CAPITAL) <> 0;
+  result := getKeyState(VK_CAPITAL) <> 0;
 end;
 
 function mmpCtrlKeyDown: boolean;
@@ -69,16 +69,15 @@ begin
   // In other words, getKeyboardState only registers it in the window in which is was pressed.
   // This isn't the case with the Shift keys.
   case getKeyState(VK_CONTROL) < 0 of TRUE: include(result, ssCtrl); end;
-//  case (vKeyboardState[VK_CONTROL] and $80) <> 0 of TRUE: include(result, ssCtrl); end;
 end;
 
 function mmpToggleNumlock: boolean;
 begin
-  result := FALSE;
+  result      := FALSE;
   var kbState := mmpKBState;
   keybd_event(VK_NUMLOCK, kbState[VK_NUMLOCK] xor 1, KEYEVENTF_EXTENDEDKEY or 0, 0);
   keybd_event(VK_NUMLOCK, kbState[VK_NUMLOCK] xor 1, KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
-  result := TRUE;
+  result      := TRUE;
 end;
 
 end.

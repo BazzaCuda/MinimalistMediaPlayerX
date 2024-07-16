@@ -21,22 +21,23 @@ unit mmpThumbUtils;
 interface
 
 uses
-  system.sysUtils, system.win.comObj, vcl.graphics, winApi.activeX, winApi.shlObj, winApi.windows;
+  winApi.activeX, winApi.shlObj, winApi.windows,
+  system.sysUtils, system.win.comObj,
+  vcl.graphics;
 
-procedure ExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
-
+procedure extractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 
 implementation
 
 const
-  IEIFLAG_OFFLINE = $0008;      // if the extractor shouldn't hit the net to get any content neede for the rendering
+  IEIFLAG_OFFLINE = $0008;      // whether the extractor shouldn't hit the net to get any content needed for the rendering
   IEIFLAG_SCREEN  = $0020;      // render as if for the screen  (this is exlusive with IEIFLAG_ASPECT )
 
 type
   IExtractImage = interface
     ['{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1}']
-    function getLocation(pszPathBuffer: PWideChar; cch: DWORD; var pdwPriority: DWORD; var prgSize: TSize; dwRecClrDepth: DWORD; var pdwFlags: DWORD): HResult; stdcall;
-    function extract(var phBmpThumbnail: HBITMAP): HResult; stdcall;
+    function getLocation(pszPathBuffer: pWideChar; cch: DWORD; var pdwPriority: DWORD; var prgSize: TSize; dwRecClrDepth: DWORD; var pdwFlags: DWORD): HRESULT; stdcall;
+    function extract(var phBmpThumbnail: HBITMAP): HRESULT; stdcall;
   end;
 
 procedure ExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
@@ -47,7 +48,7 @@ var
   eaten:          cardinal;
   flags:          cardinal;
   prio:           cardinal;
-  id:             PItemIDList;
+  id:             pItemIDList;
   ex:             IExtractImage;
   s:              TSize;
   h:              HBITMAP;
@@ -62,7 +63,7 @@ try
 
     flags := 0;
     w     := extractFilePath(aFilePath);
-    oleCheck(desktopFolder.parseDisplayName(0, nil, PWideChar(w), eaten, id, flags));
+    oleCheck(desktopFolder.parseDisplayName(0, nil, pWideChar(w), eaten, id, flags));
     try
       oleCheck(desktopFolder.bindToObject(id, nil, IShellFolder, sourceFolder));
     finally
@@ -70,7 +71,7 @@ try
     end;
 
     w := extractFileName(aFilePath);
-    oleCheck(sourceFolder.parseDisplayName(0, nil, PWideChar(w), eaten, id, flags));
+    oleCheck(sourceFolder.parseDisplayName(0, nil, pWideChar(w), eaten, id, flags));
     try
       oleCheck(sourceFolder.getUIObjectOf(0, 1, id, IExtractImage, nil, ex));
     finally
@@ -82,7 +83,7 @@ try
     flags := IEIFLAG_SCREEN or IEIFLAG_OFFLINE;
     prio  := 0;
     setLength(w, MAX_PATH);
-    oleCheck(ex.getLocation(PWideChar(w), length(w) * 2, prio, s, 32, flags));
+    oleCheck(ex.getLocation(pWideChar(w), length(w) * 2, prio, s, 32, flags));
     oleCheck(ex.extract(h));
 
     aBitmap.handle := h;
