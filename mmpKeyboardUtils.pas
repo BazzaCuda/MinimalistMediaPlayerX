@@ -57,18 +57,12 @@ begin
 end;
 
 function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit that needs this
-var
-  vKeyboardState: TKeyBoardState;
+// getKeyboardState is faulty when controlling multiple windows so we roll our own.
 begin
-  getKeyboardState(vKeyboardState);
-  result := keyboardStateToShiftState(vKeyboardState);
-
-  // I don't know why this is necessary but it is.
-  // Ctrl-[G] on multiple windows proves it.
-  // The "other" windows don't know the Ctrl key is down without this.
-  // In other words, getKeyboardState only registers it in the window in which is was pressed.
-  // This isn't the case with the Shift keys.
-  case getKeyState(VK_LCONTROL) < 0 of TRUE: include(result, ssCtrl); end;
+  result := [];
+  case getKeyState(VK_CONTROL)  < 0 of TRUE: include(result, ssCtrl);   end;
+  case getKeyState(VK_SHIFT)    < 0 of TRUE: include(result, ssShift);  end;
+  case getKeyState(VK_MENU)     < 0 of TRUE: include(result, ssAlt);    end;
 end;
 
 function mmpToggleNumlock: boolean;

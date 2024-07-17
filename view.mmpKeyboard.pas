@@ -42,12 +42,12 @@ const
 
 function KBCapsLock: boolean;
 begin
-  result := GetKeyState(VK_CAPITAL) <> 0;
+  result := getKeyState(VK_CAPITAL) <> 0;
 end;
 
 function KBNumLock: boolean;
 begin
-  result := GetKeyState(VK_NUMLOCK) <> 0;
+  result := getKeyState(VK_NUMLOCK) <> 0;
 end;
 
 function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
