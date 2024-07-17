@@ -26,9 +26,9 @@ uses
 type
   IBookmark = interface
     ['{316364FE-FE36-47F3-BE39-410EA778C6BA}']
-    function delete(const aURL: string): string;
-    function position(const aURL: string): integer;
-    function save(const aURL: string; const aPosition: integer): string;
+    function delete   (const aURL: string): string;
+    function position (const aURL: string): integer;
+    function save     (const aURL: string; const aPosition: integer): string;
   end;
 
 function newBookmark: IBookmark;
@@ -46,9 +46,9 @@ type
   protected
   private
   public
-    function delete(const aURL: string): string;
-    function position(const aURL: string): integer;
-    function save(const aURL: string; const aPosition: integer): string;
+    function delete   (const aURL: string): string;
+    function position (const aURL: string): integer;
+    function save     (const aURL: string; const aPosition: integer): string;
   end;
 
 function newBookmark: IBookmark;
@@ -64,6 +64,7 @@ begin
   result := 'Bookmark deleted';
   notifyApp(newNotice(evSTOpInfo, result));
 end;
+
 function TBookmark.position(const aURL: string): integer;
 begin
   result := CF.asInteger[aURL];
@@ -72,8 +73,8 @@ end;
 
 function TBookmark.save(const aURL: string; const aPosition: integer): string;
 begin
-  CF[aURL] := intToStr(aPosition);
-  result := 'Bookmarked';
+  CF[aURL]  := intToStr(aPosition);
+  result    := 'Bookmarked';
   notifyApp(newNotice(evSTOpInfo, result));
 end;
 

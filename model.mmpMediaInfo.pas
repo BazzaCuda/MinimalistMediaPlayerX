@@ -74,14 +74,12 @@ type
     function getSelectedCount:      integer;
     function getStreamCount:        integer;
 
-    procedure setLowestID(const aValue: integer);
-
     function sortStreams: boolean;
 
     property chapterCount:      integer                     read getChapterCount;
     property imageHeight:       integer                     read getImageHeight;
     property imageWidth:        integer                     read getImageWidth;
-    property lowestID:          integer                     read getLowestID write setLowestID;
+    property lowestID:          integer                     read getLowestID;
     property mediaChapters:     TObjectList<TMediaChapter>  read getMediaChapters;
     property mediaStreams:      TObjectList<TMediaStream>   read getMediaStreams;
     property selectedCount:     integer                     read getSelectedCount;
@@ -166,7 +164,7 @@ implementation
 uses
   system.generics.defaults, system.sysUtils, system.timeSpan,
   mediaInfoDLL,
-  mmpFileUtils,
+  mmpFileUtils, mmpUtils,
   _debugWindow;
 
 var gMI: IMediaInfo;
@@ -181,10 +179,10 @@ end;
 constructor TMediaInfo.create;
 begin
   inherited;
-  FMediaStreams := TObjectList<TMediaStream>.create;
-  FMediaStreams.ownsObjects := TRUE;
-  FMediaChapters := TObjectList<TMediaChapter>.create;
-  FMediaChapters.ownsObjects := TRUE;
+  FMediaStreams               := TObjectList<TMediaStream>.create;
+  FMediaStreams.ownsObjects   := TRUE;
+  FMediaChapters              := TObjectList<TMediaChapter>.create;
+  FMediaChapters.ownsObjects  := TRUE;
   appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
@@ -474,6 +472,10 @@ begin
     end;
 
     case aMediaType of mtAudio, mtVideo: createChapters; end;
+
+    sortStreams;
+
+    setLowestID(mmpIfThenElse(MI.mediaStreams.count > 0, strToIntDef(MI.mediaStreams[0].ID, 0), 0));
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;

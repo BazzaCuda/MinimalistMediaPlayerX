@@ -28,9 +28,9 @@ type
     ['{32AB825C-CC48-47F2-8717-8F471C059BAD}']
     function  getAsBoolean(const aName: string): boolean;
     function  getAsInteger(const aName: string): integer;
-    function  getValue(const aName: string): string;
+    function  getValue    (const aName: string): string;
 
-    procedure setValue(const aName: string; const aValue: string);
+    procedure setValue    (const aName: string; const aValue: string);
 
     function  deleteConfig(const aName: string): boolean;
     function  initConfigFile(const aFilePath: string): boolean;
@@ -51,19 +51,22 @@ uses
 type
   TConfigFile = class(TInterfacedObject, IConfigFile)
   strict private
-    FFileContents: TStringList;
-    FFilePath: string;
+    FFileContents:  TStringList;
+    FFilePath:      string;
     FLastWriteTime: TDateTime;
-    function saveConfigFile: boolean;
   private
-    function    getValue(const aName: string): string;
-    procedure   setValue(const aName: string; const aValue: string);
-    function    getAsBoolean(const aName: string): boolean;
-    function    getAsInteger(const aName: string): integer;
     function    checkForManualEdits: boolean;
+    function    saveConfigFile: boolean;
   public
     constructor create;
     destructor  Destroy; override;
+
+    function    getAsBoolean(const aName: string): boolean;
+    function    getAsInteger(const aName: string): integer;
+    function    getValue    (const aName: string): string;
+
+    procedure   setValue(const aName: string; const aValue: string);
+
     function    deleteConfig(const aName: string): boolean;
     function    initConfigFile(const aFilePath: string): boolean;
     function    toHex(const aInteger: integer): string;

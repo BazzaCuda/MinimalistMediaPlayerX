@@ -99,7 +99,7 @@ end;
 
 function refreshStreamInfo(const aMediaFilePath: string): boolean;
 begin
-  MI.lowestID := streamListForm.getStreamInfo(aMediaFilePath);
+  streamListForm.getStreamInfo(aMediaFilePath);
   streamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
@@ -257,8 +257,6 @@ begin
 
   clSegments.itemCount := 0;
   clStreams.itemCount  := 0;
-
-//  MI.lowestID := getStreamInfo;
 end;
 
 function TStreamListForm.getStreamInfo(const aMediaFilePath: string): integer;
@@ -270,8 +268,6 @@ begin
   MI.getMediaInfo(aMediaFilePath, mtVideo);
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
-  MI.sortStreams;
-  case MI.mediaStreams.count > 0 of TRUE: case tryStrToInt(MI.mediaStreams[0].ID, result) of FALSE: result := 0; end;end;
 end;
 
 function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;

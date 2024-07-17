@@ -26,16 +26,16 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState;
 
-function mmpAdjustAspectRatio (const aWnd: HWND; const aHeight: integer): TPoint;
-function mmpArrangeAll        (const aWnd: HWND): boolean;
-function mmpCenterWindow      (const aWnd: HWND; const aPt: TPoint): boolean;
-function mmpGreaterWindow     (const aWnd: HWND; aShiftState: TShiftState): integer; overload;
-function mmpGreaterWindow     (const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
+function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
+function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
-function mmpPosWinXY          (const aHWND: HWND; const x: integer; const y: integer): boolean;
-function mmpSetWindowPos      (const aWnd: HWND; aPt: TPoint): boolean;
-function mmpSetWindowSize     (const aWnd: HWND; aPt: TPoint): boolean;
-function mmpWinXY             (const aWnd: HWND): TPoint;
+function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint): boolean;
+function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): integer; overload;
+function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
+function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): boolean;
+function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint): boolean;
+function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): boolean;
+function mmpWinXY             (const aWND: HWND): TPoint;
 
 implementation
 
@@ -45,7 +45,7 @@ uses
   mmpDesktopUtils, mmpPostToAllUtils, mmpUtils,
   _debugWindow;
 
-function mmpAdjustAspectRatio(const aWnd: HWND; const aHeight: integer): TPoint;
+function mmpAdjustAspectRatio(const aWND: HWND; const aHeight: integer): TPoint;
 var
   vWidth:  integer;
 
@@ -85,7 +85,7 @@ end;
 var
   vPrevVideoHeight: integer = 0;
   vPrevImageHeight: integer = 0;
- function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
+function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
 var
   vWidth:           integer;
   vHeight:          integer;
@@ -116,8 +116,8 @@ var
 
   function withinScreenLimits: boolean;
   begin
-    var vDelta := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of widthHelp and widthPlaylist will be zero
-    result := (vWidth + vDelta <= mmpScreenWidth) and (vHeight <= mmpScreenHeight);
+    var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of widthHelp and widthPlaylist will be zero
+    result      := (vWidth + vDelta <= mmpScreenWidth) and (vHeight <= mmpScreenHeight);
   end;
 
 begin
@@ -179,13 +179,16 @@ begin
   result.y := vHeight;
 end;
 
-function mmpArrangeAll(const aWnd: HWND): boolean;
+function mmpArrangeAll(const aWND: HWND): boolean;
 var
-  vCount: integer;
-  vWidth, vHeight: integer;
-  vScreenWidth, vScreenHeight: integer;
-  vZero: integer;
-  vHMiddle, vVMiddle: integer;
+  vCount:             integer;
+  vWidth,
+  vHeight:            integer;
+  vScreenWidth,
+  vScreenHeight:      integer;
+  vZero:              integer;
+  vHMiddle,
+  vVMiddle:           integer;
 begin
   result := FALSE;
   vCount := notifyApp(newNotice(evPAReqCount)).integer;
@@ -194,6 +197,7 @@ begin
   case GS.autoCenter of FALSE:  begin
                                   notifyApp(newNotice(evPAPostToEvery, WIN_AUTOCENTER_OFF));
                                   notifyApp(newNotice(evPAPostToEvery, WIN_MAX_SIZE_OFF)); end;end;
+
   var vMsg: TMessage;
   vMsg := default(TMessage);
   case vCount of
@@ -207,11 +211,11 @@ begin
 
   mmpProcessMessages; // make sure this window has resized before continuing
 
-  mmpWndWidthHeight(aWnd, vWidth, vHeight);
+  mmpWndWidthHeight(aWND, vWidth, vHeight);
   vScreenWidth  := mmpScreenWidth;
   vScreenHeight := mmpScreenHeight;
-  vHMiddle      := vScreenWidth div 2;
-  vVMiddle      := vScreenHeight div 2;
+  vHMiddle      := vScreenWidth   div 2;
+  vVMiddle      := vScreenHeight  div 2;
   vZero         := vHMiddle - vWidth;
 
   vCount    := notifyApp(newNotice(evPAReqCount)).integer;
@@ -232,8 +236,8 @@ begin
   case vCount = 3 of TRUE: mmpPosWinXY(PA[3], vHMiddle - (vWidth div 2), vHeight + 40); end;
 
   case vCount = 4 of TRUE: begin
-                              mmpPosWinXY(PA[3], vZero,  vHeight + 40);
-                              mmpPosWinXY(PA[4], vHMiddle, vHeight + 40); end;end;
+                              mmpPosWinXY(PA[3], vZero,     vHeight + 40);
+                              mmpPosWinXY(PA[4], vHMiddle,  vHeight + 40); end;end;
 
   case vCount > 4 of TRUE: for var i := 1 to vCount do mmpPosWinXY(PA[i], ((mmpScreenWidth div vCount) * (i - 1)), 100); end;
 
@@ -241,7 +245,8 @@ begin
   result := TRUE;
 end;
 
-function mmpCenterWindow(const aWnd: HWND; const aPt: TPoint): boolean;
+function mmpCenterWindow(const aWND: HWND; const aPt: TPoint): boolean;
+// aPt is optional and provides the calculated dimensions that a window is going to have
 var
   vR: TRect;
   vHPos: integer;
@@ -249,35 +254,35 @@ var
 
   function alreadyCentred: boolean;
   begin
-    result  := FALSE;
-    var vDelta := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
-    vHPos   := (mmpScreenWidth  - vR.width - vDelta) div 2;
-    vVPos   := (mmpScreenHeight - vR.height) div 2;
-    result  := (vR.left = vHPos) and (vR.top = vVPos);
+    result      := FALSE;
+    var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
+    vHPos       := (mmpScreenWidth  - vR.width - vDelta)  div 2;
+    vVPos       := (mmpScreenHeight - vR.height)          div 2;
+    result      := (vR.left = vHPos) and (vR.top = vVPos);
   end;
 
 begin
   result := FALSE;
-  getWindowRect(aWnd, vR);
+  getWindowRect(aWND, vR);
 
-  case (aPt.x <> 0) and (aPt.y <> 0) of  TRUE:  begin
+  case (aPt.x <> 0) and (aPt.y <> 0) of  TRUE:  begin // override the current dimensions with those provided
                                                   vR.width  := aPt.x;
                                                   vR.height := aPt.y; end;end;
 
 
   case alreadyCentred of TRUE: EXIT; end;
 
-  case (vHPos > 0) and (vVPos > 0) of TRUE: mmpSetWindowPos(aWnd, point(vHPos, vVPos)); end;
+  case (vHPos > 0) and (vVPos > 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
 
   notifyApp(newNotice(evGSAutoCenter, TRUE));
   result := TRUE;
 end;
 
-function mmpGreaterWindow(const aWnd: HWND; aShiftState: TShiftState): integer;
+function mmpGreaterWindow(const aWND: HWND; aShiftState: TShiftState): integer;
 var
   vR: TRect;
 begin
-  getWindowRect(aWnd, vR);
+  getWindowRect(aWND, vR);
 
   GS.notify(newNotice(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
 
@@ -285,7 +290,7 @@ begin
                                 FALSE: result := vR.height + 30; end;
 end;
 
-function mmpGreaterWindow(const aWnd: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
+function mmpGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
 var
   dx:   integer;
   dy:   integer;
@@ -332,7 +337,7 @@ var
   end;
 
 begin
-  getWindowRect(aWnd, vR);
+  getWindowRect(aWND, vR);
   newW := vR.Width;
   newH := vR.height;
 
@@ -340,35 +345,35 @@ begin
   checkDesktop;
   calcDimensions; // do what the user requested
 
-  SetWindowPos(aWnd, HWND_TOP, 0, 0, newW, newH, SWP_NOMOVE); // resize the window
+  mmpSetWindowSize(aWND, point(newW, newH)); // resize the window
 end;
 
-function mmpPosWinXY(const aHWND: HWND; const x: integer; const y: integer): boolean;
+function mmpPosWinXY(const aWND: HWND; const x: integer; const y: integer): boolean;
 begin
   result := FALSE;
-  setWindowPos(aHWND, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+  mmpSetWindowPos(aWND, point(x, y));
   result := TRUE;
 end;
 
-function mmpSetWindowPos(const aWnd: HWND; aPt: TPoint): boolean;
+function mmpSetWindowPos(const aWND: HWND; aPt: TPoint): boolean;
 begin
   result := FALSE;
-  setWindowPos(aWnd, HWND_TOP, aPt.x, aPt.y, 0, 0, SWP_NOSIZE);
+  setWindowPos(aWND, HWND_TOP, aPt.x, aPt.y, 0, 0, SWP_NOSIZE);
   result := TRUE;
 end;
 
-function mmpSetWindowSize(const aWnd: HWND; aPt: TPoint): boolean;
+function mmpSetWindowSize(const aWND: HWND; aPt: TPoint): boolean;
 begin
   result := FALSE;
-  setWindowPos(GS.mainForm.handle, HWND_TOP, 0, 0, aPt.x, aPt.y, SWP_NOMOVE);
+  setWindowPos(aWND, HWND_TOP, 0, 0, aPt.x, aPt.y, SWP_NOMOVE);
   result := TRUE;
 end;
 
-function mmpWinXY(const aWnd: HWND): TPoint;
+function mmpWinXY(const aWND: HWND): TPoint;
 var vR: TRect;
 begin
   getWindowRect(aWnd, vR);
-  result := vR.Location;
+  result := vR.location;
 end;
 
 end.

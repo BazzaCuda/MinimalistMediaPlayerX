@@ -20,10 +20,10 @@ unit mmpUserFolders;
 
 interface
 
-function mmpUserBaseFolder(const aFolder: string): string;
-function mmpUserDstFolder(const aFolder: string): string;
-function mmpFolderFromFKey(const aKey: WORD): string;
-function mmpUserOverride(const aFolder: string): string;
+function mmpFolderFromFKey (const aKey: WORD):      string;
+function mmpUserBaseFolder (const aFolder: string): string;
+function mmpUserDstFolder  (const aFolder: string): string;
+function mmpUserOverride   (const aFolder: string): string;
 
 implementation
 
@@ -31,6 +31,11 @@ uses
   system.sysUtils,
   mmpConsts, mmpFolderUtils, mmpFileUtils,
   model.mmpConfigFile;
+
+function mmpFolderFromFKey(const aKey: WORD): string;
+begin
+  result := 'folder' + intToStr(aKey - 111); // F1-F12 = 112-123
+end;
 
 function mmpUserBaseFolder(const aFolder: string): string;
 begin
@@ -40,11 +45,6 @@ begin
 
   result := CF[CONF_BASE_FOLDER];
   case result <> '' of TRUE: result := mmpITBS(result); end;
-end;
-
-function mmpFolderFromFKey(const aKey: WORD): string;
-begin
-  result := 'folder' + intToStr(aKey - 111); // F1-F12 = 112-123
 end;
 
 function mmpUserDstFolder(const aFolder: string): string;

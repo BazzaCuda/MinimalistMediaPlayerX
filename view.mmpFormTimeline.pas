@@ -582,21 +582,23 @@ begin
           cmdLine := '-hide_banner';
 
           cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
-          cmdLine := cmdLine + ' -i "' + FMediaFilePath + '"';
+          cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
           cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
 
           vMaps := '';
           for var vMediaStream in MI.mediaStreams do
             case vMediaStream.selected of TRUE: begin
-                                                  case tryStrToInt(vMediaStream.ID, vID) of FALSE: vID := 0; end;
+                                                  vID := strToIntDef(vMediaStream.ID, 0);
                                                   case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
                                                   vMaps := vMaps + format(' -map 0:%d ', [vID]);
                                                 end;end;
-          vMaps := vMaps + ' -c copy';
+          vMaps   := vMaps + ' -c copy';
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
+
           var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' seg' + vSegment.segID + extractFileExt(FMediaFilePath);
           case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
+
           cmdLine := cmdLine + ' -y "' + segFile + '"';
           log(cmdLine);
 

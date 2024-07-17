@@ -30,8 +30,8 @@ function mmpCancelDelay: boolean;
 function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
 function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
-function mmpIfThenElse(const aBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
-function mmpIfThenElse(const aBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
+function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
+function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 function mmpProcessMessages: boolean;
 
 implementation
@@ -41,7 +41,7 @@ uses
   _debugWindow;
 
 var
-  gCancel: boolean;
+  gCancel: boolean = FALSE;
 
 function mmpCancelDelay: boolean;
 begin
@@ -123,11 +123,11 @@ function mmpDelay(const dwMilliseconds: DWORD): boolean;
 var
   iStart, iStop: DWORD;
 begin
-  result := FALSE;
+  result  := FALSE;
   gCancel := FALSE;
-  iStart := GetTickCount;
+  iStart  := getTickCount;
   repeat
-    iStop  := GetTickCount;
+    iStop := getTickCount;
     mmpProcessMessages;
   until gCancel or ((iStop  -  iStart) >= dwMilliseconds);
   result := TRUE;
@@ -138,15 +138,15 @@ begin
   result := FnnKeyApps[aFnnKeyApp];
 end;
 
-function mmpIfThenElse(const aBoolean: boolean; aTrue: string; aFalse: string): string;
+function mmpIfThenElse(const bBoolean: boolean; aTrue: string; aFalse: string): string;
 begin
-  case aBoolean of   TRUE: result := aTrue;
+  case bBoolean of   TRUE: result := aTrue;
                     FALSE: result := aFalse; end;
 end;
 
-function mmpIfThenElse(const aBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
+function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 begin
-  case aBoolean of   TRUE: result := aTrue;
+  case bBoolean of   TRUE: result := aTrue;
                     FALSE: result := aFalse; end;
 end;
 
