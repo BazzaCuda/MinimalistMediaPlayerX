@@ -33,21 +33,21 @@ type
   {$REGION}
   // this should be in the implementation section but that would cause problems with the IDE
   TPlaylistForm = class(TForm)
-    backPanel:    TPanel;
-    buttonPanel:  TPanel;
-    shiftLabel:   TLabel;
-    moveLabel:    TLabel;
-    LB:           TListBox;
-    ApplicationEvents: TApplicationEvents;
-    lblFolder:    TLabel;
-    procedure ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean);
-    procedure FormCreate(sender: TObject);
-    procedure LBDblClick(sender: TObject);
-    procedure LBKeyDn(sender: TObject; var key: Word; Shift: TShiftState);
-    procedure LBKeyPress(sender: TObject; var key: Char);
-    procedure LBKeyUp(sender: TObject; var key: Word; shift: TShiftState);
-    procedure LBMouseEnter(Sender: TObject);
-    procedure LBMouseLeave(Sender: TObject);
+    backPanel:          TPanel;
+    buttonPanel:        TPanel;
+    shiftLabel:         TLabel;
+    moveLabel:          TLabel;
+    LB:                 TListBox;
+    applicationEvents:  TApplicationEvents;
+    lblFolder:          TLabel;
+    procedure   applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
+    procedure   FormCreate(sender: TObject);
+    procedure   LBDblClick(sender: TObject);
+    procedure   LBKeyDn(sender: TObject; var key: Word; Shift: TShiftState);
+    procedure   LBKeyPress(sender: TObject; var key: Char);
+    procedure   LBKeyUp(sender: TObject; var key: Word; shift: TShiftState);
+    procedure   LBMouseEnter(Sender: TObject);
+    procedure   LBMouseLeave(Sender: TObject);
   private
     FMouseOver: boolean;
     function    isItemVisible: boolean;
@@ -78,6 +78,7 @@ type
   strict private
     FListBoxLoaded: boolean;
     FPlaylistForm:  TPlaylistForm;
+    FSubscriber:    ISubscriber;
   private
     function    createForm(const bCreateNew: boolean): TPlaylistForm;
     function    moveForm(const wr: TWndRec): boolean;
@@ -90,8 +91,7 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var
-  gPlaylistFormProxy: IPlaylistForm;
+var gPlaylistFormProxy: IPlaylistForm = NIL;
 function PL: IPlaylistForm;
 begin
   case gPlaylistFormProxy = NIL of TRUE: gPlaylistFormProxy := TPlaylistFormProxy.create; end;
@@ -100,7 +100,7 @@ end;
 
 {$R *.dfm}
 
-procedure TPlaylistForm.ApplicationEventsMessage(var msg: tagMSG; var handled: boolean);
+procedure TPlaylistForm.applicationEventsMessage(var msg: tagMSG; var handled: boolean);
 begin
   case FMouseOver of FALSE: EXIT; end;
   case (msg.message = WM_MOUSEWHEEL) of TRUE: begin
@@ -115,8 +115,8 @@ procedure TPlaylistForm.createParams(var params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
-  Params.ExStyle    := Params.ExStyle OR (WS_EX_APPWINDOW);
-  Params.WndParent  := SELF.Handle; // normally application.handle
+  params.ExStyle    := params.ExStyle OR (WS_EX_APPWINDOW);
+  params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TPlaylistForm.FormCreate(Sender: TObject);
@@ -132,9 +132,8 @@ begin
   LB.AlignWithMargins := TRUE;
 
   SELF.width  := 556;
-//  SELF.height := 840;
 
-  SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+  setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
 
   styleElements     := []; // don't allow any theme alterations
@@ -164,7 +163,6 @@ begin
                                   case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
                                                          FALSE: LB.topIndex := 0; end;end;end;
   finally
-
   end;
 end;
 
@@ -239,7 +237,7 @@ end;
 
 constructor TPlayListFormProxy.create;
 begin
-  appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 function TPlayListFormProxy.createForm(const bCreateNew: boolean): TPlaylistForm;
@@ -251,6 +249,7 @@ end;
 
 destructor TPlayListFormProxy.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
   shutForm;
   inherited;
 end;
@@ -315,10 +314,9 @@ begin
 end;
 
 initialization
-  gPlaylistFormProxy  := NIL;
   PL; // to create the appNotifier subscriber
 
 finalization
-  gPlaylistFormProxy  := NIL;
+  gPlaylistFormProxy := NIL;
 
 end.

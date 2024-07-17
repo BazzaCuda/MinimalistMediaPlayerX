@@ -55,7 +55,7 @@ uses
   mmpFileUtils in 'mmpFileUtils.pas',
   ALProgressBar in 'ALProgressBar.pas',
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
-  viewModel.mmpMPVFormatting in 'viewModel.mmpMPVFormatting.pas',
+  model.mmpMPVFormatting in 'model.mmpMPVFormatting.pas',
   model.mmpParamStrings in 'model.mmpParamStrings.pas',
   mmpDialogs in 'mmpDialogs.pas',
   model.mmpPlaylist in 'model.mmpPlaylist.pas',
@@ -102,7 +102,8 @@ uses
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
   mmpUserFolders in 'mmpUserFolders.pas',
-  mmpTicker in 'mmpTicker.pas';
+  mmpTicker in 'mmpTicker.pas',
+  mmpFormatting in 'mmpFormatting.pas';
 
 function checkParam: boolean;
 begin

@@ -43,31 +43,32 @@ type
     FThumbs:            TObjectList<TThumb>;
     FThumbSize:         integer;
   private
-    function  fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
-    function  generateThumbs(const aItemIx: integer): integer;
-    function  getCurrentIx: integer;
-    function  getWhichHost: THostType;
+    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+    function    generateThumbs(const aItemIx: integer): integer;
+    function    getCurrentIx: integer;
+    function    getWhichHost: THostType;
   public
     constructor create;
-    destructor Destroy; override;
-    function cancel: boolean;
-    function initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
-    function playCurrentItem: boolean;
-    function playPrevThumbsPage: boolean;
-    function playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
-    function setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
-    function showDisplayDimensions(const aHost: THostType): boolean;
-    function thumbColCount: integer;
-    function thumbsPerPage: integer;
-    function thumbRowCount: integer;
-    property currentFolder:     string        read FCurrentFolder;
-    property currentIx:         integer       read getCurrentIx;
-    property foldPanelReserved: boolean                             write FFoldPanelReserved;
-    property onThumbClick:      TNotifyEvent  read FOnThumbClick    write FOnThumbClick;
-    property playlist:          IPlaylist     read FPlaylist;
-    property thumbSize:         integer       read FThumbSize       write FThumbSize;
-    property statusBar:         TStatusBar                          write FStatusBar;
-    property whichHost:         THostType     read getWhichHost;
+    destructor  Destroy; override;
+    function    cancel:             boolean;
+    function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
+    function    playCurrentItem:    boolean;
+    function    playPrevThumbsPage: boolean;
+    function    playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
+    function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
+    function    showDisplayDimensions(const aHost: THostType): boolean;
+    function    thumbColCount:      integer;
+    function    thumbsPerPage:      integer;
+    function    thumbRowCount:      integer;
+
+    property    currentFolder:      string        read FCurrentFolder;
+    property    currentIx:          integer       read getCurrentIx;
+    property    foldPanelReserved:  boolean                             write FFoldPanelReserved;
+    property    onThumbClick:       TNotifyEvent  read FOnThumbClick    write FOnThumbClick;
+    property    playlist:           IPlaylist     read FPlaylist;
+    property    thumbSize:          integer       read FThumbSize       write FThumbSize;
+    property    statusBar:          TStatusBar                          write FStatusBar;
+    property    whichHost:          THostType     read getWhichHost;
   end;
 
 implementation
@@ -76,8 +77,7 @@ uses
   winApi.windows,
   system.sysUtils,
   vcl.graphics,
-  mmpFileUtils, mmpPanelCtrls, mmpUtils,
-  viewModel.mmpMPVFormatting,
+  mmpFileUtils, mmpFormatting, mmpPanelCtrls, mmpUtils,
   model.mmpMediaInfo,
   _debugWindow;
 
@@ -91,25 +91,24 @@ end;
 constructor TThumbs.create;
 begin
   inherited;
-  FPlaylist := newPlaylist;
-  FThumbs := TObjectList<TThumb>.create;
+  FPlaylist   := newPlaylist;
+  FThumbs     := TObjectList<TThumb>.create;
   FThumbs.ownsObjects := TRUE;
-  FThumbSize := THUMB_DEFAULT_SIZE;
+  FThumbSize  := THUMB_DEFAULT_SIZE;
 end;
 
 destructor TThumbs.Destroy;
 begin
-//  case FPlaylist  = NIL of FALSE: FPlaylist.free; end;
   FPlaylist := NIL;
-  case FThumbs    = NIL of FALSE: FThumbs.free;   end;
+  case FThumbs = NIL of FALSE: FThumbs.free; end;
   inherited;
 end;
 
 function TThumbs.fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
 begin
   case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
-  case aPlaylist.hasItems of FALSE: aPlaylist.fillPlaylist(aCurrentFolder, [mtImage]); end;
-  case aPlaylist.hasItems of TRUE:  aPlaylist.find(aFilePath); end;
+  case aPlaylist.hasItems of  FALSE: aPlaylist.fillPlaylist(aCurrentFolder, [mtImage]); end;
+  case aPlaylist.hasItems of   TRUE: aPlaylist.find(aFilePath); end;
   case aPlaylist.hasItems AND (aPlaylist.currentIx = -1) of TRUE: aPlaylist.first; end;
 end;
 
@@ -122,9 +121,7 @@ var
   function adjustCurrentItem: boolean;  // guarantee a full page of thumbnails on the last page
   begin
     var vEndIx := FPlaylist.count - 1;
-{    case FPlaylist.currentIx = vEndIx of
-        TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1));
-       FALSE:} case (vEndIx - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1)); end;{end;}
+    case (vEndIx - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1)); end;
   end;
 
   function calcNextThumbPosition: integer;

@@ -23,9 +23,10 @@ _\* add **SHIFT** for greater change_<br />
 
 **Resets**<br />
 **1** = reset slideshow speed to normal<br />
-**2** = reset brightness<br />
+**2** = reset contrast<br />
 **3** = reset panning<br />
 **4** = reset rotation<br />
+**0** = reset brightness<br />
 **'**  = reset gamma (single quote)<br />
 **;**  = reset saturation<br />
 **U** = reset  zoom i.e. [U]nzoom<br />

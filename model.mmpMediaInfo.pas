@@ -30,9 +30,9 @@ uses
 type
   TMediaChapter = class(TObject)
   private
-    FChapterTitle:   string;
-    FChapterStartSS: integer;
-    FChapterEndSS: integer;
+    FChapterTitle:    string;
+    FChapterStartSS:  integer;
+    FChapterEndSS:    integer;
   public
     property chapterTitle:   string  read FChapterTitle   write FChapterTitle;
     property chapterStartSS: integer read FChapterStartSS write FChapterStartSS;
@@ -126,35 +126,19 @@ type
     function sortStreams: boolean;
     function notify(const aNotice: INotice): INotice;
 
-    procedure setLowestID(const aValue: integer);
-
     property audioBitRate:        string  read getAudioBitRate;
-    property audioCount:          integer read FMD.mdAudioCount;
     property chapterCount:        integer read getChapterCount;
     property displayAspectRatio:  string  read getDisplayAspectRatio;
     property duration:            integer read getDuration;
     property fileSize:            string  read getFileSize;
-    property generalCount:        integer read FMD.mdGeneralCount;
-    property hasCoverArt:         boolean read getHasCoverArt;
-    property imageCount:          integer read FMD.mdImageCount;
-    property imageHeight:         integer read getImageHeight;
-    property imageWidth:          integer read getImageWidth;
-    property mediaChapters:       TObjectList<TMediaChapter> read FMediaChapters;
-    property mediaStreams:        TObjectList<TMediaStream>  read FMediaStreams;
-    property otherCount:          integer read FMD.mdOtherCount;
     property overallBitRate:      string  read getOverallBitRate;
     property overallFrameRate:    string  read getOverallFrameRate;
     property stereoMono:          string  read getStereoMono;
     property streamCount:         integer read getStreamCount;
-    property textCount:           integer read FMD.mdTextCount;
     property videoBitRate:        string  read getVideoBitRate;
-    property videoCount:          integer read FMD.mdVideoCount;
     property X:                   integer read FMD.mdWidth;
     property Y:                   integer read FMD.mdHeight;
     property XY:                  string  read getXY;
-
-    property lowestID:            integer read getLowestID write FLowestID;
-    property selectedCount:       integer read getSelectedCount;
   end;
 
 function MI: IMediaInfo;
@@ -167,7 +151,7 @@ uses
   mmpFileUtils, mmpUtils,
   _debugWindow;
 
-var gMI: IMediaInfo;
+var gMI: IMediaInfo = NIL;
 function MI: IMediaInfo;
 begin
   case gMI = NIL of TRUE: gMI := TMediaInfo.create; end;
@@ -232,7 +216,6 @@ function TMediaInfo.getDuration: integer;
 begin
   result := FMD.mdDuration div 1000;
 end;
-
 
 function mmpFormatFileSize(const aSize: int64): string;
 begin
@@ -475,7 +458,7 @@ begin
 
     sortStreams;
 
-    setLowestID(mmpIfThenElse(MI.mediaStreams.count > 0, strToIntDef(MI.mediaStreams[0].ID, 0), 0));
+    FLowestID := mmpIfThenElse(MI.mediaStreams.count > 0, strToIntDef(MI.mediaStreams[0].ID, 0), 0);
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;
@@ -517,14 +500,9 @@ begin
   end;
 end;
 
-procedure TMediaInfo.setLowestID(const aValue: integer);
-begin
-  FLowestID := aValue;
-end;
-
 function TMediaInfo.sortStreams: boolean;
 begin
-  mediaStreams.sort(TComparer<TMediaStream>.construct(
+  FMediaStreams.sort(TComparer<TMediaStream>.construct(
       function (const L, R: TMediaStream): integer
       begin
          case length(L.ID) = 1 of TRUE: L.ID := '0' + L.ID; end;
@@ -535,7 +513,9 @@ begin
 end;
 
 initialization
+  MI; // create appNotifier subscriber
+
+finalization
   gMI := NIL;
-  MI;
 
 end.

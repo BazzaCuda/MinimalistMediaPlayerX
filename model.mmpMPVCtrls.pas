@@ -24,58 +24,58 @@ uses
   winApi.windows,
   system.classes,
   MPVBasePlayer, MPVConst,
-  viewModel.mmpMPVFormatting;
+  model.mmpMPVFormatting;
 
-function mpvCreate(var mpv: TMPVBasePlayer): boolean;
+function mpvCreate    (var mpv: TMPVBasePlayer): boolean;
 function mpvInitPlayer(const mpv: TMPVBasePlayer; const sWinHandle: HWND; const sScrShotDir: string; const sConfigDir: string; const sLogFile: string = ''; fEventWait: double = 0.5): TMPVErrorCode;
-function mpvOpenFile(const mpv: TMPVBasePlayer; aURL: string): TMPVErrorCode;
+function mpvOpenFile  (const mpv: TMPVBasePlayer; aURL: string): TMPVErrorCode;
 
-function mpvBrightnessDn(const mpv: TMPVBasePlayer): string;
-function mpvBrightnessReset(const mpv: TMPVBasePlayer): string;
-function mpvBrightnessUp(const mpv: TMPVBasePlayer): string;
-function mpvChapterNext(const mpv: TMPVBasePlayer): boolean;
-function mpvChapterPrev(const mpv: TMPVBasePlayer): boolean;
-function mpvContrastDn(const mpv: TMPVBasePlayer): string;
-function mpvContrastReset(const mpv: TMPVBasePlayer): string;
-function mpvContrastUp(const mpv: TMPVBasePlayer): string;
-function mpvCycleAudio(const mpv: TMPVBasePlayer): boolean;
-function mpvCycleSubs(const mpv: TMPVBasePlayer): boolean;
-function mpvFrameBackwards(const mpv: TMPVBasePlayer): boolean;
-function mpvFrameForwards(const mpv: TMPVBasePlayer): boolean;
-function mpvGammaDn(const mpv: TMPVBasePlayer): string;
-function mpvGammaReset(const mpv: TMPVBasePlayer): string;
-function mpvGammaUp(const mpv: TMPVBasePlayer): string;
-function mpvMute(const mpv: TMPVBasePlayer; const aValue: boolean): string;
-function mpvMuteUnmute(const mpv: TMPVBasePlayer): string;
-function mpvPanDn(const mpv: TMPVBasePlayer): string;
-function mpvPanLeft(const mpv: TMPVBasePlayer): string;
-function mpvPanReset(const mpv: TMPVBasePlayer): string;
-function mpvPanRight(const mpv: TMPVBasePlayer): string;
-function mpvPanUp(const mpv: TMPVBasePlayer): string;
-function mpvPause(const mpv: TMPVBasePlayer): boolean;
-function mpvPausePlay(const mpv: TMPVBasePlayer): string;
-function mpvResetAll(const mpv: TMPVBasePlayer): string;
-function mpvResume(const mpv: TMPVBasePlayer): boolean;
-function mpvRotateLeft(const mpv: TMPVBasePlayer): string;
-function mpvRotateReset(const mpv: TMPVBasePlayer): string;
-function mpvRotateRight(const mpv: TMPVBasePlayer): string;
-function mpvSaturationDn(const mpv: TMPVBasePlayer): string;
-function mpvSaturationReset(const mpv: TMPVBasePlayer): string;
-function mpvSaturationUp(const mpv: TMPVBasePlayer): string;
-function mpvSeek(const mpv: TMPVBasePlayer; const aValue: integer): boolean;
-function mpvSpeedDn(const mpv: TMPVBasePlayer): string;
-function mpvSpeedReset(const mpv: TMPVBasePlayer): string;
-function mpvSpeedUp(const mpv: TMPVBasePlayer): string;
-function mpvStartOver(const mpv: TMPVBasePlayer): string;
-function mpvStop(const mpv: TMPVBasePlayer): boolean;
-function mpvTakeScreenshot(const mpv: TMPVBasePlayer; const aFolder: string): boolean;
-function mpvToggleRepeat(const mpv: TMPVBasePlayer): string;
-function mpvToggleSubtitles(const mpv: TMPVBasePlayer): string;
-function mpvVolDown(const mpv: TMPVBasePlayer): string;
-function mpvVolUp(const mpv: TMPVBasePlayer): string;
-function mpvZoomIn(const mpv: TMPVBasePlayer): string;
-function mpvZoomOut(const mpv: TMPVBasePlayer): string;
-function mpvZoomReset(const mpv: TMPVBasePlayer): string;
+function mpvBrightnessDn    (const mpv: TMPVBasePlayer): string;
+function mpvBrightnessReset (const mpv: TMPVBasePlayer): string;
+function mpvBrightnessUp    (const mpv: TMPVBasePlayer): string;
+function mpvChapterNext     (const mpv: TMPVBasePlayer): boolean;
+function mpvChapterPrev     (const mpv: TMPVBasePlayer): boolean;
+function mpvContrastDn      (const mpv: TMPVBasePlayer): string;
+function mpvContrastReset   (const mpv: TMPVBasePlayer): string;
+function mpvContrastUp      (const mpv: TMPVBasePlayer): string;
+function mpvCycleAudio      (const mpv: TMPVBasePlayer): boolean;
+function mpvCycleSubs       (const mpv: TMPVBasePlayer): boolean;
+function mpvFrameBackwards  (const mpv: TMPVBasePlayer): boolean;
+function mpvFrameForwards   (const mpv: TMPVBasePlayer): boolean;
+function mpvGammaDn         (const mpv: TMPVBasePlayer): string;
+function mpvGammaReset      (const mpv: TMPVBasePlayer): string;
+function mpvGammaUp         (const mpv: TMPVBasePlayer): string;
+function mpvMute            (const mpv: TMPVBasePlayer; const aValue: boolean): string;
+function mpvMuteUnmute      (const mpv: TMPVBasePlayer): string;
+function mpvPanDn           (const mpv: TMPVBasePlayer): string;
+function mpvPanLeft         (const mpv: TMPVBasePlayer): string;
+function mpvPanReset        (const mpv: TMPVBasePlayer): string;
+function mpvPanRight        (const mpv: TMPVBasePlayer): string;
+function mpvPanUp           (const mpv: TMPVBasePlayer): string;
+function mpvPause           (const mpv: TMPVBasePlayer): boolean;
+function mpvPausePlay       (const mpv: TMPVBasePlayer): string;
+function mpvResetAll        (const mpv: TMPVBasePlayer): string;
+function mpvResume          (const mpv: TMPVBasePlayer): boolean;
+function mpvRotateLeft      (const mpv: TMPVBasePlayer): string;
+function mpvRotateReset     (const mpv: TMPVBasePlayer): string;
+function mpvRotateRight     (const mpv: TMPVBasePlayer): string;
+function mpvSaturationDn    (const mpv: TMPVBasePlayer): string;
+function mpvSaturationReset (const mpv: TMPVBasePlayer): string;
+function mpvSaturationUp    (const mpv: TMPVBasePlayer): string;
+function mpvSeek            (const mpv: TMPVBasePlayer; const aValue: integer): boolean;
+function mpvSpeedDn         (const mpv: TMPVBasePlayer): string;
+function mpvSpeedReset      (const mpv: TMPVBasePlayer): string;
+function mpvSpeedUp         (const mpv: TMPVBasePlayer): string;
+function mpvStartOver       (const mpv: TMPVBasePlayer): string;
+function mpvStop            (const mpv: TMPVBasePlayer): boolean;
+function mpvTakeScreenshot  (const mpv: TMPVBasePlayer; const aFolder: string): boolean;
+function mpvToggleRepeat    (const mpv: TMPVBasePlayer): string;
+function mpvToggleSubtitles (const mpv: TMPVBasePlayer): string;
+function mpvVolDown         (const mpv: TMPVBasePlayer): string;
+function mpvVolUp           (const mpv: TMPVBasePlayer): string;
+function mpvZoomIn          (const mpv: TMPVBasePlayer): string;
+function mpvZoomOut         (const mpv: TMPVBasePlayer): string;
+function mpvZoomReset       (const mpv: TMPVBasePlayer): string;
 
 implementation
 
@@ -112,8 +112,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', brightness);
-  mpv.SetPropertyInt64('brightness', brightness - 1);
+  mpv.getPropertyInt64('brightness', brightness);
+  mpv.setPropertyInt64('brightness', brightness - 1);
   result := mpvFormattedBrightness(mpv);
 end;
 
@@ -121,7 +121,7 @@ function mpvBrightnessReset(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('brightness', 0);
+  mpv.setPropertyInt64('brightness', 0);
   result := 'Brightness reset';
 end;
 
@@ -131,8 +131,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', brightness);
-  mpv.SetPropertyInt64('brightness', brightness + 1);
+  mpv.getPropertyInt64('brightness', brightness);
+  mpv.setPropertyInt64('brightness', brightness + 1);
   result := mpvFormattedBrightness(mpv);
 end;
 
@@ -156,8 +156,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', contrast);
-  mpv.SetPropertyInt64('contrast', contrast - 1);
+  mpv.getPropertyInt64('contrast', contrast);
+  mpv.setPropertyInt64('contrast', contrast - 1);
   result := mpvFormattedContrast(mpv);
 end;
 
@@ -165,7 +165,7 @@ function mpvContrastReset(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('contrast', 0);
+  mpv.setPropertyInt64('contrast', 0);
   result := 'Contrast reset';
 end;
 
@@ -175,8 +175,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', contrast);
-  mpv.SetPropertyInt64('contrast', contrast + 1);
+  mpv.getPropertyInt64('contrast', contrast);
+  mpv.setPropertyInt64('contrast', contrast + 1);
   result := mpvFormattedContrast(mpv);
 end;
 
@@ -214,8 +214,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', gamma);
-  mpv.SetPropertyInt64('gamma', gamma - 1);
+  mpv.getPropertyInt64('gamma', gamma);
+  mpv.setPropertyInt64('gamma', gamma - 1);
   result := mpvFormattedgamma(mpv);
 end;
 
@@ -223,7 +223,7 @@ function mpvGammaReset(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('gamma', 0);
+  mpv.setPropertyInt64('gamma', 0);
   result := 'Gamma reset';
 end;
 
@@ -233,8 +233,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', gamma);
-  mpv.SetPropertyInt64('gamma', gamma + 1);
+  mpv.getPropertyInt64('gamma', gamma);
+  mpv.setPropertyInt64('gamma', gamma + 1);
   result := mpvFormattedgamma(mpv);
 end;
 
@@ -417,8 +417,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', saturation);
-  mpv.SetPropertyInt64('saturation', saturation - 1);
+  mpv.getPropertyInt64('saturation', saturation);
+  mpv.setPropertyInt64('saturation', saturation - 1);
   result := mpvFormattedsaturation(mpv);
 end;
 
@@ -426,7 +426,7 @@ function mpvSaturationReset(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.SetPropertyInt64('saturation', 0);
+  mpv.setPropertyInt64('saturation', 0);
   result := 'Saturation reset';
 end;
 
@@ -443,8 +443,8 @@ var
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', saturation);
-  mpv.SetPropertyInt64('saturation', saturation + 1);
+  mpv.getPropertyInt64('saturation', saturation);
+  mpv.setPropertyInt64('saturation', saturation + 1);
   result := mpvFormattedsaturation(mpv);
 end;
 
@@ -482,7 +482,7 @@ function mpvStartOver(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.Seek(0, FALSE);
+  mpv.seek(0, FALSE);
   result := 'Start over';
 end;
 
@@ -506,10 +506,10 @@ var vLoop: string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyString('loop-file', vLoop);
+  mpv.getPropertyString('loop-file', vLoop);
   case vLoop = 'no' of  TRUE: mpv.setPropertyString('loop-file', 'yes');
                        FALSE: mpv.setPropertyString('loop-file', 'no'); end;
-  mpv.GetPropertyString('loop-file', vLoop);
+  mpv.getPropertyString('loop-file', vLoop);
   case vLoop = 'no' of  TRUE: result := 'repeat off';
                        FALSE: result := 'repeat on'; end;
 end;
@@ -518,10 +518,10 @@ function mpvToggleSubtitles(const mpv: TMPVBasePlayer): string;
 var vSid: string;
 begin
   result := '';
-  mpv.GetPropertyString('sub', vSid);
+  mpv.getPropertyString('sub', vSid);
   case vSid = 'no' of  TRUE: mpv.setPropertyString('sub', 'auto');
                       FALSE: mpv.setPropertyString('sub', 'no'); end;
-  mpv.GetPropertyString('sub', vSid);
+  mpv.getPropertyString('sub', vSid);
   case vSid = 'no' of  TRUE: result := 'subtitles off';
                       FALSE: result := 'subtitles on'; end;
 end;

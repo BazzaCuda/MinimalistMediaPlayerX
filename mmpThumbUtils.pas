@@ -25,7 +25,7 @@ uses
   system.sysUtils, system.win.comObj,
   vcl.graphics;
 
-procedure extractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+procedure mmpExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 
 implementation
 
@@ -40,7 +40,7 @@ type
     function extract(var phBmpThumbnail: HBITMAP): HRESULT; stdcall;
   end;
 
-procedure ExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+procedure mmpExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 var
   malloc:         IMalloc;
   desktopFolder:  IShellFolder;

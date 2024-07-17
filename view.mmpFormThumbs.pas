@@ -67,24 +67,24 @@ type
     procedure onInitMPV(sender: TObject);
     procedure onOpenFile(const aURL: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
-    function adjustAspectRatio: boolean;
-    function autoCenter: boolean;
-    function checkThumbsPerPage: boolean;
+    function adjustAspectRatio:   boolean;
+    function autoCenter:          boolean;
+    function checkThumbsPerPage:  boolean;
     function deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function keepFile(const aFilePath: string): boolean;
-    function maximizeWindow: boolean;
-    function minimizeWindow: boolean;
+    function maximizeWindow:      boolean;
+    function minimizeWindow:      boolean;
     function moveHelp(const bCreateNew: boolean = FALSE): boolean;
-    function moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
+    function moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
     function movePlaylist(const bCreateNew: boolean): boolean;
-    function pausePlay: boolean;
-    function playCurrentItem: boolean;
-    function playFirst: boolean;
-    function playLast: boolean;
-    function playNext: boolean;
-    function playNextFolder: boolean;
-    function playPrev: boolean;
-    function playPrevFolder: boolean;
+    function pausePlay:           boolean;
+    function playCurrentItem:     boolean;
+    function playFirst:           boolean;
+    function playLast:            boolean;
+    function playNext:            boolean;
+    function playNextFolder:      boolean;
+    function playPrev:            boolean;
+    function playPrevFolder:      boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
     function renameFile(const aFilePath: string): boolean;
     function reverseSlideshow: boolean;
@@ -93,19 +93,19 @@ type
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
     function showHost(const aHostType: THostType): boolean;
     function showSlideshowDirection: boolean;
-    function speedDn: boolean;
-    function speedReset: boolean;
-    function speedUp: boolean;
-    function takeScreenshot: string;
-    function undoMove: string;
-    function whichHost: THostType;
+    function speedDn:             boolean;
+    function speedReset:          boolean;
+    function speedUp:             boolean;
+    function takeScreenshot:      string;
+    function undoMove:            string;
+    function whichHost:           THostType;
     function windowSize(const aKeyOp: TKeyOp): boolean;
   protected
-    procedure createParams(var params: TCreateParams); override;
+    procedure CreateParams(var params: TCreateParams); override;
     procedure onDoubleClick(sender: TObject);
     procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
-    procedure WMMove(var Message: TMessage) ; message WM_MOVE;
+    procedure WMMove(var Message: TMessage); message WM_MOVE;
   public
     function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
   end;
@@ -117,33 +117,34 @@ implementation
 
 uses
   winApi.shellApi,
+  system.types,
   mmpMPVProperties,
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
-  model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove,
+  model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
   TStatusBarHelperClass,
   _debugWindow;
 
-var vTF: TThumbsForm;
+var gTF: TThumbsForm = NIL;
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TModalResult;
 begin
-  vTF := TThumbsForm.create(NIL);
+  gTF := TThumbsForm.create(NIL);
   try
-    vTF.initThumbnails(aFilePath, aRect, aHostType);
+    gTF.initThumbnails(aFilePath, aRect, aHostType);
     notifyApp(newNotice(evGSShowingThumbs, TRUE));
-    result := vTF.showModal;
+    result := gTF.showModal;
   finally
     notifyApp(newNotice(evGSShowingThumbs, FALSE));
-    vTF.free;
+    gTF.free;
   end;
   mmpProcessMessages;
 end;
 
 function focusThumbs: boolean;
 begin
-  case vTF = NIL of TRUE: EXIT; end;
-  setForegroundWindow(vTF.handle); // so this window also receives keyboard keystrokes
+  case gTF = NIL of TRUE: EXIT; end;
+  setForegroundWindow(gTF.handle); // so this window also receives keyboard keystrokes
 end;
 
 {$R *.dfm}
@@ -169,7 +170,7 @@ begin
 
   vHeight := vHeight + mmpCaptionHeight + FStatusBar.height + (mmpBorderWidth * 2);
 
-  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+  mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
   mmpProcessMessages;
 
   case GS.autoCenter of TRUE: autoCenter; end;
@@ -203,7 +204,7 @@ begin
   case (SELF.width > mmpScreenWidth) or (SELF.height > mmpScreenHeight) of TRUE: mmpGreaterWindow(SELF.handle, [ssCtrl], vThumbsSize, htThumbsHost); end;
 end;
 
-procedure TThumbsForm.createParams(var params: TCreateParams);
+procedure TThumbsForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
@@ -284,18 +285,16 @@ begin
                                         FALSE: FProgressForm.subHeading.caption  := 'Opening'; end;
     case FInitialHost = htThumbsHost of  TRUE: FProgressForm.show; end;
     mmpProcessMessages;
-    setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
-    FProgressForm.timer.interval := FTimerInterval;
-    FProgressForm.timer.onTimer  := timerTimer;
-    FProgressForm.timer.enabled := TRUE;
+    mmpSetWindowTopmost(FProgressForm.handle);
+    FProgressForm.timer.interval  := FTimerInterval;
+    FProgressForm.timer.onTimer   := timerTimer;
+    FProgressForm.timer.enabled   := TRUE;
   finally
   end;
 
-  setWindowPos(SELF.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
+  mmpSetWindowTop(SELF.handle);
 
   checkThumbsPerPage;
-
-//  setWindowPos(GS.mainForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); // prevent mainForm from dropping down the Z-Order when progressForm closes  // EXPERIMENTALLY COMMENTED OUT
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
@@ -309,10 +308,10 @@ begin
 
   case GS.autoCenter of TRUE: autoCenter; end;
 
-  SELF.borderIcons   := [biSystemMenu, biMaximize];
-  SELF.borderStyle   := bsSizeable;
-  SELF.borderWidth   := 0;
-  SELF.color         := clBlack;
+  SELF.borderIcons    := [biSystemMenu, biMaximize];
+  SELF.borderStyle    := bsSizeable;
+  SELF.borderWidth    := 0;
+  SELF.color          := clBlack;
 
   FMPVHost.align      := alClient;
   FThumbsHost.align   := alClient;
@@ -355,11 +354,11 @@ begin
 
   vHeight := mmpScreenHeight - 50;
 
-  vWidth := trunc(vHeight / MI.imageHeight * MI.imageWidth);
+  vWidth  := trunc(vHeight / MI.imageHeight * MI.imageWidth);
 
-  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOSIZE); // center window
+  mmpSetWindowPos(SELF.Handle, point((mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2)); // center window
   mmpProcessMessages;
-  SetWindowPos(SELF.Handle, HWND_TOP, (mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2, vWidth, vHeight, SWP_NOMOVE); // resize window
+  mmpSetWindowSize(SELF.Handle, point(vWidth, vHeight)); // resize window
 end;
 
 function TThumbsForm.minimizeWindow: boolean;
@@ -390,12 +389,12 @@ begin
                                                                                   mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;end; // ignore GS.autoCenter
 end;
 
-function TThumbsForm.moveHelpWindow(const aCreateNew: boolean = FALSE): boolean;
+function TThumbsForm.moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
 begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
 
-  moveHelp(aCreateNew);
+  moveHelp(bCreateNew);
 end;
 
 function TThumbsForm.movePlaylist(const bCreateNew: boolean): boolean;

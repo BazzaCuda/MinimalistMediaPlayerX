@@ -178,7 +178,7 @@
         <DCCReference Include="mmpFileUtils.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="view.mmpProgressBar.pas"/>
-        <DCCReference Include="viewModel.mmpMPVFormatting.pas"/>
+        <DCCReference Include="model.mmpMPVFormatting.pas"/>
         <DCCReference Include="model.mmpParamStrings.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
         <DCCReference Include="model.mmpPlaylist.pas"/>
@@ -226,6 +226,7 @@
         <DCCReference Include="TStatusBarHelperClass.pas"/>
         <DCCReference Include="mmpUserFolders.pas"/>
         <DCCReference Include="mmpTicker.pas"/>
+        <DCCReference Include="mmpFormatting.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

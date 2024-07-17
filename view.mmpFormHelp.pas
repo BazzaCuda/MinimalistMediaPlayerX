@@ -25,6 +25,7 @@ uses
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
   HTMLUn2, HtmlView, MarkDownViewerComponents,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
 type
@@ -32,27 +33,28 @@ type
     ['{1FF2B312-F655-4254-800D-C489EE2A712B}']
   end;
 
+  {$REGION}
   // this should be in the implementation section but that would cause problems with the IDE
   THelpForm = class(TForm)
-    backPanel: TPanel;
-    buttonPanel: TPanel;
-    shiftLabel: TLabel;
-    helpLabel: TLabel;
-    md1: TMarkdownViewer;
-    md2: TMarkdownViewer;
-    md3: TMarkdownViewer;
-    procedure FormResize(Sender: TObject);
+    backPanel:    TPanel;
+    buttonPanel:  TPanel;
+    shiftLabel:   TLabel;
+    helpLabel:    TLabel;
+    md1:          TMarkdownViewer;
+    md2:          TMarkdownViewer;
+    md3:          TMarkdownViewer;
+    procedure   FormResize(Sender: TObject);
   protected
     constructor create(const aHeight: integer; const aHelpType: THelpType);
-    procedure CreateParams(var Params: TCreateParams);
+    procedure   CreateParams(var Params: TCreateParams);
   public
   end;
+  {$ENDREGION}
 
 implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpGlobalState, mmpMarkDownUtils,
   _debugWindow;
 
@@ -60,7 +62,8 @@ type
   // can't implement IHelpForm with the TForm so we use an intermediary
   THelpFormProxy = class(TInterfacedObject, IHelpForm)
   strict private
-    FHelpForm: THelpForm;
+    FHelpForm:    THelpForm;
+    FSubscriber:  ISubscriber;
   private
     function    onNotify(const aNotice: INotice): INotice;
   protected
@@ -74,8 +77,7 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var
-  gHelpFormProxy: IHelpForm;
+var gHelpFormProxy: IHelpForm = NIL;
 function HW: IHelpForm;
 begin
   case gHelpFormProxy = NIL of TRUE: gHelpFormProxy := THelpFormProxy.create; end;
@@ -110,13 +112,13 @@ begin
   md2.cursor      := crDefault;
   md3.cursor      := crDefault;
 
-  SELF.width  :=  600;
+  SELF.width      :=  600;
   case aHeight > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: SELF.height := aHeight;
                                             FALSE: SELF.height := 600; end;
 
-  md1.width := SELF.width div 3;
-  md2.width := SELF.width div 3;
-  md3.width := SELF.width div 3;
+  md1.width       := SELF.width div 3;
+  md2.width       := SELF.width div 3;
+  md3.width       := SELF.width div 3;
 
   md1.margins.top := 6;
   md2.margins.top := 6;
@@ -134,7 +136,7 @@ begin
                                 loadMarkDownFromResource(md3, 'resource_mdImages3'); end;
   end;
 
-  SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+  setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
 end;
 
@@ -142,8 +144,8 @@ procedure THelpForm.CreateParams(var Params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;
-  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := SELF.Handle; // normally application.handle
+  params.exStyle    := params.ExStyle or (WS_EX_APPWINDOW);
+  params.wndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure THelpForm.FormResize(Sender: TObject);
@@ -157,7 +159,7 @@ end;
 constructor THelpFormProxy.create;
 begin
   inherited;
-  appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 function THelpFormProxy.createForm(const wr: TWndRec): THelpForm;
@@ -169,6 +171,7 @@ end;
 
 destructor THelpFormProxy.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
   shutForm;
   inherited;
 end;
@@ -221,7 +224,6 @@ begin
 end;
 
 initialization
-  ghelpFormProxy  := NIL;
   HW; // to create the appNotifier subscriber
 
 finalization

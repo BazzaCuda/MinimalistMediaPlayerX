@@ -23,6 +23,8 @@ object ProgressForm: TProgressForm
     Margins.Bottom = 10
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 307
+    ExplicitHeight = 95
     object FSubHeading: TLabel
       Left = 6
       Top = 35

@@ -26,7 +26,6 @@ uses
   vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
   mmpConsts,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-
   viewModel.mmpVM, Vcl.AppEvnts;
 
 type
@@ -38,40 +37,42 @@ type
     property    viewModel:    IViewModel  read getViewModel write setViewModel;
   end;
 
+  {$REGION}
   TMMPUI = class(TForm)
-    ApplicationEvents: TApplicationEvents;
-    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    procedure FormResize(Sender: TObject);
-    procedure ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    applicationEvents: TApplicationEvents;
+    procedure   applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
+    procedure   FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure   FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure   FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure   FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure   FormResize(Sender: TObject);
   strict private
     FViewModel: IViewModel;
-    function    getViewModel: IViewModel;
-    procedure   setViewModel(const aValue: IViewModel);
   protected
     procedure   FormCreate(Sender: TObject);
-    procedure   WMNCHitTest(var msg: TWMNCHitTest);   message WM_NCHITTEST;
-    procedure   WMSizing(var msg: TMessage);          message WM_SIZING;
-    procedure   WMDropFiles(var msg: TWMDropFiles);   message WM_DROPFILES;
-    procedure   WMEnterSizeMove(var msg: TMessage);   message WM_ENTERSIZEMOVE;
+    procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
+    procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
+    procedure   WMDropFiles       (var msg: TWMDropFiles);  message WM_DROPFILES;
+    procedure   WMEnterSizeMove   (var msg: TMessage);      message WM_ENTERSIZEMOVE;
 
-    procedure   WINAutoCenterOff(var msg: TMessage);  message WIN_AUTOCENTER_OFF;
-    procedure   WINCaption(var msg: TMessage);        message WIN_CAPTION;
-    procedure   WINCloseApp(var msg: TMessage);       message WIN_CLOSEAPP;
-    procedure   WINGreater(var msg: TMessage);        message WIN_GREATER;
-    procedure   WINMaxSizeOff(var msg: TMessage);     message WIN_MAX_SIZE_OFF;
-    procedure   WINControls(var msg: TMessage);       message WIN_TOGGLE_CONTROLS;
-    procedure   WINPausePlay(var msg: TMessage);      message WIN_PAUSE_PLAY;
-    procedure   WINStartOver(var msg: TMessage);      message WIN_START_OVER;
-    procedure   WINSyncMedia(var msg: TMessage);      message WIN_SYNC_MEDIA;
-    procedure   WINTab(var msg: TMessage);            message WIN_TAB;
-    procedure   WINTabTab(var msg: TMessage);         message WIN_TABTAB;
-    procedure   WINResize(var msg: TMessage);         message WIN_RESIZE;
+    procedure   WINAutoCenterOff  (var msg: TMessage);      message WIN_AUTOCENTER_OFF;
+    procedure   WINCaption        (var msg: TMessage);      message WIN_CAPTION;
+    procedure   WINCloseApp       (var msg: TMessage);      message WIN_CLOSEAPP;
+    procedure   WINGreater        (var msg: TMessage);      message WIN_GREATER;
+    procedure   WINMaxSizeOff     (var msg: TMessage);      message WIN_MAX_SIZE_OFF;
+    procedure   WINControls       (var msg: TMessage);      message WIN_TOGGLE_CONTROLS;
+    procedure   WINPausePlay      (var msg: TMessage);      message WIN_PAUSE_PLAY;
+    procedure   WINStartOver      (var msg: TMessage);      message WIN_START_OVER;
+    procedure   WINSyncMedia      (var msg: TMessage);      message WIN_SYNC_MEDIA;
+    procedure   WINTab            (var msg: TMessage);      message WIN_TAB;
+    procedure   WINTabTab         (var msg: TMessage);      message WIN_TABTAB;
+    procedure   WINResize         (var msg: TMessage);      message WIN_RESIZE;
   public
+    function    getViewModel: IViewModel;
+    procedure   setViewModel(const aValue: IViewModel);
     property    viewModel:    IViewModel      read getViewModel write setViewModel;
   end;
+  {$ENDREGION}
 
 var
   MMPUI: TMMPUI;
@@ -88,12 +89,11 @@ uses
 
 { TMMPUI }
 
-procedure TMMPUI.ApplicationEventsMessage(var msg: tagMSG; var handled: Boolean);
+procedure TMMPUI.applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
 // mouse events on MPV and key events for all windows
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   case GS.showingAbout  of TRUE: EXIT; end;
-//  case GS.userInput     of TRUE: EXIT; end;
   case msg.message = WM_LBUTTONDOWN of TRUE: FViewModel.onMouseDown(mbLeft, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_LBUTTONUP   of TRUE: FViewModel.onMouseUp(mbLeft, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_RBUTTONDOWN of TRUE: FViewModel.onMouseDown(mbRight, mmpShiftState, msg.pt.x, msg.pt.Y); end;
@@ -110,14 +110,12 @@ end;
 
 procedure TMMPUI.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-//  case GS.userInput of TRUE: EXIT; end;
   case FViewModel = NIL of TRUE: EXIT; end;
   case key = VK_F10 of TRUE:  FViewModel.onKeyDown(key, shift); end;
 end;
 
 procedure TMMPUI.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-//  case GS.userInput of TRUE: EXIT; end;
   case FViewModel = NIL of TRUE: EXIT; end;
   case key = VK_F10 of TRUE:  FViewModel.onKeyUp(key, shift); end;
 end;

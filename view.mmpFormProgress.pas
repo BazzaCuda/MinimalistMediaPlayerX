@@ -21,32 +21,32 @@ unit view.mmpFormProgress;
 interface
 
 uses
-  Winapi.Messages, Winapi.Windows,
-  System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  winApi.messages, winApi.windows,
+  system.classes, system.sysUtils, system.variants,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
 type
   TProgressForm = class(TForm)
-    Panel1: TPanel;
+    Panel1:     TPanel;
     FSubHeading: TLabel;
-    FHeading: TLabel;
-    btnIgnore: TButton;
-    btnCancel: TButton;
-    btnRerun: TButton;
-    FTimer: TTimer;
-    procedure FormCreate(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
+    FHeading:   TLabel;
+    btnIgnore:  TButton;
+    btnCancel:  TButton;
+    btnRerun:   TButton;
+    FTimer:     TTimer;
+    procedure   btnCancelClick(Sender: TObject);
+    procedure   FormCreate(Sender: TObject);
   private
     FOnCancel:  TNotifyEvent;
-    procedure setButtons(const value: boolean);
-    procedure setModal(const isModal: boolean);
+    procedure   setButtons(const value: boolean);
+    procedure   setModal(const isModal: boolean);
   public
-    property buttons:       boolean                         write setButtons;
-    property heading:       TLabel       read FHeading;
-    property subHeading:    TLabel       read FSubHeading;
-    property modal:         boolean                         write setModal;
-    property onCancel:      TNotifyEvent read FOnCancel     write FOnCancel;
-    property timer:         TTimer       read FTimer;
+    property    buttons:      boolean                         write setButtons;
+    property    heading:      TLabel        read FHeading;
+    property    subHeading:   TLabel        read FSubHeading;
+    property    modal:        boolean                         write setModal;
+    property    onCancel:     TNotifyEvent  read FOnCancel    write FOnCancel;
+    property    timer:        TTimer        read FTimer;
   end;
 
 implementation

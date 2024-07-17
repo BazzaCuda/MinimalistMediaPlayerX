@@ -68,18 +68,19 @@ end;
 
 function mmpPlayFirst: boolean;
 begin
-  case notifyApp(newNotice(evPLFirst)).tf of  TRUE: mmpPlayCurrent; end;
+  result := notifyApp(newNotice(evPLFirst)).tf;
+  case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpPlayLast: boolean;
 begin
-  case notifyApp(newNotice(evPLLast)).tf of   TRUE: mmpPlayCurrent; end;
+  result := notifyApp(newNotice(evPLLast)).tf;
+  case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpPlayNext: boolean;
 begin
   result := notifyApp(newNotice(evPLNext)).tf;
-
   case result of TRUE: mmpPlayCurrent; end;
 end;
 

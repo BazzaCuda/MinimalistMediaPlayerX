@@ -3022,8 +3022,8 @@ object MMPUI: TMMPUI
   OnMouseWheelUp = FormMouseWheelUp
   OnResize = FormResize
   TextHeight = 15
-  object ApplicationEvents: TApplicationEvents
-    OnMessage = ApplicationEventsMessage
+  object applicationEvents: TApplicationEvents
+    OnMessage = applicationEventsMessage
     Left = 288
     Top = 152
   end

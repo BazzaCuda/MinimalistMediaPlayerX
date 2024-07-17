@@ -52,7 +52,7 @@ type
     procedure setCursorPos(const Value: integer);
     function  updatePositionDisplay(const aPosition: integer = -1): boolean;
   protected
-    procedure createParams(var Params: TCreateParams);
+    procedure createParams(var params: TCreateParams);
     procedure exportSegments(sender: TObject);
   public
     property  cursorPos: integer read getCursorPos write setCursorPos;
@@ -60,6 +60,7 @@ type
 
   TTimeline = class(TObject)
   strict private
+    FCancelled:               boolean;
     FLengthenCount:           integer;
     FMax:                     integer;
     FMediaFilePath:           string;
@@ -81,7 +82,7 @@ type
     procedure   setPosition(const Value: integer);
 
     function    addUndo(const aAction: string): string;
-    function    cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
+    function    cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment: string;
     function    drawSegments: boolean;
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -111,6 +112,7 @@ type
     function    undo(const aPrevAction: string):  boolean;
     function    validKey(key: WORD):              boolean;
 
+    property    cancelled:      boolean               read FCancelled;
     property    lengthenCount:  integer               read FLengthenCount write FLengthenCount;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
@@ -122,7 +124,7 @@ type
   end;
 
 function focusTimeline: boolean;
-function showTimeline(const Pt: TPoint; const aWidth: integer; const createNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bCreateNew: boolean = TRUE): boolean;
 function shutTimeline: boolean;
 function TL: TTimeline;
 
@@ -131,16 +133,10 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpGlobalState, mmpImageUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
-  viewModel.mmpMPVFormatting,
   model.mmpMediaInfo,
   _debugWindow;
-
-var
-  timelineForm: TTimelineForm;
-  gTL: TTimeline;
-  gCancelled: boolean;
 
 function debugSL(aText: string; aSL: TStringList): boolean;
 begin
@@ -150,23 +146,18 @@ begin
   for var i := aSL.count - 1 downto 0 do debug(aSL[i]);
 end;
 
-function ctrlKeyDown: boolean;
-begin
-  result := GetKeyState(VK_CONTROL) < 0;
-end;
-
 function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
 var
-  ExecInfo: TShellExecuteInfo;
-  exitCode: cardinal;
+  vExecInfo: TShellExecuteInfo;
+  vExitCode: cardinal;
 begin
-  ZeroMemory(@ExecInfo, SizeOf(ExecInfo));
-  with ExecInfo do
+  zeroMemory(@vExecInfo, SizeOf(vExecInfo));
+  with vExecInfo do
   begin
-    cbSize := SizeOf(ExecInfo);
-    fMask := SEE_MASK_NOCLOSEPROCESS;
-    Wnd := 0;
-    lpVerb := 'open';
+    cbSize  := sizeOf(vExecInfo);
+    fMask   := SEE_MASK_NOCLOSEPROCESS;
+    Wnd     := 0;
+    lpVerb  := 'open';
 
     case aRunType of
       rtFFMPeg: lpFile := 'ffmpeg';
@@ -174,11 +165,11 @@ begin
     end;
 
     case aRunType of
-      rtFFMpeg: lpParameters := PChar(aCmdLine);
-      rtCMD:    lpParameters := PChar(' /K ffmpeg ' + aCmdLine);
+      rtFFMpeg: lpParameters := pChar(aCmdLine);
+      rtCMD:    lpParameters := pChar(' /K ffmpeg ' + aCmdLine);
     end;
 
-    lpDirectory := PWideChar(extractFilePath(ParamStr(0)));
+    lpDirectory := pWideChar(mmpExePath);
 
     case aRunType of
       rtFFMpeg: nShow := SW_HIDE;
@@ -187,56 +178,58 @@ begin
 
   end;
 
-  result := ShellExecuteEx(@ExecInfo);
+  result := ShellExecuteEx(@vExecInfo);
 
-  case result AND (ExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
+  case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
                                                       case aRunType of
                                                         rtFFMpeg: begin
                                                                     repeat
-                                                                      case MsgWaitForMultipleObjects(1, ExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of  TRUE: mmpProcessMessages;
-                                                                                                                                                                                  FALSE: BREAK; end;
-                                                                    until gCancelled;
-                                                                    getExitCodeProcess(execInfo.hProcess, exitCode);
-                                                                    result := exitCode = 0;
+                                                                      case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
+                                                                                                                                                                                    FALSE: BREAK; end;
+                                                                    until TL.cancelled;
+                                                                    getExitCodeProcess(vExecInfo.hProcess, vExitCode);
+                                                                    result := vExitCode = 0;
                                                                   end;
                                                         rtCMD: result := TRUE;
                                                       end;
-                                                      CloseHandle(ExecInfo.hProcess);
+                                                      closeHandle(vExecInfo.hProcess);
                                                     end;
   end;
 end;
 
+var gTimelineForm: TTimelineForm = NIL;
 function focusTimeline: boolean;
 begin
-  case timeLineForm = NIL of TRUE: EXIT; end;
-  setForegroundWindow(timelineForm.handle); // so this window also receives keyboard keystrokes
+  case gTimeLineForm = NIL of TRUE: EXIT; end;
+  setForegroundWindow(gTimelineForm.handle); // so this window also receives keyboard keystrokes
 end;
 
-function showTimeline(const Pt: TPoint;  const aWidth: integer; const createNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bCreateNew: boolean = TRUE): boolean;
 begin
-  case (timelineForm = NIL) and createNew of TRUE: timelineForm := TTimelineForm.create(NIL); end;
-  case timelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
+  case (gTimelineForm = NIL) and bCreateNew of TRUE: gTimelineForm := TTimelineForm.create(NIL); end;
+  case gTimelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
 
-  TSegment.parentForm := timelineForm;
+  TSegment.parentForm := gTimelineForm;
 
-  timelineForm.width  := aWidth;
-  timelineForm.height := DEFAULT_SEGMENT_HEIGHT;
+  gTimelineForm.width  := aWidth;
+  gTimelineForm.height := DEFAULT_SEGMENT_HEIGHT;
 
-  timelineForm.show;
-  winAPI.Windows.setWindowPos(timelineForm.handle, HWND_TOP, Pt.X, Pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  gTimelineForm.show;
+  winAPI.Windows.setWindowPos(gTimelineForm.handle, HWND_TOP, aPt.X, aPt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 
-  showStreamList(point(pt.x + timelineForm.width, pt.y), aWidth, timelineForm.exportSegments, createNew);
+  mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
 
   notifyApp(newNotice(evMPKeepOpen, TRUE));
   notifyApp(newNotice(evGSShowingTimeline, TRUE));
-  notifyApp(newNotice(evGSTimelineHeight, timelineForm.height + 10));
+  notifyApp(newNotice(evGSTimelineHeight, gTimelineForm.height + 10));
 end;
 
+var gTL: TTimeline = NIL;
 function shutTimeline: boolean;
 begin
-  shutStreamList;
-  case gTL          <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
-  case timelineForm <> NIL of TRUE: begin timelineForm.free; timelineForm := NIL; end;end;
+  mmpShutStreamList;
+  case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
+  case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
   notifyApp(newNotice(evMPKeepOpen, FALSE));
   notifyApp(newNotice(evGSShowingTimeline, FALSE));
   notifyApp(newNotice(evGSTimelineHeight, 0));
@@ -252,12 +245,12 @@ end;
 
 { TTimelineForm }
 
-procedure TTimelineForm.createParams(var Params: TCreateParams);
+procedure TTimelineForm.createParams(var params: TCreateParams);
 // no taskbar icon for this window
 begin
   inherited;
-  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := SELF.Handle; // normally application.handle
+  params.ExStyle    := params.ExStyle or (WS_EX_APPWINDOW);
+  params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -357,8 +350,8 @@ begin
 
   var vSaveUndo := vOK; // a change was made
 
-  case ctrlKeyDown AND (key = ord('Z')) of TRUE: begin TL.undo(TL.prevAction);   vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Z
-  case ctrlKeyDown AND (key = ord('Y')) of TRUE: begin TL.redo;                  vSaveUndo := FALSE;    TL.drawSegments; end;end; // Ctrl-Y
+  case mmpCtrlKeyDown and (key = ord('Z')) of TRUE: begin TL.undo(TL.prevAction); vSaveUndo := FALSE; TL.drawSegments; end;end; // Ctrl-Z
+  case mmpCtrlKeyDown and (key = ord('Y')) of TRUE: begin TL.redo;                vSaveUndo := FALSE; TL.drawSegments; end;end; // Ctrl-Y
 
   case vSaveUndo of TRUE: begin
                             vAction := TL.saveSegments;
@@ -370,8 +363,8 @@ end;
 
 procedure TTimelineForm.FormResize(Sender: TObject);
 begin
-  lblPosition.left := (SELF.width div 2) - (lblPosition.width div 2);
-  lblPosition.top  := (SELF.height div 2) - (lblPosition.height div 2);
+  lblPosition.left := (SELF.width   div 2) - (lblPosition.width   div 2);
+  lblPosition.top  := (SELF.height  div 2) - (lblPosition.height  div 2);
   TL.drawSegments;
 end;
 
@@ -390,8 +383,8 @@ end;
 function TTimelineForm.updatePositionDisplay(const aPosition: integer = -1): boolean;
 begin
   var vPosition := mmpIfThenElse(aPosition = -1, TL.position, aPosition);
-  case lblPosition.tag = 0 of  TRUE: timelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
-                              FALSE: timelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
+  case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
+                              FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
   lblPosition.repaint;
 end;
 
@@ -403,10 +396,10 @@ begin
 
   FPrevAction := aAction;
 
-  var vSL := TStringList.create;
-  vSL.text := aAction;
+  var vSL     := TStringList.create;
+  vSL.text    := aAction;
   FUndoList.push(vSL);
-  result := aAction;
+  result      := aAction;
   debugSL('add undo', vSL);
 end;
 
@@ -424,7 +417,7 @@ begin
   FRedoList.ownsObjects := TRUE;
 end;
 
-function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const deleteLeft: boolean = FALSE; const deleteRight: boolean = FALSE): boolean;
+function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
 begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
@@ -436,9 +429,9 @@ begin
 
   case newSegment.endSS <= newSegment.startSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newSegment.startSS, newSegment.endSS]); end;
 
-  case ctrlKeyDown of TRUE: delSegment(aSegment); end;
-  case deleteLeft  of TRUE: delSegment(aSegment); end;
-  case deleteRight of TRUE: delSegment(newSegment); end;
+  case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
+  case bDeleteLeft    of TRUE: delSegment(aSegment); end;
+  case bDeleteRight   of TRUE: delSegment(newSegment); end;
 
   case aSegment.isLast of  TRUE: segments.add(newSegment);
                           FALSE: segments.insert(aSegment.ix + 1, newSegment); end;
@@ -466,26 +459,26 @@ begin
   var n := 1;
   for var vSegment in segments do begin
     vSegment.top     := 0;
-    vSegment.height  := timelineForm.height;
-    vSegment.left    := trunc((vSegment.startSS / FMax) * timelineForm.width);
-    vSegment.width   := trunc((vSegment.duration / FMax) * timelineForm.width);
+    vSegment.height  := gTimelineForm.height;
+    vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width);
+    vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
     vSegment.caption := '';
     vSegment.segID   := format('%.2d', [n]);
     vSegment.setDisplayDetails;
     vSegment.StyleElements := [];
-    mmpCopyPNGImage(timelineForm.imgTrashCan, vSegment.trashCan);
+    mmpCopyPNGImage(gTimelineForm.imgTrashCan, vSegment.trashCan);
 
     VSegment.trashCan.visible := vSegment.deleted;
     case vSegment.deleted of TRUE: begin
                                       vSegment.trashCan.left := (vSegment.width  div 2) - (vSegment.trashCan.width  div 2);
                                       vSegment.trashCan.top  := (vSegment.height div 2) - (vSegment.trashCan.height div 2); end;end;
-    vSegment.parent := timelineForm;
+    vSegment.parent := gTimelineForm;
     vSegment.invalidate;
     SetWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
     inc(n);
   end;
-  timelineForm.pnlCursor.bringToFront;
-  applySegments(TL.segments);
+  gTimelineForm.pnlCursor.bringToFront;
+  mmpApplySegments(TL.segments);
 end;
 
 function TTimeline.filePathOUT: string;
@@ -558,13 +551,13 @@ var
   vID:        integer;
   vSegOneFN:  string;
 begin
-  result     := TRUE;
-  gCancelled := FALSE;
+  result      := TRUE;
+  FCancelled  := FALSE;
 
-  vSegOneFN  := '';
+  vSegOneFN   := '';
 
-  var vProgressForm := TProgressForm.create(NIL);
-  vProgressForm.onCancel := onCancelButton;
+  var vProgressForm       := TProgressForm.create(NIL);
+  vProgressForm.onCancel  := onCancelButton;
   var vS1 := ''; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
   var vS2 := ''; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
   vProgressForm.heading.caption := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
@@ -572,7 +565,7 @@ begin
 
   // export segments
   try
-    case ctrlKeyDown of FALSE: begin
+    case mmpCtrlKeyDown of FALSE: begin
       var vSL := TStringList.create;
       try
         vSL.saveToFile(filePathSEG); // clear previous contents
@@ -643,7 +636,7 @@ function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: intege
 begin
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   segments.clear; FUndoList.clear; FRedoList.clear;
-  refreshStreamInfo(aMediaFilePath);
+  mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
   case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
@@ -657,12 +650,12 @@ end;
 
 function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
 var
-  vSL: TStringList;
-  vStartSS: integer;
-  vEndSS: integer;
-  vDeleted: boolean;
-  posHyphen: integer;
-  posComma: integer;
+  vSL:        TStringList;
+  vStartSS:   integer;
+  vEndSS:     integer;
+  vDeleted:   boolean;
+  posHyphen:  integer;
+  posComma:   integer;
 begin
   segments.clear;
   vSL := TStringList.create;
@@ -707,8 +700,8 @@ end;
 
 function TTimeline.log(const aLogEntry: string): boolean;
 begin
-  var vLogFile := filePathLOG;
-  var vLog := TStringList.create;
+  var vLogFile  := filePathLOG;
+  var vLog      := TStringList.create;
   try
     case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
     vLog.add(aLogEntry);
@@ -723,9 +716,9 @@ begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
-  var ix := aSegment.ix;
-  aSegment.startSS := segments[ix - 1].startSS;
-  segments[ix - 1].color := aSegment.color;
+  var ix                  := aSegment.ix;
+  aSegment.startSS        := segments[ix - 1].startSS;
+  segments[ix - 1].color  := aSegment.color;
   segments.delete(ix - 1);
   result := TRUE;
 end;
@@ -735,8 +728,8 @@ begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
-  var ix := aSegment.ix;
-  aSegment.endSS := segments[ix + 1].endSS;
+  var ix          := aSegment.ix;
+  aSegment.endSS  := segments[ix + 1].endSS;
   segments[ix + 1].color := aSegment.color;
   segments.delete(ix + 1);
   result := TRUE;
@@ -744,7 +737,7 @@ end;
 
 procedure TTimeline.onCancelButton(sender: TObject);
 begin
-  gCancelled := TRUE;
+  FCancelled := TRUE;
 end;
 
 function TTimeline.redo: boolean;
@@ -808,8 +801,8 @@ procedure TTimeline.setPosition(const Value: integer);
 begin
   FPosition := value;
   case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
-  timelineForm.pnlCursor.left := trunc((FPosition / FMax) * timelineForm.width) - (timelineForm.pnlCursor.width div 2);
-  timelineForm.updatePositionDisplay;
+  gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
+  gTimelineForm.updatePositionDisplay;
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
@@ -848,11 +841,9 @@ begin
 end;
 
 initialization
-  timelineForm := NIL;
-  gTL          := NIL;
 
 finalization
-  case gTL          <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
-  case timelineForm <> NIL of TRUE: begin timelineForm.close; timelineForm.free; timelineForm := NIL; end;end;
+  case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
+  case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.close; gTimelineForm.free; gTimelineForm := NIL; end;end;
 
 end.

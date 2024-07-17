@@ -91,9 +91,9 @@ uses
   winApi.shellApi,
   system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
-  viewModel.mmpKeyboardOps, viewModel.mmpMPVFormatting,
+  viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   _debugWindow;
 
@@ -115,16 +115,18 @@ type
     FDragged:               boolean;
     FResizingWindow:        boolean;
     FSlideshowTimer:        TTimer;
+    FSubscriber:            ISubscriber;
+    FSubscriberTT:          ISubscriber;
   private
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doEscapeKey:          boolean;
-    function    forcedResize(const aWnd: HWND; const pt: TPoint; const X, Y: int64): boolean;
+    function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
     function    keepDelete:           boolean;
     function    minimizeWindow:       boolean;
     function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
-    function    moveTimeline(const createNew: boolean = FALSE): boolean;
+    function    moveTimeline(const bCreateNew: boolean = FALSE): boolean;
     function    playNextFolder:       boolean;
     function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
@@ -134,7 +136,7 @@ type
     function    sendOpInfo(const aOpInfo: string): boolean;
     function    setupSlideshowTimer:  boolean;
     function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
-    function    tab(const bCapsLock:  boolean; const aFactor: integer = 0): string;
+    function    tab(const aCapsLock:  boolean; const aFactor: integer = 0): string;
     function    toggleEditMode:       boolean;
     function    toggleFullscreen:     boolean;
     function    toggleHelp:           boolean;
@@ -190,7 +192,7 @@ type
     function    showUI:                 boolean;
   end;
 
-var gVM: IViewModel;
+var gVM: IViewModel = NIL;
 function newViewModel: IViewModel;
 begin
   case gVM = NIL of TRUE: gVM := TVM.create; end;
@@ -248,9 +250,8 @@ end;
 constructor TVM.create;
 begin
   inherited;
-
-  TT.notifier.subscribe(newSubscriber(onTickTimer));
-  appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber   := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriberTT := TT.notifier.subscribe(newSubscriber(onTickTimer));
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -276,6 +277,8 @@ end;
 
 destructor TVM.Destroy;
 begin
+  TT.notifier.unsubscribe(FSubscriberTT);
+  appNotifier.unsubscribe(FSubscriber);
   case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
   inherited;
 end;
@@ -286,7 +289,7 @@ begin
                                                 FALSE: notifyApp(newNotice(evAppClose)); end;
 end;
 
-function TVM.forcedResize(const aWnd: HWND; const pt: TPoint; const X: int64; const Y: int64): boolean;
+function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
 // X and Y are the video dimensions
 // pt.x is the designated width, or...
 // py.y is the designated height
@@ -312,16 +315,16 @@ var
 begin
   case (X <= 0) OR (Y <= 0) of TRUE: EXIT; end;
 
-  vWidth  := pt.x;
-  vHeight := pt.y;
+  vWidth  := aPt.x;
+  vHeight := aPt.y;
 
-  case pt.x <> 0 of TRUE: repeat vWidth  := vWidth  - 50; adjustHeightForAspectRatio; until withinScreenLimits; end;
+  case aPt.x <> 0 of TRUE: repeat vWidth  := vWidth  - 50; adjustHeightForAspectRatio; until withinScreenLimits; end;
 
-  case pt.y <> 0 of TRUE: repeat vHeight := vHeight - 50; adjustWidthForAspectRatio;  until withinScreenLimits; end;
+  case aPt.y <> 0 of TRUE: repeat vHeight := vHeight - 50; adjustWidthForAspectRatio;  until withinScreenLimits; end;
 
   sendMessage(aWnd, WM_SYSCOMMAND, SC_RESTORE, 0); // in case it was minimized
-  SetWindowPos(aWnd, HWND_TOPMOST, 0, 0, vWidth, vHeight, SWP_NOMOVE);      // Both SWPs achieve HWND_TOP as HWND_TOP itself doesn't work.
-  SetWindowPos(aWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE); // resize the window. Triggers adjustAspectRatio
+  setWindowPos(aWnd, HWND_TOPMOST, 0, 0, vWidth, vHeight, SWP_NOMOVE);      // Both SWPs achieve HWND_TOP as HWND_TOP itself doesn't work.
+  setWindowPos(aWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE); // resize the window. Triggers adjustAspectRatio
 end;
 
 function TVM.getMediaPlayer: IMediaPlayer;
@@ -353,7 +356,6 @@ end;
 function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
 begin
   FVideoPanel             := aVideoPanel;
-//  FVideoPanel.OnClick     := onVideoPanelClick; // deprecated - it's annoying
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
 
   mmpThemeInitForm(aForm);
@@ -404,10 +406,10 @@ begin
   notifyApp(newNotice(evPLFormMove, wr));
 end;
 
-function TVM.moveTimeline(const createNew: boolean = FALSE): boolean;
+function TVM.moveTimeline(const bCreateNew: boolean = FALSE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
-  showTimeline(vPt, FVideoPanel.width, createNew);
+  showTimeline(vPt, FVideoPanel.width, bCreateNew);
 end;
 
 procedure TVM.onFormResize;
@@ -865,7 +867,7 @@ begin
   result := TRUE;
 end;
 
-function TVM.tab(const bCapsLock: boolean; const aFactor: integer = 0): string;
+function TVM.tab(const aCapsLock: boolean; const aFactor: integer = 0): string;
 var
   vFactor:    integer;
   vTab:       integer;
@@ -876,7 +878,7 @@ begin
   case aFactor > 0 of  TRUE: vFactor := aFactor;
                       FALSE: vFactor := 100; end;
 
-  case bCapsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
+  case aCapsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
   case ssShift in mmpShiftState of TRUE: vFactor := 50; end;
 
   vDuration := FMP.notify(newNotice(evMPReqDuration)).integer;
@@ -944,6 +946,7 @@ begin
                                                           FResizingWindow := FALSE; end;end;
   result := TRUE;
 end;
+
 function TVM.togglePlaylist: boolean;
 begin
   result := FALSE;
@@ -955,7 +958,6 @@ begin
 end;
 
 initialization
-  gVM := NIL;
 
 finalization
   gVM := NIL;

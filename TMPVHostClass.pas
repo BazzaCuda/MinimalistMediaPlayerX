@@ -31,7 +31,7 @@ type
     FOnOpenFile: TOpenFileEvent;
   public
     function openFile(const aURL: string): string;
-    property OnOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
+    property onOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
   end;
 
 implementation

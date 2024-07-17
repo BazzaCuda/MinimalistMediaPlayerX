@@ -40,31 +40,28 @@ type
   TMediaTypes = class(TInterfacedObject, IMediaTypes)
   strict private
     FMediaExts: string;
-    function getMediaExts: string;
-  protected
   private
+    function    getMediaExts: string;
+  protected
   public
     constructor create;
     destructor  Destroy;  override;
-    function mediaType(const aExt: string): TMediaType;
-    property mediaExts: string read FMediaExts;
+    function    mediaType(const aExt: string): TMediaType;
   end;
 
-var
-  gMT: IMediaTypes;
+var gMT: IMediaTypes = NIL;
 function MT: IMediaTypes;
 begin
   case gMT = NIL of TRUE: gMT := TMediaTypes.create; end;
   result := gMT;
 end;
 
-
 { TMediaTypes }
 
 constructor TMediaTypes.create;
 begin
   inherited;
-  getMediaExts;
+//  getMediaExts; // not currently used
 end;
 
 destructor TMediaTypes.Destroy;
@@ -96,6 +93,8 @@ begin
 end;
 
 initialization
+
+finalization
   gMT := NIL;
 
 end.

@@ -86,13 +86,14 @@ uses
 type
   TAboutFormProxy = class(TInterfacedObject, IAboutForm)
   strict private
-    FProgramUpdates: IProgramUpdates;
-    FProgressForm:   TProgressForm;
+    FProgramUpdates:  IProgramUpdates;
+    FProgressForm:    TProgressForm;
+    FSubscriber:      ISubscriber;
   private
     procedure   timerTimer(Sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
     function    showForm(const thisVersion: string; const buildVersion: string): boolean; overload;
-    function    showForm: boolean; overload;
+    function    showForm:         boolean; overload;
     function    showProgressForm: boolean;
   public
     constructor create;
@@ -100,8 +101,7 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var
-  gAboutFormProxy: IAboutForm;
+var gAboutFormProxy: IAboutForm = NIL;
 function AB: IAboutForm;
 begin
   case gAboutFormProxy = NIL of TRUE: gAboutFormProxy := TAboutFormProxy.create; end;
@@ -199,12 +199,13 @@ end;
 constructor TAboutFormProxy.create;
 begin
   inherited;
-  appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber     := appNotifier.subscribe(newSubscriber(onNotify));
   FProgramUpdates := newProgramUpdates;
 end;
 
 destructor TAboutFormProxy.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
   inherited;
 end;
 
@@ -238,7 +239,6 @@ begin
     showModal;
   finally
     free;
-//    mmpDelay(1000); // CHECK THIS
     notifyApp(newNotice(evGSShowingAbout, FALSE));
   end;
 end;
@@ -259,9 +259,9 @@ begin
     FProgressForm.show;
     mmpProcessMessages;
     setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
-    FProgressForm.timer.interval := 1000;
-    FProgressForm.timer.OnTimer  := timerTimer;
-    FProgressForm.timer.enabled := TRUE;
+    FProgressForm.timer.interval  := 1000;
+    FProgressForm.timer.OnTimer   := timerTimer;
+    FProgressForm.timer.enabled   := TRUE;
   finally
   end;
 end;
@@ -273,7 +273,9 @@ begin
 end;
 
 initialization
-  gAboutFormProxy := NIL;
   AB; // to create the appNotifier listener and IProgramUpdates
+
+finalization
+  gAboutFormProxy := NIL;
 
 end.

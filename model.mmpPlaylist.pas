@@ -31,27 +31,27 @@ type
 
   IPlaylist = interface
     ['{EAA8F4FC-4F65-4080-B25F-5F5CA08309D9}']
-    function    clear: boolean;
-    function    copyToClipboard: string;
-    function    count: integer;
+    function    clear:                            boolean;
+    function    copyToClipboard:                  string;
+    function    count:                            integer;
     function    currentFolder:                    string;
     function    currentItem:                      string;
     function    currentIx:                        integer;
     function    deleteIx(const ix: integer = -1): boolean;
     function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
     function    find(const anItem: string):       boolean;
-    function    first: boolean;
+    function    first:                            boolean;
     function    getNotifier:                      INotifier;
     function    hasItems:                         boolean;
-    function    indexOf(const anItem: string): integer;
-    function    insert(const anItem: string): boolean;
-    function    isFirst: boolean;
-    function    isLast: boolean;
-    function    last: boolean;
-    function    next: boolean;
+    function    indexOf(const anItem: string):    integer;
+    function    insert(const anItem: string):     boolean;
+    function    isFirst:                          boolean;
+    function    isLast:                           boolean;
+    function    last:                             boolean;
+    function    next:                             boolean;
     function    notify(const aNotice: INotice):   INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev: boolean;
+    function    prev:                             boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):         integer;
     function    thisItem(const ix: integer):      string;
@@ -82,45 +82,44 @@ type
     FPlaylist:      TList<string>;
     FSubscriber:    ISubscriber;
   private
-    function add(const anItem: string): boolean;
-    function clear: boolean;
-    function count: integer;
-    function copyToClipboard: string;
-    function deleteIx(const ix: integer = -1): boolean;
-    function displayItem: string;
-    function extractNumericPart(const aString: string): integer;
-    function fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
-    function first: boolean;
-    function formattedItem: string;
-    function indexOf(const anItem: string): integer;
-    function insert(const anItem: string): boolean;
-    function isFirst: boolean;
-    function isLast: boolean;
-    function isSpecialImage: boolean;
-    function last: boolean;
-    function next: boolean;
-    function onNotify(const aNotice: INotice): INotice;
-    function prev: boolean;
-    function replaceCurrentItem(const aNewItem: string): boolean;
-    function sort: boolean;
-    function validIx(const ix: integer): boolean;
+    function    add(const anItem: string):        boolean;
+    function    displayItem:                      string;
+    function    extractNumericPart(const aString: string): integer;
+    function    formattedItem:                    string;
+    function    getPlaylist(aListBox: TListBox):  boolean;
+    function    isSpecialImage:                   boolean;
+    function    onNotify(const aNotice: INotice): INotice;
+    function    sort:                             boolean;
   protected
-    function    getPlaylist(aListBox: TListBox): boolean;
-
     procedure   setCurrentFolder(const aValue: string);
-    function    setIx(const ix: integer): integer;
   public
     constructor create;
     destructor  Destroy; override;
-    function    currentFolder: string;
-    function    currentItem: string;
-    function    currentIx: integer;
-    function    find(const anItem: string): boolean;
-    function    getNotifier: INotifier;
-    function    hasItems: boolean;
-    function    notify(const aNotice: INotice): INotice;
+    function    clear:                            boolean;
+    function    copyToClipboard:                  string;
+    function    count:                            integer;
+    function    currentFolder:                    string;
+    function    currentItem:                      string;
+    function    currentIx:                        integer;
+    function    deleteIx(const ix: integer = -1): boolean;
+    function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
+    function    find(const anItem: string):       boolean;
+    function    first:                            boolean;
+    function    getNotifier:                      INotifier;
+    function    hasItems:                         boolean;
+    function    indexOf(const anItem: string):    integer;
+    function    insert(const anItem: string):     boolean;
+    function    isFirst:                          boolean;
+    function    isLast:                           boolean;
+    function    last:                             boolean;
+    function    next:                             boolean;
+    function    notify(const aNotice: INotice):   INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    thisItem(const ix: integer): string;
+    function    prev:                             boolean;
+    function    replaceCurrentItem(const aNewItem: string): boolean;
+    function    setIx(const ix: integer):         integer;
+    function    thisItem(const ix: integer):      string;
+    function    validIx(const ix: integer):       boolean;
   end;
 
 function newPlaylist: IPlaylist;
@@ -139,7 +138,7 @@ function TPlaylist.clear: boolean;
 begin
   FPlaylist.clear;
   FPlayIx := -1;
-  result := FPlaylist.count = 0;
+  result  := FPlaylist.count = 0;
 end;
 
 function TPlaylist.copyToClipboard: string;
@@ -157,10 +156,9 @@ end;
 constructor TPlaylist.create;
 begin
   inherited;
-  FPlaylist := TList<string>.create;
+  FPlaylist   := TList<string>.create;
   FPLaylist.sort;
-  FSubscriber := newSubscriber(onNotify);
-  appNotifier.subscribe(FSubscriber);
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 function TPlaylist.currentFolder: string;
@@ -239,14 +237,14 @@ begin
   case directoryExists(aFolder) of FALSE: EXIT; end;
   FCurrentFolder := aFolder;
 
-  case FindFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
+  case findFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
       vExt := lowerCase(extractFileExt(vSR.name));
       case fileExtOK of TRUE: add(aFolder + vSR.Name); end;
-    until FindNext(vSR) <> 0;
+    until findNext(vSR) <> 0;
   end;
 
-  system.sysUtils.FindClose(vSR);
+  system.sysUtils.findClose(vSR);
   sort;
 
   case hasItems of  TRUE: FPlayIx := 0;
@@ -273,7 +271,7 @@ end;
 function TPlaylist.formattedItem: string;
 begin
   case hasItems of FALSE: EXIT; end;
-  result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, ExtractFileName(currentItem)]);
+  result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, extractFileName(currentItem)]);
 end;
 
 function TPlaylist.getNotifier: INotifier;

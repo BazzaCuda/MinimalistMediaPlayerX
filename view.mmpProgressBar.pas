@@ -43,8 +43,7 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpConsts, mmpGlobalState,
-  viewModel.mmpMPVFormatting,
+  mmpConsts, mmpFormatting, mmpGlobalState,
   _debugWindow;
 
 type
@@ -55,23 +54,24 @@ type
     FNotifier:        INotifier;
     FInitialized:     boolean;
     FShowProgressBar: boolean;
+    FSubscriber:      ISubscriber;
   private
-    function  brighter:      integer;
-    function  centerCursor:  boolean;
-    function  darker:        integer;
-    function  formResize:    boolean;
-    function  resetColor: integer;
-    function  onNotify(const aNotice: INotice): INotice;
+    function    brighter:      integer;
+    function    centerCursor:  boolean;
+    function    darker:        integer;
+    function    formResize:    boolean;
+    function    resetColor: integer;
+    function    onNotify(const aNotice: INotice): INotice;
   protected
-    function  getPosition: integer;
+    function    getPosition: integer;
 
-    procedure setMax(const aValue: integer);
-    function  setNewPosition(const x: integer): integer;
-    procedure setShowProgressBar(const aValue: boolean);
+    procedure   setMax(const aValue: integer);
+    function    setNewPosition(const x: integer): integer;
+    procedure   setShowProgressBar(const aValue: boolean);
 
-    procedure onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
-    procedure progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure   onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
+    procedure   progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure   progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   public
     constructor create;
     destructor  Destroy; override;
@@ -113,7 +113,7 @@ begin
 
   FShowProgressBar := TRUE;
 
-  appNotifier.subscribe(newSubscriber(onNotify)); // appNotifier and PB.notifier Notices all go to the same method
+  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify)); // appNotifier and PB.notifier Notices all go to the same method
 end;
 
 function TProgressBar.darker: integer;
@@ -129,6 +129,7 @@ destructor TProgressBar.Destroy;
 begin
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
+  appNotifier.unsubscribe(FSubscriber);
   inherited;
 end;
 

@@ -27,7 +27,6 @@ uses
 type
   TMediaStream = class(TObject)
   strict private
-  private
     FID:          string;
     FBitRate:     string;
     FDuration:    string;
@@ -42,27 +41,30 @@ type
     FInfo:        string;
     FSelected:    boolean;
   public
-    constructor create(const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string; const aInfo: string; const aIconIx: integer);
-    property ID:          string  read FID          write FID;
-    property streamType:  string  read FStreamType  write FStreamType;
-    property duration:    string  read FDuration    write FDuration;
-    property bitRate:     string  read FBitRate     write FBitRate;
-    property format:      string  read FFormat      write FFormat;
-    property title:       string  read FTitle       write FTitle;
-    property language:    string  read FLanguage    write FLanguage;
-    property videoHeight: string  read FVideoHeight write FVideoHeight;
-    property videoWidth:  string  read FVideoWidth  write FVideoWidth;
+    constructor   create( const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
+                          const aInfo: string; const aIconIx: integer);
 
-    property iconIx:      integer read FIconIx      write FIconIx;
-    property info:        string  read FInfo        write FInfo;
-    property selected:    boolean read FSelected    write FSelected;
+    property      ID:          string  read FID          write FID;
+    property      streamType:  string  read FStreamType  write FStreamType;
+    property      duration:    string  read FDuration    write FDuration;
+    property      bitRate:     string  read FBitRate     write FBitRate;
+    property      format:      string  read FFormat      write FFormat;
+    property      title:       string  read FTitle       write FTitle;
+    property      language:    string  read FLanguage    write FLanguage;
+    property      videoHeight: string  read FVideoHeight write FVideoHeight;
+    property      videoWidth:  string  read FVideoWidth  write FVideoWidth;
+
+    property      iconIx:      integer read FIconIx      write FIconIx;
+    property      info:        string  read FInfo        write FInfo;
+    property      selected:    boolean read FSelected    write FSelected;
   end;
 
 implementation
 
 { TMediaStream }
 
-constructor TMediaStream.create(const aID, aStreamType, aDuration, aFormat, aBitRate, aTitle, aLanguage, aInfo: string; const aIconIx: integer);
+constructor TMediaStream.create(const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
+                                const aInfo: string; const aIconIx: integer);
 begin
   FID         := aID;
   FStreamType := aStreamType;

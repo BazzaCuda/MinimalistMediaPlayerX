@@ -47,10 +47,10 @@ type
     FTimer:     TTimer;
   private
     procedure   timerEvent(aSender: TObject);
-    function    getNotifier: INotifier;
   public
     constructor create;
     destructor  Destroy; override;
+    function    getNotifier: INotifier;
     property    notifier: INotifier  read getNotifier;
   end;
 
@@ -89,7 +89,6 @@ begin
 end;
 
 initialization
-  gTT := NIL;
 
 finalization
   gTT := NIL;

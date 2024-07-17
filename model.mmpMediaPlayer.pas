@@ -40,8 +40,8 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  mmpConsts, mmpFileUtils, mmpGlobalState, mmpUtils,
-  model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties, mmpTickTimer,
+  mmpConsts, mmpFileUtils, mmpGlobalState, mmpTickTimer, mmpUtils,
+  model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
 
 type
@@ -64,22 +64,22 @@ type
     procedure   onFileOpen(Sender: TObject; const aFilePath: string);
     procedure   onInitMPV(sender: TObject);
     procedure   onStateChange(cSender: TObject; eState: TMPVPlayerState);
-    function    onTickTimer(const aNotice: INotice):  INotice;
 
-    procedure   setPosition(const aValue: integer);
+    function    onNotify(const aNotice: INotice):     INotice;
+    function    onTickTimer(const aNotice: INotice):  INotice;
 
     function    openURL(const aURL: string):          boolean;
     function    pausePlay:                            string;
     function    pausePlayImages:                      string;
     function    sendOpInfo(const aOpInfo: string):    boolean;
   protected
-    function    getNotifier:                          INotifier;
-    function    initMediaPlayer(const aHWND: HWND):   boolean;
-    function    notify(const aNotice: INotice):       INotice;
-    function    onNotify(const aNotice: INotice):     INotice;
+    procedure   setPosition(const aValue: integer);
   public
     constructor create;
     destructor  Destroy; override;
+    function    getNotifier:                          INotifier;
+    function    initMediaPlayer(const aHWND: HWND):   boolean;
+    function    notify(const aNotice: INotice):       INotice;
   end;
 
 function newMediaPlayer: IMediaPlayer;
@@ -125,7 +125,7 @@ begin
   notifyApp(newNotice(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory));
 
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration);
-  case tryStrToFloat(FImageDisplayDuration, FImageDisplayDurationMs) of FALSE: FImageDisplayDurationMs := IMAGE_DISPLAY_DURATION; end;
+  FImageDisplayDurationMs := strToFloatDef(FImageDisplayDuration, IMAGE_DISPLAY_DURATION);
   notifyApp(newNotice(evGSIDD, trunc(FImageDisplayDurationMs)));
   FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
@@ -274,7 +274,7 @@ begin
   FVideoWidth   := 0;
   FVideoHeight  := 0;
   FCheckCount   := 0;
-  FIgnoreTicks  := FALSE;
+  FIgnoreTicks  := FALSE; // react in onTickTimer
 
   notifyApp(newNotice(evGSMediaType, FMediaType));
   notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
@@ -296,9 +296,6 @@ function TMediaPlayer.pausePlayImages: string;
 begin
   FImagesPaused := NOT FImagesPaused;
   notifyApp(newNotice(evGSImagesPaused, FImagesPaused));
-
-//  case FImagesPaused of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
-//                        FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;   // this should now always be inf
 
   case FImagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;

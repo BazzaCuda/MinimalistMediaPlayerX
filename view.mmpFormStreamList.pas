@@ -55,83 +55,78 @@ type
     md: TMarkdownViewer;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
+    procedure clSegmentsItemClick(Sender: TObject);
     procedure clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clStreamsItemClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
-    procedure clSegmentsItemClick(Sender: TObject);
     procedure btnExportMouseEnter(Sender: TObject);
     procedure btnExportMouseLeave(Sender: TObject);
     procedure btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   private
-    FOnExport: TNotifyEvent;
-    FSegments: TObjectList<TSegment>;
-    function getStreamInfo(const aMediaFilePath: string): integer;
-    function updateExportButton(aEnabled: boolean): boolean;
-    function updateStreamsCaption: boolean;
+    FOnExport:  TNotifyEvent;
+    FSegments:  TObjectList<TSegment>;
+    function    getStreamInfo(const aMediaFilePath: string): integer;
+    function    updateExportButton(aEnabled: boolean): boolean;
+    function    updateStreamsCaption: boolean;
   protected
-    function applySegments(const aSegments: TObjectList<TSegment>): boolean;
-    procedure createParams(var Params: TCreateParams);
+    function    applySegments(const aSegments: TObjectList<TSegment>): boolean;
+    procedure   createParams(var Params: TCreateParams);
   public
     property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
 
-function applySegments(const aSegments: TObjectList<TSegment>): boolean;
-function refreshStreamInfo(const aMediaFilePath: string): boolean;
-function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
-function shutStreamList: boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>): boolean;
+function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShutStreamList: boolean;
 
 implementation
 
 uses
-  mmpConsts, mmpGlobalState, mmpMarkDownUtils,
+  mmpConsts, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline,
-  viewModel.mmpMPVFormatting,
   model.mmpMediaInfo,
   _debugWindow;
 
-var
-  streamListForm: TStreamListForm;
+var gStreamListForm: TStreamListForm = NIL;
 
-function ctrlKeyDown: boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>): boolean;
 begin
-  result := GetKeyState(VK_CONTROL) < 0;
+  gStreamListForm.applySegments(aSegments);
 end;
 
-function refreshStreamInfo(const aMediaFilePath: string): boolean;
+function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
 begin
-  streamListForm.getStreamInfo(aMediaFilePath);
-  streamListForm.updateExportButton(MI.selectedCount > 0);
+  gStreamListForm.getStreamInfo(aMediaFilePath);
+  gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
-function showStreamList(const Pt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const createNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 begin
-  case (streamListForm = NIL) and createNew of TRUE: streamListForm := TStreamListForm.create(NIL); end;
-  case streamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
+  case (gStreamListForm = NIL) and bCreateNew of TRUE: gStreamListForm := TStreamListForm.create(NIL); end;
+  case gStreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
 
   screen.cursor := crDefault;
 
-  case GS.showingStreamList of FALSE: streamListForm.pageControl.pages[0].show; end; // first time only
-  streamListForm.show;
-  streamListForm.onExport := aExportEvent;
+  case GS.showingStreamList of FALSE: gStreamListForm.pageControl.pages[0].show; end; // first time only
+  gStreamListForm.show;
+  gStreamListForm.onExport := aExportEvent;
 
-  winApi.windows.setWindowPos(streamListForm.handle, HWND_TOP, Pt.X, Pt.Y - streamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   notifyApp(newNotice(evGSShowingStreamlist, TRUE));
-  notifyApp(newNotice(evGSWidthStreamlist, streamlistForm.width));
+  notifyApp(newNotice(evGSWidthStreamlist, gStreamListForm.width));
 end;
 
-function shutStreamList: boolean;
+function mmpShutStreamList: boolean;
 begin
-  case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
+  case gStreamListForm <> NIL of TRUE: begin gStreamListForm.close; gStreamListForm.free; gStreamListForm := NIL; end;end;
   notifyApp(newNotice(evGSShowingStreamlist, FALSE));
   notifyApp(newNotice(evGSWidthStreamlist, 0));
 end;
 
-function applySegments(const aSegments: TObjectList<TSegment>): boolean;
-begin
-  streamListForm.applySegments(aSegments);
-end;
-
 {$R *.dfm}
+
+{ TStreamListForm }
 
 function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>): boolean;
 begin
@@ -147,8 +142,8 @@ end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
 begin
-  case ctrlKeyDown of  TRUE: btnExport.caption := 'Join';
-                      FALSE: btnExport.caption := 'Export'; end;
+  case mmpCtrlKeyDown of   TRUE: btnExport.caption := 'Join';
+                          FALSE: btnExport.caption := 'Export'; end;
 end;
 
 procedure TStreamListForm.btnExportMouseLeave(Sender: TObject);
@@ -158,8 +153,8 @@ end;
 
 procedure TStreamListForm.btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  case ctrlKeyDown of  TRUE: btnExport.caption := 'Join';
-                      FALSE: btnExport.caption := 'Export'; end;
+  case mmpCtrlKeyDown of   TRUE: btnExport.caption := 'Join';
+                          FALSE: btnExport.caption := 'Export'; end;
 end;
 
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -210,12 +205,12 @@ begin
   updateExportButton(MI.selectedCount > 0);
 end;
 
-procedure TStreamListForm.createParams(var Params: TCreateParams);
+procedure TStreamListForm.createParams(var params: TCreateParams);
 // no taskbar icon for this window
 begin
   inherited;
-  Params.ExStyle    := Params.ExStyle or (WS_EX_APPWINDOW);
-  Params.WndParent  := SELF.Handle; // normally application.handle
+  params.ExStyle    := params.ExStyle or (WS_EX_APPWINDOW);
+  params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
 procedure TStreamListForm.formCreate(Sender: TObject);
@@ -281,9 +276,8 @@ begin
 end;
 
 initialization
-  streamListForm := NIL;
 
 finalization
-  case streamListForm <> NIL of TRUE: begin streamListForm.close; streamListForm.free; streamListForm := NIL; end;end;
+  case gStreamListForm <> NIL of TRUE: begin gStreamListForm.close; gStreamListForm.free; gStreamListForm := NIL; end;end;
 
 end.

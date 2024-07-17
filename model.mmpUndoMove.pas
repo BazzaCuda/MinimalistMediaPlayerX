@@ -42,9 +42,9 @@ type
   public
     constructor create;
     destructor  Destroy; override;
-    function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
-    function undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
-    property undoRecs: TObjectStack<TUndoRec> read FUndoRecs;
+    function    recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
+    function    undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
+    property    undoRecs: TObjectStack<TUndoRec> read FUndoRecs;
   end;
 
 function UM: IUndoMove;
@@ -54,7 +54,7 @@ implementation
 uses
   _debugWindow;
 
-var gUM: IUndoMove;
+var gUM: IUndoMove = NIL;
 function UM: IUndoMove;
 begin
   case gUM = NIL of TRUE: gUM := TUndoMove.create; end;
@@ -100,7 +100,6 @@ begin
 end;
 
 initialization
-  gUM := NIL;
 
 finalization
   gUM := NIL;

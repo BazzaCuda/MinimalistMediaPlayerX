@@ -21,7 +21,7 @@ unit TThumbClass;
 interface
 
 uses
-  vcl.controls, vcl.extCtrls;
+  vcl.extCtrls;
 
 type
   TThumb = class(TImage)
@@ -33,7 +33,7 @@ type
 implementation
 
 uses
-  mmpConsts, mmpThumbUtils;
+  mmpThumbUtils;
 
 { TThumb }
 
@@ -41,11 +41,11 @@ constructor TThumb.create(const aFilePath: string; const aDesiredWidth: integer 
 begin
   inherited Create(NIL);
 
-  width   := aDesiredWidth;  // THUMB_DEFAULT_SIZE;
-  height  := aDesiredHeight; // THUMB_DEFAULT_SIZE;
+  width   := aDesiredWidth;
+  height  := aDesiredHeight;
   stretch := TRUE;
 
-  extractThumb(picture.bitmap, aFilePath, aDesiredWidth, aDesiredHeight);
+  mmpExtractThumb(picture.bitmap, aFilePath, aDesiredWidth, aDesiredHeight);
 end;
 
 end.

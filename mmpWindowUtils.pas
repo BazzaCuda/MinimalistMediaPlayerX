@@ -34,6 +34,8 @@ function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): inte
 function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
 function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): boolean;
 function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint): boolean;
+function mmpSetWindowTop      (const aWND: HWND): boolean;
+function mmpSetWindowTopmost  (const aWND: HWND): boolean;
 function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): boolean;
 function mmpWinXY             (const aWND: HWND): TPoint;
 
@@ -82,10 +84,8 @@ begin
   result.y := aHeight + 2;
 end;
 
-var
-  vPrevVideoHeight: integer = 0;
-  vPrevImageHeight: integer = 0;
 function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
+{$J+} const vPrevVideoHeight: integer = 0; vPrevImageHeight: integer = 0; {$J-}
 var
   vWidth:           integer;
   vHeight:          integer;
@@ -367,6 +367,16 @@ begin
   result := FALSE;
   setWindowPos(aWND, HWND_TOP, 0, 0, aPt.x, aPt.y, SWP_NOMOVE);
   result := TRUE;
+end;
+
+function mmpSetWindowTop(const aWND: HWND): boolean;
+begin
+  setWindowPos(aWND, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
+end;
+
+function mmpSetWindowTopmost(const aWND: HWND): boolean;
+begin
+  setWindowPos(aWND, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
 end;
 
 function mmpWinXY(const aWND: HWND): TPoint;

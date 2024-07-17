@@ -42,49 +42,50 @@ type
     FTitle:       TLabel;
     FTrashCan:    TImage;
   private
-    function  getDuration: integer;
-    function  getIsFirst: boolean;
-    function  getIsLast: boolean;
-    function  getIx: integer;
-    function  getSegID: string;
-    function  getTitle: string;
-    procedure setSegID(const Value: string);
-    procedure setSelected(const Value: boolean);
-    procedure setTitle(const Value: string);
+    function      getDuration:  integer;
+    function      getIsFirst:   boolean;
+    function      getIsLast:    boolean;
+    function      getIx:        integer;
+    function      getSegID:     string;
+    function      getTitle:     string;
+    procedure     setSegID(const Value: string);
+    procedure     setSelected(const Value: boolean);
+    procedure     setTitle(const Value: string);
 
-    class var FParent: TWinControl;
-    class var FSelSeg: TSegment;
-    class var FSegments: TObjectList<TSegment>;
-    class destructor freeSegments;
-    class function getSegments: TObjectList<TSegment>; static;
-    class function getIncludedCount: integer; static;
+    class var     FParent:      TWinControl;
+    class var     FSelSeg:      TSegment;
+    class var     FSegments:    TObjectList<TSegment>;
+
+    class destructor  freeSegments;
+    class function    getSegments:      TObjectList<TSegment>;  static;
+    class function    getIncludedCount: integer;                static;
 
   protected
     procedure doClick(Sender: TObject);
     procedure paint; override;
   public
-    constructor create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
-    function delete: boolean;
-    procedure setDisplayDetails;
-    function setAsSelSeg: boolean;
-    property deleted:   boolean read FDeleted  write FDeleted;
-    property duration:  integer read getDuration;
-    property endSS:     integer read FEndSS    write FEndSS;
-    property isFirst:   boolean read getIsFirst;
-    property isLast:    boolean read getIsLast;
-    property ix:        integer read getIx;
-    property oldColor:  TColor  read FOldColor write FOldColor;
-    property segID:     string  read getSegID  write setSegID;
-    property selected:  boolean read FSelected write setSelected;
-    property startSS:   integer read FStartSS  write FStartSS;
-    property title:     string  read getTitle  write setTitle;
-    property trashCan:  TImage  read FTrashCan;
+    constructor create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
+    function    delete: boolean;
+    procedure   setDisplayDetails;
+    function    setAsSelSeg: boolean;
+    property    deleted:   boolean read FDeleted      write FDeleted;
+    property    duration:  integer read getDuration;
+    property    endSS:     integer read FEndSS        write FEndSS;
+    property    isFirst:   boolean read getIsFirst;
+    property    isLast:    boolean read getIsLast;
+    property    ix:        integer read getIx;
+    property    oldColor:  TColor  read FOldColor     write FOldColor;
+    property    segID:     string  read getSegID      write setSegID;
+    property    selected:  boolean read FSelected     write setSelected;
+    property    startSS:   integer read FStartSS      write FStartSS;
+    property    title:     string  read getTitle      write setTitle;
+    property    trashCan:  TImage  read FTrashCan;
 
-    class function clearFocus: boolean; static;
-    class property includedCount: integer read getIncludedCount;
-    class property parentForm: TWinControl write FParent;
-    class property segments: TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
-    class property selSeg: TSegment read FSelSeg write FSelSeg;
+    class function clearFocus:    boolean; static;
+    class property includedCount: integer               read getIncludedCount;
+    class property parentForm:    TWinControl                                   write FParent;
+    class property segments:      TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
+    class property selSeg:        TSegment              read FSelSeg            write FSelSeg;
   end;
 
 implementation
@@ -94,9 +95,8 @@ uses
   mmpConsts,
   _debugWindow;
 
-var nextColor: integer = 0;
-function generateRandomEvenDarkerSoftColor: TColor;
-// chatGPT
+function generateRandomEvenDarkerSoftColor: TColor; // from a suggestion by chatGPT
+{$J+} const nextColor: integer = 0; {$J-}
 var
   darkerSoftColors: array of TColor;
 begin
@@ -142,7 +142,7 @@ begin
   freeAndNil(FSegments);
 end;
 
-constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const aDeleted: boolean = FALSE);
+constructor TSegment.create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
 begin
   inherited create(NIL);
   parent            := FParent;
@@ -187,7 +187,7 @@ begin
   FTrashCan.visible := FALSE;
   FTrashCan.onClick := doClick;
 
-  case aDeleted of TRUE: SELF.delete; end;
+  case bDeleted of TRUE: SELF.delete; end;
 end;
 
 function TSegment.delete: boolean;

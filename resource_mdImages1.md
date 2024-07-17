@@ -15,6 +15,7 @@
 Ctrl-**DEL** [D]elete folder after confirm**&loz;**<br />
 **C** Save/Copy to "Copied" folder**\***<br />
 **K** [K]eep file (rename with leading _ )<br />
+Ctrl-**K** [K]eep/Delete all files in folder**&loz;**<br />
 **S** Save/Move to "Saved" folder**\***<br />
 Ctrl-**S** Save altered image to new file<br />
 **R** [R]ename file<br />
@@ -22,7 +23,7 @@ Ctrl-**S** Save altered image to new file<br />
 Ctrl-**U** undo Save/Move<br />
 
 _**\*** can be specified in MinimalistMediaPlayer.conf_<br />
-_**&loz;** doesn't touch the contents of subfolders_<br />
+_**&loz;** doesn't touch the contents of non-empty subfolders_<br />
 
 **Gamma**<br />
 **[** decrease :hold to repeat<br />

@@ -30,8 +30,8 @@ uses
 type
   ICaptions = interface
     ['{1F91FC41-F900-499E-82D7-5BE4733A9F19}']
-    function    blankOutTimeCaption: boolean;
     function    blankInTimeCaption: boolean;
+    function    blankOutTimeCaption: boolean;
     function    getCaptionsForm: TForm;
     function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
     function    notify(const aNotice: INotice): INotice;
@@ -57,21 +57,21 @@ type
 
     FPLCurrentItem: string;
 
-    function    getHWND: HWND;
+    function    getHWND:          HWND;
     procedure   setDisplayTime(const aValue: string);
     procedure   setOpInfo(const aValue: string);
     procedure   setShowData(const aValue: boolean);
     procedure   setShowTime(const aValue: boolean);
-    function    getCaptionsForm: TForm;
-    function    getColor: TColor;
+    function    getColor:         TColor;
     procedure   setColor(const Value: TColor);
   public
     constructor Create(aOwner: TComponent); override;
     destructor  Destroy; override;
     procedure   formResize(const aUIWidth: integer = 0);
+    function    brighter:   integer;
+    function    darker:     integer;
+    function    getCaptionsForm:  TForm;
     function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
-    function    brighter: integer;
-    function    darker: integer;
     function    resetColor: integer;
     function    toggleCaptions(const aShiftState: TShiftState): boolean;
   end;
@@ -92,32 +92,32 @@ const
   DEFAULT_WINDOW_HEIGHT = 160;
 
 type
-
   // There are problems if we put the interface on TCaptionsForm, so we use an intermediary
   TCaptionsProxy = class(TInterfacedObject, ICaptions)
   strict private
     FCaptionsForm:  TCaptionsForm;
     FSavedColor:    TColor;
     FSubscriber:    ISubscriber;
+    FSubscriberTT:  ISubscriber;
     FTImerCount:    integer;
   private
     function    onNotify(const aNotice: INotice): INotice;
     function    onTickTimer(const aNotice: INotice): INotice;
   protected
     procedure   formResize(const aUIWidth: integer = 0);
-    function    getCaptionsForm: TForm;
-    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
   public
     constructor create(const aOwner: TForm);
     destructor  Destroy; override;
-    function    blankOutTimeCaption: boolean;
     function    blankInTimeCaption: boolean;
+    function    blankOutTimeCaption: boolean;
+    function    getCaptionsForm: TForm;
+    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
     function    notify(const aNotice: INotice): INotice;
     function    resetTimer: boolean;
     function    setOpInfo(const aOpInfo: string): boolean;
   end;
 
-var gST: ICaptions;
+var gST: ICaptions = NIL;
 function ST(const aOwner: TForm = NIL): ICaptions;
 begin
   case gST = NIL of TRUE: gST := TCaptionsProxy.create(aOwner); end;
@@ -133,8 +133,8 @@ begin
   FTimeLabel.font.color   := FTimeLabel.font.color  + $010101;
   FOpInfo.font.color      := FOpInfo.font.color     + $010101;
   FDataMemo.font.color    := FDataMemo.font.color   + $010101;
-  result := FTimeLabel.font.color;
-  CF[CONF_TIME_CAPTION]       := CF.toHex(result);
+  result                  := FTimeLabel.font.color;
+  CF[CONF_TIME_CAPTION]   := CF.toHex(result);
 end;
 
 constructor TCaptionsForm.create(aOwner: TComponent);
@@ -159,69 +159,69 @@ constructor TCaptionsForm.create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 
-  SELF.height           := DEFAULT_WINDOW_HEIGHT;
+  SELF.height             := DEFAULT_WINDOW_HEIGHT;
 
-  FShowTime             := TRUE;
+  FShowTime               := TRUE;
 
-  FInfoPanel            := TPanel.create(SELF);
-  FInfoPanel.parent     := SELF;
-  FInfoPanel.align      := alClient;   // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
-  FInfoPanel.bevelOuter := bvNone;
-  FInfoPanel.font.color := ST_DEFAULT_COLOR;
+  FInfoPanel              := TPanel.create(SELF);
+  FInfoPanel.parent       := SELF;
+  FInfoPanel.align        := alClient;   // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
+  FInfoPanel.bevelOuter   := bvNone;
+  FInfoPanel.font.color   := ST_DEFAULT_COLOR;
 
-  FTimeLabel            := TLabel.create(FInfoPanel);
-  FTimeLabel.parent     := FInfoPanel;
+  FTimeLabel              := TLabel.create(FInfoPanel);
+  FTimeLabel.parent       := FInfoPanel;
   mmpInitTransparentLabel(FTimeLabel);
   defaultFontEtc(FTimeLabel);
-  FTimeLabel.caption    := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
-  FTimeLabel.autoSize   := FALSE;
-  FTimeLabel.top        := FInfoPanel.height - FTimeLabel.height;
+  FTimeLabel.caption      := '00:00:00 / 99:99:99'; // used to set initial size and position of opInfo
+  FTimeLabel.autoSize     := FALSE;
+  FTimeLabel.top          := FInfoPanel.height - FTimeLabel.height;
 
-  FOpInfo               := TLabel.create(FInfoPanel);
-  FOpInfo.parent        := FInfoPanel;
+  FOpInfo                 := TLabel.create(FInfoPanel);
+  FOpInfo.parent          := FInfoPanel;
   mmpInitTransparentLabel(FOpInfo);
   defaultFontEtc(FOpInfo);
-  FOpInfo.autoSize      := FALSE;
-  FOpInfo.width         := FTimeLabel.width;
-  FOpInfo.top           := FTimeLabel.top - FOpInfo.height;
+  FOpInfo.autoSize        := FALSE;
+  FOpInfo.width           := FTimeLabel.width;
+  FOpInfo.top             := FTimeLabel.top - FOpInfo.height;
   formResize;
 
-  FTimeLabel.caption    := ' ';
+  FTimeLabel.caption      := ' ';
 
   FDataMemo := TMemo.create(SELF);
-  FDataMemo.parent         := SELF;
-  FDataMemo.align          := alLeft;
-  FDataMemo.height         := 125;
-  FDataMemo.top            := FTimeLabel.top - FDataMemo.height;
-  FDataMemo.left           := 0;
-  FDataMemo.width          := 200;
-  FDataMemo.wordWrap       := FALSE;
-  FDataMemo.bevelInner     := bvNone;
-  FDataMemo.bevelOuter     := bvNone;
-  FDataMemo.borderStyle    := bsNone;
-  FDataMemo.color          := clBlack;
-  FDataMemo.margins.bottom := 20; // otherwise the bottom line displays behind the progressBar
-  FDataMemo.readOnly       := TRUE;
-  FDataMemo.tabStop        := FALSE;
-  FDataMemo.font.name      := 'Tahoma';
-  FDataMemo.font.color     := ST_DEFAULT_COLOR;
-  FDataMemo.font.size      := 10;
-  FDataMemo.font.style     := [fsBold];
-  FDataMemo.styleElements  := [];
+  FDataMemo.parent          := SELF;
+  FDataMemo.align           := alLeft;
+  FDataMemo.height          := 125;
+  FDataMemo.top             := FTimeLabel.top - FDataMemo.height;
+  FDataMemo.left            := 0;
+  FDataMemo.width           := 200;
+  FDataMemo.wordWrap        := FALSE;
+  FDataMemo.bevelInner      := bvNone;
+  FDataMemo.bevelOuter      := bvNone;
+  FDataMemo.borderStyle     := bsNone;
+  FDataMemo.color           := clBlack;
+  FDataMemo.margins.bottom  := 20; // otherwise the bottom line displays behind the progressBar
+  FDataMemo.readOnly        := TRUE;
+  FDataMemo.tabStop         := FALSE;
+  FDataMemo.font.name       := 'Tahoma';
+  FDataMemo.font.color      := ST_DEFAULT_COLOR;
+  FDataMemo.font.size       := 10;
+  FDataMemo.font.style      := [fsBold];
+  FDataMemo.styleElements   := [];
   FDataMemo.clear;
-  FDataMemo.visible        := CF.asBoolean[CONF_SHOW_METADATA];
-  FShowData                := CF.asBoolean[CONF_SHOW_METADATA];
+  FDataMemo.visible         := CF.asBoolean[CONF_SHOW_METADATA];
+  FShowData                 := CF.asBoolean[CONF_SHOW_METADATA];
 end;
 
 function TCaptionsForm.darker: integer;
 begin
-  result := FTimeLabel.font.color;
+  result                    := FTimeLabel.font.color;
   case FTimeLabel.font.color = $010101 of TRUE: EXIT; end;
-  FTimeLabel.font.color   := FTimeLabel.font.color  - $010101;
-  FOpInfo.font.color      := FOpInfo.font.color     - $010101;
-  FDataMemo.font.color    := FDataMemo.font.color   - $010101;
+  FTimeLabel.font.color     := FTimeLabel.font.color  - $010101;
+  FOpInfo.font.color        := FOpInfo.font.color     - $010101;
+  FDataMemo.font.color      := FDataMemo.font.color   - $010101;
   result := FTimeLabel.font.color;
-  CF[CONF_TIME_CAPTION] := CF.toHex(result);
+  CF[CONF_TIME_CAPTION]     := CF.toHex(result);
 end;
 
 destructor TCaptionsForm.Destroy;
@@ -233,8 +233,8 @@ procedure TCaptionsForm.formResize(const aUIWidth: integer = 0);
 // align := alBottom draws the labels but not in the correct position!
 begin
   SELF.height     := DEFAULT_WINDOW_HEIGHT;
-  FTimeLabel.left := SELF.width - FTimeLabel.width;    // don't rely on the dimensions of FInfoPanel!
-  FTimeLabel.top  := SELF.height - FTimeLabel.height;
+  FTimeLabel.left := SELF.width   - FTimeLabel.width;    // don't rely on the dimensions of FInfoPanel!
+  FTimeLabel.top  := SELF.height  - FTimeLabel.height;
   FOpInfo.left    := FTimeLabel.left;                  // needs to be set even though align = alBottom!
   FOpInfo.top     := FTimeLabel.top - FOpInfo.height;
   case aUIWidth <> 0 of TRUE: FUIWidth := aUIWidth; end;
@@ -283,7 +283,7 @@ begin
   FOpInfo.font.color      := ST_DEFAULT_COLOR;
   FDataMemo.font.color    := ST_DEFAULT_COLOR;
   result                  := ST_DEFAULT_COLOR;
-  CF[CONF_TIME_CAPTION]       := CF.toHex(result);
+  CF[CONF_TIME_CAPTION]   := CF.toHex(result);
 end;
 
 procedure TCaptionsForm.setColor(const Value: TColor);
@@ -357,12 +357,14 @@ constructor TCaptionsProxy.create(const aOwner: TForm);
 begin
   inherited create;
   FCaptionsForm := TCaptionsForm.create(aOwner);
-  appNotifier.subscribe(newSubscriber(onNotify));
-  TT.notifier.subscribe(newSubscriber(onTickTimer));
+  FSubscriber   := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriberTT := TT.notifier.subscribe(newSubscriber(onTickTimer));
 end;
 
 destructor TCaptionsProxy.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
+  TT.notifier.unsubscribe(FSubscriberTT);
   inherited;
 end;
 
@@ -410,7 +412,7 @@ end;
 
 function TCaptionsProxy.onTickTimer(const aNotice: INotice): INotice;
 begin
-  result      := aNotice;
+  result := aNotice;
   case FCaptionsForm.FOpInfo.caption = '' of TRUE: EXIT; end;
   inc(FTImerCount);
   case FTimerCount < 2 of TRUE: EXIT; end;
@@ -428,7 +430,6 @@ begin
 end;
 
 initialization
-  gST := NIL;
 
 finalization
   gST := NIL;

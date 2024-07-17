@@ -50,8 +50,7 @@ implementation
 uses
   system.sysUtils;
 
-var
-  gPS: IParamStrings;
+var gPS: IParamStrings = NIL;
 function PS: IParamStrings;
 begin
   case gPS = NIL of TRUE: gPS := TParamStrings.create; end;
@@ -83,6 +82,8 @@ begin
 end;
 
 initialization
+
+finalization
   gPS := NIL;
 
 end.

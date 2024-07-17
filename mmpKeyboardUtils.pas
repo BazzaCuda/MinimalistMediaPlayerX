@@ -68,7 +68,7 @@ begin
   // The "other" windows don't know the Ctrl key is down without this.
   // In other words, getKeyboardState only registers it in the window in which is was pressed.
   // This isn't the case with the Shift keys.
-  case getKeyState(VK_CONTROL) < 0 of TRUE: include(result, ssCtrl); end;
+  case getKeyState(VK_LCONTROL) < 0 of TRUE: include(result, ssCtrl); end;
 end;
 
 function mmpToggleNumlock: boolean;

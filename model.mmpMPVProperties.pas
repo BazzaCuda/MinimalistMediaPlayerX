@@ -26,23 +26,23 @@ uses
   mmpConsts,
   _debugWindow;
 
-function mpvAdjusted(const mpv: TMPVBasePlayer): boolean;
-function mpvDuration(const mpv: TMPVBasePlayer): integer;
-function mpvFileName(const mpv: TMPVBasePlayer): string;
-function mpvPosition(const mpv: TMPVBasePlayer): integer;
-function mpvState(const mpv: TMPVBasePlayer): TMPVPlayerState;
-function mpvVideoHeight(const mpv: TMPVBasePlayer): int64;
-function mpvVideoWidth(const mpv: TMPVBasePlayer): int64;
-function mpvXY(const mpv: TMPVBasePlayer): TPoint;
+function mpvAdjusted    (const mpv: TMPVBasePlayer): boolean;
+function mpvDuration    (const mpv: TMPVBasePlayer): integer;
+function mpvFileName    (const mpv: TMPVBasePlayer): string;
+function mpvPosition    (const mpv: TMPVBasePlayer): integer;
+function mpvState       (const mpv: TMPVBasePlayer): TMPVPlayerState;
+function mpvVideoHeight (const mpv: TMPVBasePlayer): int64;
+function mpvVideoWidth  (const mpv: TMPVBasePlayer): int64;
+function mpvXY          (const mpv: TMPVBasePlayer): TPoint;
 
 //==========
 
-function mpvGetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; var  aString: string): boolean;
-function mpvSetPropertyString(const mpv: TMPVBasePlayer; const aProperty: string; const aValue: string): boolean;
-function mpvgetMute(const mpv: TMPVBasePlayer; var aBoolean: boolean): boolean;
-function mpvSetMute(const mpv: TMPVBasePlayer; const value: boolean): boolean;
-function mpvSetKeepOpen(const mpv: TMPVBasePlayer; const value: boolean): boolean;
-function mpvSetVolume(const mpv: TMPVBasePlayer; const aVolume: integer): boolean;
+function mpvGetPropertyString (const mpv: TMPVBasePlayer; const aProperty: string; var  aString: string): boolean;
+function mpvSetPropertyString (const mpv: TMPVBasePlayer; const aProperty: string; const aValue: string): boolean;
+function mpvgetMute           (const mpv: TMPVBasePlayer; var aBoolean: boolean): boolean;
+function mpvSetMute           (const mpv: TMPVBasePlayer; const value: boolean): boolean;
+function mpvSetKeepOpen       (const mpv: TMPVBasePlayer; const value: boolean): boolean;
+function mpvSetVolume         (const mpv: TMPVBasePlayer; const aVolume: integer): boolean;
 
 function mpvSetDefaults(const mpv: TMPVBasePlayer; const aExePath: string): boolean;
 
@@ -60,13 +60,13 @@ var
   zoomX, zoomY: double;
 begin
   result := FALSE;
-  mpv.GetPropertyInt64('brightness', brightness);
-  mpv.GetPropertyInt64('contrast', contrast);
-  mpv.GetPropertyInt64('gamma', gamma);
+  mpv.getPropertyInt64('brightness', brightness);
+  mpv.getPropertyInt64('contrast', contrast);
+  mpv.getPropertyInt64('gamma', gamma);
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.getPropertyInt64('video-rotate', rot);
-  mpv.GetPropertyInt64('saturation', saturation);
+  mpv.getPropertyInt64('saturation', saturation);
   mpv.getPropertyDouble('video-scale-x', zoomX);
   mpv.getPropertyDouble('video-scale-y', zoomY);
   result := brightness + contrast + gamma + panX + panY + rot + saturation + zoomX + zoomY <> 2; // video-scale-x = 1; video-scale-y = 1
@@ -86,7 +86,7 @@ function mpvFileName(const mpv: TMPVBasePlayer): string;
 begin
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
-  result := mpv.FileName;
+  result := mpv.fileName;
 end;
 
 function mpvPosition(const mpv: TMPVBasePlayer): integer;
@@ -166,7 +166,7 @@ begin
   result      := FALSE;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume  := aVolume;
-  result := TRUE;
+  result      := TRUE;
 end;
 
 function mpvSetDefaults(const mpv: TMPVBasePlayer; const aExePath: string): boolean;
@@ -175,12 +175,12 @@ begin
   result := FALSE;
   case mpv = NIL of TRUE: EXIT; end;
   with mpv do begin
-    SetPropertyString('osc', 'no'); // On Screen Control
-    SetPropertyString('force-window', 'yes');
-    SetPropertyString('config-dir', aExePath); // mpv.conf location
-    SetPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
-    SetPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
-    SetPropertyBool('keep-open-pause', FALSE);
+    setPropertyString('osc', 'no'); // On Screen Control
+    setPropertyString('force-window', 'yes');
+    setPropertyString('config-dir', aExePath); // mpv.conf location
+    setPropertyString('config', 'yes');  // DISABLE USER ACCESS TO MPV.CONF? - NO!
+    setPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
+    setPropertyBool('keep-open-pause', FALSE);
 
     setPropertyString('sub-font', 'Segoe UI');
     setPropertyString('sub-color', '#808080');
@@ -189,8 +189,8 @@ begin
     setPropertyString('osd-back-color', '#00000000');
     setPropertyString('osd-shadow-offset', '0');
     setPropertyString('screenshot-format', 'png');
-    SetPropertyString('osd-font-size', '10');
-    SetPropertyInt64('osd-duration', 3000);
+    setPropertyString('osd-font-size', '10');
+    setPropertyInt64('osd-duration', 3000);
     setPropertyString('osd-align-x', 'right');
     setPropertyString('osd-align-y', 'bottom');
     setPropertyString('osd-margin-x', '4');
@@ -198,7 +198,7 @@ begin
     setPropertyString('screenshot-png-compression', '0');
     setPropertyString('screenshot-template', '%F %p %04n');
 //    setPropertyString('sid', '1');
-    setPropertyString('image-display-duration', 'inf');
+//    setPropertyString('image-display-duration', 'inf');
 //    SetPropertyDouble('sub-delay', -00.99);
   end;
   result := TRUE;

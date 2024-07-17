@@ -40,7 +40,6 @@ type
     FVideoPanel:  TPanel;
     FCaptionCopy: string;
     FInitialized: boolean;
-    FSubscriber:  ISubscriber;
   private
     FCaption:     TLabel;
     function    reshowCaption: boolean;
@@ -70,24 +69,25 @@ uses
   _debugWindow;
 
 type
-
   // There are problems if we put the interface on a TForm, so we use an intermediary
   TMainCaptionProxy = class(TInterfacedObject, IMainCaption)
   strict private
     FMainCaptionForm: TMainCaptionForm;
+    FSubscriber:      ISubscriber;
+    FSubscriberTT:    ISubscriber;
     FTimerCount:      integer;
-    function initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
   private
-    function onNotify(const aNotice: INotice): INotice;
-    function onTickTimer(const aNotice: INotice): INotice;
+    function    onNotify(const aNotice: INotice): INotice;
+    function    onTickTimer(const aNotice: INotice): INotice;
   public
     constructor create(const aOwner: TForm);
     destructor  Destroy; override;
+    function    initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
     function    notify(const aNotice: INotice): INotice;
     function    resetTimer: boolean;
   end;
 
-var gMC: IMainCaption;
+var gMC: IMainCaption = NIL;
 function MC(const aOwner: TForm): IMainCaption;
 begin
   case gMC = NIL of TRUE: gMC := TMainCaptionProxy.create(aOwner); end;
@@ -165,7 +165,7 @@ begin
   SELF.parent := aVideoPanel;
   copiedFromDFM;
   mmpInitTransparentForm(SELF);
-  SELF.align := alTop;
+  SELF.align  := alTop;
 
   FCaption.parent        := SELF;
   mmpInitTransparentLabel(FCaption);
@@ -215,13 +215,15 @@ end;
 constructor TMainCaptionProxy.create(const aOwner: TForm);
 begin
   inherited create;
-  FMainCaptionForm := TMainCaptionForm.create(aOwner);
-  appNotifier.subscribe(newSubscriber(onNotify));
-  TT.notifier.subscribe(newSubscriber(onTickTimer));
+  FMainCaptionForm  := TMainCaptionForm.create(aOwner);
+  FSubscriber       := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriberTT     := TT.notifier.subscribe(newSubscriber(onTickTimer));
 end;
 
 destructor TMainCaptionProxy.Destroy;
 begin
+  appNotifier.unsubscribe(FSubscriber);
+  TT.notifier.unsubscribe(FSubscriberTT);
   inherited;
 end;
 
@@ -265,7 +267,6 @@ begin
 end;
 
 initialization
-  gMC := NIL;
 
 finalization
   gMC := NIL;

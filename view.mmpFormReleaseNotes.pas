@@ -29,10 +29,10 @@ uses
 
 type
   TReleaseNotesForm = class(TForm)
-    md: TMarkdownViewer;
-    Panel1: TPanel;
+    md:       TMarkdownViewer;
+    Panel1:   TPanel;
     btnClose: TButton;
-    Label1: TLabel;
+    Label1:   TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
