@@ -146,17 +146,17 @@ type
     procedure notifySubscribers(const aNotice: INotice);
   end;
 
-function newNotice:                                                                                 INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aBoolean:    boolean):                         INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aComponent:  TComponent):                      INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aInteger:    integer):                         INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aMediaType:  TMediaType):                      INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):                        INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aPt:         TPoint):                          INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState):                     INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aText:       string = ''):                     INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aText:       string; aMediaType: TMediaType):  INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aWndRec:     TWndRec):                         INotice; overload;
+function newNotice:                                                                                         INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aBoolean:    boolean):                                 INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aComponent:  TComponent):                              INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aInteger:    integer):                                 INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aMediaType:  TMediaType):                              INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):                                INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aPt:         TPoint):                                  INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState):                             INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aText:       string = ''):                             INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aText:       string; aMediaType: TMediaType):          INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aWndRec:     TWndRec):                                 INotice; overload;
 
 implementation
 

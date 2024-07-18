@@ -167,7 +167,7 @@ begin
 
   MMPUI.viewModel.playlist      := newPlaylist;
 
-  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder));
+  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
   case notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
 

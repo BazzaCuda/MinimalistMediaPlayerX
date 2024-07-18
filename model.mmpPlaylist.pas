@@ -31,33 +31,33 @@ type
 
   IPlaylist = interface
     ['{EAA8F4FC-4F65-4080-B25F-5F5CA08309D9}']
-    function    clear:                            boolean;
-    function    copyToClipboard:                  string;
-    function    count:                            integer;
-    function    currentFolder:                    string;
-    function    currentItem:                      string;
-    function    currentIx:                        integer;
-    function    deleteIx(const ix: integer = -1): boolean;
+    function    clear:                                      boolean;
+    function    copyToClipboard:                            string;
+    function    count:                                      integer;
+    function    currentFolder:                              string;
+    function    currentItem:                                string;
+    function    currentIx:                                  integer;
+    function    deleteIx(const ix: integer = -1):           boolean;
     function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
-    function    find(const anItem: string):       boolean;
-    function    first:                            boolean;
-    function    getNotifier:                      INotifier;
-    function    hasItems:                         boolean;
-    function    indexOf(const anItem: string):    integer;
-    function    insert(const anItem: string):     boolean;
-    function    isFirst:                          boolean;
-    function    isLast:                           boolean;
-    function    last:                             boolean;
-    function    next:                             boolean;
-    function    notify(const aNotice: INotice):   INotice;
+    function    find(const anItem: string):                 boolean;
+    function    first:                                      boolean;
+    function    getNotifier:                                INotifier;
+    function    hasItems:                                   boolean;
+    function    indexOf(const anItem: string):              integer;
+    function    insert(const anItem: string):               boolean;
+    function    isFirst:                                    boolean;
+    function    isLast:                                     boolean;
+    function    last:                                       boolean;
+    function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev:                             boolean;
+    function    prev:                                       boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
-    function    setIx(const ix: integer):         integer;
-    function    thisItem(const ix: integer):      string;
-    function    validIx(const ix: integer):       boolean;
+    function    setIx(const ix: integer):                   integer;
+    function    thisItem(const ix: integer):                string;
+    function    validIx(const ix: integer):                 boolean;
 
-    property    notifier:                         INotifier     read getNotifier;
+    property    notifier:                                   INotifier     read getNotifier;
   end;
 
 function newPlaylist: IPlaylist;
@@ -82,44 +82,44 @@ type
     FPlaylist:      TList<string>;
     FSubscriber:    ISubscriber;
   private
-    function    add(const anItem: string):        boolean;
-    function    displayItem:                      string;
+    function    add(const anItem: string):          boolean;
+    function    displayItem:                        string;
     function    extractNumericPart(const aString: string): integer;
-    function    formattedItem:                    string;
-    function    getPlaylist(aListBox: TListBox):  boolean;
-    function    isSpecialImage:                   boolean;
-    function    onNotify(const aNotice: INotice): INotice;
-    function    sort:                             boolean;
+    function    formattedItem:                      string;
+    function    getPlaylist(aListBox: TListBox):    boolean;
+    function    isSpecialImage:                     boolean;
+    function    onNotify(const aNotice: INotice):   INotice;
+    function    sort:                               boolean;
   protected
     procedure   setCurrentFolder(const aValue: string);
   public
     constructor create;
     destructor  Destroy; override;
-    function    clear:                            boolean;
-    function    copyToClipboard:                  string;
-    function    count:                            integer;
-    function    currentFolder:                    string;
-    function    currentItem:                      string;
-    function    currentIx:                        integer;
-    function    deleteIx(const ix: integer = -1): boolean;
+    function    clear:                                      boolean;
+    function    copyToClipboard:                            string;
+    function    count:                                      integer;
+    function    currentFolder:                              string;
+    function    currentItem:                                string;
+    function    currentIx:                                  integer;
+    function    deleteIx(const ix: integer = -1):           boolean;
     function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
-    function    find(const anItem: string):       boolean;
-    function    first:                            boolean;
-    function    getNotifier:                      INotifier;
-    function    hasItems:                         boolean;
-    function    indexOf(const anItem: string):    integer;
-    function    insert(const anItem: string):     boolean;
-    function    isFirst:                          boolean;
-    function    isLast:                           boolean;
-    function    last:                             boolean;
-    function    next:                             boolean;
-    function    notify(const aNotice: INotice):   INotice;
+    function    find(const anItem: string):                 boolean;
+    function    first:                                      boolean;
+    function    getNotifier:                                INotifier;
+    function    hasItems:                                   boolean;
+    function    indexOf(const anItem: string):              integer;
+    function    insert(const anItem: string):               boolean;
+    function    isFirst:                                    boolean;
+    function    isLast:                                     boolean;
+    function    last:                                       boolean;
+    function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev:                             boolean;
+    function    prev:                                       boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
-    function    setIx(const ix: integer):         integer;
-    function    thisItem(const ix: integer):      string;
-    function    validIx(const ix: integer):       boolean;
+    function    setIx(const ix: integer):                   integer;
+    function    thisItem(const ix: integer):                string;
+    function    validIx(const ix: integer):                 boolean;
   end;
 
 function newPlaylist: IPlaylist;
@@ -223,11 +223,11 @@ const
   faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
 var
   vSR: TSearchRec;
-  vExt: string;
 
   function fileExtOK: boolean;
   begin
-    result := MT.mediaType(vExt) in aSetOfMediaType;
+    var vMT := MT.mediaType(vSR.name);
+    result  := (vMT <> mtUnk) and ((mtUnk in aSetOfMediaType) or (vMT in aSetOfMediaType));
   end;
 
 begin
@@ -239,7 +239,6 @@ begin
 
   case findFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
     repeat
-      vExt := lowerCase(extractFileExt(vSR.name));
       case fileExtOK of TRUE: add(aFolder + vSR.Name); end;
     until findNext(vSR) <> 0;
   end;
@@ -312,8 +311,8 @@ function TPlaylist.insert(const anItem: string): boolean;
 // insert at FPlayIx + 1, after the current item
 begin
   result := FALSE;
-  case next of  TRUE: FPlaylist.insert(FPlayIx, anItem);
-               FALSE: FPlaylist.add(anItem); end;
+  case isLast of   TRUE: FPlaylist.add(anItem);
+                  FALSE: FPlaylist.insert(FPlayIx, anItem); end;
   result := FPlaylist.count > 0;
 end;
 
@@ -342,12 +341,25 @@ begin
   result := FPlayIx <> -1;
 end;
 
-function TPlaylist.next: boolean;
+function TPlaylist.next(const aMediaType: TMediaType = mtUnk): boolean;
+
+  function findNext: boolean;
+  var vMediaType: TMediaType;
+  begin
+    result := FALSE;
+    repeat
+      inc(FPlayIx);
+      vMediaType := MT.mediaType(currentItem);
+      case isLast and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end;
+    until (aMediaType in [mtUnk, vMediaType]) or isLast; // order of shortcut logic is important here
+    result := TRUE;
+  end;
+
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
-  case isLast of TRUE: EXIT; end;
-  inc(FPlayIx);
+  case isLast   of TRUE:  EXIT; end;
+  case findNext of FALSE: EXIT; end;
   result := TRUE;
 end;
 
@@ -363,12 +375,12 @@ begin
   case aNotice.event of
     evPLCopyToClipboard:    aNotice.text  := copyToClipboard;
     evPLDeleteIx:           aNotice.tf    := deleteIx(aNotice.integer);
-    evPLFillPlaylist:       fillPlaylist(aNotice.text);
+    evPLFillPlaylist:       fillPlaylist(aNotice.text, [aNotice.mediaType]);
     evPLFillListbox:        getPlaylist(aNotice.component as TListBox);
     evPLFind:               aNotice.tf    := find(aNotice.text);
     evPLFirst:              aNotice.tf    := first;
     evPLLast:               aNotice.tf    := last;
-    evPLNext:               aNotice.tf    := next;
+    evPLNext:               aNotice.tf    := next(aNotice.mediaType);
     evPLPrev:               aNotice.tf    := prev;
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
 

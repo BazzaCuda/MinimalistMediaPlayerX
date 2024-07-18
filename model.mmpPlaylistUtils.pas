@@ -23,8 +23,8 @@ interface
 uses
   system.sysUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpGlobalState,
-  model.mmpMediaPlayer, model.mmpPlaylist;
+  mmpConsts, mmpGlobalState,
+  model.mmpConfigFile, model.mmpMediaPlayer, model.mmpPlaylist;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 function mmpPlayCurrent:      boolean;
@@ -79,8 +79,11 @@ begin
 end;
 
 function mmpPlayNext: boolean;
+var vMediaType: TMediaType;
 begin
-  result := notifyApp(newNotice(evPLNext)).tf;
+  case GS.imagesPaused of  TRUE: vMediaType := mtUnk;
+                          FALSE: vMediaType := CF.asMediaType[CONF_SLIDESHOW_FORMAT]; end;
+  result := notifyApp(newNotice(evPLNext, vMediaType)).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 

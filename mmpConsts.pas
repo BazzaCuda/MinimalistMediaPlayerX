@@ -77,6 +77,7 @@ const
   CONF_OPEN_IMAGE           = 'openImage';
   CONF_PROGRESS_BAR         = 'progressBar';
   CONF_SHOW_METADATA        = 'showMetaData';
+  CONF_SLIDESHOW_FORMAT     = 'slideshowFormat';
   CONF_TIME_CAPTION         = 'timeCaption';
   CONF_VIDEO_DELETE         = 'videoDelete';
   CONF_VOLUME               = 'volume';
@@ -135,6 +136,7 @@ type
   TAnonFunc = reference to function: boolean;
 
 const
+  mmpMediaTypeStrings: array[0..3] of string = ('unk', 'audio', 'video', 'image');
   FnnKeyApps: array[F10_APP..F12_APP] of string = ('F10', 'F11', 'F12');
   mediaTypes: array[0..87] of TMediaTypeRec = (
 

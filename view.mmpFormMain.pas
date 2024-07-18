@@ -23,10 +23,10 @@ interface
 uses
   winApi.messages, winapi.windows,
   system.classes, system.sysUtils, system.variants,
-  vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
+  vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
   mmpConsts,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  viewModel.mmpVM, Vcl.AppEvnts;
+  viewModel.mmpVM, Vcl.Menus;
 
 type
   // we're not currently using this because of TComponent problems via TForm :(

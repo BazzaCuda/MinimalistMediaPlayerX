@@ -23,7 +23,7 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.classes,
-  vcl.Controls, vcl.extCtrls, vcl.forms,
+  vcl.Controls, vcl.extCtrls, vcl.forms, vcl.menus,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   view.mmpFormThumbs, view.mmpProgressBar,
   model.mmpMediaPlayer, model.mmpPlaylist;
@@ -117,9 +117,13 @@ type
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
+
+    FMenu:                  TPopupMenu;
   private
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function    doPlayNext:           boolean;
+    function    doPlayPrev:           boolean;
     function    doEscapeKey:          boolean;
     function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
     function    keepDelete:           boolean;
@@ -252,6 +256,10 @@ begin
   inherited;
   FSubscriber   := appNotifier.subscribe(newSubscriber(onNotify));
   FSubscriberTT := TT.notifier.subscribe(newSubscriber(onTickTimer));
+  FMenu := TPopupMenu.create(NIL);
+  var vMenuItem := TMenuItem.create(FMenu);
+  vMenuItem.caption := 'Exit';
+  FMenu.items.add(vMenuItem);
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -280,6 +288,7 @@ begin
   TT.notifier.unsubscribe(FSubscriberTT);
   appNotifier.unsubscribe(FSubscriber);
   case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
+  case FMenu = NIL of FALSE: FMenu.free; end;
   inherited;
 end;
 
@@ -288,6 +297,19 @@ begin
   case GS.mainForm.windowState = wsMaximized of  TRUE: notifyApp(newNotice(evVMToggleFullscreen));
                                                 FALSE: notifyApp(newNotice(evAppClose)); end;
 end;
+
+function TVM.doPlayNext: boolean;
+begin
+  case mmpPlayNext of FALSE:
+  case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                 FALSE: notifyApp(newNotice(evAppClose)); end;end;
+end;
+
+function TVM.doPlayPrev: boolean;
+begin
+  case mmpPlayPrev of FALSE:
+  case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playPrevFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                 FALSE: notifyApp(newNotice(evAppClose)); end;end;end;
 
 function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
 // X and Y are the video dimensions
@@ -463,6 +485,7 @@ procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer)
 begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
   case button = mbLeft of TRUE: mouseDown := FALSE; end;
+//  case button = mbRight of TRUE: FMenu.Popup(X, Y); end;
 end;
 
 procedure TVM.onMouseWheelDown(shift: TShiftState; mousePos: TPoint; var handled: Boolean);
@@ -535,10 +558,8 @@ begin
     evVMMPPlayCurrent:      mmpPlayCurrent;
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
-    evVMMPPlayNext:         case mmpPlayNext of FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                                                                      FALSE: notifyApp(newNotice(evAppClose)); end;end;
-    evVMMPPlayPrev:         case mmpPlayPrev of FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playPrevFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                                                                      FALSE: notifyApp(newNotice(evAppClose)); end;end;
+    evVMMPPlayNext:         doPlayNext;
+    evVMMPPlayPrev:         doPlayPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
     evVMPlaySomething:      playSomething(aNotice.integer);
@@ -668,7 +689,7 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath)));
+      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath), CF.asMediaType[CONF_SLIDESHOW_FORMAT]));
       notifyApp(newNotice(evPLFind, vFilePath));
       case notifyApp(newNotice(evPLReqHasItems)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
 
@@ -706,7 +727,10 @@ var
 begin
   vNextFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   notifyApp(newNotice(evSTOpInfo, vNextFolder));
-  notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
+
+  case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
+                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_SLIDESHOW_FORMAT])); end;
+
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
@@ -723,7 +747,10 @@ var
 begin
   vPrevFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   notifyApp(newNotice(evSTOpInfo, vPrevFolder));
-  notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
+
+  case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
+                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_SLIDESHOW_FORMAT])); end;
+
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
@@ -746,7 +773,7 @@ function TVM.reloadPlaylist: boolean;
 begin
   result := FALSE;
   var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
-  notifyApp(newNotice(evPLFillPlaylist, notifyApp(newNotice(evPLReqCurrentFolder)).text));
+  notifyApp(newNotice(evPLFillPlaylist, notifyApp(newNotice(evPLReqCurrentFolder)).text, mtUnk));
   case notifyApp(newNotice(evPLFind, vCurrentItem)).tf of FALSE: notifyApp(newNotice(evPLFirst)); end;
   notifyApp(newNotice(evPLFormLoadBox));
   result := TRUE;

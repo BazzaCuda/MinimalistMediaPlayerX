@@ -21,23 +21,27 @@ unit model.mmpConfigFile;
 interface
 
 uses
-  system.classes, system.ioUtils;
+  system.classes, system.ioUtils,
+  mmpConsts;
 
 type
   IConfigFile = interface
     ['{32AB825C-CC48-47F2-8717-8F471C059BAD}']
-    function  getAsBoolean(const aName: string): boolean;
-    function  getAsInteger(const aName: string): integer;
-    function  getValue    (const aName: string): string;
+    function  getAsBoolean  (const aName: string): boolean;
+    function  getAsInteger  (const aName: string): integer;
+    function  getAsMediaType(const aName: string): TMediaType;
+    function  getValue      (const aName: string): string;
 
-    procedure setValue    (const aName: string; const aValue: string);
+    procedure setValue      (const aName: string; const aValue: string);
 
-    function  deleteConfig(const aName: string): boolean;
-    function  initConfigFile(const aFilePath: string): boolean;
-    function  toHex(const aInteger: integer): string;
-    property  asBoolean[const aName: string]: boolean read getAsBoolean;
-    property  asInteger[const aName: string]: integer read getAsInteger;
-    property  value[const aName: string]: string read getValue write setValue; default;
+    function  deleteConfig  (const aName: string):      boolean;
+    function  initConfigFile(const aFilePath: string):  boolean;
+    function  toHex         (const aInteger: integer):  string;
+
+    property  asBoolean[const aName: string]:   boolean     read getAsBoolean;
+    property  asInteger[const aName: string]:   integer     read getAsInteger;
+    property  asMediaType[const aName: string]: TMediaType  read getAsMediaType;
+    property  value[const aName: string]:       string      read getValue write setValue; default;
   end;
 
 function CF: IConfigFile;
@@ -61,15 +65,16 @@ type
     constructor create;
     destructor  Destroy; override;
 
-    function    getAsBoolean(const aName: string): boolean;
-    function    getAsInteger(const aName: string): integer;
-    function    getValue    (const aName: string): string;
+    function    getAsBoolean  (const aName: string): boolean;
+    function    getAsInteger  (const aName: string): integer;
+    function    getAsMediaType(const aName: string): TMediaType;
+    function    getValue      (const aName: string): string;
 
-    procedure   setValue(const aName: string; const aValue: string);
+    procedure   setValue      (const aName: string; const aValue: string);
 
-    function    deleteConfig(const aName: string): boolean;
+    function    deleteConfig  (const aName: string): boolean;
     function    initConfigFile(const aFilePath: string): boolean;
-    function    toHex(const aInteger: integer): string;
+    function    toHex         (const aInteger: integer): string;
   end;
 
 var gCF: IConfigFile;
@@ -130,6 +135,15 @@ function TConfigFile.getAsInteger(const aName: string): integer;
 begin
   checkForManualEdits;
   try result := strToIntDef(FFileContents.values[aName], 0); except result := 0; end;
+end;
+
+function TConfigFile.getAsMediaType(const aName: string): TMediaType;
+begin
+  var vSlideshowFormat := lowercase(FFileContents.values[aName]);
+  result := mtUnk;
+  case vSlideshowFormat = 'audio' of TRUE: result := mtAudio; end;
+  case vSlideshowFormat = 'video' of TRUE: result := mtVideo; end;
+  case vSlideshowFormat = 'image' of TRUE: result := mtImage; end;
 end;
 
 function TConfigFile.getValue(const aName: string): string;
