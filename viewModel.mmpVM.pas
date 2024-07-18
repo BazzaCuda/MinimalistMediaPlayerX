@@ -486,10 +486,8 @@ begin
                                                     FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
 
     evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
-                                                  mtImage:  case GS.imagesPaused    of  TRUE: ; // ignore fake end for .png, .avif and .webp image types
-                                                                                       FALSE: begin
-                                                                                                case notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: mmpDelay(GS.IDD * 1000); end;
-                                                                                                notifyApp(newNotice(evVMMPPlayNext)); end;end;end;
+                                                  mtImage:  end; // ignore everything. Let onSlideshowTimer handle it.
+
     evMPDuration:   notifyApp(newNotice(evPBMax, aNotice.integer));
     evMPPosition:   notifyApp(newNotice(evPBPosition, aNotice.integer));
   end;
@@ -566,7 +564,7 @@ end;
 
 procedure TVM.onSlideshowTimer(sender: TObject);
 begin
-  case (GS.mediaType = mtImage) and NOT notifyApp(newNotice(evPLReqIsSpecialImage)).tf of TRUE: FMP.notifier.notifySubscribers(newNotice(evMPStateEnd)); end;
+  case (GS.mediaType = mtImage) of TRUE: notifyApp(newNotice(evVMMPPlayNext)); end;
 end;
 
 function TVM.onTickTimer(const aNotice: INotice): INotice;
