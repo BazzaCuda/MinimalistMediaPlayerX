@@ -67,6 +67,7 @@ const
   CONF_AUDIO_DELETE         = 'audioDelete';
   CONF_AUTO_UPDATE          = 'autoUpdate';
   CONF_BASE_FOLDER          = 'baseFolder';
+  CONF_DELETE_METHOD        = 'deleteMethod';
   CONF_FOLDER_DELETE        = 'folderDelete';
   CONF_KEEP_DELETE          = 'keepDelete';
   CONF_IMAGE_DELETE         = 'imageDelete';
@@ -99,6 +100,7 @@ type
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax);
 
+  TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
   TRenameType   = (rtUser, rtKeep);
 

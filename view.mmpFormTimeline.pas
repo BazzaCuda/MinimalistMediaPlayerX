@@ -613,7 +613,12 @@ begin
 
     case result of FALSE: EXIT; end;
 
-    case vSegOneFN <> '' of TRUE: begin renameFile(vSegOneFN, filePathOUT); EXIT; end;end;
+    case vSegOneFN = '' of FALSE: begin
+                                    var vFileClash := filePathOUT;
+                                    while fileExists(vFileClash) do vFileClash := vFileClash + '_';
+                                    case  fileExists(filePathOUT) of TRUE: renameFile(filePathOUT, vFileClash); end;
+                                    renameFile(vSegOneFN, filePathOUT);
+                                    EXIT; end;end;
 
   // concatenate exported segments
   vProgressForm.subHeading.caption := 'Joining segments';

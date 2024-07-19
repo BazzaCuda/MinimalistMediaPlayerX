@@ -21,7 +21,7 @@ Ctrl-**DEL** [D]elete folder contents after confirm\*\*<br />
 Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
 **R** [R]ename file<br />
 
-\*\* doesn't touch the contents of non-empty subfolders<br />
+\*\* doesn't touch the contents of subfolders<br />
 
 **Freeze Frame**<br />
 &rarr; **right** arrow, frame + :hold to repeat<br />

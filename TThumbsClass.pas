@@ -258,7 +258,7 @@ begin
   case FFoldPanelReserved of  TRUE: FFoldPanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnFold, FPlaylist.currentFolder); end;
 
-  FStatusBar.refresh;
+  FStatusBar.repaint;
   mmpProcessMessages;
 end;
 

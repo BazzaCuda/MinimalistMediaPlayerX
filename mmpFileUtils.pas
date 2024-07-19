@@ -43,7 +43,7 @@ uses
   winApi.windows,
   system.ioUtils,
   vcl.dialogs,
-  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpShellUtils, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpShellUtils, mmpShredUtils, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
 
 
@@ -51,8 +51,7 @@ function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftStat
 begin
   result    := FALSE;
 
-  var vExt  := lowerCase(extractFileExt(aFilePath));
-  var vMT   := MT.mediaType(vExt);
+  var vMT   := MT.mediaType(aFilePath);
 
   case ssCtrl in aShiftState of  TRUE:  case CF.asBoolean[CONF_FOLDER_DELETE] of FALSE: EXIT; end;end;
   case ssCtrl in aShiftState of FALSE:  case vMT of
@@ -74,6 +73,9 @@ begin
   var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(aFilePath);
   case ssCtrl in aShiftState of  TRUE: vMsg := 'DELETE folder contents '#13#10#13#10'Folder: ' + extractFilePath(aFilePath) + '*.*';
                                   FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(aFilePath); end;
+
+  case CF.asDeleteMethod[CONF_DELETE_METHOD] in [dmStandard, dmShred] of TRUE: vMsg := vMsg + #13#10#13#10'Only click OK if you are ABSOLUTELY SURE'; end;
+  case CF.asDeleteMethod[CONF_DELETE_METHOD] of dmShred: vMsg := vMsg + #13#10'Shred: Once they''re gone, they are GONE!'; end;
 
   case ssCtrl in aShiftState of TRUE: vMsg := vMsg + #13#10#13#10'(doesn''t affect the contents of subfolders)'; end;
 
@@ -147,8 +149,8 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
-  case ssCtrl in aShiftState of  TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + extractFilePath(aFilePath) + '*.* "'); // folder contents but not subfolders [unless they're empty]
-                                FALSE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + aFilePath + '"'); end;                 // one individual file
+  case ssCtrl in aShiftState of  TRUE: mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
+                                FALSE: mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file
 
   result := TRUE;
 end;
@@ -226,7 +228,7 @@ end;
 
 function mmpKeepDelete(const aFolderPath: string): boolean;
 const
-  faFile = faAnyFile - faDirectory - faHidden - faSysFile;
+  faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
 var
   vSR: TSearchRec;
   vExt: string;
@@ -249,15 +251,17 @@ begin
 
   var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
       vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
-      vMsg := vMsg + 'that doesn''t start with an underscore character _'#13#10#13#10;
-      vMsg := vMsg + 'Only click OK if you are ABSOLUTELY SURE'#13#10#13#10;
-      vMsg := vMsg + 'Once they''re gone, they are GONE!';
+      vMsg := vMsg + 'that doesn''t start with an underscore character _';
+
+  case CF.asDeleteMethod[CONF_DELETE_METHOD] in [dmStandard, dmShred] of TRUE: vMsg := vMsg + #13#10#13#10'Only click OK if you are ABSOLUTELY SURE'; end;
+  case CF.asDeleteMethod[CONF_DELETE_METHOD] of dmShred: vMsg := vMsg + #13#10'Shred: Once they''re gone, they are GONE!'; end;
+
   case mmpShowOkCancelMsgDlg(vMsg) = IDOK of  TRUE:;
                                              FALSE: EXIT; end;
 
-  case findFirst(aFolderPath + '*.*', faFile, vSR) = 0 of  TRUE:
+  case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
     repeat
-      case fileOK of TRUE: mmpDoCommandLine('rot -nobanner -p 1 -r "' + aFolderPath + vSR.Name +  '"'); end;
+      case fileOK of TRUE: mmpShredThis(aFolderPath + vSR.Name, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;
     until findNext(vSR) <> 0;
   end;
 

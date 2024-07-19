@@ -27,21 +27,23 @@ uses
 type
   IConfigFile = interface
     ['{32AB825C-CC48-47F2-8717-8F471C059BAD}']
-    function  getAsBoolean  (const aName: string): boolean;
-    function  getAsInteger  (const aName: string): integer;
-    function  getAsMediaType(const aName: string): TMediaType;
-    function  getValue      (const aName: string): string;
+    function  getAsBoolean      (const aName: string): boolean;
+    function  getAsDeleteMethod (const aName: string): TDeleteMethod;
+    function  getAsInteger      (const aName: string): integer;
+    function  getAsMediaType    (const aName: string): TMediaType;
+    function  getValue          (const aName: string): string;
 
-    procedure setValue      (const aName: string; const aValue: string);
+    procedure setValue          (const aName: string; const aValue: string);
 
-    function  deleteConfig  (const aName: string):      boolean;
-    function  initConfigFile(const aFilePath: string):  boolean;
-    function  toHex         (const aInteger: integer):  string;
+    function  deleteConfig      (const aName: string):      boolean;
+    function  initConfigFile    (const aFilePath: string):  boolean;
+    function  toHex             (const aInteger: integer):  string;
 
-    property  asBoolean[const aName: string]:   boolean     read getAsBoolean;
-    property  asInteger[const aName: string]:   integer     read getAsInteger;
-    property  asMediaType[const aName: string]: TMediaType  read getAsMediaType;
-    property  value[const aName: string]:       string      read getValue write setValue; default;
+    property  asBoolean         [const aName: string]:  boolean       read getAsBoolean;
+    property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod;
+    property  asInteger         [const aName: string]:  integer       read getAsInteger;
+    property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType;
+    property  value             [const aName: string]:  string        read getValue write setValue; default;
   end;
 
 function CF: IConfigFile;
@@ -65,16 +67,17 @@ type
     constructor create;
     destructor  Destroy; override;
 
-    function    getAsBoolean  (const aName: string): boolean;
-    function    getAsInteger  (const aName: string): integer;
-    function    getAsMediaType(const aName: string): TMediaType;
-    function    getValue      (const aName: string): string;
+    function    getAsBoolean      (const aName: string): boolean;
+    function    getAsDeleteMethod (const aName: string): TDeleteMethod;
+    function    getAsInteger      (const aName: string): integer;
+    function    getAsMediaType    (const aName: string): TMediaType;
+    function    getValue          (const aName: string): string;
 
-    procedure   setValue      (const aName: string; const aValue: string);
+    procedure   setValue          (const aName: string; const aValue: string);
 
-    function    deleteConfig  (const aName: string): boolean;
-    function    initConfigFile(const aFilePath: string): boolean;
-    function    toHex         (const aInteger: integer): string;
+    function    deleteConfig      (const aName: string): boolean;
+    function    initConfigFile    (const aFilePath: string): boolean;
+    function    toHex             (const aInteger: integer): string;
   end;
 
 var gCF: IConfigFile;
@@ -131,6 +134,16 @@ begin
   result := lowerCase(FFileContents.values[aName]) = 'yes';
 end;
 
+function TConfigFile.getAsDeleteMethod(const aName: string): TDeleteMethod;
+begin
+  checkForManualEdits;
+  var vDeleteMethod := lowercase(FFileContents.values[aName]);
+  result := dmRecycle;
+  case vDeleteMethod = 'recycle'  of TRUE: result := dmRecycle;   end;
+  case vDeleteMethod = 'delete'   of TRUE: result := dmStandard;  end;
+  case vDeleteMethod = 'shred'    of TRUE: result := dmShred;     end;
+end;
+
 function TConfigFile.getAsInteger(const aName: string): integer;
 begin
   checkForManualEdits;
@@ -139,6 +152,7 @@ end;
 
 function TConfigFile.getAsMediaType(const aName: string): TMediaType;
 begin
+  checkForManualEdits;
   var vSlideshowFormat := lowercase(FFileContents.values[aName]);
   result := mtUnk;
   case vSlideshowFormat = 'audio' of TRUE: result := mtAudio; end;

@@ -23,7 +23,7 @@ Ctrl-**S** Save altered image to new file<br />
 Ctrl-**U** undo Save/Move<br />
 
 _**\*** can be specified in MinimalistMediaPlayer.conf_<br />
-_**&loz;** doesn't touch the contents of non-empty subfolders_<br />
+_**&loz;** doesn't touch the contents of subfolders_<br />
 
 **Gamma**<br />
 **[** decrease :hold to repeat<br />

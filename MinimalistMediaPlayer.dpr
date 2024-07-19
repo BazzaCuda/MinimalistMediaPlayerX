@@ -103,7 +103,8 @@ uses
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
   mmpUserFolders in 'mmpUserFolders.pas',
   mmpTicker in 'mmpTicker.pas',
-  mmpFormatting in 'mmpFormatting.pas';
+  mmpFormatting in 'mmpFormatting.pas',
+  mmpShredUtils in 'mmpShredUtils.pas';
 
 function checkParam: boolean;
 begin

@@ -114,7 +114,7 @@
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <VerInfo_Release>5</VerInfo_Release>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
-        <Debugger_RunParams>&quot;B:\Downloads\_testMMP\032.jpg&quot;   &quot;B:\Downloads\_testMMP\030.jpg&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Images\zTest\New Folder\017.jpg&quot; &quot;B:\Downloads\_testMMP\032.jpg&quot;   &quot;B:\Downloads\_testMMP\030.jpg&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
     </PropertyGroup>
@@ -139,7 +139,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Downloads\_testMMP\030.jpg&quot; &quot;B:\Movies\Bourne 1 - The Bourne Identity (2002).mp4&quot; &quot;B:\Images\zTest\048.jpg&quot; &quot;B:\Downloads\_testMMP\HostDash (12).jpg&quot; &quot;B:\AudioLibrary\Enya - Orinoco Flow (Official 4K Music Video).m4a&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Images\zTest\New Folder\017.jpg&quot; &quot;B:\Downloads\_testMMP\030.jpg&quot; &quot;B:\Movies\Bourne 1 - The Bourne Identity (2002).mp4&quot; &quot;B:\Images\zTest\048.jpg&quot; &quot;B:\Downloads\_testMMP\HostDash (12).jpg&quot; &quot;B:\AudioLibrary\Enya - Orinoco Flow (Official 4K Music Video).m4a&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
@@ -227,6 +227,7 @@
         <DCCReference Include="mmpUserFolders.pas"/>
         <DCCReference Include="mmpTicker.pas"/>
         <DCCReference Include="mmpFormatting.pas"/>
+        <DCCReference Include="mmpShredUtils.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

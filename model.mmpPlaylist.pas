@@ -220,7 +220,7 @@ end;
 
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
 const
-  faFile  = faAnyFile - faDirectory - faHidden - faSysFile;
+  faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
 var
   vSR: TSearchRec;
 
@@ -237,7 +237,7 @@ begin
   case directoryExists(aFolder) of FALSE: EXIT; end;
   FCurrentFolder := aFolder;
 
-  case findFirst(aFolder + '*.*', faFile, vSR) = 0 of  TRUE:
+  case findFirst(aFolder + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
     repeat
       case fileExtOK of TRUE: add(aFolder + vSR.Name); end;
     until findNext(vSR) <> 0;
