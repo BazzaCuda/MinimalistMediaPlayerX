@@ -133,6 +133,7 @@ begin
     koToggleProgressBar:  notifyApp(newNotice(evPBToggleProgressBar));
     koToggleControls:     notifyApp(newNotice(evPAPostToAll, WIN_TOGGLE_CONTROLS));
     koToggleEditMode:     notifyApp(newNotice(evVMToggleEditMode));
+    koToggleFiltering:    notifyApp(newNotice(evVMToggleFiltering));
     koToggleHelp:         notifyApp(newNotice(evVMToggleHelp));
     koToggleNumlock:      mmpToggleNumlock;
     koTogglePlaylist:     notifyApp(newNotice(evVMTogglePlaylist));

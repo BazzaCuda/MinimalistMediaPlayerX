@@ -128,6 +128,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(N) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koMinimizeWindow; end;
     case keyDn and keyIs(O)                             and NOT GS.showingTimeline    of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(P)                                                           of TRUE: result := koTogglePlaylist; end;
+    case keyUp and keyIs(P) and     ctrl                                              of TRUE: result := koToggleFiltering; end;
     case keyUp and keyIs(Q)                                                           of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(R) and     ctrl                                              of TRUE: result := koToggleRepeat; end;
     case keyUp and keyIs(R) and NOT ctrl                                              of TRUE: result := koRenameFile; end;
@@ -198,7 +199,6 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_VOLUME_UP)                                                of TRUE: result := koVolUp; end;
 
     // spare keys
-    case keyUp and keyIs(P) and ctrl                                                  of TRUE: result := koNone; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
   end;
 

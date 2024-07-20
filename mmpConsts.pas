@@ -76,10 +76,10 @@ const
   CONF_NEXT_FOLDER_ON_EMPTY = 'nextFolderOnEmpty';
   CONF_NEXT_FOLDER_ON_END   = 'nextFolderOnEnd';
   CONF_OPEN_IMAGE           = 'openImage';
+  CONF_PLAYLIST_FORMAT      = 'playlistFormat';
   CONF_PROGRESS_BAR         = 'progressBar';
   CONF_REPEAT_DELAY_MS      = 'repeatDelayMs';
   CONF_SHOW_METADATA        = 'showMetaData';
-  CONF_SLIDESHOW_FORMAT     = 'slideshowFormat';
   CONF_TIME_CAPTION         = 'timeCaption';
   CONF_VIDEO_DELETE         = 'videoDelete';
   CONF_VOLUME               = 'volume';
@@ -99,7 +99,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koResetAll,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax);
+            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);

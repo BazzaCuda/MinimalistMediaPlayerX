@@ -82,7 +82,7 @@ function mmpPlayNext: boolean;
 var vMediaType: TMediaType;
 begin
   case GS.imagesPaused of  TRUE: vMediaType := mtUnk;
-                          FALSE: vMediaType := CF.asMediaType[CONF_SLIDESHOW_FORMAT]; end;
+                          FALSE: vMediaType := CF.asMediaType[CONF_PLAYLIST_FORMAT]; end;
   result := notifyApp(newNotice(evPLNext, vMediaType)).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;

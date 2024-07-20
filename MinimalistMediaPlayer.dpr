@@ -161,6 +161,7 @@ begin
 
   CF.initConfigFile(mmpConfigFilePath);
   notifyApp(newNotice(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]));
+  case GS.repeatDelayMs <= 0 of TRUE: notifyApp(newNotice(evGSRepeatDelayMs, 100)); end;
 
   Application.CreateForm(TMMPUI, MMPUI);
   notifyApp(newNotice(evGSMainForm, MMPUI));

@@ -143,6 +143,7 @@ type
     function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
     function    tab(const aCapsLock:  boolean; const aFactor: integer = 0): string;
     function    toggleEditMode:       boolean;
+    function    toggleFiltering:      boolean;
     function    toggleFullscreen:     boolean;
     function    toggleHelp:           boolean;
     function    togglePlaylist:       boolean;
@@ -579,6 +580,7 @@ begin
     evVMShowThumbs:         showThumbnails(htThumbsHost);
     evVMShutTimeline:       shutTimeline;
     evVMToggleEditMode:     begin toggleEditMode; resizeWindow; end;
+    evVMToggleFiltering:    toggleFiltering;
     evVMToggleHelp:         begin toggleHelp;     resizeWindow; end;
     evVMToggleFullscreen:   toggleFullscreen;
     evVMTogglePlaylist:     begin togglePlaylist; resizeWindow; end;
@@ -699,7 +701,7 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath), CF.asMediaType[CONF_SLIDESHOW_FORMAT]));
+      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath), CF.asMediaType[CONF_PLAYLIST_FORMAT]));
       notifyApp(newNotice(evPLFind, vFilePath));
       case notifyApp(newNotice(evPLReqHasItems)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
 
@@ -739,7 +741,7 @@ begin
   notifyApp(newNotice(evSTOpInfo, vNextFolder));
 
   case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
-                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_SLIDESHOW_FORMAT])); end;
+                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT])); end;
 
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
@@ -759,7 +761,7 @@ begin
   notifyApp(newNotice(evSTOpInfo, vPrevFolder));
 
   case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
-                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_SLIDESHOW_FORMAT])); end;
+                          FALSE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT])); end;
 
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
@@ -961,13 +963,13 @@ begin
   result := TRUE;
 end;
 
-function TVM.toggleHelp: boolean;
+function TVM.toggleFiltering: boolean;
 begin
   result := FALSE;
-  notifyApp(newNotice(evPLFormShutForm));
-  GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
-  case GS.showingHelp of   TRUE: notifyApp(newNotice(evVMMoveHelp, TRUE));
-                          FALSE: notifyApp(newNotice(evHelpShutHelp)); end;
+  notifyApp(newNotice(evGSImagesPaused, NOT GS.imagesPaused));
+  setupSlideshowTimer;
+  case GS.imagesPaused of  TRUE: notifyApp(newNotice(evSTOpInfo, 'Playlist filtering OFF'));
+                          FALSE: notifyApp(newNotice(evSTOpInfo, 'Playlist filtering ON')); end;
   result := TRUE;
 end;
 
@@ -979,6 +981,16 @@ begin
                                                           FResizingWindow := TRUE;
                                                           GS.mainForm.windowState := wsMaximized;
                                                           FResizingWindow := FALSE; end;end;
+  result := TRUE;
+end;
+
+function TVM.toggleHelp: boolean;
+begin
+  result := FALSE;
+  notifyApp(newNotice(evPLFormShutForm));
+  GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
+  case GS.showingHelp of   TRUE: notifyApp(newNotice(evVMMoveHelp, TRUE));
+                          FALSE: notifyApp(newNotice(evHelpShutHelp)); end;
   result := TRUE;
 end;
 

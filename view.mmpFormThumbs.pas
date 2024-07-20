@@ -320,8 +320,8 @@ begin
   FMPVHost.visible    := FInitialHost = htMPVHost;
   FThumbsHost.visible := FInitialHost = htThumbsHost;
 
-  case FInitialHost of     htMPVHost: FTimerInterval := 1000;
-                        htThumbsHost: FTimerInterval := 1000; end;
+  case FInitialHost of     htMPVHost: FTimerInterval := 100;
+                        htThumbsHost: FTimerInterval := 250; end;
 
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
