@@ -31,9 +31,6 @@ uses
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 
-const
-  NUMPASSES = 1;
-
 implementation
 
 uses
@@ -43,6 +40,7 @@ uses
   _debugWindow;
 
 const
+  NUMPASSES       = 1;
   CLEANINGBUFFERS = 3;
 
 var
@@ -185,11 +183,12 @@ begin
 	if (fileLengthLo + fileLengthHi) <> 0 then begin
 		// Seek to the last byte of the file
 		dec(fileLengthLo);
-		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
+		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi); // I suspect this only works in C with the decrement causing an underflow (?)...
     vFileLength.lowPart   := fileLengthLo;
     vFileLength.highPart  := fileLengthHi;
-    setFilePointerEx(hFile, fileLengthLo, @vFileLength.highPart, FILE_BEGIN);
-		// Write one zero byte, which causes the file system to fill the entire file's on-disk contents with 0
+    setFilePointerEx(hFile, fileLengthLo, @vFileLength.highPart, FILE_BEGIN); // ...but as we're now using setFilePointerEx which handles 64bit integers, it might not be an issue.
+		// MR:  "Write one zero byte, which causes the file system to fill the entire file's on-disk contents with 0"
+    // Baz: "This no longer true. It does exactly what you'd expect it to do - write to the very last byte in the file."
     result := -2;
 		case secureOverwrite(hFile, DWORD(1)) of FALSE: EXIT; end;
   end;
