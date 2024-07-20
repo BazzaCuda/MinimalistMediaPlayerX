@@ -77,6 +77,7 @@ const
   CONF_NEXT_FOLDER_ON_END   = 'nextFolderOnEnd';
   CONF_OPEN_IMAGE           = 'openImage';
   CONF_PROGRESS_BAR         = 'progressBar';
+  CONF_REPEAT_DELAY_MS      = 'repeatDelayMs';
   CONF_SHOW_METADATA        = 'showMetaData';
   CONF_SLIDESHOW_FORMAT     = 'slideshowFormat';
   CONF_TIME_CAPTION         = 'timeCaption';

@@ -113,6 +113,7 @@ type
 
     FDoubleClick:           boolean;
     FDragged:               boolean;
+    FLocked:                boolean;
     FResizingWindow:        boolean;
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
@@ -300,16 +301,22 @@ end;
 
 function TVM.doPlayNext: boolean;
 begin
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
+
   case mmpPlayNext of FALSE:
   case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                 FALSE: notifyApp(newNotice(evAppClose)); end;end;
+                                                 FALSE: FLocked := FALSE; {notifyApp(newNotice(evAppClose));} end;end;
 end;
 
 function TVM.doPlayPrev: boolean;
 begin
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
+
   case mmpPlayPrev of FALSE:
   case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playPrevFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                 FALSE: notifyApp(newNotice(evAppClose)); end;end;end;
+                                                 FALSE: FLocked := FALSE; {notifyApp(newNotice(evAppClose));} end;end;end;
 
 function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
 // X and Y are the video dimensions
@@ -503,6 +510,8 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
 
+  case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;end;end;
+
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
@@ -528,6 +537,7 @@ end;
 
 function TVM.onMPOpen(const aNotice: INotice): boolean;
 begin
+//  FLocked := FALSE;
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);

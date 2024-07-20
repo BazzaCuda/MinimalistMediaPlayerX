@@ -32,6 +32,7 @@ type
 
     evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
+    evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
     evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist,

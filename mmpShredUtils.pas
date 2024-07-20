@@ -162,7 +162,7 @@ begin
 	result := TRUE;
 end;
 
-function secureDelete(const aFilePath: pWideChar; aFileLengthHi: DWORD; aFileLengthLo: DWORD): integer;
+function secureDelete(const aFilePath: pWideChar; fileLengthHi: DWORD; fileLengthLo: DWORD): integer;
 var
   hFile:        THandle;
   FileLength:   ULARGE_INTEGER;
@@ -178,11 +178,11 @@ begin
 
 	// If the file has a non-zero length, fill it with 0's first in order to
   // preserve its cluster allocation.
-	if (aFileLengthLo + aFileLengthHi) <> 0 then begin
+	if (fileLengthLo + fileLengthHi) <> 0 then begin
 		// Seek to the last byte of the file
-		dec(aFileLengthLo);
-		if (aFileLengthLo = DWORD(-1) AND aFileLengthHi) then dec(aFileLengthHi);
-		setFilePointer(hFile, aFileLengthLo, pointer(&aFileLengthHi), FILE_BEGIN);
+		dec(fileLengthLo);
+		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
+		setFilePointer(hFile, fileLengthLo, pointer(&fileLengthHi), FILE_BEGIN);
 		// Write one zero byte, which causes the file system to fill the entire file's on-disk contents with 0
     result := -2;
 		case secureOverwrite(hFile, DWORD(1)) of FALSE: EXIT; end;
@@ -190,8 +190,8 @@ begin
 
 	// Now go back to the start of the file and overwrite the rest of the file.
 	setFilePointer(hFile, 0, NIL, FILE_BEGIN);
-	fileLength.lowPart := aFileLengthLo;
-	fileLength.highPart := aFileLengthHi;
+	fileLength.lowPart  := fileLengthLo;
+	fileLength.highPart := fileLengthHi;
   bytesWritten := 0;
   while (bytesWritten < fileLength.quadPart) do begin
     bytesToWrite := min(fileLength.quadPart - bytesWritten, 65536);
@@ -204,7 +204,7 @@ begin
   end;
 
 	// Done!
-	closeHandle( hFile );
+	closeHandle(hFile);
 
 	// Rename the file a few times
 	lastFileName := overwriteFileName(aFilePath);
@@ -262,9 +262,9 @@ function threadIt(pThreadRec: PThreadRec): integer;
 begin
   try
     case pThreadRec.trDeleteMethod of
-      dmShred:    result := secureDeleteFile(pThreadRec.trFilePath);
       dmRecycle:  result := recycleDeleteFile(pThreadRec.trFilePath);
       dmStandard: result := standardDeleteFile(pThreadRec.trFilePath);
+      dmShred:    result := secureDeleteFile(pThreadRec.trFilePath);
     end;
   finally
     dispose(pThreadRec);

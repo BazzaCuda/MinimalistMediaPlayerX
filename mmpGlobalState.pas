@@ -54,6 +54,7 @@ type
     function getMaxSize:                  boolean;
     function getMediaType:                TMediaType;
     function getMPVScreenshotDirectory:   string;
+    function getRepeatDelayMs:            integer;
     function getShowingAbout:             boolean;
     function getShowingHelp:              boolean;
     function getShowingPlaylist:          boolean;
@@ -76,6 +77,7 @@ type
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
     property mediaType:                 TMediaType          read getMediaType;
+    property repeatDelayMs:             integer             read getRepeatDelayMs;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
     property showingAbout:              boolean             read getShowingAbout;
     property showingHelp:               boolean             read getShowingHelp;
@@ -108,6 +110,7 @@ type
     FMaxSize:                 boolean;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
+    FRepeatDelayMs:           integer;
     FShowingAbout:            boolean;
     FShowingHelp:             boolean;
     FShowingPlaylist:         boolean;
@@ -132,6 +135,7 @@ type
     function    getMaxSize:                  boolean;
     function    getMediaType:                TMediaType;
     function    getMPVScreenshotDirectory:   string;
+    function    getRepeatDelayMs:            integer;
     function    getShowingAbout:             boolean;
     function    getShowingHelp:              boolean;
     function    getShowingPlaylist:          boolean;
@@ -203,6 +207,11 @@ end;
 function TGlobalState.getMPVScreenshotDirectory: string;
 begin
   result := FMPVScreenshotDirectory;
+end;
+
+function TGlobalState.getRepeatDelayMs: integer;
+begin
+  result := FRepeatDelayMs;
 end;
 
 function TGlobalState.getShowingAbout: boolean;
@@ -277,6 +286,7 @@ begin
     evGSMaxSize:                  FMaxSize                := aNotice.tf;
     evGSMediaType:                FMediaType              := aNotice.mediaType;
     evGSMPVScreenshotDirectory:   FMPVScreenshotDirectory := aNotice.text;
+    evGSRepeatDelayMs:            FRepeatDelayMs          := aNotice.integer;
     evGSShowingAbout:             FShowingAbout           := aNotice.tf;
     evGSShowingHelp:              FShowingHelp            := aNotice.tf;
     evGSShowingPlaylist:          FShowingPlaylist        := aNotice.tf;

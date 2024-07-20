@@ -160,6 +160,7 @@ begin
   checkParam;
 
   CF.initConfigFile(mmpConfigFilePath);
+  notifyApp(newNotice(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]));
 
   Application.CreateForm(TMMPUI, MMPUI);
   notifyApp(newNotice(evGSMainForm, MMPUI));

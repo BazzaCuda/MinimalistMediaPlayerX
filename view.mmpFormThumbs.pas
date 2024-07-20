@@ -449,7 +449,7 @@ end;
 procedure TThumbsForm.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
   case  FPlayingSlideshow of FALSE:
-        case eState of mpsPlay: begin case FLocked of TRUE: mmpDelay(100); end; FLocked := FALSE; EXIT; end;end;end;
+        case eState of mpsPlay: begin case FLocked of TRUE: mmpDelay(GS.repeatDelayMs); end; FLocked := FALSE; EXIT; end;end;end;
 
   case FPlayingSlideshow of TRUE:
   case eState of
