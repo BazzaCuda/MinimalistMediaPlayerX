@@ -96,7 +96,7 @@ end;
 // pulverizing, shredding or melting the disk.
 //
 //--------------------------------------------------------------------
-function secureOverwrite(aFileHandle: THandle; aLength: LONGLONG): boolean;
+function secureOverwrite(aFileHandle: THandle; aLength: ULONGLONG): boolean;
 const
   CLEANBUFSIZE = 65536;
 var
@@ -104,7 +104,7 @@ var
 	totalWritten: ULONGLONG;
 	bytesWritten,
   bytesToWrite: ULONG;
-	seekLength:   LARGE_INTEGER;
+	seekLength:   LONG;
 	status:       BOOLEAN;
 begin
   result := FALSE;
@@ -133,15 +133,15 @@ begin
 	// Do the overwrite
   for passes := 1 to NUMPASSES do begin
 		if (passes <> 1) then begin
-      seekLength.quadPart := aLength;
-			setFilePointer(aFileHandle, -seekLength.lowPart, pointer(&seekLength.highPart), FILE_CURRENT);
+      seekLength := aLength;
+			setFilePointer(aFileHandle, -seekLength, NIL, FILE_CURRENT);
     end;
 
 		for i := 1 to CLEANINGBUFFERS do begin
 			// Move back to the start of where we're overwriting
 			if (i <> 1) then begin
-        seekLength.quadPart := aLength;
-				setFilePointer(aFileHandle, -seekLength.lowPart, pointer(&seekLength.highPart), FILE_CURRENT);
+        seekLength := aLength;
+				setFilePointer(aFileHandle, -seekLength, NIL, FILE_CURRENT);
       end;
 			// Loop and overwrite
 			totalWritten := 0;
@@ -166,9 +166,10 @@ function secureDelete(const aFilePath: pWideChar; fileLengthHi: DWORD; fileLengt
 var
   hFile:        THandle;
   FileLength:   ULARGE_INTEGER;
-  bytesWritten,
+  bytesWritten: uLARGE_INTEGER;
   bytesToWrite: ULONGLONG;
   lastFileName: string;
+  vFileLength: ULARGE_INTEGER;
 begin
 	// Open the file in overwrite mode
 	hFile := createFile(aFilePath, GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
@@ -180,9 +181,11 @@ begin
   // preserve its cluster allocation.
 	if (fileLengthLo + fileLengthHi) <> 0 then begin
 		// Seek to the last byte of the file
-		dec(fileLengthLo);
-		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
-		setFilePointer(hFile, fileLengthLo, pointer(&fileLengthHi), FILE_BEGIN);
+//		dec(fileLengthLo);
+//		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
+    vFileLength.lowPart   := fileLengthLo;
+    vFileLength.highPart  := fileLengthHi;
+    setFilePointerEx(hFile, fileLengthLo, @vFileLength.highPart, FILE_BEGIN);
 		// Write one zero byte, which causes the file system to fill the entire file's on-disk contents with 0
     result := -2;
 		case secureOverwrite(hFile, DWORD(1)) of FALSE: EXIT; end;
@@ -192,15 +195,15 @@ begin
 	setFilePointer(hFile, 0, NIL, FILE_BEGIN);
 	fileLength.lowPart  := fileLengthLo;
 	fileLength.highPart := fileLengthHi;
-  bytesWritten := 0;
-  while (bytesWritten < fileLength.quadPart) do begin
-    bytesToWrite := min(fileLength.quadPart - bytesWritten, 65536);
+  bytesWritten.quadPart := 0;
+  while (bytesWritten.quadPart < fileLength.quadPart) do begin
+    bytesToWrite := min(fileLength.quadPart - bytesWritten.quadPart, 65536);
     result := -3;
     if (NOT secureOverwrite(hFile, DWORD(bytesToWrite))) then begin
       closeHandle(hFile);
       EXIT;
     end;
-    bytesWritten := bytesWritten + bytesToWrite;
+    bytesWritten.quadPart := bytesWritten.quadPart + bytesToWrite;
   end;
 
 	// Done!
@@ -208,6 +211,8 @@ begin
 
 	// Rename the file a few times
 	lastFileName := overwriteFileName(aFilePath);
+
+  EXIT;
 
 	// Now we can delete the file
 	if (NOT deleteFile(lastFileName)) then begin

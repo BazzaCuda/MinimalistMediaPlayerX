@@ -613,10 +613,14 @@ begin
 
     case result of FALSE: EXIT; end;
 
+
+    // Previously, FFmpeg would have overwritten the output file, except now we don't run FFmpeg if we only have one segment
+    // and the rename below would fail if we don't delete the output file or at least rename it. So we may as well delete it.
+    case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE); end; // use the user's specified deleteMethod
+
+    while fileExists(filePathOUT) do mmpDelay(1000); // give the thread time to run.
+
     case vSegOneFN = '' of FALSE: begin
-                                    var vFileClash := filePathOUT;
-                                    while fileExists(vFileClash) do vFileClash := vFileClash + '_';
-                                    case  fileExists(filePathOUT) of TRUE: renameFile(filePathOUT, vFileClash); end;
                                     renameFile(vSegOneFN, filePathOUT);
                                     EXIT; end;end;
 

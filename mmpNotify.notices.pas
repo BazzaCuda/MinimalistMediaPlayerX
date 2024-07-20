@@ -51,7 +51,7 @@ type
     evMPGammaDn, evMPGammaReset, evMPGammaUp,
     evMPKeepOpen,
     evMPMuteUnmute, evMPNextChapter, evMPPrevChapter, evMPOpenUrl, evMPPanDn, evMPPanLeft, evMPPanReset, evMPPanRight, evMPPanUp,
-    evMPPause, evMPPausePlay, evMPPosition, evMPResetAll,
+    evMPPause, evMPPausePlay, evMPPosition, evMPResetAll, evMPResume,
     evMPRotateLeft, evMPRotateReset, evMPRotateRight,
     evMPSaturationDn, evMPSaturationUp, evMPSaturationReset, evMPScreenshot, evMPSpeedDn, evMPSpeedUp, evMPSpeedReset, evMPStartOver, evMPStop,
     evMPToggleRepeat, evMPToggleSubtitles,
@@ -59,7 +59,7 @@ type
 
     evMPStateEnd, evMPStateLoading, evMPStatePlay,
 
-    evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqImagesPaused, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
+    evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
 
     evMXSysVolMax,
 

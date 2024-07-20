@@ -307,7 +307,7 @@ begin
 
   case mmpPlayNext of FALSE:
   case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                 FALSE: FLocked := FALSE; {notifyApp(newNotice(evAppClose));} end;end;
+                                                 FALSE: FLocked := FALSE; end;end;
 end;
 
 function TVM.doPlayPrev: boolean;
@@ -317,7 +317,8 @@ begin
 
   case mmpPlayPrev of FALSE:
   case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playPrevFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                 FALSE: FLocked := FALSE; {notifyApp(newNotice(evAppClose));} end;end;end;
+                                                 FALSE: FLocked := FALSE; end;end;
+end;
 
 function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
 // X and Y are the video dimensions
@@ -511,7 +512,8 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
 
-  case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;end;end;
+  case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;
+                                                    mtAudio,mtVideo: FLocked := FALSE; end;end;
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
@@ -597,6 +599,8 @@ end;
 
 procedure TVM.onSlideshowTimer(sender: TObject);
 begin
+  FSlideshowTimer.enabled := NOT GS.imagesPaused; // usually because a [R]ename has paused the slideshow
+  case FSlideshowTimer.enabled of FALSE: EXIT; end;
   case (GS.mediaType = mtImage) of TRUE: notifyApp(newNotice(evVMMPPlayNext)); end;
 end;
 
@@ -798,9 +802,10 @@ var
   vWasPlaying:      boolean;
 begin
   result := '';
+  notifyApp(newNotice(evGSImagesPaused, TRUE)); // stop any running slideshow at the earliest possible
   case notifyApp(newNotice(evPLReqHasItems)).tf of FALSE: EXIT; end;
   vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and notifyApp(newNotice(evMPReqPlaying)).tf;
-  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPausePlay)); end; // otherwise we'll rename the wrong file if this one ends and the next one plays
+  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPause)); end; // otherwise we'll rename the wrong file if this one ends and the next one plays
 
   vOldName := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case aRenameType of
@@ -808,7 +813,7 @@ begin
     rtKeep: vNewName := mmpRenameFile(vOldName, '_' + mmpFileNameWithoutExtension(vOldName));
   end;
 
-  case vWasPlaying of TRUE: notifyApp(newNotice(evMPPausePlay)); end;
+  case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;
 
   case vNewName = vOldName of TRUE: EXIT; end;
 
@@ -886,7 +891,7 @@ begin
   notifyApp(newNotice(evPLFormShutForm));
   notifyApp(newNotice(evVMShutTimeline));
 
-  case notifyApp(newNotice(evMPReqImagesPaused)).tf of FALSE: notifyApp(newNotice(evMPPausePlay)); end;
+  case GS.imagesPaused of FALSE: notifyApp(newNotice(evMPPausePlay)); end;
   notifyApp(newNotice(evMPPause));
 
   case showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType) of mrAll: EXIT; end; // showModal; user pressed Ctrl-[0]

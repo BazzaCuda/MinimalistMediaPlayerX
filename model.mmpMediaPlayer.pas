@@ -54,7 +54,6 @@ type
     FIgnoreTicks:             boolean;
     FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
-    FImagesPaused:            boolean;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
     FNotifier:                INotifier;
@@ -175,6 +174,7 @@ begin
     evMPPausePlay:        sendOpInfo(pausePlay);
     evMPPrevChapter:      mpvChapterPrev(mpv);
     evMPResetAll:         sendOpInfo(mpvResetAll(mpv));
+    evMPResume:           mpvResume(mpv);
     evMPRotateLeft:       sendOpInfo(mpvRotateLeft(mpv));
     evMPRotateReset:      sendOpInfo(mpvRotateReset(mpv));
     evMPRotateRight:      sendOpInfo(mpvRotateRight(mpv));
@@ -202,7 +202,6 @@ begin
     evMPReqDuration:      aNotice.integer := mpvDuration(mpv);
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
     evMPReqIDD:           aNotice.integer := trunc(FImageDisplayDurationMs);
-    evMPReqImagesPaused:  aNotice.tf      := FImagesPaused;
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
     evMPReqPosition:      aNotice.integer := mpvPosition(mpv);
     evMPReqVideoHeight:   aNotice.integer := mpvVideoHeight(mpv);
@@ -294,10 +293,9 @@ end;
 
 function TMediaPlayer.pausePlayImages: string;
 begin
-  FImagesPaused := NOT FImagesPaused;
-  notifyApp(newNotice(evGSImagesPaused, FImagesPaused));
+  notifyApp(newNotice(evGSImagesPaused, NOT GS.imagesPaused));
 
-  case FImagesPaused of  TRUE: result := 'slideshow paused';
+  case GS.imagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;
 end;
 
