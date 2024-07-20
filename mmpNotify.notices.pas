@@ -30,7 +30,7 @@ type
 
     evAboutFormShow, evAboutReleaseNotesFormShow,
 
-    evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
+    evGSActiveTasks, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,

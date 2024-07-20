@@ -611,6 +611,8 @@ begin
 
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
+
+  case GS.activeTasks = 0 of  FALSE: notifyApp(newNotice(evSTOpInfo, format('Shredding: %d', [GS.activeTasks]))); end;
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);

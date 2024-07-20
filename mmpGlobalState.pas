@@ -47,6 +47,7 @@ uses
 type
   IGlobalState = interface
     ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
+    function getActiveTasks:              integer;
     function getAutoCenter:               boolean;
     function getIDD:                      integer;
     function getImagesPaused:             boolean;
@@ -71,6 +72,7 @@ type
 
     function notify(const aNotice: INotice): INotice;
 
+    property activeTasks:               integer             read getActiveTasks;
     property autoCenter:                boolean             read getAutoCenter;
     property IDD:                       integer             read getIDD;
     property imagesPaused:              boolean             read getImagesPaused;
@@ -103,6 +105,7 @@ uses
 type
   TGlobalState = class(TInterfacedObject, IGlobalState)
   strict private
+    FActiveTasks:             integer;
     FAutoCenter:              boolean;
     FIDD:                     integer;
     FImagesPaused:            boolean;
@@ -128,6 +131,7 @@ type
   public
     constructor create;
     destructor  Destroy; override;
+    function    getActiveTasks:              integer;
     function    getAutoCenter:               boolean;
     function    getIDD:                      integer;
     function    getImagesPaused:             boolean;
@@ -172,6 +176,11 @@ destructor TGlobalState.Destroy;
 begin
   appNotifier.unsubscribe(FSubscriber);
   inherited;
+end;
+
+function TGlobalState.getActiveTasks: integer;
+begin
+  result := FActiveTasks;
 end;
 
 function TGlobalState.getAutoCenter: boolean;
@@ -279,6 +288,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
+    evGSActiveTasks:              FActiveTasks            := aNotice.integer;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
     evGSIDD:                      FIDD                    := aNotice.integer;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;

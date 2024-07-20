@@ -26,7 +26,8 @@ uses
   winApi.windows,
   system.math, system.sysUtils,
   vcl.dialogs,
-  mmpConsts, mmpFolderUtils;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts, mmpFolderUtils, mmpUtils;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 
@@ -37,6 +38,8 @@ implementation
 
 uses
   winApi.shellApi,
+  system.generics.collections, system.threading,
+  mmpGlobalState,
   _debugWindow;
 
 const
@@ -181,8 +184,8 @@ begin
   // preserve its cluster allocation.
 	if (fileLengthLo + fileLengthHi) <> 0 then begin
 		// Seek to the last byte of the file
-//		dec(fileLengthLo);
-//		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
+		dec(fileLengthLo);
+		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi);
     vFileLength.lowPart   := fileLengthLo;
     vFileLength.highPart  := fileLengthHi;
     setFilePointerEx(hFile, fileLengthLo, @vFileLength.highPart, FILE_BEGIN);
@@ -211,8 +214,6 @@ begin
 
 	// Rename the file a few times
 	lastFileName := overwriteFileName(aFilePath);
-
-  EXIT;
 
 	// Now we can delete the file
 	if (NOT deleteFile(lastFileName)) then begin
@@ -260,20 +261,30 @@ type
   PThreadRec  = ^TThreadRec;
   TThreadRec  = record
    trFilePath:      string;
-   trDeleteMethod:  TDeleteMethod;
   end;
 
-function threadIt(pThreadRec: PThreadRec): integer;
+//function threadIt(pThreadRec: PThreadRec): integer;
+//begin
+//  try
+//    try
+//      result := secureDeleteFile(pThreadRec.trFilePath);
+//    except end;
+//  finally
+//    dispose(pThreadRec);
+//  end;
+//end;
+
+var gTasks: TList<ITask>;
+function threadIt(const aFilePath: string): integer;
+var vTask: ITask;
 begin
-  try
-    case pThreadRec.trDeleteMethod of
-      dmRecycle:  result := recycleDeleteFile(pThreadRec.trFilePath);
-      dmStandard: result := standardDeleteFile(pThreadRec.trFilePath);
-      dmShred:    result := secureDeleteFile(pThreadRec.trFilePath);
-    end;
-  finally
-    dispose(pThreadRec);
-  end;
+  vTask := TTask.create(
+                        procedure
+                        begin
+                          secureDeleteFile(aFilePath);
+                        end);
+  gTasks.add(vTask);
+  vTask.start;
 end;
 
 function shredIt(const aFilePath: string; const aDeleteMethod: TDeleteMethod): boolean;
@@ -281,10 +292,16 @@ var
   threadID:   LONGWORD;
   vThreadRec: PThreadRec;
 begin
-  new(vThreadRec);
-  vThreadRec.trFilePath     := aFilePath;
-  vThreadRec.trDeleteMethod := aDeleteMethod;
-  closeHandle(beginThread(NIL, 0, @threadIt, vThreadRec, 0, threadID));
+  case aDeleteMethod of
+    dmRecycle:  recycleDeleteFile(aFilepath);
+    dmStandard: standardDeleteFile(aFilePath);
+    dmShred:    threadIt(aFilePath);
+//    dmShred:    begin
+//                  new(vThreadRec);
+//                  vThreadRec.trFilePath     := aFilePath;
+//                  closeHandle(beginThread(NIL, 0, @threadIt, vThreadRec, 0, threadID));
+//                end;
+  end;
 end;
 
 function shredFolderFiles(const aFolderPath: string; const aDeleteMethod: TDeleteMethod): integer;
@@ -303,10 +320,29 @@ begin
   findClose(SR);
 end;
 
+function monitorTasks: boolean;
+begin
+  result := FALSE;
+  repeat
+    for var i := gTasks.count - 1 downto 0 do
+      case gTasks[i].status = TTaskStatus.completed of TRUE: gTasks.delete(i); end;
+    notifyApp(newNotice(evGSActiveTasks, gTasks.count));
+    mmpDelay(1000);
+  until gTasks.count = 0;
+  result := TRUE;
+end;
+
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
   case fileExists(aFullPath) of  TRUE: shredIt(aFullPath, aDeleteMethod);
                                 FALSE: case directoryExists(aFullPath) of TRUE: shredFolderFiles(aFullPath, aDeleteMethod); end;end;
+  monitorTasks;
 end;
+
+initialization
+  gTasks := TList<ITask>.create;
+
+finalization
+  gTasks.free;
 
 end.
