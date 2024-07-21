@@ -51,5 +51,5 @@ Ctrl-**S** = toggle [S]ubtitles<br />
 **V** = sync all [V]ideo windows<br />
 **X** = e[X]it fullscreen or app<br />
 
-\* and toggles main slideshow on/off
+\* for an image, toggles main slideshow playing/paused
 
