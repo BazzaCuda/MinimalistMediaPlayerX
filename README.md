@@ -1,6 +1,8 @@
 MMP: Minimalist Media Player
 =====================
 
+`MMP` (`v4.0.0`) coming TODAY! Now with multiple delete methods (recycle, delete or shred) and playlist filtering to play only the images, audio or video on an entire drive.
+
 `MMP` (`v3.0.3`) can now play through all the media files on an entire drive, starting wherever you choose. Folders that don't contain supported media files will be skipped. For those folders that do, a new playlist will be created and played through automatically. You can, of course, have the [P]laylist panel open while you do this and watch `MMP` create each new playlist as it navigates through all your folders. You can use any of the playlist controls or double-click with the mouse to skip items in the list and jump to others. Requires the new `nextFolderOnEnd=yes` setting. See the release notes.
 
 _N.B. Some v2 users have reported issues with the main window resizing itself several times on normal-sized monitors, e.g. 1920 x 1080, until it eventually fits.
@@ -79,18 +81,17 @@ Control | Action
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
+`BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
 `Ctrl and mouse`        | with a Ctrl key down, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
-`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
-`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
-`Up Arrow`              | increase the volume. Can be held down for rapid increase
-`Down Arrow`            | decrease the volume. Can be held down for rapid decrease
+`Right Arrow`           | pauses the video and steps forwards one frame (or next image). Can be held down for rapid continuous stepping
+`Left Arrow`            | pauses the video and steps backwards one frame (or prev image). Can be held down for rapid continuous stepping
+`Up Arrow`              | increase the volume. Can be held down for rapid increase (or mouse wheel)
+`Down Arrow`            | decrease the volume. Can be held down for rapid decrease (or mouse wheel)
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Left button down`      | drag the media window around the screen
-`Ctrl+Left button down` | drag the media window around the screen
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
@@ -102,11 +103,7 @@ Control | Action
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
-`8`                     | decrease contrast. Can be held down for rapid decrease
-`9`                     | increase contrast. Can be held down for rapid increase
-`2`                     | reset contrast to normal
-`0`                     | reset brightness to normal
-`-` (Hyphen)            | decrease brighntess. Can be held down for rapid decrease
+`-` (Hyphen)            | decrease brightness. Can be held down for rapid decrease
 `=`                     | increase brightness. Can be held down for rapid increase  
 `{`                     | decrease saturation setting. Can be held down for rapid decrease
 `}`                     | increase saturation setting. Can be held down for rapid increase
@@ -130,7 +127,7 @@ Control | Action
 `DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
 `D`                     | navigate to the next [D]irectory aka Folder
-`Ctrl-D`                | navigate to the previous [D]irectory akak Folder 
+`Ctrl-D`                | navigate to the previous [D]irectory aka Folder 
 `E`                     | [E]ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `F`                     | show/cancel [F]ullScreen mode
@@ -145,17 +142,19 @@ Control | Action
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `Ctrl-K`                | keep/delete: keep the `Kept` files in a folder, delete the others 
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
-`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio.
+`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `N`                     | mi[N]imize window to the Windows taskbar
+`Ctrl-N`                | toggle NUMLOCK on and off. For controlling multiple `MMP` windows
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
 `P`                     | show/hide the [P]laylist
+`Ctrl-P`                | toggle [P]laylist filtering on and off
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
-`Ctrl-S`                | toggle subtitles on/off
+`Ctrl-S`                | toggle [S]ubtitles on/off
 `T`                     | Tab through the audio or video file. See below in Category section
-`T`                     | if viewing an image, open the `Image & Thumbnail Browser` 
+`T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-V`                | set System Vol to Max
@@ -222,19 +221,20 @@ Control | Action
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click the window`   | toggle fullscreen mode
-`Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
-`with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
-`CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
+`Right single-click the window`  | reserved for future context menu
+`CTRL`                           | hold ctrl key down and move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
 **On-Screen Display** | 
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar [B]righter/more prominent. Hold for rapid increase. Your preference gets saved to the configuration file
-`Ctrl-Shift-B`          | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file
+`Shift-B`               | Make the progress [Bar] darker. Hold for rapid decrease. Your preference gets saved to the configuration file
+`Ctrl-Shift-B`          | reset progress [B] to its default. Your preference gets saved to the configuration file
 `C`                     | show/Hide on-screen [C]aptions (media info) and media file timestamp
 `Ctrl-C`                | show/Hide all on-screen captions, media file timestamp and media metadata
 `Ctrl-S`                | toggle subtitles on/off
+`F7`                    | cycle through all subtitle tracks in the media file
 **Panning** | 
 `Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
@@ -257,6 +257,8 @@ Control | Action
 `END`                   | play the last media file in the playlist (A/HOME plays the first)
 `W`                     | [W]atch the next video in the list (or play the next audio)
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
+`P`                     | show/hide the [P]laylist
+`Ctrl-P`                | toggle [P]laylist filtering on and off
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 **Rotating** | 
@@ -287,8 +289,6 @@ Control | Action
 `Caps Lock Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 `Shift-T`               | tab forwards 50th of media duration
 `Ctrl-Shift-T`          | tab backwards 50th of media duration
-`Left Alt key`          | tab forwards 200th of media duration. Intended to be held down for "fast forward"
-`Ctrl-Left Alt key`     | tab backwards 200th of media duration. Intended to be held down for "fast reverse"
 **Volume / Sound** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
@@ -310,7 +310,6 @@ Control | Action
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 `Left button down`      | drag the media window around the screen
-`Ctrl+Left button down` | drag the media window around the screen
 **Zoom** | 
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
@@ -328,11 +327,11 @@ Control | Action
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-F`                | open your File Explorer at the current folder
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
-`Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
+`Ctrl-I`                | open an image in the `[I]mage & Thumbnail Browser`
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
-`Ctrl-V`                | set System Volume to Max.
+`Ctrl-V`                | set System [V]olume to Max.
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
-`BACKSPACE`             | reset zoom, pan, rotation, speed, brightness, contrast, gamma, saturation and captions/progress bar brightness to normal
+`BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `T`                     | on an image, display the `Image & Thumbnail Browser`; on an audio or video file, Tab as normal
 `Y`                     | display the `Image & Thumbnail Browser` regardless of what type of media file is currently showing
