@@ -82,15 +82,15 @@ function TReleaseNotesForm.initReleaseNotes: boolean;
 begin
   initMarkDownViewer(md);
 
-  SELF.color          := md.defBackground;
-  btnClose.default    := TRUE;
-  btnClose.cancel     := TRUE;
+  SELF.color        := md.defBackground;
+  btnClose.default  := TRUE;
+  btnClose.cancel   := TRUE;
 end;
 
 function TReleaseNotesForm.loadReleaseNotes(const aReleaseTag: string; const aFilePath: string): boolean;
 begin
-  SELF.caption := 'Release Notes ' + aReleaseTag;
-  md.serverRoot :=  mmpExePath;
+  SELF.caption  := aReleaseTag;
+  md.serverRoot := mmpExePath;
   md.loadFromFile(aFilePath);
 end;
 

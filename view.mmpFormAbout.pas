@@ -54,6 +54,7 @@ type
     btnWhatsNew: TButton;
     Label3: TLabel;
     lblWikiURL: TLabel;
+    btnLicence: TButton;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
@@ -63,6 +64,7 @@ type
     procedure lblWikiURLClick(Sender: TObject);
     procedure lblWikiURLMouseEnter(Sender: TObject);
     procedure lblWikiURLMouseLeave(Sender: TObject);
+    procedure btnLicenceClick(Sender: TObject);
   protected
     function setBuildVersion(const aBuild: string): boolean;
     function setCopyrightYear(const aYear: WORD): boolean;
@@ -113,6 +115,11 @@ end;
 procedure TAboutForm.btnCloseClick(Sender: TObject);
 begin
   modalResult := mrOK;
+end;
+
+procedure TAboutForm.btnLicenceClick(Sender: TObject);
+begin
+  gAboutFormProxy.notify(newNotice(evAboutGNULicenceShow));
 end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
@@ -219,7 +226,8 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evAboutFormShow:                showForm;
-    evAboutReleaseNotesFormShow:    showReleaseNotes(FProgramUpdates.releaseTag, FProgramUpdates.getReleaseNotesFilePath(FProgramUpdates.releaseTag));
+    evAboutReleaseNotesFormShow:    showReleaseNotes('Release Notes ' + FProgramUpdates.releaseTag, FProgramUpdates.getReleaseNotesFilePath(FProgramUpdates.releaseTag));
+    evAboutGNULicenceShow:          showReleaseNotes('GNU General Public License', mmpExePath + 'license');
   end;
 end;
 

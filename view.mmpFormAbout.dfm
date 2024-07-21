@@ -2429,4 +2429,13 @@ object AboutForm: TAboutForm
     Visible = False
     OnClick = btnWhatsNewClick
   end
+  object btnLicence: TButton
+    Left = 8
+    Top = 235
+    Width = 137
+    Height = 25
+    Caption = 'GNU General Public License'
+    TabOrder = 2
+    OnClick = btnLicenceClick
+  end
 end

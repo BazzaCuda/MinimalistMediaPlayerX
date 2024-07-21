@@ -28,7 +28,7 @@ uses
 type
   TNoticeEvent = (evNone,
 
-    evAboutFormShow, evAboutReleaseNotesFormShow,
+    evAboutFormShow, evAboutGNULicenceShow, evAboutReleaseNotesFormShow,
 
     evGSActiveTasks, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,

@@ -841,11 +841,9 @@ object ReleaseNotesForm: TReleaseNotesForm
     object Label1: TLabel
       Left = 16
       Top = 13
-      Width = 360
+      Width = 289
       Height = 15
-      Caption = 
-        'Resize this window if necessary to better fit the release notes ' +
-        'content'
+      Caption = 'Resize this window if necessary to better fit the content'
     end
     object btnClose: TButton
       Left = 528
