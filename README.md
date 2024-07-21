@@ -1,6 +1,8 @@
 MMP: Minimalist Media Player
 =====================
 
+`MMP` (`v4.0.0`) coming TODAY! Now with multiple delete methods (recycle, delete or shred) and playlist filtering to play only the images, audio or video on an entire drive.
+
 `MMP` (`v3.0.3`) can now play through all the media files on an entire drive, starting wherever you choose. Folders that don't contain supported media files will be skipped. For those folders that do, a new playlist will be created and played through automatically. You can, of course, have the [P]laylist panel open while you do this and watch `MMP` create each new playlist as it navigates through all your folders. You can use any of the playlist controls or double-click with the mouse to skip items in the list and jump to others. Requires the new `nextFolderOnEnd=yes` setting. See the release notes.
 
 _N.B. Some v2 users have reported issues with the main window resizing itself several times on normal-sized monitors, e.g. 1920 x 1080, until it eventually fits.
