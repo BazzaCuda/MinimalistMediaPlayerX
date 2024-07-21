@@ -225,7 +225,7 @@ Control | Action
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click the window`   | toggle fullscreen mode
-`Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
+`Right single-click the window`  | reserved for future context menu
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
