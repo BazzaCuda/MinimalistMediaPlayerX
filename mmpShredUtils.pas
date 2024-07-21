@@ -246,7 +246,7 @@ begin
   vFileOp.wFunc   := FO_DELETE;
   vFileOp.pFrom   := PChar(aFilePath);
   vFileOp.fFlags  := FOF_ALLOWUNDO OR FOF_SILENT OR FOF_NOCONFIRMATION;
-  result := SHFileOperation(vFileOp);
+  result          := SHFileOperation(vFileOp);
 end;
 
 function standardDeleteFile(const aFilePath: string): integer;
@@ -261,17 +261,6 @@ type
   TThreadRec  = record
    trFilePath:      string;
   end;
-
-//function threadIt(pThreadRec: PThreadRec): integer;
-//begin
-//  try
-//    try
-//      result := secureDeleteFile(pThreadRec.trFilePath);
-//    except end;
-//  finally
-//    dispose(pThreadRec);
-//  end;
-//end;
 
 var gTasks: TList<ITask>;
 function threadIt(const aFilePath: string): integer;
@@ -295,11 +284,6 @@ begin
     dmRecycle:  recycleDeleteFile(aFilepath);
     dmStandard: standardDeleteFile(aFilePath);
     dmShred:    threadIt(aFilePath);
-//    dmShred:    begin
-//                  new(vThreadRec);
-//                  vThreadRec.trFilePath     := aFilePath;
-//                  closeHandle(beginThread(NIL, 0, @threadIt, vThreadRec, 0, threadID));
-//                end;
   end;
 end;
 
