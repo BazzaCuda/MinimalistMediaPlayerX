@@ -72,8 +72,10 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 The following list will be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features.
 
-### Keyboard Controls
+### Keyboard Controls (Main Window*)
 ---------------------
+\* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
+
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
 Control | Action
@@ -112,8 +114,10 @@ Control | Action
 `;`                     | reset saturation to normal
 `'` (single quote)      | reset gamma to normal
 
-### Alphabetic and Numeric Controls
+### Alphabetic and Numeric Controls (Main Window*)
 ---------------
+\* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser
+
 Control | Action
 ------- | ------
 `A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
@@ -177,8 +181,10 @@ Control | Action
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 
-### Full List of Controls By Category
+### Full List of Controls By Category (Main Window*)
 ---------------
+\* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
+
 Control | Action
 ------- | ------
 **Bookmarks** ||
