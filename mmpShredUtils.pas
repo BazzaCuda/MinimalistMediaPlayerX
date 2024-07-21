@@ -269,7 +269,9 @@ begin
   vTask := TTask.create(
                         procedure
                         begin
-                          secureDeleteFile(aFilePath);
+                          try
+                           secureDeleteFile(aFilePath);
+                          except end;
                         end);
   gTasks.add(vTask);
   vTask.start;
