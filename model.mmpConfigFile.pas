@@ -153,11 +153,11 @@ end;
 function TConfigFile.getAsMediaType(const aName: string): TMediaType;
 begin
   checkForManualEdits;
-  var vSlideshowFormat := lowercase(FFileContents.values[aName]);
+  var vPlaylistFormat := lowercase(FFileContents.values[aName]);
   result := mtUnk;
-  case vSlideshowFormat = 'audio' of TRUE: result := mtAudio; end;
-  case vSlideshowFormat = 'video' of TRUE: result := mtVideo; end;
-  case vSlideshowFormat = 'image' of TRUE: result := mtImage; end;
+  case vPlaylistFormat = 'audio' of TRUE: result := mtAudio; end;
+  case vPlaylistFormat = 'video' of TRUE: result := mtVideo; end;
+  case vPlaylistFormat = 'image' of TRUE: result := mtImage; end;
 end;
 
 function TConfigFile.getValue(const aName: string): string;

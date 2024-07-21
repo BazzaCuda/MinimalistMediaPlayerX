@@ -129,6 +129,7 @@ begin
   LB.margins.left     := 10;
   LB.margins.right    := 10;
   LB.margins.top      := 10;
+
   LB.AlignWithMargins := TRUE;
 
   SELF.width  := 556;

@@ -148,7 +148,7 @@ begin
 end;
 
 begin
-  reportMemoryLeaksOnShutdown   := TRUE;
+  reportMemoryLeaksOnShutdown   := FALSE;
   debugClear;
 
   application.initialize;
