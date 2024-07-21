@@ -149,6 +149,7 @@ Control | Action
 `N`                     | mi[N]imize window to the Windows taskbar
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
 `P`                     | show/hide the [P]laylist
+`Ctrl-P`                | toggle [P]laylist filtering on and off
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `R`                     | [R]ename the current media file
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
@@ -223,8 +224,7 @@ Control | Action
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click the window`   | toggle fullscreen mode
 `Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
-`with Numlock on`                | move mouse along the progress bar to "scrub" backwards and forwards through the media file
-`CTRL`                           | hold ctrl key down and move mouse along the progress bar. Same as above
+`CTRL`                           | hold ctrl key down and move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
 **On-Screen Display** | 
@@ -257,6 +257,8 @@ Control | Action
 `END`                   | play the last media file in the playlist (A/HOME plays the first)
 `W`                     | [W]atch the next video in the list (or play the next audio)
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
+`P`                     | show/hide the [P]laylist
+`Ctrl-P`                | toggle [P]laylist filtering on and off
 `Q`                     | play the previous media file in the [Q]ueue/playlist
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 **Rotating** | 
@@ -310,7 +312,6 @@ Control | Action
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
 `Ctrl-0`                | close all running instances of MMP
 `Left button down`      | drag the media window around the screen
-`Ctrl+Left button down` | drag the media window around the screen
 **Zoom** | 
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
