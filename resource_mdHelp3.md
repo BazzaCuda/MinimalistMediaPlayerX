@@ -39,15 +39,17 @@ _(add SHIFT for quicker zooming)_<br />
 **'**  = reset gamma (single quote)<br />
 **;**  = reset saturation<br />
 **U** = reset  zoom i.e. [U]nzoom<br />
-**BACKSPACE** = reset all<br />
+**BACKSPACE** = reset all the above<br />
 Ctrl-Shift-**B** = reset caption color/brightness<br />
 
 **Other**<br />
-**Spacebar** = pause/play<br />
+**Spacebar** = pause/play\*<br />
 Ctrl-**R** = toggle infinite repeat<br />
 Ctrl-**S** = toggle [S]ubtitles<br />
 **T** show thumbnails if this is an image (else Tab)<br />
 **Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows<br />
 **X** = e[X]it fullscreen or app<br />
+
+\* and toggles main slideshow on/off
 

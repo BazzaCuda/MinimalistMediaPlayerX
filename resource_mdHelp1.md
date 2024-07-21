@@ -34,9 +34,7 @@ Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
 
 **Mouse**<br />
 Left click hold, drag window<br />
-Ctrl-left click hold, drag window<br />
 Left dbl-click, toggle fullscreen<br />
-Right click, pause/play<br />
 **Ctrl**, scrub along progress bar<br />
 Wheel up, volume up<br />
 Wheel down, volume down<br />
