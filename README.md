@@ -162,7 +162,7 @@ Control | Action
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-V`                | set System Vol to Max
-`W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
+`W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio or image)
 `X`                     | e[X]it the application
 `Y`                     | open the `Image & Thumbnail Browser`
 `Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
