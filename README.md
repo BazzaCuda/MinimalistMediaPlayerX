@@ -329,7 +329,7 @@ Control | Action
 `F10`                   | open media file in PotPlayer (assumes default installation folder) - can be overridden in .conf
 `F11`                   | open media file in LossLessCut (assumes default installation folder) - can be overridden in .conf            
 `F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
-`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
+`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
 `Ctrl-F`                | open your File Explorer at the current folder
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
