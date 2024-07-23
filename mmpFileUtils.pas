@@ -130,7 +130,6 @@ begin
 end;
 
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
-// performs (in a separate process) the actual file/folder deletion initiated by deleteCurrentFile
 var vSysMessage: string;
 begin
   result := FALSE;

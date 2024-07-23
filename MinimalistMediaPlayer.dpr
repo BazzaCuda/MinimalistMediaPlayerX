@@ -142,13 +142,14 @@ begin
 
   case (lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') of FALSE: EXIT; end;
 
+  case GS.mediaType of mtImage: notifyApp(newNotice(evMPStop)); end;
   case GS.mediaType of mtImage: notifyApp(newNotice(evVMImageInBrowser)); end;
 
   result := TRUE;
 end;
 
 begin
-  reportMemoryLeaksOnShutdown   := FALSE;
+  reportMemoryLeaksOnShutdown   := TRUE;
   debugClear;
 
   application.initialize;

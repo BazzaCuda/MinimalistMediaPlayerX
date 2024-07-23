@@ -898,10 +898,11 @@ begin
 
   case showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType) of mrAll: EXIT; end; // showModal; user pressed Ctrl-[0]
 
-  GS.mainForm.show;
-  setActiveWindow(GS.mainForm.handle);
-
-  mmpCheckPlaylistItemExists(FPlaylist, FMP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
+  case lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp' of   TRUE:  notifyApp(newNotice(evAppClose));
+                                                        FALSE:  begin
+                                                                  GS.mainForm.show;
+                                                                  setActiveWindow(GS.mainForm.handle);
+                                                                  mmpCheckPlaylistItemExists(FPlaylist, FMP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end;end;
 end;
 
 function TVM.showUI: boolean;

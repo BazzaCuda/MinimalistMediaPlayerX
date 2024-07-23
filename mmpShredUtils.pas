@@ -312,7 +312,7 @@ begin
     for var i := gTasks.count - 1 downto 0 do
       case gTasks[i].status = TTaskStatus.completed of TRUE: gTasks.delete(i); end;
     notifyApp(newNotice(evGSActiveTasks, gTasks.count));
-    mmpDelay(1000);
+    mmpDelay(100);
   until gTasks.count = 0;
   result := TRUE;
 end;

@@ -68,6 +68,7 @@ const
   CONF_AUTO_UPDATE          = 'autoUpdate';
   CONF_BASE_FOLDER          = 'baseFolder';
   CONF_DELETE_METHOD        = 'deleteMethod';
+  CONF_EXIT_BROWSER         = 'exitBrowser';
   CONF_FOLDER_DELETE        = 'folderDelete';
   CONF_KEEP_DELETE          = 'keepDelete';
   CONF_IMAGE_DELETE         = 'imageDelete';
