@@ -129,7 +129,7 @@ Control | Action
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
 `DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled by deleting rot.exe
-`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
+`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `D`                     | navigate to the next [D]irectory aka Folder
 `Ctrl-D`                | navigate to the previous [D]irectory aka Folder 
 `E`                     | [E]ars - mute/unmute sound
