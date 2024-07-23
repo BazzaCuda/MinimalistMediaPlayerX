@@ -121,7 +121,7 @@ Control | Action
 Control | Action
 ------- | ------
 `A` or `HOME`           | play the first media file in the playlist (`Z`/`END` plays last)
-`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
+`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar and captions [B]righter/more prominent
 `Shift-B`               | Make the progress [B]ar and captions darker/less prominent
