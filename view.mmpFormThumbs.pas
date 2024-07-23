@@ -61,10 +61,12 @@ type
     FProgressForm:            TProgressForm;
     FShowing:                 boolean;
     FSlideshowDirection:      TSlideshowDirection;
+    FSubscriber:              ISubscriber;
     FThumbs:                  TThumbs;
     FTimerInterval:           integer;
   private
     procedure onInitMPV(sender: TObject);
+
     procedure onOpenFile(const aURL: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio:   boolean;
@@ -77,6 +79,7 @@ type
     function moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
     function movePlaylist(const bCreateNew: boolean): boolean;
+    function onNotify(const aNotice: INotice): INotice;
     function pausePlay:           boolean;
     function playCurrentItem:     boolean;
     function playFirst:           boolean;
@@ -233,6 +236,7 @@ begin
   case FThumbs        = NIL of FALSE: freeAndNIL(FThumbs); end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
   notifyApp(newNotice(evHelpShutHelp));
+  appNotifier.unsubscribe(FSubscriber);
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
@@ -257,6 +261,7 @@ begin
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it.
+  FSubscriber             := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -426,6 +431,13 @@ begin
 //                                                          FALSE:  processKeyOp(koPausePlay, [], 0); end;end;
 end;
 
+function TThumbsForm.onNotify(const aNotice: INotice): INotice;
+begin
+  result := aNotice;
+  case aNotice = NIL of TRUE: EXIT; end;
+  case aNotice.event of evGSActiveTasks:  mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end;
+end;
+
 procedure TThumbsForm.onInitMPV(sender: TObject);
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
@@ -455,14 +467,12 @@ begin
   case eState of
     mpsPlay,
     mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
-                  case FPlayingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
-                                                                case FPlayingSlideshow of
-                                                                  TRUE: case FSlideshowDirection of
-                                                                               sdForwards:  case playNext of FALSE: playFirst; end;
-                                                                               sdBackwards: case playPrev of FALSE: playLast;  end;
-                                                                        end;end;end;end;end;
-            end;
-  end;
+              case FPlayingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
+                                                    case FPlayingSlideshow of // still playing slideshow after the delay?
+                                                                              TRUE: case FSlideshowDirection of
+                                                                                      sdForwards:  case playNext of FALSE: playFirst; end;
+                                                                                      sdBackwards: case playPrev of FALSE: playLast;  end;
+                                                    end;end;end;end;end;end;end;
   mmpProcessMessages;
 end;
 
