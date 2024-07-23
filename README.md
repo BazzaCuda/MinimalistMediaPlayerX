@@ -120,7 +120,7 @@ Control | Action
 
 Control | Action
 ------- | ------
-`A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
+`A` or `HOME`           | play the first media file in the playlist (`Z`/`END` plays last)
 `Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar and captions [B]righter/more prominent
@@ -165,7 +165,7 @@ Control | Action
 `W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio or image)
 `X`                     | e[X]it the application
 `Y`                     | open the `Image & Thumbnail Browser`
-`Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
+`Z` or `END`            | play the last media file in the playlist (`A`/`HOME` plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset Contrast to normal
 `3`                     | reset Panning to normal
