@@ -213,7 +213,7 @@ Control | Action
 **File Control** | 
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `DEL`                   | [D]elete current media file (after confirmation)
-`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled by deleting rot.exe
+`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
