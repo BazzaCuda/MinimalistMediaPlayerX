@@ -123,6 +123,7 @@ type
   private
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function    doAppClose:           boolean;
     function    doPlayNext:           boolean;
     function    doPlayPrev:           boolean;
     function    doEscapeKey:          boolean;
@@ -292,6 +293,14 @@ begin
   case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
   case FMenu = NIL of FALSE: FMenu.free; end;
   inherited;
+end;
+
+function TVM.doAppClose: boolean;
+begin
+  notifyApp(newNotice(evPLFormShutForm));
+  notifyApp(newNotice(evHelpShutHelp));
+  notifyApp(newNotice(evVMShutTimeline));
+  GS.mainForm.close;
 end;
 
 function TVM.doEscapeKey: boolean;
@@ -556,6 +565,7 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
 
   case aNotice.event of
+    evAppClose:             doAppClose;
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
@@ -586,7 +596,6 @@ begin
     evVMToggleHelp:         begin toggleHelp;     resizeWindow; end;
     evVMToggleFullscreen:   toggleFullscreen;
     evVMTogglePlaylist:     begin togglePlaylist; resizeWindow; end;
-    evAppClose:             GS.mainForm.close;
     evWndResize:            begin moveHelp; movePlaylist; moveTimeline; end;
   end;
 end;
@@ -633,7 +642,7 @@ end;
 
 procedure TVM.onWINCloseApp(var msg: TMessage);
 begin
-  GS.mainForm.close;
+  doAppClose;
 end;
 
 procedure TVM.onWINControls(var msg: TMessage);
