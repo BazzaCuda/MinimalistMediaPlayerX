@@ -142,8 +142,9 @@ begin
 
   case (lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') of FALSE: EXIT; end;
 
-  case GS.mediaType of mtImage: notifyApp(newNotice(evMPStop)); end;
-  case GS.mediaType of mtImage: notifyApp(newNotice(evVMImageInBrowser)); end;
+  case GS.mediaType of mtImage: begin
+                                  notifyApp(newNotice(evMPStop));
+                                  notifyApp(newNotice(evVMImageInBrowser)); end;end;
 
   result := TRUE;
 end;
