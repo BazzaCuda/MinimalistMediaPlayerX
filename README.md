@@ -257,10 +257,10 @@ Control | Action
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
 **Playlist** | 
-`A`                     | play the first media file in the playlist (Z/END plays last)
-`HOME`                  | play the first media file in the playlist (Z/END plays last)
-`Z`                     | play the last media file in the playlist (A/HOME plays the first)
-`END`                   | play the last media file in the playlist (A/HOME plays the first)
+`A`                     | play the first media file in the playlist (`Z`/`END` plays last)
+`HOME`                  | play the first media file in the playlist (`Z`/`END` plays last)
+`Z`                     | play the last media file in the playlist (`A`/`HOME` plays the first)
+`END`                   | play the last media file in the playlist (`A`/`HOME` plays the first)
 `W`                     | [W]atch the next video in the list (or play the next audio)
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
 `P`                     | show/hide the [P]laylist
