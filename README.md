@@ -144,9 +144,9 @@ Control | Action
 `Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
 `J`                     | ad[J]ust the aspect ratio of the window to fit the aspect ratio of an image
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
-`Ctrl-K`                | keep/delete: keep the `Kept` files in a folder, delete the others 
+`Ctrl-K`                | [K]eep/delete: keep the `Kept` files in a folder, delete the others 
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
-`M`                     | Maximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
+`M`                     | [M]aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `N`                     | mi[N]imize window to the Windows taskbar
 `Ctrl-N`                | toggle NUMLOCK on and off. For controlling multiple `MMP` windows
 `O`                     | zoom [O]ut. Can be held down for rapid zooming
