@@ -12,8 +12,6 @@ These issues were fixed in v3._
 
 MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
-THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
-
 VERSION 3 is HERE!! Now with image and thumbnail browsing and image manipulation. (https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases)
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
@@ -122,7 +120,7 @@ Control | Action
 
 Control | Action
 ------- | ------
-`A` or `HOME`           | play the first media file in the playlist (Z/END plays last)
+`A` or `HOME`           | play the first media file in the playlist (`Z`/`END` plays last)
 `Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdates=yes_ is in .conf
 `B`                     | [B]lackout/restore progress [B]ar
 `Ctrl-B`                | Make the progress [B]ar and captions [B]righter/more prominent
@@ -164,10 +162,10 @@ Control | Action
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
 `Ctrl-V`                | set System Vol to Max
-`W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio)
+`W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio or image)
 `X`                     | e[X]it the application
 `Y`                     | open the `Image & Thumbnail Browser`
-`Z` or `END`            | play the last media file in the playlist (A/HOME plays the first)
+`Z` or `END`            | play the last media file in the playlist (`A`/`HOME` plays the first)
 `1`                     | reset the playback speed to normal, i.e. [1]00%
 `2`                     | reset Contrast to normal
 `3`                     | reset Panning to normal
@@ -181,7 +179,7 @@ Control | Action
 `-` (Hyphen)            | decrease brightness. Can be held down for rapid decrease
 `=`                     | increase brightness. Can be held down for rapid increase  
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
-`Ctrl-0`                | close all running instances of MMP
+`Ctrl-0`                | close all running instances of `MMP`
 
 ### Full List of Controls By Category (Main Window*)
 ---------------
@@ -259,10 +257,10 @@ Control | Action
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
 **Playlist** | 
-`A`                     | play the first media file in the playlist (Z/END plays last)
-`HOME`                  | play the first media file in the playlist (Z/END plays last)
-`Z`                     | play the last media file in the playlist (A/HOME plays the first)
-`END`                   | play the last media file in the playlist (A/HOME plays the first)
+`A`                     | play the first media file in the playlist (`Z`/`END` plays last)
+`HOME`                  | play the first media file in the playlist (`Z`/`END` plays last)
+`Z`                     | play the last media file in the playlist (`A`/`HOME` plays the first)
+`END`                   | play the last media file in the playlist (`A`/`HOME` plays the first)
 `W`                     | [W]atch the next video in the list (or play the next audio)
 `Numpad ENTER`          | [W]atch the next video in the list (or play the next audio)
 `P`                     | show/hide the [P]laylist
