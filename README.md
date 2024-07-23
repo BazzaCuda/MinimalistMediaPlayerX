@@ -12,8 +12,6 @@ These issues were fixed in v3._
 
 MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
-THE POLLS ARE OPEN! HAVE YOUR SAY: https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions
-
 VERSION 3 is HERE!! Now with image and thumbnail browsing and image manipulation. (https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases)
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
