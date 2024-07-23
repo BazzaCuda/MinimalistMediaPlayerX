@@ -179,7 +179,7 @@ Control | Action
 `-` (Hyphen)            | decrease brightness. Can be held down for rapid decrease
 `=`                     | increase brightness. Can be held down for rapid increase  
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous videos
-`Ctrl-0`                | close all running instances of MMP
+`Ctrl-0`                | close all running instances of `MMP`
 
 ### Full List of Controls By Category (Main Window*)
 ---------------
