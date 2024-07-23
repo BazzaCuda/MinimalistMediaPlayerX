@@ -1,7 +1,7 @@
 MMP: Minimalist Media Player
 =====================
 
-Good or bad, what do you like or dislike about `MMP`? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
+Good or bad, what do you like or dislike about `MMP`? Not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
 
 `MMP` (`v4.0.0`) released! Now with multiple delete methods (recycle, delete or shred) and playlist filtering to automatically play through only the images, audio or video on an entire drive.
 
