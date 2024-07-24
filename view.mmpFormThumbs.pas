@@ -802,6 +802,7 @@ begin
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
     koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; notifyApp(newNotice(evPAPostToEvery, WIN_CLOSEAPP)); end;
     koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
+    koCloseToMain:        begin mmpCancelDelay; FThumbs.cancel; modalResult := mrIgnore; end;
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);

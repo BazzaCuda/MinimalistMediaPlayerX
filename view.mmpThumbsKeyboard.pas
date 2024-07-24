@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder
+            koKeepDelete, koExploreFolder, koCloseToMain
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -128,6 +128,7 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(W) and     ctrl                                      of TRUE: result := koWiki; end;
     case keyUp and keyIs(W) and NOT ctrl                                      of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(X)                                                   of TRUE: result := koCloseImageBrowser; end;
+    case keyUp and keyIs(X) and     ctrl                                      of TRUE: result := koCloseToMain; end;
     case keyUp and keyIs(Y)                                                   of TRUE: result := koPlayThumbs; end;
     case keyUp and keyIs(Z)                                                   of TRUE: result := koPlayLast; end;
 

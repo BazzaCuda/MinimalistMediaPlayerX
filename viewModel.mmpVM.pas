@@ -905,13 +905,17 @@ begin
   case GS.imagesPaused of FALSE: notifyApp(newNotice(evMPPausePlay)); end;
   notifyApp(newNotice(evMPPause));
 
-  case showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType) of mrAll: EXIT; end; // showModal; user pressed Ctrl-[0]
+  var vMR := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
+  case vMR of
+    mrAll:      EXIT; // user pressed Ctrl-[0]
+    mrClose:    case lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp' of   TRUE:  begin notifyApp(newNotice(evAppClose)); EXIT; end; // normal exit from browser
+                                                                      FALSE:  ; end;
+    mrIgnore:   ;     // user pressed Ctrl-[X] - ignore exitApp setting, whatever it is
+  end;
 
-  case lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp' of   TRUE:  notifyApp(newNotice(evAppClose));
-                                                        FALSE:  begin
-                                                                  GS.mainForm.show;
-                                                                  setActiveWindow(GS.mainForm.handle);
-                                                                  mmpCheckPlaylistItemExists(FPlaylist, FMP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end;end;
+  GS.mainForm.show;
+  setActiveWindow(GS.mainForm.handle);
+  mmpCheckPlaylistItemExists(FPlaylist, FMP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
 end;
 
 function TVM.showUI: boolean;
