@@ -905,8 +905,8 @@ begin
   case GS.imagesPaused of FALSE: notifyApp(newNotice(evMPPausePlay)); end;
   notifyApp(newNotice(evMPPause));
 
-  var vMR := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
-  case vMR of
+  var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
+  case vModalResult of
     mrAll:      EXIT; // user pressed Ctrl-[0]
     mrClose:    case lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp' of   TRUE:  begin notifyApp(newNotice(evAppClose)); EXIT; end; // normal exit from browser
                                                                       FALSE:  ; end;
