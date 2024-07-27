@@ -340,7 +340,7 @@ var
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
-  vNewName := mmpRenameFile(aFilePath, '_' + mmpFileNameWithoutExtension(aFilePath));
+  vNewName := mmpRenameFile(aFilePath, '! ' + mmpFileNameWithoutExtension(aFilePath));
   case vNewName <> aFilePath of  TRUE: begin
                                         FThumbs.playlist.replaceCurrentItem(vNewName);
                                         mmpSetPanelText(FStatusBar, pnHelp, 'Kept');

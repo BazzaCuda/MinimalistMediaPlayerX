@@ -89,7 +89,7 @@ implementation
 
 uses
   winApi.shellApi,
-  system.sysUtils, system.types,
+  system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
@@ -124,6 +124,7 @@ type
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
+    function    doCleanup:            boolean;
     function    doPlayNext:           boolean;
     function    doPlayPrev:           boolean;
     function    doEscapeKey:          boolean;
@@ -301,6 +302,50 @@ begin
   notifyApp(newNotice(evHelpShutHelp));
   notifyApp(newNotice(evVMShutTimeline));
   GS.mainForm.close;
+end;
+
+function TVM.doCleanup: boolean;
+const filesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden and NOT faSysFile;
+var
+  vFolder:  string;
+  SR:       TSearchRec;
+
+  function processSegFile: boolean;
+  var vFN: string;
+  begin
+    result := FALSE;
+
+    var vSL := TStringList.create;
+    vSL.loadFromFile(vFolder + SR.name);
+
+    for var i := 0 to vSL.count - 1 do begin
+      vFN := copy(vSL[i], 7);
+      delete(vFN, length(vFN), 1); // delete the trailing quote
+      replaceStr(vFN, '\\', '\');
+      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE); end;
+    end;
+    vSL.free;
+    result := TRUE;
+  end;
+
+  function extOK: boolean;
+  begin
+    var vExt := lowerCase(extractFileExt(SR.name)) + ' ';
+    case vExt = '.seg ' of TRUE: processSegFile; end;
+    result := '.log .mmp .seg '.contains(vExt);
+  end;
+
+begin
+  result := FALSE;
+  notifyApp(newNotice(evSTOpInfo, 'Cleanup in progress'));
+  vFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
+  case findFirst(vFolder + '*.*', filesOnly, SR) = 0 of TRUE:
+    repeat
+      case extOK of TRUE: mmpDeleteThisFile(vFolder + SR.name, [], TRUE); end;
+    until findNext(SR) <> 0;
+  end;
+  findClose(SR);
+  result := TRUE;
 end;
 
 function TVM.doEscapeKey: boolean;
@@ -569,6 +614,7 @@ begin
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
+    evVMCleanup:            doCleanup;
     evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
     evVMDoEscapeKey:        doEscapeKey;
     evVMKeepCurrentItem:    sendOpInfo(renameCurrentItem(rtKeep));
@@ -821,7 +867,7 @@ begin
   vOldName := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case aRenameType of
     rtUser: vNewName := mmpRenameFile(vOldName);
-    rtKeep: vNewName := mmpRenameFile(vOldName, '_' + mmpFileNameWithoutExtension(vOldName));
+    rtKeep: vNewName := mmpRenameFile(vOldName, '! ' + mmpFileNameWithoutExtension(vOldName));
   end;
 
   case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;

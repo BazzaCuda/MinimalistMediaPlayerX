@@ -48,8 +48,8 @@ begin
                                         begin
                                           var aa := lowerCase(mmpFileNameWithoutExtension(extractFileName(a)));
                                           var bb := lowerCase(mmpFileNameWithoutExtension(extractFileName(b)));
-                                          case aa[1] = '_' of TRUE: aa[1] := #01; end;
-                                          case bb[1] = '_' of TRUE: bb[1] := #01; end;
+                                          case aa[1] = '!' of TRUE: aa[1] := #01; end;
+                                          case bb[1] = '!' of TRUE: bb[1] := #01; end;
                                           result := mmpCompareStr(aa, bb);
                                         end
                                        )

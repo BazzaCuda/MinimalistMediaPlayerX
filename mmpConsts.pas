@@ -100,7 +100,7 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koResetAll,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering);
+            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);

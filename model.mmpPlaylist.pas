@@ -220,7 +220,7 @@ end;
 
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
 const
-  faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
+  faFilesOnly = faAnyFile AND NOT faDirectory {AND NOT faHidden} AND NOT faSysFile;
 var
   vSR: TSearchRec;
 

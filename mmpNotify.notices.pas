@@ -80,7 +80,7 @@ type
 
     evTimelineHeight,
 
-    evVMAdjustAspectRatio, evVMArrangeAll, evVMCenterWindow, evVMDeleteCurrentItem, evVMDoEscapeKey, evVMImageInBrowser, evVMKeepCurrentItem, evVMKeepDelete,
+    evVMAdjustAspectRatio, evVMArrangeAll, evVMCenterWindow, evVMCleanup, evVMDeleteCurrentItem, evVMDoEscapeKey, evVMImageInBrowser, evVMKeepCurrentItem, evVMKeepDelete,
     evVMMinimize, evVMMoveHelp, evVMMovePlaylist, evVMMoveTimeline, evVMShowThumbs,
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
     evVMToggleFiltering,

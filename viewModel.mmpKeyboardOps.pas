@@ -66,6 +66,7 @@ begin
     koBrightnessDn:       MP.notify(newNotice(evMPBrightnessDn));
     koBrightnessReset:    MP.notify(newNotice(evMPBrightnessReset));
     koBrightnessUp:       MP.notify(newNotice(evMPBrightnessUp));
+    koCleanup:            notifyApp(newNotice(evVMCleanup));
     koCentreWindow:       notifyApp(newNotice(evVMCenterWindow));
     koClipboard:          sendOpInfo(notifyApp(newNotice(evPLCopyToClipboard)).text);
     koCloseEvery:         notifyApp(newNotice(evPAPostToEvery, WIN_CLOSEAPP));
