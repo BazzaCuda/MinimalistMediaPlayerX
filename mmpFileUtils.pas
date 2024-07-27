@@ -27,7 +27,7 @@ uses
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
@@ -36,6 +36,7 @@ function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpKeepDelete(const aFolderPath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+function mmpRunTasks: boolean;
 
 implementation
 
@@ -129,12 +130,12 @@ begin
   result := TPath.getFileNameWithoutExtension(aFilePath);
 end;
 
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bDeleteIt: boolean = FALSE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
 var vSysMessage: string;
 begin
   result := FALSE;
 
-  case bDeleteIt of FALSE: begin
+  case bSilentDelete of FALSE: begin
     case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
                                                               mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
                                                               EXIT; end;end;
@@ -151,7 +152,8 @@ begin
   case ssCtrl in aShiftState of  TRUE: mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
                                 FALSE: mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file
 
-  result := TRUE;
+  case bRunTasks of  TRUE: result := mmpRunTasks;
+                    FALSE: result := TRUE; end;
 end;
 
 function mmpFileSize(const aFilePath: string): int64;
@@ -296,6 +298,13 @@ begin
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
                                                               FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
+end;
+
+function mmpRunTasks: boolean;
+begin
+  result := FALSE;
+  mmpStartTasks;
+  result := TRUE;
 end;
 
 end.

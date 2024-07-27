@@ -30,6 +30,7 @@ uses
   mmpConsts, mmpFolderUtils, mmpUtils;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
+function mmpStartTasks: boolean;
 
 implementation
 
@@ -263,6 +264,7 @@ type
   end;
 
 var gTasks: TList<ITask>;
+    gCount: integer = 0;
 function threadIt(const aFilePath: string): integer;
 var vTask: ITask;
 begin
@@ -270,11 +272,12 @@ begin
                         procedure
                         begin
                           try
-                           secureDeleteFile(aFilePath);
+                            interlockedIncrement(gCount);
+                            secureDeleteFile(aFilePath);
+                            interlockedDecrement(gCount);
                           except end;
                         end);
   gTasks.add(vTask);
-  vTask.start;
 end;
 
 function shredIt(const aFilePath: string; const aDeleteMethod: TDeleteMethod): boolean;
@@ -306,26 +309,34 @@ begin
 end;
 
 function monitorTasks: boolean;
+var i: integer;
 begin
   result := FALSE;
+
+  for i := 0 to gTasks.count - 1 do gTasks[i].start;
+
   repeat
-    for var i := gTasks.count - 1 downto 0 do
-      case gTasks[i].status = TTaskStatus.completed of TRUE: gTasks.delete(i); end;
-    notifyApp(newNotice(evGSActiveTasks, gTasks.count));
+    notifyApp(newNotice(evGSActiveTasks, gCount));
     mmpDelay(100);
-  until gTasks.count = 0;
+  until gCount = 0;
+  notifyApp(newNotice(evGSActiveTasks, gCount));
+  gTasks.clear;
   result := TRUE;
+end;
+
+function mmpStartTasks: boolean;
+begin
+  result := monitorTasks;
 end;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
   case fileExists(aFullPath) of  TRUE: shredIt(aFullPath, aDeleteMethod);
                                 FALSE: case directoryExists(aFullPath) of TRUE: shredFolderFiles(aFullPath, aDeleteMethod); end;end;
-  monitorTasks;
 end;
 
 initialization
-  gTasks := TList<ITask>.create;
+  gTasks  := TList<ITask>.create;
 
 finalization
   gTasks.free;

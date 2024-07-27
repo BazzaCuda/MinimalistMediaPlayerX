@@ -104,7 +104,8 @@ uses
   mmpUserFolders in 'mmpUserFolders.pas',
   mmpTicker in 'mmpTicker.pas',
   mmpFormatting in 'mmpFormatting.pas',
-  mmpShredUtils in 'mmpShredUtils.pas';
+  mmpShredUtils in 'mmpShredUtils.pas',
+  TCleanupClass in 'TCleanupClass.pas';
 
 function checkParam: boolean;
 begin

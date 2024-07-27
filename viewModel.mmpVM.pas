@@ -95,6 +95,7 @@ uses
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
+  TCleanupClass,
   _debugWindow;
 
 type
@@ -305,47 +306,14 @@ begin
 end;
 
 function TVM.doCleanup: boolean;
-const filesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden and NOT faSysFile;
 var
   vFolder:  string;
-  SR:       TSearchRec;
-
-  function processSegFile: boolean;
-  var vFN: string;
-  begin
-    result := FALSE;
-
-    var vSL := TStringList.create;
-    vSL.loadFromFile(vFolder + SR.name);
-
-    for var i := 0 to vSL.count - 1 do begin
-      vFN := copy(vSL[i], 7);
-      delete(vFN, length(vFN), 1); // delete the trailing quote
-      replaceStr(vFN, '\\', '\');
-      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE); end;
-    end;
-    vSL.free;
-    result := TRUE;
-  end;
-
-  function extOK: boolean;
-  begin
-    var vExt := lowerCase(extractFileExt(SR.name)) + ' ';
-    case vExt = '.seg ' of TRUE: processSegFile; end;
-    result := '.log .mmp .seg '.contains(vExt);
-  end;
-
 begin
   result := FALSE;
   notifyApp(newNotice(evSTOpInfo, 'Cleanup in progress'));
   vFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
-  case findFirst(vFolder + '*.*', filesOnly, SR) = 0 of TRUE:
-    repeat
-      case extOK of TRUE: mmpDeleteThisFile(vFolder + SR.name, [], TRUE); end;
-    until findNext(SR) <> 0;
-  end;
-  findClose(SR);
-  result := TRUE;
+  result := newCleanup.cleanup(vFolder);
+  notifyApp(newNotice(evSTOpInfo, 'Cleanup complete'));
 end;
 
 function TVM.doEscapeKey: boolean;
