@@ -130,6 +130,7 @@ Control | Action
 `Ctrl-Shift-B`          | Reset the progress [B]ar and captions to default color
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
+`Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `D`                     | navigate to the next [D]irectory aka Folder
@@ -216,6 +217,7 @@ Control | Action
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `DEL`                   | [D]elete current media file (after confirmation)
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
+`Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
