@@ -310,8 +310,14 @@ var
   vFolder:  string;
 begin
   result := FALSE;
+
+  vFolder   := notifyApp(newNotice(evPLReqCurrentFolder)).text;
+  var vMsg  := 'Cleanup Timeline Editing files in '#13#10
+              + vFolder + ' ???';
+
+  case mmpShowOKCancelMsgDlg(vMsg) = mrOK of FALSE: EXIT; end;
+
   notifyApp(newNotice(evSTOpInfo, 'Cleanup in progress'));
-  vFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
   result := newCleanup.cleanup(vFolder);
   notifyApp(newNotice(evSTOpInfo, 'Cleanup complete'));
 end;
