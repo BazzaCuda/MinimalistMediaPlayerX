@@ -23,8 +23,9 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.classes,
-  vcl.Controls, vcl.extCtrls, vcl.forms, vcl.menus,
+  vcl.Controls, vcl.extCtrls, vcl.forms,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpMenu,
   view.mmpFormThumbs, view.mmpProgressBar,
   model.mmpMediaPlayer, model.mmpPlaylist;
 
@@ -108,6 +109,7 @@ type
     FMPDuration:            integer;
     FMPPosition:            integer;
 
+    FMenu:                  IMMPMenu;
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
     FPB:                    IProgressBar;
@@ -120,7 +122,6 @@ type
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
 
-    FMenu:                  TPopupMenu;
   private
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -261,10 +262,6 @@ begin
   inherited;
   FSubscriber   := appNotifier.subscribe(newSubscriber(onNotify));
   FSubscriberTT := TT.notifier.subscribe(newSubscriber(onTickTimer));
-  FMenu := TPopupMenu.create(NIL);
-  var vMenuItem := TMenuItem.create(FMenu);
-  vMenuItem.caption := 'Exit';
-  FMenu.items.add(vMenuItem);
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -293,7 +290,6 @@ begin
   TT.notifier.unsubscribe(FSubscriberTT);
   appNotifier.unsubscribe(FSubscriber);
   case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
-  case FMenu = NIL of FALSE: FMenu.free; end;
   inherited;
 end;
 
@@ -521,8 +517,8 @@ end;
 procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer);
 begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
-  case button = mbLeft of TRUE: mouseDown := FALSE; end;
-//  case button = mbRight of TRUE: FMenu.Popup(X, Y); end;
+  case button = mbLeft  of TRUE: mouseDown := FALSE; end;
+  case button = mbRight of TRUE: FMenu := newMMPMenu.popup(X, Y); end;
 end;
 
 procedure TVM.onMouseWheelDown(shift: TShiftState; mousePos: TPoint; var handled: Boolean);

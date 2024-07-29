@@ -26,7 +26,7 @@ uses
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
   mmpConsts,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  viewModel.mmpVM, Vcl.Menus;
+  viewModel.mmpVM;
 
 type
   // we're not currently using this because of TComponent problems via TForm :(

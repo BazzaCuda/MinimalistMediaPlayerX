@@ -105,7 +105,9 @@ begin
   var vLastWriteTime := TFile.getLastWriteTime(FFilePath);
   case vLastWriteTime > FLastWriteTime of TRUE: begin
                                                   FLastWriteTime := vLastWriteTime;
-                                                  FFileContents.loadFromFile(FFilePath);
+                                                  try
+                                                    FFileContents.loadFromFile(FFilePath);
+                                                  except end;
                                                 end;end;
   result := TRUE;
 end;

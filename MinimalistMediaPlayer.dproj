@@ -229,6 +229,7 @@
         <DCCReference Include="mmpFormatting.pas"/>
         <DCCReference Include="mmpShredUtils.pas"/>
         <DCCReference Include="TCleanupClass.pas"/>
+        <DCCReference Include="mmpMenu.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

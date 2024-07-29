@@ -105,7 +105,8 @@ uses
   mmpTicker in 'mmpTicker.pas',
   mmpFormatting in 'mmpFormatting.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
-  TCleanupClass in 'TCleanupClass.pas';
+  TCleanupClass in 'TCleanupClass.pas',
+  mmpMenu in 'mmpMenu.pas';
 
 function checkParam: boolean;
 begin
@@ -151,7 +152,7 @@ begin
 end;
 
 begin
-  reportMemoryLeaksOnShutdown   := FALSE;
+  reportMemoryLeaksOnShutdown   := TRUE;
   debugClear;
 
   application.initialize;
