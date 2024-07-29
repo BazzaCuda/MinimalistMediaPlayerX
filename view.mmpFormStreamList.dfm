@@ -15,6 +15,7 @@ object StreamListForm: TStreamListForm
   KeyPreview = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
   TextHeight = 13
   object Label1: TLabel
     Left = 16

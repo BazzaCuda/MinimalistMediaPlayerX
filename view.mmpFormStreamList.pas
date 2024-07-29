@@ -62,6 +62,7 @@ type
     procedure btnExportMouseEnter(Sender: TObject);
     procedure btnExportMouseLeave(Sender: TObject);
     procedure btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FOnExport:  TNotifyEvent;
     FSegments:  TObjectList<TSegment>;
@@ -252,6 +253,11 @@ begin
 
   clSegments.itemCount := 0;
   clStreams.itemCount  := 0;
+end;
+
+procedure TStreamListForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  key := 0;
 end;
 
 function TStreamListForm.getStreamInfo(const aMediaFilePath: string): integer;
