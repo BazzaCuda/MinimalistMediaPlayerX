@@ -3,6 +3,8 @@ MMP: Minimalist Media Player
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
 
+`MMP` (`v4.0.2`) released! `Ctrl-Shift [C]` will clean-up your leftover audio and video editing files in the current playlist folder.
+
 `MMP` (`v4.0.1`) released! Now with multiple delete methods (recycle, delete or shred) and playlist filtering to automatically play through only the images, audio or video on an entire drive.
 
 `MMP` (`v3.0.3`) can now play through all the media files on an entire drive, starting wherever you choose. Folders that don't contain supported media files will be skipped. For those folders that do, a new playlist will be created and played through automatically. You can, of course, have the [P]laylist panel open while you do this and watch `MMP` create each new playlist as it navigates through all your folders. You can use any of the playlist controls or double-click with the mouse to skip items in the list and jump to others. Requires the new `nextFolderOnEnd=yes` setting. See the release notes.
@@ -128,6 +130,7 @@ Control | Action
 `Ctrl-Shift-B`          | Reset the progress [B]ar and captions to default color
 `C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
 `Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
+`Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `D`                     | navigate to the next [D]irectory aka Folder
@@ -214,6 +217,7 @@ Control | Action
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `DEL`                   | [D]elete current media file (after confirmation)
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
+`Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
