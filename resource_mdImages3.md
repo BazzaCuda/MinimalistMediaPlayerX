@@ -1,7 +1,8 @@
 **Window Control**<br />
 Ctrl-**0** close all instances of MMP
 **ESC**ape, exit fullscreen or Image Browser<br />
-**X** = e[X]it fullscreen or Image Browser<br />
+**X** e[X]it fullscreen or Image Browser<br />
+Ctrl-**X** e[X]it to main MMP window\*\*<br />
 **F** show/cancel [F]ullscreen<br />
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
@@ -15,11 +16,15 @@ Ctrl-Numpad **Subtract**, reduce width\*<br />
 Ctrl-Numpad **Add**, increase width\*<br />
 
 _\* add **SHIFT** for greater change_<br />
+_\** ignores exitBrowser setting_<br />
 
 **Zoom**<br />
 **I** zoom [I]n, hold for repeat<br />
 **O** zoom [O]out, hold for repeat<br />
 **U** [U]nzoom, i.e. cancel zoom<br />
+Ctrl-Mouse wheel up/down, zoom in/out\*<br />
+
+_\* add **SHIFT** for greater change_<br />
 
 **Resets**<br />
 **1** = reset slideshow speed to normal<br />

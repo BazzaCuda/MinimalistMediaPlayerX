@@ -35,14 +35,17 @@ function newMMPMenu: IMMPMenu;
 implementation
 
 uses
+  model.mmpConfigFile,
   _debugWindow;
 
 type
   TMMPMenu = class(TInterfacedObject, IMMPMenu)
   strict private
-    FMenu: TPopupMenu;
+    FMenu:      TPopupMenu;
+  private
+    function    buildMenu(const aMenu: TPopupMenu): boolean;
   protected
-    procedure onClick(sender: TObject);
+    procedure   onClick(sender: TObject);
   public
     constructor create;
     destructor  Destroy; override;
@@ -72,13 +75,18 @@ begin
   notifyApp(newNotice(evAppClose));
 end;
 
-function TMMPMenu.popup(x, y: integer): IMMPMenu;
+function TMMPMenu.buildMenu(const aMenu: TPopupMenu): boolean;
 begin
-  FMenu := TPopupMenu.create(NIL);
-  var vMenuItem := TMenuItem.create(FMenu);
+  var vMenuItem     := TMenuItem.create(FMenu);
   vMenuItem.caption := 'Exit';
   vMenuItem.onClick := onClick;
   FMenu.items.add(vMenuItem);
+end;
+
+function TMMPMenu.popup(x, y: integer): IMMPMenu;
+begin
+  FMenu := TPopupMenu.create(NIL);
+  buildMenu(FMenu);
   FMenu.popup(x, y);
   result := SELF;
 end;

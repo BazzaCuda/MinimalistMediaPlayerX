@@ -48,6 +48,8 @@ type
     procedure FStatusBarClick(Sender: TObject);
     procedure FStatusBarMouseLeave(Sender: TObject);
     procedure FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
   strict private
     mpv: TMPVBasePlayer;
     FDurationResetSpeed:      double;
@@ -781,6 +783,22 @@ begin
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
   case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10
+end;
+
+procedure TThumbsForm.FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  case whichHost of htThumbsHost: EXIT; end;
+  case mmpCtrlKeyDown of   TRUE: mpvZoomOut(mpv);
+                          FALSE: case mmpAltKeyDown of   TRUE: mpvPanLeft(mpv);
+                                                        FALSE: mpvPanDn(mpv); end;end;
+end;
+
+procedure TThumbsForm.FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  case whichHost of htThumbsHost: EXIT; end;
+  case mmpCtrlKeyDown of   TRUE: mpvZoomIn(mpv);
+                          FALSE: case mmpAltKeyDown of   TRUE: mpvPanRight(mpv);
+                                                        FALSE: mpvPanUp(mpv); end;end;
 end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;

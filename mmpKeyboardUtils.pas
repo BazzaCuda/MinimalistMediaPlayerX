@@ -24,17 +24,23 @@ uses
   winApi.windows,
   system.classes;
 
-function mmpCapsLockOn:     boolean;       
-function mmpCtrlKeyDown:    boolean;       
+function mmpAltKeyDown:     boolean;
+function mmpCapsLockOn:     boolean;
+function mmpCtrlKeyDown:    boolean;
 function mmpKBState:        TKeyboardState;
-function mmpNumLockOn:      boolean;       
+function mmpNumLockOn:      boolean;
 function mmpShiftState:     TShiftState;    // so we don't have to pull vcl.forms into every unit that needs this
-function mmpToggleNumlock:  boolean;       
+function mmpToggleNumlock:  boolean;
 
 implementation
 
 uses
   vcl.forms;
+
+function mmpAltKeyDown: boolean;
+begin
+  result := getKeyState(VK_MENU) < 0;
+end;
 
 function mmpCapsLockOn: boolean;
 begin

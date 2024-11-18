@@ -14,7 +14,7 @@
 **DEL** [D]elete file after confirm<br />
 Ctrl-**DEL** [D]elete folder after confirm**&loz;**<br />
 **C** Save/Copy to "Copied" folder**\***<br />
-**K** [K]eep file (rename with leading _ )<br />
+**K** [K]eep file (rename with leading ! and space)<br />
 Ctrl-**K** [K]eep/Delete all files in folder**&loz;**<br />
 **S** Save/Move to "Saved" folder**\***<br />
 Ctrl-**S** Save altered image to new file<br />
@@ -39,5 +39,7 @@ Left click thumbnail, display image<br />
 &darr; Ctrl-**Dn arrow**, pan down<br />
 &larr; Ctrl-**Left arrow**, pan left<br />
 &rarr; Ctrl-**Right arrow**, pan right<br />
+Mouse wheel up/down, pan up/down<br />
+Alt-Mouse wheel up/down, pan left/right<br />
 **3** reset panning<br />
 

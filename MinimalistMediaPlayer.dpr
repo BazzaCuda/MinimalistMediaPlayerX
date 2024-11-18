@@ -65,7 +65,6 @@ uses
   model.mmpMPVProperties in 'model.mmpMPVProperties.pas',
   mmpTickTimer in 'mmpTickTimer.pas',
   view.mmpKeyboard in 'view.mmpKeyboard.pas',
-  mmpConsts in 'mmpConsts.pas',
   mmpShellUtils in 'mmpShellUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
   mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
@@ -106,7 +105,9 @@ uses
   mmpFormatting in 'mmpFormatting.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
   TCleanupClass in 'TCleanupClass.pas',
-  mmpMenu in 'mmpMenu.pas';
+  mmpMenu in 'mmpMenu.pas',
+  MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
+  mmpConsts in 'mmpConsts.pas';
 
 function checkParam: boolean;
 begin

@@ -15,9 +15,10 @@
 
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />
+Ctrl-Shift-**C** cleanup editing files<br />
 **DEL** [D]elete file after confirm<br />
 Ctrl-**DEL** [D]elete folder contents after confirm\*\*<br />
-**K** [K]eep file (rename with leading _ )<br />
+**K** [K]eep file (rename with leading ! and space )<br />
 Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
 **R** [R]ename file<br />
 
@@ -35,6 +36,7 @@ Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
 **Mouse**<br />
 Left click hold, drag window<br />
 Left dbl-click, toggle fullscreen<br />
+Right click, pause/play<br />
 **Ctrl**, scrub along progress bar<br />
 Wheel up, volume up<br />
 Wheel down, volume down<br />

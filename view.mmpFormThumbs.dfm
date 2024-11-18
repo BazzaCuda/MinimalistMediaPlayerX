@@ -3021,6 +3021,8 @@ object ThumbsForm: TThumbsForm
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
+  OnMouseWheelDown = FormMouseWheelDown
+  OnMouseWheelUp = FormMouseWheelUp
   OnResize = FormResize
   OnShow = FormShow
   TextHeight = 15
@@ -3087,8 +3089,6 @@ object ThumbsForm: TThumbsForm
     OnMouseMove = FStatusBarMouseMove
     OnDrawPanel = FStatusBarDrawPanel
     OnResize = FStatusBarResize
-    ExplicitTop = 409
-    ExplicitWidth = 618
   end
   object FThumbsHost: TPanel
     Left = 112
