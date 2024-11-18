@@ -85,6 +85,7 @@ Control | Action
 `Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
 `ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
+`Right-Click`           | pause/resume playback of audio/video. pause/resume slideshow of images
 `BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
 `Ctrl and mouse`        | with a Ctrl key down, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Right Arrow`           | pauses the video and steps forwards one frame (or next image). Can be held down for rapid continuous stepping
@@ -146,7 +147,7 @@ Control | Action
 `I`                     | zoom [I]n. Can be held down for rapid zooming
 `Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
 `J`                     | ad[J]ust the aspect ratio of the window to fit the aspect ratio of an image
-`K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | [K]eep/delete: keep the `Kept` files in a folder, delete the others 
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | [M]aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
@@ -218,7 +219,7 @@ Control | Action
 `DEL`                   | [D]elete current media file (after confirmation)
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
-`K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
 **Freeze Frame** | 
@@ -231,10 +232,13 @@ Control | Action
 **Mouse** | 
 `Left click the window and hold` | the window can be dragged/repositioned
 `Left double-click the window`   | toggle fullscreen mode
-`Right single-click the window`  | reserved for future context menu
+`Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
 `CTRL`                           | hold ctrl key down and move mouse along the progress bar to "scrub" backwards and forwards through the media file
 `Wheel up`                       | volume up
 `Wheel down`                     | volume down
+`Wheel up/down`                  | in `Image & Thumbnail Browser`: scroll image up/down. add `[Shift]` to increase scroll amount
+`Alt` and `Wheel up/down`        | in `Image & Thumbnail Browser`: scroll image left/right. add `[Shift]` to increase scroll amount
+`Ctrl` and `Wheel up/down`       | in `Image & Thumbnail Browser`: zoom image in/out. add `[Shift]` to increase zoom amount
 **On-Screen Display** | 
 `#`                     | briefly reshow the media caption (the filename and its position/number in the playlist)
 `B`                     | [B]lackout/restore progress [B]ar
@@ -251,6 +255,8 @@ Control | Action
 `Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
 `3`                     | reset panning to normal
+`Wheel up/down`                  | in `Image & Thumbnail Browser`: scroll image up/down. add `[Shift]` to increase scroll amount
+`Alt` and `Wheel up/down`        | in `Image & Thumbnail Browser`: scroll image left/right. add `[Shift]` to increase scroll amount
 **Playback** |
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `Right single-click the window`  | pause/resume playback of audio/video. pause/resume slideshow of images
@@ -324,6 +330,7 @@ Control | Action
 `I`                     | zoom [I]n. Can be held down for rapid zooming in
 `O`                     | zoom [O]ut. Can be held down for rapid zooming out
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
+`Ctrl` and `Wheel up/down`       | in `Image & Thumbnail Browser`: zoom image in/out. add `[Shift]` to increase zoom amount
 **Additional** |
 `F5`                    | save a screenshot of the current frame or the currently displayed image
 `F6`                    | cycle through all audio tracks in the media file
