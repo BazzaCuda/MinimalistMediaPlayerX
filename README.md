@@ -147,7 +147,7 @@ Control | Action
 `I`                     | zoom [I]n. Can be held down for rapid zooming
 `Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
 `J`                     | ad[J]ust the aspect ratio of the window to fit the aspect ratio of an image
-`K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | [K]eep/delete: keep the `Kept` files in a folder, delete the others 
 `L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | [M]aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
@@ -219,7 +219,7 @@ Control | Action
 `DEL`                   | [D]elete current media file (after confirmation)
 `Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
-`K`                     | mark this media file as [K]eep (renames with a leading underscore to bring to top of folder)
+`K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
 **Freeze Frame** | 
