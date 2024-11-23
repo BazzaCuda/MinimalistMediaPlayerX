@@ -297,14 +297,16 @@ Control | Action
 `Ctrl-S`                | toggle subtitles on/off
 `F7`                    | cycle through all subtitle tracks in the media file
 **Tabbing** | 
-`T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
-`Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `TAB`                   | tab forwards 1 second. Can be tapped repeatedly or held down to do a "fast forward" through the media file
 `Ctrl-TAB`              | tab backwards 1 second. Can be tapped repeatedly or held down to do a "fast reverse" through the media file
-`Caps Lock-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
-`Caps Lock Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
+`Shift-TAB`             | tab forwards 2 seconds. Can be tapped repeatedly or held down to do a "fast forward" through the media file
+`Ctrl-Shift-TAB`        | tab backwards 2 seconds. Can be tapped repeatedly or held down to do a "fast reverse" through the media file
+`T`                     | [T]ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
+`Ctrl-T`                | [T]ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Shift-T`               | tab forwards 50th of media duration
 `Ctrl-Shift-T`          | tab backwards 50th of media duration
+`Caps Lock-T`           | tab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
+`Caps Lock Ctrl-T`      | tab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 **Volume / Sound** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
