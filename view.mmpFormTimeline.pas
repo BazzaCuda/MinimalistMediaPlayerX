@@ -386,6 +386,7 @@ begin
   case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
                               FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
   lblPosition.repaint;
+  lblPosition.bringToFront;
 end;
 
 { TTimeline }

@@ -15,7 +15,7 @@
 
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />
-Ctrl-Shift-**C** cleanup editing files<br />
+Ctrl-Shift-**C** cleanup timeline editing files<br />
 **DEL** [D]elete file after confirm<br />
 Ctrl-**DEL** [D]elete folder contents after confirm\*\*<br />
 **K** [K]eep file (rename with leading ! and space )<br />

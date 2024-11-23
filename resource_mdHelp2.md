@@ -32,12 +32,19 @@ Numpad **-**, decrease, hold<br />
 **1** reset speed to [1]00%<br />
 
 **Tabbing**<br />
-**T** tab 100th duration, hold \>\><br />
-Ctrl-**T**, tab back 100th, hold \<\<<br />
-**TAB**, tab 1s, hold = \>\><br />
-Ctrl-**TAB**, tab back 1s, hold \<\<<br />
-CAPS LOCK+**T**, tab 200th \>\><br />
-CAPS LOCK+CTRL-**T**, \<\< 200th<br />
+**TAB**, tab forward 1s<br />
+Ctrl-**TAB**, tab back 1s<br />
+Shift-**TAB**, tab forward 2s<br />
+Ctrl-Shift-**TAB**, tab back 2s<br />
+
+**T** tab 100th duration<br />
+Ctrl-**T**, tab back 100th<br />
+Shift-**T**, tab 50th duration<br />
+Ctrl-Shift-**T**, tab back 50th<br />
+CAPS LOCK+**T**, tab forward 200th duration<br />
+CAPS LOCK+CTRL-**T**, tab back 200th duration<br />
+
+NB hold down **TAB** or **T** to fast forward or fast reverse<br />
 
 **Volume**<br />
 &uarr; **Up** arrow, increase, hold<br />

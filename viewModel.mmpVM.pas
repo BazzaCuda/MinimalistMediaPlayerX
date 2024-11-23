@@ -962,6 +962,7 @@ begin
 
   vTab := trunc(vDuration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
+  case (vTab = 1) and (ssShift in mmpShiftState) of TRUE: vTab := 2; end;
 
   case ssCtrl  in mmpShiftState of  TRUE: vPosition := vPosition - vTab;
                                    FALSE: vPosition := vPosition + vTab; end;
@@ -969,7 +970,7 @@ begin
   FMP.notify(newNotice(evPBClick, vPosition));    // change MP position
   onMPNotify(newNotice(evMPPosition, vPosition)); // immediately update time display
 
-  case aFactor = -1 of  TRUE: newInfo := 'TAB = 1s';
+  case aFactor = -1 of  TRUE: newInfo := format('TAB = %ds', [vTab]);
                        FALSE: newInfo := format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]); end;
 
   case ssCtrl in mmpShiftState of  TRUE: newInfo := '<< ' + newInfo;
