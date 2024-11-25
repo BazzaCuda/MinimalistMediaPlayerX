@@ -83,8 +83,8 @@ object StreamListForm: TStreamListForm
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2180,8 +2180,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 442
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect

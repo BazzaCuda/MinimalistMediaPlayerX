@@ -169,8 +169,11 @@ begin
   try
     vNotes.loadFromFile(getReleaseNotesFilePath(aReleaseTag));
     for var i := 0 to vNotes.count - 1 do begin
-      var vPos1 := pos('(https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/', vNotes[i]);
+      var vPos1 := pos('(https://github.com/', vNotes[i]);
       case vPos1 = 0 of TRUE: CONTINUE; end;
+
+      var vPos4 := pos('/assets/', vNotes[i]);
+      case vPos4 = 0 of TRUE: CONTINUE; end;
 
       var vAssetURL := copy(vNotes[i], vPos1 + 1, 255);
       var vPos2 := pos(')', vAssetURL);
@@ -209,6 +212,7 @@ end;
 function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
 begin
   result := aReleaseTag;
+//  EXIT; // for testing release notes only without affecting the download stats
 
   case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
   case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)       of TRUE: EXIT; end; // we're running the latest release
