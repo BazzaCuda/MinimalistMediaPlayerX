@@ -88,6 +88,10 @@ begin
     koGammaUp:            MP.notify(newNotice(evMPGammaUp));
     koGreaterWindow:      notifyApp(newNotice(evPAPostToAll, WIN_GREATER));
     koKeep:               notifyApp(newNotice(evVMKeepCurrentItem));
+    koKeepCatF1:          notifyApp(newNotice(evVMKeepCatF1));
+    koKeepCatF2:          notifyApp(newNotice(evVMKeepCatF2));
+    koKeepCatF3:          notifyApp(newNotice(evVMKeepCatF3));
+    koKeepCatF4:          notifyApp(newNotice(evVMKeepCatF4));
     koKeepDelete:         notifyApp(newNotice(evVMKeepDelete));
     koImageInBrowser:     notifyApp(newNotice(evVMImageInBrowser));
     koMaximize:           begin notifyApp(newNotice(evGSAutoCenter, TRUE)); notifyApp(newNotice(evGSMaxSize, TRUE)); notifyApp(newNotice(evVMResizeWindow)); end; // maximize the video according to the height of the screen

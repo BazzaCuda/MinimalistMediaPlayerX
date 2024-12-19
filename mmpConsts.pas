@@ -85,6 +85,11 @@ const
   CONF_VIDEO_DELETE         = 'videoDelete';
   CONF_VOLUME               = 'volume';
 
+  CONF_CAT_F1               = 'catF1';
+  CONF_CAT_F2               = 'catF2';
+  CONF_CAT_F3               = 'catF3';
+  CONF_CAT_F4               = 'catF4';
+
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
 var
@@ -100,11 +105,12 @@ type
             koContrastUp, koContrastDn, koContrastReset, koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koResetAll,
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
-            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup);
+            koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
+            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
-  TRenameType   = (rtUser, rtKeep);
+  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4);
 
   TSnapshot = record
     key:              WORD;
@@ -142,7 +148,7 @@ type
 const
   mmpMediaTypeStrings: array[0..3] of string = ('unk', 'audio', 'video', 'image');
   FnnKeyApps: array[F10_APP..F12_APP] of string = ('F10', 'F11', 'F12');
-  mediaTypes: array[0..87] of TMediaTypeRec = (
+  mediaTypes: array[0..89] of TMediaTypeRec = (
 
 // manually added image formats
 (mimeType: 'image/jpeg';            mediaType: mtImage; typeName: 'JPEG image';                 fileExts: '.jpg .jpeg '),
@@ -152,6 +158,8 @@ const
 (mimeType: 'image/gif';             mediaType: mtImage; typeName: 'GIF image';                  fileExts: '.gif '),
 (mimeType: 'image/avif';            mediaType: mtImage; typeName: 'AVIF image';                 fileExts: '.avif '),
 (mimeType: 'image/jfif';            mediaType: mtImage; typeName: 'JFIF image';                 fileExts: '.jfif '),
+(mimeType: 'image/jxl';             mediaType: mtImage; typeName: 'JXL image';                  fileExts: '.jxl '),
+(mimeType: 'image/vtx';             mediaType: mtImage; typeName: 'VTX image';                  fileExts: '.vtx '),
 
 // DVD/Blu-ray audio formats
 (mimeType: 'audio/ac3';             mediaType: mtAudio; typeName: 'AC-3 Audio';                 fileExts: '.ac3 .a52 '),

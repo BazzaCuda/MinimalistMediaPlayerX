@@ -212,7 +212,7 @@ end;
 function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
 begin
   result := aReleaseTag;
-//  EXIT; // for testing release notes only without affecting the download stats
+  EXIT; // for testing release notes only without affecting the download stats
 
   case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
   case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)       of TRUE: EXIT; end; // we're running the latest release
@@ -228,14 +228,14 @@ function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   end;
 begin
   result := FALSE;
-  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case  aReleaseTag = ''                                                             of TRUE: EXIT; end; // couldn't obtain latest release tag
   case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
 
-  case fileExists(mmpExePath + backupName + '.exe') of FALSE:  mmpRenameFile(paramStr(0), backupName); end;
-  case fileExists(paramStr(0))                         of FALSE:  with TZipFile.create do begin
+  case fileExists(mmpExePath + backupName + '.exe')    of FALSE: mmpRenameFile(paramStr(0), backupName); end;
+  case fileExists(paramStr(0))                         of FALSE: with TZipFile.create do begin
                                                                     OnProgress := zipOnProgress;
                                                                     open(updateFile(aReleaseTag), zmRead);
-//                                                                    extractAll(CU.getExePath);
+//                                                                    extractAll(mmpExePath + backupName);
                                                                     extract('MinimalistMediaPlayer.exe', mmpExePath);
                                                                     free;
                                                                     result := fileExists(paramStr(0));

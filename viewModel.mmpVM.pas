@@ -589,6 +589,10 @@ begin
     evVMCleanup:            doCleanup;
     evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
     evVMDoEscapeKey:        doEscapeKey;
+    evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));
+    evVMKeepCatF2:          sendOpInfo(renameCurrentItem(rtKeepCatF2));
+    evVMKeepCatF3:          sendOpInfo(renameCurrentItem(rtKeepCatF3));
+    evVMKeepCatF4:          sendOpInfo(renameCurrentItem(rtKeepCatF4));
     evVMKeepCurrentItem:    sendOpInfo(renameCurrentItem(rtKeep));
     evVMKeepDelete:         keepDelete;
     evVMImageInBrowser:     showThumbnails(htMPVHost);
@@ -838,8 +842,12 @@ begin
 
   vOldName := notifyApp(newNotice(evPLReqCurrentItem)).text;
   case aRenameType of
-    rtUser: vNewName := mmpRenameFile(vOldName);
-    rtKeep: vNewName := mmpRenameFile(vOldName, '! ' + mmpFileNameWithoutExtension(vOldName));
+    rtUser:       vNewName := mmpRenameFile(vOldName);
+    rtKeep:       vNewName := mmpRenameFile(vOldName, '! '      + mmpFileNameWithoutExtension(vOldName));
+    rtKeepCatF1:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F1] + mmpFileNameWithoutExtension(vOldName));
+    rtKeepCatF2:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F2] + mmpFileNameWithoutExtension(vOldName));
+    rtKeepCatF3:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F3] + mmpFileNameWithoutExtension(vOldName));
+    rtKeepCatF4:  vNewName := mmpRenameFile(vOldName, mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
   end;
 
   case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;
@@ -851,8 +859,12 @@ begin
   notifyApp(newNotice(evPLFormLoadBox));
 
   case aRenameType of
-    rtUser: result := 'Renamed';
-    rtKeep: result := 'Kept';
+    rtUser:       result := 'Renamed';
+    rtKeep:       result := 'Kept';
+    rtKeepCatF1:  result := CF[CONF_CAT_F1] + ' ...';
+    rtKeepCatF2:  result := CF[CONF_CAT_F2] + ' ...';
+    rtKeepCatF3:  result := CF[CONF_CAT_F3] + ' ...';
+    rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
   end;
 end;
 

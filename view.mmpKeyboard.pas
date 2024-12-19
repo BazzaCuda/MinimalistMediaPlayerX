@@ -167,6 +167,10 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
                                                                                       of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
     case keyUp and keyIs(VK_ESCAPE)                 and NOT GS.userInput              of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koKeepCatF1; end;
+    case keyUp and keyIs(VK_F2)                                                       of TRUE: result := koKeepCatF2; end;
+    case keyUp and keyIs(VK_F3)                                                       of TRUE: result := koKeepCatF3; end;
+    case keyUp and keyIs(VK_F4)                                                       of TRUE: result := koKeepCatF4; end;
     case keyUp and keyIs(VK_F5)                                                       of TRUE: result := koScreenshot; end;
     case keyUp and keyIs(VK_F6)                                                       of TRUE: result := koCycleAudio; end;
     case keyUp and keyIs(VK_F7)                                                       of TRUE: result := koCycleSubs; end;
@@ -200,7 +204,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_VOLUME_UP)                                                of TRUE: result := koVolUp; end;
 
     // spare keys
-    case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
+    // case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
   end;
 
 begin
