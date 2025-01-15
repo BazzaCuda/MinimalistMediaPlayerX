@@ -222,6 +222,10 @@ Control | Action
 `K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | Keep/delete: delete all but the Kept files in a folder 
 `R`                     | [R]ename the current media file
+`F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
+`F2`                    | rename media file with category prefix 2 defined in `MinimalistMediaPlayer.conf`
+`F3`                    | rename media file with category prefix 3 defined in `MinimalistMediaPlayer.conf`
+`F4`                    | rename media file with suffix defined in `MinimalistMediaPlayer.conf`
 **Freeze Frame** | 
 `Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
 `Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
