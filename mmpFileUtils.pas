@@ -232,7 +232,6 @@ const
   faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
 var
   vSR: TSearchRec;
-  vExt: string;
 
   function fileOK: boolean;
   begin

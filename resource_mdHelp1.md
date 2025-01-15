@@ -24,6 +24,11 @@ Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
 
 \*\* doesn't touch the contents of subfolders<br />
 
+**F1** rename with prefix 1<br />
+**F2** rename with prefix 2<br />
+**F3** rename with prefix 3<br />
+**F4** rename with suffix<br />
+
 **Freeze Frame**<br />
 &rarr; **right** arrow, frame + :hold to repeat<br />
 &larr; **left** arrow, frame - :hold to repeat<br />

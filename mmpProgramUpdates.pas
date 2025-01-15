@@ -212,7 +212,7 @@ end;
 function TProgramUpdates.downloadRelease(const aReleaseTag: string): string;
 begin
   result := aReleaseTag;
-  EXIT; // for testing release notes only without affecting the download stats
+//  EXIT; // for testing release notes only without affecting the download stats
 
   case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
   case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)       of TRUE: EXIT; end; // we're running the latest release
