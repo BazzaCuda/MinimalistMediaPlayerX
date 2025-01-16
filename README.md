@@ -15,7 +15,7 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 
 `MMP` (`v3.0.3`) can now play through all the media files on an entire drive, starting wherever you choose. Folders that don't contain supported media files will be skipped. For those folders that do, a new playlist will be created and played through automatically. You can, of course, have the [P]laylist panel open while you do this and watch `MMP` create each new playlist as it navigates through all your folders. You can use any of the playlist controls or double-click with the mouse to skip items in the list and jump to others. Requires the new `nextFolderOnEnd=yes` setting. See the release notes.
 
-`MMP` (`v3.0.0`) added image and thumbnail browsing and image manipulation (e.g. brightness, contrast, gamma, saturation, crop).
+`MMP` (`v3.0.0`) added image and thumbnail browsing and image manipulation (e.g. brightness, contrast, gamma, saturation, rotate, crop).
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
 `MMP` (`v2.0.0`) added fast, lossless audio/video editing: https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
