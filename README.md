@@ -1,7 +1,7 @@
 MMP: Minimalist Media Player
 =====================
 
-An all-in-one media player, image and thumbnail browser and image manipulator, and a fast lossless audio and video timeline editor.
+An all-in-one media player, image and thumbnail browser (and image manipulator), and fast lossless editing of audio and video files with a timeline editor.
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
 
