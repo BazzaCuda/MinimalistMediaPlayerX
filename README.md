@@ -161,7 +161,7 @@ Control | Action
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
 `Ctrl-S`                | toggle [S]ubtitles on/off
-`T`                     | Tab through the audio or video file. See below in Category section
+`T`                     | [T]ab through the audio or video file. See below in Category section
 `T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
 `U`                     | [U]nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all [V]ideo windows
@@ -348,15 +348,15 @@ Control | Action
 `F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
 `Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
 `Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
-`Ctrl-F`                | open your File Explorer at the current folder
+`Ctrl-F`                | open your [F]ile Explorer at the current [F]older
 `Ctrl-H`                | show [H]elp panel of all keyboard and mouse controls
-`Ctrl-I`                | open an image in the `[I]mage & Thumbnail Browser`
+`Ctrl-I`                | open an [I]mage in the `[I]mage & Thumbnail Browser`
 `Ctrl-R`                | toggle infinite [R]epeat of the current media file
 `Ctrl-V`                | set System [V]olume to Max.
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after F12
 `BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
-`T`                     | on an image, display the `Image & Thumbnail Browser`; on an audio or video file, Tab as normal
+`T`                     | on an image, display the `Image & [T]humbnail Browser`; on an audio or video file, Tab as normal
 `Y`                     | display the `Image & Thumbnail Browser` regardless of what type of media file is currently showing
 
 Media File Formats
