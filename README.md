@@ -22,6 +22,7 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 ![editing1](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/705baa13-4b38-45ed-b2f7-235ae45c3f2d)
 
 **WIKI**
+
 MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
 **TIPS**
