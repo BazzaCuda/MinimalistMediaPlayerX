@@ -24,6 +24,7 @@ MMP: Minimalist Media Player now has its own [domain](https://minimalistmediapla
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
 `MMP` (`v2.0.0`) Now with fast, lossless audio/video editing: https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
+![editing1](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/705baa13-4b38-45ed-b2f7-235ae45c3f2d)
 
 **TIPS**
 
