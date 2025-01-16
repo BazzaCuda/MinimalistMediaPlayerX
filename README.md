@@ -1,11 +1,17 @@
 MMP: Minimalist Media Player
 =====================
 
+An all-in-one media player, image and thumbnail browser and image manipulator, and a fast lossless audio and video timeline editor.
+
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
 
-`MMP` (`v4.0.2`) released! `Ctrl-Shift [C]` will clean-up your leftover audio and video editing files in the current playlist folder.
+** Significant Releases **
 
-`MMP` (`v4.0.1`) released! Now with multiple delete methods (recycle, delete or shred) and playlist filtering to automatically play through only the images, audio or video on an entire drive.
+`MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
+
+`MMP` (`v4.0.2`) `Ctrl-Shift [C]` will clean-up your leftover audio and video editing files in the current playlist folder.
+
+`MMP` (`v4.0.1`) Now with multiple delete methods (recycle, delete or shred) and playlist filtering to automatically play through only the images, audio or video on an entire drive.
 
 `MMP` (`v3.0.3`) can now play through all the media files on an entire drive, starting wherever you choose. Folders that don't contain supported media files will be skipped. For those folders that do, a new playlist will be created and played through automatically. You can, of course, have the [P]laylist panel open while you do this and watch `MMP` create each new playlist as it navigates through all your folders. You can use any of the playlist controls or double-click with the mouse to skip items in the list and jump to others. Requires the new `nextFolderOnEnd=yes` setting. See the release notes.
 
@@ -14,20 +20,12 @@ These issues were fixed in v3._
 
 MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
-VERSION 3 is HERE!! Now with image and thumbnail browsing and image manipulation. (https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases)
+`MMP` (`v3.0.0`) Now with image and thumbnail browsing and image manipulation.
 ![Clipboard Image (23)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/4a5d4849-0dba-4c44-9ef0-13673afea03e)
 
+`MMP` (`v2.0.0`) Now with fast, lossless audio/video editing: https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 
-
-
-
-VERSION 2 RELEASED: Fast, lossless audio/video editing 
-- https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
-
-Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, .png, .webp, animated .gif, .avif, .jfif). If you set an image display duration, a slideshow of consecutive image files will be shown.
-- https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases
-
-**NEW**: Now supports .AVIF and .JFIF image files which will be included automatically in the playlist and the slideshow.
+**TIPS**
 
 **TIP**: You can crop an image by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
@@ -35,16 +33,14 @@ Now also displays all IMAGES in the current playlist folder (.jpg, .jpeg, .bmp, 
 
 **MMP: Minimalist Media Player**
 
-A powerful and ``very`` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
+A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
 
-``MMP: Minimalist Media Player`` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
+`MMP: Minimalist Media Player` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
 
-Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, ``MMP: Minimalist Media Player``provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
+Also, the window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, `MMP: Minimalist Media Player`provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
 
 This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of ``MMP: Minimalist Media Player`` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
 ![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
-
-
 
 ### Key Features
 ----------------
