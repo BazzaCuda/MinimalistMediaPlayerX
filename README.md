@@ -23,7 +23,7 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 
 **WIKI**
 
-MMP: Minimalist Media Player now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
 **TIPS**
 
@@ -54,15 +54,15 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 - Full-resolution screenshots can be saved for individual frames and for a displayed image.
 
-- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-[H]. The full functionality of ``MMP: Minimalist Media Player`` can be used while this panel is showing so you can try things out.
+- All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-[H]. The full functionality of `MMP: Minimalist Media Player` can be used while this panel is showing so you can try things out.
 
-- ``MMP: Minimalist Media Player`` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
+- `MMP: Minimalist Media Player` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
 - You can quickly bookmark the current position of a media file and restart from that point at a later time.
 
 - You can quickly resize the video by holding down the [G] key to enlarge it. Or quickly reduce it by holding down Ctrl-[G].
 
-- ``MMP: Minimalist Media Player`` provides full zoom and pan functions as well as video rotation.
+- `MMP: Minimalist Media Player` provides full zoom and pan functions as well as video rotation.
 
 - MPV playback can be configured via the normal mpv.conf file. As always with this file, some experimentation will be required to get the effect you require.
 
@@ -357,11 +357,11 @@ Control | Action
 
 Media File Formats
 ------------------
-``MMP: Minimalist Media Player`` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
+`MMP: Minimalist Media Player` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
 Dependencies
 ------------
-1. ``MMP: Minimalist Media Player`` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
+1. `MMP: Minimalist Media Player` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
 
 2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
 
