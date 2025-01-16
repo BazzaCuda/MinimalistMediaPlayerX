@@ -5,7 +5,7 @@ An all-in-one media player, image and thumbnail browser and image manipulator, a
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
 
-** Significant Releases **
+**Significant Releases**
 
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
 
