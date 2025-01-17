@@ -38,7 +38,7 @@ This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/Mini
 
 **TIPS**
 
-- You can crop an image by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
+- You can crop an image (or video frame) by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
 - You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It really doesn't get much easier than that!!
 
