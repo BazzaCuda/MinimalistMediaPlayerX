@@ -20,6 +20,11 @@ Media File Formats
 ------------------
 `MMP: Minimalist Media Player` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
+WIKI
+----
+
+`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+
 Significant Releases
 --------------------
 
@@ -36,10 +41,6 @@ Significant Releases
 
 `MMP` (`v2.0.0`) added fast, lossless audio/video editing: https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/Lossless-Audio-Video-editing
 ![editing1](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/705baa13-4b38-45ed-b2f7-235ae45c3f2d)
-
-**WIKI**
-
-`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
 
 **TIPS**
 
