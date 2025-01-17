@@ -16,6 +16,10 @@ The window resizes to fit the video perfectly, eliminating ugly black borders/ba
 This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of `MMP: Minimalist Media Player` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
 ![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
 
+Media File Formats
+------------------
+`MMP: Minimalist Media Player` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
+
 **Significant Releases**
 
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
@@ -354,10 +358,6 @@ Control | Action
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `T`                     | on an image, display the `Image & [T]humbnail Browser`; on an audio or video file, Tab as normal
 `Y`                     | display the `Image & Thumbnail Browser` regardless of what type of media file is currently showing
-
-Media File Formats
-------------------
-`MMP: Minimalist Media Player` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
 Dependencies
 ------------
