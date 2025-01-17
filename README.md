@@ -20,7 +20,8 @@ Media File Formats
 ------------------
 `MMP: Minimalist Media Player` uses MPV/FFMPEG for its media playback and manipulation functions and will therefore play the overwhelming majority of media files (audio/video/image).
 
-**Significant Releases**
+Significant Releases
+--------------------
 
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
 
