@@ -1,9 +1,20 @@
 MMP: Minimalist Media Player
 =====================
 
-An all-in-one media player, image library manager with built-in image and thumbnail browser (with image manipulation), and a timeline editor for fast lossless editing of audio and video files.
+An all-in-one media player, image library manager (with built-in image and thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
+
+**MMP: Minimalist Media Player**
+
+A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
+
+`MMP: Minimalist Media Player` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
+
+The window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, `MMP: Minimalist Media Player`provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
+
+This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of `MMP: Minimalist Media Player` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
+![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
 
 **Significant Releases**
 
@@ -30,17 +41,6 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 - You can crop an image by using zoom ([I]n/[O]ut) and pan (Ctrl-left, ctrl-right, ctrl-up, ctrl-down) until the video window shows only the part of the image you want, then [F5] screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
 - You can edit (Ctrl-[E]) an entire audio or video file using just [I] and [O] to set [I]n and [O]ut points. E.g. Use the TAB key to fast forward through a video: when you get to the next section you want to include, press [I]; when you get to the next section that you want to exclude, press [O]. When you're done, click **Export**. It really doesn't get much easier than that!!
-
-**MMP: Minimalist Media Player**
-
-A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
-
-`MMP: Minimalist Media Player` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
-
-The window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, `MMP: Minimalist Media Player`provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
-
-This is a complete rewrite of (and supercedes) https://github.com/BazzaCuda/MinimalistMediaPlayer (which is based on Windows Media Player). As such, this [here] incarnation of `MMP: Minimalist Media Player` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, etc.
-![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
 
 ### Key Features
 ----------------
