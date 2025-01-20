@@ -169,7 +169,7 @@ Control | Action
 `T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
 `U`                     | `[U]`nzoom, i.e. re-fit the video to the window
 `V`                     | synchronize all `[V]`ideo windows
-`Ctrl-V`                | set System `[V]`ol to Max
+`Ctrl-V`                | set System `[V]`olume to Max
 `W` or `Numpad ENTER`   | `[W]`atch the next video in the list (or play the next audio or image)
 `X`                     | e`[X]`it the application
 `Y`                     | open the `Image & Thumbnail Browser`
