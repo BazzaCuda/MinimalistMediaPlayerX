@@ -311,10 +311,10 @@ Control | Action
 `Ctrl-Shift-TAB`        | `[Tab]` backwards 2 seconds. Can be tapped repeatedly or held down to do a "fast reverse" through the media file
 `T`                     | `[T]`ab through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
 `Ctrl-T`                | `[T]`ab back through the media file a 100th (default) of its duration. Can be held down for rapid tabbing
-`Shift-T`               | `[Tab]` forwards 50th of media duration
-`Ctrl-Shift-T`          | `[Tab]` backwards 50th of media duration
-`Caps Lock-T`           | `[Tab]` forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
-`Caps Lock Ctrl-T`      | `[Tab]` backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
+`Shift-T`               | `[T]`ab forwards 50th of media duration
+`Ctrl-Shift-T`          | `[T]`ab backwards 50th of media duration
+`Caps Lock-T`           | `[T]`ab forwards 200th of media duration. Can be tapped repeatedly or held down for "fast forward"
+`Caps Lock Ctrl-T`      | `[T]`ab backwards 200th of media duration. Can be tapped repeatedly or held down for "fast reverse" 				
 **Volume / Sound** | 
 `Up Arrow`              | increase the volume. Can be held down for rapid increase
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease
