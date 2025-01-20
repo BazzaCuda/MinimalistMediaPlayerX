@@ -54,9 +54,9 @@ Significant Releases
 
 - Opening a media file from Windows Explorer (etc.) will automatically fill the playlist with all media files in the same folder. The playlist is sorted in "natural order" to match the order your files are [usually] listed in your file manager, taking numeric digits in filenames into account.
 
-- You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
+- You can "fast forward" through an entire media file by holding down the `[TAB]` key. Or backwards by holding down `Ctrl-[TAB]`. Thanks to MPV, the audio is maintained at the correct pitch.
 
-- With Numlock On, several `MMP` windows can be controlled simultaneously, using various keyboard commands. This can be useful for, for example, comparing multiple copies of a movie to compare resolution quality. `Ctrl-[9]` will automatically arrange up to four `MMP` video windows so they fit correctly on your desktop. `[V]` will sync all the `[V]`ideos to the same timestamp.
+- With `[Numlock] On`, several `MMP` windows can be controlled simultaneously, using various keyboard commands. This can be useful for, for example, comparing multiple copies of a movie to compare resolution quality. `Ctrl-[9]` will automatically arrange up to four `MMP` video windows so they fit correctly on your desktop. `[V]` will sync all the `[V]`ideos to the same timestamp.
 
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. `[F7]` will cycle through all the subtitle tracks in the media file.
 
@@ -86,12 +86,12 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 
 Control | Action
 ------- | ------
-`Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
-`ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
+`Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
+`ESCape`                | exit `[F]`ullscreen mode, or exit the app if not in `[F]`ullscreen mode
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `Right-Click`           | pause/resume playback of audio/video. pause/resume slideshow of images
 `BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
-`Ctrl and mouse`        | with a Ctrl key down, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
+`Ctrl and mouse`        | with a `[Ctrl]` key down, run your mouse along the progress bar to quickly "scrub" backwards and forwards through the video
 `Right Arrow`           | pauses the video and steps forwards one frame (or next image). Can be held down for rapid continuous stepping
 `Left Arrow`            | pauses the video and steps backwards one frame (or prev image). Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase (or mouse wheel)
@@ -103,7 +103,7 @@ Control | Action
 `Left button down`      | drag the media window around the screen
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
-`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after F12
+`INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the file after `[F12]`
 `Vol+ media key`        | increase the volume. Can be held down for rapid increase
 `Vol- media key`        | decrease the volume. Can be held down for rapid decrease
 `Vol-mute media key`    | mute/unmute sound
@@ -128,53 +128,53 @@ Control | Action
 Control | Action
 ------- | ------
 `A` or `HOME`           | play the first media file in the playlist (`Z`/`END` plays last)
-`Ctrl-A`                | show [A]bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
-`B`                     | [B]lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress [B]ar and captions [B]righter/more prominent
-`Shift-B`               | Make the progress [B]ar and captions darker/less prominent
-`Ctrl-Shift-B`          | Reset the progress [B]ar and captions to default color
-`C`                     | show/hide on-screen [C]aptions (toggle media file timestamp, hide media metadata)
-`Ctrl-C`                | show/hide all on-screen [C]aptions (media file timestamp and media metadata)
-`Ctrl-Shift-C`          | [C]leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
-`DEL`                   | [D]elete current media file (after user confirmation) - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
-`Ctrl-DEL`              | [D]elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
-`D`                     | navigate to the next [D]irectory aka Folder
-`Ctrl-D`                | navigate to the previous [D]irectory aka Folder 
-`E`                     | [E]ars - mute/unmute sound
-`Ctrl-E`                | toggle the media timeline [E]diting tools for lossless editing
-`F`                     | show/cancel [F]ullScreen mode
-`Ctrl-F`                | open your File Explorer at the current folder
-`G`                     | [G]reater window size. Can be held down for rapid increase
-`Ctrl-G`                | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease
-`H`                     | position the window [H]orizontally (and Vertically) in the center of the screen
-`Ctrl-H`                | toggle the [H]elp panel listing all the keyboard and mouse functions
-`I`                     | zoom [I]n. Can be held down for rapid zooming
+`Ctrl-A`                | show `[A]`bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
+`B`                     | `[B]`lackout/restore progress [B]ar
+`Ctrl-B`                | Make the progress `[B]`ar and captions [B]righter/more prominent
+`Shift-B`               | Make the progress `[B]`ar and captions darker/less prominent
+`Ctrl-Shift-B`          | Reset the progress `[B]`ar and captions to default color
+`C`                     | show/hide on-screen `[C]`aptions (toggle media file timestamp, hide media metadata)
+`Ctrl-C`                | show/hide all on-screen `[C]`aptions (media file timestamp and media metadata)
+`Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
+`DEL`                   | `[D]`elete current media file (after user confirmation) - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
+`Ctrl-DEL`              | `[D]`elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
+`D`                     | navigate to the next `[D]`irectory aka Folder
+`Ctrl-D`                | navigate to the previous `[D]`irectory aka Folder 
+`E`                     | `[E]`ars - mute/unmute sound
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing
+`F`                     | show/cancel `[F]`ullScreen mode
+`Ctrl-F`                | open your `[F]`ile Explorer at the current folder
+`G`                     | `[G]`reater window size. Can be held down for rapid increase
+`Ctrl-G`                | reduce, i.e. un`[G]`reater, the window size. Can be held down for rapid decrease
+`H`                     | position the window `[H]`orizontally (and Vertically) in the center of the screen
+`Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
+`I`                     | zoom `[I]`n. Can be held down for rapid zooming
 `Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
-`J`                     | ad[J]ust the aspect ratio of the window to fit the aspect ratio of an image
-`K`                     | mark this media file as [K]eep (renames with a leading ! and space to bring to top of folder)
-`Ctrl-K`                | [K]eep/delete: keep the `Kept` files in a folder, delete the others 
-`L`                     | re[L]oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
-`M`                     | [M]aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
-`N`                     | mi[N]imize window to the Windows taskbar
-`Ctrl-N`                | toggle NUMLOCK on and off. For controlling multiple `MMP` windows
-`O`                     | zoom [O]ut. Can be held down for rapid zooming
-`P`                     | show/hide the [P]laylist
-`Ctrl-P`                | toggle [P]laylist filtering on and off
-`Q`                     | play the previous media file in the [Q]ueue/playlist
-`R`                     | [R]ename the current media file
-`Ctrl-R`                | toggle infinite [R]epeat of the current media file
-`S`                     | re[S]tart the current media file from the beginning, aka [S]tartover
-`Ctrl-S`                | toggle [S]ubtitles on/off
-`T`                     | [T]ab through the audio or video file. See below in Category section
+`J`                     | ad`[J]`ust the aspect ratio of the window to fit the aspect ratio of an image
+`K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
+`Ctrl-K`                | `[K]`eep/delete: keep the `[K]ept` files in a folder, delete the others 
+`L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
+`M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
+`N`                     | mi`[N]`imize window to the Windows taskbar
+`Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
+`O`                     | zoom `[O]`ut. Can be held down for rapid zooming
+`P`                     | show/hide the `[P]`laylist
+`Ctrl-P`                | toggle `[P]`laylist filtering on and off
+`Q`                     | play the previous media file in the `[Q]`ueue/playlist
+`R`                     | `[R]`ename the current media file
+`Ctrl-R`                | toggle infinite `[R]`epeat of the current media file
+`S`                     | re`[S]`tart the current media file from the beginning, aka `[S]`tartover
+`Ctrl-S`                | toggle `[S]`ubtitles on/off
+`T`                     | `[T]`ab through the audio or video file. See below in Category section
 `T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
-`U`                     | [U]nzoom, i.e. re-fit the video to the window
-`V`                     | synchronize all [V]ideo windows
-`Ctrl-V`                | set System Vol to Max
-`W` or `Numpad ENTER`   | [W]atch the next video in the list (or play the next audio or image)
-`X`                     | e[X]it the application
+`U`                     | `[U]`nzoom, i.e. re-fit the video to the window
+`V`                     | synchronize all `[V]`ideo windows
+`Ctrl-V`                | set System `[V]`ol to Max
+`W` or `Numpad ENTER`   | `[W]`atch the next video in the list (or play the next audio or image)
+`X`                     | e`[X]`it the application
 `Y`                     | open the `Image & Thumbnail Browser`
 `Z` or `END`            | play the last media file in the playlist (`A`/`HOME` plays the first)
-`1`                     | reset the playback speed to normal, i.e. [1]00%
+`1`                     | reset the playback speed to normal, i.e. `[1]`00%
 `2`                     | reset Contrast to normal
 `3`                     | reset Panning to normal
 `4`                     | reset Rotation to normal/not rotated
