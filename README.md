@@ -64,7 +64,7 @@ Significant Releases
 
 - All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing Ctrl-[H]. The full functionality of `MMP: Minimalist Media Player` can be used while this panel is showing so you can try things out.
 
-- `MMP: Minimalist Media Player` provides handy keyboard access to brightness, contrast, gamma and saturation. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
+- `MMP: Minimalist Media Player` provides handy keyboard access to brightness, contrast, gamma, saturation, rotation and zoom in/out. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
 - You can quickly bookmark the current position of a media file and restart from that point at a later time.
 
