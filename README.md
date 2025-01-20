@@ -56,6 +56,8 @@ Significant Releases
 
 - You can "fast forward" through an entire media file by holding down the TAB key. Or backwards by holding down CTRL-TAB. Thanks to MPV, the audio is maintained at the correct pitch.
 
+- With Numlock On, several `MMP` windows can be controlled simultaneously, using various keyboard commands. This can be useful for, for example, comparing multiple copies of a movie to compare resolution quality. `Ctrl-[9]` will automatically arrange up to four `MMP` video windows so they fit correctly on your desktop. `[V]` will sync all the [V]ideos to the same timestamp.
+
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. [F7] will cycle through all the subtitle tracks in the media file.
 
 - Full-resolution screenshots can be saved for individual frames and for a displayed image.
