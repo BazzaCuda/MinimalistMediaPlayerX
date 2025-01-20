@@ -66,7 +66,7 @@ Significant Releases
 
 - `MMP: Minimalist Media Player` provides handy keyboard access to brightness, contrast, gamma, saturation, rotation and zoom in/out. Handy tip: quite often, if you want to brighten the picture, increasing the gamma setting (and sometimes the contrast) gives better results than going straight to the brightness control.
 
-- You can quickly bookmark the current position of a media file and restart from that point at a later time.
+- You can quickly `[5]` bookmark the current position of a media file and `[6]` restart from that point at a later time.
 
 - You can quickly resize the video by holding down the `[G]` key to enlarge it. Or quickly reduce it by holding down `Ctrl-[G]`.
 
@@ -96,10 +96,10 @@ Control | Action
 `Left Arrow`            | pauses the video and steps backwards one frame (or prev image). Can be held down for rapid continuous stepping
 `Up Arrow`              | increase the volume. Can be held down for rapid increase (or mouse wheel)
 `Down Arrow`            | decrease the volume. Can be held down for rapid decrease (or mouse wheel)
-`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (Ctrl-Shift for double speed)
-`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (Ctrl-Shift for double speed)
-`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (Ctrl-Shift for double speed)
-`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (Ctrl-Shift for double speed)
+`Ctrl-Up Arrow`         | pan up. Can be held down for continuous panning (`Ctrl-Shift` for double speed)
+`Ctrl-Down Arrow`       | pan down. Can be held down for continuous panning (`Ctrl-Shift` for double speed)
+`Ctrl-Left Arrow`       | pan left. Can be held down for continuous panning (`Ctrl-Shift` for double speed)
+`Ctrl-Right Arrow`      | pan right. Can be held down for continuous panning (`Ctrl-Shift` for double speed)
 `Left button down`      | drag the media window around the screen
 `Pg Up`                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 `Pg Dn`                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
@@ -130,7 +130,7 @@ Control | Action
 `A` or `HOME`           | play the first media file in the playlist (`Z`/`END` plays last)
 `Ctrl-A`                | show `[A]`bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
 `B`                     | `[B]`lackout/restore progress [B]ar
-`Ctrl-B`                | Make the progress `[B]`ar and captions [B]righter/more prominent
+`Ctrl-B`                | Make the progress `[B]`ar and captions `[B]`righter/more prominent
 `Shift-B`               | Make the progress `[B]`ar and captions darker/less prominent
 `Ctrl-Shift-B`          | Reset the progress `[B]`ar and captions to default color
 `C`                     | show/hide on-screen `[C]`aptions (toggle media file timestamp, hide media metadata)
@@ -147,7 +147,7 @@ Control | Action
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un`[G]`reater, the window size. Can be held down for rapid decrease
 `H`                     | position the window `[H]`orizontally (and Vertically) in the center of the screen
-`Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
+`Ctrl-H`                | toggle the `[H]`elp panel that lists all the keyboard and mouse functions
 `I`                     | zoom `[I]`n. Can be held down for rapid zooming
 `Ctrl-I`                | open an image in the `Image & Thumbnail Browser`
 `J`                     | ad`[J]`ust the aspect ratio of the window to fit the aspect ratio of an image
