@@ -46,6 +46,8 @@ Significant Releases
 
 - You can crop an image (or video frame) by using zoom (`[I]`n/`[O]`ut) and pan (`Ctrl-left`, `Ctrl-right`, `Ctrl-up`, `Ctrl-down`) until the video window shows only the part of the image you want, then `[F5]` screenshot it. The screenshot will include any changes you've made to the Brightness, Contrast, Gamma, Saturation or Rotation of the original image.
 
+- If you take a high resolution screenshot of a video or an image, the dimensions that the resulting image will have in the saved .png file can be set by first resizing the window to your required dimensions. The `Image & Thumbnail Browser` in particular gives you pixel-perfect control of the window dimensions.
+
 - You can edit (`Ctrl-[E]`) an entire audio or video file using just `[I]` and `[O]` to set `[I]`n and `[O]`ut points. E.g. Use the `[TAB]` key to fast forward through a video: when you get to the next section you want to include, press `[I]`; when you get to the next section that you want to exclude, press `[O]`. When you're done, click **Export**. It really doesn't get much easier than that!!
 
 ### Key Features
