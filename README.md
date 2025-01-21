@@ -78,7 +78,7 @@ Significant Releases
 
 - N.B. Many keys can be held down for rapid repitition.
 
-The following list will be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features.
+The following list may be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features, for both the main `MMP` media window and the `Image & Thumbnail Browser`.
 
 ### Keyboard Controls (Main Window*)
 ---------------------
