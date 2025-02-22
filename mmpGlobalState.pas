@@ -72,7 +72,7 @@ type
 
     function notify(const aNotice: INotice): INotice;
 
-    property activeTasks:               integer             read getActiveTasks;
+    property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
     property autoCenter:                boolean             read getAutoCenter;
     property IDD:                       integer             read getIDD;
     property imagesPaused:              boolean             read getImagesPaused;
