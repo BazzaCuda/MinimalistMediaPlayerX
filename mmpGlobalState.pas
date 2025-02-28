@@ -1,5 +1,5 @@
 {   MMP: Minimalist Media Player
-    Copyright (C) 2021-2024 Baz Cuda
+    Copyright (C) 2021-2099 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
 {   MMP: Minimalist Media Player
-    Copyright (C) 2021-2024 Baz Cuda
+    Copyright (C) 2021-2099 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
