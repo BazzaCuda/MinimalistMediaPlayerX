@@ -92,7 +92,7 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
@@ -331,7 +331,9 @@ begin
 
   case mmpPlayNext of FALSE:
   case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                 FALSE: FLocked := FALSE; end;end;
+                                                 FALSE: begin
+                                                          FLocked := FALSE;
+                                                          case GS.mediaType <> mtImage of TRUE: notifyApp(newNotice(evAppClose)); end;end;end;end;
 end;
 
 function TVM.doPlayPrev: boolean;
@@ -595,6 +597,7 @@ begin
     evVMKeepCatF4:          sendOpInfo(renameCurrentItem(rtKeepCatF4));
     evVMKeepCurrentItem:    sendOpInfo(renameCurrentItem(rtKeep));
     evVMKeepDelete:         keepDelete;
+    evVMKeepMove:           sendOpInfo(renameCurrentItem(rtKeepMove));
     evVMImageInBrowser:     showThumbnails(htMPVHost);
     evVMMinimize:           minimizeWindow;
     evVMMoveHelp:           movehelp(aNotice.tf);
@@ -848,14 +851,26 @@ begin
     rtKeepCatF2:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F2] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF3:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F3] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF4:  vNewName := mmpRenameFile(vOldName, mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
+    rtKeepMove:   vNewName := mmpITBS(CF[CONF_MOVE_FOLDER]) + extractFileName(vOldName);
   end;
-
-  case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;
 
   case vNewName = vOldName of TRUE: EXIT; end;
 
-  notifyApp(newNotice(evPLReplaceCurrentItem, vNewName));
-  notifyApp(newNotice(evMCCaption, notifyApp(newNotice(evPLReqFormattedItem)).text));
+  case aRenameType = rtKeepMove of   TRUE:  begin
+                                              notifyApp(newNotice(evMPStop));
+                                              forceDirectories(CF[CONF_MOVE_FOLDER]);
+                                              case directoryExists(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
+                                              case renameFile(vOldName, vNewName) of FALSE: EXIT; end;end;
+                                    FALSE: case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;end;
+
+  case aRenameType = rtKeepMove of   TRUE:  begin
+                                              notifyApp(newNotice(evPLDeleteIx, notifyApp(newNotice(evPLReqCurrentIx)).integer));
+                                              case notifyApp(newNotice(evPLReqHasItems)).tf of  TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
+                                                                                               FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;end; // force nextFolderOnEmpty/End
+                                    FALSE:  begin
+                                              notifyApp(newNotice(evPLReplaceCurrentItem, vNewName));
+                                              notifyApp(newNotice(evMCCaption, notifyApp(newNotice(evPLReqFormattedItem)).text)); end;end;
+
   notifyApp(newNotice(evPLFormLoadBox));
 
   case aRenameType of
@@ -865,6 +880,7 @@ begin
     rtKeepCatF2:  result := CF[CONF_CAT_F2] + ' ...';
     rtKeepCatF3:  result := CF[CONF_CAT_F3] + ' ...';
     rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
+    rtKeepMove:   result := 'Moved: ' + mmpITBS(CF[CONF_MOVE_FOLDER]);
   end;
 end;
 

@@ -93,6 +93,7 @@ begin
     koKeepCatF3:          notifyApp(newNotice(evVMKeepCatF3));
     koKeepCatF4:          notifyApp(newNotice(evVMKeepCatF4));
     koKeepDelete:         notifyApp(newNotice(evVMKeepDelete));
+    koKeepMove:           notifyApp(NewNotice(evVMKeepMove));
     koImageInBrowser:     notifyApp(newNotice(evVMImageInBrowser));
     koMaximize:           begin notifyApp(newNotice(evGSAutoCenter, TRUE)); notifyApp(newNotice(evGSMaxSize, TRUE)); notifyApp(newNotice(evVMResizeWindow)); end; // maximize the video according to the height of the screen
     koMinimizeWindow:     notifyApp(newNotice(evVMMinimize));

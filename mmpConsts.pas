@@ -90,6 +90,8 @@ const
   CONF_CAT_F3               = 'catF3';
   CONF_CAT_F4               = 'catF4';
 
+  CONF_MOVE_FOLDER          = 'moveFolder';
+
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
 var
@@ -106,11 +108,11 @@ type
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
-            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4);
+            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
-  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4);
+  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove);
 
   TSnapshot = record
     key:              WORD;
