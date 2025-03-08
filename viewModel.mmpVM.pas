@@ -857,13 +857,13 @@ begin
   case vNewName = vOldName of TRUE: EXIT; end;
 
   case aRenameType = rtKeepMove of   TRUE:  begin
-                                              notifyApp(newNotice(evMPStop));
-                                              forceDirectories(CF[CONF_MOVE_FOLDER]);
-                                              case directoryExists(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
-                                              case renameFile(vOldName, vNewName) of FALSE: EXIT; end;end;
+                                              case forceDirectories(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
+                                              case directoryExists(CF[CONF_MOVE_FOLDER])  of FALSE: EXIT; end;
+                                              case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
                                     FALSE: case vWasPlaying of TRUE: notifyApp(newNotice(evMPResume)); end;end;
 
   case aRenameType = rtKeepMove of   TRUE:  begin
+                                              notifyApp(newNotice(evMPStop));
                                               notifyApp(newNotice(evPLDeleteIx, notifyApp(newNotice(evPLReqCurrentIx)).integer));
                                               case notifyApp(newNotice(evPLReqHasItems)).tf of  TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
                                                                                                FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;end; // force nextFolderOnEmpty/End
