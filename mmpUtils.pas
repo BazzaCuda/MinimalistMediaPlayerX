@@ -37,7 +37,7 @@ function mmpProcessMessages: boolean;
 implementation
 
 uses
-  system.math, system.sysUtils,
+  system.math,
   _debugWindow;
 
 var

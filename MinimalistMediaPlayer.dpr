@@ -107,7 +107,8 @@ uses
   TCleanupClass in 'TCleanupClass.pas',
   mmpMenu in 'mmpMenu.pas',
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
-  mmpConsts in 'mmpConsts.pas';
+  mmpConsts in 'mmpConsts.pas',
+  mmpFuncProcs in 'mmpFuncProcs.pas';
 
 function checkParam: boolean;
 begin
