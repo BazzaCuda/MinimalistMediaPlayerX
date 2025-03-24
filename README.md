@@ -24,7 +24,7 @@ Media File Formats
 WIKI
 ----
 
-`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (constantly being added to)
 
 Significant Releases
 --------------------
