@@ -441,8 +441,10 @@ end;
 function TVM.keepDelete: boolean;
 begin
   var vCurrentFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
-  case mmpKeepDelete(vCurrentFolder) of TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                                                              FALSE: notifyApp(newNotice(evAppClose)); end;end;
+  case mmpKeepDelete(vCurrentFolder) of FALSE: EXIT; end;
+
+  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
+                                                  FALSE: notifyApp(newNotice(evAppClose)); end;
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -670,7 +672,7 @@ end;
 procedure TVM.onVideoPanelDblClick(sender: TObject);
 begin
   FDoubleClick := TRUE;
-  mmpDo(FDragged, evNone, evVMToggleFullscreen); // don't process button up after a drag as a click
+  mmpDo(FDragged, evNone, evVMToggleFullscreen); // after a drag, don't process button up as a click
 end;
 
 procedure TVM.onWINAutoCenterOff(var msg: TMessage);

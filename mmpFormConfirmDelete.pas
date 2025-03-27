@@ -1,0 +1,144 @@
+{   MMP: Minimalist Media Player
+    Copyright (C) 2021-2099 Baz Cuda
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+}
+unit mmpFormConfirmDelete;
+
+interface
+
+uses
+  winApi.windows, winApi.Messages,
+  system.imageList, system.sysUtils, system.variants, system.classes, vcl.graphics,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts;
+
+type
+  TDeletionObject = (doFile, doFolder);
+
+  TConfirmDeleteForm = class(TForm)
+    btnYes: TButton;
+    btnNo: TButton;
+    imgDeleteFolder: TImage;
+    lblConfirm: TLabel;
+    imgDeleteFile: TImage;
+    lblItemToDelete: TLabel;
+    lblTitle: TLabel;
+    lblSubFolders: TLabel;
+    imgDeleteMethod: TImage;
+    lblRecycle: TLabel;
+    ImageList: TImageList;
+    lblStandard: TLabel;
+    lblShred: TLabel;
+    lblDeleteMethod: TLabel;
+    lblGoneMeansGone: TLabel;
+    Label1: TLabel;
+    procedure FormActivate(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+  public
+    constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
+  end;
+
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  mmpGlobalState,
+  model.mmpConfigFile,
+  _debugWindow;
+
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
+begin
+  result := mrNo;
+  notifyApp(newNotice(evGSUserInput, TRUE));
+  with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod) do begin
+    result := showModal;
+    free;
+  end;
+  notifyApp(newNotice(evGSUserInput, FALSE));
+end;
+
+{ TConfirmDeleteForm }
+
+function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
+begin
+  case aTextWidth > aMaxWidth of   TRUE:  begin
+                                            var vChop := length(aText) div 2;
+                                            repeat
+                                              inc(vChop);
+                                            until (vChop > length(aText)) or (aText[vChop] = '\');
+                                            var vLine1 := copy(aText, 1, vChop) + '...';
+                                            var vLine2 := '...\' + copy(aText, vChop + 1);
+                                            result := vLine1 + #13#10 + vLine2; end;
+                                  FALSE:  result := aText; end;
+end;
+
+constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
+begin
+  inherited create(NIL);
+  popupParent := GS.mainForm;
+
+  label1.caption := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
+  var vCaption := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width);
+  case aDeletionObject of doFile: vCaption := vCaption + #13#10 + extractFileName(aPath); end;
+  lblItemToDelete.caption := vCaption;
+
+  imgDeleteFolder.visible := aDeletionObject = doFolder;
+  imgDeleteFile.visible   := aDeletionObject = doFile;
+
+  case aDeletionObject of
+    doFile:   lblTitle.caption := 'Delete File';
+    doFolder: lblTitle.caption := 'Delete Folder Contents'; end;
+
+  lblSubFolders.visible := aDeletionObject = doFolder;
+
+  lblDeleteMethod.caption := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
+
+  case aDeleteMethod of
+    dmRecycle:  lblConfirm.caption := 'Confirm Recycle';
+    dmStandard: lblConfirm.caption := 'Confirm Delete';
+    dmShred:    lblConfirm.caption := 'Confirm Shred'; end;
+
+  case aDeletionObject of
+    doFile:     lblConfirm.caption := lblConfirm.caption + ' File?';
+    doFolder:   lblConfirm.caption := lblConfirm.caption + ' Folder?'; end;
+
+  lblRecycle.visible  := aDeleteMethod = dmRecycle;
+  lblStandard.visible := aDeleteMethod = dmStandard;
+  lblShred.visible    := aDeleteMethod = dmShred;
+
+  lblGoneMeansGone.visible := aDeleteMethod = dmShred;
+
+  imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
+  setWindowPos(SELF.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE OR SWP_NOSIZE); // otherwise it can end up behind the Image & Thumbnail Browser window
+end;
+
+procedure TConfirmDeleteForm.FormActivate(Sender: TObject);
+begin
+  btnNo.setFocus;
+end;
+
+procedure TConfirmDeleteForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case key = VK_ESCAPE of TRUE: modalResult := mrNo; end;
+end;
+
+end.

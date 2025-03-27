@@ -233,6 +233,10 @@
         <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpFuncProcs.pas"/>
+        <DCCReference Include="mmpFormConfirmDelete.pas">
+            <Form>ConfirmDeleteForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

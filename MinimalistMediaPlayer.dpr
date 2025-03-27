@@ -108,7 +108,8 @@ uses
   mmpMenu in 'mmpMenu.pas',
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
-  mmpFuncProcs in 'mmpFuncProcs.pas';
+  mmpFuncProcs in 'mmpFuncProcs.pas',
+  mmpFormConfirmDelete in 'mmpFormConfirmDelete.pas' {ConfirmDeleteForm};
 
 function checkParam: boolean;
 begin

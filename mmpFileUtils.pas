@@ -43,8 +43,8 @@ implementation
 uses
   winApi.windows,
   system.ioUtils,
-  vcl.dialogs,
-  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpShellUtils, mmpShredUtils, mmpUtils,
+  vcl.controls, vcl.dialogs,
+  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpShellUtils, mmpShredUtils, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
 
 
@@ -68,19 +68,14 @@ begin
 end;
 
 function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState): boolean;
+var vDeletionObject: TDeletionObject;
 begin
   result := FALSE;
 
-  var vMsg := 'DELETE '#13#10#13#10'Folder: ' + extractFilePath(aFilePath);
-  case ssCtrl in aShiftState of  TRUE: vMsg := 'DELETE folder contents '#13#10#13#10'Folder: ' + extractFilePath(aFilePath) + '*.*';
-                                  FALSE: vMsg := vMsg + #13#10#13#10'File: ' + extractFileName(aFilePath); end;
+  case ssCtrl in aShiftState of  TRUE: vDeletionObject := doFolder;
+                                FALSE: vDeletionObject := doFile; end;
 
-  case CF.asDeleteMethod[CONF_DELETE_METHOD] in [dmStandard, dmShred] of TRUE: vMsg := vMsg + #13#10#13#10'Only click OK if you are ABSOLUTELY SURE'; end;
-  case CF.asDeleteMethod[CONF_DELETE_METHOD] of dmShred: vMsg := vMsg + #13#10'Shred: Once they''re gone, they are GONE!'; end;
-
-  case ssCtrl in aShiftState of TRUE: vMsg := vMsg + #13#10#13#10'(doesn''t affect the contents of subfolders)'; end;
-
-  result := mmpShowOkCancelMsgDlg(vMsg) = IDOK;
+  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrYes;
 end;
 
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
