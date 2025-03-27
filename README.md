@@ -15,6 +15,7 @@ The window resizes to fit the video perfectly, eliminating ugly black borders/ba
 
 This is a complete rewrite of (and supercedes) an earlier project which was based on Windows Media Player. As such, this [here] incarnation of `MMP: Minimalist Media Player` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, playback speed, etc.
 ![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
+`Ctrl-[H]` both in the main media window and in the `Image & Thumbnail Browser` to view the Help panel listing all the many controls for audio, video, and images.
 
 Media File Formats
 ------------------
@@ -23,7 +24,7 @@ Media File Formats
 WIKI
 ----
 
-`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (currently being developed)
+`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (constantly being added to)
 
 Significant Releases
 --------------------
