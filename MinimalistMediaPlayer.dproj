@@ -108,7 +108,7 @@
         <DCC_ExeOutput>.\$(Platform)\$(Config)\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=MMP: Minimalist Media Player;FileVersion=4.0.8.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=4.0.6.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=MMP: Minimalist Media Player;FileVersion=4.0.9.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=4.0.9.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
@@ -117,7 +117,7 @@
         <Debugger_RunParams>&quot;B:\Images\zTest\New Folder\017.jpg&quot; &quot;B:\Downloads\_testMMP\032.jpg&quot;   &quot;B:\Downloads\_testMMP\030.jpg&quot; &quot;B:\Movies\Groundhog Day (1993) [edited].mp4&quot; &quot;I:\MoviesToGo\Casanova (2005).mkv&quot; &quot;B:\Downloads\_testMMP\jon.richardson.live.2014.nidiot.bdrip.x264-haggis [c].mp4&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
-        <VerInfo_Release>8</VerInfo_Release>
+        <VerInfo_Release>9</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -205,6 +205,7 @@
         <DCCReference Include="mmpProgramUpdates.pas"/>
         <DCCReference Include="view.mmpFormDownload.pas"/>
         <DCCReference Include="mmpFormInputBox.pas"/>
+        <DCCReference Include="mmpFormConfirmDelete.pas"/>
         <DCCReference Include="view.mmpFormProgress.pas"/>
         <DCCReference Include="mmpKeyboardUtils.pas"/>
         <DCCReference Include="view.mmpFormAbout.pas"/>
@@ -233,10 +234,6 @@
         <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpFuncProcs.pas"/>
-        <DCCReference Include="mmpFormConfirmDelete.pas">
-            <Form>ConfirmDeleteForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

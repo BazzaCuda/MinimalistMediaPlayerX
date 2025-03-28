@@ -80,6 +80,7 @@ const
   CONF_PLAYLIST_FORMAT      = 'playlistFormat';
   CONF_PROGRESS_BAR         = 'progressBar';
   CONF_REPEAT_DELAY_MS      = 'repeatDelayMs';
+  CONF_SCALE_FACTOR         = 'scaleFactor';
   CONF_SHOW_METADATA        = 'showMetaData';
   CONF_TIME_CAPTION         = 'timeCaption';
   CONF_VIDEO_DELETE         = 'videoDelete';

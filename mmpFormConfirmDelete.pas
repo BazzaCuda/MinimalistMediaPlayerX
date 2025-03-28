@@ -30,6 +30,11 @@ uses
 type
   TDeletionObject = (doFile, doFolder);
 
+  IConfirmDeleteForm = interface
+    ['{96B437DD-E174-4008-9DCA-C55BE40D5BF2}']
+  end;
+
+  {$REGION}
   TConfirmDeleteForm = class(TForm)
     btnYes: TButton;
     btnNo: TButton;
@@ -53,6 +58,7 @@ type
   public
     constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
   end;
+  {$ENDREGION}
 
 function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
 
@@ -94,7 +100,6 @@ end;
 constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
 begin
   inherited create(NIL);
-  popupParent := GS.mainForm;
 
   label1.caption := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
   var vCaption := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width);
@@ -128,6 +133,13 @@ begin
   lblGoneMeansGone.visible := aDeleteMethod = dmShred;
 
   imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
+
+  var vScaleFactor := CF.asInteger[CONF_SCALE_FACTOR];
+  case vScaleFactor < 50 of TRUE: vScaleFactor := 50; end;
+  SELF.scaleBy(vScaleFactor, 100);
+  imgDeleteMethod.top     := lblShred.top;
+  imgDeleteMethod.left    := lblShred.left - imgDeleteMethod.width;
+
   setWindowPos(SELF.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE OR SWP_NOSIZE); // otherwise it can end up behind the Image & Thumbnail Browser window
 end;
 

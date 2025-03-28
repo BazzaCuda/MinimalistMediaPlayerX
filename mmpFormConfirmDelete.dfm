@@ -1,7 +1,7 @@
 object ConfirmDeleteForm: TConfirmDeleteForm
   Left = 0
   Top = 0
-  BorderStyle = bsSizeToolWin
+  BorderStyle = bsToolWindow
   Caption = 'Confirm Delete'
   ClientHeight = 441
   ClientWidth = 624
@@ -3022,6 +3022,9 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   Position = poScreenCenter
   OnActivate = FormActivate
   OnKeyUp = FormKeyUp
+  DesignSize = (
+    624
+    441)
   TextHeight = 15
   object imgDeleteFolder: TImage
     Left = 8
@@ -4765,6 +4768,8 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Top = 104
     Width = 56
     Height = 56
+    Anchors = [akTop, akRight]
+    Stretch = True
     Transparent = True
   end
   object lblRecycle: TLabel
@@ -4784,9 +4789,9 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Alignment = taCenter
     AutoSize = False
     Caption = 
-      'Standard delete from disk. File contents may  be recoverable usi' +
-      'ng specialist tools until the data gets overwritten by the conte' +
-      'nts of another file.'
+      'Standard delete from disk. File contents may be recoverable usin' +
+      'g specialist tools until the data gets overwritten by the conten' +
+      'ts of another file.'
     Transparent = True
     WordWrap = True
   end
@@ -4879,8 +4884,8 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   object ImageList: TImageList
     Height = 56
     Width = 56
-    Left = 576
-    Top = 120
+    Left = 568
+    Top = 112
     Bitmap = {
       494C010103000800040038003800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000E000000038000000010020000000000000C4
