@@ -28,7 +28,7 @@ uses
   mmpConsts;
 
 type
-  TDeletionObject = (doFile, doFolder);
+  TDeletionObject = (doFile, doFolder, doKeepDelete);
 
   IConfirmDeleteForm = interface
     ['{96B437DD-E174-4008-9DCA-C55BE40D5BF2}']
@@ -52,6 +52,7 @@ type
     lblDeleteMethod: TLabel;
     lblGoneMeansGone: TLabel;
     Label1: TLabel;
+    lblKeptFiles: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -106,14 +107,17 @@ begin
   case aDeletionObject of doFile: vCaption := vCaption + #13#10 + extractFileName(aPath); end;
   lblItemToDelete.caption := vCaption;
 
-  imgDeleteFolder.visible := aDeletionObject = doFolder;
+  imgDeleteFolder.visible := aDeletionObject in [doFolder, doKeepDelete];
   imgDeleteFile.visible   := aDeletionObject = doFile;
 
   case aDeletionObject of
-    doFile:   lblTitle.caption := 'Delete File';
-    doFolder: lblTitle.caption := 'Delete Folder Contents'; end;
+    doFile:       lblTitle.caption := 'Delete File';
+    doFolder:     lblTitle.caption := 'Delete Folder Contents';
+    doKeepDelete: lblTitle.caption := 'Delete all but the "[K]eep" files';
+  end;
 
-  lblSubFolders.visible := aDeletionObject = doFolder;
+  lblSubFolders.visible := aDeletionObject in [doFolder, doKeepDelete];
+  lblKeptFiles.visible  := aDeletionObject = doKeepDelete;
 
   lblDeleteMethod.caption := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
 
@@ -123,8 +127,9 @@ begin
     dmShred:    lblConfirm.caption := 'Confirm Shred'; end;
 
   case aDeletionObject of
-    doFile:     lblConfirm.caption := lblConfirm.caption + ' File?';
-    doFolder:   lblConfirm.caption := lblConfirm.caption + ' Folder?'; end;
+    doFile:       lblConfirm.caption := lblConfirm.caption + ' File?';
+    doFolder:     lblConfirm.caption := lblConfirm.caption + ' Folder?';
+    doKeepDelete: lblConfirm.caption := lblConfirm.caption + ' non-"[K]eep" files?'; end;
 
   lblRecycle.visible  := aDeleteMethod = dmRecycle;
   lblStandard.visible := aDeleteMethod = dmStandard;

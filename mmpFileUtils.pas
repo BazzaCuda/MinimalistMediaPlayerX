@@ -244,15 +244,7 @@ begin
                                                   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                                   EXIT; end;end;
 
-  var vMsg := 'KEEP/DELETE '#13#10#13#10'Folder: ' + aFolderPath + '*.*';
-      vMsg := vMsg + #13#10#13#10'WARNING: This will delete every file in the folder'#13#10;
-      vMsg := vMsg + 'that doesn''t start with an exclamation point !';
-
-  case CF.asDeleteMethod[CONF_DELETE_METHOD] in [dmStandard, dmShred] of TRUE: vMsg := vMsg + #13#10#13#10'Only click OK if you are ABSOLUTELY SURE'; end;
-  case CF.asDeleteMethod[CONF_DELETE_METHOD] of dmShred: vMsg := vMsg + #13#10'Shred: Once they''re gone, they are GONE!'; end;
-
-  case mmpShowOkCancelMsgDlg(vMsg) = IDOK of  TRUE:;
-                                             FALSE: EXIT; end;
+  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrNO of TRUE: EXIT; end;
 
   case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
     repeat

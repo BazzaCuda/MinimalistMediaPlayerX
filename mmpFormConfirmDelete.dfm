@@ -4110,9 +4110,9 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Stretch = True
   end
   object lblConfirm: TLabel
-    Left = 127
+    Left = 8
     Top = 299
-    Width = 369
+    Width = 608
     Height = 40
     Alignment = taCenter
     AutoSize = False
@@ -4765,7 +4765,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object imgDeleteMethod: TImage
     Left = 251
-    Top = 104
+    Top = 109
     Width = 56
     Height = 56
     Anchors = [akTop, akRight]
@@ -4774,7 +4774,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblRecycle: TLabel
     Left = 313
-    Top = 104
+    Top = 109
     Width = 200
     Height = 49
     Alignment = taCenter
@@ -4783,7 +4783,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblStandard: TLabel
     Left = 313
-    Top = 104
+    Top = 109
     Width = 240
     Height = 73
     Alignment = taCenter
@@ -4797,7 +4797,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblShred: TLabel
     Left = 313
-    Top = 104
+    Top = 109
     Width = 240
     Height = 73
     Alignment = taCenter
@@ -4810,7 +4810,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblDeleteMethod: TLabel
     Left = 215
-    Top = 83
+    Top = 88
     Width = 401
     Height = 15
     Alignment = taCenter
@@ -4850,6 +4850,19 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     ParentFont = False
     Visible = False
   end
+  object lblKeptFiles: TLabel
+    Left = 290
+    Top = 64
+    Width = 244
+    Height = 17
+    Caption = '"[K]eep" files start with a ! and a space.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object btnYes: TButton
     Left = 127
     Top = 378
@@ -4885,7 +4898,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Height = 56
     Width = 56
     Left = 568
-    Top = 112
+    Top = 117
     Bitmap = {
       494C010103000800040038003800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000E000000038000000010020000000000000C4
