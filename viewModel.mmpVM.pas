@@ -301,7 +301,7 @@ destructor TVM.Destroy;
 begin
   TT.notifier.unsubscribe(FSubscriberTT);
   appNotifier.unsubscribe(FSubscriber);
-  mmpDo(FSlideshowTimer <> NIL, mmpFree, FSlideshowTimer);
+  mmpFree(FSlideshowTimer <> NIL, FSlideshowTimer);
   inherited;
 end;
 
@@ -320,8 +320,8 @@ begin
   result := FALSE;
 
   vFolder   := notifyApp(newNotice(evPLReqCurrentFolder)).text;
-  var vMsg  := 'Cleanup Timeline Editing files in '#13#10
-              + vFolder + ' ???';
+  var vMsg  := 'Cleanup Timeline Editing files in '#13#10#13#10
+              + 'Folder: ' + vFolder + ' ???';
 
   mmpDo(mmpShowOKCancelMsgDlg(vMsg) = mrOK, procedure begin
                                                         notifyApp(newNotice(evSTOpInfo, 'Cleanup in progress'));

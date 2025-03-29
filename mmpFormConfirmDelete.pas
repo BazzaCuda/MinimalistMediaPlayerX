@@ -52,7 +52,7 @@ type
     lblDeleteMethod: TLabel;
     lblGoneMeansGone: TLabel;
     Label1: TLabel;
-    lblKeptFiles: TLabel;
+    lblKeepFiles: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -117,7 +117,7 @@ begin
   end;
 
   lblSubFolders.visible := aDeletionObject in [doFolder, doKeepDelete];
-  lblKeptFiles.visible  := aDeletionObject = doKeepDelete;
+  lblKeepFiles.visible  := aDeletionObject = doKeepDelete;
 
   lblDeleteMethod.caption := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
 

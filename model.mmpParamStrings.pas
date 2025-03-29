@@ -61,8 +61,7 @@ end;
 
 function TParamStrings.getFileFolder: string;
 begin
-  case paramCount = 0 of  TRUE: result := '';
-                         FALSE: result := extractFilePath(paramStr(1)); end;
+  result := extractFilePath(paramStr(1));  // paramStr returns '' if index is out of range
 end;
 
 function TParamStrings.getFileFolderAndName: string;
@@ -72,8 +71,7 @@ end;
 
 function TParamStrings.getFileName: string;
 begin
-  case paramCount = 0 of  TRUE: result := '';
-                         FALSE: result := extractFileName(paramStr(1)); end;
+  result := extractFileName(paramStr(1)); // paramStr returns '' if index is out of range
 end;
 
 function TParamStrings.getNoFile: boolean;

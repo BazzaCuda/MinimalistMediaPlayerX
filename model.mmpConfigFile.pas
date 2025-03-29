@@ -107,8 +107,7 @@ begin
                                                   FLastWriteTime := vLastWriteTime;
                                                   try
                                                     FFileContents.loadFromFile(FFilePath);
-                                                  except end;
-                                                end;end;
+                                                  except end;end;end;
   result := TRUE;
 end;
 
@@ -170,9 +169,9 @@ end;
 
 function TConfigFile.initConfigFile(const aFilePath: string): boolean;
 begin
-  result := FALSE;
+  result    := FALSE;
   FFilePath := aFilePath;
-  result := TRUE;
+  result    := TRUE;
 end;
 
 function TConfigFile.saveConfigFile: boolean;

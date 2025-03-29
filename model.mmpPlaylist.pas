@@ -262,8 +262,7 @@ end;
 function TPlaylist.first: boolean;
 begin
   result := FALSE;
-  case hasItems of  TRUE: FPlayIx := 0;
-                   FALSE: FPlayIx := -1; end;
+  FPlayIx := -ord(NOT hasItems); // TRUE = 0, FALSE = -1, a reversal of their ordinal values
   result := FPlayIx = 0;
 end;
 
@@ -326,7 +325,7 @@ begin
   result := FPlayIx = FPlaylist.count - 1;
 end;
 
-function TPlaylist.isSpecialImage: boolean;
+function TPlaylist.isSpecialImage: boolean; // I don't remember what this was all about - it's not used
 begin
   result := FALSE;
   var vExt := lowerCase(extractFileExt(currentItem)) + ' ';

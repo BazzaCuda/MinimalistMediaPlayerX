@@ -4850,12 +4850,12 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     ParentFont = False
     Visible = False
   end
-  object lblKeptFiles: TLabel
+  object lblKeepFiles: TLabel
     Left = 290
     Top = 64
-    Width = 244
+    Width = 164
     Height = 17
-    Caption = '"[K]eep" files start with a ! and a space.'
+    Caption = '"[K]eep" files start with a !'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13

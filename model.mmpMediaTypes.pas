@@ -73,7 +73,7 @@ function TMediaTypes.getMediaExts: string;
 begin
   result := FMediaExts;
   case result <> '' of TRUE: EXIT; end;
-  for var i := 0 to high(mediaTypes) do
+  for var i := low(mediaTypes) to high(mediaTypes) do
     FMediaExts := FMediaExts + mediaTypes[i].fileExts;
   result := FMediaExts;
 end;

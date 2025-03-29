@@ -44,7 +44,7 @@ var
   vBrightness: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('brightness', vBrightness);
+  mpv.getPropertyInt64('brightness', vBrightness);
   result := format('Brightness: %d', [vBrightness]);
 end;
 
@@ -53,7 +53,7 @@ var
   vContrast: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('contrast', vContrast);
+  mpv.getPropertyInt64('contrast', vContrast);
   result := format('Contrast: %d', [vContrast]);
 end;
 
@@ -68,7 +68,7 @@ var
   vGamma: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('gamma', vGamma);
+  mpv.getPropertyInt64('gamma', vGamma);
   result := format('Gamma: %d', [vGamma]);
 end;
 
@@ -77,7 +77,7 @@ var
   vSaturation: int64;
 begin
   case mpv = NIL of TRUE: EXIT; end;
-  mpv.GetPropertyInt64('saturation', vSaturation);
+  mpv.getPropertyInt64('saturation', vSaturation);
   result := format('Saturation: %d', [vSaturation]);
 end;
 

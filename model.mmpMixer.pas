@@ -24,7 +24,7 @@ implementation
 
 uses
   winApi.activeX, winApi.MMSystem, winApi.windows,
-  system.sysUtils, system.win.comObj,
+  system.math, system.sysUtils, system.win.comObj,
   mmpMMDevApi_tlb,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
@@ -226,8 +226,7 @@ var
   vDetails:         TMixerControlDetails;
   vUnsignedDetails: TMixerControlDetailsUnsigned;
 begin
-  case aValue < 0     of TRUE: aValue := 0;     end;
-  case aValue > 65535 of TRUE: aValue := 65535; end;
+  aValue := max(0, min(65535, aValue));
 
   zeroMemory(@vLine, sizeOf(vLine));
   vLine.cbStruct          := sizeOf(vLine);
@@ -288,9 +287,7 @@ procedure TVistaMixer.setVolume(aValue: integer);
 var
   vValue: single;
 begin
-  case aValue < 0     of TRUE: aValue := 0;     end;
-  case aValue > 65535 of TRUE: aValue := 65535; end;
-  vValue := aValue / 65535;
+  vValue := max(0, min(65535, aValue)) / 65535;
   FmmEndpoint.setMasterVolumeLevelScalar(vValue, NIL);
 end;
 

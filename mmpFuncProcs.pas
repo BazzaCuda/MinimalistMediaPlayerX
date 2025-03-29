@@ -45,7 +45,7 @@ procedure mmpDo(aBoolean: boolean; trueEvent:   TNoticeEvent; aInteger: integer)
 procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; aObject: TObject); overload;
 procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; falseProc: TOProc; aObject: TObject); overload;
 
-procedure mmpFree(aObject: TObject);
+procedure mmpFree(aBoolean: boolean; aObject: TObject);
 
 implementation
 
@@ -93,9 +93,9 @@ begin
   mmpDo(aBoolean, T);
 end;
 
-procedure mmpFree(aObject: TObject);
+procedure mmpFree(aBoolean: boolean; aObject: TObject);
 begin
-  mmpDo(aObject <> NIL, procedure begin aObject.free; end);
+  mmpDo(aBoolean and (aObject <> NIL), procedure begin aObject.free; end);
 end;
 
 procedure mmpDo(aBoolean: boolean; trueProc: TOProc; falseProc: TOProc; aObject: TObject);

@@ -270,7 +270,7 @@ begin
     vExt              := extractFileExt(vOldFileNamePart);
     vOldFileNamePart  := mmpFileNameWithoutExtension(vOldFileNamePart);
 
-    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart;
+    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart; // the calling code has already supplied the new name
                                    FALSE: begin
                                             try
                                               s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
@@ -283,7 +283,7 @@ begin
 
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
-                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
+                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10#13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
 end;
 
 function mmpRunTasks: boolean;
