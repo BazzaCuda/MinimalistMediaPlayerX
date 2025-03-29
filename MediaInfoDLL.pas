@@ -80,78 +80,78 @@ type TMIInfoOption =
 {$ELSE}
 
 var
-  LibHandle: THandle = 0;
+  libHandle: THandle = 0;
 
   // Unicode methods
-  MediaInfo_New:        function  (): THandle cdecl stdcall;
-  MediaInfo_Delete:     procedure (Handle: THandle) cdecl stdcall;
-  MediaInfo_Open:       function  (Handle: THandle; File__: PWideChar): Cardinal cdecl stdcall;
-  MediaInfo_Close:      procedure (Handle: THandle) cdecl stdcall;
-  MediaInfo_Inform:     function  (Handle: THandle; Reserved: Integer): PWideChar cdecl stdcall;
-  MediaInfo_GetI:       function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: Integer;   KindOfInfo: TMIInfo): PWideChar cdecl stdcall; //Default: KindOfInfo=Info_Text,
-  MediaInfo_Get:        function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: PWideChar; KindOfInfo: TMIInfo; KindOfSearch: TMIInfo): PWideChar cdecl stdcall; //Default: KindOfInfo=Info_Text, KindOfSearch=Info_Name
-  MediaInfo_Option:     function  (Handle: THandle; Option: PWideChar; Value: PWideChar): PWideChar cdecl stdcall;
-  MediaInfo_State_Get:  function  (Handle: THandle): Integer cdecl stdcall;
-  MediaInfo_Count_Get:  function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer): Integer cdecl stdcall;
+  mediaInfo_New:        function  (): THandle cdecl stdcall;
+  mediaInfo_Delete:     procedure (Handle: THandle) cdecl stdcall;
+  mediaInfo_Open:       function  (Handle: THandle; File__: PWideChar): Cardinal cdecl stdcall;
+  mediaInfo_Close:      procedure (Handle: THandle) cdecl stdcall;
+  mediaInfo_Inform:     function  (Handle: THandle; Reserved: Integer): PWideChar cdecl stdcall;
+  mediaInfo_GetI:       function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: Integer;   KindOfInfo: TMIInfo): PWideChar cdecl stdcall; //Default: KindOfInfo=Info_Text,
+  mediaInfo_Get:        function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: PWideChar; KindOfInfo: TMIInfo; KindOfSearch: TMIInfo): PWideChar cdecl stdcall; //Default: KindOfInfo=Info_Text, KindOfSearch=Info_Name
+  mediaInfo_Option:     function  (Handle: THandle; Option: PWideChar; Value: PWideChar): PWideChar cdecl stdcall;
+  mediaInfo_State_Get:  function  (Handle: THandle): Integer cdecl stdcall;
+  mediaInfo_Count_Get:  function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer): Integer cdecl stdcall;
 
   // Ansi methods
-  MediaInfoA_New:       function  (): THandle cdecl stdcall;
-  MediaInfoA_Delete:    procedure (Handle: THandle) cdecl stdcall;
-  MediaInfoA_Open:      function  (Handle: THandle; File__: PAnsiChar): Cardinal cdecl stdcall;
-  MediaInfoA_Close:     procedure (Handle: THandle) cdecl stdcall;
-  MediaInfoA_Inform:    function  (Handle: THandle; Reserved: Integer): PAnsiChar cdecl stdcall;
-  MediaInfoA_GetI:      function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: Integer; KindOfInfo: TMIInfo): PAnsiChar cdecl stdcall; //Default: KindOfInfo=Info_Text
-  MediaInfoA_Get:       function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: PAnsiChar;   KindOfInfo: TMIInfo; KindOfSearch: TMIInfo): PAnsiChar cdecl stdcall; //Default: KindOfInfo=Info_Text, KindOfSearch=Info_Name
-  MediaInfoA_Option:    function  (Handle: THandle; Option: PAnsiChar; Value: PAnsiChar): PAnsiChar cdecl stdcall;
-  MediaInfoA_State_Get: function  (Handle: THandle): Integer cdecl stdcall;
-  MediaInfoA_Count_Get: function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer): Integer cdecl stdcall;
+  mediaInfoA_New:       function  (): THandle cdecl stdcall;
+  mediaInfoA_Delete:    procedure (Handle: THandle) cdecl stdcall;
+  mediaInfoA_Open:      function  (Handle: THandle; File__: PAnsiChar): Cardinal cdecl stdcall;
+  mediaInfoA_Close:     procedure (Handle: THandle) cdecl stdcall;
+  mediaInfoA_Inform:    function  (Handle: THandle; Reserved: Integer): PAnsiChar cdecl stdcall;
+  mediaInfoA_GetI:      function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: Integer; KindOfInfo: TMIInfo): PAnsiChar cdecl stdcall; //Default: KindOfInfo=Info_Text
+  mediaInfoA_Get:       function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer; Parameter: PAnsiChar;   KindOfInfo: TMIInfo; KindOfSearch: TMIInfo): PAnsiChar cdecl stdcall; //Default: KindOfInfo=Info_Text, KindOfSearch=Info_Name
+  mediaInfoA_Option:    function  (Handle: THandle; Option: PAnsiChar; Value: PAnsiChar): PAnsiChar cdecl stdcall;
+  mediaInfoA_State_Get: function  (Handle: THandle): Integer cdecl stdcall;
+  mediaInfoA_Count_Get: function  (Handle: THandle; StreamKind: TMIStreamKind; StreamNumber: Integer): Integer cdecl stdcall;
 
-function MediaInfoDLL_Load(const LibPath: string): boolean;
+function mediaInfoDLL_Load(const LibPath: string): boolean;
 
 {$ENDIF}
 
 implementation
 
+uses mmpFuncProcs;
+
 {$IFNDEF STATIC}
-function MI_GetProcAddress(Name: PChar; var Addr: Pointer): boolean;
+function MI_getProcAddress(name: PChar; var addr: pointer): boolean;
 begin
-  Addr := GetProcAddress(LibHandle, Name);
-  Result := Addr <> nil;
+  addr    := getProcAddress(libHandle, name);
+  result  := addr <> NIL;
 end;
 
-function MediaInfoDLL_Load(const LibPath: string): boolean;
+function mediaInfoDLL_Load(const libPath: string): boolean;
 begin
-  Result := False;
+  result := FALSE;
 
-  if LibHandle = 0 then
-    LibHandle := LoadLibrary(PChar(LibPath));
+  mmpDo(libHandle = 0,  procedure begin libHandle := loadLibrary(PChar(libPath)); end);
 
-  if LibHandle <> 0 then
-  begin
-    MI_GetProcAddress('MediaInfo_New',        @MediaInfo_New);
-    MI_GetProcAddress('MediaInfo_Delete',     @MediaInfo_Delete);
-    MI_GetProcAddress('MediaInfo_Open',       @MediaInfo_Open);
-    MI_GetProcAddress('MediaInfo_Close',      @MediaInfo_Close);
-    MI_GetProcAddress('MediaInfo_Inform',     @MediaInfo_Inform);
-    MI_GetProcAddress('MediaInfo_GetI',       @MediaInfo_GetI);
-    MI_GetProcAddress('MediaInfo_Get',        @MediaInfo_Get);
-    MI_GetProcAddress('MediaInfo_Option',     @MediaInfo_Option);
-    MI_GetProcAddress('MediaInfo_State_Get',  @MediaInfo_State_Get);
-    MI_GetProcAddress('MediaInfo_Count_Get',  @MediaInfo_Count_Get);
+  mmpDo(libHandle <> 0, procedure begin
+                                    MI_getProcAddress('MediaInfo_New',        @MediaInfo_New);
+                                    MI_getProcAddress('MediaInfo_Delete',     @MediaInfo_Delete);
+                                    MI_getProcAddress('MediaInfo_Open',       @MediaInfo_Open);
+                                    MI_getProcAddress('MediaInfo_Close',      @MediaInfo_Close);
+                                    MI_getProcAddress('MediaInfo_Inform',     @MediaInfo_Inform);
+                                    MI_getProcAddress('MediaInfo_GetI',       @MediaInfo_GetI);
+                                    MI_getProcAddress('MediaInfo_Get',        @MediaInfo_Get);
+                                    MI_getProcAddress('MediaInfo_Option',     @MediaInfo_Option);
+                                    MI_getProcAddress('MediaInfo_State_Get',  @MediaInfo_State_Get);
+                                    MI_getProcAddress('MediaInfo_Count_Get',  @MediaInfo_Count_Get);
 
-    MI_GetProcAddress('MediaInfoA_New',       @MediaInfoA_New);
-    MI_GetProcAddress('MediaInfoA_Delete',    @MediaInfoA_Delete);
-    MI_GetProcAddress('MediaInfoA_Open',      @MediaInfoA_Open);
-    MI_GetProcAddress('MediaInfoA_Close',     @MediaInfoA_Close);
-    MI_GetProcAddress('MediaInfoA_Inform',    @MediaInfoA_Inform);
-    MI_GetProcAddress('MediaInfoA_GetI',      @MediaInfoA_GetI);
-    MI_GetProcAddress('MediaInfoA_Get',       @MediaInfoA_Get);
-    MI_GetProcAddress('MediaInfoA_Option',    @MediaInfoA_Option);
-    MI_GetProcAddress('MediaInfoA_State_Get', @MediaInfoA_State_Get);
-    MI_GetProcAddress('MediaInfoA_Count_Get', @MediaInfoA_Count_Get);
+                                    MI_getProcAddress('MediaInfoA_New',       @MediaInfoA_New);
+                                    MI_getProcAddress('MediaInfoA_Delete',    @MediaInfoA_Delete);
+                                    MI_getProcAddress('MediaInfoA_Open',      @MediaInfoA_Open);
+                                    MI_getProcAddress('MediaInfoA_Close',     @MediaInfoA_Close);
+                                    MI_getProcAddress('MediaInfoA_Inform',    @MediaInfoA_Inform);
+                                    MI_getProcAddress('MediaInfoA_GetI',      @MediaInfoA_GetI);
+                                    MI_getProcAddress('MediaInfoA_Get',       @MediaInfoA_Get);
+                                    MI_getProcAddress('MediaInfoA_Option',    @MediaInfoA_Option);
+                                    MI_getProcAddress('MediaInfoA_State_Get', @MediaInfoA_State_Get);
+                                    MI_getProcAddress('MediaInfoA_Count_Get', @MediaInfoA_Count_Get);
+                                  end);
 
-    Result := True;
-  end;
+  result := libHandle <> 0;
 end;
 
 {$ENDIF}

@@ -82,8 +82,6 @@ begin
   notifyApp(newNotice(evGSUserInput, FALSE));
 end;
 
-{ TConfirmDeleteForm }
-
 function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
 begin
   case aTextWidth > aMaxWidth of   TRUE:  begin
@@ -96,6 +94,8 @@ begin
                                             result := vLine1 + #13#10 + vLine2; end;
                                   FALSE:  result := aText; end;
 end;
+
+{ TConfirmDeleteForm }
 
 constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
 begin
@@ -135,7 +135,8 @@ begin
   imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
 
   var vScaleFactor := CF.asInteger[CONF_SCALE_FACTOR];
-  case vScaleFactor < 50 of TRUE: vScaleFactor := 50; end;
+  case vScaleFactor <  50 of TRUE: vScaleFactor :=  50; end;
+  case vScaleFactor > 100 of TRUE: vScaleFactor := 100; end;
   SELF.scaleBy(vScaleFactor, 100);
   imgDeleteMethod.top     := lblShred.top;
   imgDeleteMethod.left    := lblShred.left - imgDeleteMethod.width;

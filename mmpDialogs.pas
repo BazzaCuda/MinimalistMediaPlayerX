@@ -34,15 +34,14 @@ implementation
 uses
   winApi.activeX,
   vcl.forms, vcl.stdCtrls,
-  mmpGlobalState;
+  mmpFuncProcs, mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL): TModalResult;
-// used for displaying the delete file/folder confirmation dialog
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
-// The standard dialog would unhelpfully truncate them.#
+// The standard dialog would unhelpfully truncate them.
 var vControl: TControl;
 begin
   screen.cursor := crDefault;
@@ -56,11 +55,11 @@ begin
     width     := width + 200;
 
     for var i := 0 to controlCount - 1 do begin
-      case controls[i] is TLabel  of   TRUE: with controls[i] as TLabel do width := width + 200; end;
-      case controls[i] is TButton of   TRUE: with controls[i] as TButton do begin
-                                                                                top  := top  + 60;
-                                                                                left := left + 100;
-                                                                            end;end;
+      mmpDo(controls[i] is TLabel,  procedure begin with controls[i] as TLabel  do  width := width + 200; end);
+      mmpDo(controls[i] is TButton, procedure begin with controls[i] as TButton do  begin
+                                                                                      top  := top  + 60;
+                                                                                      left := left + 100;
+                                                                                    end;end);
     end;
     result := showModal;
   finally

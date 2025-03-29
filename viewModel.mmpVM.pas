@@ -271,6 +271,10 @@ begin
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
+  function nothingToPlay: boolean;
+  begin
+    result := (ssCtrl in aShiftState) or NOT notifyApp(newNotice(evPLReqHasItems)).tf;
+  end;
 begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and notifyApp(newNotice(evMPReqPlaying)).tf;
   mmpDo(vWasPlaying, evMPPausePlay);
@@ -283,10 +287,12 @@ begin
   var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case notifyApp(newNotice(evPLDeleteIx, vIx)).tf of FALSE: EXIT; end; // unlikely
 
-  case (ssCtrl in aShiftState) or NOT notifyApp(newNotice(evPLReqHasItems)).tf of
-     TRUE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
-                                                            FALSE: notifyApp(newNotice(evAppClose)); end;
-    FALSE: notifyApp(newNotice(evVMPlaySomething, vIx)); end;
+  T := procedure begin
+    case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
+                                                     FALSE: notifyApp(newNotice(evAppClose)); end;end;
+
+  F := procedure begin notifyApp(newNotice(evVMPlaySomething, vIx)); end;
+  mmpDo(nothingToPlay, T, F);
 
   notifyApp(newNotice(evPLFormLoadBox));
 end;
@@ -295,7 +301,7 @@ destructor TVM.Destroy;
 begin
   TT.notifier.unsubscribe(FSubscriberTT);
   appNotifier.unsubscribe(FSubscriber);
-  mmpDo(FSlideshowTimer <> NIL, procedure begin FSlideshowTimer.free; end);
+  mmpDo(FSlideshowTimer <> NIL, mmpFree, FSlideshowTimer);
   inherited;
 end;
 

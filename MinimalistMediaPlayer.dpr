@@ -114,13 +114,13 @@ uses
 function checkParam: boolean;
 begin
   result := FALSE;
-  case PS.noFile of TRUE:  begin
-                                mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
-                                                    + 'or to permanently associate media file types with this application.'#13#10#13#10
-                                                    + 'Alternatively, you can drag and drop a media file onto the window.',
-                                                      mtInformation, [MBOK]); end;end;
+  T := procedure  begin
+                    mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
+                                        + 'or to permanently associate media file types with this application.'#13#10#13#10
+                                        + 'Alternatively, you can drag and drop a media file onto the window.',
+                                          mtInformation, [MBOK]); end;
+  mmpDo(PS.noFile, T);
   result := TRUE;
-
 end;
 
 function initUI(const aMainForm: TForm): boolean;
@@ -141,19 +141,6 @@ begin
   result := TRUE;
 end;
 
-function checkBrowser: boolean;
-begin
-  result := FALSE;
-
-  case (lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') of FALSE: EXIT; end;
-
-  case GS.mediaType of mtImage: begin
-                                  notifyApp(newNotice(evMPStop));
-                                  notifyApp(newNotice(evVMImageInBrowser)); end;end;
-
-  result := TRUE;
-end;
-
 begin
   reportMemoryLeaksOnShutdown   := FALSE;
   debugClear;
@@ -168,7 +155,7 @@ begin
 
   CF.initConfigFile(mmpConfigFilePath);
   notifyApp(newNotice(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]));
-  case GS.repeatDelayMs <= 0 of TRUE: notifyApp(newNotice(evGSRepeatDelayMs, 100)); end;
+  mmpDo(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, 100);
 
   Application.CreateForm(TMMPUI, MMPUI);
   notifyApp(newNotice(evGSMainForm, MMPUI));
@@ -179,13 +166,14 @@ begin
 
   MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
-  case notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf of TRUE: notifyApp(newNotice(evVMMPPlayCurrent)); end;
+  mmpDo(notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf, evVMMPPlayCurrent);
 
   MMPUI.viewModel.showUI;
 
   notifyApp(newNotice(evSTForceCaptions));
 
-  checkBrowser;
+  T := procedure begin mmpDo(GS.mediaType = mtImage, [evMPStop, evVMImageInBrowser]); end;
+  mmpDo(lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser', T);
 
   application.Run;
 end.

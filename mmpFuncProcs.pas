@@ -27,14 +27,25 @@ uses
 const
   doNowt = NIL;
 
+type
+  void    = boolean;
+  TOProc  = TProc<TObject>;
+
 var
   T:      TProc;
   F:      TProc;
 
-procedure mmpDo(aBoolean: boolean; trueProc: TProc; falseProc: TProc); overload;
-procedure mmpDo(aBoolean: boolean; trueProc: TProc); overload;
-procedure mmpDo(aBoolean: boolean; aTrueEvent: TNoticeEvent; aFalseEvent: TNoticeEvent); overload;
-procedure mmpDo(aBoolean: boolean; aTrueEvent: TNoticeEvent); overload;
+procedure mmpDo(aBoolean: boolean; trueProc:    TProc; falseProc: TProc); overload;
+procedure mmpDo(aBoolean: boolean; trueProc:    TProc); overload;
+procedure mmpDo(aBoolean: boolean; trueEvent:   TNoticeEvent; falseEvent: TNoticeEvent); overload;
+procedure mmpDo(aBoolean: boolean; trueEvent:   TNoticeEvent); overload;
+procedure mmpDo(aBoolean: boolean; trueNotices: array of TNoticeEvent); overload;
+procedure mmpDo(aBoolean: boolean; trueEvent:   TNoticeEvent; aInteger: integer); overload;
+
+procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; aObject: TObject); overload;
+procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; falseProc: TOProc; aObject: TObject); overload;
+
+procedure mmpFree(aObject: TObject);
 
 implementation
 
@@ -54,17 +65,53 @@ begin
   mmpDo(aBoolean, trueProc, NIL);
 end;
 
-procedure mmpDo(aBoolean: boolean; aTrueEvent: TNoticeEvent; aFalseEvent: TNoticeEvent);
+procedure mmpDo(aBoolean: boolean; trueEvent: TNoticeEvent; falseEvent: TNoticeEvent);
 begin
-  T :=  procedure begin notifyApp(newNotice(aTrueEvent)); end;
-  F :=  procedure begin notifyApp(newNotice(aFalseEvent)); end;
+  T :=  procedure begin notifyApp(newNotice(trueEvent)); end;
+  F :=  procedure begin notifyApp(newNotice(falseEvent)); end;
   mmpDo(aBoolean, T, F);
 end;
 
-procedure mmpDo(aBoolean: boolean; aTrueEvent: TNoticeEvent);
+procedure mmpDo(aBoolean: boolean; trueEvent: TNoticeEvent);
 begin
-  T :=  procedure begin notifyApp(newNotice(aTrueEvent)); end;
+  T :=  procedure begin notifyApp(newNotice(trueEvent)); end;
   mmpDo(aBoolean, T, NIL);
+end;
+
+procedure mmpDo(aBoolean: boolean; trueNotices: array of TNoticeEvent); overload;
+begin
+  for var i := low(trueNotices) to high(trueNotices) do begin
+    var vNotice := trueNotices[i];
+    T := procedure begin notifyApp(newNotice(vNotice)); end;
+    mmpDo(aBoolean, T, NIL);
+  end;
+end;
+
+procedure mmpDo(aBoolean: boolean; trueEvent: TNoticeEvent; aInteger: integer); overload;
+begin
+  T :=  procedure begin notifyApp(newNotice(trueEvent, aInteger)); end;
+  mmpDo(aBoolean, T);
+end;
+
+procedure mmpFree(aObject: TObject);
+begin
+  mmpDo(aObject <> NIL, procedure begin aObject.free; end);
+end;
+
+procedure mmpDo(aBoolean: boolean; trueProc: TOProc; falseProc: TOProc; aObject: TObject);
+var doProc: array[boolean] of TOProc;
+begin
+  doProc[TRUE]  := trueProc;
+  doProc[FALSE] := falseProc;
+  try
+    doProc[aBoolean](aObject);
+  except
+  end;
+end;
+
+procedure mmpDo(aBoolean: boolean; trueProc: TOProc; aObject: TObject); overload;
+begin
+  mmpDo(aBoolean, trueProc, NIL, aObject);
 end;
 
 end.
