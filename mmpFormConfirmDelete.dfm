@@ -4765,7 +4765,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object imgDeleteMethod: TImage
     Left = 251
-    Top = 109
+    Top = 113
     Width = 56
     Height = 56
     Anchors = [akTop, akRight]
@@ -4774,7 +4774,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblRecycle: TLabel
     Left = 313
-    Top = 109
+    Top = 113
     Width = 200
     Height = 49
     Alignment = taCenter
@@ -4783,7 +4783,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblStandard: TLabel
     Left = 313
-    Top = 109
+    Top = 113
     Width = 240
     Height = 73
     Alignment = taCenter
@@ -4797,7 +4797,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblShred: TLabel
     Left = 313
-    Top = 109
+    Top = 113
     Width = 240
     Height = 73
     Alignment = taCenter
@@ -4810,7 +4810,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   end
   object lblDeleteMethod: TLabel
     Left = 215
-    Top = 88
+    Top = 92
     Width = 401
     Height = 15
     Alignment = taCenter
@@ -4837,8 +4837,8 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     ParentFont = False
   end
   object Label1: TLabel
-    Left = 536
-    Top = 344
+    Left = 528
+    Top = 378
     Width = 67
     Height = 31
     Caption = 'Label1'
@@ -4851,8 +4851,8 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Visible = False
   end
   object lblKeepFiles: TLabel
-    Left = 290
-    Top = 64
+    Left = 332
+    Top = 65
     Width = 164
     Height = 17
     Caption = '"[K]eep" files start with a !'
@@ -4898,7 +4898,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Height = 56
     Width = 56
     Left = 568
-    Top = 117
+    Top = 121
     Bitmap = {
       494C010103000800040038003800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000E000000038000000010020000000000000C4

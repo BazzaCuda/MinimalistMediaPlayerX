@@ -147,6 +147,8 @@ begin
 end;
 
 function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
+// rtFFMPeg: normal running - the user just gets to see progress dialogs
+// rtCMD: a segment export failed, so we rerun showing the cmd prompt box so the user can view the FFMPeg error messages
 var
   vExecInfo: TShellExecuteInfo;
   vExitCode: cardinal;
@@ -728,8 +730,8 @@ begin
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix                  := aSegment.ix;
   aSegment.startSS        := segments[ix - 1].startSS;
-  segments[ix - 1].color  := aSegment.color;
-  segments.delete(ix - 1);
+  segments[ix - 1].color  := aSegment.color; // set the color...
+  segments.delete(ix - 1);                   // ...then delete the segment???
   result := TRUE;
 end;
 
@@ -740,8 +742,8 @@ begin
   case aSegment.isLast of TRUE: EXIT; end;
   var ix          := aSegment.ix;
   aSegment.endSS  := segments[ix + 1].endSS;
-  segments[ix + 1].color := aSegment.color;
-  segments.delete(ix + 1);
+  segments[ix + 1].color := aSegment.color; // set the color...
+  segments.delete(ix + 1);                  // ...then delete the segment???
   result := TRUE;
 end;
 

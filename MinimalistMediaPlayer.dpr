@@ -128,8 +128,11 @@ var
   vVideoPanel: TPanel;
 begin
   result := FALSE;
+
   mmpThemeInitForm(aMainForm);
+
   vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
+
   MMPUI.viewModel               := newViewModel;
   MMPUI.viewModel.mediaPlayer   := newMediaPlayer;
   MMPUI.viewModel.initUI(aMainForm, vVideoPanel);
@@ -138,6 +141,7 @@ begin
   ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger[CONF_TIME_CAPTION]); // multiple captions at the bottom of the window
 
   MMPUI.viewModel.progressBar   := newProgressBar.initProgressBar(ST.captionsForm, CF.asInteger[CONF_PROGRESS_BAR], 0);
+
   result := TRUE;
 end;
 
@@ -163,7 +167,6 @@ begin
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
-
   MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
   mmpDo(notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf, evVMMPPlayCurrent);
@@ -172,8 +175,9 @@ begin
 
   notifyApp(newNotice(evSTForceCaptions));
 
-  T := procedure begin mmpDo(GS.mediaType = mtImage, [evMPStop, evVMImageInBrowser]); end;
-  mmpDo(lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser', T);
+  mmpDo(lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser', procedure begin
+                                                                mmpDo(GS.mediaType = mtImage, [evMPStop, evVMImageInBrowser]);
+                                                              end);
 
   application.Run;
 end.

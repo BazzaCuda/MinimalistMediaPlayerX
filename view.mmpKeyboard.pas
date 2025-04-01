@@ -203,9 +203,6 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_VOLUME_DOWN)                                              of TRUE: result := koVolDn; end;
     case keyUp and keyIs(VK_VOLUME_MUTE)                                              of TRUE: result := koMuteUnmute; end;
     case keyDn and keyIs(VK_VOLUME_UP)                                                of TRUE: result := koVolUp; end;
-
-    // spare keys
-    // case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koNone; end;
   end;
 
 begin

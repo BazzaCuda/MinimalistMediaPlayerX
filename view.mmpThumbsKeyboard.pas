@@ -171,17 +171,6 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
 
     case keyUp and (aKey in [VK_F1..VK_F12])                                    of TRUE: result := koMoveToKeyFolder; end;
 
-// TO DO
-//    case keyDn and keyIs(VK_SPACE) and NOT GV.playingSlideshow            of TRUE: result := koPlayNext; end;
-//    case keyDn and keyIs(VK_SPACE) and ctrl and NOT GV.playingSlideshow   of TRUE: result := koPlayPrev; end;
-
-//    case keyUp and keyIs(F)                                               of TRUE: result := koFullscreen; end;
-//    case keyUp and keyIs(B) and NOT ctrl                                  of TRUE: result := koToggleBlackout; end;
-//    case keyUp and keyIs(HASH)                                            of TRUE: result := koShowCaption; end;
-//    case keyDn and keyIs(B) and ctrl                                      of TRUE: result := koBrighterPB; end;
-//    case keyDn and keyIs(B) and ctrl and shift                            of TRUE: result := koDarkerPB; end;
-//    case keyUp and keyIs(P)                                               of TRUE: result := koTogglePlaylist; end;
-
 // spare keys
 //    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koNone; end;
 //    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koNone; end;
@@ -195,15 +184,8 @@ function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aSh
   end;
 
 begin
-//  debugInteger('keyOpKey', aKey);
-//  case upDn = kdUp of TRUE: debug('key UP'); end;
-//  case upDn = kdDn of TRUE: debug('key DN'); end;
-//  debugBoolean('shift in shift', shift);
-//  debugBoolean('ctrl in shift', ctrl);
 
   result := getKeyOp;
-
-//  debugInteger('keyOp', integer(result));
 end;
 
 end.

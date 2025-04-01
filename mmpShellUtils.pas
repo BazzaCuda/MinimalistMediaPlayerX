@@ -24,7 +24,7 @@ uses
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
-function mmpDoCommandLine(const aCommandLine: string): boolean;
+function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 
@@ -35,7 +35,7 @@ uses
   system.sysUtils,
   mmpFileUtils;
 
-function mmpDoCommandLine(const aCommandLine: string): boolean;
+function mmpExecCommandLine(const aCommandLine: string): boolean;
 // Create a cmd.exe process to execute any command line
 // "Current Directory" defaults to the folder containing this application's executable.
 var

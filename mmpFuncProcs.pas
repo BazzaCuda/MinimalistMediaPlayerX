@@ -30,6 +30,7 @@ const
 type
   void    = boolean;
   TOProc  = TProc<TObject>;
+  TRFunc  = TFunc<boolean>;
 
 var
   T:      TProc;
@@ -45,6 +46,9 @@ procedure mmpDo(aBoolean: boolean; trueEvent:   TNoticeEvent; aInteger: integer)
 procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; aObject: TObject); overload;
 procedure mmpDo(aBoolean: boolean; trueProc:    TOProc; falseProc: TOProc; aObject: TObject); overload;
 
+function  mmpDo(aBoolean: boolean; trueFunc: TRFunc; falseFunc: TRFunc): boolean; overload;
+function  mmpDo(aBoolean: boolean; trueFunc:    TRFunc): boolean; overload;
+
 procedure mmpFree(aBoolean: boolean; aObject: TObject);
 
 implementation
@@ -54,10 +58,7 @@ var doProc: array[boolean] of TProc;
 begin
   doProc[TRUE]  := trueProc;
   doProc[FALSE] := falseProc;
-  try
-    doProc[aBoolean]();
-  except
-  end;
+  case doProc[aBoolean] = NIL of FALSE: doProc[aBoolean](); end;
 end;
 
 procedure mmpDo(aBoolean: boolean; trueProc: TProc); overload;
@@ -78,7 +79,7 @@ begin
   mmpDo(aBoolean, T, NIL);
 end;
 
-procedure mmpDo(aBoolean: boolean; trueNotices: array of TNoticeEvent); overload;
+procedure mmpDo(aBoolean: boolean; trueNotices: array of TNoticeEvent);
 begin
   for var i := low(trueNotices) to high(trueNotices) do begin
     var vNotice := trueNotices[i];
@@ -87,7 +88,7 @@ begin
   end;
 end;
 
-procedure mmpDo(aBoolean: boolean; trueEvent: TNoticeEvent; aInteger: integer); overload;
+procedure mmpDo(aBoolean: boolean; trueEvent: TNoticeEvent; aInteger: integer);
 begin
   T :=  procedure begin notifyApp(newNotice(trueEvent, aInteger)); end;
   mmpDo(aBoolean, T);
@@ -103,15 +104,27 @@ var doProc: array[boolean] of TOProc;
 begin
   doProc[TRUE]  := trueProc;
   doProc[FALSE] := falseProc;
-  try
-    doProc[aBoolean](aObject);
-  except
-  end;
+  case doProc[aBoolean] = NIL of FALSE: doProc[aBoolean](aObject); end;
 end;
 
-procedure mmpDo(aBoolean: boolean; trueProc: TOProc; aObject: TObject); overload;
+procedure mmpDo(aBoolean: boolean; trueProc: TOProc; aObject: TObject);
 begin
   mmpDo(aBoolean, trueProc, NIL, aObject);
+end;
+
+//=====
+
+function mmpDo(aBoolean: boolean; trueFunc: TRFunc; falseFunc: TRFunc): boolean;
+var doFunc: array[boolean] of TRFunc;
+begin
+  doFunc[TRUE]  := trueFunc;
+  doFunc[FALSE] := falseFunc;
+  case doFunc[aBoolean] = NIL of FALSE: result := doFunc[aBoolean](); end;
+end;
+
+function mmpDo(aBoolean: boolean; trueFunc: TRFunc): boolean;
+begin
+  result := mmpDo(aBoolean, trueFunc, NIL);
 end;
 
 end.

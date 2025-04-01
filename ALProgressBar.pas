@@ -18,7 +18,7 @@
     v1.03 02-Sep-2001 Fixed problem with background color not being persisted
                       if the color is black.
     v1.04 Jul-2023    Added Hint.
-    v1.05 Jul-2024    Stripped out everything not used to track down problem with bar suddenly not being drawn
+    v1.05 Jul-2024    Stripped out everything not being used in order to track down problem with bar suddenly not being drawn
 }
 unit ALProgressBar;
 

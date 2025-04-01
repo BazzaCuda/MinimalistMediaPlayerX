@@ -253,6 +253,7 @@ begin
   end;
 
   system.sysUtils.findClose(vSR);
+  mmpRunTasks;
   result := TRUE;
 end;
 

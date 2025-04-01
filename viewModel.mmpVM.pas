@@ -205,7 +205,7 @@ type
 var gVM: IViewModel = NIL;
 function newViewModel: IViewModel;
 begin
-  mmpDo(gVM = NIL, procedure begin gVM := TVM.create; end);
+  case gVM = NIL of TRUE: gVM := TVM.create; end;
   result := gVM;
 end;
 
@@ -257,7 +257,7 @@ function TVM.adjustAspectRatio: boolean;
 begin
   FResizingWindow := TRUE;
   var vPt := mmpAdjustAspectRatio(GS.mainForm.handle, FVideoPanel.height);
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   notifyApp(newNotice(evSTDisplayXY));
   FResizingWindow := FALSE;
@@ -287,9 +287,9 @@ begin
   var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
   case notifyApp(newNotice(evPLDeleteIx, vIx)).tf of FALSE: EXIT; end; // unlikely
 
-  T := procedure begin
-    case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
-                                                     FALSE: notifyApp(newNotice(evAppClose)); end;end;
+  T := procedure  begin
+                    case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
+                                                                    FALSE: notifyApp(newNotice(evAppClose)); end;end;
 
   F := procedure begin notifyApp(newNotice(evVMPlaySomething, vIx)); end;
   mmpDo(nothingToPlay, T, F);
@@ -449,8 +449,7 @@ begin
   var vCurrentFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
   case mmpKeepDelete(vCurrentFolder) of FALSE: EXIT; end;
 
-  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: notifyApp(newNotice(evAppClose)); end;
-                                                  FALSE: notifyApp(newNotice(evAppClose)); end;
+  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and playNextFolder, evNone, evAppClose);
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -706,7 +705,7 @@ begin
   FResizingWindow := TRUE;
   var vHeight := mmpGreaterWindow(GS.mainForm.handle, mmpShiftState);
   var vPt     := mmpCalcWindowSize(vHeight, GS.maxSize);
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   moveHelp;
   movePlaylist;
@@ -767,9 +766,9 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath), CF.asMediaType[CONF_PLAYLIST_FORMAT]));
+      notifyApp(newNotice(evPLFillPlaylist, extractFilePath(vFilePath), mtUnk));
       notifyApp(newNotice(evPLFind, vFilePath));
-      mmpDo(notifyApp(newNotice(evPLReqHasItems)).tf, procedure begin notifyApp(newNotice(evVMMPPlayCurrent)); end);
+      mmpDo(notifyApp(newNotice(evPLReqHasItems)).tf, evVMMPPlayCurrent);
 
       BREAK; // we only process the first file if multiple files are dropped
     end;
@@ -890,7 +889,7 @@ begin
 
   case aRenameType = rtKeepMove of   TRUE:  begin
                                               notifyApp(newNotice(evMPStop));
-                                              notifyApp(newNotice(evPLDeleteIx, notifyApp(newNotice(evPLReqCurrentIx)).integer));
+                                              notifyApp(newNotice(evPLDeleteIx, notifyApp(newNotice(evPLReqCurrentIx)).integer)); // this decrements PL's FPlayIx
                                               case notifyApp(newNotice(evPLReqHasItems)).tf of  TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
                                                                                                FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;end; // force nextFolderOnEmpty/End
                                     FALSE:  begin
@@ -919,7 +918,7 @@ begin
   FResizingWindow := TRUE;
 
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
   mmpSetWindowSize(GS.mainForm.handle, vPt);
 
   notifyApp(newNotice(evWndResize)); // reposition the help, playlist and timeline windows
@@ -1040,13 +1039,14 @@ begin
   notifyApp(newNotice(evPLFormShutForm));
 
   var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
-  case mmpIsEditFriendly(vCurrentItem) of FALSE: begin mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
-                                                                             + 'The path/filename contains a single quote and/or an ampersand.'#13#10#13#10
-                                                                             + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
-                                                                             + 'Rename the path/filename first.',
-                                                                               mtInformation, [MBOK]);
-                                                         EXIT; end;end;
 
+  F := procedure begin mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
+                                                          + 'The path/filename contains a single quote and/or an ampersand.'#13#10#13#10
+                                                          + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
+                                                          + 'Rename the path/filename first.', mtInformation, [MBOK]); end;
+
+  mmpDo(mmpIsEditFriendly(vCurrentItem), NIL, F);
+  case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
   case GS.showingTimeline of  TRUE: shutTimeline;
                              FALSE: notifyApp(newNotice(evVMMoveTimeline, TRUE)); end;

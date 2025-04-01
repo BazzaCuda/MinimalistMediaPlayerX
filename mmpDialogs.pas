@@ -42,7 +42,6 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const defButton:     TMsgDlgBtn     = MBCANCEL): TModalResult;
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
-var vControl: TControl;
 begin
   screen.cursor := crDefault;
   coInitialize(NIL);
@@ -51,15 +50,15 @@ begin
     notifyApp(newNotice(evGSUserInput, TRUE));
     font.name := 'Segoe UI';
     font.size := 12;
-    height    := height + 50;
-    width     := width + 200;
+    height    := height +  50;
+    width     := width  + 200;
 
     for var i := 0 to controlCount - 1 do begin
-      mmpDo(controls[i] is TLabel,  procedure begin with controls[i] as TLabel  do  width := width + 200; end);
-      mmpDo(controls[i] is TButton, procedure begin with controls[i] as TButton do  begin
-                                                                                      top  := top  + 60;
-                                                                                      left := left + 100;
-                                                                                    end;end);
+      mmpDo(controls[i] is  TLabel, procedure begin with controls[i] do width  := width + 200; end);
+      mmpDo(controls[i] is TButton, procedure begin with controls[i] do begin
+                                                                          top  := top   +  60;
+                                                                          left := left  + 100;
+                                                                        end;end);
     end;
     result := showModal;
   finally

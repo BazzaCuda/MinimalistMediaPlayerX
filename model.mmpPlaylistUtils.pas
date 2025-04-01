@@ -37,6 +37,8 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 
 implementation
 
+uses _debugWindow;
+
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 begin
   var vIx := aPL.currentIx;
