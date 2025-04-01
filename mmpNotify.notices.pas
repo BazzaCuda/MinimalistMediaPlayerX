@@ -78,7 +78,7 @@ type
 
     evTickTimer,
 
-    evTimelineHeight,
+    evTimelineHeight, evTLMax, evTLPosition,
 
     evVMAdjustAspectRatio, evVMArrangeAll, evVMCenterWindow, evVMCleanup, evVMDeleteCurrentItem, evVMDoEscapeKey, evVMImageInBrowser, evVMKeepCurrentItem, evVMKeepDelete,
     evVMKeepCatF1, evVMKeepCatF2, evVMKeepCatF3, evVMKeepCatF4, evVMKeepMove,

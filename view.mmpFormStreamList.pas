@@ -63,6 +63,7 @@ type
     procedure btnExportMouseLeave(Sender: TObject);
     procedure btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure pageControlChange(Sender: TObject);
   private
     FOnExport:  TNotifyEvent;
     FSegments:  TObjectList<TSegment>;
@@ -72,6 +73,8 @@ type
   protected
     function    applySegments(const aSegments: TObjectList<TSegment>): boolean;
     procedure   createParams(var Params: TCreateParams);
+    procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
+    procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
   public
     property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
@@ -85,7 +88,7 @@ implementation
 
 uses
   mmpConsts, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
-  view.mmpFormTimeline,
+  view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;
 
@@ -139,6 +142,7 @@ end;
 procedure TStreamListForm.btnExportClick(Sender: TObject);
 begin
   case assigned(FOnExport) of TRUE: FOnExport(NIL); end;
+  focusTimeline;
 end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
@@ -177,6 +181,7 @@ end;
 procedure TStreamListForm.clSegmentsItemClick(Sender: TObject);
 begin
   TL.segments[clSegments.ItemIndex].setAsSelSeg;
+  focusTimeline;
 end;
 
 procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -204,6 +209,7 @@ begin
   clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
   updateStreamsCaption;
   updateExportButton(MI.selectedCount > 0);
+  focusTimeline;
 end;
 
 procedure TStreamListForm.createParams(var params: TCreateParams);
@@ -224,10 +230,10 @@ begin
   clSegments.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
   clStreams.borderStyle        := bsNone;
   clStreams.styleElements      := []; // don't allow any theme alterations
-  clStreams.color                              := DARK_MODE_LIGHT;
-  clStreams.itemSelectionOptions.focusedColor  := DARK_MODE_LIGHT;
-  clStreams.itemSelectionOptions.hotColor      := DARK_MODE_LIGHT;
-  clStreams.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
+  clStreams.color                               := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.focusedColor   := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.hotColor       := DARK_MODE_LIGHT;
+  clStreams.itemSelectionOptions.selectedColor  := DARK_MODE_LIGHT;
 
   SELF.width  := 460;
   SELF.height := 400;
@@ -242,8 +248,9 @@ begin
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
 
-  styleElements     := []; // don't allow any theme alterations
-  borderStyle       := bsNone;
+//  styleElements     := []; // don't allow any theme alterations
+  mmpThemeInitForm(SELF);
+  borderStyle       := bsSizeable;
   font.color        := DARK_MODE_SILVER;
 
   md.align := alClient;
@@ -258,6 +265,7 @@ end;
 procedure TStreamListForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   key := 0;
+  focusTimeline;
 end;
 
 function TStreamListForm.getStreamInfo(const aMediaFilePath: string): integer;
@@ -271,6 +279,11 @@ begin
   clStreams.itemCount := MI.mediaStreams.count;
 end;
 
+procedure TStreamListForm.pageControlChange(Sender: TObject);
+begin
+  focusTimeline;
+end;
+
 function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;
 begin
   btnExport.enabled := aEnabled;
@@ -279,6 +292,24 @@ end;
 function TStreamListForm.updateStreamsCaption: boolean;
 begin
   tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.streamCount]);
+end;
+
+procedure TStreamListForm.WMNCHitTest(var msg: TWMNCHitTest);
+begin
+  // Prevent the cursor from changing when hovering over the side edges or bottom edge
+  case (msg.result = HTRIGHT) or (msg.result = HTLEFT) or (msg.result = HTBOTTOM) of TRUE: msg.result := HTCLIENT; end;
+end;
+
+procedure TStreamListForm.WMSizing(var msg: TMessage);
+// restricts the horizontal resizing by modifying the right edge of the resizing rectangle to ensure that the window's width remains constant.
+// The user can control the height of a video - the app controls the width.
+var
+  newRect: PRect;
+begin
+  inherited;
+  // Prevent horizontal resizing by adjusting the rectangle's left and right edges
+  newRect := PRect(msg.LParam);
+  newRect^.right := newRect^.left + width;
 end;
 
 initialization

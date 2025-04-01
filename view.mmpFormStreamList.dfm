@@ -3,7 +3,7 @@ object StreamListForm: TStreamListForm
   Top = 0
   BorderIcons = []
   BorderStyle = bsNone
-  Caption = 'Playlist'
+  Caption = 'Segments & Streams'
   ClientHeight = 585
   ClientWidth = 460
   Color = 2829099
@@ -48,7 +48,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 538
-      ActivePage = tsSegments
+      ActivePage = tsStreams
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -58,6 +58,7 @@ object StreamListForm: TStreamListForm
       ParentFont = False
       TabHeight = 24
       TabOrder = 0
+      OnChange = pageControlChange
       object tsSegments: TTabSheet
         Caption = '          Segments          '
         object clSegments: TControlList
@@ -2180,8 +2181,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect

@@ -69,6 +69,7 @@ type
     FShortenCount:            integer;
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
+    FSubscriber:              ISubscriber;
   private
     constructor create;
     destructor  Destroy; override;
@@ -104,6 +105,7 @@ type
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
+    function    onNotify(const aNotice: INotice): INotice;
   public
     function    clear:          boolean;
     function    delSegment(const aSegment: TSegment): boolean;
@@ -418,6 +420,7 @@ begin
   FRedoList             := TObjectStack<TStringList>.create;
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
+  FSubscriber           := appNotifier.subscribe(newSubscriber(onNotify));
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -750,6 +753,16 @@ end;
 procedure TTimeline.onCancelButton(sender: TObject);
 begin
   FCancelled := TRUE;
+end;
+
+function TTimeline.onNotify(const aNotice: INotice): INotice;
+begin
+  result := aNotice;
+  case aNotice = NIL of TRUE: EXIT; end;
+  case aNotice.event of
+    evTLMax:      setMax(aNotice.integer);
+    evTLPosition: setPosition(aNotice.integer);
+  end;
 end;
 
 function TTimeline.redo: boolean;

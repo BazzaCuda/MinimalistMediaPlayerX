@@ -285,13 +285,11 @@ begin
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
 
   var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
-  case notifyApp(newNotice(evPLDeleteIx, vIx)).tf of FALSE: EXIT; end; // unlikely
+  notifyApp(newNotice(evPLDeleteIx, vIx));
 
-  T := procedure  begin
-                    case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
-                                                                    FALSE: notifyApp(newNotice(evAppClose)); end;end;
-
+  T := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose); end;
   F := procedure begin notifyApp(newNotice(evVMPlaySomething, vIx)); end;
+
   mmpDo(nothingToPlay, T, F);
 
   notifyApp(newNotice(evPLFormLoadBox));
@@ -342,7 +340,7 @@ begin
 
   case mmpPlayNext of TRUE: EXIT; end;
 
-  T :=  procedure begin mmpDo(playNextFolder, evNone, evAppClose); end;
+  T :=  procedure begin mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose); end;
   F :=  procedure begin
                     FLocked := FALSE;
                     mmpDo(GS.mediaType <> mtImage, evAppClose);
@@ -358,7 +356,7 @@ begin
 
   case mmpPlayPrev of TRUE: EXIT; end;
 
-  T :=  procedure begin mmpDo(playPrevFolder, evNone, evAppClose); end;
+  T :=  procedure begin mmpDo(notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose); end;
   F :=  procedure begin FLocked := FALSE; end;
 
   mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
@@ -446,10 +444,9 @@ end;
 
 function TVM.keepDelete: boolean;
 begin
-  var vCurrentFolder := notifyApp(newNotice(evPLReqCurrentFolder)).text;
-  case mmpKeepDelete(vCurrentFolder) of FALSE: EXIT; end;
-
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and playNextFolder, evNone, evAppClose);
+  mmpDo(    mmpKeepDelete(notifyApp(newNotice(evPLReqCurrentFolder)).text)
+        and CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]
+        and notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose);
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -570,24 +567,22 @@ begin
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
-    evMPStatePlay:  case GS.mediaType = mtImage of   TRUE: notifyApp(newNotice(evSTBlankOutTimeCaption));
-                                                    FALSE: notifyApp(newNotice(evSTBlankInTimeCaption)); end;
+    evMPStatePlay:  mmpDo(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
 
-    evMPStateEnd:   case GS.mediaType of mtAudio, mtVideo:  case GS.showingTimeline of FALSE: notifyApp(newNotice(evVMMPPlayNext)); end;
-                                                  mtImage:  end; // ignore everything. Let onSlideshowTimer handle it.
+    evMPStateEnd:   mmpDo((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
-    evMPDuration:   notifyApp(newNotice(evPBMax, aNotice.integer));
-    evMPPosition:   notifyApp(newNotice(evPBPosition, aNotice.integer));
+    evMPDuration:   mmpDo(evPBMax, aNotice.integer);
+    evMPPosition:   mmpDo(evPBPosition, aNotice.integer);
   end;
 
   case aNotice.event of
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
-                      case GS.showingTimeline of TRUE: TL.max := aNotice.integer; end;end;
+                      mmpDo(GS.showingTimeline, evTLMax, aNotice.integer); end;
     evMPPosition:   begin
                       FMPPosition := aNotice.integer;
                       notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)));
-                      case GS.showingTimeline of TRUE: TL.position := aNotice.integer; end;end;
+                      mmpDo(GS.showingTimeline, evTLPosition, aNotice.integer); end;
   end;
 end;
 
@@ -799,10 +794,10 @@ end;
 
 function TVM.playNextFolder: boolean;
 // reload playlist from vNextFolder and play first item
-var
-  vNextFolder: string;
 begin
-  vNextFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  var vNextFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mmpDo(vNextFolder = '', evAppClose);
+
   notifyApp(newNotice(evSTOpInfo, vNextFolder));
 
   case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
@@ -811,18 +806,17 @@ begin
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
-                      FALSE: case (vNextFolder = '') of  TRUE: notifyApp(newNotice(evAppClose));
-                                                        FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: notifyApp(newNotice(evVMPlayNextFolder));
-                                                                                                              FALSE: notifyApp(newNotice(evMPStop)); end;end;end; // if the folder is empty we want a blank screen
+                      FALSE: mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
+
   result := vNextFolder <> '';
 end;
 
 function TVM.playPrevFolder: boolean;
 // reload playlist from vPrevFolder and play first item
-var
-  vPrevFolder: string;
 begin
-  vPrevFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  var vPrevFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mmpDo(vPrevFolder = '', evAppClose);
+
   notifyApp(newNotice(evSTOpInfo, vPrevFolder));
 
   case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
@@ -831,9 +825,8 @@ begin
   notifyApp(newNotice(evPLFormLoadBox));
   case notifyApp(newNotice(evPLReqHasItems)).tf of
                        TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
-                      FALSE: case (vPrevFolder = '') of  TRUE: notifyApp(newNotice(evAppClose));
-                                                        FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: notifyApp(newNotice(evVMPlayPrevFolder));
-                                                                                                              FALSE: notifyApp(newNotice(evMPStop)); end;end;end; // if the folder is empty we want a blank screen
+                      FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: notifyApp(newNotice(evVMPlayPrevFolder));
+                                                                            FALSE: notifyApp(newNotice(evMPStop)); end;end; // if the folder is empty we want a blank screen
   result := vPrevFolder <> '';
 end;
 
