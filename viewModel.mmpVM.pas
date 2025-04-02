@@ -238,16 +238,16 @@ begin
   result := (abs(wndRect.left - rectStart.left) > 10) or (abs(wndRect.top - rectStart.top) > 10);
 
   mmpDo(result, procedure begin
-                            notifyApp(newNotice(evGSAutoCenter, FALSE));
-                            notifyApp(newNotice(evGSMaxSize, FALSE));
+                            mmpDo(evGSAutoCenter, FALSE);
+                            mmpDo(evGSMaxSize,    FALSE);
                           end);
 
   moveWindow(aHWND, dx, dy, wndRect.width, wndRect.height, FALSE);
 
   mmpDo(result, procedure begin
-                            notifyApp(newNotice(evVMMoveHelp));
-                            notifyApp(newNotice(evVMMovePlaylist));
-                            notifyApp(newNotice(evVMMoveTimeline));
+                            mmpDo(evVMMoveHelp);
+                            mmpDo(evVMMovePlaylist);
+                            mmpDo(evVMMoveTimeline);
                           end);
 end;
 
@@ -259,7 +259,7 @@ begin
   var vPt := mmpAdjustAspectRatio(GS.mainForm.handle, FVideoPanel.height);
   case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
   mmpSetWindowSize(GS.mainForm.handle, vPt);
-  notifyApp(newNotice(evSTDisplayXY));
+  mmpDo(evSTDisplayXY);
   FResizingWindow := FALSE;
 end;
 
@@ -273,26 +273,26 @@ end;
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
   function nothingToPlay: boolean;
   begin
-    result := (ssCtrl in aShiftState) or NOT notifyApp(newNotice(evPLReqHasItems)).tf;
+    result := (ssCtrl in aShiftState) or NOT mmpDo(evPLReqHasItems).tf;
   end;
 begin
-  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and notifyApp(newNotice(evMPReqPlaying)).tf;
+  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmpDo(evMPReqPlaying).tf;
   mmpDo(vWasPlaying, evMPPausePlay);
 
-  var vCurrentItem := notifyApp(newNotice(evPLReqCurrentItem)).text;
+  var vCurrentItem := mmpDo(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
 
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
 
-  var vIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
-  notifyApp(newNotice(evPLDeleteIx, vIx));
+  var vIx := mmpDo(evPLReqCurrentIx).integer;
+  mmpDo(evPLDeleteIx, vIx);
 
-  T := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and notifyApp(newNotice(evVMPlayNextFolder)).tf, evNone, evAppClose); end;
+  T := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
   F := procedure begin notifyApp(newNotice(evVMPlaySomething, vIx)); end;
 
   mmpDo(nothingToPlay, T, F);
 
-  notifyApp(newNotice(evPLFormLoadBox));
+  mmpDo(evPLFormLoadBox);
 end;
 
 destructor TVM.Destroy;
@@ -305,9 +305,9 @@ end;
 
 function TVM.doAppClose: boolean;
 begin
-  notifyApp(newNotice(evPLFormShutForm));
-  notifyApp(newNotice(evHelpShutHelp));
-  notifyApp(newNotice(evVMShutTimeline));
+  mmpDo(evPLFormShutForm);
+  mmpDo(evHelpShutHelp);
+  mmpDo(evVMShutTimeline);
   GS.mainForm.close;
 end;
 
@@ -322,9 +322,9 @@ begin
               + 'Folder: ' + vFolder + ' ???';
 
   mmpDo(mmpShowOKCancelMsgDlg(vMsg) = mrOK, procedure begin
-                                                        notifyApp(newNotice(evSTOpInfo, 'Cleanup in progress'));
+                                                        mmpDo(evSTOpInfo, 'Cleanup in progress');
                                                         newCleanup.cleanup(vFolder);
-                                                        notifyApp(newNotice(evSTOpInfo, 'Cleanup complete'));
+                                                        mmpDo(evSTOpInfo, 'Cleanup complete');
                                                       end);
 end;
 
@@ -798,14 +798,14 @@ begin
   var vNextFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mmpDo(vNextFolder = '', evAppClose);
 
-  notifyApp(newNotice(evSTOpInfo, vNextFolder));
+  mmpDo(evSTOpInfo, vNextFolder);
 
-  case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder));
+  case GS.imagesPaused of  TRUE: mmpDo(evPLFillPlaylist, vNextFolder);
                           FALSE: notifyApp(newNotice(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT])); end;
 
-  notifyApp(newNotice(evPLFormLoadBox));
+  mmpDo(evPLFormLoadBox);
   case notifyApp(newNotice(evPLReqHasItems)).tf of
-                       TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
+                       TRUE: mmpDo(evVMMPPlayCurrent);
                       FALSE: mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
 
   result := vNextFolder <> '';
@@ -817,16 +817,16 @@ begin
   var vPrevFolder := mmpNextFolder(notifyApp(newNotice(evPLReqCurrentFolder)).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mmpDo(vPrevFolder = '', evAppClose);
 
-  notifyApp(newNotice(evSTOpInfo, vPrevFolder));
+  mmpDo(evSTOpInfo, vPrevFolder);
 
-  case GS.imagesPaused of  TRUE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder));
+  case GS.imagesPaused of  TRUE: mmpDo(evPLFillPlaylist, vPrevFolder);
                           FALSE: notifyApp(newNotice(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT])); end;
 
-  notifyApp(newNotice(evPLFormLoadBox));
-  case notifyApp(newNotice(evPLReqHasItems)).tf of
-                       TRUE: notifyApp(newNotice(evVMMPPlayCurrent));
-                      FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: notifyApp(newNotice(evVMPlayPrevFolder));
-                                                                            FALSE: notifyApp(newNotice(evMPStop)); end;end; // if the folder is empty we want a blank screen
+  mmpDo(evPLFormLoadBox);
+  case mmpDo(evPLReqHasItems).tf of
+                       TRUE: mmpDo(evVMMPPlayCurrent);
+                      FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_END] of   TRUE: mmpDo(evVMPlayPrevFolder);
+                                                                            FALSE: mmpDo(evMPStop); end;end; // if the folder is empty we want a blank screen
   result := vPrevFolder <> '';
 end;
 
