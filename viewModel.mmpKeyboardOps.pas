@@ -59,7 +59,7 @@ begin
     koAboutBox:           mmpDo(evAboutFormShow);
     koAdjustAspectRatio:  mmpDo(evVMAdjustAspectRatio);
     koArrangeAll:         mmpDo(evVMArrangeAll);
-    koBookmarkDelete:     newBookmark.delete(MP.notify(mmpDo(evMPReqFileName)).text);
+    koBookmarkDelete:     newBookmark.delete(MP.notify(newNotice(evMPReqFileName)).text);
     koBookmarkLoad:       MP.notify(newNotice(evPBClick, newBookmark.position(MP.notify(newNotice(evMPReqFileName)).text)));
     koBookmarkSave:       newBookmark.save(MP.notify(newNotice(evMPReqFileName)).text, MP.notify(newNotice(evMPReqPosition)).integer);
     koBrighterPB:         begin mmpDo(evMCBrighter); mmpDo(evPBBrighter); mmpDo(evSTBrighter); end;
