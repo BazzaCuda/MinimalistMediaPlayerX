@@ -81,7 +81,7 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpFileUtils, mmpFuncProcs, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 
@@ -119,12 +119,12 @@ end;
 
 procedure TAboutForm.btnLicenceClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(newNotice(evAboutGNULicenceShow));
+  gAboutFormProxy.notify(mmpDo(evAboutGNULicenceShow));
 end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(newNotice(evAboutReleaseNotesFormShow));
+  gAboutFormProxy.notify(mmpDo(evAboutReleaseNotesFormShow));
 end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -233,7 +233,7 @@ end;
 
 function TAboutFormProxy.showForm(const thisVersion, buildVersion: string): boolean;
 begin
-  notifyApp(newNotice(evGSShowingAbout, TRUE));
+  mmpDo(evGSShowingAbout, TRUE);
   showProgressForm;
   with TAboutForm.create(NIL) do
   try
@@ -247,7 +247,7 @@ begin
     showModal;
   finally
     free;
-    notifyApp(newNotice(evGSShowingAbout, FALSE));
+    mmpDo(evGSShowingAbout, FALSE);
   end;
 end;
 

@@ -135,7 +135,7 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpFuncProcs, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpMediaInfo,
   _debugWindow;
@@ -223,9 +223,9 @@ begin
 
   mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
 
-  notifyApp(newNotice(evMPKeepOpen, TRUE));
-  notifyApp(newNotice(evGSShowingTimeline, TRUE));
-  notifyApp(newNotice(evGSTimelineHeight, gTimelineForm.height + 10));
+  mmpDo(evMPKeepOpen, TRUE);
+  mmpDo(evGSShowingTimeline, TRUE);
+  mmpDo(evGSTimelineHeight, gTimelineForm.height + 10);
 end;
 
 var gTL: TTimeline = NIL;
@@ -234,9 +234,9 @@ begin
   mmpShutStreamList;
   case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
-  notifyApp(newNotice(evMPKeepOpen, FALSE));
-  notifyApp(newNotice(evGSShowingTimeline, FALSE));
-  notifyApp(newNotice(evGSTimelineHeight, 0));
+  mmpDo(evMPKeepOpen, FALSE);
+  mmpDo(evGSShowingTimeline, FALSE);
+  mmpDo(evGSTimelineHeight, 0);
 end;
 
 function TL: TTimeline;
@@ -283,8 +283,8 @@ begin
 
   case FDragging of TRUE: begin
                             cursorPos := cursorPos + (X - pnlCursor.Width div 2);
-                            var vNewPos := notifyApp(newNotice(evPBSetNewPosition, cursorPos)).integer;
-                            notifyApp(newNotice(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max)));
+                            var vNewPos := mmpDo(evPBSetNewPosition, cursorPos).integer;
+                            mmpDo(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
                             updatePositionDisplay(vNewPos);
                           end;end;
 
@@ -480,7 +480,7 @@ begin
                                       vSegment.trashCan.top  := (vSegment.height div 2) - (vSegment.trashCan.height div 2); end;end;
     vSegment.parent := gTimelineForm;
     vSegment.invalidate;
-    SetWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    setWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
     inc(n);
   end;
   gTimelineForm.pnlCursor.bringToFront;

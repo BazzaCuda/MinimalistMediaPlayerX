@@ -47,7 +47,7 @@ begin
   coInitialize(NIL);
   with createMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
-    notifyApp(newNotice(evGSUserInput, TRUE));
+    mmpDo(evGSUserInput, TRUE);
     font.name := 'Segoe UI';
     font.size := 12;
     height    := height +  50;
@@ -63,7 +63,7 @@ begin
     result := showModal;
   finally
     free;
-    notifyApp(newNotice(evGSUserInput, FALSE));
+    mmpDo(evGSUserInput, FALSE);
     coUninitialize;
   end;
 end;

@@ -31,6 +31,9 @@ function mmpInitTransparentLabel(const aLabel: TLabel): boolean;
 function mmpThemeCreateVideoPanel(const aForm: TForm): TPanel;
 function mmpThemeInitForm(const aForm: TForm): boolean;
 
+function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): boolean;
+function mmpSetGlassFrame(const aForm: TForm): boolean;
+
 implementation
 
 function mmpThemeCreateVideoPanel(const aForm: TForm): TPanel;
@@ -81,8 +84,7 @@ begin
   aLabel.wordWrap          := FALSE;
 end;
 
-
-function mmpSetCustomTitleBar(const aForm: TForm): boolean;
+function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): boolean;
 begin
   aForm.customTitleBar.enabled        := TRUE;
   aForm.customTitleBar.showCaption    := FALSE;
@@ -90,7 +92,7 @@ begin
   aForm.customTitleBar.systemButtons  := FALSE;
   aForm.customTitleBar.systemColors   := FALSE;
   aForm.customTitleBar.systemHeight   := FALSE;
-  aForm.customTitleBar.height         := 1; // systemHeight=FALSE must be set before this
+  aForm.customTitleBar.height         := aHeight; // systemHeight=FALSE must be set before this
 end;
 
 function mmpSetGlassFrame(const aForm: TForm): boolean;

@@ -1,10 +1,9 @@
 object StreamListForm: TStreamListForm
   Left = 0
   Top = 0
-  BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Segments & Streams'
-  ClientHeight = 585
+  ClientHeight = 586
   ClientWidth = 460
   Color = 2829099
   Font.Charset = DEFAULT_CHARSET
@@ -35,7 +34,7 @@ object StreamListForm: TStreamListForm
     Left = 0
     Top = 0
     Width = 460
-    Height = 585
+    Height = 586
     Align = alClient
     BevelOuter = bvNone
     Color = 2302755
@@ -47,7 +46,7 @@ object StreamListForm: TStreamListForm
       Left = 3
       Top = 3
       Width = 454
-      Height = 538
+      Height = 533
       ActivePage = tsStreams
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
@@ -65,7 +64,7 @@ object StreamListForm: TStreamListForm
           Left = 0
           Top = 0
           Width = 446
-          Height = 504
+          Height = 499
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWhite
@@ -84,8 +83,8 @@ object StreamListForm: TStreamListForm
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 442
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2168,7 +2167,7 @@ object StreamListForm: TStreamListForm
           Left = 0
           Top = 0
           Width = 446
-          Height = 504
+          Height = 499
           Align = alClient
           ItemMargins.Left = 0
           ItemMargins.Top = 0
@@ -2306,9 +2305,9 @@ object StreamListForm: TStreamListForm
     end
     object pnlButtons: TPanel
       Left = 0
-      Top = 544
+      Top = 539
       Width = 460
-      Height = 41
+      Height = 47
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1

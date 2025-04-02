@@ -75,6 +75,7 @@ type
     procedure   createParams(var Params: TCreateParams);
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
+    procedure   WMSize            (var msg: TWMSize);       message WM_SIZE;
   public
     property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
@@ -87,10 +88,15 @@ function mmpShutStreamList: boolean;
 implementation
 
 uses
-  mmpConsts, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
+  system.math,
+  mmpConsts, mmpFormatting, mmpFuncProcs, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;
+
+const
+  DEFAULT_WIDTH  = 460;
+  DEFAULT_HEIGHT = 400;
 
 var gStreamListForm: TStreamListForm = NIL;
 
@@ -116,16 +122,20 @@ begin
   gStreamListForm.show;
   gStreamListForm.onExport := aExportEvent;
 
-  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
-  notifyApp(newNotice(evGSShowingStreamlist, TRUE));
-  notifyApp(newNotice(evGSWidthStreamlist, gStreamListForm.width));
+  // When the main window is resized or moved, force a WM_SIZE message to be generated without actually changing the size of the form
+  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height + 1, SWP_SHOWWINDOW); // + SWP_NOSIZE);
+  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height - 1, SWP_SHOWWINDOW); // + SWP_NOSIZE);
+//  gStreamListForm.backPanel.invalidate; // force align := alClient
+
+  mmpDo(evGSShowingStreamlist, TRUE);
+  mmpDo(evGSWidthStreamlist, gStreamListForm.width);
 end;
 
 function mmpShutStreamList: boolean;
 begin
   case gStreamListForm <> NIL of TRUE: begin gStreamListForm.close; gStreamListForm.free; gStreamListForm := NIL; end;end;
-  notifyApp(newNotice(evGSShowingStreamlist, FALSE));
-  notifyApp(newNotice(evGSWidthStreamlist, 0));
+  mmpDo(evGSShowingStreamlist, FALSE);
+  mmpDo(evGSWidthStreamlist, 0);
 end;
 
 {$R *.dfm}
@@ -235,8 +245,8 @@ begin
   clStreams.itemSelectionOptions.hotColor       := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.selectedColor  := DARK_MODE_LIGHT;
 
-  SELF.width  := 460;
-  SELF.height := 400;
+  SELF.width  := DEFAULT_WIDTH;
+  SELF.height := DEFAULT_HEIGHT;
 
   pageControl.tabWidth := 0; // tab widths are controlled by the width of the captions
   tsSegments.caption := '        Segments        ';
@@ -248,9 +258,9 @@ begin
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
 
-//  styleElements     := []; // don't allow any theme alterations
-  mmpThemeInitForm(SELF);
-  borderStyle       := bsSizeable;
+  styleElements     := []; // don't allow any theme alterations
+  mmpSetGlassFrame(SELF);
+  mmpSetCustomTitleBar(SELF, 2); // give the user a more substantial top edge for resizing
   font.color        := DARK_MODE_SILVER;
 
   md.align := alClient;
@@ -297,19 +307,28 @@ end;
 procedure TStreamListForm.WMNCHitTest(var msg: TWMNCHitTest);
 begin
   // Prevent the cursor from changing when hovering over the side edges or bottom edge
-  case (msg.result = HTRIGHT) or (msg.result = HTLEFT) or (msg.result = HTBOTTOM) of TRUE: msg.result := HTCLIENT; end;
+//  case (msg.result = HTTOP) of FALSE: msg.result := HTTOP; end;
+  msg.result := HTTOP;
 end;
 
-procedure TStreamListForm.WMSizing(var msg: TMessage);
+procedure TStreamListForm.WMSize(var msg: TWMSize); // called when setWindowPos is called without SWP_NOMOVE
+begin
+  case msg.height > GS.mainForm.height  of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, GS.mainForm.height,  SWP_NOMOVE); end;
+  case msg.height < DEFAULT_HEIGHT      of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, DEFAULT_HEIGHT,      SWP_NOMOVE); end;
+  backPanel.height := SELF.height; // force align := alClient
+end;
+
+procedure TStreamListForm.WMSizing(var msg: TMessage); // called when the user is manually resizing the form
 // restricts the horizontal resizing by modifying the right edge of the resizing rectangle to ensure that the window's width remains constant.
 // The user can control the height of a video - the app controls the width.
-var
-  newRect: PRect;
 begin
   inherited;
   // Prevent horizontal resizing by adjusting the rectangle's left and right edges
-  newRect := PRect(msg.LParam);
-  newRect^.right := newRect^.left + width;
+  var vNewRect := PRect(msg.LParam);
+//  newRect^.right := newRect^.left + width; // redundant: WMNCHitTest prevents width resizing
+  case vNewRect^.top < GS.mainForm.top of TRUE: vNewRect^.top := GS.mainForm.top; end; // don't use height
+  case vNewRect^.top > (SELF.top + SELF.height) - DEFAULT_HEIGHT of TRUE: vNewRect^.top := (SELF.top + SELF.height) - DEFAULT_HEIGHT; end;
+  backPanel.height := vNewRect^.height; // force align := alClient
 end;
 
 initialization

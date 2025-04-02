@@ -21,8 +21,10 @@ unit mmpFuncProcs;
 interface
 
 uses
-  system.sysUtils,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  winApi.messages,
+  system.classes, system.sysUtils,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts;
 
 const
   doNowt = NIL;
@@ -31,7 +33,7 @@ type
   void    = boolean;
   TOProc  = TProc<TObject>;
   TRFunc  = TFunc<boolean>;
-  TProcVar = procedure(aInteger: integer);
+  TProcVar = procedure;
 
 var
   T:      TProc;
@@ -59,9 +61,16 @@ function mmpDo(const aBoolean: boolean;     const trueEvent:    TNoticeEvent;   
 
 //===== Event Notices with the INotice returned (no boolean test)
 function mmpDo(const aEvent: TNoticeEvent                                                                                         ): INotice; overload;
-function mmpDo(const aEvent: TNoticeEvent;  const aBoolean: boolean                                                               ): INotice; overload;
-function mmpDo(const aEvent: TNoticeEvent;  const aInteger: integer                                                               ): INotice; overload;
-function mmpDo(const aEvent: TNoticeEvent;  const aString:  string                                                                ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aBoolean:     boolean                                                           ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aInteger:     integer                                                           ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aString:      string                                                            ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aText:        string; const aMediaType: TMediaType                              ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aWndRec:      TWndRec                                                           ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aComponent:   TComponent                                                        ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aMediaType:   TMediaType                                                        ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aMsg:         TMessage                                                          ): INotice; overload;
+function mmpDo(const aEvent: TNoticeEvent;  const aShiftState:  TShiftState                                                       ): INotice; overload;
+
 
 //===== Misc
 procedure mmpFree(const aBoolean: boolean;  const aObject: TObject);
@@ -168,6 +177,36 @@ begin
   result := notifyApp(newNotice(aEvent, aString));
 end;
 
+function mmpDo(const aEvent: TNoticeEvent; const aText: string; const aMediaType: TMediaType): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aText, aMediaType));
+end;
+
+function mmpDo(const aEvent: TNoticeEvent; const aWndRec: TWndRec): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aWndRec));
+end;
+
+function mmpDo(const aEvent: TNoticeEvent; const aComponent: TComponent): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aComponent));
+end;
+
+function mmpDo(const aEvent: TNoticeEvent; const aMediaType: TMediaType): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aMediaType));
+end;
+
+function mmpDo(const aEvent: TNoticeEvent; const aMsg: TMessage): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aMsg));
+end;
+
+function mmpDo(const aEvent: TNoticeEvent; const aShiftState: TShiftState): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aShiftState));
+end;
+
 //===== Misc
 
 procedure mmpFree(const aBoolean: boolean; const aObject: TObject);
@@ -177,7 +216,7 @@ end;
 
 procedure mmpDo(const aBoolean: boolean; const aProcVar: TProcVar);
 begin
-  aProcVar(0);
+  aProcVar();
 end;
 
 end.

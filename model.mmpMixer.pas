@@ -26,7 +26,8 @@ uses
   winApi.activeX, winApi.MMSystem, winApi.windows,
   system.math, system.sysUtils, system.win.comObj,
   mmpMMDevApi_tlb,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpFuncProcs;
 
 type
   IMixer = interface
@@ -318,7 +319,7 @@ begin
   setMute(FALSE);
   setVolume(65535);
   result := 'Sys Vol Max';
-  notifyApp(newNotice(evSTOpInfo, result));   // CHECK THIS. create IMixer each time
+  mmpDo(evSTOpInfo, result);   // CHECK THIS. create IMixer each time
 end;
 
 initialization

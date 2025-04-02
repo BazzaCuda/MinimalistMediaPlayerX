@@ -37,7 +37,7 @@ implementation
 uses
   winApi.shellApi,
   system.generics.collections, system.threading,
-  mmpGlobalState,
+  mmpFuncProcs, mmpGlobalState,
   _debugWindow;
 
 const
@@ -316,10 +316,10 @@ begin
   for i := 0 to gTasks.count - 1 do gTasks[i].start;
 
   repeat
-    notifyApp(newNotice(evGSActiveTasks, gCount));
+    mmpDo(evGSActiveTasks, gCount);
     mmpDelay(100);
   until gCount = 0;
-  notifyApp(newNotice(evGSActiveTasks, gCount));
+  mmpDo(evGSActiveTasks, gCount);
   gTasks.clear;
   result := TRUE;
 end;

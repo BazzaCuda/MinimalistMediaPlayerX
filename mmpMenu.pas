@@ -35,6 +35,7 @@ function newMMPMenu: IMMPMenu;
 implementation
 
 uses
+  mmpFuncProcs,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -72,7 +73,7 @@ end;
 
 procedure TMMPMenu.onClick(sender: TObject);
 begin
-  notifyApp(newNotice(evAppClose));
+  mmpDo(evAppClose);
 end;
 
 function TMMPMenu.buildMenu(const aMenu: TPopupMenu): boolean;

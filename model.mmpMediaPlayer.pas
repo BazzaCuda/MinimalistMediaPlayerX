@@ -40,7 +40,7 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  mmpConsts, mmpFileUtils, mmpGlobalState, mmpTickTimer, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpFuncProcs, mmpGlobalState, mmpTickTimer, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
 
@@ -121,11 +121,11 @@ begin
   mpvInitPlayer(mpv, aHWND, mmpExePath, mmpExePath);
 
   mpvGetPropertyString(mpv, 'screenshot-directory', FMPVScreenshotDirectory);
-  notifyApp(newNotice(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory));
+  mmpDo(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory);
 
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration);
   FImageDisplayDurationMs := strToFloatDef(FImageDisplayDuration, IMAGE_DISPLAY_DURATION);
-  notifyApp(newNotice(evGSIDD, trunc(FImageDisplayDurationMs)));
+  mmpDo(evGSIDD, trunc(FImageDisplayDurationMs));
   FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
 
@@ -219,10 +219,10 @@ procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case FMediaType of mtAudio, mtVideo:  begin
-                                          FNotifier.notifySubscribers(newNotice(evMPDuration, mpvDuration(mpv)));
-                                          FNotifier.notifySubscribers(newNotice(evMPPosition, 0)); end;end;
+                                          FNotifier.notifySubscribers(mmpDo(evMPDuration, mpvDuration(mpv)));
+                                          FNotifier.notifySubscribers(mmpDo(evMPPosition, 0)); end;end;
 
-  case FMediaType of mtAudio, mtImage: notifyApp(newNotice(evVMResizeWindow)); end; // for mtImage, do it in onTickTimer
+  case FMediaType of mtAudio, mtImage: mmpDo(evVMResizeWindow); end; // for mtImage, do it in onTickTimer
 
   var vNotice     := newNotice;
   vNotice.event   := evVMMPOnOpen;
@@ -236,9 +236,9 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
 //  TDebug.debugEnum<TMPVPlayerState>('eState ' + extractFileName(mpvFileName(mpv)), eState);
   case eState of
-    mpsLoading:   ; // FNotifier.notifySubscribers(newNotice(evMPStateLoading)); {not currently used}
-    mpsEnd:       FNotifier.notifySubscribers(newNotice(evMPStateEnd));
-    mpsPlay:      FNotifier.notifySubscribers(newNotice(evMPStatePlay));
+    mpsLoading:   ; // FNotifier.notifySubscribers(mmpDo(evMPStateLoading)); {not currently used}
+    mpsEnd:       FNotifier.notifySubscribers(mmpDo(evMPStateEnd));
+    mpsPlay:      FNotifier.notifySubscribers(mmpDo(evMPStatePlay));
   end;
 end;
 
@@ -247,7 +247,7 @@ begin
   result := aNotice;
   case FNotifier = NIL  of TRUE: EXIT; end;
   case FIgnoreTicks     of TRUE: EXIT; end;
-  case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(newNotice(evMPPosition, mpvPosition(mpv))); end;
+  case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(mmpDo(evMPPosition, mpvPosition(mpv))); end;
 
   case FDimensionsDone of FALSE:  begin // only ever false for videos
     inc(FCheckCount);
@@ -255,7 +255,7 @@ begin
     case (mpvVideoWidth(mpv) <> FVideoWidth) or (mpvVideoHeight(mpv) <> FVideoHeight) of TRUE:  begin
                                                                                                   FVideoWidth     := mpvVideoWidth(mpv);
                                                                                                   FVideoHeight    := mpvVideoHeight(mpv);
-                                                                                                  notifyApp(newNotice(evVMResizeWindow)); end;end;end;
+                                                                                                  mmpDo(evVMResizeWindow); end;end;end;
   end;
 end;
 
@@ -275,10 +275,10 @@ begin
   FCheckCount   := 0;
   FIgnoreTicks  := FALSE; // react in onTickTimer
 
-  notifyApp(newNotice(evGSMediaType, FMediaType));
-  notifyApp(newNotice(evMIGetMediaInfo, aURL, FMediaType));
-  notifyApp(newNotice(evSTUpdateMetaData));
-  notifyApp(newNotice(evMCCaption, notifyApp(newNotice(evPLReqFormattedItem)).text));
+  mmpDo(evGSMediaType, FMediaType);
+  mmpDo(evMIGetMediaInfo, aURL, FMediaType);
+  mmpDo(evSTUpdateMetaData);
+  mmpDo(evMCCaption, mmpDo(evPLReqFormattedItem).text);
   result := TRUE;
 end;
 
@@ -293,7 +293,7 @@ end;
 
 function TMediaPlayer.pausePlayImages: string;
 begin
-  notifyApp(newNotice(evGSImagesPaused, NOT GS.imagesPaused));
+  mmpDo(evGSImagesPaused, NOT GS.imagesPaused);
 
   case GS.imagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;
@@ -302,7 +302,7 @@ end;
 function TMediaPlayer.sendOpInfo(const aOpInfo: string): boolean;
 begin
   result := FALSE;
-  notifyApp(newNotice(evSTOpInfo, aOpInfo));
+  mmpDo(evSTOpInfo, aOpInfo);
   result := TRUE;
 end;
 

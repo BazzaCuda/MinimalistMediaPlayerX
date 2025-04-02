@@ -67,7 +67,7 @@ uses
   winApi.shellApi,
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  mmpConsts, mmpFuncProcs, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   view.mmpKeyboard,
   viewModel.mmpKeyboardOps,
   _debugWindow;
@@ -130,7 +130,7 @@ begin
   LB.margins.right    := 10;
   LB.margins.top      := 10;
 
-  LB.AlignWithMargins := TRUE;
+  LB.alignWithMargins := TRUE;
 
   SELF.width  := 556;
 
@@ -152,7 +152,7 @@ end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
-  var vCurrentIx := notifyApp(newNotice(evPLReqCurrentIx)).integer;
+  var vCurrentIx := mmpDo(evPLReqCurrentIx).integer;
   case vCurrentIx = -1 of TRUE: EXIT; end;
 
   try
@@ -216,17 +216,17 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
-  lblFolder.caption := format('Folder: %s', [notifyApp(newNotice(evPLReqCurrentFolder)).text]);
-  notifyApp(newNotice(evPLFillListBox, LB));
+  lblFolder.caption := format('Folder: %s', [mmpDo(evPLReqCurrentFolder).text]);
+  mmpDo(evPLFillListBox, LB);
   highlightCurrentItem;
 end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
-  notifyApp(newNotice(evVMShutTimeline));
-  var vThisItem := notifyApp(newNotice(evPLReqThisItem, aItemIndex)).text;
-  notifyApp(newNotice(evPLFind, vThisItem)); // set as current
-  notifyApp(newNotice(evVMMPPlayCurrent));
+  mmpDo(evVMShutTimeline);
+  var vThisItem := mmpDo(evPLReqThisItem, aItemIndex).text;
+  mmpDo(evPLFind, vThisItem); // set as current
+  mmpDo(evVMMPPlayCurrent);
 end;
 
 function TPlaylistForm.visibleItemCount: integer;
@@ -259,17 +259,17 @@ function TPlayListFormProxy.moveForm(const wr: TWndRec): boolean;
 begin
   FPlaylistForm := createForm(wr.createNew);
   case FPlaylistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
-  GS.notify(newNotice(evGSShowingPlaylist, TRUE));
+  GS.notify(mmpDo(evGSShowingPlaylist, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: FPlaylistForm.height := wr.height;
                                               FALSE: FPlaylistForm.height := 400; end;
-  notifyApp(newNotice(evGSWidthHelp, FPlaylistForm.width));
+  mmpDo(evGSWidthHelp, FPlaylistForm.width);
   screen.cursor := crDefault;
 
-  case FListBoxLoaded of FALSE: notifyApp(newNotice(evPLFormLoadBox)); end; // do once when the playlist is first opened
+  mmpDo(FListBoxLoaded, evNone, evPLFormLoadBox); // do once when the playlist is first opened
   FListBoxLoaded := TRUE;
 
-  notifyApp(newNotice(evPLFormShow));
-  notifyApp(newNotice(evPLFormHighlight));
+  mmpDo(evPLFormShow);
+  mmpDo(evPLFormHighlight);
 
   var vRect: TRect;
   getWindowRect(FPlaylistForm.handle, vRect);
@@ -309,8 +309,8 @@ begin
   FPlaylistForm.close;
   FPlaylistForm.free;
   FPlaylistForm := NIL;
-  notifyApp(newNotice(evGSWidthHelp, 0));
-  GS.notify(newNotice(evGSShowingPlaylist, FALSE));
+  mmpDo(evGSWidthHelp, 0);
+  GS.notify(mmpDo(evGSShowingPlaylist, FALSE));
   FListBoxLoaded := FALSE;
 end;
 

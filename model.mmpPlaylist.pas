@@ -68,7 +68,7 @@ uses
   winApi.windows,
   system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
-  mmpFileUtils, mmpUtils,
+  mmpFileUtils, mmpFuncProcs, mmpUtils,
   model.mmpMediaTypes,
   TListHelperClass,
   _debugWindow;
@@ -250,7 +250,7 @@ begin
                    FALSE: FPlayIx := -1; end;
 
   result := hasItems;
-  notifyApp(newNotice(evPLNewPlaylist));
+  mmpDo(evPLNewPlaylist);
 end;
 
 function TPlaylist.find(const anItem: string): boolean;
@@ -424,8 +424,6 @@ end;
 procedure TPlaylist.setCurrentFolder(const aValue: string);
 begin
   FCurrentFolder := aValue;
-//  FNotifier.notifySubscribers(newNotice(evPLCurrentFolder, aValue)); // CHECK THIS
-//  notifyApp(newNotice(evPLCurrentFolder, aValue));
 end;
 
 function TPlaylist.setIx(const ix: integer): integer;

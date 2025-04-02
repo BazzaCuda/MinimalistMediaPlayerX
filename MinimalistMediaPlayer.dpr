@@ -129,7 +129,7 @@ var
 begin
   result := FALSE;
 
-  mmpThemeInitForm(aMainForm);
+//  mmpThemeInitForm(aMainForm);  // is also called in VM.initUI
 
   vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
 
@@ -158,26 +158,24 @@ begin
   checkParam;
 
   CF.initConfigFile(mmpConfigFilePath);
-  notifyApp(newNotice(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]));
+  mmpDo(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
   mmpDo(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, 100);
 
   Application.CreateForm(TMMPUI, MMPUI);
-  notifyApp(newNotice(evGSMainForm, MMPUI));
+  mmpDo(evGSMainForm, MMPUI);
 
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
-  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
+  MMPUI.viewModel.playlist.notify(mmpDo(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
-  mmpDo(notifyApp(newNotice(evPLFind, PS.fileFolderAndName)).tf, evVMMPPlayCurrent);
+  mmpDo(mmpDo(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 
   MMPUI.viewModel.showUI;
 
-  notifyApp(newNotice(evSTForceCaptions));
+  mmpDo(evSTForceCaptions);
 
-  mmpDo(lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser', procedure begin
-                                                                mmpDo(GS.mediaType = mtImage, [evMPStop, evVMImageInBrowser]);
-                                                              end);
+  mmpDo((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
   application.Run;
 end.

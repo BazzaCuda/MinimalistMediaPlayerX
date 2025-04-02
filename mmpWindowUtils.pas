@@ -44,7 +44,7 @@ implementation
 uses
   winApi.messages,
   system.types,
-  mmpDesktopUtils, mmpPostToAllUtils, mmpUtils,
+  mmpDesktopUtils, mmpFuncProcs, mmpPostToAllUtils, mmpUtils,
   _debugWindow;
 
 function mmpAdjustAspectRatio(const aWND: HWND; const aHeight: integer): TPoint;
@@ -65,8 +65,8 @@ var
   begin
     result          := FALSE;
     MPmediaType     := GS.mediaType;
-    MPvideoWidth    := notifyApp(newNotice(evMPReqVideoWidth)).integer;
-    MPvideoHeight   := notifyApp(newNotice(evMPReqVideoHeight)).integer;
+    MPvideoWidth    := mmpDo(evMPReqVideoWidth).integer;
+    MPvideoHeight   := mmpDo(evMPReqVideoHeight).integer;
     result          := TRUE;
 //    debugFormat('MP.x:%d, MP.y:%d', [MPvideoWidth, MPvideoHeight]);
   end;
@@ -107,9 +107,9 @@ var
   begin
     result          := FALSE;
     MPmediaType     := GS.mediaType;
-    MPvideoWidth    := notifyApp(newNotice(evMPReqVideoWidth)).integer;
-    MPvideoHeight   := notifyApp(newNotice(evMPReqVideoHeight)).integer;
-    MIhasCoverArt   := notifyApp(newNotice(evMIReqHasCoverArt)).tf;
+    MPvideoWidth    := mmpDo(evMPReqVideoWidth).integer;
+    MPvideoHeight   := mmpDo(evMPReqVideoHeight).integer;
+    MIhasCoverArt   := mmpDo(evMIReqHasCoverArt).tf;
     result          := TRUE;
 //    debugFormat('getMediaInfo MP.x:%d, MP.y:%d', [MPvideoWidth, MPvideoHeight]);
   end;
@@ -191,12 +191,12 @@ var
   vVMiddle:           integer;
 begin
   result := FALSE;
-  vCount := notifyApp(newNotice(evPAReqCount)).integer;
+  vCount := mmpDo(evPAReqCount).integer;
 
-  notifyApp(newNotice(evGSAutoCenter, vCount = 1));
+  mmpDo(evGSAutoCenter, vCount = 1);
   case GS.autoCenter of FALSE:  begin
-                                  notifyApp(newNotice(evPAPostToEvery, WIN_AUTOCENTER_OFF));
-                                  notifyApp(newNotice(evPAPostToEvery, WIN_MAX_SIZE_OFF)); end;end;
+                                  mmpDo(evPAPostToEvery, WIN_AUTOCENTER_OFF);
+                                  mmpDo(evPAPostToEvery, WIN_MAX_SIZE_OFF); end;end;
 
   var vMsg: TMessage;
   vMsg := default(TMessage);
@@ -207,7 +207,7 @@ begin
     else     vMsg.WParam := mmpScreenWidth  div vCount;
   end;
   vMsg.msg := WIN_RESIZE;
-  notifyApp(newNotice(evPAPostToEveryEx, vMsg));
+  mmpDo(evPAPostToEveryEx, vMsg);
 
   mmpProcessMessages; // make sure this window has resized before continuing
 
@@ -218,7 +218,7 @@ begin
   vVMiddle      := vScreenHeight  div 2;
   vZero         := vHMiddle - vWidth;
 
-  vCount    := notifyApp(newNotice(evPAReqCount)).integer;
+  vCount    := mmpDo(evPAReqCount).integer;
   var vHWND := 0;
 
   case vCount = 2 of TRUE: begin
@@ -274,7 +274,7 @@ begin
 
   case (vHPos > 0) and (vVPos > 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
 
-  notifyApp(newNotice(evGSAutoCenter, TRUE));
+  mmpDo(evGSAutoCenter, TRUE);
   result := TRUE;
 end;
 
@@ -284,7 +284,7 @@ var
 begin
   getWindowRect(aWND, vR);
 
-  GS.notify(newNotice(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
+  GS.notify(mmpDo(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
 
   case ssCtrl in aShiftState of  TRUE: result := vR.height - 30;
                                 FALSE: result := vR.height + 30; end;

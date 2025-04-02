@@ -55,7 +55,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpGlobalState, mmpMarkDownUtils,
+  mmpGlobalState, mmpFuncProcs, mmpMarkDownUtils,
   _debugWindow;
 
 type
@@ -180,15 +180,15 @@ function THelpFormProxy.moveForm(const wr: TWndRec): boolean;
 begin
   FHelpForm := createForm(wr);
   case FHelpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
-  GS.notify(newNotice(evGSShowingHelp, TRUE));
+  GS.notify(mmpDo(evGSShowingHelp, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of TRUE: FHelpForm.height := wr.height; end;
   screen.cursor := crDefault;
 
-  notifyApp(newNotice(evHelpShowHelp));
+  mmpDo(evHelpShowHelp);
 
   winAPI.windows.setWindowPos(FHelpForm.handle, HWND_TOP, wr.pt.X, wr.pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   setForegroundWindow(wr.HWND);
-  notifyApp(newNotice(evGSWidthHelp, FHelpForm.width));
+  mmpDo(evGSWidthHelp, FHelpForm.width);
 end;
 
 function THelpFormProxy.notify(const aNotice: INotice): INotice;
@@ -219,8 +219,8 @@ begin
   FHelpForm.close;
   FHelpForm.Free;
   FHelpForm := NIL;
-  notifyApp(newNotice(evGSWidthHelp, 0));
-  GS.notify(newNotice(evGSShowingHelp, FALSE));
+  mmpDo(evGSWidthHelp, 0);
+  GS.notify(mmpDo(evGSShowingHelp, FALSE));
 end;
 
 initialization

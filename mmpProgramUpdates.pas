@@ -41,7 +41,7 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpFuncProcs, mmpUtils,
   view.mmpFormDownload, view.mmpProgressBar,
   model.mmpConfigFile,
   _debugWindow;
@@ -148,15 +148,15 @@ end;
 
 procedure TWorkProgress.idHTTPWork(aSender: TObject; aWorkMode: TWorkMode; aWorkCount: int64);
 begin
-  gProgressBar.notify(newNotice(evPBPosition, aWorkCount));
-  gDownloadForm.byteLabel.caption := format('%n of %n', [aWorkCount * 1.0, gProgressBar.notify(newNotice(evPBReqMax)).integer * 1.0]);
+  gProgressBar.notify(mmpDo(evPBPosition, aWorkCount));
+  gDownloadForm.byteLabel.caption := format('%n of %n', [aWorkCount * 1.0, gProgressBar.notify(mmpDo(evPBReqMax)).integer * 1.0]);
   gDownloadForm.byteLabel.Refresh;
   mmpProcessMessages;
 end;
 
 procedure TWorkProgress.idHTTPWorkBegin(aSender: TObject; aWorkMode: TWorkMode; aWorkCountMax: int64);
 begin
-  gProgressBar.notify(newNotice(evPBMax, aWorkCountMax));
+  gProgressBar.notify(mmpDo(evPBMax, aWorkCountMax));
 end;
 
 { TProgramUpdates }

@@ -37,46 +37,48 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 
 implementation
 
-uses _debugWindow;
+uses
+  mmpFuncProcs,
+  _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
 begin
   var vIx := aPL.currentIx;
   var vCI := aPL.currentItem;
 
-  case mmpValidatePlaylist(aPL) of FALSE: case bNextFolderOnEmpty of   TRUE: case notifyApp(newNotice(evVMPlayNextFolder)).tf of
+  case mmpValidatePlaylist(aPL) of FALSE: case bNextFolderOnEmpty of   TRUE: case mmpDo(evVMPlayNextFolder).tf of
                                                                                                          TRUE: EXIT;
-                                                                                                        FALSE: begin notifyApp(newNotice(evAppClose)); EXIT; end;end;
-                                                                      FALSE: begin notifyApp(newNotice(evAppClose)); EXIT; end;end;end;
+                                                                                                        FALSE: begin mmpDo(evAppClose); EXIT; end;end;
+                                                                      FALSE: begin mmpDo(evAppClose); EXIT; end;end;end;
 
   case fileExists(vCI) of  TRUE:  begin
                                     aPL.find(vCI);
-                                    notifyApp(newNotice(evVMMPPlayCurrent)); end;
+                                    mmpDo(evVMMPPlayCurrent); end;
                           FALSE:  case aPL.validIx(vIx) of   TRUE:  begin // play first remaining item that was after the original item's position in the playlist
                                                                       aPL.setIx(vIx);
-                                                                      notifyApp(newNotice(evVMMPPlayCurrent)); end;
+                                                                      mmpDo(evVMMPPlayCurrent); end;
                                                             FALSE:  case aPL.validIx(vIx - 1) of   TRUE:  begin // otherwise play the nearest before its position
                                                                                                             aPL.setIx(vIx - 1);
-                                                                                                            notifyApp(newNotice(evVMMPPlayCurrent)); end;
-                                                                                                  FALSE:  notifyApp(newNotice(evVMMPPlayCurrent)); end;end;end;
+                                                                                                            mmpDo(evVMMPPlayCurrent); end;
+                                                                                                  FALSE:  mmpDo(evVMMPPlayCurrent); end;end;end;
 
 end;
 
 function mmpPlayCurrent: boolean;
 begin
-  notifyApp(newNotice(evVMShutTimeline));
-  notifyApp(newNotice(evMPOpenUrl, notifyApp(newNotice(evPLReqCurrentItem)).text));
+  mmpDo(evVMShutTimeline);
+  mmpDo(evMPOpenUrl, mmpDo(evPLReqCurrentItem).text);
 end;
 
 function mmpPlayFirst: boolean;
 begin
-  result := notifyApp(newNotice(evPLFirst)).tf;
+  result := mmpDo(evPLFirst).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpPlayLast: boolean;
 begin
-  result := notifyApp(newNotice(evPLLast)).tf;
+  result := mmpDo(evPLLast).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
@@ -85,19 +87,19 @@ var vMediaType: TMediaType;
 begin
   case GS.imagesPaused of  TRUE: vMediaType := mtUnk;
                           FALSE: vMediaType := CF.asMediaType[CONF_PLAYLIST_FORMAT]; end;
-  result := notifyApp(newNotice(evPLNext, vMediaType)).tf;
+  result := mmpDo(evPLNext, vMediaType).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpPlayPrev: boolean;
 begin
-  result := notifyApp(newNotice(evPLPrev)).tf;
+  result := mmpDo(evPLPrev).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpScreenshotFolder: string;
 begin
-  case GS.MPVScreenshotDirectory = '' of   TRUE: result := notifyApp(newNotice(evPLReqCurrentFolder)).text;
+  case GS.MPVScreenshotDirectory = '' of   TRUE: result := mmpDo(evPLReqCurrentFolder).text;
                                           FALSE: result := GS.MPVScreenshotDirectory; end;
 end;
 
@@ -109,7 +111,7 @@ begin
 
   aPL.first;
 
-  notifyApp(newNotice(evPLFormLoadBox));
+  mmpDo(evPLFormLoadBox);
 
   result := aPL.hasItems;
 end;

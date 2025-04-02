@@ -84,7 +84,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpConsts, mmpKeyboardUtils, mmpTickTimer,
+  mmpConsts, mmpFuncProcs, mmpKeyboardUtils, mmpTickTimer,
   view.mmpThemeUtils,
   _debugWindow;
 
@@ -310,7 +310,7 @@ begin
   FShowData := aValue;
 
   case FShowData of FALSE: FDataMemo.clear;
-                     TRUE: notifyApp(newNotice(evMIFillMetaData, FDataMemo)); end;
+                     TRUE: mmpDo(evMIFillMetaData, FDataMemo); end;
 
   FDataMemo.visible := FShowData and (SELF.width > 336);
 
@@ -400,7 +400,7 @@ begin
     evSTForceCaptions:        FCaptionsForm.setShowData(CF.asBoolean[CONF_SHOW_METADATA]);
     evSTToggleCaptions:       FCaptionsForm.toggleCaptions(mmpShiftState);
     evWndResize:              FCaptionsForm.formResize(600);
-    evMCReshowCaption:        FCaptionsForm.setOpInfo(notifyApp(newNotice(evPLReqFormattedItem)).text);
+    evMCReshowCaption:        FCaptionsForm.setOpInfo(mmpDo(evPLReqFormattedItem).text);
     evSTUpdateMetaData:       FCaptionsForm.setShowData(FCaptionsForm.FShowData);
     evSTBlankInTimeCaption:   blankInTimeCaption;
     evSTBlankOutTimeCaption:  blankOutTimeCaption;
