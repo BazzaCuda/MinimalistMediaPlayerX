@@ -167,7 +167,7 @@ begin
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
-  MMPUI.viewModel.playlist.notify(mmpDo(evPLFillPlaylist, PS.fileFolder, mtUnk));
+  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
   mmpDo(mmpDo(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 

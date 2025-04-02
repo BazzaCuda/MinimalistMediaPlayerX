@@ -259,7 +259,7 @@ function TPlayListFormProxy.moveForm(const wr: TWndRec): boolean;
 begin
   FPlaylistForm := createForm(wr.createNew);
   case FPlaylistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
-  GS.notify(mmpDo(evGSShowingPlaylist, TRUE));
+  GS.notify(newNotice(evGSShowingPlaylist, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: FPlaylistForm.height := wr.height;
                                               FALSE: FPlaylistForm.height := 400; end;
   mmpDo(evGSWidthHelp, FPlaylistForm.width);
@@ -310,7 +310,7 @@ begin
   FPlaylistForm.free;
   FPlaylistForm := NIL;
   mmpDo(evGSWidthHelp, 0);
-  GS.notify(mmpDo(evGSShowingPlaylist, FALSE));
+  GS.notify(newNotice(evGSShowingPlaylist, FALSE));
   FListBoxLoaded := FALSE;
 end;
 

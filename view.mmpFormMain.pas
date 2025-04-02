@@ -186,6 +186,7 @@ end;
 
 procedure TMMPUI.WINPausePlay(var msg: TMessage);
 begin
+  debug('WINPausePlay');
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWINPausePlay(msg);
 end;

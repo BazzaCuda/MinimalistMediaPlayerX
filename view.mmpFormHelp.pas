@@ -180,7 +180,7 @@ function THelpFormProxy.moveForm(const wr: TWndRec): boolean;
 begin
   FHelpForm := createForm(wr);
   case FHelpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
-  GS.notify(mmpDo(evGSShowingHelp, TRUE));
+  GS.notify(newNotice(evGSShowingHelp, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of TRUE: FHelpForm.height := wr.height; end;
   screen.cursor := crDefault;
 
@@ -220,7 +220,7 @@ begin
   FHelpForm.Free;
   FHelpForm := NIL;
   mmpDo(evGSWidthHelp, 0);
-  GS.notify(mmpDo(evGSShowingHelp, FALSE));
+  GS.notify(newNotice(evGSShowingHelp, FALSE));
 end;
 
 initialization

@@ -119,12 +119,12 @@ end;
 
 procedure TAboutForm.btnLicenceClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(mmpDo(evAboutGNULicenceShow));
+  gAboutFormProxy.notify(newNotice(evAboutGNULicenceShow));
 end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(mmpDo(evAboutReleaseNotesFormShow));
+  gAboutFormProxy.notify(newNotice(evAboutReleaseNotesFormShow));
 end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;

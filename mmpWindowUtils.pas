@@ -284,7 +284,7 @@ var
 begin
   getWindowRect(aWND, vR);
 
-  GS.notify(mmpDo(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
+  GS.notify(newNotice(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
 
   case ssCtrl in aShiftState of  TRUE: result := vR.height - 30;
                                 FALSE: result := vR.height + 30; end;

@@ -438,8 +438,8 @@ begin
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
 
-  GS.notify(mmpDo(evGSAutoCenter, TRUE));
-  GS.notify(mmpDo(evGSMaxSize, TRUE));
+  GS.notify(newNotice(evGSAutoCenter, TRUE));
+  GS.notify(newNotice(evGSMaxSize, TRUE));
 end;
 
 function TVM.keepDelete: boolean;
@@ -549,12 +549,12 @@ end;
 
 procedure TVM.onMouseWheelDown(shift: TShiftState; mousePos: TPoint; var handled: Boolean);
 begin
-  FMP.notify(mmpDo(evWheelDn));
+  FMP.notify(newNotice(evWheelDn));
 end;
 
 procedure TVM.onMouseWheelUp(shift: TShiftState; mousePos: TPoint; var handled: Boolean);
 begin
-  FMP.notify(mmpDo(evWheelUp));
+  FMP.notify(newNotice(evWheelUp));
 end;
 
 function TVM.onMPNotify(const aNotice: INotice): INotice;
@@ -653,6 +653,7 @@ end;
 
 procedure TVM.onSlideshowTimer(sender: TObject);
 begin
+  debug('onSlideshowTimer');
   FSlideshowTimer.enabled := NOT GS.imagesPaused; // usually because a [R]ename has paused the slideshow
   case FSlideshowTimer.enabled of FALSE: EXIT; end;
   mmpDo(GS.mediaType = mtImage, evVMMPPlayNext);
@@ -677,7 +678,7 @@ end;
 
 procedure TVM.onWINAutoCenterOff(var msg: TMessage);
 begin
-  GS.notify(mmpDo(evGSAutoCenter, FALSE));
+  GS.notify(newNotice(evGSAutoCenter, FALSE));
 end;
 
 procedure TVM.onWINCaption(var msg: TMessage);
@@ -710,12 +711,13 @@ end;
 
 procedure TVM.onWINMaxSizeOff(var msg: TMessage);
 begin
-  GS.notify(mmpDo(evGSMaxSize, FALSE));
+  GS.notify(NewNotice(evGSMaxSize, FALSE));
 end;
 
 procedure TVM.onWINPausePlay(var msg: TMessage);
 begin
-  FMP.notify(mmpDo(evMPPausePlay));
+  debug('TVM.onWINPausePlay');
+  FMP.notify(newNotice(evMPPausePlay));
   setupSlideshowTimer;
 end;
 
@@ -728,12 +730,12 @@ end;
 
 procedure TVM.onWINStartOver(var msg: TMessage);
 begin
-  FMP.notify(mmpDo(evMPStartOver));
+  FMP.notify(newNotice(evMPStartOver));
 end;
 
 procedure TVM.onWINSyncMedia(var msg: TMessage);
 begin
-  FMP.notify(mmpDo(evPBClick, msg.WParam));
+  FMP.notify(newNotice(evPBClick, msg.WParam));
   sendOpInfo('Synced');
 end;
 
@@ -1001,8 +1003,8 @@ begin
   case aCapsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
   case ssShift in mmpShiftState of TRUE: vFactor := 50; end;
 
-  vDuration := FMP.notify(mmpDo(evMPReqDuration)).integer;
-  VPosition := FMP.notify(mmpDo(evMPReqPosition)).integer;
+  vDuration := FMP.notify(newNotice(evMPReqDuration)).integer;
+  VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
   vTab := trunc(vDuration / vFactor);
   case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
@@ -1011,8 +1013,8 @@ begin
   case ssCtrl  in mmpShiftState of  TRUE: vPosition := vPosition - vTab;
                                    FALSE: vPosition := vPosition + vTab; end;
 
-  FMP.notify(mmpDo(evPBClick, vPosition));    // change MP position
-  onMPNotify(mmpDo(evMPPosition, vPosition)); // immediately update time display
+  FMP.notify(newNotice(evPBClick, vPosition));    // change MP position
+  onMPNotify(newNotice(evMPPosition, vPosition)); // immediately update time display
 
   case aFactor = -1 of  TRUE: newInfo := format('TAB = %ds', [vTab]);
                        FALSE: newInfo := format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]); end;
@@ -1073,7 +1075,7 @@ function TVM.toggleHelp: boolean;
 begin
   result := FALSE;
   mmpDo(evPLFormShutForm);
-  GS.notify(mmpDo(evGSShowingHelp, NOT GS.showingHelp));
+  GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
   case GS.showingHelp of   TRUE: mmpDo(evVMMoveHelp, TRUE);
                           FALSE: mmpDo(evHelpShutHelp); end;
   result := TRUE;
@@ -1083,7 +1085,7 @@ function TVM.togglePlaylist: boolean;
 begin
   result := FALSE;
   mmpDo(evHelpShutHelp);
-  GS.notify(mmpDo(evGSShowingPlaylist, NOT GS.showingPlaylist));
+  GS.notify(newNotice(evGSShowingPlaylist, NOT GS.showingPlaylist));
   case GS.showingPlaylist of   TRUE: mmpDo(evVMMovePlaylist, TRUE);
                               FALSE: mmpDo(evPLFormShutForm); end;
   result := TRUE;
