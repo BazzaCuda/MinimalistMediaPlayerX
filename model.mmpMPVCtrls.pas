@@ -347,7 +347,6 @@ end;
 
 function mpvPausePlay(const mpv: TMPVBasePlayer): string;
 begin
-  debug('mpvPausePlay');
   result := '';
   case mpv = NIL of TRUE: EXIT; end;
   case mpvState(mpv) of

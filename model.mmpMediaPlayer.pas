@@ -284,7 +284,6 @@ end;
 
 function TMediaPlayer.pausePlay: string;
 begin
-  debug('TMediaPlayer.pausePlay');
   case FMediaType of
     mtImage:  result := pausePlayImages;
     mtAudio,
@@ -294,7 +293,6 @@ end;
 
 function TMediaPlayer.pausePlayImages: string;
 begin
-  debug('pausePlayImages');
   mmpDo(evGSImagesPaused, NOT GS.imagesPaused);
 
   case GS.imagesPaused of  TRUE: result := 'slideshow paused';

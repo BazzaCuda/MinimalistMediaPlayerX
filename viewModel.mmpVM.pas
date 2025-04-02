@@ -653,7 +653,6 @@ end;
 
 procedure TVM.onSlideshowTimer(sender: TObject);
 begin
-  debug('onSlideshowTimer');
   FSlideshowTimer.enabled := NOT GS.imagesPaused; // usually because a [R]ename has paused the slideshow
   case FSlideshowTimer.enabled of FALSE: EXIT; end;
   mmpDo(GS.mediaType = mtImage, evVMMPPlayNext);
@@ -716,7 +715,6 @@ end;
 
 procedure TVM.onWINPausePlay(var msg: TMessage);
 begin
-  debug('TVM.onWINPausePlay');
   FMP.notify(newNotice(evMPPausePlay));
   setupSlideshowTimer;
 end;
