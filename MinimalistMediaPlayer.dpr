@@ -129,8 +129,6 @@ var
 begin
   result := FALSE;
 
-//  mmpThemeInitForm(aMainForm);  // is also called in VM.initUI
-
   vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
 
   MMPUI.viewModel               := newViewModel;
