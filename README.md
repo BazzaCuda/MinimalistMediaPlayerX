@@ -26,6 +26,10 @@ WIKI
 
 `MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (constantly being added to)
 
+Keyboard Controls
+-----------------
+A brief description of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in _view.mmpKeyboard.pas_ and in _view.mmpThumbsKeyboard.pas_ will tell you what you can do in each window, both the main media window and the `Image & Thumbnail Browser`. 
+
 Significant Releases
 --------------------
 
