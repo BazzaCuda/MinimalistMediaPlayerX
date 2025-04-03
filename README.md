@@ -28,7 +28,7 @@ WIKI
 
 Keyboard Controls
 -----------------
-A brief description of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in _view.mmpKeyboard.pas_ and in _view.mmpThumbsKeyboard.pas_ will tell you what you can do in each window, both the main media window and the `Image & Thumbnail Browser`. 
+A brief description of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboard.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboard.pas) and in [_view.mmpThumbsKeyboard.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpThumbsKeyboard.pas) will tell you what actions you can take in the main media-playing window and in the `Image & Thumbnail Browser`, respectively.
 
 Significant Releases
 --------------------
