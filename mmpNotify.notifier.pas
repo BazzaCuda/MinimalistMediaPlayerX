@@ -84,21 +84,16 @@ begin
 end;
 
 destructor TNotifier.Destroy;
-var
-  vSubscriber: ISubscriber;
 begin
-  for vSubscriber in FSubscribers do unsubscribe(vSubscriber);
+  for var vSubscriber in FSubscribers do unsubscribe(vSubscriber);
   FSubscribers.free;
   inherited;
 end;
 
 procedure TNotifier.notifySubscribers(const aNotice: INotice);
-var
-  vSubscriber: ISubscriber;
 begin
-//  result := aNotice;
   case aNotice  = NIL of TRUE: EXIT; end;
-  for vSubscriber in FSubscribers do vSubscriber.notifySubscriber(aNotice);
+  for var vSubscriber in FSubscribers do vSubscriber.notifySubscriber(aNotice);
 end;
 
 function TNotifier.subscribe(const aSubscriber: ISubscriber): ISubscriber;

@@ -524,7 +524,7 @@ end;
 
 procedure TVM.onMouseDown(button: TMouseButton; shift: TShiftState; X, Y: Integer);
 begin
-  case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
+  case ptInRect(FVideoPanel.clientRect, FVideoPanel.screenToClient(point(X, Y))) of FALSE: EXIT; end;
   mmpDo(button = mbLeft, procedure  begin
                                       FDragged := FALSE;
                                       mouseDown := TRUE;
