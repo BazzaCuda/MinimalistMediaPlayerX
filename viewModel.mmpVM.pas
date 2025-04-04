@@ -444,9 +444,8 @@ end;
 
 function TVM.keepDelete: boolean;
 begin
-  mmpDo(    mmpKeepDelete(mmpDo(evPLReqCurrentFolder).text)
-        and CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]
-        and mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose);
+  case mmpKeepDelete(mmpDo(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
+  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose);
 end;
 
 function TVM.minimizeWindow: boolean;
