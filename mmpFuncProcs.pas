@@ -172,7 +172,7 @@ begin
   result := notifyApp(newNotice(aEvent, aInteger));
 end;
 
-function mmpDo(const aEvent: TNoticeEvent; const aString:  string): INotice;
+function mmpDo(const aEvent: TNoticeEvent; const aString: string): INotice;
 begin
   result := notifyApp(newNotice(aEvent, aString));
 end;

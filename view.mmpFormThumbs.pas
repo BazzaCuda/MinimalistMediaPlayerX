@@ -238,7 +238,7 @@ begin
   case FThumbs        = NIL of FALSE: freeAndNIL(FThumbs); end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
   mmpDo(evHelpShutHelp);
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
@@ -251,7 +251,7 @@ begin
 
   mmpInitStatusBar(FStatusBar);
 
-  mpvCreate(mpv); // if you ever create an IMediaPlayer here, you'll need to appNotifier.unsubscribe it (in TMediaPlayer.destroy) when the form closes
+  mpvCreate(mpv); // if you ever create an IMediaPlayer here, you'll need to appEvents.unsubscribe it (in TMediaPlayer.destroy) when the form closes
   mpv.onInitMPV    := onInitMPV;
   mpv.OnStateChged := onStateChange;
   mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
@@ -263,7 +263,7 @@ begin
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it.
-  FSubscriber             := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber             := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);

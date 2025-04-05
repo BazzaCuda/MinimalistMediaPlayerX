@@ -238,7 +238,7 @@ end;
 
 constructor TPlayListFormProxy.create;
 begin
-  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function TPlayListFormProxy.createForm(const bCreateNew: boolean): TPlaylistForm;
@@ -250,7 +250,7 @@ end;
 
 destructor TPlayListFormProxy.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   shutForm;
   inherited;
 end;
@@ -315,7 +315,7 @@ begin
 end;
 
 initialization
-  PL; // to create the appNotifier subscriber
+  PL; // to create the appEvents.subscriber
 
 finalization
   gPlaylistFormProxy := NIL;

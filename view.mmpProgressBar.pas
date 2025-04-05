@@ -31,10 +31,10 @@ uses
 type
   IProgressBar = interface
     ['{2CF981F3-CE41-48EA-A365-13E9F7986238}']
-    function    getNotifier: INotifier;
+//    function    getNotifier: INotifier;
     function    initProgressBar(const aForm: TForm; const aColor: TColor; const aColorDelta: TColor): IProgressBar;
     function    notify(const aNotice: INotice): INotice;
-    property    notifier: INotifier read getNotifier;
+//    property    notifier: INotifier read getNotifier;
   end;
 
 function newProgressBar: IProgressBar;
@@ -51,7 +51,6 @@ type
   strict private
     FPB:              TALProgressBar;
     FX:               integer;
-    FNotifier:        INotifier;
     FInitialized:     boolean;
     FShowProgressBar: boolean;
     FSubscriber:      ISubscriber;
@@ -75,7 +74,6 @@ type
   public
     constructor create;
     destructor  Destroy; override;
-    function    getNotifier: INotifier;
     function    initProgressBar(const aForm: TForm; const aColor: TColor; const aColorDelta: TColor): IProgressBar;
     function    notify(const aNotice: INotice): INotice;
   end;
@@ -113,7 +111,7 @@ begin
 
   FShowProgressBar := TRUE;
 
-  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify)); // appNotifier and PB.notifier Notices all go to the same method
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify)); // appEvents.and PB.notifier Notices all go to the same method
 end;
 
 function TProgressBar.darker: integer;
@@ -129,7 +127,7 @@ destructor TProgressBar.Destroy;
 begin
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   inherited;
 end;
 
@@ -138,12 +136,6 @@ begin
   result := FALSE;
   FPB.repaint;
   result := TRUE;
-end;
-
-function TProgressBar.getNotifier: INotifier;
-begin
-  case FNotifier = NIL of TRUE: FNotifier := newNotifier; end;
-  result := FNotifier;
 end;
 
 function TProgressBar.getPosition: integer;

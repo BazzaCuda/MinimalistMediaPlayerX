@@ -159,7 +159,7 @@ end;
 constructor THelpFormProxy.create;
 begin
   inherited;
-  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function THelpFormProxy.createForm(const wr: TWndRec): THelpForm;
@@ -171,7 +171,7 @@ end;
 
 destructor THelpFormProxy.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   shutForm;
   inherited;
 end;
@@ -224,7 +224,7 @@ begin
 end;
 
 initialization
-  HW; // to create the appNotifier subscriber
+  HW; // to create the appEvents.subscriber
 
 finalization
   gHelpFormProxy := NIL;

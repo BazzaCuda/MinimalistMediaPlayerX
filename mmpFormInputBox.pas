@@ -79,13 +79,13 @@ end;
 
 procedure TInputBoxForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  TT.notifier.unsubscribe(FSubscriber);
+  TT.unsubscribe(FSubscriber);
 end;
 
 procedure TInputBoxForm.FormCreate(Sender: TObject);
 begin
   FSubscriber := newSubscriber(onNotify);
-  TT.notifier.subscribe(FSubscriber);
+  TT.subscribe(FSubscriber);
 end;
 
 function TInputBoxForm.onNotify(const aNotice: INotice): INotice;

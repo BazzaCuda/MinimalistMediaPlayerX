@@ -41,7 +41,6 @@ type
     function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
     function    find(const anItem: string):                 boolean;
     function    first:                                      boolean;
-    function    getNotifier:                                INotifier;
     function    hasItems:                                   boolean;
     function    indexOf(const anItem: string):              integer;
     function    insert(const anItem: string):               boolean;
@@ -56,8 +55,6 @@ type
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
     function    validIx(const ix: integer):                 boolean;
-
-    property    notifier:                                   INotifier     read getNotifier;
   end;
 
 function newPlaylist: IPlaylist;
@@ -77,7 +74,6 @@ type
   TPlaylist = class(TInterfacedObject, IPlaylist)
   strict private
     FCurrentFolder: string;
-    FNotifier:      INotifier;
     FPlayIx:        integer;
     FPlaylist:      TList<string>;
     FSubscriber:    ISubscriber;
@@ -105,7 +101,6 @@ type
     function    fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
     function    find(const anItem: string):                 boolean;
     function    first:                                      boolean;
-    function    getNotifier:                                INotifier;
     function    hasItems:                                   boolean;
     function    indexOf(const anItem: string):              integer;
     function    insert(const anItem: string):               boolean;
@@ -158,7 +153,7 @@ begin
   inherited;
   FPlaylist   := TList<string>.create;
   FPLaylist.sort;
-  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function TPlaylist.currentFolder: string;
@@ -196,7 +191,7 @@ end;
 
 destructor TPlaylist.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   case FPlaylist <> NIL of TRUE: FPlaylist.free; end;
   inherited;
 end;
@@ -270,12 +265,6 @@ function TPlaylist.formattedItem: string;
 begin
   case hasItems of FALSE: EXIT; end;
   result := format('[%d/%d] %s', [FPlayIx + 1, FPlaylist.count, extractFileName(currentItem)]);
-end;
-
-function TPlaylist.getNotifier: INotifier;
-begin
-  case FNotifier = NIL of TRUE: FNotifier := newNotifier; end;
-  result := FNotifier;
 end;
 
 function TPlaylist.getPlaylist(aListBox: TListBox): boolean;

@@ -165,18 +165,21 @@ begin
   FSegID.top        := 0;
   FSegID.left       := 4;
   FSegID.styleElements := [];
+  FSegID.onClick    := doClick;
 
   FTitle := TLabel.create(SELF);
   FTitle.parent         := SELF;
   FTitle.top            := 18;
   FTitle.left           := 4;
   FTitle.styleElements  := [];
+  FTitle.onClick        := doClick;
 
   FSegDetails := TLabel.create(SELF);
   FSegDetails.parent     := SELF;
   FSegDetails.top        := 38;
   FSegDetails.left       := 4;
   FSegDetails.styleElements := [];
+  FSegDetails.onClick    := doClick;
 
   FTrashCan := TImage.create(SELF);
   FTrashCan.parent := SELF;

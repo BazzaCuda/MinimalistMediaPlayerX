@@ -26,10 +26,8 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
-  ITickTimer = interface
+  ITickTimer = interface(ISubscribable)
     ['{520972A9-0FDF-4557-A9A2-BE8B3D5B143A}']
-    function getNotifier: INotifier;
-    property notifier:    INotifier  read getNotifier;
   end;
 
 function TT: ITickTimer;
@@ -50,8 +48,11 @@ type
   public
     constructor create;
     destructor  Destroy; override;
-    function    getNotifier: INotifier;
-    property    notifier: INotifier  read getNotifier;
+
+    // ISubscribable
+    function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
+    procedure   unsubscribe(const aSubscriber: ISubscriber);
+
   end;
 
 var gTT: ITickTimer = NIL;
@@ -66,6 +67,7 @@ end;
 constructor TTickTimer.create;
 begin
   inherited;
+  FNotifier       := newNotifier;
   FTimer          := TTimer.create(NIL);
   FTimer.interval := 999;
   FTimer.onTimer  := timerEvent;
@@ -77,15 +79,19 @@ begin
   inherited;
 end;
 
-function TTickTimer.getNotifier: INotifier;
+function TTickTimer.subscribe(const aSubscriber: ISubscriber): ISubscriber;
 begin
-  case FNotifier = NIL of TRUE: FNotifier := newNotifier; end;
-  result := FNotifier;
+  result := FNotifier.subscribe(aSubscriber);
 end;
 
 procedure TTickTimer.timerEvent(aSender: TObject);
 begin
   FNotifier.notifySubscribers(mmpDo(evTickTimer));
+end;
+
+procedure TTickTimer.unsubscribe(const aSubscriber: ISubscriber);
+begin
+  FNotifier.unsubscribe(aSubscriber);
 end;
 
 initialization

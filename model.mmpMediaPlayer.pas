@@ -25,12 +25,10 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
-  IMediaPlayer = interface
+  IMediaPlayer = interface(ISubscribable)
     ['{7666FECA-9BF6-4422-BB68-8EEAF6A6E6F7}']
-    function  getNotifier:  INotifier;
     function  initMediaPlayer(const aHWND: HWND): boolean;
     function  notify(const aNotice: INotice): INotice;
-    property  notifier:     INotifier read getNotifier;
   end;
 
 function newMediaPlayer: IMediaPlayer;
@@ -76,9 +74,13 @@ type
   public
     constructor create;
     destructor  Destroy; override;
-    function    getNotifier:                          INotifier;
     function    initMediaPlayer(const aHWND: HWND):   boolean;
     function    notify(const aNotice: INotice):       INotice;
+
+    // ISubscribable
+    function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
+    procedure   unsubscribe(const aSubscriber: ISubscriber);
+
   end;
 
 function newMediaPlayer: IMediaPlayer;
@@ -90,20 +92,15 @@ end;
 
 constructor TMediaPlayer.create;
 begin
-  TT.notifier.subscribe(newSubscriber(onTickTimer));
-  appNotifier.subscribe(newSubscriber(onNotify));
+  FNotifier := newNotifier;
+  TT.subscribe(newSubscriber(onTickTimer));
+  appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 destructor TMediaPlayer.Destroy;
 begin
   case mpv = NIL of FALSE: mpv.free; end;
   inherited;
-end;
-
-function TMediaPlayer.getNotifier: INotifier;
-begin
-  case FNotifier = NIL of TRUE: FNotifier := newNotifier; end;
-  result := FNotifier;
 end;
 
 function TMediaPlayer.initMediaPlayer(const aHWND: HWND): boolean;
@@ -309,6 +306,16 @@ end;
 procedure TMediaPlayer.setPosition(const aValue: integer);
 begin
   mpvSeek(mpv, aValue);
+end;
+
+function TMediaPlayer.subscribe(const aSubscriber: ISubscriber): ISubscriber;
+begin
+  result := FNotifier.subscribe(aSubscriber);
+end;
+
+procedure TMediaPlayer.unsubscribe(const aSubscriber: ISubscriber);
+begin
+  FNotifier.unsubscribe(aSubscriber);
 end;
 
 end.

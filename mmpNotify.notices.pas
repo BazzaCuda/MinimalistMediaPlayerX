@@ -142,10 +142,14 @@ type
     property  notifyMethod: TNotifyMethod write setNotifyMethod;
   end;
 
-  INotifier = interface
-    ['{DD326AE1-5049-43AA-9215-DF53DB5FC958}']
+  ISubscribable = interface
+    ['{6E55B835-3C16-404E-AAA0-8C4354BBEB59}']
     function  subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure unsubscribe(const aSubscriber: ISubscriber);
+  end;
+
+  INotifier = interface(ISubscribable)
+    ['{DD326AE1-5049-43AA-9215-DF53DB5FC958}']
     procedure notifySubscribers(const aNotice: INotice);
   end;
 

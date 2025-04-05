@@ -169,12 +169,12 @@ end;
 constructor TGlobalState.create;
 begin
   inherited;
-  FSubscriber := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 destructor TGlobalState.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   inherited;
 end;
 

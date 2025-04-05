@@ -167,7 +167,7 @@ begin
   FMediaStreams.ownsObjects   := TRUE;
   FMediaChapters              := TObjectList<TMediaChapter>.create;
   FMediaChapters.ownsObjects  := TRUE;
-  appNotifier.subscribe(newSubscriber(onNotify));
+  appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 destructor TMediaInfo.Destroy;
@@ -514,7 +514,7 @@ begin
 end;
 
 initialization
-  MI; // create appNotifier subscriber
+  MI; // create appEvents.subscriber
 
 finalization
   gMI := NIL;

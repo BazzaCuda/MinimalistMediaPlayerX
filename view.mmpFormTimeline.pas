@@ -346,7 +346,8 @@ begin
   case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                                   TL.drawSegments; end;end;
   case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        TL.drawSegments; end;end;
   case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); TL.drawSegments; end;end;
-  case key = ord('M') of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                                   TL.drawSegments; end;end;
+  case (key = ord('M')) and NOT mmpCtrlKeyDown of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                                   TL.drawSegments; end;end;
+  case (key = ord('M')) and     mmpCtrlKeyDown of TRUE: debug('merge them all!'); end;
   case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                                    TL.drawSegments; end;end;
 
   case key = ord('L') of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;  // user has stopped holding down L
@@ -420,7 +421,7 @@ begin
   FRedoList             := TObjectStack<TStringList>.create;
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
-  FSubscriber           := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber           := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;

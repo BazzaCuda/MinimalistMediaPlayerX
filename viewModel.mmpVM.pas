@@ -39,7 +39,6 @@ type
   IViewModel = interface
     ['{D9293E74-93D4-4576-A5B9-66A806E6BA42}']
     function    getMediaPlayer:       IMediaPlayer;
-    function    getNotifier:          INotifier;
     function    getPlaylist:          IPlaylist;
     function    getProgressBar:       IProgressBar;
     function    getVideoPanel:        TPanel;
@@ -78,7 +77,6 @@ type
     procedure   setProgressBar(const aValue: IProgressBar);
 
     property    mediaPlayer:           IMediaPlayer        read getMediaPlayer  write setMediaPlayer;
-    property    notifier:              INotifier           read getNotifier;
     property    playlist:              IPlaylist           read getPlaylist     write setPlaylist;
     property    progressBar:           IProgressBar        read getProgressBar  write setProgressBar;
     property    videoPanel:            TPanel              read getVideoPanel;
@@ -103,8 +101,6 @@ type
   TVM = class(TInterfacedObject, IViewModel)
   strict private
     FVideoPanel:            TPanel;
-
-    FNotifier:              INotifier;
 
     FMPDuration:            integer;
     FMPPosition:            integer;
@@ -187,7 +183,6 @@ type
     function    onTickTimer(const aNotice: INotice):  INotice;
 
     function    getMediaPlayer:         IMediaPlayer;
-    function    getNotifier:            INotifier;
     function    getPlaylist:            IPlaylist;
     function    getProgressBar:         IProgressBar;
     function    getVideoPanel:          TPanel;
@@ -266,8 +261,8 @@ end;
 constructor TVM.create;
 begin
   inherited;
-  FSubscriber   := appNotifier.subscribe(newSubscriber(onNotify));
-  FSubscriberTT := TT.notifier.subscribe(newSubscriber(onTickTimer));
+  FSubscriber   := appEvents.subscribe(newSubscriber(onNotify));
+  FSubscriberTT := TT.subscribe(newSubscriber(onTickTimer));
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -287,7 +282,7 @@ begin
   var vIx := mmpDo(evPLReqCurrentIx).integer;
   mmpDo(evPLDeleteIx, vIx);
 
-  T := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of TRUE: mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;end;
   F := procedure begin mmpDo(evVMPlaySomething, vIx); end;
 
   mmpDo(nothingToPlay, T, F);
@@ -297,8 +292,8 @@ end;
 
 destructor TVM.Destroy;
 begin
-  TT.notifier.unsubscribe(FSubscriberTT);
-  appNotifier.unsubscribe(FSubscriber);
+  TT.unsubscribe(FSubscriberTT);
+  appEvents.unsubscribe(FSubscriber);
   mmpFree(FSlideshowTimer <> NIL, FSlideshowTimer);
   inherited;
 end;
@@ -356,7 +351,7 @@ begin
 
   case mmpPlayPrev of TRUE: EXIT; end;
 
-  T :=  procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  T :=  procedure begin mmpDo(mmpDo(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
   F :=  procedure begin FLocked := FALSE; end;
 
   mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
@@ -405,12 +400,6 @@ begin
   result := FMP;
 end;
 
-function TVM.getNotifier: INotifier;
-begin
-  case FNotifier = NIL of TRUE: FNotifier := newNotifier; end;
-  result := FNotifier;
-end;
-
 function TVM.getPlaylist: IPlaylist;
 begin
   result := FPlaylist;
@@ -434,7 +423,7 @@ begin
   mmpThemeInitForm(aForm);
 
   mmpDo(FMP <> NIL, procedure begin
-                                FMP.notifier.subscribe(newSubscriber(onMPNotify));
+                                FMP.subscribe(newSubscriber(onMPNotify));
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
 
@@ -445,7 +434,7 @@ end;
 function TVM.keepDelete: boolean;
 begin
   case mmpKeepDelete(mmpDo(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose);
+  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end);
 end;
 
 function TVM.minimizeWindow: boolean;

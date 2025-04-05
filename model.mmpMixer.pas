@@ -296,7 +296,7 @@ end;
 
 constructor TMixer.create;
 begin
-  appNotifier.subscribe(newSubscriber(onNotify));
+  appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function TMixer.notify(const aNotice: INotice): INotice;

@@ -206,13 +206,13 @@ end;
 constructor TAboutFormProxy.create;
 begin
   inherited;
-  FSubscriber     := appNotifier.subscribe(newSubscriber(onNotify));
+  FSubscriber     := appEvents.subscribe(newSubscriber(onNotify));
   FProgramUpdates := newProgramUpdates;
 end;
 
 destructor TAboutFormProxy.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
+  appEvents.unsubscribe(FSubscriber);
   inherited;
 end;
 
@@ -281,7 +281,7 @@ begin
 end;
 
 initialization
-  AB; // to create the appNotifier listener and IProgramUpdates
+  AB; // to create the appEvents.listener and IProgramUpdates
 
 finalization
   gAboutFormProxy := NIL;

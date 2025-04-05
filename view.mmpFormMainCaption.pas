@@ -216,14 +216,14 @@ constructor TMainCaptionProxy.create(const aOwner: TForm);
 begin
   inherited create;
   FMainCaptionForm  := TMainCaptionForm.create(aOwner);
-  FSubscriber       := appNotifier.subscribe(newSubscriber(onNotify));
-  FSubscriberTT     := TT.notifier.subscribe(newSubscriber(onTickTimer));
+  FSubscriber       := appEvents.subscribe(newSubscriber(onNotify));
+  FSubscriberTT     := TT.subscribe(newSubscriber(onTickTimer));
 end;
 
 destructor TMainCaptionProxy.Destroy;
 begin
-  appNotifier.unsubscribe(FSubscriber);
-  TT.notifier.unsubscribe(FSubscriberTT);
+  appEvents.unsubscribe(FSubscriber);
+  TT.unsubscribe(FSubscriberTT);
   inherited;
 end;
 
