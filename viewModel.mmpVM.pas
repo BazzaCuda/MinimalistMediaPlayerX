@@ -282,7 +282,8 @@ begin
   var vIx := mmpDo(evPLReqCurrentIx).integer;
   mmpDo(evPLDeleteIx, vIx);
 
-  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of TRUE: mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;end;
+  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose);
+                                                                       FALSE: mmpDo(evAppClose); end;end;
   F := procedure begin mmpDo(evVMPlaySomething, vIx); end;
 
   mmpDo(nothingToPlay, T, F);
@@ -434,7 +435,9 @@ end;
 function TVM.keepDelete: boolean;
 begin
   case mmpKeepDelete(mmpDo(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end);
+  T := procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  F := procedure begin mmpDo(evAppClose); end;
+  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);
 end;
 
 function TVM.minimizeWindow: boolean;

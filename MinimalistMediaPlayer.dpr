@@ -135,8 +135,8 @@ begin
   MMPUI.viewModel.mediaPlayer   := newMediaPlayer;
   MMPUI.viewModel.initUI(aMainForm, vVideoPanel);
 
-  MC(aMainForm).initCaption(vVideoPanel, CF.asInteger[CONF_MAIN_CAPTION]);  // single caption at the top of the window
-  ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger[CONF_TIME_CAPTION]); // multiple captions at the bottom of the window
+  MC(aMainForm).initCaption(vVideoPanel, CF.asInteger[CONF_MAIN_CAPTION]);  // Main Caption: single caption at the top of the window
+  ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger[CONF_TIME_CAPTION]); // Sub-Titles: multiple captions at the bottom of the window
 
   MMPUI.viewModel.progressBar   := newProgressBar.initProgressBar(ST.captionsForm, CF.asInteger[CONF_PROGRESS_BAR], 0);
 

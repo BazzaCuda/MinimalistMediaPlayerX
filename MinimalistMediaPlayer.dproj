@@ -114,7 +114,7 @@
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
-        <Debugger_RunParams>&quot;B:\Movies\Let The Right One In (2008).mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;https://free.storehd.xyz/hls/usanetwork/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9My8xNi8yMDI1IDI6NTk6MjEgUE0maGFzaF92YWx1ZT1odVZyQnNUSlNhZDc1cEhKZEhlWXhRPT0mdmFsaWRtaW51dGVzPTI4MA==&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
