@@ -76,7 +76,7 @@ Significant Releases
 
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. `[F7]` will cycle through all the subtitle tracks in the media file.
 
-- Full-resolution screenshots can be saved for individual frames and for a displayed image.
+- Full-resolution screenshots can be saved for individual frames and for a displayed image. Adjusting the size of either the main media window or the `Image & Thumbnail Browser` will set the pixel dimensions of the saved image.
 
 - All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing `Ctrl-[H]`. The full functionality of `MMP: Minimalist Media Player` can be used while this panel is showing so you can try things out.
 
