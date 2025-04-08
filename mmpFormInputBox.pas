@@ -46,7 +46,7 @@ implementation
 
 uses
   vcl.styles, vcl.themes,
-  mmpFuncProcs, mmpGlobalState, mmpTickTimer, mmpUtils,
+  mmpDoProcs, mmpGlobalState, mmpTickTimer, mmpUtils,
   _debugWindow;
 
 {$R *.dfm}

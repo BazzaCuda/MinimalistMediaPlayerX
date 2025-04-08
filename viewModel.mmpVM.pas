@@ -90,7 +90,7 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpFuncProcs, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
@@ -252,7 +252,7 @@ function TVM.adjustAspectRatio: boolean;
 begin
   FResizingWindow := TRUE;
   var vPt := mmpAdjustAspectRatio(GS.mainForm.handle, FVideoPanel.height);
-  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
+  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   mmpDo(evSTDisplayXY);
   FResizingWindow := FALSE;
@@ -650,6 +650,7 @@ begin
 end;
 
 function TVM.onTickTimer(const aNotice: INotice): INotice;
+// hides the cursor once the user has stopped moving the mouse
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
@@ -657,7 +658,7 @@ begin
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
 
-  case GS.activeTasks = 0 of  FALSE: mmpDo(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end;
+  case GS.activeTasks = 0 of  FALSE: mmpDo(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
@@ -691,7 +692,7 @@ begin
   FResizingWindow := TRUE;
   var vHeight := mmpGreaterWindow(GS.mainForm.handle, mmpShiftState);
   var vPt     := mmpCalcWindowSize(vHeight, GS.maxSize);
-  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
+  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   moveHelp;
   movePlaylist;
@@ -791,13 +792,17 @@ begin
 
   mmpDo(evSTOpInfo, vNextFolder);
 
-  case GS.imagesPaused of  TRUE: mmpDo(evPLFillPlaylist, vNextFolder);
-                          FALSE: mmpDo(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  T := procedure begin mmpDo(evPLFillPlaylist, vNextFolder); end;
+  F := procedure begin mmpDo(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+
+  mmpDo(GS.imagesPaused, T, F);
 
   mmpDo(evPLFormLoadBox);
-  case mmpDo(evPLReqHasItems).tf of
-                       TRUE: mmpDo(evVMMPPlayCurrent);
-                      FALSE: mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
+
+  T := procedure begin mmpDo(evVMMPPlayCurrent); end;
+  F := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
+
+  mmpDo(mmpDo(evPLReqHasItems).tf, T, F);
 
   result := vNextFolder <> '';
 end;
@@ -810,13 +815,17 @@ begin
 
   mmpDo(evSTOpInfo, vPrevFolder);
 
-  case GS.imagesPaused of  TRUE: mmpDo(evPLFillPlaylist, vPrevFolder);
-                          FALSE: mmpDo(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  T := procedure begin mmpDo(evPLFillPlaylist, vPrevFolder); end;
+  F := procedure begin mmpDo(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+
+  mmpDo(GS.imagesPaused, T, F);
 
   mmpDo(evPLFormLoadBox);
-  case mmpDo(evPLReqHasItems).tf of
-                       TRUE: mmpDo(evVMMPPlayCurrent);
-                      FALSE: mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evMPStop); end; // if the folder is empty we want a blank screen
+
+  T := procedure begin mmpDo(evVMMPPlayCurrent); end;
+  F := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evMPStop); end; // if the folder is empty we want a blank screen
+
+  mmpDo(mmpDo(evPLReqHasItems).tf, T, F);
 
   result := vPrevFolder <> '';
 end;
@@ -825,8 +834,8 @@ function TVM.playSomething(const aIx: integer): boolean;
 begin
   result := FALSE;
   mmpDo((aIx = 0) or mmpDo(evPLReqIsLast).tf,
-       evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
-       evVMMPPlayNext);    // ...hence, playNext
+                                              evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
+                                              evVMMPPlayNext);    // ...hence, playNext
   result := TRUE;
 end;
 
@@ -901,7 +910,9 @@ begin
   FResizingWindow := TRUE;
 
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
-  case GS.autoCenter of TRUE: mmpCenterWindow(GS.mainForm.handle, vPt); end;
+
+  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+
   mmpSetWindowSize(GS.mainForm.handle, vPt);
 
   mmpDo(evWndResize); // reposition the help, playlist and timeline windows
@@ -986,31 +997,29 @@ var
   vDuration:  integer;
   vPosition:  integer;
 begin
-  case aFactor > 0 of  TRUE: vFactor := aFactor;
-                      FALSE: vFactor := 100; end;
+  vFactor := mmp.use(aFactor > 0, aFactor, 100);
 
-  case aCapsLock of TRUE: vFactor := 200; end; // alt-key does the same as it can be a pain having the CapsLock key on all the time
-  case ssShift in mmpShiftState of TRUE: vFactor := 50; end;
+  vFactor := mmp.use(aCapsLock, 200, vFactor);
+
+  vFactor := mmp.use(ssShift in mmpShiftState, 50, vFactor);
 
   vDuration := FMP.notify(newNotice(evMPReqDuration)).integer;
   VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
   vTab := trunc(vDuration / vFactor);
-  case (vTab = 0) or (aFactor = -1) of TRUE: vTab := 1; end;
-  case (vTab = 1) and (ssShift in mmpShiftState) of TRUE: vTab := 2; end;
+  vTab := mmp.use((vTab = 0) or (aFactor = -1), 1, vTab);
+  vTab := mmp.use((vTab = 1) and (ssShift in mmpShiftState), 2, vTab);
 
-  case ssCtrl  in mmpShiftState of  TRUE: vPosition := vPosition - vTab;
-                                   FALSE: vPosition := vPosition + vTab; end;
+  vPosition := mmp.use(ssCtrl  in mmpShiftState, vPosition - vTab, vPosition + vTab);
 
   FMP.notify(newNotice(evPBClick, vPosition));    // change MP position
   onMPNotify(newNotice(evMPPosition, vPosition)); // immediately update time display
 
-  case aFactor = -1 of  TRUE: newInfo := format('TAB = %ds', [vTab]);
-                       FALSE: newInfo := format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]); end;
+  newInfo := mmp.use(aFactor = -1, format('TAB = %ds', [vTab]),
+                                   format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]));
 
-  case ssCtrl in mmpShiftState of  TRUE: newInfo := '<< ' + newInfo;
-                                  FALSE: newInfo := '>> ' + newInfo;
-  end;
+  newInfo := mmp.use(ssCtrl in mmpShiftState, '<< ' + newInfo, '>> ' + newInfo);
+
   result := newInfo;
 end;
 
@@ -1031,10 +1040,10 @@ begin
   mmpDo(mmpIsEditFriendly(vCurrentItem), NIL, F);
   case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
-  case GS.showingTimeline of  TRUE: shutTimeline;
-                             FALSE: mmpDo(evVMMoveTimeline, TRUE); end;
+  mmpDo(GS.showingTimeline, procedure begin shutTimeline; end,
+                            procedure begin mmpDo(evVMMoveTimeline, TRUE); end);
 
-  case GS.showingTimeline of TRUE: TL.initTimeline(vCurrentItem, FMPDuration); end;
+  mmpDo(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, FMPDuration); end);
 
   result := TRUE;
 end;
@@ -1065,8 +1074,9 @@ begin
   result := FALSE;
   mmpDo(evPLFormShutForm);
   GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
-  case GS.showingHelp of   TRUE: mmpDo(evVMMoveHelp, TRUE);
-                          FALSE: mmpDo(evHelpShutHelp); end;
+
+  mmpDo(GS.showingHelp, procedure begin mmpDo(evVMMoveHelp, TRUE); end,
+                        procedure begin mmpDo(evHelpShutHelp); end);
   result := TRUE;
 end;
 
@@ -1075,8 +1085,10 @@ begin
   result := FALSE;
   mmpDo(evHelpShutHelp);
   GS.notify(newNotice(evGSShowingPlaylist, NOT GS.showingPlaylist));
-  case GS.showingPlaylist of   TRUE: mmpDo(evVMMovePlaylist, TRUE);
-                              FALSE: mmpDo(evPLFormShutForm); end;
+
+  mmpDo(GS.showingPlaylist, procedure begin mmpDo(evVMMovePlaylist, TRUE); end,
+                            procedure begin mmpDo(evPLFormShutForm); end);
+
   result := TRUE;
 end;
 

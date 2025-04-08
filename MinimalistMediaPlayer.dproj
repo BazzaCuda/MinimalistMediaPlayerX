@@ -114,7 +114,7 @@
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
-        <Debugger_RunParams>&quot;https://free.storehd.xyz/hls/usanetwork/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9My8xNi8yMDI1IDI6NTk6MjEgUE0maGFzaF92YWx1ZT1odVZyQnNUSlNhZDc1cEhKZEhlWXhRPT0mdmFsaWRtaW51dGVzPTI4MA==&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\Asterix the Gaul\19 Asterix and the Soothsayer\Asterix -19- Asterix and the Soothsayer - 15.jpg&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
@@ -141,7 +141,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Movies\Let The Right One In (2008).mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\Asterix the Gaul\19 Asterix and the Soothsayer\Asterix -19- Asterix and the Soothsayer - 15.jpg&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
@@ -234,7 +234,8 @@
         <DCCReference Include="mmpMenu.pas"/>
         <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
-        <DCCReference Include="mmpFuncProcs.pas"/>
+        <DCCReference Include="mmpDoProcs.pas"/>
+        <DCCReference Include="mmpFuncProg.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>

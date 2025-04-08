@@ -68,7 +68,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpFuncProcs, mmpGlobalState,
+  mmpDoProcs, mmpGlobalState,
   model.mmpConfigFile,
   _debugWindow;
 

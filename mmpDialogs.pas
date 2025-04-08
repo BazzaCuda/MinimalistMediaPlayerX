@@ -34,7 +34,7 @@ implementation
 uses
   winApi.activeX,
   vcl.forms, vcl.stdCtrls,
-  mmpFuncProcs, mmpGlobalState;
+  mmpDoProcs, mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;

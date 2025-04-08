@@ -38,7 +38,7 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 implementation
 
 uses
-  mmpFuncProcs,
+  mmpDoProcs, mmpFuncProg,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
@@ -61,7 +61,6 @@ begin
                                                                                                             aPL.setIx(vIx - 1);
                                                                                                             mmpDo(evVMMPPlayCurrent); end;
                                                                                                   FALSE:  mmpDo(evVMMPPlayCurrent); end;end;end;
-
 end;
 
 function mmpPlayCurrent: boolean;
@@ -83,11 +82,9 @@ begin
 end;
 
 function mmpPlayNext: boolean;
-var vMediaType: TMediaType;
 begin
-  case GS.imagesPaused of  TRUE: vMediaType := mtUnk;
-                          FALSE: vMediaType := CF.asMediaType[CONF_PLAYLIST_FORMAT]; end;
-  result := mmpDo(evPLNext, vMediaType).tf;
+  var vMediaType := mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
+  result := mmp.cmd(evPLNext, vMediaType).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 

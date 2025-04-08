@@ -44,7 +44,7 @@ implementation
 uses
   winApi.messages,
   system.types,
-  mmpDesktopUtils, mmpFuncProcs, mmpPostToAllUtils, mmpUtils,
+  mmpDesktopUtils, mmpDoProcs, mmpFuncProg, mmpPostToAllUtils, mmpUtils,
   _debugWindow;
 
 function mmpAdjustAspectRatio(const aWND: HWND; const aHeight: integer): TPoint;
@@ -286,8 +286,7 @@ begin
 
   GS.notify(newNotice(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
 
-  case ssCtrl in aShiftState of  TRUE: result := vR.height - 30;
-                                FALSE: result := vR.height + 30; end;
+  result := mmp.use(ssCtrl in aShiftState, vR.height - 30, vR.height + 30);
 end;
 
 function mmpGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;

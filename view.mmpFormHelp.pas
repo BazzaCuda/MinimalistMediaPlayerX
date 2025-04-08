@@ -55,7 +55,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpGlobalState, mmpFuncProcs, mmpMarkDownUtils,
+  mmpGlobalState, mmpDoProcs, mmpMarkDownUtils,
   _debugWindow;
 
 type

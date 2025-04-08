@@ -32,7 +32,7 @@ function mmpProcessKeyOp(const MP: IMediaPlayer; var SS: TSnapshot): boolean;
 implementation
 
 uses
-  mmpFuncProcs, mmpPostToAllUtils, mmpWindowUtils,
+  mmpDoProcs, mmpPostToAllUtils, mmpWindowUtils,
   model.mmpBookmark, model.mmpMixer, model.mmpPlaylistUtils,
   _debugWindow;
 

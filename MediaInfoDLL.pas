@@ -112,7 +112,7 @@ function mediaInfoDLL_Load(const LibPath: string): boolean;
 
 implementation
 
-uses mmpFuncProcs;
+uses mmpDoProcs;
 
 {$IFNDEF STATIC}
 function MI_getProcAddress(name: PChar; var addr: pointer): boolean;

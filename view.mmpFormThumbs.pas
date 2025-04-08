@@ -124,7 +124,7 @@ uses
   winApi.shellApi,
   system.types,
   mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFuncProcs, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
   model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
@@ -178,7 +178,7 @@ begin
   mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
   mmpProcessMessages;
 
-  case GS.autoCenter of TRUE: autoCenter; end;
+  mmpDo(GS.autoCenter, autoCenter);
 end;
 
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
@@ -259,6 +259,7 @@ begin
 
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
+  vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', '1', vImageDisplayDuration);
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
@@ -398,7 +399,7 @@ end;
 
 function TThumbsForm.moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
 begin
-  case FThumbs = NIL of TRUE: EXIT; end;
+  case FThumbs = NIL of  TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
 
   moveHelp(bCreateNew);
@@ -423,8 +424,7 @@ end;
 
 procedure TThumbsForm.onDoubleClick(sender: TObject);
 begin
-  case SELF.windowState = wsMaximized of   TRUE:  SELF.windowState := wsNormal;
-                                          FALSE:  SELF.windowState := wsMaximized; end;
+  SELF.windowState := mmp.use<TWindowState>(SELF.windowState = wsMaximized, wsNormal, wsMaximized);
 end;
 
 procedure TThumbsForm.onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
@@ -438,7 +438,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.activeTasks = 0 of TRUE: EXIT; end;
-  case aNotice.event of evGSActiveTasks:  mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end;
+  mmpDo(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end);
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
@@ -545,7 +545,7 @@ var
   vNextFolder: string;
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  case vNextFolder = '' of FALSE: FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  mmpDo(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
   result := vNextFolder <> '';
@@ -556,7 +556,7 @@ begin
   case whichHost of
     htMPVHost:    begin case FLocked of TRUE: EXIT; end;
                         FLocked := TRUE;
-                        result := FThumbs.playlist.prev;
+                        result  := FThumbs.playlist.prev;
                         playCurrentItem; end;
     htThumbsHost: case FThumbs.playlist.currentIx = FThumbs.thumbsPerPage of FALSE: FThumbs.playPrevThumbsPage; end;
   end;
@@ -567,7 +567,7 @@ var
   vPrevFolder: string;
 begin
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  case vPrevFolder = '' of FALSE: FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end; // because extractFilePath needs a file name ;)
+  mmpDo(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
   result := vPrevFolder <> '';
@@ -586,9 +586,9 @@ begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
   vNewName := mmpRenameFile(aFilePath);
-  case vNewName = aFilePath of FALSE: begin
-                                        FThumbs.playlist.replaceCurrentItem(vNewName);
-                                        mmpSetPanelText(FStatusBar, pnFold, 'Renamed: ' + aFilePath); end;end;
+  mmpDo(vNewName <> aFilePath,  procedure begin
+                                            FThumbs.playlist.replaceCurrentItem(vNewName);
+                                            mmpSetPanelText(FStatusBar, pnFold, 'Renamed: ' + aFilePath); end);
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
 end;
 
@@ -596,7 +596,7 @@ function TThumbsForm.reverseSlideshow: boolean;
 begin
   FSlideshowDirection := TSlideshowDirection(1 - ord(FSlideshowDirection)); // x := 1 - x
   showSlideshowDirection;
-  case FPlayingSlideshow of FALSE: pausePlay; end;
+  mmpDo(NOT FPlayingSlideshow, pausePlay);
 end;
 
 function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
@@ -684,6 +684,7 @@ end;
 
 procedure TThumbsForm.FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
+
   case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of  TRUE: screen.cursor := crHandPoint;
                                                                     FALSE: screen.cursor := crDefault; end;
 end;
@@ -811,7 +812,7 @@ begin
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
 
     koAboutBox:           mmpDo(evAboutFormShow);
-    koAdjustAspectRatio:  case whichHost of htMPVHost: adjustAspectRatio; end;
+    koAdjustAspectRatio:  mmpDo(whichHost = htMPVHost, adjustAspectRatio);
     koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
     koBrightnessUp:       mpvBrightnessUp(mpv);
     koBrightnessDn:       mpvBrightnessDn(mpv);

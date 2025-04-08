@@ -109,7 +109,8 @@ uses
   mmpMenu in 'mmpMenu.pas',
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
-  mmpFuncProcs in 'mmpFuncProcs.pas';
+  mmpDoProcs in 'mmpDoProcs.pas',
+  mmpFuncProg in 'mmpFuncProg.pas';
 
 function checkParam: boolean;
 begin

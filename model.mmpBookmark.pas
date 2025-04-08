@@ -37,7 +37,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpFuncProcs,
+  mmpDoProcs,
   model.mmpConfigFile,
   _debugWindow;
 

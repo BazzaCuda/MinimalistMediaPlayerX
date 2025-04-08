@@ -81,7 +81,7 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpFuncProcs, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpFileUtils, mmpDoProcs, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 

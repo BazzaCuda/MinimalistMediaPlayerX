@@ -135,7 +135,7 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpFormatting, mmpFuncProcs, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpDoProcs, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpMediaInfo,
   _debugWindow;
