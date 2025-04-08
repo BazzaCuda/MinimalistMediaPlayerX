@@ -68,7 +68,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpDoProcs, mmpGlobalState,
+  mmpDoProcs, mmpFuncProg, mmpGlobalState,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -85,66 +85,64 @@ end;
 
 function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
 begin
-  case aTextWidth > aMaxWidth of   TRUE:  begin
-                                            var vChop := length(aText) div 2;
-                                            repeat
-                                              inc(vChop);
-                                            until (vChop > length(aText)) or (aText[vChop] = '\');
-                                            var vLine1 := copy(aText, 1, vChop) + '...';
-                                            var vLine2 := '...\' + copy(aText, vChop + 1);
-                                            result := vLine1 + #13#10 + vLine2; end;
-                                  FALSE:  result := aText; end;
+  TF := function:string begin
+                          var vChop := length(aText) div 2;
+                          repeat
+                            inc(vChop);
+                          until (vChop > length(aText)) or (aText[vChop] = '\');
+                          var vLine1 := copy(aText, 1, vChop) + '...';
+                          var vLine2 := '...\' + copy(aText, vChop + 1);
+                          result := vLine1 + #13#10 + vLine2; end;
+
+  FF := function:string begin result := aText; end;
+
+  result := mmpDo(aTextWidth > aMaxWidth, TF, FF);
 end;
 
 { TConfirmDeleteForm }
 
 constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
+const
+  TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files');
+  CONFIRM_CAPTIONS: array[TDeleteMethod]    of string = ('Confirm Recycle', 'Confirm Delete', 'Confirm Shred');
+  TYPE_CAPTIONS:    array[TDeletionObject]  of string = (' File?', ' Folder?', ' non-"[K]eep" files?');
 begin
   inherited create(NIL);
 
-  label1.caption := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
-  var vCaption := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width);
+  label1.caption            := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
+  var vCaption              := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width - 100); // -100 to create a minimum 50-pixel margin on each end
+
   case aDeletionObject of doFile: vCaption := vCaption + #13#10 + extractFileName(aPath); end;
-  lblItemToDelete.caption := vCaption;
+  lblItemToDelete.caption   := vCaption;
 
-  imgDeleteFolder.visible := aDeletionObject in [doFolder, doKeepDelete];
-  imgDeleteFile.visible   := aDeletionObject = doFile;
+  imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete];
+  imgDeleteFile.visible     := aDeletionObject = doFile;
 
-  case aDeletionObject of
-    doFile:       lblTitle.caption := 'Delete File';
-    doFolder:     lblTitle.caption := 'Delete Folder Contents';
-    doKeepDelete: lblTitle.caption := 'Delete all but the "[K]eep" files';
-  end;
+  lblTitle.caption          := TITLE_CAPTIONS[aDeletionObject];
 
-  lblSubFolders.visible := aDeletionObject in [doFolder, doKeepDelete];
-  lblKeepFiles.visible  := aDeletionObject = doKeepDelete;
+  lblSubFolders.visible     := aDeletionObject in [doFolder, doKeepDelete];
+  lblKeepFiles.visible      := aDeletionObject = doKeepDelete;
 
-  lblDeleteMethod.caption := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
+  lblDeleteMethod.caption   := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
 
-  case aDeleteMethod of
-    dmRecycle:  lblConfirm.caption := 'Confirm Recycle';
-    dmStandard: lblConfirm.caption := 'Confirm Delete';
-    dmShred:    lblConfirm.caption := 'Confirm Shred'; end;
+  lblConfirm.caption        := CONFIRM_CAPTIONS[aDeleteMethod];
 
-  case aDeletionObject of
-    doFile:       lblConfirm.caption := lblConfirm.caption + ' File?';
-    doFolder:     lblConfirm.caption := lblConfirm.caption + ' Folder?';
-    doKeepDelete: lblConfirm.caption := lblConfirm.caption + ' non-"[K]eep" files?'; end;
+  lblConfirm.caption        := lblConfirm.caption + TYPE_CAPTIONS[aDeletionObject];
 
-  lblRecycle.visible  := aDeleteMethod = dmRecycle;
-  lblStandard.visible := aDeleteMethod = dmStandard;
-  lblShred.visible    := aDeleteMethod = dmShred;
+  lblRecycle.visible        := aDeleteMethod = dmRecycle;
+  lblStandard.visible       := aDeleteMethod = dmStandard;
+  lblShred.visible          := aDeleteMethod = dmShred;
 
-  lblGoneMeansGone.visible := aDeleteMethod = dmShred;
+  lblGoneMeansGone.visible  := aDeleteMethod = dmShred;
 
   imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
 
-  var vScaleFactor := CF.asInteger[CONF_SCALE_FACTOR];
-  case vScaleFactor <  50 of TRUE: vScaleFactor :=  50; end;
-  case vScaleFactor > 100 of TRUE: vScaleFactor := 100; end;
-  SELF.scaleBy(vScaleFactor, 100);
-  imgDeleteMethod.top     := lblShred.top;
-  imgDeleteMethod.left    := lblShred.left - imgDeleteMethod.width;
+  var vScaleFactor          := CF.asInteger[CONF_SCALE_FACTOR];
+  vScaleFactor              := mmp.use(vScaleFactor <  MIN_SCALE_FACTOR, MIN_SCALE_FACTOR, vScaleFactor);
+  vScaleFactor              := mmp.use(vScaleFactor >  MAX_SCALE_FACTOR, MAX_SCALE_FACTOR, vScaleFactor);
+  SELF.scaleBy(vScaleFactor, MAX_SCALE_FACTOR);
+  imgDeleteMethod.top       := lblShred.top;
+  imgDeleteMethod.left      := lblShred.left - imgDeleteMethod.width;
 
   setWindowPos(SELF.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE OR SWP_NOSIZE); // otherwise it can end up behind the Image & Thumbnail Browser window
 end;

@@ -29,6 +29,16 @@ const
   BACKSLASH           = '\';
   MPV_ERROR_SUCCESS   = 0;
 
+  _1KB = 1024;
+  _1MB = 1024 * 1024;
+  _1GB = 1024 * 1024 * 1024;
+  _xGB = 1052266987; // 0.98 of 1GB
+
+  SECS_PER_HOUR = 3600;
+
+  MIN_SCALE_FACTOR =  50;
+  MAX_SCALE_FACTOR = 100;
+
   WIN_AUTOCENTER_OFF  = WM_APP + 2001;
   WIN_CAPTION         = WM_APP + 2002;
   WIN_CLOSEAPP        = WM_APP + 2003;

@@ -31,20 +31,26 @@ const
   doNowt = NIL;
 
 var
-  T:      TProc;
-  F:      TProc;
+  T:            TProc;
+  F:            TProc;
+  guardClause:  boolean;
+  TF:           TFunc<string>;
+  FF:           TFunc<string>;
 
 type
   void    = boolean;
   TOProc  = TProc<TObject>;
-  TRFunc  = TFunc<boolean>;
+  TBFunc  = TFunc<boolean>;
+  TSFunc  = TFunc<string>;
   TProcVar = procedure;
 
 type
   mmp = record
     class function use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: integer;  aFalseValue: integer):  integer; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: string;   aFalseValue: string ):  string; overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: cardinal; aFalseValue: cardinal):  cardinal; overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: int64;    aFalseValue: int64   ):  int64;    overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: integer;  aFalseValue: integer ):  integer;  overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: string;   aFalseValue: string  ):  string;   overload; static;
 
     //===== TProcs
     class function cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean; overload; static;
@@ -54,9 +60,13 @@ type
     class function cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): boolean; overload; static;
     class function cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): boolean; overload; static;
 
-    //===== TRFuncs which return a boolean result
-    class function cmd(const aBoolean: boolean; const trueFunc: TRFunc; const falseFunc: TRFunc): boolean; overload; static;
-    class function cmd(const aBoolean: boolean; const trueFunc: TRFunc): boolean; overload; static;
+    //===== TBFuncs which return a boolean result
+    class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean; overload; static;
+    class function cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean; overload; static;
+
+    //===== TSFuncs which return a string result
+    class function cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string; overload; static;
+    class function cmd(const aBoolean: boolean; const trueFunc: TSFunc): string; overload; static;
 
     //===== Event Notices with no result
     class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): boolean; overload; static;
@@ -86,23 +96,33 @@ type
 implementation
 
 class function mmp.use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T;
-var setType: array[boolean] of T;
+var setTypeVal: array[boolean] of T;
 begin
-  setType[FALSE] := aFalseValue;
-  setType[TRUE]  := aTrueValue;
-  result := setType[aBoolean];
+  setTypeVal[TRUE]  := aTrueValue;
+  setTypeVal[FALSE] := aFalseValue;
+  result            := setTypeVal[aBoolean];
 end;
 
 { mmp }
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: string; aFalseValue: string): string;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: int64;    aFalseValue: int64   ):  int64;
 begin
-  result := mmp.use<string>(aBoolean, aTrueValue, aFalseValue);
+  result := mmp.use<int64>(aBoolean, aTrueValue, aFalseValue);
+end;
+
+class function mmp.use(const aBoolean: boolean; const aTrueValue: cardinal; aFalseValue: cardinal): cardinal;
+begin
+  result := mmp.use<cardinal>(aBoolean, aTrueValue, aFalseValue);
 end;
 
 class function mmp.use(const aBoolean: boolean; const aTrueValue: integer; aFalseValue: integer): integer;
 begin
   result := mmp.use<integer>(aBoolean, aTrueValue, aFalseValue);
+end;
+
+class function mmp.use(const aBoolean: boolean; const aTrueValue: string; aFalseValue: string): string;
+begin
+  result := mmp.use<string>(aBoolean, aTrueValue, aFalseValue);
 end;
 
 //===== TProcs
@@ -134,15 +154,29 @@ begin
 end;
 
 //===== TRFuncs which return a boolean result
-class function mmp.cmd(const aBoolean: boolean; const trueFunc: TRFunc; const falseFunc: TRFunc): boolean;
-var doFunc: array[boolean] of TRFunc;
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean;
+var doFunc: array[boolean] of TBFunc;
 begin
   doFunc[TRUE]  := trueFunc;
   doFunc[FALSE] := falseFunc;
-  case doFunc[aBoolean] = NIL of FALSE: Result := doFunc[aBoolean](); end;
+  case doFunc[aBoolean] = NIL of FALSE: result := doFunc[aBoolean](); end;
 end;
 
-class function mmp.cmd(const aBoolean: boolean; const trueFunc: TRFunc): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean;
+begin
+  result := cmd(aBoolean, trueFunc, NIL);
+end;
+
+//===== TSFuncs which return a string result
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string;
+var doFunc: array[boolean] of TSFunc;
+begin
+  doFunc[TRUE]  := trueFunc;
+  doFunc[FALSE] := falseFunc;
+  case doFunc[aBoolean] = NIL of FALSE: result := doFunc[aBoolean](); end;
+end;
+
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc): string;
 begin
   result := cmd(aBoolean, trueFunc, NIL);
 end;
@@ -171,13 +205,13 @@ end;
 class function mmp.cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent): INotice;
 begin
   result := NIL;
-  case aBoolean of TRUE: Result := notifyApp(newNotice(trueEvent)); end;
+  case aBoolean of TRUE: result := notifyApp(newNotice(trueEvent)); end;
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const aInteger: integer): INotice;
 begin
   result := NIL;
-  case aBoolean of TRUE: Result := notifyApp(newNotice(trueEvent, aInteger)); end;
+  case aBoolean of TRUE: result := notifyApp(newNotice(trueEvent, aInteger)); end;
 end;
 
 //===== Event Notices with the INotice returned (no boolean test)

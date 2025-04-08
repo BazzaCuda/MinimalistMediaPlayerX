@@ -238,8 +238,8 @@ begin
   case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnNumb, mmpFormatFileNumber(FPlaylist.indexOf(aURL) + 1, FPlaylist.count));
                              FALSE: mmpSetPanelText(FStatusBar, pnNumb, mmpFormatFileNumber(0, 0)); end;
 
-  case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(mmpFileSize(aURL)));
-                                                               FALSE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatThumbFileSize(0)); end;
+  case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatFileSize(mmpFileSize(aURL)));
+                                                               FALSE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatFileSize(0)); end;
                              FALSE: mmpSetPanelText(FStatusBar, pnSize, ''); end;
 
 

@@ -27,21 +27,21 @@ implementation
 
 uses
   system.sysUtils,
-  mmpConsts, mmpDoProcs;
+  mmpConsts, mmpFuncProg;
 
 function mmpITBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
-  case length(result) = 0 of TRUE: EXIT; end;
-  case result[high(result)] = BACKSLASH of FALSE: result := result + BACKSLASH; end;
+  guardClause := (length(result) > 0) and (result[high(result)] <> BACKSLASH);
+  result := mmp.use(guardClause, result + BACKSLASH, result);
 end;
 
 function mmpRTBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
-  case (length(result) > 1) and
-     charInSet(result[length(result)], ['\','/']) and
-      ((length(result) <> 3) or (result[2] <> ':')) of TRUE: setLength(result, length(result) - 1); end;
+  guardClause := (length(result) > 1) and charInSet(result[length(result)], ['\','/']) and ((length(result) <> 3) or (result[2] <> ':'));
+  setLength(result, mmp.use(guardClause, length(result) - 1, length(result)));
 end;
+
 
 end.

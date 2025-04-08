@@ -80,8 +80,6 @@ type TMIInfoOption =
 {$ELSE}
 
 var
-  libHandle: THandle = 0;
-
   // Unicode methods
   mediaInfo_New:        function  (): THandle cdecl stdcall;
   mediaInfo_Delete:     procedure (Handle: THandle) cdecl stdcall;
@@ -113,6 +111,9 @@ function mediaInfoDLL_Load(const LibPath: string): boolean;
 implementation
 
 uses mmpDoProcs;
+
+var
+  libHandle: THandle = 0;
 
 {$IFNDEF STATIC}
 function MI_getProcAddress(name: PChar; var addr: pointer): boolean;

@@ -22,7 +22,6 @@ interface
 
 function mmpFormatFileNumber    (const aFileNumber: integer; const aFileCount: integer): string;
 function mmpFormatFileSize      (const aSize: int64): string;
-function mmpFormatThumbFileSize (const aSize: int64): string;
 function mmpFormatPageNumber    (const aPageNumber: integer; const aPageCount: integer; const aA: string): string;
 function mmpFormatSeconds       (const aSeconds: integer): string;
 function mmpFormatTickCount     (const aTickCount: double): string;
@@ -32,7 +31,8 @@ function mmpFormatWidthHeight   (const aWidth: integer; const aHeight: integer):
 implementation
 
 uses
-  system.sysUtils;
+  system.sysUtils,
+  mmpConsts, mmpFuncProg;
 
 function mmpFormatFileNumber(const aFileNumber: integer; const aFileCount: integer): string;
 begin
@@ -45,17 +45,21 @@ begin
 end;
 
 function mmpFormatFileSize(const aSize: int64): string;
+var
+  vFormatString:  string;
+  vSize:          double;
 begin
- case aSize >= 1052266987 of  TRUE: try result := format('FS:  %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
-                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:  %d KB', [trunc(aSize / 1024)]); except end;
-                                                                FALSE: try result := format('FS:  %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
-end;
+  try
+    vFormatString := '%.0f KB';
+    vFormatString := mmp.use(aSize >= _1MB, '%.2f MB', vFormatString);
+    vFormatString := mmp.use(aSize >= _xGB, '%.3f GB', vFormatString); // >= 0.98 of 1GB
 
-function mmpFormatThumbFileSize(const aSize: int64): string;
-begin
- case aSize >= 1052266987 of  TRUE: try result := format('%.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
-                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('%d KB', [trunc(aSize / 1024)]); except end;
-                                                                FALSE: try result := format('%.2f MB', [aSize / 1024 / 1024]); except end;end;end;
+    vSize         := trunc(aSize / _1KB);
+    vSize         := mmp.use<double>(aSize >= _1MB, aSize / _1MB, vSize);
+    vSize         := mmp.use<double>(aSize >= _xGB, aSize / _1GB, vSize); // >= 0.98 of 1GB
+
+    result := format(vFormatString, [vSize]);
+  except end;
 end;
 
 function mmpFormatSeconds(const aSeconds: integer): string;
@@ -77,9 +81,9 @@ end;
 
 function mmpFormatTime(const aSeconds: integer): string;
 begin
-  case aSeconds < 60 of  TRUE: result := format('%.2d:%.2d', [0, aSeconds]);
-                        FALSE: case aSeconds < 3600 of   TRUE: result := format('%.2d:%.2d', [aSeconds div 60, aSeconds mod 60]);
-                                                        FALSE: result := format('%.2d:%.2d:%.2d', [aSeconds div 3600, (aSeconds mod 3600) div 60, aSeconds mod 3600 mod 60]); end;end;
+  case aSeconds < 60 of   TRUE: result := format('%.2d:%.2d', [0, aSeconds]); // 0:ss
+  {mm:ss}                FALSE: case aSeconds < SECS_PER_HOUR of   TRUE: result := format('%.2d:%.2d',      [aSeconds div 60, aSeconds mod 60]);
+  {hh:mm:ss}                                                      FALSE: result := format('%.2d:%.2d:%.2d', [aSeconds div SECS_PER_HOUR, (aSeconds mod SECS_PER_HOUR) div 60, aSeconds mod SECS_PER_HOUR mod 60]); end;end;
 end;
 
 end.

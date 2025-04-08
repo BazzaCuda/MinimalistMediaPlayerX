@@ -67,7 +67,7 @@ implementation
 
 uses
   math,
-  mmpConsts,
+  mmpConsts, mmpFuncProg,
   _debugWindow;
 
 { TALProgressBar }
@@ -107,19 +107,16 @@ begin
 end;
 
 procedure TALProgressBar.adjustBarLength;
-var
-  barLength: integer;
 begin
   canvas.brush.color := FBackgroundColor;
   canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
   case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
 
-  case (FPosition > 0) of  TRUE: barLength := ceil((FPosition / FMax) * SELF.width); // BAZ - changed from round
-                          FALSE: barLength := 0; end;
+  var vBarLength := mmp.use(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
   canvas.brush.color := FBarColor;
-  canvas.fillRect(rect(0, 0, barLength, 10));
+  canvas.fillRect(rect(0, 0, vBarLength, 10));
 end;
 
 procedure TALProgressBar.SetBackgroundColor(const aValue: TColor);

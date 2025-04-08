@@ -89,7 +89,7 @@ begin
   result := FALSE;
   try
     vDestFolder := aDstFolder;
-    vDestFile   := vDestFolder + ExtractFileName(aFilePath);
+    vDestFile   := vDestFolder + extractFileName(aFilePath);
     try
       forceDirectories(vDestFolder);
     except end;                        // this will get picked up by the failed directoryExists below

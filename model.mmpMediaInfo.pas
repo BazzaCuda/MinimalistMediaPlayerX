@@ -148,7 +148,7 @@ implementation
 uses
   system.generics.defaults, system.sysUtils, system.timeSpan,
   mediaInfoDLL,
-  mmpFileUtils, mmpDoProcs, mmpUtils,
+  mmpFileUtils, mmpDoProcs, mmpFormatting, mmpFuncProg, mmpUtils,
   _debugWindow;
 
 var gMI: IMediaInfo = NIL;
@@ -217,15 +217,9 @@ begin
   result := FMD.mdDuration div 1000;
 end;
 
-function mmpFormatFileSize(const aSize: int64): string;
-begin
- case aSize >= 1052266987 of  TRUE: try result := format('FS:   %.3f GB', [aSize / 1024 / 1024 / 1024]); except end;  // >= 0.98 of 1GB
-                             FALSE: case aSize < 1024 * 1024 of  TRUE: try result := format('FS:   %d KB', [trunc(aSize / 1024)]); except end;
-                                                                FALSE: try result := format('FS:   %.2f MB', [aSize / 1024 / 1024]); except end;end;end;
-end;
 function TMediaInfo.getFileSize: string;
 begin
-  result := mmpFormatFileSize(mmpFileSize(FURL));
+  result := 'FS:   ' + mmpFormatFileSize(mmpFileSize(FURL));
 end;
 
 function TMediaInfo.getMetaData(const aMemo: TMemo): boolean;
