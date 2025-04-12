@@ -163,6 +163,8 @@ end;
 
 function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): boolean;
 // download any and all images in the release notes
+// As of v4.1.3 this just modifies the release notes so each URL for an image is replaced with a local path to the file in the releaseNotes folder
+// The files themselves are now included in the zip file
 begin
   case fileExists(getReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
   var vNotes := TStringList.create;
@@ -186,7 +188,7 @@ begin
 
       var vFileName := copy(vAssetURL, vPos3 + 1, 255);
 
-      downloadAsset(vAssetURL, getReleaseNotesFolder + vFileName);
+//      downloadAsset(vAssetURL, getReleaseNotesFolder + vFileName); // this now gives 404 for the latest images on github which redirect to amazonaws
 
       vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
     end;
@@ -235,9 +237,12 @@ begin
   case fileExists(paramStr(0))                         of FALSE: with TZipFile.create do begin
                                                                     OnProgress := zipOnProgress;
                                                                     open(updateFile(aReleaseTag), zmRead);
-//                                                                    extractAll(mmpExePath + backupName);
-                                                                    extract('MinimalistMediaPlayer.exe', mmpExePath);
-                                                                    free;
+                                                                    try
+                                                                      extract('MinimalistMediaPlayer.exe', mmpExePath, TRUE);
+                                                                      for var i := 0 to fileCount - 1 do case startsText('releaseNotes/', fileName[i]) of TRUE: extract(i, mmpExePath, TRUE); end; // accompanying images
+                                                                    finally
+                                                                      free;
+                                                                    end;
                                                                     result := fileExists(paramStr(0));
                                                                   end;end;
 end;

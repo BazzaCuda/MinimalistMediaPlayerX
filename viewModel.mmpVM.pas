@@ -1032,10 +1032,13 @@ begin
 
   var vCurrentItem := mmpDo(evPLReqCurrentItem).text;
 
-  F := procedure begin mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
-                                                          + 'The path/filename contains a single quote and/or an ampersand.'#13#10#13#10
-                                                          + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
-                                                          + 'Rename the path/filename first.', mtInformation, [MBOK]); end;
+  F := procedure  begin
+                    mmpDo(evMPPause);
+                    mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
+                                                       + 'The path or filename contains a single quote, double quote, ampersand, etc.'#13#10
+                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_./'#13#10#13#10
+                                                       + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
+                                                       + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
 
   mmpDo(mmpIsEditFriendly(vCurrentItem), NIL, F);
   case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;

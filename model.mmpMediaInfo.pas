@@ -473,8 +473,8 @@ begin
   case FHandle = 0 of TRUE: begin
                               try
                                 case mediaInfoDLL_Load('MediaInfo.dll') of FALSE: EXIT; end;
-                                mediaInfo_Option(0, 'Internet', 'No');
-                                FHandle := MediaInfo_New();
+                                mediaInfo_option(0, 'Internet', 'No');
+                                FHandle := mediaInfo_New();
                               except end;end;end;
   result := FHandle <> 0;
 end;

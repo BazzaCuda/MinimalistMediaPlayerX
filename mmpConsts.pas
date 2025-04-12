@@ -71,7 +71,8 @@ const
 
   UI_DEFAULT_AUDIO_HEIGHT = 56;
 
-  IMAGE_DISPLAY_DURATION = 3; // in seconds, to match the setting in mpv.conf
+  IMAGE_DISPLAY_DURATION        = 2;    // in seconds, to match the setting in mpv.conf
+  IMAGE_DISPLAY_DURATION_STRING = '2';
 
   CONF_ALLOW_INTO_WINDOWS   = 'allowIntoWindows';
   CONF_AUDIO_DELETE         = 'audioDelete';

@@ -573,7 +573,8 @@ begin
   // export segments
   try
     case mmpCtrlKeyDown of FALSE: begin
-      var vSL := TStringList.create;
+      var vSL                 := TStringList.create;
+          vSL.defaultEncoding := TEncoding.UTF8;
       try
         vSL.saveToFile(filePathSEG); // clear previous contents
         for var vSegment in segments do begin
@@ -716,8 +717,9 @@ end;
 
 function TTimeline.log(const aLogEntry: string): boolean;
 begin
-  var vLogFile  := filePathLOG;
-  var vLog      := TStringList.create;
+  var vLogFile          := filePathLOG;
+  var vLog              := TStringList.create;
+  vLog.defaultEncoding  := TEncoding.UTF8;
   try
     case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
     vLog.add(aLogEntry);

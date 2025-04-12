@@ -42,7 +42,7 @@ implementation
 
 uses
   winApi.windows,
-  system.ioUtils,
+  system.ioUtils, system.regularExpressions,
   vcl.controls, vcl.dialogs,
   mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpShellUtils, mmpShredUtils, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
@@ -206,8 +206,15 @@ begin
 end;
 
 function mmpIsEditFriendly(const aFilePath: string): boolean;
+const
+  VALID_CHARS   = '^([a-zA-Z]:\\)([\w\s.~!@#$%^()\[\]{}+\-=_\\\/`])*$'; // valid Windows file path minus & and | and '
+  INVALID_CHARS = '[<>''"/|?*&]'; {explicitly disallow these: < (less than), > (greater than), ' (single quote), " (double quote), / (slash), | (vertical bar or pipe), ? (question mark), * (asterisk), & (ampersand) }
 begin
-  result := NOT aFilePath.contains('''') and NOT aFilePath.contains('&');
+  result := FALSE;
+  try
+    result := TRegEx.isMatch(aFilePath, VALID_CHARS);
+  except
+  end;
 end;
 
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;

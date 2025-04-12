@@ -38,7 +38,7 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  mmpConsts, mmpFileUtils, mmpDoProcs, mmpGlobalState, mmpTickTimer, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpTickTimer, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
 
@@ -50,7 +50,6 @@ type
     FCheckCount:              integer;
     FDimensionsDone:          boolean;
     FIgnoreTicks:             boolean;
-    FImageDisplayDuration:    string;
     FImageDisplayDurationMs:  double;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
@@ -120,11 +119,13 @@ begin
   mpvGetPropertyString(mpv, 'screenshot-directory', FMPVScreenshotDirectory);
   mmpDo(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory);
 
-  mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, FImageDisplayDuration);
-  FImageDisplayDurationMs := strToFloatDef(FImageDisplayDuration, IMAGE_DISPLAY_DURATION);
-  mmpDo(evGSIDD, trunc(FImageDisplayDurationMs));
-  FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;
-  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');
+  var vImageDisplayDuration: string;
+  mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
+  vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
+  FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION);                                // if the image-display-duration= entry isn't a valid integer
+  mmpDo(evGSIDD, trunc(FImageDisplayDurationMs));                // stored as seconds, same as in mpv.conf
+  FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;     // this property isn't currently used anywhere (see evMPReqIDD)
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');  // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
 
   pausePlayImages; // default is paused;
 
@@ -198,7 +199,7 @@ begin
 
     evMPReqDuration:      aNotice.integer := mpvDuration(mpv);
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
-    evMPReqIDD:           aNotice.integer := trunc(FImageDisplayDurationMs);
+    evMPReqIDD:           aNotice.integer := trunc(FImageDisplayDurationMs); // not currently used
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
     evMPReqPosition:      aNotice.integer := mpvPosition(mpv);
     evMPReqVideoHeight:   aNotice.integer := mpvVideoHeight(mpv);

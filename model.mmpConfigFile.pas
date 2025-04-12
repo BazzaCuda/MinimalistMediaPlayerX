@@ -52,6 +52,7 @@ implementation
 
 uses
   system.sysUtils,
+  mmpDoProcs, mmpFuncProg,
   _debugWindow;
 
 type
@@ -103,11 +104,12 @@ begin
   case fileExists(FFilePath) of FALSE: EXIT; end;
 
   var vLastWriteTime := TFile.getLastWriteTime(FFilePath);
-  case vLastWriteTime > FLastWriteTime of TRUE: begin
-                                                  FLastWriteTime := vLastWriteTime;
-                                                  try
-                                                    FFileContents.loadFromFile(FFilePath);
-                                                  except end;end;end;
+
+  T := procedure begin try FFileContents.loadFromFile(FFilePath); except end;end;
+
+  mmpDo(vLastWriteTime > FLastWriteTime, T);
+  FLastWriteTime := vLastWriteTime;
+
   result := TRUE;
 end;
 
@@ -124,7 +126,7 @@ end;
 
 destructor TConfigFile.Destroy;
 begin
-  case FFileContents <> NIL of TRUE: FFileContents.free; end;
+  mmpFree(FFileContents <> NIL, FFileContents);
   inherited;
 end;
 

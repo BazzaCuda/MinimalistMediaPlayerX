@@ -74,7 +74,7 @@ type
 
     property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
     property autoCenter:                boolean             read getAutoCenter;
-    property IDD:                       integer             read getIDD;
+    property IDD:                       integer             read getIDD;         // image-display-duration in seconds
     property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;

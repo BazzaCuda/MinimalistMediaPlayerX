@@ -259,11 +259,11 @@ begin
 
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
-  vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', '1', vImageDisplayDuration);
-  FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;
+  vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
+  FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;                          // if the image-display-duration= entry isn't a valid integer
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
-  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it.
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
   FSubscriber             := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
