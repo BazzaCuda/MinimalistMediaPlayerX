@@ -346,7 +346,7 @@ begin
   case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                                   TL.drawSegments; end;end;
   case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        TL.drawSegments; end;end;
   case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); TL.drawSegments; end;end;
-  case (key = ord('M')) and NOT mmpCtrlKeyDown of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);                                   TL.drawSegments; end;end;
+  case (key = ord('M')) and NOT mmpCtrlKeyDown of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);          TL.drawSegments; end;end;
   case (key = ord('M')) and     mmpCtrlKeyDown of TRUE: debug('merge them all!'); end;
   case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                                    TL.drawSegments; end;end;
 
@@ -531,8 +531,8 @@ end;
 function TTimeline.defaultSegment: string;
 begin
   segments.clear;
-  segments.add(TSegment.create(0, FMax));
-  result := format('0-%d,0', [FMax]);
+  segments.add(TSegment.create(1, FMax));
+  result := format('1-%d,0', [FMax]);
 end;
 
 function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -574,7 +574,6 @@ begin
   try
     case mmpCtrlKeyDown of FALSE: begin
       var vSL                 := TStringList.create;
-          vSL.defaultEncoding := TEncoding.UTF8;
       try
         vSL.saveToFile(filePathSEG); // clear previous contents
         for var vSegment in segments do begin
@@ -674,6 +673,7 @@ var
   posHyphen:  integer;
   posComma:   integer;
 begin
+  result := '';
   segments.clear;
   vSL := TStringList.create;
   try
@@ -736,8 +736,7 @@ begin
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix                  := aSegment.ix;
   aSegment.startSS        := segments[ix - 1].startSS;
-  segments[ix - 1].color  := aSegment.color; // set the color...
-  segments.delete(ix - 1);                   // ...then delete the segment???
+  segments.delete(ix - 1);
   result := TRUE;
 end;
 
@@ -748,8 +747,7 @@ begin
   case aSegment.isLast of TRUE: EXIT; end;
   var ix          := aSegment.ix;
   aSegment.endSS  := segments[ix + 1].endSS;
-  segments[ix + 1].color := aSegment.color; // set the color...
-  segments.delete(ix + 1);                  // ...then delete the segment???
+  segments.delete(ix + 1);
   result := TRUE;
 end;
 
@@ -817,7 +815,7 @@ function TTimeline.segmentAt(const aCursorPos: integer): TSegment;
 begin
   result := NIL;
   for var vSegment in segments do
-    case (aCursorPos >= vSegment.left) and (aCursorPos <= vSegment.left + vSegment.width) of TRUE: begin result := vSegment; BREAK; end;end;
+    case (aCursorPos >= vSegment.left) and (aCursorPos <= vSegment.left + vSegment.width - 1) of TRUE: begin result := vSegment; BREAK; end;end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);

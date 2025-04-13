@@ -209,7 +209,7 @@ end;
 
 function TSegment.getDuration: integer;
 begin
-  result := FEndSS - FStartSS;
+  result := (FEndSS - FStartSS) + 1;
 end;
 
 function TSegment.getIsFirst: boolean;
