@@ -46,7 +46,6 @@ type
     procedure FormResize(Sender: TObject);
     procedure lblPositionClick(Sender: TObject);
   strict private
-    FBusy:     boolean;
     FDragging: boolean;
   private
     function  getCursorPos: integer;
@@ -335,11 +334,6 @@ begin
   var vSaveUndo := FALSE;
   var vAction   := '';
 
-  case FBusy of TRUE: begin FBusy := FALSE; EXIT; end;end; // don't start another segment cut until the previous one has finished
-  case 'CIO'.contains(char(key)) of TRUE: FBusy := TRUE; end;
-
-  try
-
   case key = ord('C')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              end;
   case key = ord('R')                           of TRUE: vSaveUndo := TL.restoreSegment(TSegment.selSeg);                               end;
   case key = ord('X')                           of TRUE: vSaveUndo := TL.delSegment(TSegment.selSeg);                                   end;
@@ -362,10 +356,6 @@ begin
   TL.drawSegments;
 
   case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
-
-  finally
-    FBusy := FALSE;
-  end;
 end;
 
 procedure TTimelineForm.FormResize(Sender: TObject);
