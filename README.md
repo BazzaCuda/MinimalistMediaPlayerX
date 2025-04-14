@@ -1,8 +1,6 @@
 MMP: Minimalist Media Player
 =====================
 
-**KNOWN ISSUE: Make sure that, at a minimum, your `mpv.conf` file contains the line `image-display-duration=1`, or however many seconds you want the slideshows to display each image for. This is minor issue with the slideshows that will be fixed in the next release.**
-
 An all-in-one media player, image library manager (with built-in image and thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you.
