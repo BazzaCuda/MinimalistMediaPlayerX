@@ -68,19 +68,19 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpDoProcs, mmpFuncProg, mmpGlobalState,
+  mmpFuncProg, mmpGlobalState,
   model.mmpConfigFile,
   _debugWindow;
 
 function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
 begin
   result := mrNo;
-  mmpDo(evGSUserInput, TRUE);
+  mmp.cmd(evGSUserInput, TRUE);
   with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod) do begin
     result := showModal;
     free;
   end;
-  mmpDo(evGSUserInput, FALSE);
+  mmp.cmd(evGSUserInput, FALSE);
 end;
 
 function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
@@ -96,7 +96,7 @@ begin
 
   FF := function:string begin result := aText; end;
 
-  result := mmpDo(aTextWidth > aMaxWidth, TF, FF);
+  result := mmp.cmd(aTextWidth > aMaxWidth, TF, FF);
 end;
 
 { TConfirmDeleteForm }

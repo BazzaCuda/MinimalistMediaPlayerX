@@ -67,7 +67,7 @@ uses
   winApi.shellApi,
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpDoProcs, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  mmpConsts, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   view.mmpKeyboard,
   viewModel.mmpKeyboardOps,
   _debugWindow;
@@ -152,7 +152,7 @@ end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
 begin
-  var vCurrentIx := mmpDo(evPLReqCurrentIx).integer;
+  var vCurrentIx := mmp.cmd(evPLReqCurrentIx).integer;
   case vCurrentIx = -1 of TRUE: EXIT; end;
 
   try
@@ -216,17 +216,17 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
 begin
-  lblFolder.caption := format('Folder: %s', [mmpDo(evPLReqCurrentFolder).text]);
-  mmpDo(evPLFillListBox, LB);
+  lblFolder.caption := format('Folder: %s', [mmp.cmd(evPLReqCurrentFolder).text]);
+  mmp.cmd(evPLFillListBox, LB);
   highlightCurrentItem;
 end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
-  mmpDo(evVMShutTimeline);
-  var vThisItem := mmpDo(evPLReqThisItem, aItemIndex).text;
-  mmpDo(evPLFind, vThisItem); // set as current
-  mmpDo(evVMMPPlayCurrent);
+  mmp.cmd(evVMShutTimeline);
+  var vThisItem := mmp.cmd(evPLReqThisItem, aItemIndex).text;
+  mmp.cmd(evPLFind, vThisItem); // set as current
+  mmp.cmd(evVMMPPlayCurrent);
 end;
 
 function TPlaylistForm.visibleItemCount: integer;
@@ -262,14 +262,14 @@ begin
   GS.notify(newNotice(evGSShowingPlaylist, TRUE));
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of  TRUE: FPlaylistForm.height := wr.height;
                                               FALSE: FPlaylistForm.height := 400; end;
-  mmpDo(evGSWidthHelp, FPlaylistForm.width);
+  mmp.cmd(evGSWidthHelp, FPlaylistForm.width);
   screen.cursor := crDefault;
 
-  mmpDo(FListBoxLoaded, evNone, evPLFormLoadBox); // do once when the playlist is first opened
+  mmp.cmd(FListBoxLoaded, evNone, evPLFormLoadBox); // do once when the playlist is first opened
   FListBoxLoaded := TRUE;
 
-  mmpDo(evPLFormShow);
-  mmpDo(evPLFormHighlight);
+  mmp.cmd(evPLFormShow);
+  mmp.cmd(evPLFormHighlight);
 
   var vRect: TRect;
   getWindowRect(FPlaylistForm.handle, vRect);
@@ -309,7 +309,7 @@ begin
   FPlaylistForm.close;
   FPlaylistForm.free;
   FPlaylistForm := NIL;
-  mmpDo(evGSWidthHelp, 0);
+  mmp.cmd(evGSWidthHelp, 0);
   GS.notify(newNotice(evGSShowingPlaylist, FALSE));
   FListBoxLoaded := FALSE;
 end;

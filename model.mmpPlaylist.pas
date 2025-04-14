@@ -65,7 +65,7 @@ uses
   winApi.windows,
   system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
-  mmpFileUtils, mmpDoProcs, mmpUtils,
+  mmpFileUtils, mmpFuncProg, mmpUtils,
   model.mmpMediaTypes,
   TListHelperClass,
   _debugWindow;
@@ -245,7 +245,7 @@ begin
                    FALSE: FPlayIx := -1; end;
 
   result := hasItems;
-  mmpDo(evPLNewPlaylist);
+  mmp.cmd(evPLNewPlaylist);
 end;
 
 function TPlaylist.find(const anItem: string): boolean;

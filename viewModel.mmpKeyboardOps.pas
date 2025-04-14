@@ -32,13 +32,13 @@ function mmpProcessKeyOp(const MP: IMediaPlayer; var SS: TSnapshot): boolean;
 implementation
 
 uses
-  mmpDoProcs, mmpPostToAllUtils, mmpWindowUtils,
+  mmpFuncProg, mmpPostToAllUtils, mmpWindowUtils,
   model.mmpBookmark, model.mmpMixer, model.mmpPlaylistUtils,
   _debugWindow;
 
 function sendOpInfo(const aOpInfo: string): boolean;
 begin
-  mmpDo(evSTOpInfo, aOpInfo);
+  mmp.cmd(evSTOpInfo, aOpInfo);
 end;
 
 function message(const aMsg: integer; const aWParam: NativeUInt; aLParam: NativeInt): TMessage;
@@ -56,93 +56,93 @@ begin
   case SS.keyOp of
     koNone:               EXIT; // key not processed. bypass setting result to TRUE
 
-    koAboutBox:           mmpDo(evAboutFormShow);
-    koAdjustAspectRatio:  mmpDo(evVMAdjustAspectRatio);
-    koArrangeAll:         mmpDo(evVMArrangeAll);
+    koAboutBox:           mmp.cmd(evAboutFormShow);
+    koAdjustAspectRatio:  mmp.cmd(evVMAdjustAspectRatio);
+    koArrangeAll:         mmp.cmd(evVMArrangeAll);
     koBookmarkDelete:     newBookmark.delete(MP.notify(newNotice(evMPReqFileName)).text);
     koBookmarkLoad:       MP.notify(newNotice(evPBClick, newBookmark.position(MP.notify(newNotice(evMPReqFileName)).text)));
     koBookmarkSave:       newBookmark.save(MP.notify(newNotice(evMPReqFileName)).text, MP.notify(newNotice(evMPReqPosition)).integer);
-    koBrighterPB:         begin mmpDo(evMCBrighter); mmpDo(evPBBrighter); mmpDo(evSTBrighter); end;
+    koBrighterPB:         begin mmp.cmd(evMCBrighter); mmp.cmd(evPBBrighter); mmp.cmd(evSTBrighter); end;
     koBrightnessDn:       MP.notify(newNotice(evMPBrightnessDn));
     koBrightnessReset:    MP.notify(newNotice(evMPBrightnessReset));
     koBrightnessUp:       MP.notify(newNotice(evMPBrightnessUp));
-    koCleanup:            mmpDo(evVMCleanup);
-    koCentreWindow:       mmpDo(evVMCenterWindow);
-    koClipboard:          sendOpInfo(mmpDo(evPLCopyToClipboard).text);
-    koCloseEvery:         mmpDo(evPAPostToEvery, WIN_CLOSEAPP);
-    koCloseApp:           mmpDo(evAppClose);
+    koCleanup:            mmp.cmd(evVMCleanup);
+    koCentreWindow:       mmp.cmd(evVMCenterWindow);
+    koClipboard:          sendOpInfo(mmp.cmd(evPLCopyToClipboard).text);
+    koCloseEvery:         mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP);
+    koCloseApp:           mmp.cmd(evAppClose);
     koContrastDn:         MP.notify(newNotice(evMPContrastDn));
     koContrastReset:      MP.notify(newNotice(evMPContrastReset));
     koContrastUp:         MP.notify(newNotice(evMPContrastUp));
     koCycleAudio:         MP.notify(newNotice(evMPCycleAudio));
     koCycleSubs:          MP.notify(newNotice(evMPCycleSubs));
-    koDarkerPB:           begin mmpDo(evMCDarker); mmpDo(evPBDarker); mmpDo(evSTDarker); end;
-    koDeleteCurrentItem:  mmpDo(evVMDeleteCurrentItem, SS.shiftState);
-    koEscape:             mmpDo(evVMDoEscapeKey);
-    koExploreFolder:      mmpShellExec(mmpDo(evPLReqCurrentFolder).text);
+    koDarkerPB:           begin mmp.cmd(evMCDarker); mmp.cmd(evPBDarker); mmp.cmd(evSTDarker); end;
+    koDeleteCurrentItem:  mmp.cmd(evVMDeleteCurrentItem, SS.shiftState);
+    koEscape:             mmp.cmd(evVMDoEscapeKey);
+    koExploreFolder:      mmpShellExec(mmp.cmd(evPLReqCurrentFolder).text);
     koFrameBackwards:     MP.notify(newNotice(evMPFrameBackwards));
     koFrameForwards:      MP.notify(newNotice(evMPFrameForwards));
-    koFullscreen:         notifyApp(mmpDo(evVMToggleFullscreen));
+    koFullscreen:         notifyApp(mmp.cmd(evVMToggleFullscreen));
     koGammaDn:            MP.notify(newNotice(evMPGammaDn));
     koGammaReset:         MP.notify(newNotice(evMPGammaReset));
     koGammaUp:            MP.notify(newNotice(evMPGammaUp));
-    koGreaterWindow:      mmpDo(evPAPostToAll, WIN_GREATER);
-    koKeep:               mmpDo(evVMKeepCurrentItem);
-    koKeepCatF1:          mmpDo(evVMKeepCatF1);
-    koKeepCatF2:          mmpDo(evVMKeepCatF2);
-    koKeepCatF3:          mmpDo(evVMKeepCatF3);
-    koKeepCatF4:          mmpDo(evVMKeepCatF4);
-    koKeepDelete:         mmpDo(evVMKeepDelete);
-    koKeepMove:           mmpDo(evVMKeepMove);
-    koImageInBrowser:     mmpDo(evVMImageInBrowser);
-    koMaximize:           begin mmpDo(evGSAutoCenter, TRUE); mmpDo(evGSMaxSize, TRUE); mmpDo(evVMResizeWindow); end; // maximize the video according to the height of the screen
-    koMinimizeWindow:     mmpDo(evVMMinimize);
-    koMuteUnmute:         mmpDo(evMPMuteUnmute);
+    koGreaterWindow:      mmp.cmd(evPAPostToAll, WIN_GREATER);
+    koKeep:               mmp.cmd(evVMKeepCurrentItem);
+    koKeepCatF1:          mmp.cmd(evVMKeepCatF1);
+    koKeepCatF2:          mmp.cmd(evVMKeepCatF2);
+    koKeepCatF3:          mmp.cmd(evVMKeepCatF3);
+    koKeepCatF4:          mmp.cmd(evVMKeepCatF4);
+    koKeepDelete:         mmp.cmd(evVMKeepDelete);
+    koKeepMove:           mmp.cmd(evVMKeepMove);
+    koImageInBrowser:     mmp.cmd(evVMImageInBrowser);
+    koMaximize:           begin mmp.cmd(evGSAutoCenter, TRUE); mmp.cmd(evGSMaxSize, TRUE); mmp.cmd(evVMResizeWindow); end; // maximize the video according to the height of the screen
+    koMinimizeWindow:     mmp.cmd(evVMMinimize);
+    koMuteUnmute:         mmp.cmd(evMPMuteUnmute);
     koNextChapter:        MP.notify(newNotice(evMPNextChapter));
     koPanDn:              MP.notify(newNotice(evMPPanDn));
     koPanLeft:            MP.notify(newNotice(evMPPanLeft));
     koPanReset:           MP.notify(newNotice(evMPPanReset));
     koPanRight:           MP.notify(newNotice(evMPPanRight));
     koPanUp:              MP.notify(newNotice(evMPPanUP));
-    koPausePlay:          mmpDo(evPAPostToAll, WIN_PAUSE_PLAY);
-    koPBReset:            begin mmpDo(evMCReset); mmpDo(evPBReset); mmpDo(evSTReset); end;
+    koPausePlay:          mmp.cmd(evPAPostToAll, WIN_PAUSE_PLAY);
+    koPBReset:            begin mmp.cmd(evMCReset); mmp.cmd(evPBReset); mmp.cmd(evSTReset); end;
     koPrevChapter:        MP.notify(newNotice(evMPPrevChapter));
-    koPlayFirst:          mmpDo(evVMMPPlayFirst);
-    koPlayLast:           mmpDo(evVMMPPlayLast);
-    koPlayNext:           mmpDo(evVMMPPlayNext);
-    koPlayNextFolder:     mmpDo(evVMPlayNextFolder);
-    koPlayPrev:           mmpDo(evVMMPPlayPrev);
-    koPlayPrevFolder:     mmpDo(evVMPlayPrevFolder);
-    koReloadPlaylist:     mmpDo(evVMReloadPlaylist);
-    koRenameFile:         mmpDo(evVMRenameCurrentItem);
+    koPlayFirst:          mmp.cmd(evVMMPPlayFirst);
+    koPlayLast:           mmp.cmd(evVMMPPlayLast);
+    koPlayNext:           mmp.cmd(evVMMPPlayNext);
+    koPlayNextFolder:     mmp.cmd(evVMPlayNextFolder);
+    koPlayPrev:           mmp.cmd(evVMMPPlayPrev);
+    koPlayPrevFolder:     mmp.cmd(evVMPlayPrevFolder);
+    koReloadPlaylist:     mmp.cmd(evVMReloadPlaylist);
+    koRenameFile:         mmp.cmd(evVMRenameCurrentItem);
     koResetAll:           MP.notify(newNotice(evMPResetAll));
     koRotateL:            MP.notify(newNotice(evMPRotateLeft));
     koRotateR:            MP.notify(newNotice(evMPRotateRight));
     koRotateReset:        MP.notify(newNotice(evMPRotateReset));
-    koRunCut:             mmpOpenExternalApp(F11_APP, mmpDo(evPLReqCurrentItem).text);
-    koRunPot:             mmpOpenExternalApp(F10_APP, mmpDo(evPLReqCurrentItem).text);
-    koRunShot:            mmpOpenExternalApp(F12_APP, mmpDo(evPLReqCurrentItem).text);
-    koShowCaption:        mmpDo(evPAPostToAll, WIN_CAPTION);
+    koRunCut:             mmpOpenExternalApp(F11_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunPot:             mmpOpenExternalApp(F10_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunShot:            mmpOpenExternalApp(F12_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koShowCaption:        mmp.cmd(evPAPostToAll, WIN_CAPTION);
     koSpeedDn:            MP.notify(newNotice(evMPSpeedDn));
     koSpeedReset:         MP.notify(newNotice(evMPSpeedReset));
     koSpeedUp:            MP.notify(newNotice(evMPSpeedUp));
-    koStartOver:          mmpDo(evPAPostToAll, WIN_START_OVER);
-    koSysVolMax:          mmpDo(evMXSysVolMax); // someone or something needs to know this but we don't know (or care) who or what
-    koTab:                mmpDo(evPAPostToAll, WIN_TAB);
-    koTabTab:             mmpDo(evPAPostToAll, WIN_TABTAB);
+    koStartOver:          mmp.cmd(evPAPostToAll, WIN_START_OVER);
+    koSysVolMax:          mmp.cmd(evMXSysVolMax); // someone or something needs to know this but we don't know (or care) who or what
+    koTab:                mmp.cmd(evPAPostToAll, WIN_TAB);
+    koTabTab:             mmp.cmd(evPAPostToAll, WIN_TABTAB);
     koSaturationDn:       MP.notify(newNotice(evMPSaturationDn));
     koSaturationReset:    MP.notify(newNotice(evMPSaturationReset));
     koSaturationUp:       MP.notify(newNotice(evMPSaturationUp));
     koScreenshot:         MP.notify(newNotice(evMPScreenshot, mmpScreenshotFolder));
-    koSyncMedia:          mmpDo(evPAPostToEveryEx, message(WIN_SYNC_MEDIA, MP.notify(newNotice(evMPReqPosition)).integer, 0));
-    koThumbnails:         mmpDo(evVMShowThumbs);
-    koToggleProgressBar:  mmpDo(evPBToggleProgressBar);
-    koToggleControls:     mmpDo(evPAPostToAll, WIN_TOGGLE_CONTROLS);
-    koToggleEditMode:     mmpDo(evVMToggleEditMode);
-    koToggleFiltering:    mmpDo(evVMToggleFiltering);
-    koToggleHelp:         mmpDo(evVMToggleHelp);
+    koSyncMedia:          mmp.cmd(evPAPostToEveryEx, message(WIN_SYNC_MEDIA, MP.notify(newNotice(evMPReqPosition)).integer, 0));
+    koThumbnails:         mmp.cmd(evVMShowThumbs);
+    koToggleProgressBar:  mmp.cmd(evPBToggleProgressBar);
+    koToggleControls:     mmp.cmd(evPAPostToAll, WIN_TOGGLE_CONTROLS);
+    koToggleEditMode:     mmp.cmd(evVMToggleEditMode);
+    koToggleFiltering:    mmp.cmd(evVMToggleFiltering);
+    koToggleHelp:         mmp.cmd(evVMToggleHelp);
     koToggleNumlock:      mmpToggleNumlock;
-    koTogglePlaylist:     mmpDo(evVMTogglePlaylist);
+    koTogglePlaylist:     mmp.cmd(evVMTogglePlaylist);
     koToggleRepeat:       MP.notify(newNotice(evMPToggleRepeat));
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));

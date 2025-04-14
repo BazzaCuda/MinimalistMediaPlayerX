@@ -81,7 +81,7 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpDoProcs, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpFileUtils, mmpFuncProg, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 
@@ -233,7 +233,7 @@ end;
 
 function TAboutFormProxy.showForm(const thisVersion, buildVersion: string): boolean;
 begin
-  mmpDo(evGSShowingAbout, TRUE);
+  mmp.cmd(evGSShowingAbout, TRUE);
   showProgressForm;
   with TAboutForm.create(NIL) do
   try
@@ -247,7 +247,7 @@ begin
     showModal;
   finally
     free;
-    mmpDo(evGSShowingAbout, FALSE);
+    mmp.cmd(evGSShowingAbout, FALSE);
   end;
 end;
 

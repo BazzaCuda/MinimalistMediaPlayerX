@@ -52,7 +52,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpDoProcs, mmpFuncProg,
+  mmpFuncProg,
   _debugWindow;
 
 type
@@ -107,7 +107,7 @@ begin
 
   T := procedure begin try FFileContents.loadFromFile(FFilePath); except end;end;
 
-  mmpDo(vLastWriteTime > FLastWriteTime, T);
+  mmp.cmd(vLastWriteTime > FLastWriteTime, T);
   FLastWriteTime := vLastWriteTime;
 
   result := TRUE;
@@ -126,7 +126,7 @@ end;
 
 destructor TConfigFile.Destroy;
 begin
-  mmpFree(FFileContents <> NIL, FFileContents);
+  mmp.free(FFileContents <> NIL, FFileContents);
   inherited;
 end;
 

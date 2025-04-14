@@ -234,7 +234,6 @@
         <DCCReference Include="mmpMenu.pas"/>
         <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
-        <DCCReference Include="mmpDoProcs.pas"/>
         <DCCReference Include="mmpFuncProg.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>

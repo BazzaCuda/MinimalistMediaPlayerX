@@ -110,7 +110,7 @@ function mediaInfoDLL_Load(const LibPath: string): boolean;
 
 implementation
 
-uses mmpDoProcs;
+uses mmpFuncProg;
 
 var
   libHandle: THandle = 0;
@@ -126,9 +126,9 @@ function mediaInfoDLL_Load(const libPath: string): boolean;
 begin
   result := FALSE;
 
-  mmpDo(libHandle = 0,  procedure begin libHandle := loadLibrary(PChar(libPath)); end);
+  mmp.cmd(libHandle = 0,  procedure begin libHandle := loadLibrary(PChar(libPath)); end);
 
-  mmpDo(libHandle <> 0, procedure begin
+  mmp.cmd(libHandle <> 0, procedure begin
                                     MI_getProcAddress('MediaInfo_New',        @MediaInfo_New);
                                     MI_getProcAddress('MediaInfo_Delete',     @MediaInfo_Delete);
                                     MI_getProcAddress('MediaInfo_Open',       @MediaInfo_Open);

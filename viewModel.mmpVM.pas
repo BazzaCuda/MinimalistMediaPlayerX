@@ -90,7 +90,7 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
@@ -232,17 +232,17 @@ begin
 
   result := (abs(wndRect.left - rectStart.left) > 10) or (abs(wndRect.top - rectStart.top) > 10);
 
-  mmpDo(result, procedure begin
-                            mmpDo(evGSAutoCenter, FALSE);
-                            mmpDo(evGSMaxSize,    FALSE);
+  mmp.cmd(result, procedure begin
+                            mmp.cmd(evGSAutoCenter, FALSE);
+                            mmp.cmd(evGSMaxSize,    FALSE);
                           end);
 
   moveWindow(aHWND, dx, dy, wndRect.width, wndRect.height, FALSE);
 
-  mmpDo(result, procedure begin
-                            mmpDo(evVMMoveHelp);
-                            mmpDo(evVMMovePlaylist);
-                            mmpDo(evVMMoveTimeline);
+  mmp.cmd(result, procedure begin
+                            mmp.cmd(evVMMoveHelp);
+                            mmp.cmd(evVMMovePlaylist);
+                            mmp.cmd(evVMMoveTimeline);
                           end);
 end;
 
@@ -252,9 +252,9 @@ function TVM.adjustAspectRatio: boolean;
 begin
   FResizingWindow := TRUE;
   var vPt := mmpAdjustAspectRatio(GS.mainForm.handle, FVideoPanel.height);
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
-  mmpDo(evSTDisplayXY);
+  mmp.cmd(evSTDisplayXY);
   FResizingWindow := FALSE;
 end;
 
@@ -268,42 +268,42 @@ end;
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
   function nothingToPlay: boolean;
   begin
-    result := (ssCtrl in aShiftState) or NOT mmpDo(evPLReqHasItems).tf;
+    result := (ssCtrl in aShiftState) or NOT mmp.cmd(evPLReqHasItems).tf;
   end;
 begin
-  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmpDo(evMPReqPlaying).tf;
-  mmpDo(vWasPlaying, evMPPausePlay);
+  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
+  mmp.cmd(vWasPlaying, evMPPausePlay);
 
-  var vCurrentItem := mmpDo(evPLReqCurrentItem).text;
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
 
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
 
-  var vIx := mmpDo(evPLReqCurrentIx).integer;
-  mmpDo(evPLDeleteIx, vIx);
+  var vIx := mmp.cmd(evPLReqCurrentIx).integer;
+  mmp.cmd(evPLDeleteIx, vIx);
 
-  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose);
-                                                                       FALSE: mmpDo(evAppClose); end;end;
-  F := procedure begin mmpDo(evVMPlaySomething, vIx); end;
+  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose);
+                                                                       FALSE: mmp.cmd(evAppClose); end;end;
+  F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
 
-  mmpDo(nothingToPlay, T, F);
+  mmp.cmd(nothingToPlay, T, F);
 
-  mmpDo(evPLFormLoadBox);
+  mmp.cmd(evPLFormLoadBox);
 end;
 
 destructor TVM.Destroy;
 begin
   TT.unsubscribe(FSubscriberTT);
   appEvents.unsubscribe(FSubscriber);
-  mmpFree(FSlideshowTimer <> NIL, FSlideshowTimer);
+  mmp.free(FSlideshowTimer <> NIL, FSlideshowTimer);
   inherited;
 end;
 
 function TVM.doAppClose: boolean;
 begin
-  mmpDo(evPLFormShutForm);
-  mmpDo(evHelpShutHelp);
-  mmpDo(evVMShutTimeline);
+  mmp.cmd(evPLFormShutForm);
+  mmp.cmd(evHelpShutHelp);
+  mmp.cmd(evVMShutTimeline);
   GS.mainForm.close;
 end;
 
@@ -313,20 +313,20 @@ var
 begin
   result := FALSE;
 
-  vFolder   := mmpDo(evPLReqCurrentFolder).text;
+  vFolder   := mmp.cmd(evPLReqCurrentFolder).text;
   var vMsg  := 'Cleanup Timeline Editing files in '#13#10#13#10
               + 'Folder: ' + vFolder + ' ???';
 
-  mmpDo(mmpShowOKCancelMsgDlg(vMsg) = mrOK, procedure begin
-                                                        mmpDo(evSTOpInfo, 'Cleanup in progress');
+  mmp.cmd(mmpShowOKCancelMsgDlg(vMsg) = mrOK, procedure begin
+                                                        mmp.cmd(evSTOpInfo, 'Cleanup in progress');
                                                         newCleanup.cleanup(vFolder);
-                                                        mmpDo(evSTOpInfo, 'Cleanup complete');
+                                                        mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                       end);
 end;
 
 function TVM.doEscapeKey: boolean;
 begin
-  mmpDo(GS.mainForm.windowState = wsMaximized, evVMToggleFullscreen, evAppClose);
+  mmp.cmd(GS.mainForm.windowState = wsMaximized, evVMToggleFullscreen, evAppClose);
 end;
 
 function TVM.doPlayNext: boolean;
@@ -336,13 +336,13 @@ begin
 
   case mmpPlayNext of TRUE: EXIT; end;
 
-  T :=  procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
   F :=  procedure begin
                     FLocked := FALSE;
-                    mmpDo(GS.mediaType <> mtImage, evAppClose);
+                    mmp.cmd(GS.mediaType <> mtImage, evAppClose);
                   end;
 
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
+  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
 end;
 
 function TVM.doPlayPrev: boolean;
@@ -352,10 +352,10 @@ begin
 
   case mmpPlayPrev of TRUE: EXIT; end;
 
-  T :=  procedure begin mmpDo(mmpDo(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
+  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
   F :=  procedure begin FLocked := FALSE; end;
 
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
+  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
 end;
 
 function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
@@ -423,7 +423,7 @@ begin
 
   mmpThemeInitForm(aForm);
 
-  mmpDo(FMP <> NIL, procedure begin
+  mmp.cmd(FMP <> NIL, procedure begin
                                 FMP.subscribe(newSubscriber(onMPNotify));
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
@@ -434,10 +434,10 @@ end;
 
 function TVM.keepDelete: boolean;
 begin
-  case mmpKeepDelete(mmpDo(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
-  T := procedure begin mmpDo(mmpDo(evVMPlayNextFolder).tf, evNone, evAppClose); end;
-  F := procedure begin mmpDo(evAppClose); end;
-  mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);
+  case mmpKeepDelete(mmp.cmd(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
+  T := procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  F := procedure begin mmp.cmd(evAppClose); end;
+  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);
 end;
 
 function TVM.minimizeWindow: boolean;
@@ -456,7 +456,7 @@ begin
   wr.helpType   := htMain;
   wr.createNew  := bCreateNew;
 
-  mmpDo(evHelpMoveHelp, wr);
+  mmp.cmd(evHelpMoveHelp, wr);
 end;
 
 function TVM.movePlaylist(const bCreateNew: boolean): boolean;
@@ -469,7 +469,7 @@ begin
   wr.height     := FVideoPanel.height;
   wr.createNew  := bCreateNew;
 
-  mmpDo(evPLFormMove, wr);
+  mmp.cmd(evPLFormMove, wr);
 end;
 
 function TVM.moveTimeline(const bCreateNew: boolean = FALSE): boolean;
@@ -516,7 +516,7 @@ end;
 procedure TVM.onMouseDown(button: TMouseButton; shift: TShiftState; X, Y: Integer);
 begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.screenToClient(point(X, Y))) of FALSE: EXIT; end;
-  mmpDo(button = mbLeft, procedure  begin
+  mmp.cmd(button = mbLeft, procedure  begin
                                       FDragged := FALSE;
                                       mouseDown := TRUE;
                                       setStartPoint(GS.mainForm.handle);
@@ -526,7 +526,7 @@ end;
 procedure TVM.onMouseMove(aHWND: HWND; shift: TShiftState; X, Y: Integer);
 begin
   screen.cursor := crDefault;
-  mmpDo(mouseDown and (aHWND = FVideoPanel.handle), procedure begin FDragged := dragUI(GS.mainForm.handle); end);
+  mmp.cmd(mouseDown and (aHWND = FVideoPanel.handle), procedure begin FDragged := dragUI(GS.mainForm.handle); end);
 end;
 
 procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer);
@@ -558,22 +558,24 @@ begin
 
   case aNotice.event of
     evVMMPOnOpen:   onMPOpen(aNotice);
-    evMPStatePlay:  mmpDo(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
+    evMPStatePlay:  mmp.cmd(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
 
-    evMPStateEnd:   mmpDo((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
+    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
-    evMPDuration:   mmpDo(evPBMax, aNotice.integer);
-    evMPPosition:   mmpDo(evPBPosition, aNotice.integer);
+    evMPDuration:   mmp.cmd(evPBMax, aNotice.integer);
+    evMPPosition:   begin
+                      case GS.showingTimeline of TRUE: begin TL.cursorMoving := TRUE; TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;
+                      mmp.cmd(evPBPosition, aNotice.integer);
+                    end;
   end;
 
   case aNotice.event of
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
-                      mmpDo(GS.showingTimeline, evTLMax, aNotice.integer); end;
+                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer); end;
     evMPPosition:   begin
                       FMPPosition := aNotice.integer;
-                      mmpDo(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration));
-                      mmpDo(GS.showingTimeline, evTLPosition, aNotice.integer); end;
+                      mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)); end;
   end;
 end;
 
@@ -646,7 +648,7 @@ procedure TVM.onSlideshowTimer(sender: TObject);
 begin
   FSlideshowTimer.enabled := NOT GS.imagesPaused; // usually because a [R]ename has paused the slideshow
   case FSlideshowTimer.enabled of FALSE: EXIT; end;
-  mmpDo(GS.mediaType = mtImage, evVMMPPlayNext);
+  mmp.cmd(GS.mediaType = mtImage, evVMMPPlayNext);
 end;
 
 function TVM.onTickTimer(const aNotice: INotice): INotice;
@@ -658,13 +660,13 @@ begin
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
 
-  case GS.activeTasks = 0 of  FALSE: mmpDo(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
+  case GS.activeTasks = 0 of  FALSE: mmp.cmd(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
 begin
   FDoubleClick := TRUE;
-  mmpDo(FDragged, evNone, evVMToggleFullscreen); // after a drag, don't process button up as a click
+  mmp.cmd(FDragged, evNone, evVMToggleFullscreen); // after a drag, don't process button up as a click
 end;
 
 procedure TVM.onWINAutoCenterOff(var msg: TMessage);
@@ -674,7 +676,7 @@ end;
 
 procedure TVM.onWINCaption(var msg: TMessage);
 begin
-  mmpDo(evMCReshowCaption);
+  mmp.cmd(evMCReshowCaption);
 end;
 
 procedure TVM.onWINCloseApp(var msg: TMessage);
@@ -684,7 +686,7 @@ end;
 
 procedure TVM.onWINControls(var msg: TMessage);
 begin
-  mmpDo(evSTToggleCaptions);
+  mmp.cmd(evSTToggleCaptions);
 end;
 
 procedure TVM.onWINGreater(var msg: TMessage);
@@ -692,7 +694,7 @@ begin
   FResizingWindow := TRUE;
   var vHeight := mmpGreaterWindow(GS.mainForm.handle, mmpShiftState);
   var vPt     := mmpCalcWindowSize(vHeight, GS.maxSize);
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   moveHelp;
   movePlaylist;
@@ -713,9 +715,9 @@ end;
 
 procedure TVM.onWinResize(var msg: TMessage);
 begin
-  mmpDo(evPLFormShutForm);
-  mmpDo(evHelpShutHelp);
-  forcedResize(GS.mainForm.handle, point(msg.WParam, msg.LParam), mmpDo(evMPReqVideoWidth).integer, mmpDo(evMPReqVideoHeight).integer);
+  mmp.cmd(evPLFormShutForm);
+  mmp.cmd(evHelpShutHelp);
+  forcedResize(GS.mainForm.handle, point(msg.WParam, msg.LParam), mmp.cmd(evMPReqVideoWidth).integer, mmp.cmd(evMPReqVideoHeight).integer);
 end;
 
 procedure TVM.onWINStartOver(var msg: TMessage);
@@ -753,9 +755,9 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      mmpDo(evPLFillPlaylist, extractFilePath(vFilePath), mtUnk);
-      mmpDo(evPLFind, vFilePath);
-      mmpDo(mmpDo(evPLReqHasItems).tf, evVMMPPlayCurrent);
+      mmp.cmd(evPLFillPlaylist, extractFilePath(vFilePath), mtUnk);
+      mmp.cmd(evPLFind, vFilePath);
+      mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent);
 
       BREAK; // we only process the first file if multiple files are dropped
     end;
@@ -768,8 +770,8 @@ end;
 procedure TVM.onWMEnterSizeMove(var msg: TMessage);
 // the user manually starts to resize the window
 begin
-  mmpDo(evGSAutoCenter, FALSE);
-  mmpDo(evGSMaxSize,    FALSE);
+  mmp.cmd(evGSAutoCenter, FALSE);
+  mmp.cmd(evGSMaxSize,    FALSE);
 end;
 
 procedure TVM.onWMSizing(var msg: TMessage);
@@ -787,22 +789,22 @@ end;
 function TVM.playNextFolder: boolean;
 // reload playlist from vNextFolder and play first item
 begin
-  var vNextFolder := mmpNextFolder(mmpDo(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmpDo(vNextFolder = '', evAppClose);
+  var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mmp.cmd(vNextFolder = '', evAppClose);
 
-  mmpDo(evSTOpInfo, vNextFolder);
+  mmp.cmd(evSTOpInfo, vNextFolder);
 
-  T := procedure begin mmpDo(evPLFillPlaylist, vNextFolder); end;
-  F := procedure begin mmpDo(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  T := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder); end;
+  F := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
 
-  mmpDo(GS.imagesPaused, T, F);
+  mmp.cmd(GS.imagesPaused, T, F);
 
-  mmpDo(evPLFormLoadBox);
+  mmp.cmd(evPLFormLoadBox);
 
-  T := procedure begin mmpDo(evVMMPPlayCurrent); end;
-  F := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
+  T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
+  F := procedure begin mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
 
-  mmpDo(mmpDo(evPLReqHasItems).tf, T, F);
+  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F);
 
   result := vNextFolder <> '';
 end;
@@ -810,22 +812,22 @@ end;
 function TVM.playPrevFolder: boolean;
 // reload playlist from vPrevFolder and play first item
 begin
-  var vPrevFolder := mmpNextFolder(mmpDo(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmpDo(vPrevFolder = '', evAppClose);
+  var vPrevFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mmp.cmd(vPrevFolder = '', evAppClose);
 
-  mmpDo(evSTOpInfo, vPrevFolder);
+  mmp.cmd(evSTOpInfo, vPrevFolder);
 
-  T := procedure begin mmpDo(evPLFillPlaylist, vPrevFolder); end;
-  F := procedure begin mmpDo(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  T := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder); end;
+  F := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
 
-  mmpDo(GS.imagesPaused, T, F);
+  mmp.cmd(GS.imagesPaused, T, F);
 
-  mmpDo(evPLFormLoadBox);
+  mmp.cmd(evPLFormLoadBox);
 
-  T := procedure begin mmpDo(evVMMPPlayCurrent); end;
-  F := procedure begin mmpDo(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evMPStop); end; // if the folder is empty we want a blank screen
+  T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
+  F := procedure begin mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evMPStop); end; // if the folder is empty we want a blank screen
 
-  mmpDo(mmpDo(evPLReqHasItems).tf, T, F);
+  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F);
 
   result := vPrevFolder <> '';
 end;
@@ -833,7 +835,7 @@ end;
 function TVM.playSomething(const aIx: integer): boolean;
 begin
   result := FALSE;
-  mmpDo((aIx = 0) or mmpDo(evPLReqIsLast).tf,
+  mmp.cmd((aIx = 0) or mmp.cmd(evPLReqIsLast).tf,
                                               evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
                                               evVMMPPlayNext);    // ...hence, playNext
   result := TRUE;
@@ -842,10 +844,10 @@ end;
 function TVM.reloadPlaylist: boolean;
 begin
   result := FALSE;
-  var vCurrentItem := mmpDo(evPLReqCurrentItem).text;
-  mmpDo(evPLFillPlaylist, mmpDo(evPLReqCurrentFolder).text, mtUnk);
-  mmpDo(mmpDo(evPLFind, vCurrentItem).tf, evPLFirst);
-  mmpDo(evPLFormLoadBox);
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
+  mmp.cmd(evPLFillPlaylist, mmp.cmd(evPLReqCurrentFolder).text, mtUnk);
+  mmp.cmd(mmp.cmd(evPLFind, vCurrentItem).tf, evPLFirst);
+  mmp.cmd(evPLFormLoadBox);
   result := TRUE;
 end;
 
@@ -856,12 +858,12 @@ var
   vWasPlaying:      boolean;
 begin
   result := '';
-  mmpDo(evGSImagesPaused, TRUE); // stop any running slideshow at the earliest possible
-  case mmpDo(evPLReqHasItems).tf of FALSE: EXIT; end;
-  vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmpDo(evMPReqPlaying).tf;
-  mmpDo(vWasPlaying, evMPPause); // otherwise we'll rename the wrong file if this one ends and the next one plays
+  mmp.cmd(evGSImagesPaused, TRUE); // stop any running slideshow at the earliest possible
+  case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end;
+  vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
+  mmp.cmd(vWasPlaying, evMPPause); // otherwise we'll rename the wrong file if this one ends and the next one plays
 
-  vOldName := mmpDo(evPLReqCurrentItem).text;
+  vOldName := mmp.cmd(evPLReqCurrentItem).text;
   case aRenameType of
     rtUser:       vNewName := mmpRenameFile(vOldName);
     rtKeep:       vNewName := mmpRenameFile(vOldName, '! '      + mmpFileNameWithoutExtension(vOldName));
@@ -878,17 +880,17 @@ begin
                                               case forceDirectories(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
                                               case directoryExists(CF[CONF_MOVE_FOLDER])  of FALSE: EXIT; end;
                                               case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
-                                    FALSE: case vWasPlaying of TRUE: mmpDo(evMPResume); end;end;
+                                    FALSE: case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
   case aRenameType = rtKeepMove of   TRUE:  begin
-                                              mmpDo(evMPStop);
-                                              mmpDo(evPLDeleteIx, mmpDo(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
-                                              mmpDo(mmpDo(evPLReqHasItems).tf, evVMMPPlayCurrent, evVMMPPlayNext); end; // force nextFolderOnEmpty/End
+                                              mmp.cmd(evMPStop);
+                                              mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
+                                              mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent, evVMMPPlayNext); end; // force nextFolderOnEmpty/End
                                     FALSE:  begin
-                                              mmpDo(evPLReplaceCurrentItem, vNewName);
-                                              mmpDo(evMCCaption, mmpDo(evPLReqFormattedItem).text); end;end;
+                                              mmp.cmd(evPLReplaceCurrentItem, vNewName);
+                                              mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text); end;end;
 
-  mmpDo(evPLFormLoadBox);
+  mmp.cmd(evPLFormLoadBox);
 
   case aRenameType of
     rtUser:       result := 'Renamed';
@@ -904,18 +906,18 @@ end;
 function TVM.resizeWindow: boolean;
 begin
   result := FALSE;
-  case mmpDo(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
+  case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
 
   case FResizingWindow of TRUE: EXIT; end;
   FResizingWindow := TRUE;
 
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
 
-  mmpDo(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
+  mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
 
   mmpSetWindowSize(GS.mainForm.handle, vPt);
 
-  mmpDo(evWndResize); // reposition the help, playlist and timeline windows
+  mmp.cmd(evWndResize); // reposition the help, playlist and timeline windows
 
   FResizingWindow := FALSE;
   result          := TRUE;
@@ -924,7 +926,7 @@ end;
 function TVM.sendOpInfo(const aOpInfo: string): boolean;
 begin
   result := FALSE;
-  mmpDo(evSTOpInfo, aOpInfo);
+  mmp.cmd(evSTOpInfo, aOpInfo);
   result := TRUE;
 end;
 
@@ -947,7 +949,7 @@ function TVM.setupSlideshowTimer: boolean;
 begin
   case FSlideshowTimer = NIL of FALSE: freeAndNIL(FSlideshowTimer); end;
 
-  mmpDo(GS.imagesPaused, doNowt, procedure  begin
+  mmp.cmd(GS.imagesPaused, doNowt, procedure  begin
                                               FSlideshowTimer           := TTimer.create(NIL);
                                               FSlideshowTimer.interval  := GS.IDD * 1000;
                                               FSlideshowTimer.OnTimer   := onSlideshowTimer;
@@ -963,17 +965,17 @@ function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
     result.height := GS.mainForm.height;
   end;
 begin
-  mmpDo(evHelpShutHelp);
-  mmpDo(evPLFormShutForm);
-  mmpDo(evVMShutTimeline);
+  mmp.cmd(evHelpShutHelp);
+  mmp.cmd(evPLFormShutForm);
+  mmp.cmd(evVMShutTimeline);
 
-  mmpDo(GS.imagesPaused, evNone, evMPPausePlay);
-  mmpDo(evMPPause);
+  mmp.cmd(GS.imagesPaused, evNone, evMPPausePlay);
+  mmp.cmd(evMPPause);
 
   var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
   case vModalResult of
     mrAll:      EXIT; // user pressed Ctrl-[0]
-    mrClose:    mmpDo(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', procedure begin mmpDo(evAppClose); EXIT; end); // normal exit from browser
+    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', procedure begin mmp.cmd(evAppClose); EXIT; end); // normal exit from browser
     mrIgnore:   ;     // user pressed Ctrl-[X] - ignore exitApp setting, whatever it is
   end;
 
@@ -1010,7 +1012,8 @@ begin
   vTab := mmp.use((vTab = 0) or (aFactor = -1), 1, vTab);
   vTab := mmp.use((vTab = 1) and (ssShift in mmpShiftState), 2, vTab);
 
-  vPosition := mmp.use(ssCtrl  in mmpShiftState, vPosition - vTab, vPosition + vTab);
+  vPosition := mmp.use(ssCtrl in mmpShiftState, vPosition - vTab, vPosition + vTab);
+  vPosition := mmp.use((ssCtrl in mmpShiftState) and (vPosition < 1), 1, vPosition); // prevent wrap-around to the end of the audio/video
 
   FMP.notify(newNotice(evPBClick, vPosition));    // change MP position
   onMPNotify(newNotice(evMPPosition, vPosition)); // immediately update time display
@@ -1027,26 +1030,26 @@ function TVM.toggleEditMode: boolean;
 begin
   result := FALSE;
 
-  mmpDo(evHelpShutHelp);
-  mmpDo(evPLFormShutForm);
+  mmp.cmd(evHelpShutHelp);
+  mmp.cmd(evPLFormShutForm);
 
-  var vCurrentItem := mmpDo(evPLReqCurrentItem).text;
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
 
   F := procedure  begin
-                    mmpDo(evMPPause);
+                    mmp.cmd(evMPPause);
                     mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
                                                        + 'The path or filename contains a single quote, double quote, ampersand, etc.'#13#10
                                                        + 'or special characters which are not in this set: \!@#$^()[]{}+-=_./'#13#10#13#10
                                                        + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
 
-  mmpDo(mmpIsEditFriendly(vCurrentItem), NIL, F);
+  mmp.cmd(mmpIsEditFriendly(vCurrentItem), NIL, F);
   case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
-  mmpDo(GS.showingTimeline, procedure begin shutTimeline; end,
-                            procedure begin mmpDo(evVMMoveTimeline, TRUE); end);
+  mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end,
+                            procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
 
-  mmpDo(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, FMPDuration); end);
+  mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, FMPDuration); end);
 
   result := TRUE;
 end;
@@ -1054,10 +1057,10 @@ end;
 function TVM.toggleFiltering: boolean;
 begin
   result := FALSE;
-  mmpDo(evGSImagesPaused, NOT GS.imagesPaused);
+  mmp.cmd(evGSImagesPaused, NOT GS.imagesPaused);
   setupSlideshowTimer;
-  case GS.imagesPaused of  TRUE: mmpDo(evSTOpInfo, 'Playlist filtering OFF');
-                          FALSE: mmpDo(evSTOpInfo, 'Playlist filtering ON'); end;
+  case GS.imagesPaused of  TRUE: mmp.cmd(evSTOpInfo, 'Playlist filtering OFF');
+                          FALSE: mmp.cmd(evSTOpInfo, 'Playlist filtering ON'); end;
   result := TRUE;
 end;
 
@@ -1075,22 +1078,22 @@ end;
 function TVM.toggleHelp: boolean;
 begin
   result := FALSE;
-  mmpDo(evPLFormShutForm);
+  mmp.cmd(evPLFormShutForm);
   GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
 
-  mmpDo(GS.showingHelp, procedure begin mmpDo(evVMMoveHelp, TRUE); end,
-                        procedure begin mmpDo(evHelpShutHelp); end);
+  mmp.cmd(GS.showingHelp, procedure begin mmp.cmd(evVMMoveHelp, TRUE); end,
+                        procedure begin mmp.cmd(evHelpShutHelp); end);
   result := TRUE;
 end;
 
 function TVM.togglePlaylist: boolean;
 begin
   result := FALSE;
-  mmpDo(evHelpShutHelp);
+  mmp.cmd(evHelpShutHelp);
   GS.notify(newNotice(evGSShowingPlaylist, NOT GS.showingPlaylist));
 
-  mmpDo(GS.showingPlaylist, procedure begin mmpDo(evVMMovePlaylist, TRUE); end,
-                            procedure begin mmpDo(evPLFormShutForm); end);
+  mmp.cmd(GS.showingPlaylist, procedure begin mmp.cmd(evVMMovePlaylist, TRUE); end,
+                            procedure begin mmp.cmd(evPLFormShutForm); end);
 
   result := TRUE;
 end;

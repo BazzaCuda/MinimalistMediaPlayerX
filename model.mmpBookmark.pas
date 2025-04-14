@@ -37,7 +37,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpDoProcs,
+  mmpFuncProg,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -63,20 +63,20 @@ function TBookmark.delete(const aURL: string): string;
 begin
   CF.deleteConfig(aURL);
   result := 'Bookmark deleted';
-  mmpDo(evSTOpInfo, result);
+  mmp.cmd(evSTOpInfo, result);
 end;
 
 function TBookmark.position(const aURL: string): integer;
 begin
   result := CF.asInteger[aURL];
-  mmpDo(evSTOpInfo, 'From bookmark');
+  mmp.cmd(evSTOpInfo, 'From bookmark');
 end;
 
 function TBookmark.save(const aURL: string; const aPosition: integer): string;
 begin
   CF[aURL]  := intToStr(aPosition);
   result    := 'Bookmarked';
-  mmpDo(evSTOpInfo, result);
+  mmp.cmd(evSTOpInfo, result);
 end;
 
 end.

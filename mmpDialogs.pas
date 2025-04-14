@@ -34,7 +34,7 @@ implementation
 uses
   winApi.activeX,
   vcl.forms, vcl.stdCtrls,
-  mmpDoProcs, mmpGlobalState;
+  mmpFuncProg, mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
@@ -47,15 +47,15 @@ begin
   coInitialize(NIL);
   with createMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
-    mmpDo(evGSUserInput, TRUE);
+    mmp.cmd(evGSUserInput, TRUE);
     font.name := 'Segoe UI';
     font.size := 12;
     height    := height +  50;
     width     := width  + 200;
 
     for var i := 0 to controlCount - 1 do begin
-      mmpDo(controls[i] is  TLabel, procedure begin with controls[i] do width  := width + 200; end);
-      mmpDo(controls[i] is TButton, procedure begin with controls[i] do begin
+      mmp.cmd(controls[i] is  TLabel, procedure begin with controls[i] do width  := width + 200; end);
+      mmp.cmd(controls[i] is TButton, procedure begin with controls[i] do begin
                                                                           top  := top   +  60;
                                                                           left := left  + 100;
                                                                         end;end);
@@ -63,7 +63,7 @@ begin
     result := showModal;
   finally
     free;
-    mmpDo(evGSUserInput, FALSE);
+    mmp.cmd(evGSUserInput, FALSE);
     coUninitialize;
   end;
 end;

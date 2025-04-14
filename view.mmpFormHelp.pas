@@ -55,7 +55,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpGlobalState, mmpDoProcs, mmpMarkDownUtils,
+  mmpGlobalState, mmpFuncProg, mmpMarkDownUtils,
   _debugWindow;
 
 type
@@ -184,11 +184,11 @@ begin
   case wr.height > UI_DEFAULT_AUDIO_HEIGHT of TRUE: FHelpForm.height := wr.height; end;
   screen.cursor := crDefault;
 
-  mmpDo(evHelpShowHelp);
+  mmp.cmd(evHelpShowHelp);
 
   winAPI.windows.setWindowPos(FHelpForm.handle, HWND_TOP, wr.pt.X, wr.pt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
   setForegroundWindow(wr.HWND);
-  mmpDo(evGSWidthHelp, FHelpForm.width);
+  mmp.cmd(evGSWidthHelp, FHelpForm.width);
 end;
 
 function THelpFormProxy.notify(const aNotice: INotice): INotice;
@@ -219,7 +219,7 @@ begin
   FHelpForm.close;
   FHelpForm.Free;
   FHelpForm := NIL;
-  mmpDo(evGSWidthHelp, 0);
+  mmp.cmd(evGSWidthHelp, 0);
   GS.notify(newNotice(evGSShowingHelp, FALSE));
 end;
 

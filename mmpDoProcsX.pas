@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpDoProcs;
+unit mmpDoProcsX;
 
 interface
 
@@ -24,7 +24,7 @@ uses
   winApi.messages,
   system.classes, system.sysUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpFuncProg;
+  mmpConsts;
 
 //===== TProcs
 function mmpDo(const aBoolean: boolean;     const trueProc:     TProc;          const falseProc: TProc                            ): boolean; overload;
@@ -72,118 +72,118 @@ implementation
 //===== TProcs
 function mmpDo(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueProc, falseProc);
+  result := mmpDo(aBoolean, trueProc, falseProc);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueProc: TProc): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueProc);
+  result := mmpDo(aBoolean, trueProc);
 end;
 
 //===== TOProcs with a TObject parameter
 function mmpDo(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueProc, aObject);
+  result := mmpDo(aBoolean, trueProc, aObject);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueProc, falseProc, aObject);
+  result := mmpDo(aBoolean, trueProc, falseProc, aObject);
 end;
 
 //===== TRFuncs which return a boolean result
 function mmpDo(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueFunc, falseFunc);
+  result := mmpDo(aBoolean, trueFunc, falseFunc);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueFunc: TBFunc): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueFunc);
+  result := mmpDo(aBoolean, trueFunc);
 end;
 
 //===== TSFuncs which return a string result
 function mmpDo(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string;
 begin
-  result := mmp.cmd(aBoolean, trueFunc, falseFunc);
+  result := mmpDo(aBoolean, trueFunc, falseFunc);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueFunc: TSFunc): string;
 begin
-  result := mmp.cmd(aBoolean, trueFunc);
+  result := mmpDo(aBoolean, trueFunc);
 end;
 
 //===== Event Notices with no result
 function mmpDo(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueEvent, falseEvent);
+  result := mmpDo(aBoolean, trueEvent, falseEvent);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueNotices: array of TNoticeEvent): boolean;
 begin
-  result := mmp.cmd(aBoolean, trueNotices);
+  result := mmpDo(aBoolean, trueNotices);
 end;
 
 //===== Event Notices with the INotice returned
 function mmpDo(const aBoolean: boolean; const trueEvent: TNoticeEvent): INotice;
 begin
-  result := mmp.cmd(aBoolean, trueEvent);
+  result := mmpDo(aBoolean, trueEvent);
 end;
 
 function mmpDo(const aBoolean: boolean; const trueEvent: TNoticeEvent; const aInteger: integer): INotice;
 begin
-  result := mmp.cmd(aBoolean, trueEvent, aInteger);
+  result := mmpDo(aBoolean, trueEvent, aInteger);
 end;
 
 //===== Event Notices with the INotice returned (no boolean test)
 function mmpDo(const aEvent: TNoticeEvent): INotice;
 begin
-  result := mmp.cmd(aEvent);
+  result := mmpDo(aEvent);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aBoolean: boolean): INotice;
 begin
-  result := mmp.cmd(aEvent, aBoolean);
+  result := mmpDo(aEvent, aBoolean);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aInteger: integer): INotice;
 begin
-  result := mmp.cmd(aEvent, aInteger);
+  result := mmpDo(aEvent, aInteger);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aString: string): INotice;
 begin
-  result := mmp.cmd(aEvent, aString);
+  result := mmpDo(aEvent, aString);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aText: string; const aMediaType: TMediaType): INotice;
 begin
-  result := mmp.cmd(aEvent, aText, aMediaType);
+  result := mmpDo(aEvent, aText, aMediaType);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aWndRec: TWndRec): INotice;
 begin
-  result := mmp.cmd(aEvent, aWndRec);
+  result := mmpDo(aEvent, aWndRec);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aComponent: TComponent): INotice;
 begin
-  result := mmp.cmd(aEvent, aComponent);
+  result := mmpDo(aEvent, aComponent);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aMediaType: TMediaType): INotice;
 begin
-  result := mmp.cmd(aEvent, aMediaType);
+  result := mmpDo(aEvent, aMediaType);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aMsg: TMessage): INotice;
 begin
-  result := mmp.cmd(aEvent, aMsg);
+  result := mmpDo(aEvent, aMsg);
 end;
 
 function mmpDo(const aEvent: TNoticeEvent; const aShiftState: TShiftState): INotice;
 begin
-  result := mmp.cmd(aEvent, aShiftState);
+  result := mmpDo(aEvent, aShiftState);
 end;
 //===== Misc
 
@@ -194,7 +194,7 @@ end;
 
 procedure mmpDo(const aBoolean: boolean; const aProcVar: TProcVar);
 begin
-  mmp.cmd(aBoolean, aProcVar);
+  mmpDo(aBoolean, aProcVar);
 end;
 
 end.

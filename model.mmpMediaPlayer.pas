@@ -38,7 +38,7 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  mmpConsts, mmpFileUtils, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpTickTimer, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpFuncProg, mmpGlobalState, mmpTickTimer, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
 
@@ -117,13 +117,13 @@ begin
   mpvInitPlayer(mpv, aHWND, mmpExePath, mmpExePath);
 
   mpvGetPropertyString(mpv, 'screenshot-directory', FMPVScreenshotDirectory);
-  mmpDo(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory);
+  mmp.cmd(evGSMPVScreenshotDirectory, FMPVScreenshotDirectory);
 
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
   vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
   FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION);                                // if the image-display-duration= entry isn't a valid integer
-  mmpDo(evGSIDD, trunc(FImageDisplayDurationMs));                // stored as seconds, same as in mpv.conf
+  mmp.cmd(evGSIDD, trunc(FImageDisplayDurationMs));                // stored as seconds, same as in mpv.conf
   FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;     // this property isn't currently used anywhere (see evMPReqIDD)
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');  // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
 
@@ -217,10 +217,10 @@ procedure TMediaPlayer.onFileOpen(Sender: TObject; const aFilePath: string);
 begin
   case FNotifier = NIL of TRUE: EXIT; end;
   case FMediaType of mtAudio, mtVideo:  begin
-                                          FNotifier.notifySubscribers(mmpDo(evMPDuration, mpvDuration(mpv)));
-                                          FNotifier.notifySubscribers(mmpDo(evMPPosition, 0)); end;end;
+                                          FNotifier.notifySubscribers(mmp.cmd(evMPDuration, mpvDuration(mpv)));
+                                          FNotifier.notifySubscribers(mmp.cmd(evMPPosition, 0)); end;end;
 
-  case FMediaType of mtAudio, mtImage: mmpDo(evVMResizeWindow); end; // for mtImage, do it in onTickTimer
+  case FMediaType of mtAudio, mtImage: mmp.cmd(evVMResizeWindow); end; // for mtImage, do it in onTickTimer
 
   var vNotice     := newNotice;
   vNotice.event   := evVMMPOnOpen;
@@ -234,9 +234,9 @@ procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 begin
 //  TDebug.debugEnum<TMPVPlayerState>('eState ' + extractFileName(mpvFileName(mpv)), eState);
   case eState of
-    mpsLoading:   ; // FNotifier.notifySubscribers(mmpDo(evMPStateLoading)); {not currently used}
-    mpsEnd:       FNotifier.notifySubscribers(mmpDo(evMPStateEnd));
-    mpsPlay:      FNotifier.notifySubscribers(mmpDo(evMPStatePlay));
+    mpsLoading:   ; // FNotifier.notifySubscribers(mmp.cmd(evMPStateLoading)); {not currently used}
+    mpsEnd:       FNotifier.notifySubscribers(mmp.cmd(evMPStateEnd));
+    mpsPlay:      FNotifier.notifySubscribers(mmp.cmd(evMPStatePlay));
   end;
 end;
 
@@ -245,7 +245,7 @@ begin
   result := aNotice;
   case FNotifier = NIL  of TRUE: EXIT; end;
   case FIgnoreTicks     of TRUE: EXIT; end;
-  case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(mmpDo(evMPPosition, mpvPosition(mpv))); end;
+  case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(mmp.cmd(evMPPosition, mpvPosition(mpv))); end;
 
   case FDimensionsDone of FALSE:  begin // only ever false for videos
     inc(FCheckCount);
@@ -253,7 +253,7 @@ begin
     case (mpvVideoWidth(mpv) <> FVideoWidth) or (mpvVideoHeight(mpv) <> FVideoHeight) of TRUE:  begin
                                                                                                   FVideoWidth     := mpvVideoWidth(mpv);
                                                                                                   FVideoHeight    := mpvVideoHeight(mpv);
-                                                                                                  mmpDo(evVMResizeWindow); end;end;end;
+                                                                                                  mmp.cmd(evVMResizeWindow); end;end;end;
   end;
 end;
 
@@ -273,10 +273,10 @@ begin
   FCheckCount   := 0;
   FIgnoreTicks  := FALSE; // react in onTickTimer
 
-  mmpDo(evGSMediaType, FMediaType);
-  mmpDo(evMIGetMediaInfo, aURL, FMediaType);
-  mmpDo(evSTUpdateMetaData);
-  mmpDo(evMCCaption, mmpDo(evPLReqFormattedItem).text);
+  mmp.cmd(evGSMediaType, FMediaType);
+  mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
+  mmp.cmd(evSTUpdateMetaData);
+  mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
   result := TRUE;
 end;
 
@@ -291,7 +291,7 @@ end;
 
 function TMediaPlayer.pausePlayImages: string;
 begin
-  mmpDo(evGSImagesPaused, NOT GS.imagesPaused);
+  mmp.cmd(evGSImagesPaused, NOT GS.imagesPaused);
 
   case GS.imagesPaused of  TRUE: result := 'slideshow paused';
                         FALSE: result := 'slideshow unpaused'; end;
@@ -300,7 +300,7 @@ end;
 function TMediaPlayer.sendOpInfo(const aOpInfo: string): boolean;
 begin
   result := FALSE;
-  mmpDo(evSTOpInfo, aOpInfo);
+  mmp.cmd(evSTOpInfo, aOpInfo);
   result := TRUE;
 end;
 

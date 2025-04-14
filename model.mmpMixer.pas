@@ -27,7 +27,7 @@ uses
   system.math, system.sysUtils, system.win.comObj,
   mmpMMDevApi_tlb,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpDoProcs;
+  mmpFuncProg;
 
 type
   IMixer = interface
@@ -319,7 +319,7 @@ begin
   setMute(FALSE);
   setVolume(65535);
   result := 'Sys Vol Max';
-  mmpDo(evSTOpInfo, result);   // CHECK THIS. create IMixer each time
+  mmp.cmd(evSTOpInfo, result);   // CHECK THIS. create IMixer each time
 end;
 
 initialization

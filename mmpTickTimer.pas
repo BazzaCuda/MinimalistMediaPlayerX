@@ -36,7 +36,7 @@ implementation
 
 uses
   winApi.windows,
-  mmpConsts, mmpDoProcs;
+  mmpConsts, mmpFuncProg;
 
 type
   TTickTimer = class(TInterfacedObject, ITickTimer)
@@ -86,7 +86,7 @@ end;
 
 procedure TTickTimer.timerEvent(aSender: TObject);
 begin
-  FNotifier.notifySubscribers(mmpDo(evTickTimer));
+  FNotifier.notifySubscribers(mmp.cmd(evTickTimer));
 end;
 
 procedure TTickTimer.unsubscribe(const aSubscriber: ISubscriber);

@@ -47,7 +47,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 533
-      ActivePage = tsStreams
+      ActivePage = tsSegments
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -83,8 +83,8 @@ object StreamListForm: TStreamListForm
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2311,6 +2311,15 @@ object StreamListForm: TStreamListForm
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
+      object lblSegments: TLabel
+        Left = 16
+        Top = 8
+        Width = 127
+        Height = 25
+        AutoSize = False
+        Caption = 'Clicking a segment will select it in the Timeline'
+        WordWrap = True
+      end
       object btnExport: TBitBtn
         Left = 209
         Top = -1

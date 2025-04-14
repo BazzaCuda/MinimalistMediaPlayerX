@@ -46,6 +46,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure lblPositionClick(Sender: TObject);
   strict private
+    FBusy:     boolean;
     FDragging: boolean;
   private
     function  getCursorPos: integer;
@@ -61,6 +62,7 @@ type
   TTimeline = class(TObject)
   strict private
     FCancelled:               boolean;
+    FCursorMoving:            boolean;
     FLengthenCount:           integer;
     FMax:                     integer;
     FMediaFilePath:           string;
@@ -110,11 +112,13 @@ type
     function    clear:          boolean;
     function    delSegment(const aSegment: TSegment): boolean;
     function    initTimeline(const aMediaFilePath: string; const aMax: integer): string;
+    function    notify(const aNotice: INotice): INotice;
     function    redo:           boolean;
     function    undo(const aPrevAction: string):  boolean;
     function    validKey(key: WORD):              boolean;
 
     property    cancelled:      boolean               read FCancelled;
+    property    cursorMoving:   boolean               read FCursorMoving  write FCursorMoving;
     property    lengthenCount:  integer               read FLengthenCount write FLengthenCount;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
@@ -135,7 +139,7 @@ implementation
 uses
   winApi.shellApi,
   vcl.dialogs,
-  mmpFileUtils, mmpFormatting, mmpDoProcs, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpMediaInfo,
   _debugWindow;
@@ -223,9 +227,9 @@ begin
 
   mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
 
-  mmpDo(evMPKeepOpen, TRUE);
-  mmpDo(evGSShowingTimeline, TRUE);
-  mmpDo(evGSTimelineHeight, gTimelineForm.height + 10);
+  mmp.cmd(evMPKeepOpen, TRUE);
+  mmp.cmd(evGSShowingTimeline, TRUE);
+  mmp.cmd(evGSTimelineHeight, gTimelineForm.height + 10);
 end;
 
 var gTL: TTimeline = NIL;
@@ -234,9 +238,9 @@ begin
   mmpShutStreamList;
   case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
-  mmpDo(evMPKeepOpen, FALSE);
-  mmpDo(evGSShowingTimeline, FALSE);
-  mmpDo(evGSTimelineHeight, 0);
+  mmp.cmd(evMPKeepOpen, FALSE);
+  mmp.cmd(evGSShowingTimeline, FALSE);
+  mmp.cmd(evGSTimelineHeight, 0);
 end;
 
 function TL: TTimeline;
@@ -282,9 +286,9 @@ begin
   case (vCursorPt.x <= vRect.location.x) or (vCursorPt.x >= vRect.bottomRight.x) of TRUE: EXIT; end;
 
   case FDragging of TRUE: begin
-                            cursorPos := cursorPos + (X - pnlCursor.Width div 2);
-                            var vNewPos := mmpDo(evPBSetNewPosition, cursorPos).integer;
-                            mmpDo(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
+                            cursorPos := cursorPos + (X - pnlCursor.width div 2);
+                            var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer;
+                            mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
                             updatePositionDisplay(vNewPos);
                           end;end;
 
@@ -341,13 +345,18 @@ begin
   vOK := FALSE;
   vAction := '';
 
+  case FBusy of TRUE: begin FBusy := FALSE; EXIT; end;end; // don't start another segment cut until the previous one has finished
+  case 'CIO'.contains(char(key)) of TRUE: FBusy := TRUE; end;
+
+  try
+
   case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              TL.drawSegments; end;end;
   case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);                               TL.drawSegments; end;end;
   case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                                   TL.drawSegments; end;end;
   case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        TL.drawSegments; end;end;
   case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); TL.drawSegments; end;end;
   case (key = ord('M')) and NOT mmpCtrlKeyDown of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);          TL.drawSegments; end;end;
-  case (key = ord('M')) and     mmpCtrlKeyDown of TRUE: debug('merge them all!'); end;
+//  case (key = ord('M')) and     mmpCtrlKeyDown of TRUE: debug('merge them all!'); end; // possible future dev
   case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                                    TL.drawSegments; end;end;
 
   case key = ord('L') of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;  // user has stopped holding down L
@@ -364,6 +373,10 @@ begin
                             TL.addUndo(vAction); end;end;
 
   case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
+
+  finally
+    FBusy := FALSE;
+  end;
 end;
 
 procedure TTimelineForm.FormResize(Sender: TObject);
@@ -427,14 +440,15 @@ end;
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
 begin
   result := FALSE;
+  case FCursorMoving  of TRUE: EXIT; end; // after the user clicks the progressBar, ensure the cursor has moved before actioning the user's "cut"
   case aSegment = NIL of TRUE: EXIT; end;
 
   var newStartSS := aPosition;
+  case aSegment.endSS < newStartSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newStartSS, aSegment.endSS]); end;
+  case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
   var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
   aSegment.EndSS := newStartSS - 1;
-
-  case newSegment.endSS <= newSegment.startSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newSegment.startSS, newSegment.endSS]); end;
 
   case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
@@ -751,6 +765,11 @@ begin
   result := TRUE;
 end;
 
+function TTimeline.notify(const aNotice: INotice): INotice;
+begin
+  result := onNotify(aNotice);
+end;
+
 procedure TTimeline.onCancelButton(sender: TObject);
 begin
   FCancelled := TRUE;
@@ -825,10 +844,16 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  FPosition := value;
-  case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
-  gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
-  gTimelineForm.updatePositionDisplay;
+  FCursorMoving := TRUE;
+  try
+    FPosition := value;
+    case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
+    gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
+    application.ProcessMessages;
+    gTimelineForm.updatePositionDisplay;
+  finally
+    FCursorMoving := FALSE;
+  end;
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;

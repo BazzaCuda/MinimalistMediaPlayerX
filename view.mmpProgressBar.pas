@@ -41,7 +41,7 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpConsts, mmpFormatting, mmpDoProcs, mmpGlobalState,
+  mmpConsts, mmpFormatting, mmpFuncProg, mmpGlobalState,
   _debugWindow;
 
 type
@@ -241,7 +241,7 @@ function TProgressBar.setNewPosition(const x: integer): integer;
 // This includes dragging the timeline cursor, which is effectively the same thing.
 begin
   FPB.Position := round(x * FPB.max / FPB.clientWidth);
-  mmpDo(evPBClick, FPB.position);
+  mmp.cmd(evPBClick, FPB.position);
   result := FPB.position;
 end;
 

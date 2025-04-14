@@ -124,7 +124,7 @@ uses
   winApi.shellApi,
   system.types,
   mmpMPVProperties,
-  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpDoProcs, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
+  mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
   model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
@@ -137,10 +137,10 @@ begin
   gTF := TThumbsForm.create(NIL);
   try
     gTF.initThumbnails(aFilePath, aRect, aHostType);
-    mmpDo(evGSShowingThumbs, TRUE);
+    mmp.cmd(evGSShowingThumbs, TRUE);
     result := gTF.showModal;
   finally
-    mmpDo(evGSShowingThumbs, FALSE);
+    mmp.cmd(evGSShowingThumbs, FALSE);
     gTF.free;
   end;
   mmpProcessMessages;
@@ -178,7 +178,7 @@ begin
   mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
   mmpProcessMessages;
 
-  mmpDo(GS.autoCenter, autoCenter);
+  mmp.cmd(GS.autoCenter, autoCenter);
 end;
 
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
@@ -224,9 +224,9 @@ begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of
-                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmpDo(evAppClose); end;end; // shortcut logic!
+                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end; // shortcut logic!
                                                         FALSE:  begin
-                                                                  mmpDo(evPLFormLoadBox);
+                                                                  mmp.cmd(evPLFormLoadBox);
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
                                                                                                                FALSE: playNext; end;end;end;end;end; // ...hence, playNext
 end;
@@ -237,7 +237,7 @@ begin
   case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
   case FThumbs        = NIL of FALSE: freeAndNIL(FThumbs); end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
-  mmpDo(evHelpShutHelp);
+  mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
 end;
 
@@ -389,7 +389,7 @@ begin
   wr.helpType   := htImages;
   wr.createNew  := bCreateNew;
 
-  mmpDo(evHelpMoveHelp, wr);
+  mmp.cmd(evHelpMoveHelp, wr);
 
   // FormResize calls moveHelp so this will get called repeatedly until both windows fit the desktop
   case mmpWithinScreenLimits(SELF.width + GS.widthHelp, SELF.height) of FALSE:  begin
@@ -419,7 +419,7 @@ begin
   wr.height     := SELF.height;
   wr.createNew  := bCreateNew;
 
-  mmpDo(evPLFormMove, wr);
+  mmp.cmd(evPLFormMove, wr);
 end;
 
 procedure TThumbsForm.onDoubleClick(sender: TObject);
@@ -438,7 +438,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.activeTasks = 0 of TRUE: EXIT; end;
-  mmpDo(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end);
+  mmp.cmd(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end);
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);
@@ -545,7 +545,7 @@ var
   vNextFolder: string;
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmpDo(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+  mmp.cmd(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
   result := vNextFolder <> '';
@@ -567,7 +567,7 @@ var
   vPrevFolder: string;
 begin
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmpDo(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+  mmp.cmd(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   mpvStop(mpv); // if the folder is empty we want a blank screen
   playCurrentItem;
   result := vPrevFolder <> '';
@@ -586,7 +586,7 @@ begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
   vNewName := mmpRenameFile(aFilePath);
-  mmpDo(vNewName <> aFilePath,  procedure begin
+  mmp.cmd(vNewName <> aFilePath,  procedure begin
                                             FThumbs.playlist.replaceCurrentItem(vNewName);
                                             mmpSetPanelText(FStatusBar, pnFold, 'Renamed: ' + aFilePath); end);
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
@@ -596,7 +596,7 @@ function TThumbsForm.reverseSlideshow: boolean;
 begin
   FSlideshowDirection := TSlideshowDirection(1 - ord(FSlideshowDirection)); // x := 1 - x
   showSlideshowDirection;
-  mmpDo(NOT FPlayingSlideshow, pausePlay);
+  mmp.cmd(NOT FPlayingSlideshow, pausePlay);
 end;
 
 function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
@@ -760,7 +760,7 @@ begin
   case FThumbs = NIL of TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   moveHelpWindow;
-  mmpDo(evGSAutoCenter, FALSE);
+  mmp.cmd(evGSAutoCenter, FALSE);
 end;
 
 //==========
@@ -811,15 +811,15 @@ begin
   case aKeyOp of
     koNone:         EXIT;   // key not processed. bypass setting result to TRUE
 
-    koAboutBox:           mmpDo(evAboutFormShow);
-    koAdjustAspectRatio:  mmpDo(whichHost = htMPVHost, adjustAspectRatio);
+    koAboutBox:           mmp.cmd(evAboutFormShow);
+    koAdjustAspectRatio:  mmp.cmd(whichHost = htMPVHost, adjustAspectRatio);
     koAllReset:           begin mpvBrightnessReset(mpv); mpvContrastReset(mpv); mpvGammaReset(mpv); mpvPanReset(mpv); mpvRotateReset(mpv); mpvSaturationReset(mpv); mpvZoomReset(mpv); end;
     koBrightnessUp:       mpvBrightnessUp(mpv);
     koBrightnessDn:       mpvBrightnessDn(mpv);
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height));
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmpDo(evPAPostToEvery, WIN_CLOSEAPP); end;
+    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP); end;
     koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
     koCloseToMain:        begin mmpCancelDelay; FThumbs.cancel; modalResult := mrIgnore; end;
     koContrastUp:         mpvContrastUp(mpv);
@@ -866,7 +866,7 @@ begin
     koSpeedUp:            speedUp;
     koThumbsDn:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize - 10; FThumbs.playThumbs; end;end;
     koThumbsUp:           case whichHost of htThumbsHost: begin FThumbs.thumbSize := FThumbs.thumbSize + 10; FThumbs.playThumbs; end;end;
-    koToggleHelp:         begin case GS.showingHelp of TRUE: mmpDo(evHelpShutHelp); FALSE: moveHelpWindow(TRUE); end; autoCenter; end;
+    koToggleHelp:         begin case GS.showingHelp of TRUE: mmp.cmd(evHelpShutHelp); FALSE: moveHelpWindow(TRUE); end; autoCenter; end;
     koToggleNumlock:      mmpToggleNumlock;
     koUndoMove:           undoMove;
     koWiki:               mmpShellExec('https://minimalistmediaplayer.com');

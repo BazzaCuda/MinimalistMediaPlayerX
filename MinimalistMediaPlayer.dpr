@@ -109,7 +109,6 @@ uses
   mmpMenu in 'mmpMenu.pas',
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
-  mmpDoProcs in 'mmpDoProcs.pas',
   mmpFuncProg in 'mmpFuncProg.pas';
 
 function checkParam: boolean;
@@ -120,7 +119,7 @@ begin
                                         + 'or to permanently associate media file types with this application.'#13#10#13#10
                                         + 'Alternatively, you can drag and drop a media file onto the window.',
                                           mtInformation, [MBOK]); end;
-  mmpDo(PS.noFile, T);
+  mmp.cmd(PS.noFile, T);
   result := TRUE;
 end;
 
@@ -157,24 +156,24 @@ begin
   checkParam;
 
   CF.initConfigFile(mmpConfigFilePath);
-  mmpDo(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
-  mmpDo(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, 100);
+  mmp.cmd(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
+  mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, 100);
 
   Application.CreateForm(TMMPUI, MMPUI);
-  mmpDo(evGSMainForm, MMPUI);
+  mmp.cmd(evGSMainForm, MMPUI);
 
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
   MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
 
-  mmpDo(mmpDo(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
+  mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 
   MMPUI.viewModel.showUI;
 
-  mmpDo(evSTForceCaptions);
+  mmp.cmd(evSTForceCaptions);
 
-  mmpDo((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
+  mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
   application.Run;
 end.

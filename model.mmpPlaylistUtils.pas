@@ -38,7 +38,7 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 implementation
 
 uses
-  mmpDoProcs, mmpFuncProg,
+  mmpFuncProg,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
@@ -46,38 +46,38 @@ begin
   var vIx := aPL.currentIx;
   var vCI := aPL.currentItem;
 
-  case mmpValidatePlaylist(aPL) of FALSE: case bNextFolderOnEmpty of   TRUE: case mmpDo(evVMPlayNextFolder).tf of
+  case mmpValidatePlaylist(aPL) of FALSE: case bNextFolderOnEmpty of   TRUE: case mmp.cmd(evVMPlayNextFolder).tf of
                                                                                                          TRUE: EXIT;
-                                                                                                        FALSE: begin mmpDo(evAppClose); EXIT; end;end;
-                                                                      FALSE: begin mmpDo(evAppClose); EXIT; end;end;end;
+                                                                                                        FALSE: begin mmp.cmd(evAppClose); EXIT; end;end;
+                                                                      FALSE: begin mmp.cmd(evAppClose); EXIT; end;end;end;
 
   case fileExists(vCI) of  TRUE:  begin
                                     aPL.find(vCI);
-                                    mmpDo(evVMMPPlayCurrent); end;
+                                    mmp.cmd(evVMMPPlayCurrent); end;
                           FALSE:  case aPL.validIx(vIx) of   TRUE:  begin // play first remaining item that was after the original item's position in the playlist
                                                                       aPL.setIx(vIx);
-                                                                      mmpDo(evVMMPPlayCurrent); end;
+                                                                      mmp.cmd(evVMMPPlayCurrent); end;
                                                             FALSE:  case aPL.validIx(vIx - 1) of   TRUE:  begin // otherwise play the nearest before its position
                                                                                                             aPL.setIx(vIx - 1);
-                                                                                                            mmpDo(evVMMPPlayCurrent); end;
-                                                                                                  FALSE:  mmpDo(evVMMPPlayCurrent); end;end;end;
+                                                                                                            mmp.cmd(evVMMPPlayCurrent); end;
+                                                                                                  FALSE:  mmp.cmd(evVMMPPlayCurrent); end;end;end;
 end;
 
 function mmpPlayCurrent: boolean;
 begin
-  mmpDo(evVMShutTimeline);
-  mmpDo(evMPOpenUrl, mmpDo(evPLReqCurrentItem).text);
+  mmp.cmd(evVMShutTimeline);
+  mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
 end;
 
 function mmpPlayFirst: boolean;
 begin
-  result := mmpDo(evPLFirst).tf;
+  result := mmp.cmd(evPLFirst).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpPlayLast: boolean;
 begin
-  result := mmpDo(evPLLast).tf;
+  result := mmp.cmd(evPLLast).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
@@ -90,13 +90,13 @@ end;
 
 function mmpPlayPrev: boolean;
 begin
-  result := mmpDo(evPLPrev).tf;
+  result := mmp.cmd(evPLPrev).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
 function mmpScreenshotFolder: string;
 begin
-  case GS.MPVScreenshotDirectory = '' of   TRUE: result := mmpDo(evPLReqCurrentFolder).text;
+  case GS.MPVScreenshotDirectory = '' of   TRUE: result := mmp.cmd(evPLReqCurrentFolder).text;
                                           FALSE: result := GS.MPVScreenshotDirectory; end;
 end;
 
@@ -108,7 +108,7 @@ begin
 
   aPL.first;
 
-  mmpDo(evPLFormLoadBox);
+  mmp.cmd(evPLFormLoadBox);
 
   result := aPL.hasItems;
 end;

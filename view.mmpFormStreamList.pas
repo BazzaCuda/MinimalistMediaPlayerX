@@ -26,6 +26,7 @@ uses
   vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
   HTMLUn2, HtmlView, MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts,
   TSegmentClass;
 
 type
@@ -53,6 +54,7 @@ type
     tsOptions: TTabSheet;
     lblTitle: TLabel;
     md: TMarkdownViewer;
+    lblSegments: TLabel;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
@@ -65,6 +67,7 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure pageControlChange(Sender: TObject);
   private
+    FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
     FSegments:  TObjectList<TSegment>;
     function    getStreamInfo(const aMediaFilePath: string): integer;
@@ -89,7 +92,7 @@ implementation
 
 uses
   system.math,
-  mmpConsts, mmpFormatting, mmpDoProcs, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
+  mmpFormatting, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;
@@ -113,7 +116,7 @@ end;
 
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 begin
-  case (gStreamListForm = NIL) and bCreateNew of TRUE: gStreamListForm := TStreamListForm.create(NIL); end;
+  case (gStreamListForm = NIL) and bCreateNew of TRUE: begin gStreamListForm := TStreamListForm.create(NIL); end;end;
   case gStreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
 
   screen.cursor := crDefault;
@@ -123,19 +126,18 @@ begin
   gStreamListForm.onExport := aExportEvent;
 
   // When the main window is resized or moved, force a WM_SIZE message to be generated without actually changing the size of the form
-  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height + 1, SWP_SHOWWINDOW); // + SWP_NOSIZE);
-  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height - 1, SWP_SHOWWINDOW); // + SWP_NOSIZE);
-//  gStreamListForm.backPanel.invalidate; // force align := alClient
+  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height + 1, SWP_SHOWWINDOW);
+  winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height - 1, SWP_SHOWWINDOW);
 
-  mmpDo(evGSShowingStreamlist, TRUE);
-  mmpDo(evGSWidthStreamlist, gStreamListForm.width);
+  mmp.cmd(evGSShowingStreamlist, TRUE);
+  mmp.cmd(evGSWidthStreamlist, gStreamListForm.width);
 end;
 
 function mmpShutStreamList: boolean;
 begin
   case gStreamListForm <> NIL of TRUE: begin gStreamListForm.close; gStreamListForm.free; gStreamListForm := NIL; end;end;
-  mmpDo(evGSShowingStreamlist, FALSE);
-  mmpDo(evGSWidthStreamlist, 0);
+  mmp.cmd(evGSShowingStreamlist, FALSE);
+  mmp.cmd(evGSWidthStreamlist, 0);
 end;
 
 {$R *.dfm}
@@ -147,6 +149,14 @@ begin
   FSegments := aSegments;
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
+
+  case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
+
+  case clSegments.height < (clSegments.itemCount * clSegments.itemHeight) of TRUE:  case top > (GS.mainForm.top + clSegments.itemHeight) of TRUE: // resize the window if there's enough height left
+                                                                                      begin
+                                                                                        height := height + clSegments.itemHeight;
+                                                                                        winApi.windows.setWindowPos(HANDLE, HWND_TOP, left, top - clSegments.itemHeight, 0, 0, SWP_NOSIZE);
+                                                                                    end;end;end;
 end;
 
 procedure TStreamListForm.btnExportClick(Sender: TObject);
@@ -245,6 +255,8 @@ begin
   clStreams.itemSelectionOptions.hotColor       := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.selectedColor  := DARK_MODE_LIGHT;
 
+  FMediaType := GS.mediaType;
+
   SELF.width  := DEFAULT_WIDTH;
   SELF.height := DEFAULT_HEIGHT;
 
@@ -291,6 +303,7 @@ end;
 
 procedure TStreamListForm.pageControlChange(Sender: TObject);
 begin
+  lblSegments.visible := pageControl.activePage = tsSegments;
   focusTimeline;
 end;
 
@@ -307,12 +320,13 @@ end;
 procedure TStreamListForm.WMNCHitTest(var msg: TWMNCHitTest);
 begin
   // Prevent the cursor from changing when hovering over the side edges or bottom edge
-//  case (msg.result = HTTOP) of FALSE: msg.result := HTTOP; end;
+  // Prevent horizontal resizing by only allowing the top edge to be dragged
   msg.result := HTTOP;
 end;
 
-procedure TStreamListForm.WMSize(var msg: TWMSize); // called when setWindowPos is called without SWP_NOMOVE
+procedure TStreamListForm.WMSize(var msg: TWMSize); // called when setWindowPos is called without SWP_NOSIZE
 begin
+  case FMediaType = mtVideo of FALSE: EXIT; end; // the following code would break the audio editor
   case msg.height > GS.mainForm.height  of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, GS.mainForm.height,  SWP_NOMOVE); end;
   case msg.height < DEFAULT_HEIGHT      of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, DEFAULT_HEIGHT,      SWP_NOMOVE); end;
   backPanel.height := SELF.height; // force align := alClient
@@ -323,7 +337,7 @@ procedure TStreamListForm.WMSizing(var msg: TMessage); // called when the user i
 // The user can control the height of a video - the app controls the width.
 begin
   inherited;
-  // Prevent horizontal resizing by adjusting the rectangle's left and right edges
+
   var vNewRect := PRect(msg.LParam);
 //  newRect^.right := newRect^.left + width; // redundant: WMNCHitTest prevents width resizing
   case vNewRect^.top < GS.mainForm.top of TRUE: vNewRect^.top := GS.mainForm.top; end; // don't use height

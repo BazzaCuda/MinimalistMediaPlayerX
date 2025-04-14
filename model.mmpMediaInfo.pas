@@ -148,7 +148,7 @@ implementation
 uses
   system.generics.defaults, system.sysUtils, system.timeSpan,
   mediaInfoDLL,
-  mmpFileUtils, mmpDoProcs, mmpFormatting, mmpFuncProg, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpFuncProg, mmpUtils,
   _debugWindow;
 
 var gMI: IMediaInfo = NIL;
@@ -461,7 +461,7 @@ begin
     result := TRUE;
   except end;
 
-  mmpDo(evGSHasCoverArt, getHasCoverArt);
+  mmp.cmd(evGSHasCoverArt, getHasCoverArt);
 end;
 
 function TMediaInfo.getMediaStreams: TObjectList<TMediaStream>;

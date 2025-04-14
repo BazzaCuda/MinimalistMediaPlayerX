@@ -207,7 +207,7 @@ end;
 
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 const
-  VALID_CHARS   = '^([a-zA-Z]:\\)([\w\s.~!@#$%^()\[\]{}+\-=_\\\/`])*$'; // valid Windows file path minus & and | and '
+  VALID_CHARS   = '^([a-zA-Z]:\\)([\w\s.~!@#$%^()\[\]{}+\-=_\\\/`,])*$'; // valid Windows file path minus & and | and '
   INVALID_CHARS = '[<>''"/|?*&]'; {explicitly disallow these: < (less than), > (greater than), ' (single quote), " (double quote), / (slash), | (vertical bar or pipe), ? (question mark), * (asterisk), & (ampersand) }
 begin
   result := FALSE;
