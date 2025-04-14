@@ -63,12 +63,10 @@ type
   strict private
     FCancelled:               boolean;
     FCursorMoving:            boolean;
-    FLengthenCount:           integer;
     FMax:                     integer;
     FMediaFilePath:           string;
     FPosition:                integer;
     FPrevAction:              string;
-    FShortenCount:            integer;
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
@@ -119,14 +117,12 @@ type
 
     property    cancelled:      boolean               read FCancelled;
     property    cursorMoving:   boolean               read FCursorMoving  write FCursorMoving;
-    property    lengthenCount:  integer               read FLengthenCount write FLengthenCount;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
     property    position:       integer               read getPosition    write setPosition;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
     property    segCount:       integer               read getSegCount;
     property    segments:       TObjectList<TSegment> read getSegments;
-    property    shortenCount:   integer               read FShortenCount  write FShortenCount;
   end;
 
 function focusTimeline: boolean;
@@ -325,52 +321,45 @@ begin
   key := upCase(key);
   case key in ['L', 'S'] of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
-  case key in ['L'] of TRUE: begin TL.lengthenCount := TL.lengthenCount + 1; TL.lengthenSegment(TSegment.selSeg); TL.drawSegments; end;end;
-  case key in ['S'] of TRUE: begin TL.shortenCount  := TL.shortenCount  + 1; TL.shortenSegment(TSegment.selSeg);  TL.drawSegments; end;end;
+  case key in ['L'] of TRUE: TL.lengthenSegment(TSegment.selSeg); end;
+  case key in ['S'] of TRUE: TL.shortenSegment(TSegment.selSeg);  end;
 
-  var vAction := TL.saveSegments;
   TL.drawSegments;
-
-  case (TL.lengthenCount = 1) OR (TL.shortenCount = 1) of TRUE: TL.addUndo(vAction); end; // record undo starting point
 end;
 
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 // For VK_ keys we only get a formKeyDown event
-var
-  vOK: boolean;
-  vAction: string;
 begin
   case TL.validKey(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
-  vOK := FALSE;
-  vAction := '';
+  var vSaveUndo := FALSE;
+  var vAction   := '';
 
   case FBusy of TRUE: begin FBusy := FALSE; EXIT; end;end; // don't start another segment cut until the previous one has finished
   case 'CIO'.contains(char(key)) of TRUE: FBusy := TRUE; end;
 
   try
 
-  case key = ord('C') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              TL.drawSegments; end;end;
-  case key = ord('R') of TRUE: begin vOK := TL.restoreSegment(TSegment.selSeg);                               TL.drawSegments; end;end;
-  case key = ord('X') of TRUE: begin vOK := TL.delSegment(TSegment.selSeg);                                   TL.drawSegments; end;end;
-  case key = ord('I') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        TL.drawSegments; end;end;
-  case key = ord('O') of TRUE: begin vOK := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); TL.drawSegments; end;end;
-  case (key = ord('M')) and NOT mmpCtrlKeyDown of TRUE: begin vOK := TL.mergeRight(TSegment.selSeg);          TL.drawSegments; end;end;
-//  case (key = ord('M')) and     mmpCtrlKeyDown of TRUE: debug('merge them all!'); end; // possible future dev
-  case key = ord('N') of TRUE: begin vOK := TL.mergeLeft(TSegment.selSeg);                                    TL.drawSegments; end;end;
+  case key = ord('C')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              end;
+  case key = ord('R')                           of TRUE: vSaveUndo := TL.restoreSegment(TSegment.selSeg);                               end;
+  case key = ord('X')                           of TRUE: vSaveUndo := TL.delSegment(TSegment.selSeg);                                   end;
+  case key = ord('I')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        end;
+  case key = ord('O')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); end;
+  case (key = ord('M')) and NOT mmpCtrlKeyDown  of TRUE: vSaveUndo := TL.mergeRight(TSegment.selSeg);                                   end;
+//  case (key = ord('M')) and     mmpCtrlKeyDown  of TRUE: debug('merge them all!'); end; // possible future dev
+  case key = ord('N')                           of TRUE: vSaveUndo := TL.mergeLeft(TSegment.selSeg);                                    end;
 
-  case key = ord('L') of TRUE: begin vOK := TRUE; TL.lengthenCount := 0; end;end;  // user has stopped holding down L
-  case key = ord('S') of TRUE: begin vOK := TRUE; TL.shortenCount  := 0; end;end;  // user has stopped holding down S
+  case key = ord('L')                           of TRUE: vSaveUndo := TRUE; end;  // user has stopped holding down L
+  case key = ord('S')                           of TRUE: vSaveUndo := TRUE; end;  // user has stopped holding down S
 
-  var vSaveUndo := vOK; // a change was made
-
-  case mmpCtrlKeyDown and (key = ord('Z')) of TRUE: begin TL.undo(TL.prevAction); vSaveUndo := FALSE; TL.drawSegments; end;end; // Ctrl-Z
-  case mmpCtrlKeyDown and (key = ord('Y')) of TRUE: begin TL.redo;                vSaveUndo := FALSE; TL.drawSegments; end;end; // Ctrl-Y
-
-  case vSaveUndo of TRUE: begin
+  case vSaveUndo of TRUE: begin // a change was made
                             vAction := TL.saveSegments;
-                            TL.drawSegments;
                             TL.addUndo(vAction); end;end;
+
+  case mmpCtrlKeyDown and (key = ord('Z')) of TRUE: TL.undo(TL.prevAction); end; // Ctrl-Z Undo
+  case mmpCtrlKeyDown and (key = ord('Y')) of TRUE: TL.redo;                end; // Ctrl-Y Redo
+
+  TL.drawSegments;
 
   case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
 
@@ -444,7 +433,7 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
 
   var newStartSS := aPosition;
-  case aSegment.endSS < newStartSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newStartSS, aSegment.endSS]); end;
+//  case aSegment.endSS < newStartSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newStartSS, aSegment.endSS]); end;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
   var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
@@ -822,7 +811,7 @@ begin
     vSL.free;
   end;
 
-  case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+  case (TL.segCount = 1) AND (segments[0].startSS = 1) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
 function TTimeline.segFileEntry(const aSegFile: string): string;
