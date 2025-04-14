@@ -885,10 +885,12 @@ begin
   case aRenameType = rtKeepMove of   TRUE:  begin
                                               mmp.cmd(evMPStop);
                                               mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
-                                              mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent, evVMMPPlayNext); end; // force nextFolderOnEmpty/End
+                                              mmp.cmd(evVMMPPlayNext); end; // play the next item if there is one or force nextFolderOnEmpty/End
+//                                              mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent, evVMMPPlayNext); end; // force nextFolderOnEmpty/End
                                     FALSE:  begin
                                               mmp.cmd(evPLReplaceCurrentItem, vNewName);
-                                              mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text); end;end;
+                                              mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
+                                              sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
 
   mmp.cmd(evPLFormLoadBox);
 
