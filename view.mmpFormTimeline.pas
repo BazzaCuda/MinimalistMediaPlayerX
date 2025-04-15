@@ -637,7 +637,7 @@ begin
   mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  addUndo(defaultSegment); // always give the user a Ctrl-Z starting point
+  addUndo(defaultSegment); // always give the user a vanilla Ctrl-Z starting point
   case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
                                   FALSE: begin
                                            var  vSL := loadChapters;

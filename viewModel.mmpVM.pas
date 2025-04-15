@@ -267,6 +267,7 @@ begin
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
+var T, F: TProc;
   function nothingToPlay: boolean;
   begin
     result := (ssCtrl in aShiftState) or NOT mmp.cmd(evPLReqHasItems).tf;
@@ -333,6 +334,7 @@ begin
 end;
 
 function TVM.doPlayNext: boolean;
+var T, F: TProc;
 begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -344,10 +346,12 @@ begin
                     FLocked := FALSE;
                     mmp.cmd(GS.mediaType <> mtImage, evAppClose);
                   end;
+
   mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
 end;
 
 function TVM.doPlayPrev: boolean;
+var T, F: TProc;
 begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -435,6 +439,7 @@ begin
 end;
 
 function TVM.keepDelete: boolean;
+var T, F: TProc;
 begin
   case mmpKeepDelete(mmp.cmd(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
   T := procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
@@ -790,6 +795,7 @@ end;
 
 function TVM.playNextFolder: boolean;
 // reload playlist from vNextFolder and play first item
+var T, F: TProc;
 begin
   var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mmp.cmd(vNextFolder = '', evAppClose); // end of the current drive
@@ -813,6 +819,7 @@ end;
 
 function TVM.playPrevFolder: boolean;
 // reload playlist from vPrevFolder and play first item
+var T, F: TProc;
 begin
   var vPrevFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mmp.cmd(vPrevFolder = '', evAppClose);
@@ -1031,6 +1038,7 @@ begin
 end;
 
 function TVM.toggleEditMode: boolean;
+var F: TProc;
 begin
   result := FALSE;
 

@@ -141,7 +141,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Downloads\test\A Summer Story (1988) [music, Georges Delerue].mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\AudioLibrary\A Sherlock Holmes Adventure [1] Art in the Blood\10.mp3&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>

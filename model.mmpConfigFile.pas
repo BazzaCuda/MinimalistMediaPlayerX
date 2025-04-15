@@ -99,6 +99,7 @@ begin
 end;
 
 function TConfigFile.checkForManualEdits: boolean;
+var T: TProc;
 begin
   result := FALSE;
   case fileExists(FFilePath) of FALSE: EXIT; end;

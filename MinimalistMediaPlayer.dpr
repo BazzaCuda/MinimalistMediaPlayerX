@@ -112,6 +112,7 @@ uses
   mmpFuncProg in 'mmpFuncProg.pas';
 
 function checkParam: boolean;
+var T: TProc;
 begin
   result := FALSE;
   T := procedure  begin

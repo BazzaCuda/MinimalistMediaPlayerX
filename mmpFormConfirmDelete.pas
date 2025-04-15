@@ -84,6 +84,7 @@ begin
 end;
 
 function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
+var TF, FF: TSFunc;
 begin
   TF := function:string begin
                           var vChop := length(aText) div 2;

@@ -31,11 +31,7 @@ const
   doNowt = NIL;
 
 var
-  T:            TProc;
-  F:            TProc;
   guardClause:  boolean;
-  TF:           TFunc<string>;
-  FF:           TFunc<string>;
 
 type
   void    = boolean;
@@ -196,7 +192,7 @@ class function mmp.cmd(const aBoolean: boolean; const trueNotices: array of TNot
 begin
   for var i := low(trueNotices) to high(trueNotices) do begin
     var vNotice := trueNotices[i];
-    T := procedure begin notifyApp(newNotice(vNotice)); end;
+    var T:TProc := procedure begin notifyApp(newNotice(vNotice)); end;
     cmd(aBoolean, T, NIL);
   end;
 end;
