@@ -95,7 +95,8 @@ uses
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
-  _debugWindow;
+  _debugWindow,
+  model.mmpMPVCtrls; // EXPERIMENTAL
 
 type
   TVM = class(TInterfacedObject, IViewModel)
@@ -304,7 +305,9 @@ begin
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
+//  terminateProcess(getCurrentProcess(), 0);
   GS.mainForm.close;
+  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no
 end;
 
 function TVM.doCleanup: boolean;
@@ -334,14 +337,13 @@ begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
-  case mmpPlayNext of TRUE: EXIT; end;
+  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
 
   T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
   F :=  procedure begin
                     FLocked := FALSE;
                     mmp.cmd(GS.mediaType <> mtImage, evAppClose);
                   end;
-
   mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
 end;
 
@@ -790,7 +792,7 @@ function TVM.playNextFolder: boolean;
 // reload playlist from vNextFolder and play first item
 begin
   var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmp.cmd(vNextFolder = '', evAppClose);
+  mmp.cmd(vNextFolder = '', evAppClose); // end of the current drive
 
   mmp.cmd(evSTOpInfo, vNextFolder);
 

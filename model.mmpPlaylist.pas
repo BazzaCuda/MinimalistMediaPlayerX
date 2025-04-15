@@ -338,7 +338,7 @@ function TPlaylist.next(const aMediaType: TMediaType = mtUnk): boolean;
     repeat
       inc(FPlayIx);
       vMediaType := MT.mediaType(currentItem);
-      case isLast and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end;
+      case isLast and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
     until (aMediaType in [mtUnk, vMediaType]) or isLast; // order of shortcut logic is important here
     result := TRUE;
   end;

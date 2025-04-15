@@ -46,6 +46,7 @@ type
     procedure   FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure   FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure   FormResize(Sender: TObject);
+    procedure   FormClose(Sender: TObject; var Action: TCloseAction);
   strict private
     FViewModel: IViewModel;
   protected
@@ -101,6 +102,12 @@ begin
   case msg.message = WM_MOUSEMOVE   of TRUE: FViewModel.onMouseMove(msg.hwnd, mmpShiftState, msg.pt.x, msg.pt.Y); end;
   case msg.message = WM_KEYDOWN     of TRUE: FViewModel.onKeyDown(WORD(msg.WParam), mmpShiftState); end;
   case msg.message = WM_KEYUP       of TRUE: FViewModel.onKeyUp(WORD(msg.WParam), mmpShiftState); end;
+end;
+
+procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  application.processMessages;
+//  debug('formClose');
 end;
 
 procedure TMMPUI.FormCreate(Sender: TObject);

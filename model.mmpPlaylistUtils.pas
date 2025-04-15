@@ -27,12 +27,12 @@ uses
   model.mmpConfigFile, model.mmpMediaPlayer, model.mmpPlaylist;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
-function mmpPlayCurrent:      boolean;
-function mmpPlayFirst:        boolean;
-function mmpPlayLast:         boolean;
-function mmpPlayNext:         boolean;
-function mmpPlayPrev:         boolean;
-function mmpScreenshotFolder: string;
+function mmpPlayCurrent:                            boolean;
+function mmpPlayFirst:                              boolean;
+function mmpPlayLast:                               boolean;
+function mmpPlayNext(const aMediaType: TMediaType): boolean;
+function mmpPlayPrev:                               boolean;
+function mmpScreenshotFolder:                       string;
 function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 
 implementation
@@ -81,10 +81,9 @@ begin
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
-function mmpPlayNext: boolean;
+function mmpPlayNext(const aMediaType: TMediaType): boolean;
 begin
-  var vMediaType := mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
-  result := mmp.cmd(evPLNext, vMediaType).tf;
+  result := mmp.cmd(evPLNext, aMediaType).tf; // bump the playlist to the next item if there is one
   case result of TRUE: mmpPlayCurrent; end;
 end;
 

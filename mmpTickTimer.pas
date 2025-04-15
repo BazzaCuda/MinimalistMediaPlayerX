@@ -52,7 +52,6 @@ type
     // ISubscribable
     function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure   unsubscribe(const aSubscriber: ISubscriber);
-
   end;
 
 var gTT: ITickTimer = NIL;
