@@ -99,16 +99,13 @@ begin
 end;
 
 function TConfigFile.checkForManualEdits: boolean;
-var T: TProc;
 begin
   result := FALSE;
   case fileExists(FFilePath) of FALSE: EXIT; end;
 
   var vLastWriteTime := TFile.getLastWriteTime(FFilePath);
 
-  T := procedure begin try FFileContents.loadFromFile(FFilePath); except end;end;
-
-  mmp.cmd(vLastWriteTime > FLastWriteTime, T);
+  mmp.cmd(vLastWriteTime > FLastWriteTime, procedure begin try FFileContents.loadFromFile(FFilePath); except end;end);
   FLastWriteTime := vLastWriteTime;
 
   result := TRUE;
