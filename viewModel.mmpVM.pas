@@ -305,7 +305,7 @@ begin
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
-//  terminateProcess(getCurrentProcess(), 0);
+//  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
   GS.mainForm.close;
   GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no
 end;
@@ -1050,8 +1050,8 @@ begin
   mmp.cmd(mmpIsEditFriendly(vCurrentItem), NIL, F);
   case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
-  mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end,
-                            procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
+  mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
+                              procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
 
   mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, FMPDuration); end);
 

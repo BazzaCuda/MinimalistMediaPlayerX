@@ -108,7 +108,7 @@ type
   public
     function    clear:          boolean;
     function    delSegment(const aSegment: TSegment): boolean;
-    function    initTimeline(const aMediaFilePath: string; const aMax: integer): string;
+    function    initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
     function    notify(const aNotice: INotice): INotice;
     function    redo:           boolean;
     function    undo(const aPrevAction: string):  boolean;
@@ -138,14 +138,6 @@ uses
   view.mmpFormStreamList,
   model.mmpMediaInfo,
   _debugWindow;
-
-function debugSL(aText: string; aSL: TStringList): boolean;
-begin
-  EXIT;
-  debug('');
-  debug(aText);
-  for var i := aSL.count - 1 downto 0 do debug(aSL[i]);
-end;
 
 function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
@@ -332,26 +324,26 @@ begin
   case TL.validKey(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
   var vSaveUndo := FALSE;
-  var vAction   := '';
 
-  case key = ord('C')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);              end;
-  case key = ord('R')                           of TRUE: vSaveUndo := TL.restoreSegment(TSegment.selSeg);                               end;
-  case key = ord('X')                           of TRUE: vSaveUndo := TL.delSegment(TSegment.selSeg);                                   end;
-  case key = ord('I')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);        end;
-  case key = ord('O')                           of TRUE: vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE); end;
-  case (key = ord('M')) and NOT mmpCtrlKeyDown  of TRUE: vSaveUndo := TL.mergeRight(TSegment.selSeg);                                   end;
-//  case (key = ord('M')) and     mmpCtrlKeyDown  of TRUE: debug('merge them all!'); end; // possible future dev
-  case key = ord('N')                           of TRUE: vSaveUndo := TL.mergeLeft(TSegment.selSeg);                                    end;
+  case key of
+    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);
+    ord('R'): vSaveUndo := TL.restoreSegment(TSegment.selSeg);
+    ord('X'): vSaveUndo := TL.delSegment(TSegment.selSeg);
+    ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);
+    ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE);
+    ord('M'): vSaveUndo := TL.mergeRight(TSegment.selSeg);
+    ord('N'): vSaveUndo := TL.mergeLeft(TSegment.selSeg);
 
-  case key = ord('L')                           of TRUE: vSaveUndo := TRUE; end;  // user has stopped holding down L
-  case key = ord('S')                           of TRUE: vSaveUndo := TRUE; end;  // user has stopped holding down S
+    ord('L'): vSaveUndo := TRUE; // user has stopped holding down L; save the Timeline
+    ord('S'): vSaveUndo := TRUE; // user has stopped holding down S; save the Timeline
+  end;
 
-  case vSaveUndo of TRUE: begin // a change was made
-                            vAction := TL.saveSegments;
-                            TL.addUndo(vAction); end;end;
+  case vSaveUndo of TRUE: TL.addUndo(TL.saveSegments); end; // a change was made
 
-  case mmpCtrlKeyDown and (key = ord('Z')) of TRUE: TL.undo(TL.prevAction); end; // Ctrl-Z Undo
-  case mmpCtrlKeyDown and (key = ord('Y')) of TRUE: TL.redo;                end; // Ctrl-Y Redo
+  case key of
+    ord('Z'): case mmpCtrlKeyDown of TRUE: TL.undo(TL.prevAction); end; // Ctrl-Z Undo
+    ord('Y'): case mmpCtrlKeyDown of TRUE: TL.redo;                end; // Ctrl-Y Redo
+  end;
 
   TL.drawSegments;
 
@@ -390,15 +382,12 @@ end;
 
 function TTimeline.addUndo(const aAction: string): string;
 begin
-  case aAction = FPrevAction of TRUE: EXIT; end;
-
   FPrevAction := aAction;
 
   var vSL     := TStringList.create;
   vSL.text    := aAction;
   FUndoList.push(vSL);
   result      := aAction;
-  debugSL('add undo', vSL);
 end;
 
 function TTimeline.clear: boolean;
@@ -423,7 +412,6 @@ begin
   case aSegment = NIL of TRUE: EXIT; end;
 
   var newStartSS := aPosition;
-//  case aSegment.endSS < newStartSS of TRUE: debugFormat('seg: %s+, start: %d, end: %d', [aSegment.SegID, newStartSS, aSegment.endSS]); end;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
   var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
@@ -641,20 +629,22 @@ begin
   end;
 end;
 
-function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): string;
+function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
 begin
+  result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
   segments.clear; FUndoList.clear; FRedoList.clear;
   mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  case fileExists(filePathMMP) of  TRUE: result := addUndo(loadSegments);
+  addUndo(defaultSegment); // always give the user a Ctrl-Z starting point
+  case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
                                   FALSE: begin
-                                           var vSL := loadChapters;
-                                           case vSL <> NIL of  TRUE: begin result := addUndo(loadSegments(vSL, TRUE)); vSL.free; end;
-                                                              FALSE:       result := addUndo(defaultSegment); end;end;end;
+                                           var  vSL := loadChapters;
+                                           case vSL  = NIL of FALSE: begin addUndo(loadSegments(vSL, TRUE)); vSL.free; end;end;end;end;
 
   drawSegments;
+  result := TRUE;
 end;
 
 function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
@@ -725,7 +715,7 @@ end;
 function TTimeline.mergeLeft(const aSegment: TSegment): boolean;
 begin
   result := FALSE;
-  case aSegment = NIL of TRUE: EXIT; end;
+  case aSegment = NIL   of TRUE: EXIT; end;
   case aSegment.isFirst of TRUE: EXIT; end;
   var ix                  := aSegment.ix;
   aSegment.startSS        := segments[ix - 1].startSS;
@@ -736,8 +726,8 @@ end;
 function TTimeline.mergeRight(const aSegment: TSegment): boolean;
 begin
   result := FALSE;
-  case aSegment = NIL of TRUE: EXIT; end;
-  case aSegment.isLast of TRUE: EXIT; end;
+  case aSegment = NIL   of TRUE: EXIT; end;
+  case aSegment.isLast  of TRUE: EXIT; end;
   var ix          := aSegment.ix;
   aSegment.endSS  := segments[ix + 1].endSS;
   segments.delete(ix + 1);
@@ -768,13 +758,10 @@ function TTimeline.redo: boolean;
 begin
   case FRedoList.count = 0 of TRUE: EXIT; end;
 
-  case FRedoList.peek <> NIL of TRUE: begin
-                                        debugSL('redo', FRedoList.peek);
-                                        loadSegments(FRedoList.peek);
-                                        saveSegments;
-                                        drawSegments;
-                                        FUndoList.push(FRedoList.extract);
-                                      end;end;
+  loadSegments(FRedoList.peek);
+  saveSegments;
+  drawSegments;
+  FUndoList.push(FRedoList.extract); // action the item then move it to the undo list
 end;
 
 function TTimeline.restoreSegment(const aSegment: TSegment): boolean;
@@ -848,15 +835,11 @@ function TTimeline.undo(const aPrevAction: string): boolean;
 begin
   case FUndoList.count = 0 of TRUE: EXIT; end;
 
-  case (FUndoList.peek <> NIL) and (FUndoList.peek.text = aPrevAction) of TRUE: begin
-                                                                                  debugSL('pop top', FUndoList.peek);
-                                                                                  FRedoList.push(FUndoList.extract);
-                                                                                end;end;
+  case FUndoList.peek.text = aPrevAction of TRUE: FRedoList.push(FUndoList.extract); end; // move the most recent action [reflected in the Timeline] straight to the undo list
 
-  case FUndoList.count = 0 of TRUE: EXIT; end;
+  case FUndoList.count = 0 of TRUE: EXIT; end; // there was only one item remaining in FUndoList and it's just been removed
 
   case FUndoList.peek <> NIL of TRUE: begin
-                                        debugSL('undo pop', FUndoList.peek);
                                         loadSegments(FUndoList.peek);
                                         saveSegments;
                                         drawSegments;
