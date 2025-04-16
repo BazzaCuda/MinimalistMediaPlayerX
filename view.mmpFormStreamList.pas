@@ -66,6 +66,8 @@ type
     procedure btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure pageControlChange(Sender: TObject);
+    procedure btnExportKeyPress(Sender: TObject; var Key: Char);
+    procedure pageControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
@@ -131,6 +133,8 @@ begin
 
   mmp.cmd(evGSShowingStreamlist, TRUE);
   mmp.cmd(evGSWidthStreamlist, gStreamListForm.width);
+
+  focusTimeline;
 end;
 
 function mmpShutStreamList: boolean;
@@ -163,6 +167,11 @@ procedure TStreamListForm.btnExportClick(Sender: TObject);
 begin
   case assigned(FOnExport) of TRUE: FOnExport(NIL); end;
   focusTimeline;
+end;
+
+procedure TStreamListForm.btnExportKeyPress(Sender: TObject; var Key: Char);
+begin
+  key := #0;
 end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
@@ -304,6 +313,11 @@ end;
 procedure TStreamListForm.pageControlChange(Sender: TObject);
 begin
   lblSegments.visible := pageControl.activePage = tsSegments;
+  focusTimeline;
+end;
+
+procedure TStreamListForm.pageControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
   focusTimeline;
 end;
 

@@ -58,6 +58,7 @@ object StreamListForm: TStreamListForm
       TabHeight = 24
       TabOrder = 0
       OnChange = pageControlChange
+      OnMouseUp = pageControlMouseUp
       object tsSegments: TTabSheet
         Caption = '          Segments          '
         object clSegments: TControlList
@@ -2180,8 +2181,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 442
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2465,6 +2466,7 @@ object StreamListForm: TStreamListForm
         ParentFont = False
         TabOrder = 0
         OnClick = btnExportClick
+        OnKeyPress = btnExportKeyPress
         OnMouseEnter = btnExportMouseEnter
         OnMouseLeave = btnExportMouseLeave
         OnMouseMove = btnExportMouseMove
