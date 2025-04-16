@@ -248,9 +248,9 @@ end;
 function mmpCenterWindow(const aWND: HWND; const aPt: TPoint): boolean;
 // aPt is optional and provides the calculated dimensions that a window is going to have
 var
-  vR: TRect;
-  vHPos: integer;
-  vVPos: integer;
+  vR:     TRect;
+  vHPos:  integer;
+  vVPos:  integer;
 
   function alreadyCentred: boolean;
   begin

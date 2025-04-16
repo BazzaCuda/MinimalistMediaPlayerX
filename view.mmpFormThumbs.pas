@@ -684,7 +684,6 @@ end;
 
 procedure TThumbsForm.FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-
   case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of  TRUE: screen.cursor := crHandPoint;
                                                                     FALSE: screen.cursor := crDefault; end;
 end;

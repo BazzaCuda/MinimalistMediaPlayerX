@@ -82,9 +82,9 @@ function TMediaTypes.mediaType(const aExt: string): TMediaType;
 begin
   result := mtUnk;
 
-  var vExt: string := lowerCase(extractFileExt(aExt)) + ' ';
+  var vExt: string := lowerCase(extractFileExt(aExt)) + '.'; // all because of .avif !! :(
 
-  case trim(vExt) = '' of TRUE: EXIT; end;
+  case trim(vExt) = '.' of TRUE: EXIT; end;
 
   for var mediaType: TMediaTypeRec in mediaTypes do
     case mediaType.fileExts.contains(vExt) of TRUE: begin
