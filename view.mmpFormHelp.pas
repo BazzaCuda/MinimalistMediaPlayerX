@@ -172,6 +172,7 @@ end;
 destructor THelpFormProxy.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   shutForm;
   inherited;
 end;

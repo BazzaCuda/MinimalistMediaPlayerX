@@ -18,11 +18,18 @@
 }
 program MinimalistMediaPlayer;
 
+{$define FastMM_EnableMemoryLeakReporting}
+{$define FastMM_FullDebugMode}
+{$define FastMM_UseOutputDebugString}
+{$define FastMM_EnterDebugMode}
+{$define FastMM_FullDebugModeWhenDLLAvailable}
+
 {$R *.res}
 
 {$R *.dres}
 
 uses
+  FastMM5 in '..\..\3P\FastMM5\FastMM5.pas',
   system.sysUtils,
   vcl.dialogs,
   vcl.extCtrls,

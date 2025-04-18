@@ -80,6 +80,7 @@ end;
 procedure TInputBoxForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   TT.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
 end;
 
 procedure TInputBoxForm.FormCreate(Sender: TObject);

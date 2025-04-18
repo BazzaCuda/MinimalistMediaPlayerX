@@ -101,6 +101,7 @@ end;
 destructor TPostToAll.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   inherited;
 end;
 

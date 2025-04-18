@@ -454,8 +454,8 @@ begin
 
     sortStreams;
 
-    FLowestID := 0;
-    FLowestID := mmpIfThenElse(MI.mediaStreams.count > 0, strToIntDef(MI.mediaStreams[0].ID, 0), 0);
+    FLowestID := 0; // in case strToIntDef raises an exception
+    case MI.mediaStreams.count > 0 of TRUE: FLowestID := strToIntDef(MI.mediaStreams[0].ID, 0); end;
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;

@@ -30,7 +30,6 @@ function newNotifier: INotifier;
 
 function notifyApp(const aNotice: INotice): INotice;
 function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice; overload;
-
 implementation
 
 uses
@@ -44,6 +43,7 @@ type
     function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure   unsubscribe(const aSubscriber: ISubscriber);
     procedure   notifySubscribers(const aNotice: INotice);
+    procedure   unsubscribeAll;
 
     constructor create;
     destructor  Destroy; override;
@@ -106,6 +106,11 @@ end;
 procedure TNotifier.unsubscribe(const aSubscriber: ISubscriber);
 begin
   FSubscribers.remove(aSubscriber);
+end;
+
+procedure TNotifier.unsubscribeAll;
+begin
+  for var vSubscriber in FSubscribers do unsubscribe(vSubscriber);
 end;
 
 initialization

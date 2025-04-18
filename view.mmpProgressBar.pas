@@ -126,6 +126,7 @@ begin
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   inherited;
 end;
 

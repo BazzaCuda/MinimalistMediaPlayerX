@@ -213,6 +213,7 @@ end;
 destructor TAboutFormProxy.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   inherited;
 end;
 

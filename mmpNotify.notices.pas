@@ -146,6 +146,7 @@ type
     ['{6E55B835-3C16-404E-AAA0-8C4354BBEB59}']
     function  subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure unsubscribe(const aSubscriber: ISubscriber);
+    procedure unsubscribeAll;
   end;
 
   INotifier = interface(ISubscribable)

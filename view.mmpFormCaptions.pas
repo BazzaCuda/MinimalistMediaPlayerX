@@ -365,6 +365,7 @@ destructor TCaptionsProxy.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
   TT.unsubscribe(FSubscriberTT);
+  FSubscriberTT := NIL;
   inherited;
 end;
 

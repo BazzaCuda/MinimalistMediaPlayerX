@@ -64,7 +64,7 @@ type
     FShowing:                 boolean;
     FSlideshowDirection:      TSlideshowDirection;
     FSubscriber:              ISubscriber;
-    FThumbs:                  TThumbs;
+    FThumbs:                  IThumbs;
     FTimerInterval:           integer;
   private
     procedure onInitMPV(sender: TObject);
@@ -233,13 +233,13 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  mpv := NIL;
-//  case mpv            = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
+  mpv := NIL; // do this first or the user will briefly see the blank form background
   case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
-  case FThumbs        = NIL of FALSE: freeAndNIL(FThumbs); end;
+  case FThumbs        = NIL of FALSE: FThumbs := NIL; {freeAndNIL(FThumbs);} end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
   mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
@@ -281,7 +281,7 @@ end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
 begin
-  FThumbs := TThumbs.create;
+  FThumbs := newThumbs;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FThumbs.onThumbClick := onThumbClick;
 

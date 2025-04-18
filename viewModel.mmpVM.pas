@@ -296,7 +296,9 @@ end;
 destructor TVM.Destroy;
 begin
   TT.unsubscribe(FSubscriberTT);
+  FSubscriberTT := NIL;
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   mmp.free(FSlideshowTimer <> NIL, FSlideshowTimer);
   inherited;
 end;
@@ -307,7 +309,10 @@ begin
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
 //  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
-  FMP.notify(newNotice(evMPStop));
+//  FMP.notify(newNotice(evMPStop));
+  appEvents.unsubscribeAll;
+  FMP.unsubscribeAll;
+  TT.unsubscribeAll;
   GS.mainForm.close;
   GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no
 end;

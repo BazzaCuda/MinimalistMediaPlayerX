@@ -79,6 +79,7 @@ type
     // ISubscribable
     function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure   unsubscribe(const aSubscriber: ISubscriber);
+    procedure   unsubscribeAll;
 
   end;
 
@@ -318,6 +319,12 @@ end;
 procedure TMediaPlayer.unsubscribe(const aSubscriber: ISubscriber);
 begin
   FNotifier.unsubscribe(aSubscriber);
+  FNotifier := NIL;
+end;
+
+procedure TMediaPlayer.unsubscribeAll;
+begin
+  FNotifier.unsubscribeAll;
 end;
 
 end.

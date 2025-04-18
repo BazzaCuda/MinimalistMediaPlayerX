@@ -52,6 +52,7 @@ type
     // ISubscribable
     function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure   unsubscribe(const aSubscriber: ISubscriber);
+    procedure   unsubscribeAll;
   end;
 
 var gTT: ITickTimer = NIL;
@@ -91,6 +92,11 @@ end;
 procedure TTickTimer.unsubscribe(const aSubscriber: ISubscriber);
 begin
   FNotifier.unsubscribe(aSubscriber);
+end;
+
+procedure TTickTimer.unsubscribeAll;
+begin
+  FNotifier.unsubscribeAll;
 end;
 
 initialization

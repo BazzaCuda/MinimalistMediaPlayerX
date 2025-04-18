@@ -251,6 +251,7 @@ end;
 destructor TPlayListFormProxy.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
+  FSubscriber := NIL;
   shutForm;
   inherited;
 end;
