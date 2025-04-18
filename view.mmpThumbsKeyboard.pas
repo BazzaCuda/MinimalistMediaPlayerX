@@ -37,7 +37,7 @@ type
             );
   TKeyDirection = (kdDn, kdUp);
 
-function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
+function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
 
 implementation
 
@@ -53,7 +53,7 @@ const
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
   OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
 
-function processKeyStroke(const mpv: TMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
+function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
 
   function Ctrl: boolean;
   begin

@@ -47,7 +47,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 533
-      ActivePage = tsSegments
+      ActivePage = tsStreams
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -2181,8 +2181,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2465,6 +2465,7 @@ object StreamListForm: TStreamListForm
           00005E5B5B137B78780600000000000000000000000000000000}
         ParentFont = False
         TabOrder = 0
+        TabStop = False
         OnClick = btnExportClick
         OnKeyPress = btnExportKeyPress
         OnMouseEnter = btnExportMouseEnter

@@ -145,7 +145,7 @@ begin
 end;
 
 begin
-  reportMemoryLeaksOnShutdown   := FALSE;
+  reportMemoryLeaksOnShutdown   := mmpEnvironmentVariable;
   debugClear;
 
   application.initialize;

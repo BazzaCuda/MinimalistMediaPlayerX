@@ -51,7 +51,7 @@ type
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
   strict private
-    mpv: TMPVBasePlayer;
+    mpv: IMPVBasePlayer;
     FDurationResetSpeed:      double;
     FImageDisplayDurationMs:  double;
     FInitialFilePath:         string;
@@ -233,7 +233,8 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  case mpv            = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
+  mpv := NIL;
+//  case mpv            = NIL of FALSE: freeAndNIL(mpv); end;      // do this first or the user will briefly see the blank form background
   case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
   case FThumbs        = NIL of FALSE: freeAndNIL(FThumbs); end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;

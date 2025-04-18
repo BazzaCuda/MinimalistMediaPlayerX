@@ -307,6 +307,7 @@ begin
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
 //  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
+  FMP.notify(newNotice(evMPStop));
   GS.mainForm.close;
   GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no
 end;

@@ -45,7 +45,7 @@ uses
 type
   TMediaPlayer = class(TInterfacedObject, IMediaPlayer)
   strict private
-    mpv: TMPVBasePlayer;
+    mpv: IMPVBasePlayer;
 
     FCheckCount:              integer;
     FDimensionsDone:          boolean;
@@ -98,7 +98,8 @@ end;
 
 destructor TMediaPlayer.Destroy;
 begin
-  case mpv = NIL of FALSE: mpv.free; end;
+//  case mpv = NIL of FALSE: mpv.free; end;
+  mpv := NIL;
   inherited;
 end;
 

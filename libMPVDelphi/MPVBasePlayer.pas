@@ -2,6 +2,7 @@ unit MPVBasePlayer;
 
 // MPV base player classes
 // Author: Edward G. (nbuyer@gmail.com)
+// https://github.com/nbuyer/LibMPVDelphi
 
 {.$DEFINE MPV_DYNAMIC_LOAD} // should define in project options "Conditional defines"
 
@@ -53,7 +54,58 @@ type
     nLevel: Int32; const sMsg: string) of object;
   TMPVStateChanged = procedure (cSender: TObject; eState: TMPVPlayerState) of object;
 
-  TMPVBasePlayer = class
+  IMPVBasePlayer = interface
+    ['{E4A6B57C-7858-4110-A15E-F61C3D4D7BE8}']
+    function  getOnFileOpen: TMPVFileOpen;
+    procedure setOnFileOpen(const Value: TMPVFileOpen);
+    function  getOnInitMPV: TNotifyEvent;
+    procedure setOnInitMPV(const Value: TNotifyEvent);
+    function  getOnStateChg: TMPVStateChanged;
+    procedure setOnStateChg(const Value: TMPVStateChanged);
+
+    function  getCurSec: Double;
+    procedure setCurSec(const Value: Double);
+    function  getFileName: string;
+    function  getTotalSeconds: Double;
+    function  getSpeed: Double;
+    procedure setSpeed(const Value: Double);
+    function  getState: TMPVPlayerState;
+    function  getVideoHeight: Int64;
+    function  getVideoWidth: Int64;
+    function  getVol: Double;
+    procedure setVol(const Value: Double);
+
+    function  commandStr(const sCmd: string): TMPVErrorCode;
+    function  initPlayer(const sWinHandle, sScrShotDir, sConfigDir, sLogFile: string; fEventWait: Double = DEF_MPV_EVENT_SECONDS): TMPVErrorCode;
+    function  openFile(const sFullName: string): TMPVErrorCode;
+    function  pause: TMPVErrorCode;
+    function  resume: TMPVErrorCode;
+    function  seek(fPos: Double; bRelative: Boolean): TMPVErrorCode;
+    function  stop: TMPVErrorCode;
+
+    function  getPropertyBool(const sName: string; var Value: Boolean; bLogError: Boolean = True): TMPVErrorCode;
+    function  setPropertyBool(const sName: string; Value: Boolean; nID: MPVUInt64 = 0): TMPVErrorCode;
+    function  getPropertyInt64(const sName: string; var Value: Int64; bLogError: Boolean = True): TMPVErrorCode;
+    function  setPropertyInt64(const sName: string; Value: Int64; nID: MPVUInt64 = 0): TMPVErrorCode;
+    function  getPropertyDouble(const sName: string; var Value: Double; bLogError: Boolean = True): TMPVErrorCode;
+    function  setPropertyDouble(const sName: string; Value: Double; nID: MPVUInt64 = 0): TMPVErrorCode;
+    function  getPropertyString(const sName: string; var Value: string; bLogError: Boolean = True): TMPVErrorCode;
+    function  setPropertyString(const sName, sValue: string; nID: MPVUInt64 = 0): TMPVErrorCode;
+
+    property  onFileOpen: TMPVFileOpen        read GetOnFileOpen  write SetOnFileOpen;
+    property  onInitMPV: TNotifyEvent         read getOnInitMPV   write setOnInitMPV;
+    property  onStateChged: TMPVStateChanged  read GetOnStateChg  write SetOnStateChg;
+
+    property  currentSeconds:  Double  read getCurSec  write SetCurSec;
+    property  fileName:        string  read getFileName;
+    property  playbackSpeed:   Double  read getSpeed   write SetSpeed;
+    property  totalSeconds:    Double  read getTotalSeconds;
+    property  videoWidth:      Int64   read getVideoWidth;
+    property  videoHeight:     Int64   read getVideoHeight;
+    property  volume:          Double  read getVol     write SetVol;
+  end;
+
+  TMPVBasePlayer = class(TInterfacedObject, IMPVBasePlayer)
   private
     m_cLock: SyncObjs.TCriticalSection; // Lock
     m_cEventThrd: TMPVEventThread; // Thread to process events
@@ -87,6 +139,15 @@ type
     function GetOnStateChg: TMPVStateChanged;
     procedure SetOnStateChg(const Value: TMPVStateChanged);
     procedure SetState(eNewState: TMPVPlayerState);
+    function getOnInitMPV: TNotifyEvent;
+    procedure setOnInitMPV(const Value: TNotifyEvent);
+    function getTotalSeconds: Double;
+    function getSpeed: Double;
+    function getCurSec: Double;
+    function getVol: Double;
+    function getFileName: string;
+    function getVideoWidth: Int64;
+    function getVideoHeight: Int64;
   protected
     m_hMPV: PMPVHandle; // MPV Handle
 
@@ -215,17 +276,17 @@ type
     procedure SetSubTitleDelay(fSec: Double);
   public
     // Player current status/information
-    property FileName: string read m_sFileName;
+    property FileName: string read getFileName;
     property CurrentVideoTrack: string read m_sCurVTrk write SetVTrack;
     property CurrentAudioTrack: string read m_sCurATrk write SetATrack;
     property CurrentSubtitle: string read m_sCurSTrk write SetSTrack;
-    property PlaybackSpeed: Double read m_fSpeed write SetSpeed;
-    property TotalSeconds: Double read m_fLenInSec;
+    property PlaybackSpeed: Double read getSpeed write SetSpeed;
+    property TotalSeconds: Double read getTotalSeconds;
     // Current video progress, you can use a TTimer to display progress
-    property CurrentSeconds: Double read m_fCurSec write SetCurSec;
-    property VideoWidth: Int64 read m_nX;
-    property VideoHeight: Int64 read m_nY;
-    property Volume: Double read m_fVol write SetVol;
+    property CurrentSeconds: Double read getCurSec write SetCurSec;
+    property VideoWidth: Int64 read getVideoWidth;
+    property VideoHeight: Int64 read getVideoHeight;
+    property Volume: Double read getVol write SetVol;
 //    property Mute: Boolean read m_bMute write SetVolMute;
     property AudioDevice: string read GetAudioDev write SetAudioDev;
     property AudioDeviceList: string read GetAudioDevList;
@@ -238,7 +299,7 @@ type
     property OnPropertyChanged: TMPVPropertyChangedEvent read GetOnProgChg write SetOnProgChg;
     property OnStateChged: TMPVStateChanged read GetOnStateChg write SetOnStateChg;
 
-    property onInitMPV: TNotifyEvent read FOnInitMPV write FOnInitMPV;
+    property onInitMPV: TNotifyEvent read getOnInitMPV write setOnInitMPV;
   end;
 
 function MPVLibLoaded(const sLibPath: string): Boolean;
@@ -902,6 +963,16 @@ begin
   m_cLock.Leave;
 end;
 
+function TMPVBasePlayer.getCurSec: Double;
+begin
+  result := m_fCurSec;
+end;
+
+function TMPVBasePlayer.getFileName: string;
+begin
+  result := m_sFileName;
+end;
+
 function TMPVBasePlayer.GetMute: Boolean;
 begin
   m_cLock.Enter;
@@ -921,6 +992,11 @@ begin
   m_cLock.Enter;
   Result := m_eOnFileOpen;
   m_cLock.Leave;
+end;
+
+function TMPVBasePlayer.getOnInitMPV: TNotifyEvent;
+begin
+  result := FOnInitMPV;
 end;
 
 function TMPVBasePlayer.GetOnProgChg: TMPVPropertyChangedEvent;
@@ -1064,6 +1140,11 @@ begin
   end;
 end;
 
+function TMPVBasePlayer.getSpeed: Double;
+begin
+  result := m_fSpeed;
+end;
+
 function TMPVBasePlayer.GetState: TMPVPlayerState;
 begin
   m_cLock.Enter;
@@ -1080,6 +1161,26 @@ begin
     Result := dbl
   else
     Result := MPV_INVALID_SECOND;
+end;
+
+function TMPVBasePlayer.getTotalSeconds: Double;
+begin
+  result := m_fLenInSec;
+end;
+
+function TMPVBasePlayer.getVideoHeight: Int64;
+begin
+  result := m_nY;
+end;
+
+function TMPVBasePlayer.getVideoWidth: Int64;
+begin
+  result := m_nX;
+end;
+
+function TMPVBasePlayer.getVol: Double;
+begin
+  result := m_fVol;
 end;
 
 function TMPVBasePlayer.GetVolume: Double;
@@ -1357,6 +1458,11 @@ begin
   m_cLock.Enter;
   m_eOnFileOpen := Value;
   m_cLock.Leave;
+end;
+
+procedure TMPVBasePlayer.setOnInitMPV(const Value: TNotifyEvent);
+begin
+  FOnInitMPV := value;
 end;
 
 procedure TMPVBasePlayer.SetOnProgChg(const Value: TMPVPropertyChangedEvent);

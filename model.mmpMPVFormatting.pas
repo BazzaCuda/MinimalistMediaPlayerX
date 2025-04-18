@@ -25,21 +25,21 @@ uses
   mmpFormatting,
   _debugWindow;
 
-function mpvFormattedBrightness (const mpv: TMPVBasePlayer): string;
-function mpvFormattedContrast   (const mpv: TMPVBasePlayer): string;
-function mpvFormattedDuration   (const mpv: TMPVBasePlayer): string;
-function mpvFormattedGamma      (const mpv: TMPVBasePlayer): string;
-function mpvFormattedSaturation (const mpv: TMPVBasePlayer): string;
-function mpvFormattedSpeed      (const mpv: TMPVBasePlayer): string;
-function mpvFormattedTime       (const mpv: TMPVBasePlayer): string;
-function mpvFormattedVol        (const mpv: TMPVBasePlayer): string;
+function mpvFormattedBrightness (const mpv: IMPVBasePlayer): string;
+function mpvFormattedContrast   (const mpv: IMPVBasePlayer): string;
+function mpvFormattedDuration   (const mpv: IMPVBasePlayer): string;
+function mpvFormattedGamma      (const mpv: IMPVBasePlayer): string;
+function mpvFormattedSaturation (const mpv: IMPVBasePlayer): string;
+function mpvFormattedSpeed      (const mpv: IMPVBasePlayer): string;
+function mpvFormattedTime       (const mpv: IMPVBasePlayer): string;
+function mpvFormattedVol        (const mpv: IMPVBasePlayer): string;
 
 implementation
 
 uses
   system.sysUtils;
 
-function mpvFormattedBrightness(const mpv: TMPVBasePlayer): string;
+function mpvFormattedBrightness(const mpv: IMPVBasePlayer): string;
 var
   vBrightness: int64;
 begin
@@ -48,7 +48,7 @@ begin
   result := format('Brightness: %d', [vBrightness]);
 end;
 
-function mpvFormattedContrast(const mpv: TMPVBasePlayer): string;
+function mpvFormattedContrast(const mpv: IMPVBasePlayer): string;
 var
   vContrast: int64;
 begin
@@ -57,13 +57,13 @@ begin
   result := format('Contrast: %d', [vContrast]);
 end;
 
-function mpvFormattedDuration(const mpv: TMPVBasePlayer): string;
+function mpvFormattedDuration(const mpv: IMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := mmpFormatTime(trunc(mpv.totalSeconds));
 end;
 
-function mpvFormattedGamma(const mpv: TMPVBasePlayer): string;
+function mpvFormattedGamma(const mpv: IMPVBasePlayer): string;
 var
   vGamma: int64;
 begin
@@ -72,7 +72,7 @@ begin
   result := format('Gamma: %d', [vGamma]);
 end;
 
-function mpvFormattedSaturation(const mpv: TMPVBasePlayer): string;
+function mpvFormattedSaturation(const mpv: IMPVBasePlayer): string;
 var
   vSaturation: int64;
 begin
@@ -81,19 +81,19 @@ begin
   result := format('Saturation: %d', [vSaturation]);
 end;
 
-function mpvFormattedSpeed(const mpv: TMPVBasePlayer): string;
+function mpvFormattedSpeed(const mpv: IMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := format('Speed: %.2f', [mpv.PlaybackSpeed]);
 end;
 
-function mpvFormattedTime(const mpv: TMPVBasePlayer): string;
+function mpvFormattedTime(const mpv: IMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := mmpFormatTime(trunc(mpv.CurrentSeconds));
 end;
 
-function mpvFormattedVol(const mpv: TMPVBasePlayer): string;
+function mpvFormattedVol(const mpv: IMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := format('Volume: %d', [trunc(mpv.volume)]);

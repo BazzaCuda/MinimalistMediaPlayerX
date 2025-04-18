@@ -26,6 +26,8 @@ uses
   vcl.extCtrls;
 
 const
+  MMP_CHECK           = 'MMP_CHECK';
+
   BACKSLASH           = '\';
   MPV_ERROR_SUCCESS   = 0;
 

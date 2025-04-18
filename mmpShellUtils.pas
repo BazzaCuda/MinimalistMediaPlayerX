@@ -24,6 +24,7 @@ uses
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
+function mmpEnvironmentVariable: boolean;
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
@@ -34,6 +35,14 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils,
   mmpFileUtils;
+
+function mmpEnvironmentVariable: boolean;
+var
+  vBuf: array[0..1024] of char;
+begin
+  getEnvironmentVariable(MMP_CHECK, vBuf, sizeOf(vBuf) - 1);
+  result := getLastError <> ERROR_ENVVAR_NOT_FOUND;
+end;
 
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 // Create a cmd.exe process to execute any command line
