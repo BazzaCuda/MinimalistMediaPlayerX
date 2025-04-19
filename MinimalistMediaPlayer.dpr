@@ -186,7 +186,7 @@ begin
 
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 
-  MMPUI.viewModel.showUI;
+  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and location to copy
 
   mmp.cmd(evSTForceCaptions);
 

@@ -326,7 +326,7 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
-    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);
+//    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);
     ord('R'): vSaveUndo := TL.restoreSegment(TSegment.selSeg);
     ord('X'): vSaveUndo := TL.delSegment(TSegment.selSeg);
     ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);
@@ -448,6 +448,8 @@ begin
   for var vSegment in segments do begin
     vSegment.top     := 0;
     vSegment.height  := gTimelineForm.height;
+//    case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
+//                            FALSE: vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
     vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width);
     vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
     vSegment.caption := '';
@@ -848,7 +850,7 @@ begin
 end;
 
 function TTimeline.validKey(key: WORD): boolean;
-const validKeys = 'CILMNORSXYZ';
+const validKeys = {'C'} 'ILMNORSXYZ';
 begin
   result := validKeys.contains(char(key));
 end;

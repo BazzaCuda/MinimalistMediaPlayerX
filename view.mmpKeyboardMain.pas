@@ -107,8 +107,8 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(B) and NOT ctrl and     shift                                of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(B) and     ctrl and     shift                                of TRUE: result := koPBReset; end;
     case keyUp and keyIs(B) and NOT ctrl and NOT shift                                of TRUE: result := koToggleProgressBar; end;
-    case keyUp and keyIs(C)              and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koToggleControls; end;
-    case keyUp and keyIs(C) and     ctrl and     shift  and NOT GS.showingTimeline    of TRUE: result := koCleanup; end;
+    case keyUp and keyIs(C)              and NOT shift  {and NOT GS.showingTimeline}  of TRUE: result := koToggleControls; end;
+    case keyUp and keyIs(C) and     ctrl and     shift  {and NOT GS.showingTimeline}  of TRUE: result := koCleanup; end;
     case keyDn and keyIs(D) and     ctrl                                              of TRUE: result := koPlayPrevFolder; end;
     case keyDn and keyIs(D) and NOT ctrl                                              of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
@@ -137,7 +137,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(R) and NOT ctrl                                              of TRUE: result := koRenameFile; end;
     case keyUp and keyIs(S) and NOT ctrl and     shift                                of TRUE: result := koKeepSave; end;
     case keyUp and keyIs(S) and     ctrl and NOT shift                                of TRUE: result := koToggleSubtitles; end;
-    case keyUp and keyIs(S) and NOT ctrl and NOT shift and NOT GS.showingTimeline     of TRUE: result := koStartOver; end;
+    case keyUp and keyIs(S) and NOT ctrl and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koStartOver; end;
     case keyUp and keyIs(T)                             and (GS.mediaType = mtImage)  of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T)                             and (GS.mediaType <> mtImage) of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;
@@ -164,12 +164,12 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_ADD)                                                      of TRUE: result := koSpeedUp; end;
     case keyUp and keyIs(VK_DELETE)                                                   of TRUE: result := koDeleteCurrentItem; end;
     case keyDn and keyIs(VK_DOWN)   and     ctrl                                      of TRUE: result := koPanDn; end;
-    case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GS.showingPlaylist        of TRUE: result := koVolDn; end;
-    case keyDn and keyIs(VK_DOWN)   and NOT ctrl    and NOT GS.showingPlaylist
-                                                    and NOT (GS.mediaType in [mtAudio, mtVideo])
+    case keyDn and keyIs(VK_DOWN)   and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koVolDn; end;
+    case keyDn and keyIs(VK_DOWN)   and NOT ctrl        and NOT GS.showingPlaylist
+                                                        and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE)                 and NOT GS.userInput              of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_ESCAPE)                     and NOT GS.userInput          of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koKeepCatF1; end;
     case keyUp and keyIs(VK_F2)                                                       of TRUE: result := koKeepCatF2; end;
     case keyUp and keyIs(VK_F3)                                                       of TRUE: result := koKeepCatF3; end;
@@ -185,20 +185,20 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(VK_HOME)                                                     of TRUE: result := koPlayFirst; end;
     case keyUp and keyIs(VK_INSERT)                                                   of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)   and     ctrl                                      of TRUE: result := koPanLeft; end;
-    case keyDn and keyIs(VK_LEFT)   and NOT ctrl    and (GS.mediaType = mtVideo)      of TRUE: result := koFrameBackwards; end;
-    case keyDn and keyIs(VK_LEFT)   and NOT ctrl    and (GS.mediaType <> mtVideo)     of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(VK_NEXT)                   and NOT GS.showingPlaylist        of TRUE: result := koRotateR; end;
-    case keyDn and keyIs(VK_RETURN) and     ctrl    and NOT GS.showingPlaylist        of TRUE: result := koPlayPrev; end;
-    case keyDn and keyIs(VK_RETURN) and NOT ctrl    and NOT GS.showingPlaylist        of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType = mtVideo)  of TRUE: result := koFrameBackwards; end;
+    case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayPrev; end;
+    case keyUp and keyIs(VK_NEXT)                       and NOT GS.showingPlaylist    of TRUE: result := koRotateR; end;
+    case keyDn and keyIs(VK_RETURN) and     ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_RETURN) and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT)  and     ctrl                                      of TRUE: result := koPanRight; end;
-    case keyDn and keyIs(VK_RIGHT)  and NOT ctrl    and (GS.mediaType = mtVideo)      of TRUE: result := koFrameForwards; end;
-    case keyDn and keyIs(VK_RIGHT)  and NOT ctrl    and (GS.mediaType <> mtVideo)     of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_RIGHT)  and NOT ctrl        and (GS.mediaType = mtVideo)  of TRUE: result := koFrameForwards; end;
+    case keyDn and keyIs(VK_RIGHT)  and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_UP)     and     ctrl                                      of TRUE: result := koPanUp; end;
-    case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GS.showingPlaylist        of TRUE: result := koVolUp; end;
-    case keyDn and keyIs(VK_UP)     and NOT ctrl    and NOT GS.showingPlaylist
-                                                    and NOT (GS.mediaType in [mtAudio, mtVideo])
+    case keyDn and keyIs(VK_UP)     and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koVolUp; end;
+    case keyDn and keyIs(VK_UP)     and NOT ctrl        and NOT GS.showingPlaylist
+                                                        and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayPrevFolder; end;
-    case keyUp and keyIs(VK_PRIOR)                  and NOT GS.showingPlaylist        of TRUE: result := koRotateL; end;
+    case keyUp and keyIs(VK_PRIOR)                      and NOT GS.showingPlaylist    of TRUE: result := koRotateL; end;
     case keyUp and keyIs(VK_SPACE)                                                    of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT)                                                 of TRUE: result := koSpeedDn; end;
     case keyDn and keyIs(VK_TAB)                                                      of TRUE: result := koTabTab; end;

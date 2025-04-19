@@ -97,8 +97,7 @@ uses
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
-  _debugWindow,
-  model.mmpMPVCtrls; // EXPERIMENTAL
+  _debugWindow;
 
 type
   TVM = class(TInterfacedObject, IViewModel)
