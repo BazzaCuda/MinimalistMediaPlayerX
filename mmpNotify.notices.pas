@@ -81,7 +81,7 @@ type
     evTimelineHeight, evTLMax, evTLPosition,
 
     evVMAdjustAspectRatio, evVMArrangeAll, evVMCenterWindow, evVMCleanup, evVMDeleteCurrentItem, evVMDoEscapeKey, evVMImageInBrowser, evVMKeepCurrentItem, evVMKeepDelete,
-    evVMKeepCatF1, evVMKeepCatF2, evVMKeepCatF3, evVMKeepCatF4, evVMKeepMove,
+    evVMKeepCatF1, evVMKeepCatF2, evVMKeepCatF3, evVMKeepCatF4, evVMKeepMove, evVMKeepSave,
     evVMMinimize, evVMMoveHelp, evVMMovePlaylist, evVMMoveTimeline, evVMShowThumbs,
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
     evVMToggleFiltering,

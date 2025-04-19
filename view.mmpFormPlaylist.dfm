@@ -27,11 +27,10 @@ object PlaylistForm: TPlaylistForm
     object lblFolder: TLabel
       Left = 0
       Top = 559
-      Width = 556
+      Width = 34
       Height = 13
       Align = alBottom
       Caption = 'Folder:'
-      ExplicitWidth = 34
     end
     object buttonPanel: TPanel
       Left = 0

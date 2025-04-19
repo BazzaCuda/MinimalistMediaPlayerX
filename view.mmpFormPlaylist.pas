@@ -68,7 +68,6 @@ uses
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
-  view.mmpKeyboard,
   viewModel.mmpKeyboardOps,
   _debugWindow;
 
@@ -251,7 +250,7 @@ end;
 destructor TPlayListFormProxy.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
-  FSubscriber := NIL;
+//  FSubscriber := NIL;
   shutForm;
   inherited;
 end;

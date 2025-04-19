@@ -94,14 +94,14 @@ type
     function    generateThumbs(const aItemIx: integer): integer;
     function    getCurrentIx: integer;
     function    getWhichHost: THostType;
-    function getCurrentFolder: string;
-    procedure setFoldPanelReserved(const Value: boolean);
-    function getOnThumbClick: TNotifyEvent;
-    procedure setOnThumbClick(const Value: TNotifyEvent);
-    function getPlaylist: IPlaylist;
-    function getThumbSize: integer;
-    procedure setThumbSize(const Value: integer);
-    procedure setStatusBar(const Value: TStatusBar);
+    function    getCurrentFolder: string;
+    procedure   setFoldPanelReserved(const Value: boolean);
+    function    getOnThumbClick: TNotifyEvent;
+    procedure   setOnThumbClick(const Value: TNotifyEvent);
+    function    getPlaylist: IPlaylist;
+    function    getThumbSize: integer;
+    procedure   setThumbSize(const Value: integer);
+    procedure   setStatusBar(const Value: TStatusBar);
   public
     constructor create;
     destructor  Destroy; override;

@@ -71,6 +71,7 @@ type
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
+    procedure   onWinToggleRepeat(var msg: TMessage);
 
     procedure   setMediaPlayer(const aValue: IMediaPlayer);
     procedure   setPlaylist(const aValue: IPlaylist);
@@ -91,7 +92,7 @@ uses
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboard, view.mmpThemeUtils,
+  view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
@@ -176,6 +177,7 @@ type
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
+    procedure   onWinToggleRepeat(var msg: TMessage);
 
     function    onMPNotify(const aNotice: INotice):   INotice;
     function    onMPOpen(const aNotice: INotice):     boolean;
@@ -298,7 +300,7 @@ begin
   TT.unsubscribe(FSubscriberTT);
   FSubscriberTT := NIL;
   appEvents.unsubscribe(FSubscriber);
-  FSubscriber := NIL;
+//  FSubscriber := NIL;
   mmp.free(FSlideshowTimer <> NIL, FSlideshowTimer);
   inherited;
 end;
@@ -309,12 +311,12 @@ begin
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
 //  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
-//  FMP.notify(newNotice(evMPStop));
-  appEvents.unsubscribeAll;
-  FMP.unsubscribeAll;
-  TT.unsubscribeAll;
+  FMP.notify(newNotice(evMPStop));
+//  appEvents.unsubscribeAll;
+//  FMP.unsubscribeAll;
+//  TT.unsubscribeAll;
   GS.mainForm.close;
-  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no
+  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no (answers on a postcard!)
 end;
 
 function TVM.doCleanup: boolean;
@@ -624,6 +626,7 @@ begin
     evVMKeepCurrentItem:    sendOpInfo(renameCurrentItem(rtKeep));
     evVMKeepDelete:         keepDelete;
     evVMKeepMove:           sendOpInfo(renameCurrentItem(rtKeepMove));
+    evVMKeepSave:           sendOpInfo(renameCurrentItem(rtKeepSave));
     evVMImageInBrowser:     showThumbnails(htMPVHost);
     evVMMinimize:           minimizeWindow;
     evVMMoveHelp:           movehelp(aNotice.tf);
@@ -752,6 +755,11 @@ end;
 procedure TVM.onWINTabTab(var msg: TMessage);
 begin
   sendOpInfo(tab(mmpCapsLockOn, -1));
+end;
+
+procedure TVM.onWinToggleRepeat(var msg: TMessage);
+begin
+  FMP.notify(newNotice(evMPToggleRepeat));
 end;
 
 procedure TVM.onWMDropFiles(var msg: TWMDropFiles);
@@ -887,21 +895,26 @@ begin
     rtKeepCatF3:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F3] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF4:  vNewName := mmpRenameFile(vOldName, mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
     rtKeepMove:   vNewName := mmpITBS(CF[CONF_MOVE_FOLDER]) + extractFileName(vOldName);
+    rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
 
   case vNewName = vOldName of TRUE: EXIT; end;
 
-  case aRenameType = rtKeepMove of   TRUE:  begin
-                                              case forceDirectories(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
-                                              case directoryExists(CF[CONF_MOVE_FOLDER])  of FALSE: EXIT; end;
-                                              case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
-                                    FALSE: case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
+  case aRenameType of
+    rtKeepMove: begin
+                  case forceDirectories(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
+                  case directoryExists(CF[CONF_MOVE_FOLDER])  of FALSE: EXIT; end;
+                  case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
+    rtKeepSave: begin
+                  case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
+                  case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
+                  case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;end;
+  else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
-  case aRenameType = rtKeepMove of   TRUE:  begin
-                                              mmp.cmd(evMPStop);
-                                              mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
-                                              mmp.cmd(evVMMPPlayNext); end; // play the next item if there is one or force nextFolderOnEmpty/End
-//                                              mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent, evVMMPPlayNext); end; // force nextFolderOnEmpty/End
+  case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin
+                                                            mmp.cmd(evMPStop);
+                                                            mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
+                                                            mmp.cmd(evVMMPPlayNext); end; // play the next item if there is one or force nextFolderOnEmpty/End
                                     FALSE:  begin
                                               mmp.cmd(evPLReplaceCurrentItem, vNewName);
                                               mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
@@ -917,6 +930,7 @@ begin
     rtKeepCatF3:  result := CF[CONF_CAT_F3] + ' ...';
     rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
     rtKeepMove:   result := 'Moved: ' + mmpITBS(CF[CONF_MOVE_FOLDER]);
+    rtKeepSave:   result := 'Saved: ' + mmpUserDstFolder('Saved');
   end;
 end;
 

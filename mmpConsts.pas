@@ -53,6 +53,7 @@ const
   WIN_TAB             = WM_APP + 2010;
   WIN_TABTAB          = WM_APP + 2011;
   WIN_TOGGLE_CONTROLS = WM_APP + 2012;
+  WIN_TOGGLE_REPEAT   = WM_APP + 2013;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
@@ -122,11 +123,11 @@ type
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
-            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove);
+            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
-  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove);
+  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove, rtKeepSave);
 
   TSnapshot = record
     key:              WORD;

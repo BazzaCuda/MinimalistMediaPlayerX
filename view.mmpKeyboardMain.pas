@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit view.mmpKeyboard;
+unit view.mmpKeyboardMain;
 
 interface
 
@@ -125,7 +125,8 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(K) and NOT ctrl                                              of TRUE: result := koKeep; end;
     case keyUp and keyIs(L)                             and NOT GS.showingTimeline    of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(M) and     ctrl                                              of TRUE: result := koKeepMove; end;
-    case keyUp and keyIs(M) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koMaximize; end;
+    case keyUp and keyIs(M) and NOT ctrl and     shift                                of TRUE: result := koKeepMove; end;
+    case keyUp and keyIs(M) and NOT ctrl and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koMaximize; end;
     case keyUp and keyIs(N) and     ctrl                and NOT GS.showingTimeline    of TRUE: result := koToggleNumlock; end;
     case keyUp and keyIs(N) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koMinimizeWindow; end;
     case keyDn and keyIs(O)                             and NOT GS.showingTimeline    of TRUE: result := koZoomOut; end;
@@ -134,8 +135,9 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(Q)                                                           of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(R) and     ctrl                                              of TRUE: result := koToggleRepeat; end;
     case keyUp and keyIs(R) and NOT ctrl                                              of TRUE: result := koRenameFile; end;
-    case keyUp and keyIs(S) and     ctrl                                              of TRUE: result := koToggleSubtitles; end;
-    case keyUp and keyIs(S) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koStartOver; end;
+    case keyUp and keyIs(S) and NOT ctrl and     shift                                of TRUE: result := koKeepSave; end;
+    case keyUp and keyIs(S) and     ctrl and NOT shift                                of TRUE: result := koToggleSubtitles; end;
+    case keyUp and keyIs(S) and NOT ctrl and NOT shift and NOT GS.showingTimeline     of TRUE: result := koStartOver; end;
     case keyUp and keyIs(T)                             and (GS.mediaType = mtImage)  of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T)                             and (GS.mediaType <> mtImage) of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;
@@ -149,12 +151,12 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
 
     case keyDn and keyIs(BACKSLASH)                                                   of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                                   of TRUE: result := koResetAll; end;
-    case keyDn and keyIs(CLOSE_BRACKET) and     shift                                 of TRUE: result := koSaturationUp; end; // close curly brace
-    case keyDn and keyIs(CLOSE_BRACKET) and NOT shift                                 of TRUE: result := koGammaUp; end;      // close square bracket
+    case keyDn and keyIs(CLOSE_BRACKET)  and     shift                                of TRUE: result := koSaturationUp; end; // close curly brace
+    case keyDn and keyIs(CLOSE_BRACKET)  and NOT shift                                of TRUE: result := koGammaUp; end;      // close square bracket
     case keyUp and keyIs(HASH)                                                        of TRUE: result := koShowCaption; end;
     case keyDn and keyIs(HYPHEN)                                                      of TRUE: result := koBrightnessDn; end;
-    case keyDn and keyIs(OPEN_BRACKET)  and     shift                                 of TRUE: result := koSaturationDn; end; // open curly brace
-    case keyDn and keyIs(OPEN_BRACKET)  and NOT shift                                 of TRUE: result := koGammaDn; end;      // open square bracket
+    case keyDn and keyIs(OPEN_BRACKET)   and     shift                                of TRUE: result := koSaturationDn; end; // open curly brace
+    case keyDn and keyIs(OPEN_BRACKET)   and NOT shift                                of TRUE: result := koGammaDn; end;      // open square bracket
     case keyUp and keyIs(SEMICOLON)                                                   of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                                of TRUE: result := koGammaReset; end;
     case keyDn and keyIs(SLASH)                                                       of TRUE: result := koSpeedUp; end;

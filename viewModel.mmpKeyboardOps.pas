@@ -94,6 +94,7 @@ begin
     koKeepCatF4:          mmp.cmd(evVMKeepCatF4);
     koKeepDelete:         mmp.cmd(evVMKeepDelete);
     koKeepMove:           mmp.cmd(evVMKeepMove);
+    koKeepSave:           mmp.cmd(evVMKeepSave);
     koImageInBrowser:     mmp.cmd(evVMImageInBrowser);
     koMaximize:           begin mmp.cmd(evGSAutoCenter, TRUE); mmp.cmd(evGSMaxSize, TRUE); mmp.cmd(evVMResizeWindow); end; // maximize the video according to the height of the screen
     koMinimizeWindow:     mmp.cmd(evVMMinimize);
@@ -143,7 +144,7 @@ begin
     koToggleHelp:         mmp.cmd(evVMToggleHelp);
     koToggleNumlock:      mmpToggleNumlock;
     koTogglePlaylist:     mmp.cmd(evVMTogglePlaylist);
-    koToggleRepeat:       MP.notify(newNotice(evMPToggleRepeat));
+    koToggleRepeat:       mmp.cmd(evPAPostToAll, WIN_TOGGLE_REPEAT);
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));
     koVolUp:              MP.notify(newNotice(evMPVolUp));

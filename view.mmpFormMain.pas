@@ -68,6 +68,7 @@ type
     procedure   WINTab            (var msg: TMessage);      message WIN_TAB;
     procedure   WINTabTab         (var msg: TMessage);      message WIN_TABTAB;
     procedure   WINResize         (var msg: TMessage);      message WIN_RESIZE;
+    procedure   WINToggleRepeat   (var msg: TMessage);      message WIN_TOGGLE_REPEAT;
   public
     function    getViewModel: IViewModel;
     procedure   setViewModel(const aValue: IViewModel);
@@ -225,6 +226,12 @@ procedure TMMPUI.WINTabTab(var msg: TMessage);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWINTabTab(msg);
+end;
+
+procedure TMMPUI.WINToggleRepeat(var msg: TMessage);
+begin
+  case FViewModel = NIL of TRUE: EXIT; end;
+  FViewModel.onWINToggleRepeat(msg);
 end;
 
 procedure TMMPUI.WMDropFiles(var msg: TWMDropFiles);

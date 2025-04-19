@@ -18,11 +18,7 @@
 }
 program MinimalistMediaPlayer;
 
-{$define FastMM_EnableMemoryLeakReporting}
-{$define FastMM_FullDebugMode}
-{$define FastMM_UseOutputDebugString}
-{$define FastMM_EnterDebugMode}
-{$define FastMM_FullDebugModeWhenDLLAvailable}
+{$define FastMM_DebugLibraryStaticDependency}
 
 {$R *.res}
 
@@ -71,7 +67,7 @@ uses
   model.mmpMPVCtrls in 'model.mmpMPVCtrls.pas',
   model.mmpMPVProperties in 'model.mmpMPVProperties.pas',
   mmpTickTimer in 'mmpTickTimer.pas',
-  view.mmpKeyboard in 'view.mmpKeyboard.pas',
+  view.mmpKeyboardMain in 'view.mmpKeyboardMain.pas',
   mmpShellUtils in 'mmpShellUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
   mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
@@ -101,7 +97,7 @@ uses
   view.mmpFormStreamList in 'view.mmpFormStreamList.pas',
   mmpImageUtils in 'mmpImageUtils.pas',
   view.mmpFormThumbs in 'view.mmpFormThumbs.pas',
-  view.mmpThumbsKeyboard in 'view.mmpThumbsKeyboard.pas',
+  view.mmpKeyboardThumbs in 'view.mmpKeyboardThumbs.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
   TThumbsClass in 'TThumbsClass.pas',
   TThumbClass in 'TThumbClass.pas',
@@ -117,6 +113,20 @@ uses
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpFuncProg in 'mmpFuncProg.pas';
+
+procedure setupRunMode;
+begin
+  reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
+  FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
+  debugClear;
+
+  case reportMemoryLeaksOnShutdown of TRUE: begin
+                                              debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown);
+                                              FastMM_DeleteEventLogFile;
+                                              FastMM_EnterDebugMode;
+                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
+                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary]; end;end;
+end;
 
 function checkParam: boolean;
 var T: TProc;
@@ -152,8 +162,7 @@ begin
 end;
 
 begin
-  reportMemoryLeaksOnShutdown   := mmpEnvironmentVariable;
-  debugClear;
+  setupRunMode;
 
   application.initialize;
   application.showMainForm      := FALSE;

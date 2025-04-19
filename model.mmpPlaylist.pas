@@ -192,7 +192,7 @@ end;
 destructor TPlaylist.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
-  FSubscriber := NIL;
+//  FSubscriber := NIL;
   case FPlaylist <> NIL of TRUE: FPlaylist.free; end;
   inherited;
 end;

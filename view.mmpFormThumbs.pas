@@ -27,7 +27,7 @@ uses
   MPVBasePlayer,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
-  view.mmpFormProgress, view.mmpThumbsKeyboard,
+  view.mmpFormProgress, view.mmpKeyboardThumbs,
   TMPVHostClass, TThumbsClass;
 
 type
@@ -239,7 +239,7 @@ begin
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
   mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
-  FSubscriber := NIL;
+//  FSubscriber := NIL;
 end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
