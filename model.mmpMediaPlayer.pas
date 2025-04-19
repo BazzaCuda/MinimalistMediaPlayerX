@@ -233,13 +233,22 @@ end;
 
 procedure TMediaPlayer.onStateChange(cSender: TObject; eState: TMPVPlayerState);
 // no mpsStop event as yet
+var vLoop: string;
 begin
 //  TDebug.debugEnum<TMPVPlayerState>('eState ' + extractFileName(mpvFileName(mpv)), eState);
   case eState of
     mpsLoading:   ; // FNotifier.notifySubscribers(mmp.cmd(evMPStateLoading)); {not currently used}
-    mpsEnd:       FNotifier.notifySubscribers(mmp.cmd(evMPStateEnd));
+    mpsEnd:       begin
+                    mpv.getPropertyString('loop-file', vLoop);
+                    case vLoop = 'no' of   TRUE: FNotifier.notifySubscribers(mmp.cmd(evMPStateEnd));
+                                          FALSE: mpv.seek(0, FALSE); end;end; // Fix --loop-file bug in libMPV-2 with some videos
     mpsPlay:      FNotifier.notifySubscribers(mmp.cmd(evMPStatePlay));
   end;
+//  case eState of
+//    mpsLoading:   debug('mpsLoading');
+//    mpsEnd:       debug('mpsEnd');
+//    mpsPlay:      debug('mpsPlay');
+//  end;
 end;
 
 function TMediaPlayer.onTickTimer(const aNotice: INotice): INotice;
