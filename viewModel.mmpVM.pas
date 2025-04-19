@@ -65,6 +65,7 @@ type
     procedure   onWINControls(var msg: TMessage);
     procedure   onWINGreater(var msg: TMessage);
     procedure   onWINMaxSizeOff(var msg: TMessage);
+    procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
     procedure   onWinResize(var msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
@@ -171,6 +172,7 @@ type
     procedure   onWINControls(var msg: TMessage);
     procedure   onWINGreater(var msg: TMessage);
     procedure   onWINMaxSizeOff(var msg: TMessage);
+    procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
     procedure   onWinResize(var msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
@@ -721,6 +723,11 @@ end;
 procedure TVM.onWINMaxSizeOff(var msg: TMessage);
 begin
   GS.notify(NewNotice(evGSMaxSize, FALSE));
+end;
+
+procedure TVM.onWINMuteUnmute(var msg: TMessage);
+begin
+  mmp.cmd(evMPMuteUnmute);
 end;
 
 procedure TVM.onWINPausePlay(var msg: TMessage);

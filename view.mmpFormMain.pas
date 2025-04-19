@@ -59,15 +59,16 @@ type
     procedure   WINAutoCenterOff  (var msg: TMessage);      message WIN_AUTOCENTER_OFF;
     procedure   WINCaption        (var msg: TMessage);      message WIN_CAPTION;
     procedure   WINCloseApp       (var msg: TMessage);      message WIN_CLOSEAPP;
+    procedure   WINControls       (var msg: TMessage);      message WIN_TOGGLE_CONTROLS;
     procedure   WINGreater        (var msg: TMessage);      message WIN_GREATER;
     procedure   WINMaxSizeOff     (var msg: TMessage);      message WIN_MAX_SIZE_OFF;
-    procedure   WINControls       (var msg: TMessage);      message WIN_TOGGLE_CONTROLS;
+    procedure   WINMuteUnmute     (var msg: TMessage);      message WIN_MUTE_UNMUTE;
     procedure   WINPausePlay      (var msg: TMessage);      message WIN_PAUSE_PLAY;
+    procedure   WINResize         (var msg: TMessage);      message WIN_RESIZE;
     procedure   WINStartOver      (var msg: TMessage);      message WIN_START_OVER;
     procedure   WINSyncMedia      (var msg: TMessage);      message WIN_SYNC_MEDIA;
     procedure   WINTab            (var msg: TMessage);      message WIN_TAB;
     procedure   WINTabTab         (var msg: TMessage);      message WIN_TABTAB;
-    procedure   WINResize         (var msg: TMessage);      message WIN_RESIZE;
     procedure   WINToggleRepeat   (var msg: TMessage);      message WIN_TOGGLE_REPEAT;
   public
     function    getViewModel: IViewModel;
@@ -190,6 +191,12 @@ procedure TMMPUI.WINMaxSizeOff(var msg: TMessage);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWINMaxSizeOff(msg);
+end;
+
+procedure TMMPUI.WINMuteUnmute(var msg: TMessage);
+begin
+  case FViewModel = NIL of TRUE: EXIT; end;
+  FViewModel.onWINMuteUnmute(msg);
 end;
 
 procedure TMMPUI.WINPausePlay(var msg: TMessage);

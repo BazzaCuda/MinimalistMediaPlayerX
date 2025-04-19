@@ -54,6 +54,7 @@ const
   WIN_TABTAB          = WM_APP + 2011;
   WIN_TOGGLE_CONTROLS = WM_APP + 2012;
   WIN_TOGGLE_REPEAT   = WM_APP + 2013;
+  WIN_MUTE_UNMUTE     = WM_APP + 2014;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';

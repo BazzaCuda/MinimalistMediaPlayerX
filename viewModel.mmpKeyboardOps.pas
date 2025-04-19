@@ -98,7 +98,7 @@ begin
     koImageInBrowser:     mmp.cmd(evVMImageInBrowser);
     koMaximize:           begin mmp.cmd(evGSAutoCenter, TRUE); mmp.cmd(evGSMaxSize, TRUE); mmp.cmd(evVMResizeWindow); end; // maximize the video according to the height of the screen
     koMinimizeWindow:     mmp.cmd(evVMMinimize);
-    koMuteUnmute:         mmp.cmd(evMPMuteUnmute);
+    koMuteUnmute:         mmp.cmd(evPAPostToAll, WIN_MUTE_UNMUTE);
     koNextChapter:        MP.notify(newNotice(evMPNextChapter));
     koPanDn:              MP.notify(newNotice(evMPPanDn));
     koPanLeft:            MP.notify(newNotice(evMPPanLeft));
