@@ -126,11 +126,9 @@ type
     property    whichHost:          THostType     read getWhichHost;
   end;
 
-var gThumbs: TThumbs = NIL;
 function newThumbs: IThumbs;
 begin
-  case gThumbs = NIL of TRUE: gThumbs := TThumbs.create; end;
-  result := gThumbs;
+  result := TThumbs.create;
 end;
 
 { TThumbs }

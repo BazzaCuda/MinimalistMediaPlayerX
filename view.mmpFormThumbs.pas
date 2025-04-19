@@ -235,7 +235,7 @@ procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   mpv := NIL; // do this first or the user will briefly see the blank form background
   case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
-  case FThumbs        = NIL of FALSE: FThumbs := NIL; {freeAndNIL(FThumbs);} end;
+  case FThumbs        = NIL of FALSE: FThumbs := NIL; end;
   case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
   mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
