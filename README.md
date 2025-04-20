@@ -228,8 +228,6 @@ Control | Action
 `9`                     | increase contrast. Can be held down for rapid increase
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
-`C`                     | `[C]`ut the segment under the cursor into two segments
-`Ctrl-C`                | same as above but mark the left-hand segment as e[X]cluded (same as `[I]`)
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `L`                     | `[L]`engthen the selected segment by one second
