@@ -133,6 +133,7 @@ implementation
 
 uses
   winApi.shellApi,
+  system.math,
   vcl.dialogs,
   mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
@@ -326,13 +327,14 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
-//    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position);
-    ord('R'): vSaveUndo := TL.restoreSegment(TSegment.selSeg);
-    ord('X'): vSaveUndo := TL.delSegment(TSegment.selSeg);
     ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);
     ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE);
+
     ord('M'): vSaveUndo := TL.mergeRight(TSegment.selSeg);
     ord('N'): vSaveUndo := TL.mergeLeft(TSegment.selSeg);
+
+    ord('R'): vSaveUndo := TL.restoreSegment(TSegment.selSeg);
+    ord('X'): vSaveUndo := TL.delSegment(TSegment.selSeg);
 
     ord('L'): vSaveUndo := TRUE; // user has stopped holding down L; save the Timeline
     ord('S'): vSaveUndo := TRUE; // user has stopped holding down S; save the Timeline
@@ -415,7 +417,7 @@ begin
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
   var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
-  aSegment.EndSS := newStartSS - 1;
+  aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
   case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
@@ -448,9 +450,9 @@ begin
   for var vSegment in segments do begin
     vSegment.top     := 0;
     vSegment.height  := gTimelineForm.height;
-//    case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
-//                            FALSE: vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
-    vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width);
+    case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
+                            FALSE: vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
+//    vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width);
     vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
     vSegment.caption := '';
     vSegment.segID   := format('%.2d', [n]);
@@ -514,8 +516,8 @@ end;
 function TTimeline.defaultSegment: string;
 begin
   segments.clear;
-  segments.add(TSegment.create(1, FMax));
-  result := format('1-%d,0', [FMax]);
+  segments.add(TSegment.create(0, FMax));
+  result := format('0-%d,0', [FMax]);
 end;
 
 function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -850,7 +852,7 @@ begin
 end;
 
 function TTimeline.validKey(key: WORD): boolean;
-const validKeys = {'C'} 'ILMNORSXYZ';
+const validKeys = 'ILMNORSXYZ';
 begin
   result := validKeys.contains(char(key));
 end;

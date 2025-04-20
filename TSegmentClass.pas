@@ -209,7 +209,12 @@ end;
 
 function TSegment.getDuration: integer;
 begin
-  result := (FEndSS - FStartSS) + 1;
+  case FStartSS = FEndSS of TRUE: begin result := 1; EXIT; end;end; // prevent zero duration segments
+
+  result := (FEndSS - FStartSS);
+
+  case FStartSS = 0 of   TRUE: EXIT;
+                        FALSE: result := result + 1; end;
 end;
 
 function TSegment.getIsFirst: boolean;

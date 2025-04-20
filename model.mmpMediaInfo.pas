@@ -394,8 +394,6 @@ var
                                                                                                       FMediaChapters.delete(0);
                                                                                                       dec(FMD.mdChapterCount);
                                                                                                     end;end; // delete initial bogus 0:00:00-0:00:00 chapter
-
-    FMediaChapters[0].chapterStartSS := 1; // correction to MediaInfo - the first chapter doesn't start at "zero seconds"
   end;
 
 begin

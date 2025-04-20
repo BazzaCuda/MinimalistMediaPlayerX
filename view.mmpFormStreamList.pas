@@ -195,7 +195,7 @@ procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCa
 begin
   lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
-  lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].EndSS - FSegments[aIndex].startSS + 1, mmpFormatSeconds(FSegments[aIndex].EndSS - FSegments[aIndex].startSS + 1)]);
+  lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].duration, mmpFormatSeconds(FSegments[aIndex].duration)]);
   lblTitle.caption        := FSegments[aIndex].title;
   shape1.brush.color      := FSegments[aIndex].color;
   shape1.brush.style      := bsSolid;

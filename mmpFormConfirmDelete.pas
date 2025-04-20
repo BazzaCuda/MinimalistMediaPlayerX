@@ -28,7 +28,7 @@ uses
   mmpConsts;
 
 type
-  TDeletionObject = (doFile, doFolder, doKeepDelete);
+  TDeletionObject = (doFile, doFolder, doKeepDelete, doCleanup);
 
   IConfirmDeleteForm = interface
     ['{96B437DD-E174-4008-9DCA-C55BE40D5BF2}']
@@ -104,9 +104,9 @@ end;
 
 constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
 const
-  TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files');
+  TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files', 'Cleanup Timeline Editing Files');
   CONFIRM_CAPTIONS: array[TDeleteMethod]    of string = ('Confirm Recycle', 'Confirm Delete', 'Confirm Shred');
-  TYPE_CAPTIONS:    array[TDeletionObject]  of string = (' File?', ' Folder?', ' non-"[K]eep" files?');
+  TYPE_CAPTIONS:    array[TDeletionObject]  of string = (' File?', ' Folder?', ' non-"[K]eep" files?', ' Timeline Editing Files?');
 begin
   inherited create(NIL);
 
@@ -116,12 +116,12 @@ begin
   case aDeletionObject of doFile: vCaption := vCaption + #13#10 + extractFileName(aPath); end;
   lblItemToDelete.caption   := vCaption;
 
-  imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete];
+  imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
   imgDeleteFile.visible     := aDeletionObject = doFile;
 
   lblTitle.caption          := TITLE_CAPTIONS[aDeletionObject];
 
-  lblSubFolders.visible     := aDeletionObject in [doFolder, doKeepDelete];
+  lblSubFolders.visible     := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
   lblKeepFiles.visible      := aDeletionObject = doKeepDelete;
 
   lblDeleteMethod.caption   := 'deleteMethod=' + CF[CONF_DELETE_METHOD];

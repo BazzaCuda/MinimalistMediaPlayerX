@@ -92,7 +92,8 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormConfirmDelete, mmpFormatting, mmpFuncProg, mmpGlobalState,
+  mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
@@ -326,15 +327,20 @@ var
 begin
   result := FALSE;
 
-  vFolder   := mmp.cmd(evPLReqCurrentFolder).text;
-  var vMsg  := 'Cleanup Timeline Editing files in '#13#10#13#10
-              + 'Folder: ' + vFolder + ' ???';
+  mmp.cmd(evMPPause);
 
-  mmp.cmd(mmpShowOKCancelMsgDlg(vMsg) = mrOK, procedure begin
-                                                        mmp.cmd(evSTOpInfo, 'Cleanup in progress');
-                                                        newCleanup.cleanup(vFolder);
-                                                        mmp.cmd(evSTOpInfo, 'Cleanup complete');
-                                                      end);
+  vFolder   := mmp.cmd(evPLReqCurrentFolder).text;
+//  var vMsg  := 'Cleanup Timeline Editing files in '#13#10#13#10
+//              + 'Folder: ' + vFolder + ' ???';
+
+  var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
+
+  mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mryes, procedure  begin
+                                                                                                                      mmp.cmd(evSTOpInfo, 'Cleanup in progress');
+                                                                                                                      newCleanup.cleanup(vFolder);
+                                                                                                                      mmp.cmd(evSTOpInfo, 'Cleanup complete');
+                                                                                                                    end);
+  result := TRUE;
 end;
 
 function TVM.doEscapeKey: boolean;
@@ -1077,7 +1083,7 @@ begin
                     mmp.cmd(evMPPause);
                     mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
                                                        + 'The path or filename contains a single quote, double quote, ampersand, etc.'#13#10
-                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_./'#13#10#13#10
+                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
                                                        + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
 

@@ -65,10 +65,10 @@ end;
 
 function mmpPlayCurrent: boolean;
 begin
-  var vShowingTimeline := GS.showingTimeline; // EXPERIMENTAL
-  mmp.cmd(evVMShutTimeline); // so the timeline will read the correct .mmp file...
+  var vShowingTimeline := GS.showingTimeline;
+  mmp.cmd(evVMShutTimeline); // so the timeline will get re-initialized with the correct media file...
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
-  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(vShowingTimeline, evVMToggleEditMode); end; // ...when it reopens
+  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(vShowingTimeline, evVMToggleEditMode); end; // ...when/if it reopens
 end;
 
 function mmpPlayFirst: boolean;
