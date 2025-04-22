@@ -283,7 +283,7 @@ begin
                           end;end;
 
   var vSeg := TL.segmentAtSS(TL.position);
-  case vSeg = NIL of FALSE: vSeg.repaint; end;
+  case vSeg = NIL of FALSE: vSeg.invalidate; end;
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -313,6 +313,7 @@ begin
   lblPosition.bevelOuter    := bvNone;
   lblPosition.color         := TL_DEFAULT_COLOR;
   FLabelColor               := lblPosition.color;
+  doubleBuffered            := TRUE;
 end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -387,7 +388,7 @@ begin
   case vSelSeg = NIL of FALSE: case vSelSeg.deleted of   TRUE: lblPosition.color := clBlack;
                                                         FALSE: lblPosition.color := FLabelColor; end;end;
 
-  lblPosition.repaint;
+  lblPosition.invalidate;
   lblPosition.bringToFront;
 end;
 

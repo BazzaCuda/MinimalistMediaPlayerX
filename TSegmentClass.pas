@@ -21,7 +21,7 @@ unit TSegmentClass;
 interface
 
 uses
-  winApi.windows,
+  winApi.windows, winApi.messages,
   system.classes, system.generics.collections,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
 
@@ -63,6 +63,7 @@ type
   protected
     procedure doClick(Sender: TObject);
     procedure paint; override;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
     function    delete: boolean;
@@ -152,6 +153,8 @@ begin
   font.style        := [fsBold];
   alignment         := taLeftJustify;
   onClick           := doClick;
+
+  doubleBuffered    := TRUE;
 
   startSS           := aStartSS;
   endSS             := aEndSS;
@@ -280,6 +283,12 @@ end;
 procedure TSegment.setTitle(const Value: string);
 begin
   FTitle.caption := Value;
+end;
+
+procedure TSegment.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  // don't call inherited
+  message.result := 1; // prevent flicker when dragging the Timeline cursor over the panel
 end;
 
 end.

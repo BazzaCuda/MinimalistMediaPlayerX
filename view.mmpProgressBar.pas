@@ -241,8 +241,8 @@ function TProgressBar.setNewPosition(const x: integer): integer;
 // This includes dragging the timeline cursor, which is effectively the same thing.
 begin
   FPB.position := round(x * FPB.max / FPB.clientWidth);
-  mmp.cmd(evPBClick, FPB.position);
-  mmp.cmd(evTLPosition, FPB.position); // EXPERIMENTAL
+  mmp.cmd(evPBClick, FPB.position);    // notify model.mmpMediaPlayer
+  mmp.cmd(evTLPosition, FPB.position); // notify Timeline cursor
   result := FPB.position;
 end;
 
