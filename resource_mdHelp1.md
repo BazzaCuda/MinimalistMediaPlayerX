@@ -20,7 +20,10 @@ Ctrl-Shift-**C** cleanup timeline editing files<br />
 Ctrl-**DEL** [D]elete folder contents after confirm\*\*<br />
 **K** [K]eep file (rename with leading ! and space )<br />
 Ctrl-**K** [K]eep/Delete all files in folder\*\*<br />
+Ctrl-**M** [M]ove file to folder in moveFolder=<br />
+Shift-**M** [M]ove file to folder in moveFolder=<br />
 **R** [R]ename file<br />
+Shift-**S** [S]ave file to folder in saved=<br />
 
 \*\* doesn't touch the contents of subfolders<br />
 

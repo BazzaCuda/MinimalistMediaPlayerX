@@ -1,5 +1,5 @@
 {   MMP: Minimalist Media Player
-    Copyright (C) 2021-2024 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021-2099 Baz Cuda <bazzacuda@gmx.com>
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
@@ -107,7 +107,8 @@ uses
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpFuncProg in 'mmpFuncProg.pas',
-  mmpStackTrace in 'mmpStackTrace.pas';
+  mmpStackTrace in 'mmpStackTrace.pas',
+  mmpExceptionHandler in 'mmpExceptionHandler.pas';
 
 procedure setupRunMode;
 begin
@@ -177,7 +178,7 @@ begin
   Application.CreateForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
-  application.onException := MMPUI.appExceptionHandler;
+  application.onException := mmpException.handler;
 
   initUI(MMPUI);
 
@@ -186,14 +187,13 @@ begin
 
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 
-  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and location to copy
+  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy
 
   mmp.cmd(evSTForceCaptions);
 
-//  case (GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] of TRUE: mmpDelay(250); end;
-  mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT (mmpCtrlKeyDown or mmpShiftKeyDown), evVMToggleEditMode); // EXPERIMENTAL
+  mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown, evVMToggleEditMode);
 
   mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
-  application.Run;
+  application.Run; // now it's ok to raise test exceptions
 end.

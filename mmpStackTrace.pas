@@ -1,5 +1,5 @@
 {   MMP: Minimalist Media Player
-    Copyright (C) 2021-2024 Baz Cuda <bazzacuda@gmx.com>
+    Copyright (C) 2021-2099 Baz Cuda <bazzacuda@gmx.com>
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
     This program is free software; you can redistribute it and/or modify
@@ -60,23 +60,20 @@ begin
 end;
 
 initialization
-// Start the Jcl exception tracking and register our Exception
-// stack trace provider.
-if JclStartExceptionTracking then
-begin
-  Exception.GetExceptionStackInfoProc := GetExceptionStackInfoProc;
-  Exception.GetStackInfoStringProc := GetStackInfoStringProc;
-  Exception.CleanUpStackInfoProc := CleanUpStackInfoProc;
+// Start the Jcl exception tracking and register our Exception stack trace provider
+  case reportMemoryLeaksOnShutdown and JclStartExceptionTracking of  TRUE:  begin
+                                                                              Exception.GetExceptionStackInfoProc := GetExceptionStackInfoProc;
+                                                                              Exception.GetStackInfoStringProc    := GetStackInfoStringProc;
+                                                                              Exception.CleanUpStackInfoProc      := CleanUpStackInfoProc; end;
 end;
 
 finalization
-// Stop Jcl exception tracking and unregister our provider.
-if JclExceptionTrackingActive then
-begin
-  Exception.GetExceptionStackInfoProc := nil;
-  Exception.GetStackInfoStringProc := nil;
-  Exception.CleanUpStackInfoProc := nil;
-  JclStopExceptionTracking;
+// Stop Jcl exception tracking and unregister our provider
+  case reportMemoryLeaksOnShutdown and JclExceptionTrackingActive of  TRUE: begin
+                                                                              Exception.GetExceptionStackInfoProc := NIL;
+                                                                              Exception.GetStackInfoStringProc    := NIL;
+                                                                              Exception.CleanUpStackInfoProc      := NIL;
+                                                                              JclStopExceptionTracking; end;
 end;
 
 end.

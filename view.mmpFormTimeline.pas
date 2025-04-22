@@ -51,7 +51,7 @@ type
   private
     function  getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
-    function  updatePositionDisplay(const aPosition: integer = -1): boolean;
+    function  updatePositionDisplay(const aPosition: integer): boolean;
   protected
     procedure createParams(var params: TCreateParams);
     procedure exportSegments(sender: TObject);
@@ -228,7 +228,7 @@ begin
   case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
   mmp.cmd(evMPKeepOpen, FALSE);
-  mmp.cmd(evGSTimelineHeight, 0); // EXPERIMENTAL: swapped these two lines because of mmpPlayCurrent waiting
+  mmp.cmd(evGSTimelineHeight, 0);
   mmp.cmd(evGSShowingTimeline, FALSE);
 end;
 
@@ -279,7 +279,7 @@ begin
                             case cursorPos < 0 of TRUE: cursorPos := 0; end;
                             var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer;
                             mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
-                            updatePositionDisplay(vNewPos);
+                            updatePositionDisplay(TL.position);
                           end;end;
 
   var vSeg := TL.segmentAtSS(TL.position);
@@ -306,7 +306,7 @@ begin
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
   pnlCursor.left   := -1;
-  pnlCursor.width  := pnlCursor.width + 1; // EXPERIMENTAL
+  pnlCursor.width  := pnlCursor.width + 1;
   keyPreview       := TRUE;
   lblPosition.styleElements := [seFont];
   lblPosition.borderStyle   := bsNone;
@@ -376,15 +376,14 @@ procedure TTimelineForm.lblPositionClick(Sender: TObject);
 begin
   case lblPosition.tag = 0 of  TRUE: lblPosition.tag := 1;
                               FALSE: lblPosition.tag := 0; end;
-  updatePositionDisplay;
+  updatePositionDisplay(TL.position);
 end;
 
-function TTimelineForm.updatePositionDisplay(const aPosition: integer = -1): boolean;
+function TTimelineForm.updatePositionDisplay(const aPosition: integer): boolean;
 begin
-  var vPosition := mmpIfThenElse(aPosition = -1, TL.position, aPosition);
-  case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
-                              FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
-  var vSelSeg := TL.segmentAtSS(TL.position);
+  case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(aPosition) + 's';
+                              FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(aPosition); end;
+  var vSelSeg := TL.segmentAtSS(aPosition);
   case vSelSeg = NIL of FALSE: case vSelSeg.deleted of   TRUE: lblPosition.color := clBlack;
                                                         FALSE: lblPosition.color := FLabelColor; end;end;
 
@@ -831,7 +830,7 @@ begin
     case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
     gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
     application.ProcessMessages;
-    gTimelineForm.updatePositionDisplay;
+    gTimelineForm.updatePositionDisplay(TL.position);
   finally
     FCursorMoving := FALSE;
   end;

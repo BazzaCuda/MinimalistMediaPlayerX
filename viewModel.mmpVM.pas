@@ -598,7 +598,7 @@ begin
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
                       mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
-                      mmp.cmd(evGSOpeningURL, FALSE); end;
+                      mmp.cmd(evGSOpeningURL, FALSE); end; // for TVM.reInitTimeline - set to TRUE in model.mmpPlaylistUtils.mmpPlayCurrent
     evMPPosition:   begin
                       FMPPosition := aNotice.integer;
                       mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)); end;
@@ -885,7 +885,6 @@ function TVM.reInitTimeline: boolean;
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: EXIT; end;
-//  mmpDelay(1000); // EXPERIMENTAL
   var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
   TL.initTimeline(vCurrentItem, FMPDuration);
   resizeWindow;

@@ -65,16 +65,10 @@ end;
 
 function mmpPlayCurrent: boolean;
 begin
-//  var vShowingTimeline := GS.showingTimeline;
-//  mmp.cmd(evVMShutTimeline); // so the timeline will get re-initialized with the correct media file...
-//  while GS.showingTimeline do;
-  mmp.cmd(evGSOpeningURL, TRUE);
+  mmp.cmd(evGSOpeningURL, TRUE); // for TVM.reInitTimeline
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
-  while GS.openingURL do;
-//  mmpDelay(250); // EXPERIMENTAL
-//  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(vShowingTimeline, evVMToggleEditMode); end; // ...when/if it reopens
-//  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(evVMInitTimeline); end; // ...when/if it reopens
-  mmp.cmd(evVMReInitTimeline);
+  while GS.openingURL do;        // for TVM.reInitTimeline - wait until TVM receives the new duration event in its onMPNotify
+  mmp.cmd(evVMReInitTimeline);   // reInit the timeline with the new media file details
 end;
 
 function mmpPlayFirst: boolean;

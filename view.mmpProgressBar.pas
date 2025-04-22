@@ -241,7 +241,7 @@ function TProgressBar.setNewPosition(const x: integer): integer;
 // only call in response to a mouse click on the progress bar
 // This includes dragging the timeline cursor, which is effectively the same thing.
 begin
-  FPB.Position := round(x * FPB.max / FPB.clientWidth);
+  FPB.position := round(x * FPB.max / FPB.clientWidth);
   mmp.cmd(evPBClick, FPB.position);
   result := FPB.position;
 end;

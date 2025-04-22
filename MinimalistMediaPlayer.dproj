@@ -236,6 +236,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpFuncProg.pas"/>
         <DCCReference Include="mmpStackTrace.pas"/>
+        <DCCReference Include="mmpExceptionHandler.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
