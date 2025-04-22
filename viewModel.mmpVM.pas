@@ -108,6 +108,8 @@ type
     FMPDuration:            integer;
     FMPPosition:            integer;
 
+    FMPPrevPosition:        integer;
+
     FMenu:                  IMMPMenu;
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
@@ -588,15 +590,16 @@ begin
     evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   mmp.cmd(evPBMax, aNotice.integer);
-    evMPPosition:   begin
-                      case GS.showingTimeline of TRUE: begin TL.cursorMoving := TRUE; TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;
-                      mmp.cmd(evPBPosition, aNotice.integer);
-                    end;
+    evMPPosition:   case aNotice.integer = FMPPrevPosition of FALSE:  begin
+                                                                        FMPPrevPosition := aNotice.integer;
+                                                                        mmp.cmd(evPBPosition, aNotice.integer);
+                                                                        case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;end;
   end;
 
   case aNotice.event of
     evMPDuration:   begin
-                      FMPDuration := aNotice.integer;
+                      FMPPrevPosition := -1;
+                      FMPDuration     := aNotice.integer;
                       mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
                       mmp.cmd(evGSOpeningURL, FALSE); end; // for TVM.reInitTimeline - set to TRUE in model.mmpPlaylistUtils.mmpPlayCurrent
     evMPPosition:   begin

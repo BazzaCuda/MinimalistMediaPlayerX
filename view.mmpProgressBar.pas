@@ -132,7 +132,7 @@ end;
 function TProgressBar.formResize: boolean;
 begin
   result := FALSE;
-  FPB.repaint;
+  FPB.invalidate; // repaint;
   result := TRUE;
 end;
 
@@ -216,12 +216,14 @@ begin
 
   case NOT (ssCtrl in shift) of TRUE: EXIT; end;
   setNewPosition(x);
+  mmp.cmd(evTLPosition, FPB.position); // notify Timeline cursor
 end;
 
 procedure TProgressBar.progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // calculate a new video position based on where the progress bar is clicked
 begin
   setNewPosition(x);
+  mmp.cmd(evTLPosition, FPB.position); // notify Timeline cursor
 end;
 
 function TProgressBar.resetColor: integer;
@@ -241,8 +243,7 @@ function TProgressBar.setNewPosition(const x: integer): integer;
 // This includes dragging the timeline cursor, which is effectively the same thing.
 begin
   FPB.position := round(x * FPB.max / FPB.clientWidth);
-  mmp.cmd(evPBClick, FPB.position);    // notify model.mmpMediaPlayer
-  mmp.cmd(evTLPosition, FPB.position); // notify Timeline cursor
+  mmp.cmd(evPBClick, FPB.position); // notify model.mmpMediaPlayer
   result := FPB.position;
 end;
 

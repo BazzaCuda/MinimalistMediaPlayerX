@@ -31,6 +31,11 @@ uses
 type
   TRunType = (rtFFMpeg, rtCMD);
 
+//  TPanelHelper = class helper for TPanel
+//  private
+//    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+//  end;
+
   TTimelineForm = class(TForm)
     pnlCursor:          TPanel;
     lblPosition:        TPanel;
@@ -46,8 +51,6 @@ type
     procedure FormResize(Sender: TObject);
     procedure lblPositionClick(Sender: TObject);
   strict private
-    FDragging: boolean;
-    FLabelColor: TColor;
   private
     function  getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
@@ -55,6 +58,7 @@ type
   protected
     procedure createParams(var params: TCreateParams);
     procedure exportSegments(sender: TObject);
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     property  cursorPos: integer read getCursorPos write setCursorPos;
   end;
@@ -62,7 +66,7 @@ type
   TTimeline = class(TObject)
   strict private
     FCancelled:               boolean;
-    FCursorMoving:            boolean;
+    FDragging:                boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
     FPosition:                integer;
@@ -116,7 +120,7 @@ type
     function    validKey(key: WORD):              boolean;
 
     property    cancelled:      boolean               read FCancelled;
-    property    cursorMoving:   boolean               read FCursorMoving  write FCursorMoving;
+    property    dragging:       boolean               read FDragging      write FDragging;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
     property    position:       integer               read getPosition    write setPosition;
@@ -252,7 +256,7 @@ end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  FDragging := TRUE;
+  TL.dragging := TRUE;
 end;
 
 procedure TTimelineForm.pnlCursorMouseEnter(Sender: TObject);
@@ -266,29 +270,34 @@ begin
 end;
 
 procedure TTimelineForm.pnlCursorMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+{$J+} const vPrevX: integer = -1; {$J-}
 var
   vCursorPt:  TPoint;
   vRect:      TRect;
 begin
   winApi.windows.getCursorPos(vCursorPt);
   getWindowRect(SELF.handle, vRect);
-  case (vCursorPt.x <= vRect.location.x) or (vCursorPt.x >= vRect.bottomRight.x) of TRUE: EXIT; end;
+  case (vCursorPt.x <= vRect.location.x) or (vCursorPt.x >= vRect.bottomRight.x) of TRUE: EXIT; end; // prevent dragging outside the bounds of the timeline
 
-  case FDragging of TRUE: begin
-                            cursorPos := cursorPos + (X - pnlCursor.width div 2);
-                            case cursorPos < 0 of TRUE: cursorPos := 0; end;
-                            var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer;
-                            mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
-                            updatePositionDisplay(TL.position);
-                          end;end;
+  case x = vPrevX of TRUE: EXIT; end; // filter out hundreds of repeating messages when the mouse is being held down but being moved
+  vPrevX := X;
 
-  var vSeg := TL.segmentAtSS(TL.position);
-  case vSeg = NIL of FALSE: vSeg.invalidate; end;
+  case TL.dragging of  TRUE:  begin
+                                cursorPos := cursorPos + (X - pnlCursor.width div 2);
+                                case cursorPos < 0 of TRUE: cursorPos := 0; end;
+                                var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer; // PB returns the x position converted to SS
+                                mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
+                                TL.position := vNewPos;
+                                updatePositionDisplay(TL.position);
+                                var vSeg := TL.segmentAtSS(TL.position);
+                                case vSeg = NIL of FALSE: vSeg.repaint; end;
+                              end;end;
+
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  FDragging := FALSE;
+  TL.dragging := FALSE;
 end;
 
 procedure TTimelineForm.setCursorPos(const Value: integer);
@@ -303,17 +312,21 @@ end;
 
 procedure TTimelineForm.FormCreate(Sender: TObject);
 begin
+  lblPosition.caption := '';
+  keyPreview       := TRUE;
+
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
   pnlCursor.left   := -1;
   pnlCursor.width  := pnlCursor.width + 1;
-  keyPreview       := TRUE;
+
   lblPosition.styleElements := [seFont];
   lblPosition.borderStyle   := bsNone;
   lblPosition.bevelOuter    := bvNone;
   lblPosition.color         := TL_DEFAULT_COLOR;
-  FLabelColor               := lblPosition.color;
+
   doubleBuffered            := TRUE;
+  lblPosition.controlStyle  := lblPosition.controlStyle + [csOpaque];
 end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -386,10 +399,15 @@ begin
                               FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(aPosition); end;
   var vSelSeg := TL.segmentAtSS(aPosition);
   case vSelSeg = NIL of FALSE: case vSelSeg.deleted of   TRUE: lblPosition.color := clBlack;
-                                                        FALSE: lblPosition.color := FLabelColor; end;end;
+                                                        FALSE: lblPosition.color := TL_DEFAULT_COLOR; end;end;
 
   lblPosition.invalidate;
   lblPosition.bringToFront;
+end;
+
+procedure TTimelineForm.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  message.result := 1;
 end;
 
 { TTimeline }
@@ -422,7 +440,6 @@ end;
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
 begin
   result := FALSE;
-  case FCursorMoving  of TRUE: EXIT; end; // after the user clicks the progressBar, ensure the cursor has moved before actioning the user's "cut"
   case aSegment = NIL of TRUE: EXIT; end;
 
   var newStartSS := aPosition;
@@ -765,7 +782,7 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evTLMax:      setMax(aNotice.integer);
-    evTLPosition: setPosition(aNotice.integer);
+    evTLPosition: case FDragging of FALSE: setPosition(aNotice.integer); end;
   end;
 end;
 
@@ -825,16 +842,11 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  FCursorMoving := TRUE;
-  try
-    FPosition := value;
-    case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
-    gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
-    application.ProcessMessages;
-    gTimelineForm.updatePositionDisplay(TL.position);
-  finally
-    FCursorMoving := FALSE;
-  end;
+  FPosition := value;
+  case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
+  gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
+  application.ProcessMessages;
+  gTimelineForm.updatePositionDisplay(value); // TL.position); EXPERIMENTAL
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
@@ -867,6 +879,14 @@ const validKeys = 'ILMNORSXYZ';
 begin
   result := validKeys.contains(char(key));
 end;
+
+{ TPanelHelper }
+
+//procedure TPanelHelper.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+//begin
+//  inherited;
+//  message.result := 0;
+//end;
 
 initialization
 

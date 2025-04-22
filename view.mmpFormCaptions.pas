@@ -295,13 +295,13 @@ procedure TCaptionsForm.setDisplayTime(const aValue: string);
 begin
   case FShowTime of FALSE: EXIT; end;
   FTimeLabel.caption := aValue;
-  FTimeLabel.repaint; // !!!
+  FTimeLabel.invalidate; // repaint; // !!!
 end;
 
 procedure TCaptionsForm.setOpInfo(const aValue: string);
 begin
   FOpInfo.caption := aValue;
-  FOpInfo.repaint; // !!!
+  FOpInfo.invalidate; // repaint; // !!!
   ST.resetTimer;
 end;
 
