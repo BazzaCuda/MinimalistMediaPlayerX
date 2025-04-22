@@ -71,6 +71,7 @@ type
     procedure   WINTabTab         (var msg: TMessage);      message WIN_TABTAB;
     procedure   WINToggleRepeat   (var msg: TMessage);      message WIN_TOGGLE_REPEAT;
   public
+    procedure   appExceptionHandler(sender: TObject; e: Exception);
     function    getViewModel: IViewModel;
     procedure   setViewModel(const aValue: IViewModel);
     property    viewModel:    IViewModel      read getViewModel write setViewModel;
@@ -83,6 +84,7 @@ var
 implementation
 
 uses
+  system.ioUtils,
   winApi.shellApi,
   mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils,
   view.mmpFormTimeline,
@@ -91,6 +93,34 @@ uses
 {$R *.dfm}
 
 { TMMPUI }
+
+procedure TMMPUI.appExceptionHandler(sender: TObject; e: Exception);
+var
+  vLogFileName: string;
+  vLogEntry: string;
+  vCallStackPrefix: string;
+begin
+  debugFormat('e: class=%s, %s', [e.className, e.message]);
+  vLogFileName := changeFileExt(application.ExeName, '.log');
+
+  vLogEntry := format('%s%s: %s%s',
+    [formatDateTime('yyyy-mm-dd hh:nn:ss.zzz: ', now),
+     e.className,
+     e.message,
+     sLineBreak]);
+
+  vCallStackPrefix := 'Call Stack:';
+  case e is EAccessViolation of TRUE: vCallStackPrefix := 'Access Violation:'; end;
+  case e is EInvalidPointer  of TRUE: vCallStackPrefix := 'Invalid Pointer Operation:'; end;
+
+  vLogEntry := vLogEntry + format('%s%s%s%s', [vCallStackPrefix, sLineBreak, e.stackTrace, sLineBreak]);
+
+  try
+    TFile.appendAllText(vLogFileName, vLogEntry);
+  except
+    debug('Error writing to log file: ' + e.message);
+  end;
+end;
 
 procedure TMMPUI.applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
 // mouse events on MPV and key events for all windows

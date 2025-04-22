@@ -18,7 +18,7 @@
 }
 program MinimalistMediaPlayer;
 
-{$define FastMM_DebugLibraryStaticDependency}
+//{$define FastMM_DebugLibraryStaticDependency}
 
 {$R *.res}
 
@@ -45,13 +45,7 @@ uses
   mmpUtils in 'mmpUtils.pas',
   mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
-  MPVClient in 'libMPVDelphi\MPVClient.pas',
   MPVConst in 'libMPVDelphi\MPVConst.pas',
-  MPVNode in 'libMPVDelphi\MPVNode.pas',
-  MPVRender in 'libMPVDelphi\MPVRender.pas',
-  MPVRenderGL in 'libMPVDelphi\MPVRenderGL.pas',
-  MPVStreamCB in 'libMPVDelphi\MPVStreamCB.pas',
-  MPVTrack in 'libMPVDelphi\MPVTrack.pas',
   model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
   model.mmpConfigFile in 'model.mmpConfigFile.pas',
   viewModel.mmpVM in 'viewModel.mmpVM.pas',
@@ -112,7 +106,8 @@ uses
   mmpMenu in 'mmpMenu.pas',
   MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
-  mmpFuncProg in 'mmpFuncProg.pas';
+  mmpFuncProg in 'mmpFuncProg.pas',
+  mmpStackTrace in 'mmpStackTrace.pas';
 
 procedure setupRunMode;
 begin
@@ -120,12 +115,15 @@ begin
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
   debugClear;
 
+//  TSynLog.Family.Level := LOG_STACKTRACE;
+
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown);
-                                              FastMM_DeleteEventLogFile;
-                                              FastMM_EnterDebugMode;
-                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
-                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary]; end;end;
+//                                              FastMM_DeleteEventLogFile;
+//                                              FastMM_EnterDebugMode;
+//                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
+//                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary]; end;end;
+  end;end;
 end;
 
 function checkParam: boolean;
@@ -179,6 +177,8 @@ begin
   Application.CreateForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
+  application.onException := MMPUI.appExceptionHandler;
+
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
@@ -189,6 +189,9 @@ begin
   MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and location to copy
 
   mmp.cmd(evSTForceCaptions);
+
+//  case (GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] of TRUE: mmpDelay(250); end;
+  mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT (mmpCtrlKeyDown or mmpShiftKeyDown), evVMToggleEditMode); // EXPERIMENTAL
 
   mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 

@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -141,7 +141,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=3.0.3.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=3.0.3.0;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Downloads\New Folder\woolpack salford.jpg&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Videos\Monty Python&apos;s Life of Brian (1979) [edited].mp4&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <VerInfo_Release>3</VerInfo_Release>
@@ -150,6 +150,10 @@
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
+        <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\"
+copy "$(OutputDir)\$(OutputName).map" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\"
+$(PostBuildEvent)]]></PostBuildEvent>
+        <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -169,13 +173,7 @@
         <DCCReference Include="mmpUtils.pas"/>
         <DCCReference Include="mmpPostToAllUtils.pas"/>
         <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVClient.pas"/>
         <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVNode.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVRender.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVRenderGL.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVStreamCB.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVTrack.pas"/>
         <DCCReference Include="model.mmpMediaPlayer.pas"/>
         <DCCReference Include="model.mmpConfigFile.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
@@ -237,6 +235,7 @@
         <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpFuncProg.pas"/>
+        <DCCReference Include="mmpStackTrace.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -1378,4 +1377,12 @@
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
+        <PreBuildEvent/>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).map&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;</PostBuildEvent>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
 </Project>

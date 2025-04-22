@@ -60,8 +60,9 @@ const
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
-  PB_DEFAULT_COLOR = $202020;
+  PB_DEFAULT_COLOR = $202020; // higher is lighter
   ST_DEFAULT_COLOR = $707070;
+  TL_DEFAULT_COLOR = $3F3F3F;
   PB_COLOR_DELTA   = $343434;
 
   DARK_MODE_DARK   = $2B2B2B;
@@ -100,6 +101,7 @@ const
   CONF_TIME_CAPTION         = 'timeCaption';
   CONF_VIDEO_DELETE         = 'videoDelete';
   CONF_VOLUME               = 'volume';
+  CONF_START_IN_EDITOR      = 'startInEditor';
 
   CONF_CAT_F1               = 'catF1';
   CONF_CAT_F2               = 'catF2';

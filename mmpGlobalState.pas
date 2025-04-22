@@ -55,6 +55,7 @@ type
     function getMaxSize:                  boolean;
     function getMediaType:                TMediaType;
     function getMPVScreenshotDirectory:   string;
+    function getOpeningURL:               boolean;
     function getRepeatDelayMs:            integer;
     function getShowingAbout:             boolean;
     function getShowingHelp:              boolean;
@@ -79,6 +80,7 @@ type
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
     property mediaType:                 TMediaType          read getMediaType;
+    property openingURL:                boolean             read getOpeningURL;
     property repeatDelayMs:             integer             read getRepeatDelayMs;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
     property showingAbout:              boolean             read getShowingAbout;
@@ -113,6 +115,7 @@ type
     FMaxSize:                 boolean;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
+    FOpeningURL:              boolean;
     FRepeatDelayMs:           integer;
     FShowingAbout:            boolean;
     FShowingHelp:             boolean;
@@ -139,6 +142,7 @@ type
     function    getMaxSize:                  boolean;
     function    getMediaType:                TMediaType;
     function    getMPVScreenshotDirectory:   string;
+    function    getOpeningURL:               boolean;
     function    getRepeatDelayMs:            integer;
     function    getShowingAbout:             boolean;
     function    getShowingHelp:              boolean;
@@ -219,6 +223,11 @@ begin
   result := FMPVScreenshotDirectory;
 end;
 
+function TGlobalState.getOpeningURL: boolean;
+begin
+  result := FOpeningURL;
+end;
+
 function TGlobalState.getRepeatDelayMs: integer;
 begin
   result := FRepeatDelayMs;
@@ -297,6 +306,7 @@ begin
     evGSMaxSize:                  FMaxSize                := aNotice.tf;
     evGSMediaType:                FMediaType              := aNotice.mediaType;
     evGSMPVScreenshotDirectory:   FMPVScreenshotDirectory := aNotice.text;
+    evGSOpeningURL:               FOpeningURL             := aNotice.tf;
     evGSRepeatDelayMs:            FRepeatDelayMs          := aNotice.integer;
     evGSShowingAbout:             FShowingAbout           := aNotice.tf;
     evGSShowingHelp:              FShowingHelp            := aNotice.tf;

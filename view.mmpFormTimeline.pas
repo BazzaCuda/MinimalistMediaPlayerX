@@ -47,6 +47,7 @@ type
     procedure lblPositionClick(Sender: TObject);
   strict private
     FDragging: boolean;
+    FLabelColor: TColor;
   private
     function  getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
@@ -99,7 +100,7 @@ type
     function    restoreSegment(const aSegment: TSegment): boolean;
     function    saveSegments: string;
     function    segFileEntry(const aSegFile: string): string;
-    function    segmentAt(const aCursorPos: integer): TSegment;
+    function    segmentAtSS(const aSS: integer): TSegment;
     function    shortenSegment(const aSegment: TSegment): boolean;
   protected
     function    exportSegments: boolean;
@@ -135,7 +136,7 @@ uses
   winApi.shellApi,
   system.math,
   vcl.dialogs,
-  mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpMediaInfo,
   _debugWindow;
@@ -227,8 +228,8 @@ begin
   case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
   mmp.cmd(evMPKeepOpen, FALSE);
+  mmp.cmd(evGSTimelineHeight, 0); // EXPERIMENTAL: swapped these two lines because of mmpPlayCurrent waiting
   mmp.cmd(evGSShowingTimeline, FALSE);
-  mmp.cmd(evGSTimelineHeight, 0);
 end;
 
 function TL: TTimeline;
@@ -275,12 +276,13 @@ begin
 
   case FDragging of TRUE: begin
                             cursorPos := cursorPos + (X - pnlCursor.width div 2);
+                            case cursorPos < 0 of TRUE: cursorPos := 0; end;
                             var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer;
                             mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
                             updatePositionDisplay(vNewPos);
                           end;end;
 
-  var vSeg := TL.segmentAt(cursorPos);
+  var vSeg := TL.segmentAtSS(TL.position);
   case vSeg = NIL of FALSE: vSeg.repaint; end;
 end;
 
@@ -304,7 +306,13 @@ begin
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
   pnlCursor.left   := -1;
+  pnlCursor.width  := pnlCursor.width + 1; // EXPERIMENTAL
   keyPreview       := TRUE;
+  lblPosition.styleElements := [seFont];
+  lblPosition.borderStyle   := bsNone;
+  lblPosition.bevelOuter    := bvNone;
+  lblPosition.color         := TL_DEFAULT_COLOR;
+  FLabelColor               := lblPosition.color;
 end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -327,8 +335,8 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
-    ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, TRUE);
-    ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAt(cursorPos), TL.position, FALSE, TRUE);
+    ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, TRUE);
+    ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, FALSE, TRUE);
 
     ord('M'): vSaveUndo := TL.mergeRight(TSegment.selSeg);
     ord('N'): vSaveUndo := TL.mergeLeft(TSegment.selSeg);
@@ -376,6 +384,10 @@ begin
   var vPosition := mmpIfThenElse(aPosition = -1, TL.position, aPosition);
   case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(vPosition) + 's';
                               FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(vPosition); end;
+  var vSelSeg := TL.segmentAtSS(TL.position);
+  case vSelSeg = NIL of FALSE: case vSelSeg.deleted of   TRUE: lblPosition.color := clBlack;
+                                                        FALSE: lblPosition.color := FLabelColor; end;end;
+
   lblPosition.repaint;
   lblPosition.bringToFront;
 end;
@@ -451,8 +463,7 @@ begin
     vSegment.top     := 0;
     vSegment.height  := gTimelineForm.height;
     case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
-                            FALSE: vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
-//    vSegment.left    := trunc((vSegment.startSS / FMax) * gTimelineForm.width);
+                            FALSE: vSegment.left := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
     vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
     vSegment.caption := '';
     vSegment.segID   := format('%.2d', [n]);
@@ -792,7 +803,7 @@ begin
     vSL.free;
   end;
 
-  case (TL.segCount = 1) AND (segments[0].startSS = 1) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+  case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
 function TTimeline.segFileEntry(const aSegFile: string): string;
@@ -800,11 +811,11 @@ begin
   result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
 
-function TTimeline.segmentAt(const aCursorPos: integer): TSegment;
+function TTimeline.segmentAtSS(const aSS: integer): TSegment;
 begin
   result := NIL;
   for var vSegment in segments do
-    case (aCursorPos >= vSegment.left) and (aCursorPos <= vSegment.left + vSegment.width - 1) of TRUE: begin result := vSegment; BREAK; end;end;
+    case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);

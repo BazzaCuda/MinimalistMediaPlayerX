@@ -29,6 +29,7 @@ function mmpCapsLockOn:     boolean;
 function mmpCtrlKeyDown:    boolean;
 function mmpKBState:        TKeyboardState;
 function mmpNumLockOn:      boolean;
+function mmpShiftKeyDown:   boolean;
 function mmpShiftState:     TShiftState;    // so we don't have to pull vcl.forms into every unit that needs this
 function mmpToggleNumlock:  boolean;
 
@@ -60,6 +61,11 @@ end;
 function mmpNumLockOn: boolean;
 begin
   result := getKeyState(VK_NUMLOCK) <> 0;
+end;
+
+function mmpShiftKeyDown: Boolean;
+begin
+  result := (getKeyState(VK_SHIFT) and $8000) <> 0;
 end;
 
 function mmpShiftState: TShiftState; // so we don't have to pull vcl.forms into every unit that needs this

@@ -138,6 +138,7 @@ type
     function    playNextFolder:       boolean;
     function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
+    function    reInitTimeline:         boolean;
     function    reloadPlaylist:       boolean;
     function    renameCurrentItem(const aRenameType: TRenameType): string;
     function    resizeWindow: boolean;
@@ -327,11 +328,10 @@ var
 begin
   result := FALSE;
 
-  mmp.cmd(evMPPause);
+  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
+  mmp.cmd(vWasPlaying, evMPPausePlay);
 
   vFolder   := mmp.cmd(evPLReqCurrentFolder).text;
-//  var vMsg  := 'Cleanup Timeline Editing files in '#13#10#13#10
-//              + 'Folder: ' + vFolder + ' ???';
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
@@ -340,6 +340,9 @@ begin
                                                                                                                       newCleanup.cleanup(vFolder);
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                                                                                     end);
+
+  mmp.cmd(vWasPlaying, evMPResume);
+
   result := TRUE;
 end;
 
@@ -594,7 +597,8 @@ begin
   case aNotice.event of
     evMPDuration:   begin
                       FMPDuration := aNotice.integer;
-                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer); end;
+                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
+                      mmp.cmd(evGSOpeningURL, FALSE); end;
     evMPPosition:   begin
                       FMPPosition := aNotice.integer;
                       mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)); end;
@@ -646,6 +650,7 @@ begin
     evVMMPPlayPrev:         doPlayPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
+    evVMReInitTimeline:     reInitTimeline;
     evVMPlaySomething:      playSomething(aNotice.integer);
     evVMRenameCurrentItem:  sendOpInfo(renameCurrentItem(rtUser));
     evVMReloadPlaylist:     reloadPlaylist;
@@ -874,6 +879,16 @@ begin
                                               evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
                                               evVMMPPlayNext);    // ...hence, playNext
   result := TRUE;
+end;
+
+function TVM.reInitTimeline: boolean;
+begin
+  case GS.showingTimeline of FALSE: EXIT; end;
+  case GS.mediaType in [mtAudio, mtVideo] of FALSE: EXIT; end;
+//  mmpDelay(1000); // EXPERIMENTAL
+  var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
+  TL.initTimeline(vCurrentItem, FMPDuration);
+  resizeWindow;
 end;
 
 function TVM.reloadPlaylist: boolean;

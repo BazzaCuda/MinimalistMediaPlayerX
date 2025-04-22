@@ -288,6 +288,7 @@ begin
   mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
   mmp.cmd(evSTUpdateMetaData);
   mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
+
   result := TRUE;
 end;
 

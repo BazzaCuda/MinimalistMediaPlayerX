@@ -38,7 +38,7 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 implementation
 
 uses
-  mmpFuncProg,
+  mmpFuncProg, mmpUtils,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
@@ -65,10 +65,16 @@ end;
 
 function mmpPlayCurrent: boolean;
 begin
-  var vShowingTimeline := GS.showingTimeline;
-  mmp.cmd(evVMShutTimeline); // so the timeline will get re-initialized with the correct media file...
+//  var vShowingTimeline := GS.showingTimeline;
+//  mmp.cmd(evVMShutTimeline); // so the timeline will get re-initialized with the correct media file...
+//  while GS.showingTimeline do;
+  mmp.cmd(evGSOpeningURL, TRUE);
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
-  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(vShowingTimeline, evVMToggleEditMode); end; // ...when/if it reopens
+  while GS.openingURL do;
+//  mmpDelay(250); // EXPERIMENTAL
+//  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(vShowingTimeline, evVMToggleEditMode); end; // ...when/if it reopens
+//  case GS.mediaType in [mtAudio, mtVideo] of TRUE: mmp.cmd(evVMInitTimeline); end; // ...when/if it reopens
+  mmp.cmd(evVMReInitTimeline);
 end;
 
 function mmpPlayFirst: boolean;

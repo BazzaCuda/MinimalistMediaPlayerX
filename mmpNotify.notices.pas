@@ -35,7 +35,7 @@ type
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
-    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist,
+    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
@@ -85,7 +85,7 @@ type
     evVMMinimize, evVMMoveHelp, evVMMovePlaylist, evVMMoveTimeline, evVMShowThumbs,
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
     evVMToggleFiltering,
-    evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem,
+    evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem, evVMReInitTimeline,
 
     evAppClose, evAppCloseAll,
 
