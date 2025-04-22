@@ -126,7 +126,6 @@ begin
 //  FPB.parent := NIL;
 //  case FPB <> NIL of TRUE: FPB.free; end;
   appEvents.unsubscribe(FSubscriber);
-//  FSubscriber := NIL;
   inherited;
 end;
 
@@ -243,6 +242,7 @@ function TProgressBar.setNewPosition(const x: integer): integer;
 begin
   FPB.position := round(x * FPB.max / FPB.clientWidth);
   mmp.cmd(evPBClick, FPB.position);
+  mmp.cmd(evTLPosition, FPB.position); // EXPERIMENTAL
   result := FPB.position;
 end;
 

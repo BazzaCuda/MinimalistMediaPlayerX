@@ -81,8 +81,8 @@ type
     function    toHex             (const aInteger: integer): string;
   end;
 
-var gCF: IConfigFile;
 function CF: IConfigFile;
+{$J+} const gCF: IConfigFile = NIL; {J-}
 begin
   case gCF = NIL of TRUE: gCF := TConfigFile.create; end;
   result := gCF;
@@ -196,8 +196,5 @@ function TConfigFile.toHex(const aInteger: integer): string;
 begin
   result := '$' + intToHex(aInteger);
 end;
-
-initialization
-  gCF := NIL;
 
 end.

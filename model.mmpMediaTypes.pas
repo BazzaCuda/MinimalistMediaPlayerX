@@ -49,8 +49,8 @@ type
     function    mediaType(const aExt: string): TMediaType;
   end;
 
-var gMT: IMediaTypes = NIL;
 function MT: IMediaTypes;
+{$J+} const gMT: IMediaTypes = NIL; {$J-}
 begin
   case gMT = NIL of TRUE: gMT := TMediaTypes.create; end;
   result := gMT;
@@ -91,10 +91,5 @@ begin
                                                       result := mediaType.mediaType;
                                                       EXIT; end;end;
 end;
-
-initialization
-
-finalization
-  gMT := NIL;
 
 end.

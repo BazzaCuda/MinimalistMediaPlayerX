@@ -54,8 +54,8 @@ begin
   result := TNotifier.create;
 end;
 
-var gAppEvents: ISubscribable = NIL;
 function appEvents: ISubscribable;
+{$J+} const gAppEvents: ISubscribable = NIL; {$J-}
 begin
   case gAppEvents = NIL of TRUE: gAppEvents := newNotifier; end;
   result := gAppEvents;
@@ -112,11 +112,5 @@ procedure TNotifier.unsubscribeAll;
 begin
   for var vSubscriber in FSubscribers do unsubscribe(vSubscriber);
 end;
-
-initialization
-  gAppEvents := NIL;
-
-finalization
-  gAppEvents := NIL;
 
 end.

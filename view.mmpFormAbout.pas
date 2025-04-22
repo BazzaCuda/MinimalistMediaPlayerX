@@ -103,8 +103,8 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gAboutFormProxy: IAboutForm = NIL;
 function AB: IAboutForm;
+{$J+} const gAboutFormProxy: IAboutForm = NIL; {$J-}
 begin
   case gAboutFormProxy = NIL of TRUE: gAboutFormProxy := TAboutFormProxy.create; end;
   result := gAboutFormProxy;
@@ -119,12 +119,12 @@ end;
 
 procedure TAboutForm.btnLicenceClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(newNotice(evAboutGNULicenceShow));
+  AB.notify(newNotice(evAboutGNULicenceShow));
 end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
-  gAboutFormProxy.notify(newNotice(evAboutReleaseNotesFormShow));
+  AB.notify(newNotice(evAboutReleaseNotesFormShow));
 end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -283,8 +283,5 @@ end;
 
 initialization
   AB; // to create the appEvents.listener and IProgramUpdates
-
-finalization
-  gAboutFormProxy := NIL;
 
 end.

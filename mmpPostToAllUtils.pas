@@ -60,8 +60,8 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gPA: IPostToAll = NIL;
 function PA: IPostToAll;
+{$J+} const gPA: IPostToAll = NIL; {$J-}
 begin
   case gPA = NIL of TRUE: gPA := TPostToAll.create; end;
   result := gPA;
@@ -101,7 +101,6 @@ end;
 destructor TPostToAll.Destroy;
 begin
   appEvents.unsubscribe(FSubscriber);
-//  FSubscriber := NIL;
   inherited;
 end;
 
@@ -158,8 +157,5 @@ end;
 
 initialization
   PA; // create a subscription to appNotifier
-
-finalization
-  gPA := NIL;
 
 end.

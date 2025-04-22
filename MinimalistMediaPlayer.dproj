@@ -119,6 +119,7 @@
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Release>5</VerInfo_Release>
+        <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>

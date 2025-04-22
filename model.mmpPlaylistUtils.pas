@@ -67,8 +67,9 @@ function mmpPlayCurrent: boolean;
 begin
   mmp.cmd(evGSOpeningURL, TRUE); // for TVM.reInitTimeline
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
-  while GS.openingURL do;        // for TVM.reInitTimeline - wait until TVM receives the new duration event in its onMPNotify
-  mmp.cmd(evVMReInitTimeline);   // reInit the timeline with the new media file details
+  case GS.mediaType in [mtAudio, mtVideo] of   TRUE: while GS.openingURL do; end;   // for TVM.reInitTimeline - wait until TVM receives the new duration event in its onMPNotify
+  case GS.mediaType in [mtAudio, mtVideo] of   TRUE: mmp.cmd(evVMReInitTimeline);   // reInit the timeline with the new media file details
+                                              FALSE: mmp.cmd(evVMShutTimeline); end;
 end;
 
 function mmpPlayFirst: boolean;

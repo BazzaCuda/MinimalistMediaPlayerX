@@ -79,8 +79,8 @@ type
     constructor create;
   end;
 
-var gMixer: IMixer;
 function MX: IMixer;
+{$J+} const gMixer: IMixer = NIL; {$J-}
 var
   verInfo: TOSVersioninfo;
 begin
@@ -323,9 +323,6 @@ begin
 end;
 
 initialization
-  gMixer := NIL;
   MX;
-
-finalization
 
 end.

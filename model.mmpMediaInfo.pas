@@ -151,8 +151,8 @@ uses
   mmpFileUtils, mmpFormatting, mmpFuncProg, mmpUtils,
   _debugWindow;
 
-var gMI: IMediaInfo = NIL;
 function MI: IMediaInfo;
+{$J+} const gMI: IMediaInfo = NIL; {$J-}
 begin
   case gMI = NIL of TRUE: gMI := TMediaInfo.create; end;
   result := gMI;
@@ -509,8 +509,5 @@ end;
 
 initialization
   MI; // create appEvents.subscriber
-
-finalization
-  gMI := NIL;
 
 end.

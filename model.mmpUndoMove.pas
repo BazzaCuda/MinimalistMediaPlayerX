@@ -54,8 +54,8 @@ implementation
 uses
   _debugWindow;
 
-var gUM: IUndoMove = NIL;
 function UM: IUndoMove;
+{$J+} const gUM: IUndoMove = NIL; {$J-}
 begin
   case gUM = NIL of TRUE: gUM := TUndoMove.create; end;
   result := gUM;
@@ -98,10 +98,5 @@ begin
 
   result        := TRUE;
 end;
-
-initialization
-
-finalization
-  gUM := NIL;
 
 end.

@@ -260,7 +260,7 @@ end;
 type
   PThreadRec  = ^TThreadRec;
   TThreadRec  = record
-   trFilePath:      string;
+    trFilePath: string;
   end;
 
 var gTasks: TList<ITask>;

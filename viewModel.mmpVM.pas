@@ -203,8 +203,8 @@ type
     function    showUI:                 boolean;
   end;
 
-var gVM: IViewModel = NIL;
 function newViewModel: IViewModel;
+{$J+} const gVM: IViewModel = NIL; {$J-}
 begin
   case gVM = NIL of TRUE: gVM := TVM.create; end;
   result := gVM;
@@ -1155,10 +1155,5 @@ begin
 
   result := TRUE;
 end;
-
-initialization
-
-finalization
-  gVM := NIL;
 
 end.

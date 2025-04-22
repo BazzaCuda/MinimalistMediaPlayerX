@@ -117,8 +117,8 @@ type
     function    setOpInfo(const aOpInfo: string): boolean;
   end;
 
-var gST: ICaptions = NIL;
 function ST(const aOwner: TForm = NIL): ICaptions;
+{$J+} const gST: ICaptions = NIL; {$J-}
 begin
   case gST = NIL of TRUE: gST := TCaptionsProxy.create(aOwner); end;
   result := gST;
@@ -302,7 +302,7 @@ procedure TCaptionsForm.setOpInfo(const aValue: string);
 begin
   FOpInfo.caption := aValue;
   FOpInfo.repaint; // !!!
-  gST.resetTimer;
+  ST.resetTimer;
 end;
 
 procedure TCaptionsForm.setShowData(const aValue: boolean);
@@ -430,8 +430,4 @@ begin
   FCaptionsForm.setOpInfo(aOpInfo);
 end;
 
-initialization
-
-finalization
-  gST := NIL;
 end.

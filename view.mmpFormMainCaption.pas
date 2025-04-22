@@ -87,8 +87,8 @@ type
     function    resetTimer: boolean;
   end;
 
-var gMC: IMainCaption = NIL;
 function MC(const aOwner: TForm): IMainCaption;
+{$J+} const gMC: IMainCaption = NIL; {$J-}
 begin
   case gMC = NIL of TRUE: gMC := TMainCaptionProxy.create(aOwner); end;
   result := gMC;
@@ -193,7 +193,7 @@ end;
 function TMainCaptionForm.reshowCaption: boolean;
 begin
   FCaption.caption      := FCaptionCopy;
-  gMC.resetTimer;
+  MC.resetTimer;
 end;
 
 procedure TMainCaptionForm.setCaption(const aValue: string);
@@ -202,7 +202,7 @@ begin
   FCaption.repaint;
   case aValue = '' of FALSE: FCaptionCopy := aValue; end;
   mmpProcessMessages;
-  gMC.resetTimer;
+  MC.resetTimer;
 end;
 
 function TMainCaptionForm.toggleCaption: boolean;
@@ -266,10 +266,5 @@ function TMainCaptionProxy.resetTimer: boolean;
 begin
   FTImerCount := 0;
 end;
-
-initialization
-
-finalization
-  gMC := NIL;
 
 end.

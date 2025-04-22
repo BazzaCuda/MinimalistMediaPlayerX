@@ -55,8 +55,8 @@ type
     procedure   unsubscribeAll;
   end;
 
-var gTT: ITickTimer = NIL;
 function TT: ITickTimer;
+{$J+} const gTT: ITickTimer = NIL; {$J-}
 begin
   case gTT = NIL of TRUE: gTT := TTickTimer.create; end;
   result := gTT;
@@ -98,10 +98,5 @@ procedure TTickTimer.unsubscribeAll;
 begin
   FNotifier.unsubscribeAll;
 end;
-
-initialization
-
-finalization
-  gTT := NIL;
 
 end.

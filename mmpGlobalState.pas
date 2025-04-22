@@ -161,8 +161,8 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gGS: IGlobalState = NIL;
 function GS: IGlobalState;
+{$J+} const gGS: IGlobalState = NIL; {$J-}
 begin
   case gGS = NIL of TRUE: gGS := TGlobalState.create; end;
   result := gGS;

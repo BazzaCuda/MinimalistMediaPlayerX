@@ -77,8 +77,8 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gHelpFormProxy: IHelpForm = NIL;
 function HW: IHelpForm;
+{$J+} const gHelpFormProxy: IHelpForm = NIL; {$J-}
 begin
   case gHelpFormProxy = NIL of TRUE: gHelpFormProxy := THelpFormProxy.create; end;
   result := gHelpFormProxy;
@@ -226,8 +226,5 @@ end;
 
 initialization
   HW; // to create the appEvents.subscriber
-
-finalization
-  gHelpFormProxy := NIL;
 
 end.

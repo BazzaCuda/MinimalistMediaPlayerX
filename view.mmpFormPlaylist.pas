@@ -90,8 +90,8 @@ type
     function    notify(const aNotice: INotice): INotice;
   end;
 
-var gPlaylistFormProxy: IPlaylistForm = NIL;
 function PL: IPlaylistForm;
+{$J+} const gPlaylistFormProxy: IPlaylistForm = NIL; {$J-}
 begin
   case gPlaylistFormProxy = NIL of TRUE: gPlaylistFormProxy := TPlaylistFormProxy.create; end;
   result := gPlaylistFormProxy;
@@ -222,7 +222,6 @@ end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
 begin
-  mmp.cmd(evVMShutTimeline);
   var vThisItem := mmp.cmd(evPLReqThisItem, aItemIndex).text;
   mmp.cmd(evPLFind, vThisItem); // set as current
   mmp.cmd(evVMMPPlayCurrent);
@@ -318,6 +317,6 @@ initialization
   PL; // to create the appEvents.subscriber
 
 finalization
-  gPlaylistFormProxy := NIL;
+//  gPlaylistFormProxy := NIL;
 
 end.

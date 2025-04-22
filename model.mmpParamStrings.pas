@@ -50,8 +50,8 @@ implementation
 uses
   system.sysUtils;
 
-var gPS: IParamStrings = NIL;
 function PS: IParamStrings;
+{$J+} const gPS: IParamStrings = NIL; {$J-}
 begin
   case gPS = NIL of TRUE: gPS := TParamStrings.create; end;
   result := gPS;
@@ -78,10 +78,5 @@ function TParamStrings.getNoFile: boolean;
 begin
   result := trim(fileFolderAndName) = '';
 end;
-
-initialization
-
-finalization
-  gPS := NIL;
 
 end.
