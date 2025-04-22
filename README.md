@@ -228,8 +228,6 @@ Control | Action
 `9`                     | increase contrast. Can be held down for rapid increase
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
-`C`                     | `[C]`ut the segment under the cursor into two segments
-`Ctrl-C`                | same as above but mark the left-hand segment as e[X]cluded (same as `[I]`)
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `L`                     | `[L]`engthen the selected segment by one second
@@ -244,7 +242,7 @@ Control | Action
 `Ctrl-DEL`              | `[D]`elete all files in the current media file's folder (after user confirmation) - subfolders are not affected - deletion functions can be disabled in `MinimalistMediaPlayer.conf`
 `Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
-`Ctrl-K`                | `[K]`eep/delete: delete all but the Kept files in a folder
+`Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
 `Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
 `R`                     | `[R]`ename the current media file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
