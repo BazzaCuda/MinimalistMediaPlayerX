@@ -951,6 +951,7 @@ begin
                                               sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
 
   mmp.cmd(evPLFormLoadBox);
+  mmp.cmd(evTLRename, vNewName);
 
   case aRenameType of
     rtUser:       result := 'Renamed';

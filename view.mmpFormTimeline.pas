@@ -806,6 +806,7 @@ begin
   case aNotice.event of
     evTLMax:      setMax(aNotice.integer);
     evTLPosition: case FDragging of FALSE: setPosition(aNotice.integer); end;
+    evTLRename:   FMediaFilePath := aNotice.text;
   end;
 end;
 
