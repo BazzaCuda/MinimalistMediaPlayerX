@@ -85,7 +85,7 @@ type
 
     function    addUndo(const aAction: string): string;
     function    cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
-    function    defaultSegment: string;
+    function    defaultSegment(const aMax: integer): string;
     function    drawSegments: boolean;
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function    filePathLOG: string;
@@ -117,6 +117,7 @@ type
     function    validKey(key: WORD):              boolean;
 
     property    cancelled:      boolean               read FCancelled;
+    property    criticalSection:TCriticalSection      read FCriticalSection;
     property    dragging:       boolean               read FDragging      write FDragging;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
@@ -507,7 +508,7 @@ begin
   end;
 
   gTimelineForm.pnlCursor.bringToFront;
-  mmpApplySegments(TL.segments);
+  mmpApplySegments(segments);
 end;
 
 function TTimeline.filePathOUT: string;
@@ -550,11 +551,11 @@ begin
   result := TSegment.segments;
 end;
 
-function TTimeline.defaultSegment: string;
+function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-  segments.clear;
-  segments.add(TSegment.create(0, FMax));
-  result := format('0-%d,0', [FMax]);
+//  segments.clear;
+  segments.add(TSegment.create(0, aMax));
+  result := format('0-%d,0', [aMax]);
 end;
 
 function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -686,13 +687,14 @@ begin
   mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  addUndo(defaultSegment); // always give the user a vanilla Ctrl-Z starting point
+  addUndo(defaultSegment(aMax)); // always give the user a vanilla Ctrl-Z starting point
   case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
                                   FALSE: begin
                                            var  vSL := loadChapters;
                                            case vSL  = NIL of FALSE: begin addUndo(loadSegments(vSL, TRUE)); vSL.free; end;end;end;end;
 
   drawSegments;
+
   result := TRUE;
 end;
 

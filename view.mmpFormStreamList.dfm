@@ -47,7 +47,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 533
-      ActivePage = tsStreams
+      ActivePage = tsSegments
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite

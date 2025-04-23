@@ -25,6 +25,7 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
+function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
@@ -44,7 +45,7 @@ uses
   winApi.windows,
   system.ioUtils, system.regularExpressions,
   vcl.controls, vcl.dialogs,
-  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpShellUtils, mmpShredUtils, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
 
 
@@ -60,6 +61,21 @@ begin
                                           mtImage: case CF.asBoolean[CONF_IMAGE_DELETE] of FALSE: EXIT; end;
                                           mtVideo: case CF.asBoolean[CONF_VIDEO_DELETE] of FALSE: EXIT; end;end;end;
   result    := TRUE;
+end;
+
+function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
+var F: TProc;
+begin
+  F := procedure  begin
+                  mmp.cmd(evMPPause);
+                  mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
+                                                     + 'The path and/or the filename contains a single quote, double quote, ampersand, etc.'#13#10
+                                                     + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
+                                                     + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
+                                                     + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
+
+  result := mmpIsEditFriendly(aFilePath);
+  mmp.cmd(result, NIL, F);
 end;
 
 function mmpConfigFilePath: string;

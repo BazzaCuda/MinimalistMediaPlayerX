@@ -140,7 +140,7 @@ type
     function    playNextFolder:       boolean;
     function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
-    function    reInitTimeline:         boolean;
+    function    reInitTimeline(const aDuration: integer): boolean;
     function    reloadPlaylist:       boolean;
     function    renameCurrentItem(const aRenameType: TRenameType): string;
     function    resizeWindow: boolean;
@@ -589,21 +589,19 @@ begin
 
     evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
-    evMPDuration:   mmp.cmd(evPBMax, aNotice.integer);
+    evMPDuration:   begin
+                      FMPDuration     := aNotice.integer;
+                      FMPPrevPosition := -1; // reset for each new audio/video
+                      mmp.cmd(evPBMax, aNotice.integer);
+                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
+                    end;
+
     evMPPosition:   case aNotice.integer <> FMPPrevPosition of   TRUE:  begin // ignore multiple messages for the same position when the mouse is held down while grabbing the timeline cursor
                                                                           FMPPosition     := aNotice.integer;
                                                                           FMPPrevPosition := FMPPosition;
                                                                           mmp.cmd(evPBPosition, aNotice.integer);
                                                                           mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration));
                                                                           case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;end;
-  end;
-
-  case aNotice.event of
-    evMPDuration:   begin
-                      FMPPrevPosition := -1; // reset for each new audio/video
-                      FMPDuration     := aNotice.integer;
-                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
-                    end;
   end;
 end;
 
@@ -652,7 +650,7 @@ begin
     evVMMPPlayPrev:         doPlayPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder;
     evVMPlayPrevFolder:     playPrevFolder;
-    evVMReInitTimeline:     reInitTimeline;
+    evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
     evVMRenameCurrentItem:  sendOpInfo(renameCurrentItem(rtUser));
     evVMReloadPlaylist:     reloadPlaylist;
@@ -883,12 +881,16 @@ begin
   result := TRUE;
 end;
 
-function TVM.reInitTimeline: boolean;
+function TVM.reInitTimeline(const aDuration: integer): boolean;
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: EXIT; end;
+
   var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
-  case TL = NIL of FALSE: TL.initTimeline(vCurrentItem, FMPDuration); end;
+  case mmpIsEditFriendly(vCurrentItem) of FALSE: mmp.cmd(evVMShutTimeline); end; // close the timeline
+  case mmpCheckIfEditFriendly(vCurrentItem) of FALSE: EXIT; end;                 // notify the user
+
+  case TL = NIL of FALSE: TL.initTimeline(vCurrentItem, aDuration); end;
   resizeWindow;
 end;
 
@@ -1086,7 +1088,6 @@ begin
 end;
 
 function TVM.toggleEditMode: boolean;
-var F: TProc;
 begin
   result := FALSE;
 
@@ -1095,16 +1096,7 @@ begin
 
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
 
-  F := procedure  begin
-                    mmp.cmd(evMPPause);
-                    mmpShowOKCancelMsgDlg(vCurrentItem + #13#10#13#10
-                                                       + 'The path or filename contains a single quote, double quote, ampersand, etc.'#13#10
-                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
-                                                       + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
-                                                       + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
-
-  mmp.cmd(mmpIsEditFriendly(vCurrentItem), NIL, F);
-  case mmpIsEditFriendly(vCurrentItem) of FALSE: EXIT; end;
+  case mmpCheckIfEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
   mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
