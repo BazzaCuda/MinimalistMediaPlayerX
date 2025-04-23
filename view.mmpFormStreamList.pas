@@ -158,11 +158,12 @@ begin
   case bResetHeight of TRUE: SELF.height := DEFAULT_HEIGHT; end;
   case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
 
-  case clSegments.height < (clSegments.itemCount * clSegments.itemHeight) of TRUE:  case top > (GS.mainForm.top + clSegments.itemHeight) of TRUE: // resize the window if there's enough height left
-                                                                                      begin
-                                                                                        height := height + clSegments.itemHeight;
-                                                                                        winApi.windows.setWindowPos(HANDLE, HWND_TOP, left, top - clSegments.itemHeight, 0, 0, SWP_NOSIZE);
-                                                                                    end;end;end;
+
+  while (clSegments.height < (clSegments.itemCount * clSegments.itemHeight)) // keep resizing the window while there's enough height left
+  and (SELF.top > (GS.mainForm.top + clSegments.itemHeight)) do begin        // to accommodate as many of the segments as possible (SELF. for clarity)
+                                                                  SELF.height := SELF.height + clSegments.itemHeight;
+                                                                  winApi.windows.setWindowPos(HANDLE, HWND_TOP, SELF.left, SELF.top - clSegments.itemHeight, 0, 0, SWP_NOSIZE);
+                                                                end;
 end;
 
 procedure TStreamListForm.btnExportClick(Sender: TObject);
