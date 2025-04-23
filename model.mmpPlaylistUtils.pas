@@ -70,13 +70,12 @@ begin
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text); // for TVM.reInitTimeline - will reset evGSOpenigURL when it's finished
   while GS.openingURL do application.processMessages;     // for TVM.reInitTimeline - wait for MP to finish opening the URL
 
-  case GS.showingTimeline of TRUE: begin
-                    var vMPDuration := 0;
-                    while vMPDuration <= 0 do vMPDuration := mmp.cmd(evMPReqDuration).integer; // wait until MPV notifies MPVBasePlayer of the details
+  case GS.mediaType in [mtAudio, mtVideo] of FALSE: begin mmp.cmd(evVMShutTimeline); EXIT; end;end; // close the timeline if we're now displaying an image
 
-                    case GS.mediaType in [mtAudio, mtVideo] of   TRUE: mmp.cmd(evVMReInitTimeline, vMPDuration);    // reInit the timeline with the new media file details
-                                                                FALSE: mmp.cmd(evVMShutTimeline); end;              // or close the timeline if we're now displaying an image
-  end;end;
+  case GS.showingTimeline of TRUE:  begin
+                                      var vMPDuration := 0;
+                                      while vMPDuration <= 0 do vMPDuration := mmp.cmd(evMPReqDuration).integer; // wait until MPV notifies MPVBasePlayer of the details
+                                      mmp.cmd(evVMReInitTimeline, vMPDuration); end;end;                         // reInit the timeline with the new media file details
 end;
 
 function mmpPlayFirst: boolean;

@@ -117,7 +117,6 @@ type
     function    validKey(key: WORD):              boolean;
 
     property    cancelled:      boolean               read FCancelled;
-    property    criticalSection:TCriticalSection      read FCriticalSection;
     property    dragging:       boolean               read FDragging      write FDragging;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
@@ -558,7 +557,6 @@ end;
 
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-//  segments.clear;
   segments.add(TSegment.create(0, aMax));
   result := format('0-%d,0', [aMax]);
 end;
