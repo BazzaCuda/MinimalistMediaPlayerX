@@ -953,6 +953,7 @@ begin
 
   mmp.cmd(evPLFormLoadBox);
   mmp.cmd(evTLRename, vNewName);
+  mmpRenameMMPFile(vOldName, vNewName);
 
   case aRenameType of
     rtUser:       result := 'Renamed';

@@ -37,6 +37,7 @@ function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpKeepDelete(const aFolderPath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+function mmpRenameMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
 function mmpRunTasks: boolean;
 
 implementation
@@ -309,6 +310,16 @@ begin
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
                                                               FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10#13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
 end;
+
+function mmpRenameMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
+// leave the original .seg file so cleanUp will delete any leftover .segnn. files listed in it
+begin
+  result := aNewFilePath;
+  var vOldMMP := changeFileExt(aOldFilePath, '.mmp');
+  var vNewMMP := changeFileExt(aNewFilePath, '.mmp');
+  renameFile(vOldMMP, vNewMMP);
+end;
+
 
 function mmpRunTasks: boolean;
 begin
