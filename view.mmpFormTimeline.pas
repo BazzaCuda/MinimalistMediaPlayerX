@@ -86,7 +86,7 @@ type
     function    addUndo(const aAction: string): string;
     function    cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment(const aMax: integer): string;
-    function    drawSegments: boolean;
+    function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function    filePathLOG: string;
     function    filePathMMP: string;
@@ -478,7 +478,7 @@ begin
   inherited;
 end;
 
-function TTimeline.drawSegments: boolean;
+function TTimeline.drawSegments(const bResetHeight: boolean = FALSE): boolean;
 begin
   case GS.openingURL of TRUE: EXIT; end;
   case FMax = 0 of TRUE: EXIT; end;
@@ -512,7 +512,7 @@ begin
   end;
 
   gTimelineForm.pnlCursor.bringToFront;
-  mmpApplySegments(segments);
+  mmpApplySegments(segments, bResetHeight);
 end;
 
 function TTimeline.filePathOUT: string;
@@ -696,7 +696,7 @@ begin
                                            var  vSL := loadChapters;
                                            case vSL  = NIL of FALSE: begin addUndo(loadSegments(vSL, TRUE)); vSL.free; end;end;end;end;
 
-  drawSegments;
+  drawSegments(TRUE);
 
   result := TRUE;
 end;

@@ -76,7 +76,7 @@ type
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
   protected
-    function    applySegments(const aSegments: TObjectList<TSegment>): boolean;
+    function    applySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
     procedure   createParams(var Params: TCreateParams);
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
@@ -85,7 +85,7 @@ type
     property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 function mmpShutStreamList: boolean;
@@ -105,9 +105,9 @@ const
 
 var gStreamListForm: TStreamListForm = NIL;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
 begin
-  gStreamListForm.applySegments(aSegments);
+  gStreamListForm.applySegments(aSegments, bResetHeight);
 end;
 
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
@@ -148,13 +148,15 @@ end;
 
 { TStreamListForm }
 
-function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>): boolean;
+function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
 begin
   FSegments := aSegments;
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
 
   case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
+
+  case bResetHeight of TRUE: SELF.height := DEFAULT_HEIGHT; end;
 
   case clSegments.height < (clSegments.itemCount * clSegments.itemHeight) of TRUE:  case top > (GS.mainForm.top + clSegments.itemHeight) of TRUE: // resize the window if there's enough height left
                                                                                       begin
