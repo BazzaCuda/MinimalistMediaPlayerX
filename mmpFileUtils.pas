@@ -67,12 +67,12 @@ function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 var F: TProc;
 begin
   F := procedure  begin
-                  mmp.cmd(evMPPause);
-                  mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
-                                                     + 'The path and/or the filename contains a single quote, double quote, ampersand, etc.'#13#10
-                                                     + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
-                                                     + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
-                                                     + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
+                    mmp.cmd(evMPPause);
+                    mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
+                                                       + 'The <path>\<filename> contains a single quote, double quote, ampersand, etc.'#13#10
+                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
+                                                       + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
+                                                       + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);

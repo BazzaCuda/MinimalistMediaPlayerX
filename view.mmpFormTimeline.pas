@@ -467,7 +467,12 @@ end;
 
 destructor TTimeline.Destroy;
 begin
-  segments.clear;
+  FCriticalSection.acquire;
+  try
+    segments.clear;
+  finally
+    FCriticalSection.release;
+  end;
   FUndoList.free;
   FRedoList.free;
   case FCriticalSection = NIL of FALSE: FCriticalSection.free; end;
