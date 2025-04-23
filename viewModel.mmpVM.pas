@@ -624,6 +624,7 @@ begin
 
   case aNotice.event of
     evAppClose:             doAppClose;
+    evGSActiveTasks:        sendOpInfo(format('Tasks: %d', [GS.activeTasks]));
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
