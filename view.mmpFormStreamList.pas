@@ -193,6 +193,7 @@ end;
 
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
+  case FSegments.count = 0 of TRUE: EXIT; end; // EXPERIMENTAL
   lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].duration, mmpFormatSeconds(FSegments[aIndex].duration)]);

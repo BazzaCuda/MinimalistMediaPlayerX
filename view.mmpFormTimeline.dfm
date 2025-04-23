@@ -2063,6 +2063,7 @@ object TimelineForm: TTimelineForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
+    Visible = False
     OnClick = lblPositionClick
   end
 end

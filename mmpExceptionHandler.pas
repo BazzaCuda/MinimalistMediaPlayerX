@@ -35,11 +35,14 @@ function mmpException: IMMPExceptionHandler;
 implementation
 
 uses
-  system.ioUtils,
+  system.classes, system.ioUtils,
   _debugWindow;
 
 type
   TMMPExceptionHandler = class(TInterfacedObject, IMMPExceptionHandler)
+  protected
+    class procedure clearLogFile;
+    class function  logFileName: string;
   public
     procedure appExceptionHandler(sender: TObject; e: Exception);
     function  handler: TExceptionEvent;
@@ -61,7 +64,6 @@ begin
   case reportMemoryLeaksOnShutdown of FALSE: EXIT; end;
 
   debugFormat('e: class=%s, %s', [e.className, e.message]);
-  var vLogFileName := changeFileExt(application.exeName, '.log');
 
   var vLogEntry := format('%s%s: %s%s',
     [formatDateTime('yyyy-mm-dd hh:nn:ss.zzz: ', now),
@@ -70,15 +72,25 @@ begin
      sLineBreak]);
 
   var vCallStackPrefix := 'Call Stack:';
-  case e is EAccessViolation of TRUE: vCallStackPrefix := 'Access Violation:'; end;
-  case e is EInvalidPointer  of TRUE: vCallStackPrefix := 'Invalid Pointer Operation:'; end;
+  case e is EAccessViolation of TRUE: vCallStackPrefix := 'Access Violation stackTrace:'; end;
+  case e is EInvalidPointer  of TRUE: vCallStackPrefix := 'Invalid Pointer Operation stackTrace:'; end;
 
   vLogEntry := vLogEntry + format('%s%s%s%s', [vCallStackPrefix, sLineBreak, e.stackTrace, sLineBreak]); // stackTrace is populated by mmpStackTrace
 
   try
-    TFile.appendAllText(vLogFileName, vLogEntry);
+    TFile.appendAllText(logFileName, vLogEntry);
   except
     debug('Error writing to log file: ' + e.message);
+  end;
+end;
+
+class procedure TMMPExceptionHandler.clearLogFile;
+begin
+  var vSL := TStringList.create;
+  try
+    vSL.saveToFile(logFileName);
+  finally
+    vSL.free;
   end;
 end;
 
@@ -86,5 +98,13 @@ function TMMPExceptionHandler.handler: TExceptionEvent;
 begin
   result := appExceptionHandler;
 end;
+
+class function TMMPExceptionHandler.logFileName: string;
+begin
+  result := changeFileExt(application.exeName, '.log');
+end;
+
+initialization
+  TMMPExceptionHandler.clearLogFile;
 
 end.

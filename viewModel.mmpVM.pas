@@ -590,21 +590,20 @@ begin
     evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   mmp.cmd(evPBMax, aNotice.integer);
-    evMPPosition:   case aNotice.integer = FMPPrevPosition of FALSE:  begin
-                                                                        FMPPrevPosition := aNotice.integer;
-                                                                        mmp.cmd(evPBPosition, aNotice.integer);
-                                                                        case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;end;
+    evMPPosition:   case aNotice.integer <> FMPPrevPosition of   TRUE:  begin // ignore multiple messages for the same position when the mouse is held down while grabbing the timeline cursor
+                                                                          FMPPosition     := aNotice.integer;
+                                                                          FMPPrevPosition := FMPPosition;
+                                                                          mmp.cmd(evPBPosition, aNotice.integer);
+                                                                          mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration));
+                                                                          case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;end;
   end;
 
   case aNotice.event of
     evMPDuration:   begin
-                      FMPPrevPosition := -1;
+                      FMPPrevPosition := -1; // reset for each new audio/video
                       FMPDuration     := aNotice.integer;
                       mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
-                      mmp.cmd(evGSOpeningURL, FALSE); end; // for TVM.reInitTimeline - set to TRUE in model.mmpPlaylistUtils.mmpPlayCurrent
-    evMPPosition:   begin
-                      FMPPosition := aNotice.integer;
-                      mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration)); end;
+                    end;
   end;
 end;
 
@@ -889,7 +888,7 @@ begin
   case GS.showingTimeline of FALSE: EXIT; end;
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: EXIT; end;
   var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
-  TL.initTimeline(vCurrentItem, FMPDuration);
+  case TL = NIL of FALSE: TL.initTimeline(vCurrentItem, FMPDuration); end;
   resizeWindow;
 end;
 

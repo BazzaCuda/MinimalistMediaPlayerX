@@ -289,6 +289,7 @@ begin
   mmp.cmd(evSTUpdateMetaData);
   mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
 
+  mmp.cmd(evGSOpeningURL, FALSE); // for TVM.reInitTimeline - set to TRUE in model.mmpPlaylistUtils.mmpPlayCurrent
   result := TRUE;
 end;
 

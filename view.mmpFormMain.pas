@@ -109,7 +109,6 @@ end;
 procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   application.processMessages;
-//  debug('formClose');
 end;
 
 procedure TMMPUI.FormCreate(Sender: TObject);

@@ -38,6 +38,7 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 implementation
 
 uses
+  vcl.forms,
   mmpFuncProg, mmpUtils,
   _debugWindow;
 
@@ -65,11 +66,11 @@ end;
 
 function mmpPlayCurrent: boolean;
 begin
-  mmp.cmd(evGSOpeningURL, TRUE); // for TVM.reInitTimeline
-  mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text);
-  case GS.mediaType in [mtAudio, mtVideo] of   TRUE: while GS.openingURL do; end;   // for TVM.reInitTimeline - wait until TVM receives the new duration event in its onMPNotify
-  case GS.mediaType in [mtAudio, mtVideo] of   TRUE: mmp.cmd(evVMReInitTimeline);   // reInit the timeline with the new media file details
-                                              FALSE: mmp.cmd(evVMShutTimeline); end;
+  mmp.cmd(evGSOpeningURL, TRUE);                          // for TVM.reInitTimeline - gets reset in model.mmpMediaPlayer.openURL when all the new info is available
+  mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text); // for TVM.reInitTimeline - will reset evGSOpenigURL when it's finished
+  while GS.openingURL do application.processMessages;     // for TVM.reInitTimeline - wait for MP to finish opening the URL
+  case GS.mediaType in [mtAudio, mtVideo] of   TRUE: mmp.cmd(evVMReInitTimeline);     // reInit the timeline with the new media file details
+                                              FALSE: mmp.cmd(evVMShutTimeline); end;  // or close the timeline if we're now displaying an image
 end;
 
 function mmpPlayFirst: boolean;

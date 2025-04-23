@@ -22,7 +22,7 @@ interface
 
 uses
   winApi.messages, winApi.Windows,
-  system.classes, system.generics.collections, system.sysUtils, system.variants,
+  system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   view.mmpFormProgress,
@@ -30,11 +30,6 @@ uses
 
 type
   TRunType = (rtFFMpeg, rtCMD);
-
-//  TPanelHelper = class helper for TPanel
-//  private
-//    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
-//  end;
 
   TTimelineForm = class(TForm)
     pnlCursor:          TPanel;
@@ -74,6 +69,8 @@ type
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
+
+    FCriticalSection:         TCriticalSection;
   private
     constructor create;
     destructor  Destroy; override;
@@ -313,6 +310,8 @@ end;
 procedure TTimelineForm.FormCreate(Sender: TObject);
 begin
   lblPosition.caption := '';
+
+  doubleBuffered            := TRUE;
   keyPreview       := TRUE;
 
   pnlCursor.height := SELF.height;
@@ -324,9 +323,8 @@ begin
   lblPosition.borderStyle   := bsNone;
   lblPosition.bevelOuter    := bvNone;
   lblPosition.color         := TL_DEFAULT_COLOR;
-
-  doubleBuffered            := TRUE;
   lblPosition.controlStyle  := lblPosition.controlStyle + [csOpaque];
+  lblPosition.visible       := TRUE;
 end;
 
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -397,6 +395,7 @@ function TTimelineForm.updatePositionDisplay(const aPosition: integer): boolean;
 begin
   case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(aPosition) + 's';
                               FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(aPosition); end;
+
   var vSelSeg := TL.segmentAtSS(aPosition);
   case vSelSeg = NIL of FALSE: case vSelSeg.deleted of   TRUE: lblPosition.color := clBlack;
                                                         FALSE: lblPosition.color := TL_DEFAULT_COLOR; end;end;
@@ -435,6 +434,7 @@ begin
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
   FSubscriber           := appEvents.subscribe(newSubscriber(onNotify));
+  FCriticalSection      := TCriticalSection.create;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -469,34 +469,43 @@ begin
   segments.clear;
   FUndoList.free;
   FRedoList.free;
+  case FCriticalSection = NIL of FALSE: FCriticalSection.free; end;
   inherited;
 end;
 
 function TTimeline.drawSegments: boolean;
 begin
+  case GS.openingURL of TRUE: EXIT; end;
   case FMax = 0 of TRUE: EXIT; end;
-  var n := 1;
-  for var vSegment in segments do begin
-    vSegment.top     := 0;
-    vSegment.height  := gTimelineForm.height;
-    case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
-                            FALSE: vSegment.left := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
-    vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
-    vSegment.caption := '';
-    vSegment.segID   := format('%.2d', [n]);
-    vSegment.setDisplayDetails;
-    vSegment.StyleElements := [];
-    mmpCopyPNGImage(gTimelineForm.imgTrashCan, vSegment.trashCan);
 
-    VSegment.trashCan.visible := vSegment.deleted;
-    case vSegment.deleted of TRUE: begin
-                                      vSegment.trashCan.left := (vSegment.width  div 2) - (vSegment.trashCan.width  div 2);
-                                      vSegment.trashCan.top  := (vSegment.height div 2) - (vSegment.trashCan.height div 2); end;end;
-    vSegment.parent := gTimelineForm;
-    vSegment.invalidate;
-    setWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-    inc(n);
+  var n := 1;
+  FCriticalSection.acquire;
+  try
+    for var vSegment in segments do begin
+      vSegment.top     := 0;
+      vSegment.height  := gTimelineForm.height;
+      case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
+                              FALSE: vSegment.left := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
+      vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
+      vSegment.caption := '';
+      vSegment.segID   := format('%.2d', [n]);
+      vSegment.setDisplayDetails;
+      vSegment.StyleElements := [];
+      mmpCopyPNGImage(gTimelineForm.imgTrashCan, vSegment.trashCan);
+
+      VSegment.trashCan.visible := vSegment.deleted;
+      case vSegment.deleted of TRUE: begin
+                                        vSegment.trashCan.left := (vSegment.width  div 2) - (vSegment.trashCan.width  div 2);
+                                        vSegment.trashCan.top  := (vSegment.height div 2) - (vSegment.trashCan.height div 2); end;end;
+      vSegment.parent := gTimelineForm;
+      vSegment.invalidate;
+      setWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+      inc(n);
+    end;
+  finally
+    FCriticalSection.release;
   end;
+
   gTimelineForm.pnlCursor.bringToFront;
   mmpApplySegments(TL.segments);
 end;
@@ -665,7 +674,15 @@ function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: intege
 begin
   result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
-  segments.clear; FUndoList.clear; FRedoList.clear;
+
+  FCriticalSection.acquire;
+  try
+    segments.clear;
+  finally
+    FCriticalSection.release;
+  end;
+
+  FUndoList.clear; FRedoList.clear;
   mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
@@ -779,6 +796,7 @@ end;
 function TTimeline.onNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
+  case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evTLMax:      setMax(aNotice.integer);
@@ -831,8 +849,13 @@ end;
 function TTimeline.segmentAtSS(const aSS: integer): TSegment;
 begin
   result := NIL;
-  for var vSegment in segments do
-    case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
+  FCriticalSection.acquire;
+  try
+    for var vSegment in segments do
+      case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
+  finally
+    FCriticalSection.release;
+  end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);
@@ -843,9 +866,9 @@ end;
 procedure TTimeline.setPosition(const Value: integer);
 begin
   FPosition := value;
-  case (FPosition = 0) OR (FMax = 0) of TRUE: EXIT; end;
-  gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2);
-  application.ProcessMessages;
+  case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
+                        FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
+  application.processMessages;
   gTimelineForm.updatePositionDisplay(value); // TL.position); EXPERIMENTAL
 end;
 
@@ -879,14 +902,6 @@ const validKeys = 'ILMNORSXYZ';
 begin
   result := validKeys.contains(char(key));
 end;
-
-{ TPanelHelper }
-
-//procedure TPanelHelper.WMEraseBkgnd(var Message: TWMEraseBkgnd);
-//begin
-//  inherited;
-//  message.result := 0;
-//end;
 
 initialization
 
