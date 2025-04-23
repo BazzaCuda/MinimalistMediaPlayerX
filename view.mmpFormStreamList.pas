@@ -154,9 +154,9 @@ begin
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
 
-  case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
-
+  FMediaType := GS.mediaType;
   case bResetHeight of TRUE: SELF.height := DEFAULT_HEIGHT; end;
+  case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
 
   case clSegments.height < (clSegments.itemCount * clSegments.itemHeight) of TRUE:  case top > (GS.mainForm.top + clSegments.itemHeight) of TRUE: // resize the window if there's enough height left
                                                                                       begin
