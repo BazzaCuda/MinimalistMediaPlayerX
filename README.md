@@ -232,8 +232,8 @@ Control | Action
 **Editing** (Ctrl-E) |
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
-`L`                     | `[L]`engthen the selected segment by one second
-`S`                     | `[S]`horten the selected segment by one second
+`L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
+`S`                     | `[S]`horten the selected segment by one second. Can be held down for rapid repeat
 `M`                     | `[M]`erge the selected segment with the segment to its right
 `N`                     | `[N]`erge the selected segment with the segment to its left
 `R`                     | `[R]`estore the selected e[X]cluded segment
