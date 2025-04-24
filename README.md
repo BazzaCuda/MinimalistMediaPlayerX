@@ -175,6 +175,7 @@ Control | Action
 `L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
 `Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
 `N`                     | mi`[N]`imize window to the Windows taskbar
 `Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
 `O`                     | zoom `[O]`ut. Can be held down for rapid zooming
@@ -185,6 +186,7 @@ Control | Action
 `Ctrl-R`                | toggle infinite `[R]`epeat of the current media file
 `S`                     | re`[S]`tart the current media file from the beginning, aka `[S]`tartover
 `Ctrl-S`                | toggle `[S]`ubtitles on/off
+`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
 `T`                     | `[T]`ab through the audio or video file. See below in Category section
 `T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
 `U`                     | `[U]`nzoom, i.e. re-fit the video to the window
@@ -244,7 +246,9 @@ Control | Action
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
 `Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
 `R`                     | `[R]`ename the current media file
+`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
 `F2`                    | rename media file with category prefix 2 defined in `MinimalistMediaPlayer.conf`
 `F3`                    | rename media file with category prefix 3 defined in `MinimalistMediaPlayer.conf`
@@ -391,3 +395,7 @@ Dependencies
 3. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources.
 
 4. Acknowledgement is due to the author of Perpetual Notes v4.05 (https://www.enselsoftware.com/product/PerpetualNotes.html) for being the only RTF editor I could find on the entire internet that could actually [,accurately] read back in what it had written out! (And I tested some big players during my search!)
+
+5. Uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) uncomment one conditional compiler directive at the top of the .dpr project file, 2) create an MMP_CHECK=MMP_CHECK environment variable and, 3) include FastMM_FullDebugMode64.dll in the executable's folder.
+
+6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing.
