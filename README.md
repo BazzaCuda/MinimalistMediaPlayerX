@@ -106,7 +106,7 @@ Although there are a lot of keyboard controls, the alphabetic letters have been 
 Control | Action
 ------- | ------
 `Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
-`ESCape`                | exit `[F]`ullscreen mode, or exit the app if not in `[F]`ullscreen mode
+`ESCape`                | exit `[F]`ullscreen mode, or exit the app if not in `[F]`ullscreen mode. Also closes all popup dialog boxes and messages
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `Right-Click`           | pause/resume playback of audio/video. pause/resume slideshow of images
 `BACKSPACE`             | reset brightness, contrast, gamma, pan, rotation, saturation, speed, zoom to their defaults
