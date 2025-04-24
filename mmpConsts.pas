@@ -88,6 +88,7 @@ const
   CONF_FOLDER_DELETE        = 'folderDelete';
   CONF_KEEP_DELETE          = 'keepDelete';
   CONF_IMAGE_DELETE         = 'imageDelete';
+  CONF_LOGGING              = 'logging';
   CONF_MAIN_CAPTION         = 'caption';
   CONF_MUTED                = 'muted';
   CONF_NEXT_FOLDER_ON_EMPTY = 'nextFolderOnEmpty';
@@ -98,10 +99,10 @@ const
   CONF_REPEAT_DELAY_MS      = 'repeatDelayMs';
   CONF_SCALE_FACTOR         = 'scaleFactor';
   CONF_SHOW_METADATA        = 'showMetaData';
+  CONF_START_IN_EDITOR      = 'startInEditor';
   CONF_TIME_CAPTION         = 'timeCaption';
   CONF_VIDEO_DELETE         = 'videoDelete';
   CONF_VOLUME               = 'volume';
-  CONF_START_IN_EDITOR      = 'startInEditor';
 
   CONF_CAT_F1               = 'catF1';
   CONF_CAT_F2               = 'catF2';

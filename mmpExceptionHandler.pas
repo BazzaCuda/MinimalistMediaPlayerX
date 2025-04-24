@@ -36,6 +36,8 @@ implementation
 
 uses
   system.classes, system.ioUtils,
+  mmpConsts,
+  model.mmpConfigFile,
   _debugWindow;
 
 type
@@ -59,7 +61,7 @@ end;
 
 procedure TMMPExceptionHandler.appExceptionHandler(sender: TObject; e: Exception); // must be procedure of object
 begin
-   // trap all exceptions but don't inconvenience the user
+   // trap all exceptions but don't inconvenience the user.
    // the developer on the other hand...meh! let him have it.
   case reportMemoryLeaksOnShutdown of FALSE: EXIT; end;
 
@@ -78,7 +80,7 @@ begin
   vLogEntry := vLogEntry + format('%s%s%s%s', [vCallStackPrefix, sLineBreak, e.stackTrace, sLineBreak]); // stackTrace is populated by mmpStackTrace
 
   try
-    TFile.appendAllText(logFileName, vLogEntry);
+    case CF.asBoolean[CONF_LOGGING] of TRUE: TFile.appendAllText(logFileName, vLogEntry); end;
   except
     {$if BazDebugWindow} debug('Error writing to log file: ' + e.message); {$endif}
   end;
@@ -86,12 +88,13 @@ end;
 
 class procedure TMMPExceptionHandler.clearLogFile;
 begin
-  var vSL := TStringList.create;
-  try
-    vSL.saveToFile(logFileName);
-  finally
-    vSL.free;
-  end;
+  case fileExists(logFileName) of TRUE: begin
+                                          var vSL := TStringList.create;
+                                          try
+                                            vSL.saveToFile(logFileName);
+                                          finally
+                                            vSL.free;
+                                          end;end;end;
 end;
 
 function TMMPExceptionHandler.handler: TExceptionEvent;

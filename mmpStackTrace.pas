@@ -20,6 +20,8 @@ unit mmpStackTrace;
 
 interface
 
+{$ifopt D+}
+
 uses
   SysUtils, Classes, JclDebug;
 
@@ -75,5 +77,7 @@ finalization
                                                                               Exception.CleanUpStackInfoProc      := NIL;
                                                                               JclStopExceptionTracking; end;
 end;
-
+{$else}
+implementation
+{$endif}
 end.
