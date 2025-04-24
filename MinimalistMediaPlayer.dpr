@@ -18,7 +18,12 @@
 }
 program MinimalistMediaPlayer;
 
-//{$define FastMM_DebugLibraryStaticDependency}
+{$ifopt D+}
+//  {$define UseFastMM5MemoryLeakReporting}
+  {$ifdef UseFastMM5MemoryLeakReporting}
+    {$define FastMM_DebugLibraryStaticDependency}
+  {$endif}
+{$endif}
 
 {$R *.res}
 
@@ -116,15 +121,15 @@ begin
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
   debugClear;
 
-//  TSynLog.Family.Level := LOG_STACKTRACE;
-
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown);
-//                                              FastMM_DeleteEventLogFile;
-//                                              FastMM_EnterDebugMode;
-//                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
-//                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary]; end;end;
-  end;end;
+                                              {$ifdef useFastMM5MemoryLeakReporting}
+                                              FastMM_DeleteEventLogFile;
+                                              FastMM_EnterDebugMode;
+                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
+                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary];
+                                              {$endif}
+                                            end;end;
 end;
 
 function checkParam: boolean;

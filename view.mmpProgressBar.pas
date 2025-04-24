@@ -132,7 +132,7 @@ end;
 function TProgressBar.formResize: boolean;
 begin
   result := FALSE;
-  FPB.invalidate; // repaint;
+  FPB.invalidate;
   result := TRUE;
 end;
 

@@ -199,7 +199,7 @@ end;
 procedure TMainCaptionForm.setCaption(const aValue: string);
 begin
   FCaption.caption      := aValue; // show the new caption immediately
-  FCaption.invalidate; // repaint;
+  FCaption.invalidate;
   case aValue = '' of FALSE: FCaptionCopy := aValue; end;
   mmpProcessMessages;
   MC.resetTimer;

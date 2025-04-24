@@ -287,7 +287,7 @@ begin
                                 TL.position := vNewPos;
                                 updatePositionDisplay(TL.position);
                                 var vSeg := TL.segmentAtSS(TL.position);
-                                case vSeg = NIL of FALSE: vSeg.repaint; end;
+                                case vSeg = NIL of FALSE: vSeg.invalidate; end; // it's really not clear which is best here, repaint or invalidate
                               end;end;
 
 end;
@@ -406,7 +406,8 @@ end;
 
 procedure TTimelineForm.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  message.result := 1;
+  // don't call inherited
+  message.result := 1; // prevent flicker when dragging the Timeline cursor over a panel
 end;
 
 { TTimeline }
@@ -875,7 +876,7 @@ begin
   case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                         FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   application.processMessages;
-  gTimelineForm.updatePositionDisplay(value); // TL.position); EXPERIMENTAL
+  gTimelineForm.updatePositionDisplay(value);
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;

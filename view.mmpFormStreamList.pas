@@ -158,8 +158,8 @@ begin
   case bResetHeight of TRUE: SELF.height := DEFAULT_HEIGHT; end;
   case FMediaType = mtVideo of FALSE: EXIT; end; // don't break the audio editor
 
-  while (clSegments.height < (clSegments.itemHeight * clSegments.itemCount)) // keep resizing the window while there's enough height left
-  and (SELF.top > (GS.mainForm.top + clSegments.itemHeight)) do begin        // to accommodate as many of the segments as possible (SELF. for clarity)
+  while (clSegments.height < (clSegments.itemHeight * clSegments.itemCount)) // keep resizing the window while there's enough height left,
+  and (SELF.top > (GS.mainForm.top + clSegments.itemHeight)) do begin        // to accommodate as many of the segments as possible (SELF. for clarity only)
                                                                   SELF.height := SELF.height + clSegments.itemHeight;
                                                                   winApi.windows.setWindowPos(HANDLE, HWND_TOP, SELF.left, SELF.top - clSegments.itemHeight, 0, 0, SWP_NOSIZE); // Y - itemHeight
                                                                 end;

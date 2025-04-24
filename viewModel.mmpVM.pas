@@ -591,12 +591,12 @@ begin
 
     evMPDuration:   begin
                       FMPDuration     := aNotice.integer;
-                      FMPPrevPosition := -1; // reset for each new audio/video
+                      FMPPrevPosition := -1; // reset for each new audio/video, see below
                       mmp.cmd(evPBMax, aNotice.integer);
                       mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
                     end;
 
-    evMPPosition:   case aNotice.integer <> FMPPrevPosition of   TRUE:  begin // ignore multiple messages for the same position when the mouse is held down while grabbing the timeline cursor
+    evMPPosition:   case aNotice.integer <> FMPPrevPosition of   TRUE:  begin // ignore multiple WM_ mouse messages for the same position when the mouse is held down while grabbing the timeline cursor
                                                                           FMPPosition     := aNotice.integer;
                                                                           FMPPrevPosition := FMPPosition;
                                                                           mmp.cmd(evPBPosition, aNotice.integer);

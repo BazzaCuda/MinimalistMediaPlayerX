@@ -142,7 +142,7 @@ begin
     pnFold: aStatusBar.panels[PANEL_FOLD].text := aText;
     pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;
   end;
-  aStatusBar.invalidate; // repaint;
+  aStatusBar.invalidate;
   mmpProcessMessages;
 end;
 
