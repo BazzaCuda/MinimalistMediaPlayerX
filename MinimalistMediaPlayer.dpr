@@ -119,10 +119,10 @@ procedure setupRunMode;
 begin
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-  debugClear;
+  {$if BazDebugWindow} debugClear; {$endif}
 
   case reportMemoryLeaksOnShutdown of TRUE: begin
-                                              debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown);
+                                              {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
                                               {$ifdef useFastMM5MemoryLeakReporting}
                                               FastMM_DeleteEventLogFile;
                                               FastMM_EnterDebugMode;

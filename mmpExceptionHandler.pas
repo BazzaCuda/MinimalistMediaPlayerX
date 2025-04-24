@@ -63,7 +63,7 @@ begin
    // the developer on the other hand...meh! let him have it.
   case reportMemoryLeaksOnShutdown of FALSE: EXIT; end;
 
-  debugFormat('e: class=%s, %s', [e.className, e.message]);
+  {$if BazDebugWindow} debugFormat('e: class=%s, %s', [e.className, e.message]); {$endif}
 
   var vLogEntry := format('%s%s: %s%s',
     [formatDateTime('yyyy-mm-dd hh:nn:ss.zzz: ', now),
@@ -80,7 +80,7 @@ begin
   try
     TFile.appendAllText(logFileName, vLogEntry);
   except
-    debug('Error writing to log file: ' + e.message);
+    {$if BazDebugWindow} debug('Error writing to log file: ' + e.message); {$endif}
   end;
 end;
 
