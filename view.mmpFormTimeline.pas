@@ -113,7 +113,7 @@ type
     function    initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
     function    notify(const aNotice: INotice): INotice;
     function    redo:           boolean;
-    function    undo(const aPrevAction: string):  boolean;
+    function    undo:           boolean;
     function    validKey(key: WORD):              boolean;
 
     property    cancelled:      boolean               read FCancelled;
@@ -226,7 +226,7 @@ var gTL: TTimeline = NIL;
 function shutTimeline: boolean;
 begin
   mmpShutStreamList;
-  case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
+  case gTL            <> NIL of TRUE: begin gTL.saveSegments; gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
   mmp.cmd(evMPKeepOpen, FALSE);
   mmp.cmd(evGSTimelineHeight, 0);
@@ -363,8 +363,8 @@ begin
   case vSaveUndo of TRUE: TL.addUndo(TL.saveSegments); end; // a change was made
 
   case key of
-    ord('Z'): case mmpCtrlKeyDown of TRUE: TL.undo(TL.prevAction); end; // Ctrl-Z Undo
-    ord('Y'): case mmpCtrlKeyDown of TRUE: TL.redo;                end; // Ctrl-Y Redo
+    ord('Z'): case mmpCtrlKeyDown of TRUE: TL.undo; end; // Ctrl-Z Undo
+    ord('Y'): case mmpCtrlKeyDown of TRUE: TL.redo; end; // Ctrl-Y Redo
   end;
 
   TL.drawSegments;
@@ -812,13 +812,20 @@ begin
 end;
 
 function TTimeline.redo: boolean;
+// discard the most recent action [by moving it straight to the undo list] and apply the subsequent actions from the stack
 begin
   case FRedoList.count = 0 of TRUE: EXIT; end;
 
-  loadSegments(FRedoList.peek);
-  saveSegments;
-  drawSegments;
-  FUndoList.push(FRedoList.extract); // action the item then move it to the undo list
+  // move the most recent action [reflected in the Timeline] straight to the undo list, and then redo _to_ the action before that.
+  // It's not a major problem, but without this the user's first Ctrl-[Y] won't appear to do anything.
+  case (FRedoList.count > 1) and (FRedoList.peek.text = FPrevAction) of TRUE: FUndoList.push(FRedoList.extract); end;
+
+  // action the top item on the stack then move it to the undo list
+  case FRedoList.peek <> NIL of TRUE: begin
+                                        loadSegments(FRedoList.peek);
+                                        FPrevAction := saveSegments; // the previous action is what is currently reflected in the Timeline
+                                        drawSegments;
+                                        FUndoList.push(FRedoList.extract); end;end;
 end;
 
 function TTimeline.restoreSegment(const aSegment: TSegment): boolean;
@@ -887,20 +894,19 @@ begin
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS - 1;
 end;
 
-function TTimeline.undo(const aPrevAction: string): boolean;
-// discard the most recent action and apply the subsequent actions from the stack
+function TTimeline.undo: boolean;
+// discard the most recent action [by moving it straight to the redo list] and apply the subsequent actions from the stack
 begin
-  case FUndoList.count = 0 of TRUE: EXIT; end;
+  // move the most recent action [reflected in the Timeline] straight to the undo list, and then undo _to_ the action before that.
+  // It's not a major problem, but without this the user's first Ctrl-[Z] won't appear to do anything.
+  case (FUndoList.count > 1) and (FUndoList.peek.text = FPrevAction) of TRUE: FRedoList.push(FUndoList.extract); end;
 
-  case FUndoList.peek.text = aPrevAction of TRUE: FRedoList.push(FUndoList.extract); end; // move the most recent action [reflected in the Timeline] straight to the undo list
-
-  case FUndoList.count = 0 of TRUE: EXIT; end; // there was only one item remaining in FUndoList and it's just been removed
-
+  // action the top item on the stack then move it to the redo list
   case FUndoList.peek <> NIL of TRUE: begin
-                                        loadSegments(FUndoList.peek);
-                                        saveSegments;
+                                        case FUndoList.peek.text <> FPrevAction of TRUE: loadSegments(FUndoList.peek); end; // prevent random colors on an otherwise unchanging Timeline
+                                        FPrevAction := saveSegments; // the previous action is what is currently reflected in the Timeline
                                         drawSegments;
-                                        FRedoList.push(FUndoList.extract);
+                                        case FUndoList.count = 1 of FALSE: FRedoList.push(FUndoList.extract); end; // don't let the user move the default undo segment to the redo list!!
                                       end;end;
 end;
 
