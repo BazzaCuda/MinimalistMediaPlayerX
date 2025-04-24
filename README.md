@@ -348,7 +348,7 @@ Control | Action
 `F6`                    | cycle through all audio tracks in the media file
 `Ctrl-V`                | set System Volume to Max
 **Window Control** | 
-`ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode
+`ESCape`                | exit Fullscreen mode, or exit the app if not in fullscreen mode. Also closes all popup dialog boxes and messages
 `F`                     | show/cancel `[F]`ullScreen mode
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un`[G]`reater, the window size. Can be held down for rapid decrease
