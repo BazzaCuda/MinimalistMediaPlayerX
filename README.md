@@ -40,7 +40,7 @@ _Note that `openImage=browser` is the recommended setting._
 Delphi Developers
 -----------------
 
-For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, two-way Observer Pattern, see the aptly named article, [MVVM Architecture and `MMP`'s Event Notification Mechanism (two-way Observer Pattern)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/MVVM-architecture-and-MMP's-event-notification-mechanism-%E2%80%90-for-interested-Delphi-developers)
+For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, two-way Observer Pattern, see the aptly named article, [MVVM Architecture and `MMP`'s Event Notification Mechanism (two-way Observer Pattern)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/MVVM-architecture-and-MMP's-event-notification-mechanism-(two%E2%80%90way-Observer-Pattern)-%E2%80%90-for-interested-Delphi-developers)
 
 Significant Releases
 --------------------
