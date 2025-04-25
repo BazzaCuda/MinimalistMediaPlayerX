@@ -47,7 +47,8 @@ uses
   system.ioUtils, system.regularExpressions,
   vcl.controls, vcl.dialogs,
   mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
-  model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove;
+  model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove,
+  _debugWindow;
 
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
@@ -317,7 +318,7 @@ begin
   result := aNewFilePath;
   var vOldMMP := changeFileExt(aOldFilePath, '.mmp');
   var vNewMMP := changeFileExt(aNewFilePath, '.mmp');
-  renameFile(vOldMMP, vNewMMP);
+  case fileExists(vOldMMP) of TRUE: renameFile(vOldMMP, vNewMMP); end;
 end;
 
 

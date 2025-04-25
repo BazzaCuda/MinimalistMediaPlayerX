@@ -55,6 +55,10 @@ type
     lblTitle: TLabel;
     md: TMarkdownViewer;
     lblSegments: TLabel;
+    lblExportSS: TLabel;
+    lblTotalSS: TLabel;
+    lblExport: TLabel;
+    lblTotal: TLabel;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
@@ -68,6 +72,10 @@ type
     procedure pageControlChange(Sender: TObject);
     procedure btnExportKeyPress(Sender: TObject; var Key: Char);
     procedure pageControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure btnExportKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnExportKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
@@ -76,7 +84,8 @@ type
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
   protected
-    function    applySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
+    function    applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
+    function    updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;
     procedure   createParams(var Params: TCreateParams);
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
@@ -85,7 +94,7 @@ type
     property onExport: TNotifyEvent read FOnExport write FOnExport;
   end;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 function mmpShutStreamList: boolean;
@@ -105,9 +114,9 @@ const
 
 var gStreamListForm: TStreamListForm = NIL;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 begin
-  gStreamListForm.applySegments(aSegments, bResetHeight);
+  gStreamListForm.applySegments(aSegments, aMax, bResetHeight);
 end;
 
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
@@ -148,11 +157,13 @@ end;
 
 { TStreamListForm }
 
-function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const bResetHeight: boolean = FALSE): boolean;
+function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 begin
   FSegments := aSegments;
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
+
+  updateTotals(aSegments, aMax);
 
   FMediaType := GS.mediaType;
   case bResetHeight of TRUE: SELF.height := DEFAULT_HEIGHT; end;
@@ -163,6 +174,7 @@ begin
                                                                   SELF.height := SELF.height + clSegments.itemHeight;
                                                                   winApi.windows.setWindowPos(HANDLE, HWND_TOP, SELF.left, SELF.top - clSegments.itemHeight, 0, 0, SWP_NOSIZE); // Y - itemHeight
                                                                 end;
+  focusTimeline;
 end;
 
 procedure TStreamListForm.btnExportClick(Sender: TObject);
@@ -171,9 +183,22 @@ begin
   focusTimeline;
 end;
 
+procedure TStreamListForm.btnExportKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  key := 0;
+  focusTimeline;
+end;
+
 procedure TStreamListForm.btnExportKeyPress(Sender: TObject; var Key: Char);
 begin
   key := #0;
+  focusTimeline;
+end;
+
+procedure TStreamListForm.btnExportKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  key := 0;
+  focusTimeline;
 end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
@@ -291,8 +316,27 @@ begin
 
   loadMarkDownFromResource(md, 'Resource_mdEditing');
 
-  clSegments.itemCount := 0;
-  clStreams.itemCount  := 0;
+  clSegments.itemCount  := 0;
+  clStreams.itemCount   := 0;
+
+  lblExportSS.caption   := '';
+  lblTotalSS.caption    := '';
+  lblExportSS.left      := pnlButtons.width - lblExportSS.width;
+  lblTotalSS.Left       := lblExportSS.left;
+  lblExport.left        := lblExportSS.left - lblExport.width - 2;
+  lblTotal.left         := lblExport.left;
+end;
+
+procedure TStreamListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  key := 0;
+  focusTimeline;
+end;
+
+procedure TStreamListForm.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  key := #0;
+  focusTimeline;
 end;
 
 procedure TStreamListForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -331,6 +375,18 @@ end;
 function TStreamListForm.updateStreamsCaption: boolean;
 begin
   tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.streamCount]);
+end;
+
+function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;
+  function sumExportSS: integer;
+  begin
+    result := 0;
+    for var vSegment in aSegments do case vSegment.deleted of FALSE: result := result + vSegment.duration; end;
+  end;
+begin
+  var exportSS := sumExportSS;
+  lblExportSS.caption := format('%d secs (%s)', [exportSS, mmpFormatSeconds(exportSS)]);
+  lblTotalSS.caption  := format('%d secs (%s)', [aMax, mmpFormatSeconds(aMax)]);
 end;
 
 procedure TStreamListForm.WMNCHitTest(var msg: TWMNCHitTest);

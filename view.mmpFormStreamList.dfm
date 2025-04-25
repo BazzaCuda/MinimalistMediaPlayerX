@@ -14,6 +14,8 @@ object StreamListForm: TStreamListForm
   KeyPreview = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   OnKeyUp = FormKeyUp
   TextHeight = 13
   object Label1: TLabel
@@ -2181,8 +2183,8 @@ object StreamListForm: TStreamListForm
           object Shape2: TShape
             Left = 0
             Top = 0
-            Width = 442
-            Height = 70
+            Width = 0
+            Height = 0
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2314,17 +2316,61 @@ object StreamListForm: TStreamListForm
       TabOrder = 1
       object lblSegments: TLabel
         Left = 16
-        Top = 8
+        Top = 6
         Width = 127
         Height = 25
         AutoSize = False
         Caption = 'Clicking a segment will select it in the Timeline'
         WordWrap = True
       end
+      object lblExportSS: TLabel
+        Left = 336
+        Top = 4
+        Width = 110
+        Height = 13
+        AutoSize = False
+        Caption = '25655 secs (427m35s)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblTotalSS: TLabel
+        Left = 336
+        Top = 21
+        Width = 110
+        Height = 13
+        AutoSize = False
+        Caption = '25655 secs (427m35s)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWhite
+        Font.Height = -11
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblExport: TLabel
+        Left = 288
+        Top = 4
+        Width = 36
+        Height = 13
+        AutoSize = False
+        Caption = 'Export:'
+      end
+      object lblTotal: TLabel
+        Left = 288
+        Top = 21
+        Width = 36
+        Height = 13
+        AutoSize = False
+        Caption = 'Total:'
+      end
       object btnExport: TBitBtn
-        Left = 209
+        Left = 150
         Top = -1
-        Width = 160
+        Width = 130
         Height = 40
         Caption = ' Export'
         Font.Charset = DEFAULT_CHARSET
@@ -2467,7 +2513,9 @@ object StreamListForm: TStreamListForm
         TabOrder = 0
         TabStop = False
         OnClick = btnExportClick
+        OnKeyDown = btnExportKeyDown
         OnKeyPress = btnExportKeyPress
+        OnKeyUp = btnExportKeyUp
         OnMouseEnter = btnExportMouseEnter
         OnMouseLeave = btnExportMouseLeave
         OnMouseMove = btnExportMouseMove

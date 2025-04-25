@@ -952,8 +952,8 @@ begin
                                               sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
 
   mmp.cmd(evPLFormLoadBox);
-  mmp.cmd(evTLRename, vNewName);
-  mmpRenameMMPFile(vOldName, vNewName);
+  case GS.showingTimeline of TRUE: mmp.cmd(evTLRename, vNewName); end;
+  case aRenameType in [rtKeepMove, rtKeepSave] of FALSE: mmpRenameMMPFile(vOldName, vNewName); end;
 
   case aRenameType of
     rtUser:       result := 'Renamed';

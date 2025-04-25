@@ -226,7 +226,7 @@ var gTL: TTimeline = NIL;
 function shutTimeline: boolean;
 begin
   mmpShutStreamList;
-  case gTL            <> NIL of TRUE: begin gTL.saveSegments; gTL.free; gTL := NIL; end;end;
+  case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
   case gTimelineForm  <> NIL of TRUE: begin gTimelineForm.free; gTimelineForm := NIL; end;end;
   mmp.cmd(evMPKeepOpen, FALSE);
   mmp.cmd(evGSTimelineHeight, 0);
@@ -368,6 +368,7 @@ begin
   end;
 
   TL.drawSegments;
+  updatePositionDisplay(TL.position);
 
   case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
@@ -414,6 +415,8 @@ end;
 
 function TTimeline.addUndo(const aAction: string): string;
 begin
+  while FRedoList.count > 0 do FUndoList.push(FRedoList.extract); // !!!!!!
+
   FPrevAction := aAction;
 
   var vSL     := TStringList.create;
@@ -513,7 +516,7 @@ begin
   end;
 
   gTimelineForm.pnlCursor.bringToFront;
-  mmpApplySegments(segments, bResetHeight);
+  mmpApplySegments(segments, FMax, bResetHeight);
 end;
 
 function TTimeline.filePathOUT: string;
@@ -818,10 +821,10 @@ begin
 
   // move the most recent action [reflected in the Timeline] straight to the undo list, and then redo _to_ the action before that.
   // It's not a major problem, but without this the user's first Ctrl-[Y] won't appear to do anything.
-  case (FRedoList.count > 1) and (FRedoList.peek.text = FPrevAction) of TRUE: FUndoList.push(FRedoList.extract); end;
+  while (FRedoList.count > 0) and (FRedoList.peek.text = FPrevAction) do FUndoList.push(FRedoList.extract);
 
   // action the top item on the stack then move it to the undo list
-  case FRedoList.peek <> NIL of TRUE: begin
+  case FRedoList.count > 0 of TRUE:   begin
                                         loadSegments(FRedoList.peek);
                                         FPrevAction := saveSegments; // the previous action is what is currently reflected in the Timeline
                                         drawSegments;
@@ -839,7 +842,7 @@ end;
 
 function TTimeline.saveSegments: string;
 begin
-  case TL.segCount = 0 of TRUE: EXIT; end;
+  case segCount = 0 of TRUE: EXIT; end;
 
   var vSL := TStringList.create;
   try
@@ -852,7 +855,7 @@ begin
     vSL.free;
   end;
 
-  case (TL.segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = TL.max) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
+  case (segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = FMax) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
 function TTimeline.segFileEntry(const aSegFile: string): string;
@@ -899,14 +902,14 @@ function TTimeline.undo: boolean;
 begin
   // move the most recent action [reflected in the Timeline] straight to the undo list, and then undo _to_ the action before that.
   // It's not a major problem, but without this the user's first Ctrl-[Z] won't appear to do anything.
-  case (FUndoList.count > 1) and (FUndoList.peek.text = FPrevAction) of TRUE: FRedoList.push(FUndoList.extract); end;
+  while (FUndoList.count > 1) and (FUndoList.peek.text = FPrevAction) do FRedoList.push(FUndoList.extract); // don't remove the default undo segment
 
   // action the top item on the stack then move it to the redo list
-  case FUndoList.peek <> NIL of TRUE: begin
+  case FUndoList.count > 0 of TRUE:   begin
                                         case FUndoList.peek.text <> FPrevAction of TRUE: loadSegments(FUndoList.peek); end; // prevent random colors on an otherwise unchanging Timeline
                                         FPrevAction := saveSegments; // the previous action is what is currently reflected in the Timeline
                                         drawSegments;
-                                        case FUndoList.count = 1 of FALSE: FRedoList.push(FUndoList.extract); end; // don't let the user move the default undo segment to the redo list!!
+                                        case FUndoList.count > 1 of TRUE: FRedoList.push(FUndoList.extract); end; // don't let the user move the default undo segment to the redo list!!
                                       end;end;
 end;
 

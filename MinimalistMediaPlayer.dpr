@@ -19,7 +19,7 @@
 program MinimalistMediaPlayer;
 
 {$ifopt D+}
-//  {$define UseFastMM5MemoryLeakReporting}
+  {$define UseFastMM5MemoryLeakReporting}
   {$ifdef UseFastMM5MemoryLeakReporting}
     {$define FastMM_DebugLibraryStaticDependency}
   {$endif}
