@@ -28,6 +28,7 @@ type
   IConfigFile = interface
     ['{32AB825C-CC48-47F2-8717-8F471C059BAD}']
     function  getAsBoolean      (const aName: string): boolean;
+    procedure setAsBoolean      (const aName: string; const aValue: boolean);
     function  getAsDeleteMethod (const aName: string): TDeleteMethod;
     function  getAsInteger      (const aName: string): integer;
     function  getAsMediaType    (const aName: string): TMediaType;
@@ -39,11 +40,11 @@ type
     function  initConfigFile    (const aFilePath: string):  boolean;
     function  toHex             (const aInteger: integer):  string;
 
-    property  asBoolean         [const aName: string]:  boolean       read getAsBoolean;
+    property  asBoolean         [const aName: string]:  boolean       read getAsBoolean       write setAsBoolean;
     property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod;
     property  asInteger         [const aName: string]:  integer       read getAsInteger;
     property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType;
-    property  value             [const aName: string]:  string        read getValue write setValue; default;
+    property  value             [const aName: string]:  string        read getValue           write setValue; default;
   end;
 
 function CF: IConfigFile;
@@ -69,6 +70,7 @@ type
     destructor  Destroy; override;
 
     function    getAsBoolean      (const aName: string): boolean;
+    procedure   setAsBoolean      (const aName: string; const aValue: boolean);
     function    getAsDeleteMethod (const aName: string): TDeleteMethod;
     function    getAsInteger      (const aName: string): integer;
     function    getAsMediaType    (const aName: string): TMediaType;
@@ -183,6 +185,12 @@ begin
   except // trap rapid-fire write errors, e.g. when user holds down ctrl-B
   end;
   result := TRUE;
+end;
+
+procedure TConfigFile.setAsBoolean(const aName: string; const aValue: boolean);
+begin
+  case aValue of   TRUE: setValue(aName, 'yes');
+                  FALSE: setValue(aName, 'no'); end;
 end;
 
 procedure TConfigFile.setValue(const aName: string; const aValue: string);

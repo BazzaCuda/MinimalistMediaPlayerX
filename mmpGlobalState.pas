@@ -58,6 +58,7 @@ type
     function getOpeningURL:               boolean;
     function getRepeatDelayMs:            integer;
     function getShowingAbout:             boolean;
+    function getShowingConfig:            boolean;
     function getShowingHelp:              boolean;
     function getShowingPlaylist:          boolean;
     function getShowingStreamlist:        boolean;
@@ -84,6 +85,7 @@ type
     property repeatDelayMs:             integer             read getRepeatDelayMs;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
     property showingAbout:              boolean             read getShowingAbout;
+    property showingConfig:             boolean             read getShowingConfig;
     property showingHelp:               boolean             read getShowingHelp;
     property showingPlaylist:           boolean             read getShowingPlaylist;
     property showingStreamlist:         boolean             read getShowingStreamlist;
@@ -118,6 +120,7 @@ type
     FOpeningURL:              boolean;
     FRepeatDelayMs:           integer;
     FShowingAbout:            boolean;
+    FShowingConfig:           boolean;
     FShowingHelp:             boolean;
     FShowingPlaylist:         boolean;
     FShowingStreamlist:       boolean;
@@ -145,6 +148,7 @@ type
     function    getOpeningURL:               boolean;
     function    getRepeatDelayMs:            integer;
     function    getShowingAbout:             boolean;
+    function    getShowingConfig:            boolean;
     function    getShowingHelp:              boolean;
     function    getShowingPlaylist:          boolean;
     function    getShowingStreamlist:        boolean;
@@ -238,6 +242,11 @@ begin
   result := FShowingAbout;
 end;
 
+function TGlobalState.getShowingConfig: boolean;
+begin
+  result := FShowingConfig;
+end;
+
 function TGlobalState.getShowingHelp: boolean;
 begin
   result := FShowingHelp;
@@ -309,6 +318,7 @@ begin
     evGSOpeningURL:               FOpeningURL             := aNotice.tf;
     evGSRepeatDelayMs:            FRepeatDelayMs          := aNotice.integer;
     evGSShowingAbout:             FShowingAbout           := aNotice.tf;
+    evGSShowingConfig:            FShowingConfig          := aNotice.tf;
     evGSShowingHelp:              FShowingHelp            := aNotice.tf;
     evGSShowingPlaylist:          FShowingPlaylist        := aNotice.tf;
     evGSShowingStreamlist:        FShowingStreamlist      := aNotice.tf;

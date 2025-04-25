@@ -113,7 +113,8 @@ uses
   mmpConsts in 'mmpConsts.pas',
   mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
-  mmpExceptionHandler in 'mmpExceptionHandler.pas';
+  mmpExceptionHandler in 'mmpExceptionHandler.pas',
+  view.mmpFormConfig in 'view.mmpFormConfig.pas' {ConfigForm};
 
 procedure setupRunMode;
 begin

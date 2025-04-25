@@ -149,7 +149,8 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(Y)                                                           of TRUE: result := koThumbnails; end;
     case keyUp and keyIs(Z)                                                           of TRUE: result := koPlayLast; end;
 
-    case keyDn and keyIs(BACKSLASH)                                                   of TRUE: result := koSpeedDn; end;
+    case keyUp and keyIs(BACKSLASH)      and     shift                                of TRUE: result := koConfig; end;
+    case keyDn and keyIs(BACKSLASH)      and NOT shift                                of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                                   of TRUE: result := koResetAll; end;
     case keyDn and keyIs(CLOSE_BRACKET)  and     shift                                of TRUE: result := koSaturationUp; end; // close curly brace
     case keyDn and keyIs(CLOSE_BRACKET)  and NOT shift                                of TRUE: result := koGammaUp; end;      // close square bracket

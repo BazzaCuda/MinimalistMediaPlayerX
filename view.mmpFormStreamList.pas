@@ -321,7 +321,7 @@ begin
 
   lblExportSS.caption   := '';
   lblTotalSS.caption    := '';
-  lblExportSS.left      := pnlButtons.width - lblExportSS.width;
+  lblExportSS.left      := pnlButtons.width - lblExportSS.width - 6;
   lblTotalSS.Left       := lblExportSS.left;
   lblExport.left        := lblExportSS.left - lblExport.width - 2;
   lblTotal.left         := lblExport.left;

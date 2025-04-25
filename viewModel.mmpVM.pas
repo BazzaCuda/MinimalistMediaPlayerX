@@ -94,7 +94,7 @@ uses
   vcl.dialogs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormConfirmDelete, mmpFormatting, mmpFuncProg, mmpGlobalState,
   mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
+  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
@@ -629,6 +629,7 @@ begin
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
     evVMCleanup:            doCleanup;
+    evVMConfig:             mmpConfig;
     evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
     evVMDoEscapeKey:        doEscapeKey;
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));

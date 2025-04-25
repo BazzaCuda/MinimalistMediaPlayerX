@@ -71,6 +71,7 @@ begin
     koClipboard:          sendOpInfo(mmp.cmd(evPLCopyToClipboard).text);
     koCloseEvery:         mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP);
     koCloseApp:           mmp.cmd(evAppClose);
+    koConfig:             mmp.cmd(evVMConfig);
     koContrastDn:         MP.notify(newNotice(evMPContrastDn));
     koContrastReset:      MP.notify(newNotice(evMPContrastReset));
     koContrastUp:         MP.notify(newNotice(evMPContrastUp));

@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder, koCloseToMain
+            koKeepDelete, koExploreFolder, koCloseToMain, koConfig
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -132,7 +132,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(Y)                                                     of TRUE: result := koPlayThumbs; end;
     case keyUp and keyIs(Z)                                                     of TRUE: result := koPlayLast; end;
 
-    case keyDn and keyIs(BACKSLASH)                                             of TRUE: result := koSpeedDn; end;
+    case keyDn and keyIs(BACKSLASH)                 and     shift               of TRUE: result := koConfig; end;
+    case keyDn and keyIs(BACKSLASH)                 and NOT shift               of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                             of TRUE: result := koAllReset; end;
     case keyDn and keyIs(CLOSE_BRACKET)             and     shift               of TRUE: result := koSaturationUp; end; // close curly brace
     case keyDn and keyIs(CLOSE_BRACKET)             and NOT shift               of TRUE: result := koGammaUp; end;

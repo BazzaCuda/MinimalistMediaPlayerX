@@ -719,7 +719,7 @@ begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
                     playCurrentItem; end;end;
 
-  focusThumbs;
+  case GS.showingConfig of FALSE: focusThumbs; end;
 end;
 
 function TThumbsForm.undoMove: string;
@@ -822,6 +822,7 @@ begin
     koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP); end;
     koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
     koCloseToMain:        begin mmpCancelDelay; FThumbs.cancel; modalResult := mrIgnore; end;
+    koConfig:             mmp.cmd(evVMConfig);
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
