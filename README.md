@@ -31,7 +31,7 @@ WIKI
 
 Keyboard Controls
 -----------------
-A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboard.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboard.pas) and in [_view.mmpThumbsKeyboard.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpThumbsKeyboard.pas) will tell you what actions you can take in the main media-playing window and in the `Image & Thumbnail Browser`, respectively.
+A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboardMain.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardMain.pas) and in [_view.mmpKeyboardThumbs.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardThumbs.pas) will tell you what actions you can take in the main media-playing window and in the `Image & Thumbnail Browser`, respectively.
 
 _(For a quick run-down of the options in the `MinimalistMediaPlayer.conf` file, see [the wiki page](https://minimalistmediaplayer.com/mmp/config))_
 
@@ -40,7 +40,7 @@ _Note that `openImage=browser` is the recommended setting._
 Delphi Developers
 -----------------
 
-For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, two-way Observer Pattern, see the aptly named article, [MVVM Architecture and `MMP`'s Event Notification Mechanism (two-way Observer Pattern)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/MVVM-architecture-and-MMP's-event-notification-mechanism-%E2%80%90-for-interested-Delphi-developers)
+For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, two-way Observer Pattern, see the aptly named article, [MVVM Architecture and `MMP`'s Event Notification Mechanism (two-way Observer Pattern)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki/MVVM-architecture-and-MMP's-event-notification-mechanism-(two%E2%80%90way-Observer-Pattern)-%E2%80%90-for-interested-Delphi-developers)
 
 Significant Releases
 --------------------
