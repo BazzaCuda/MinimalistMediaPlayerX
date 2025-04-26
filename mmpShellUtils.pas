@@ -26,6 +26,7 @@ uses
 
 function mmpEnvironmentVariable: boolean;
 function mmpExecCommandLine(const aCommandLine: string): boolean;
+function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 
@@ -66,16 +67,19 @@ begin
   result := createProcess(pWideChar(vCmd), pWideChar(vParams), nil, nil, FALSE, CREATE_NEW_PROCESS_GROUP + NORMAL_PRIORITY_CLASS, nil, pWideChar(mmpExePath), vStartInfo, vProcInfo);
 end;
 
+function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
+begin
+  result := CF[mmpFnnKeyAppToString(aFnnKeyApp)]; // has the user overridden the default app in the config file?
+
+  case result = '' of TRUE: case aFnnKeyApp of // No
+                                F10_APP: result := POT_PLAYER;
+                                F11_APP: result := LOSSLESS_CUT;
+                                F12_APP: result := SHOTCUT; end;end;
+end;
+
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 begin
-  var vAppPath := CF[mmpFnnKeyAppToString(aFnnKeyApp)]; // has the user overridden the default app in the config file?
-
-  case vAppPath = '' of TRUE: case aFnnKeyApp of // No
-                                F10_APP: vAppPath := POT_PLAYER;
-                                F11_APP: vAppPath := LOSSLESS_CUT;
-                                F12_APP: vAppPath := SHOTCUT; end;end;
-
-  mmpShellExec(vAppPath, aParams);
+  mmpShellExec(mmpGetExternalApp(aFnnKeyApp), aParams);
 end;
 
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;

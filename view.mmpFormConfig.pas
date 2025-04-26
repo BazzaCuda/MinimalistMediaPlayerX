@@ -84,7 +84,6 @@ type
     fileOpenDialog: TFileOpenDialog;
     Label32: TLabel;
     Label33: TLabel;
-    SpeedButton1: TSpeedButton;
     edtF1: TLabeledEdit;
     btnF1: TSpeedButton;
     edtF2: TLabeledEdit;
@@ -109,6 +108,13 @@ type
     btnF11: TSpeedButton;
     edtF12: TLabeledEdit;
     btnF12: TSpeedButton;
+    edtAppF10: TLabeledEdit;
+    btnAppF10: TSpeedButton;
+    edtAppF11: TLabeledEdit;
+    btnAppF11: TSpeedButton;
+    edtAppF12: TLabeledEdit;
+    btnAppF12: TSpeedButton;
+    Label34: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -133,6 +139,8 @@ type
     procedure edtBaseFolderChange(Sender: TObject);
     procedure btnCopiedClick(Sender: TObject);
     procedure edtCopiedChange(Sender: TObject);
+    procedure btnAppF10Click(Sender: TObject);
+    procedure edtAppF10Change(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -144,7 +152,7 @@ function mmpConfig: boolean;
 implementation
 
 uses
-  mmpConsts, mmpFolderUtils, mmpFuncProg, mmpGlobalState, mmpUserFolders, mmpUtils,
+  mmpConsts, mmpFolderUtils, mmpFuncProg, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
   model.mmpConfigFile;
 
 function mmpConfig: boolean;
@@ -177,7 +185,56 @@ begin
   end;
 end;
 
+
+function selectApplication(const aFileOpenDialog: TFileOpenDialog; const aPrevFolder: string): string;
+begin
+  with aFileOpenDialog do begin
+    title         := 'Select an Application';
+    options       := [fdoPathMustExist, fdoFileMustExist, fdoForceFileSystem, fdoNoValidate];
+    OKButtonLabel := 'Select';
+    defaultFolder := aPrevFolder;
+    fileName      := aPrevFolder;
+
+    fileTypes.clear;
+    with fileTypes.Add do begin
+      displayName := 'Exe Files';
+      fileMask := '*.exe';
+    end;
+
+    with fileTypes.Add do begin
+      displayName := 'Bat Files';
+      fileMask := '*.bat';
+    end;
+
+    with fileTypes.Add do begin
+      displayName := 'Shortcuts';
+      fileMask := '*.lnk';
+    end;
+
+    with fileTypes.Add do begin
+      displayName := 'All Files';
+      fileMask := '*.*';
+    end;
+
+    fileTypeIndex := 0;
+
+    case execute of  TRUE: result := fileName;
+                    FALSE: result := ''; end;
+  end;
+end;
+
 {$R *.dfm}
+
+procedure TConfigForm.btnAppF10Click(Sender: TObject);
+{$J+} const vPrevFolder: string = ''; {$J-}
+begin
+  vPrevFolder := selectApplication(fileOpenDialog, vPrevFolder);
+  case vPrevFolder = '' of TRUE: EXIT; end;
+
+  case sender = btnAppF10 of TRUE: edtAppF10.text := vPrevFolder; end;
+  case sender = btnAppF11 of TRUE: edtAppF11.text := vPrevFolder; end;
+  case sender = btnAppF12 of TRUE: edtAppF12.text := vPrevFolder; end;
+end;
 
 procedure TConfigForm.btnBaseFolderClick(Sender: TObject);
 {$J+} const vPrevFolder: string = ''; {$J-}
@@ -275,12 +332,27 @@ begin
   CF.asBoolean[CONF_VIDEO_DELETE] := chbVideo.checked;
 end;
 
+procedure TConfigForm.edtAppF10Change(Sender: TObject);
+begin
+  var vEdit := sender as TLabeledEdit;
+  case fileExists(vEdit.text) of FALSE: begin vEdit.font.color := clRed; EXIT; end;end;
+  vEdit.font.color := DARK_MODE_SILVER;
+
+  case trim(vEdit.text) = '' of TRUE: vEdit.text := ' '; end; // allow the user to blank the folder name without CF deleting the entry
+
+  // if the .conf file entry hasn't changed, or the edit box contains the default app for the Fnn key, don't write to the .conf file
+  case (vEdit = edtAppF10) and NOT (edtAppF10.text = mmpGetExternalApp(F10_APP)) of TRUE: CF[mmpFnnKeyAppToString(F10_APP)] := vEdit.text; end;
+  case (vEdit = edtAppF11) and NOT (edtAppF11.text = mmpGetExternalApp(F11_APP)) of TRUE: CF[mmpFnnKeyAppToString(F11_APP)] := vEdit.text; end;
+  case (vEdit = edtAppF12) and NOT (edtAppF12.text = mmpGetExternalApp(F12_APP)) of TRUE: CF[mmpFnnKeyAppToString(F12_APP)] := vEdit.text; end;
+end;
+
 procedure TConfigForm.edtBaseFolderChange(Sender: TObject);
 begin
-  case directoryExists(edtBaseFolder.text) of  TRUE: edtBaseFolder.font.color := DARK_MODE_SILVER;
-                                              FALSE: edtBaseFolder.font.color := clRed; end;
-  case directoryExists(edtBaseFolder.text) of FALSE: EXIT; end;
-  CF[CONF_BASE_FOLDER] := edtBaseFolder.text;
+  var vText := edtBaseFolder.text;
+  case directoryExists(vText) of FALSE: begin edtBaseFolder.font.color := clRed; EXIT; end;end;
+  edtBaseFolder.font.color := DARK_MODE_SILVER;
+  case trim(vText) = '' of TRUE: vText := ' '; end;
+  CF[CONF_BASE_FOLDER] := vText;
 end;
 
 procedure TConfigForm.edtCopiedChange(Sender: TObject);
@@ -290,10 +362,9 @@ begin
 
   case (length(vText) > 1) and (vText[2] = ':') of TRUE:
     case directoryExists(vText) of FALSE: begin vEdit.font.color := clRed; EXIT; end;end;end;
-
   vEdit.font.color := DARK_MODE_SILVER;
 
-  case trim(vText) = ''   of TRUE: vText := ' '; end; // allow the user to blank the folder name
+  case trim(vText) = ''   of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
   // I could have used tags and searched for the edt with the corresponding tag as the btn
   // but as this is an immutable list...meh!
@@ -360,6 +431,10 @@ begin
   edtF10.text                   := CF['folder10'];
   edtF11.text                   := CF['folder11'];
   edtF12.text                   := CF['folder12'];
+
+  edtAppF10.text                := mmpGetExternalApp(F10_APP);
+  edtAppF11.text                := mmpGetExternalApp(F11_APP);
+  edtAppF12.text                := mmpGetExternalApp(F12_APP);
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
