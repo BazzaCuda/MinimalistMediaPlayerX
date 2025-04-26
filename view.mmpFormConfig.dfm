@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsScaleFactor
+    ActivePage = tsUserFolders
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -775,6 +775,7 @@ object ConfigForm: TConfigForm
         ParentFont = False
       end
       object btnBaseFolder: TSpeedButton
+        Tag = 1
         Left = 523
         Top = 104
         Width = 23
@@ -832,6 +833,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnSaved: TSpeedButton
+        Tag = 4
         Left = 523
         Top = 133
         Width = 23
@@ -889,6 +891,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnMoved: TSpeedButton
+        Tag = 3
         Left = 344
         Top = 133
         Width = 23
@@ -946,6 +949,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnCopied: TSpeedButton
+        Tag = 2
         Left = 162
         Top = 133
         Width = 23
@@ -1041,6 +1045,7 @@ object ConfigForm: TConfigForm
         StyleElements = [seClient, seBorder]
       end
       object btnF1: TSpeedButton
+        Tag = 5
         Left = 162
         Top = 178
         Width = 23
@@ -1098,6 +1103,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF2: TSpeedButton
+        Tag = 6
         Left = 162
         Top = 206
         Width = 23
@@ -1155,6 +1161,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF3: TSpeedButton
+        Tag = 7
         Left = 162
         Top = 234
         Width = 23
@@ -1212,6 +1219,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF4: TSpeedButton
+        Tag = 8
         Left = 163
         Top = 263
         Width = 23
@@ -1269,7 +1277,8 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF5: TSpeedButton
-        Left = 346
+        Tag = 9
+        Left = 345
         Top = 178
         Width = 23
         Height = 22
@@ -1326,6 +1335,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF7: TSpeedButton
+        Tag = 11
         Left = 347
         Top = 234
         Width = 23
@@ -1383,6 +1393,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF8: TSpeedButton
+        Tag = 12
         Left = 347
         Top = 263
         Width = 23
@@ -1440,6 +1451,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF9: TSpeedButton
+        Tag = 13
         Left = 523
         Top = 178
         Width = 23
@@ -1497,6 +1509,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF6: TSpeedButton
+        Tag = 10
         Left = 346
         Top = 206
         Width = 23
@@ -1554,6 +1567,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF10: TSpeedButton
+        Tag = 14
         Left = 523
         Top = 206
         Width = 23
@@ -1611,6 +1625,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF11: TSpeedButton
+        Tag = 15
         Left = 523
         Top = 234
         Width = 23
@@ -1668,6 +1683,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object btnF12: TSpeedButton
+        Tag = 16
         Left = 523
         Top = 263
         Width = 23
@@ -1725,6 +1741,7 @@ object ConfigForm: TConfigForm
         OnClick = btnBaseFolderClick
       end
       object edtBaseFolder: TLabeledEdit
+        Tag = 1
         Left = 176
         Top = 103
         Width = 341
@@ -1745,6 +1762,7 @@ object ConfigForm: TConfigForm
         OnChange = edtBaseFolderChange
       end
       object edtSaved: TLabeledEdit
+        Tag = 4
         Left = 421
         Top = 133
         Width = 96
@@ -1768,6 +1786,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtMoved: TLabeledEdit
+        Tag = 3
         Left = 243
         Top = 133
         Width = 96
@@ -1791,6 +1810,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtCopied: TLabeledEdit
+        Tag = 2
         Left = 61
         Top = 133
         Width = 96
@@ -1814,6 +1834,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF1: TLabeledEdit
+        Tag = 5
         Left = 61
         Top = 178
         Width = 96
@@ -1837,6 +1858,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF2: TLabeledEdit
+        Tag = 6
         Left = 61
         Top = 206
         Width = 96
@@ -1860,6 +1882,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF3: TLabeledEdit
+        Tag = 7
         Left = 61
         Top = 234
         Width = 96
@@ -1883,6 +1906,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF4: TLabeledEdit
+        Tag = 8
         Left = 60
         Top = 263
         Width = 96
@@ -1906,6 +1930,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF5: TLabeledEdit
+        Tag = 9
         Left = 243
         Top = 178
         Width = 96
@@ -1929,6 +1954,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF7: TLabeledEdit
+        Tag = 11
         Left = 244
         Top = 234
         Width = 96
@@ -1952,6 +1978,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF8: TLabeledEdit
+        Tag = 12
         Left = 244
         Top = 263
         Width = 96
@@ -1975,6 +2002,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF9: TLabeledEdit
+        Tag = 13
         Left = 421
         Top = 178
         Width = 96
@@ -1998,6 +2026,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF6: TLabeledEdit
+        Tag = 10
         Left = 243
         Top = 206
         Width = 96
@@ -2021,6 +2050,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF10: TLabeledEdit
+        Tag = 14
         Left = 421
         Top = 206
         Width = 96
@@ -2044,6 +2074,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF11: TLabeledEdit
+        Tag = 15
         Left = 421
         Top = 234
         Width = 96
@@ -2067,6 +2098,7 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
       object edtF12: TLabeledEdit
+        Tag = 16
         Left = 421
         Top = 263
         Width = 96
@@ -2682,7 +2714,7 @@ object ConfigForm: TConfigForm
         Left = 20
         Top = 16
         Width = 543
-        Height = 165
+        Height = 217
         Alignment = taCenter
         AutoSize = False
         Caption = 

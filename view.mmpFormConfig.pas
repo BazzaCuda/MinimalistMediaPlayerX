@@ -267,24 +267,10 @@ begin
   case vNewFolder = '' of TRUE: EXIT; end;
   vPrevFolder := vNewFolder;
 
-  // I could have used tags and searched for the edt with the corresponding tag as the btn
-  // but as this is an immutable list...meh!
-  case sender = btnBaseFolder of TRUE: edtBaseFolder.text := vPrevFolder; end;
-  case sender = btnCopied     of TRUE: edtCopied.text     := vPrevFolder; end;
-  case sender = btnMoved      of TRUE: edtMoved.text      := vPrevFolder; end;
-  case sender = btnSaved      of TRUE: edtSaved.text      := vPrevFolder; end;
-  case sender = btnF1         of TRUE: edtF1.text         := vPrevFolder; end;
-  case sender = btnF2         of TRUE: edtF2.text         := vPrevFolder; end;
-  case sender = btnF3         of TRUE: edtF3.text         := vPrevFolder; end;
-  case sender = btnF4         of TRUE: edtF4.text         := vPrevFolder; end;
-  case sender = btnF5         of TRUE: edtF5.text         := vPrevFolder; end;
-  case sender = btnF6         of TRUE: edtF6.text         := vPrevFolder; end;
-  case sender = btnF7         of TRUE: edtF7.text         := vPrevFolder; end;
-  case sender = btnF8         of TRUE: edtF8.text         := vPrevFolder; end;
-  case sender = btnF9         of TRUE: edtF9.text         := vPrevFolder; end;
-  case sender = btnF10        of TRUE: edtF10.text        := vPrevFolder; end;
-  case sender = btnF11        of TRUE: edtF11.text        := vPrevFolder; end;
-  case sender = btnF12        of TRUE: edtF12.text        := vPrevFolder; end;
+  // each TLabeledEdit and each TSpeedButton have tags 1 - 16
+  var vTag := TSpeedButton(sender).tag;
+  for var i := 0 to tsUserFolders.controlCount - 1 do
+    case (tsUserFolders.controls[i] is TLabeledEdit) and (TLabeledEdit(tsUserFolders.controls[i]).tag = vTag) of TRUE: TLabeledEdit(tsUserFolders.controls[i]).text := vPrevFolder; end;
 end;
 
 procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
@@ -392,23 +378,7 @@ begin
 
   case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
-  // I could have used tags and searched for the edt with the corresponding tag as the btn
-  // but as this is an immutable list...meh!
-  case vEdit = edtCopied  of TRUE: CF['copied']   := vText; end;
-  case vEdit = edtMoved   of TRUE: CF['moved']    := vText; end;
-  case vEdit = edtSaved   of TRUE: CF['saved']    := vText; end;
-  case vEdit = edtF1      of TRUE: CF['folder1']  := vText; end;
-  case vEdit = edtF2      of TRUE: CF['folder2']  := vText; end;
-  case vEdit = edtF3      of TRUE: CF['folder3']  := vText; end;
-  case vEdit = edtF4      of TRUE: CF['folder4']  := vText; end;
-  case vEdit = edtF5      of TRUE: CF['folder5']  := vText; end;
-  case vEdit = edtF6      of TRUE: CF['folder6']  := vText; end;
-  case vEdit = edtF7      of TRUE: CF['folder7']  := vText; end;
-  case vEdit = edtF8      of TRUE: CF['folder8']  := vText; end;
-  case vEdit = edtF9      of TRUE: CF['folder9']  := vText; end;
-  case vEdit = edtF10     of TRUE: CF['folder10'] := vText; end;
-  case vEdit = edtF11     of TRUE: CF['folder11'] := vText; end;
-  case vEdit = edtF12     of TRUE: CF['folder12'] := vText; end;
+  CF[CONF_FOLDERS[vEdit.tag]] := vText;
 end;
 
 procedure TConfigForm.edtPrefixF1Change(Sender: TObject);
@@ -451,22 +421,9 @@ begin
   rbFilterVideo.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtVideo;
   rbFilterImage.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtImage;
 
-  edtBaseFolder.text            := trim(CF[CONF_BASE_FOLDER]);
-  edtCopied.text                := trim(CF['copied']);
-  edtMoved.text                 := trim(CF['moved']);
-  edtSaved.text                 := trim(CF['saved']);
-  edtF1.text                    := trim(CF['folder1']);
-  edtF2.text                    := trim(CF['folder2']);
-  edtF3.text                    := trim(CF['folder3']);
-  edtF4.text                    := trim(CF['folder4']);
-  edtF5.text                    := trim(CF['folder5']);
-  edtF6.text                    := trim(CF['folder6']);
-  edtF7.text                    := trim(CF['folder7']);
-  edtF8.text                    := trim(CF['folder8']);
-  edtF9.text                    := trim(CF['folder9']);
-  edtF10.text                   := trim(CF['folder10']);
-  edtF11.text                   := trim(CF['folder11']);
-  edtF12.text                   := trim(CF['folder12']);
+  // each TLabeledEdit and each TSpeedButton have tags 1 - 16
+  for var i := 0 to tsUserFolders.controlCount - 1 do
+    case tsUserFolders.controls[i] is TLabeledEdit of TRUE: TLabeledEdit(tsUserFolders.controls[i]).text := trim(CF[CONF_FOLDERS[TLabeledEdit(tsUserFolders.controls[i]).tag]]); end;
 
   edtAppF10.text                := trim(mmpGetExternalApp(F10_APP));
   edtAppF11.text                := trim(mmpGetExternalApp(F11_APP));

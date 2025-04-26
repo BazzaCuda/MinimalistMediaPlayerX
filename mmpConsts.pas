@@ -114,6 +114,10 @@ const
 
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
+  CONF_FOLDERS: array[1..16] of string
+                            = ('baseFolder', 'copied', 'moved', 'saved', 'folder1', 'folder2', 'folder3', 'folder4', 'folder5', 'folder6',
+                                                                          'folder7', 'folder8', 'folder9', 'folder10', 'folder11', 'folder12');
+
 var
   nopoint: TPoint;
 
