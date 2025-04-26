@@ -30,6 +30,7 @@ type
     function  getAsBoolean      (const aName: string): boolean;
     procedure setAsBoolean      (const aName: string; const aValue: boolean);
     function  getAsDeleteMethod (const aName: string): TDeleteMethod;
+    procedure setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function  getAsInteger      (const aName: string): integer;
     function  getAsMediaType    (const aName: string): TMediaType;
     function  getValue          (const aName: string): string;
@@ -41,7 +42,7 @@ type
     function  toHex             (const aInteger: integer):  string;
 
     property  asBoolean         [const aName: string]:  boolean       read getAsBoolean       write setAsBoolean;
-    property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod;
+    property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod  write setAsDeleteMethod;
     property  asInteger         [const aName: string]:  integer       read getAsInteger;
     property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType;
     property  value             [const aName: string]:  string        read getValue           write setValue; default;
@@ -72,6 +73,7 @@ type
     function    getAsBoolean      (const aName: string): boolean;
     procedure   setAsBoolean      (const aName: string; const aValue: boolean);
     function    getAsDeleteMethod (const aName: string): TDeleteMethod;
+    procedure   setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function    getAsInteger      (const aName: string): integer;
     function    getAsMediaType    (const aName: string): TMediaType;
     function    getValue          (const aName: string): string;
@@ -191,6 +193,15 @@ procedure TConfigFile.setAsBoolean(const aName: string; const aValue: boolean);
 begin
   case aValue of   TRUE: setValue(aName, 'yes');
                   FALSE: setValue(aName, 'no'); end;
+end;
+
+procedure TConfigFile.setAsDeleteMethod(const aName: string; const aDeleteMethod: TDeleteMethod);
+begin
+  case aDeleteMethod of
+    dmRecycle:  setValue(aName, 'recycle');
+    dmStandard: setValue(aName, 'delete');
+    dmShred:    setValue(aName, 'shred');
+  end;
 end;
 
 procedure TConfigFile.setValue(const aName: string; const aValue: string);
