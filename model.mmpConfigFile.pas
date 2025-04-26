@@ -33,6 +33,7 @@ type
     procedure setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function  getAsInteger      (const aName: string): integer;
     function  getAsMediaType    (const aName: string): TMediaType;
+    procedure setAsMediaType    (const aName: string; const aMediaType: TMediaType);
     function  getValue          (const aName: string): string;
 
     procedure setValue          (const aName: string; const aValue: string);
@@ -44,7 +45,7 @@ type
     property  asBoolean         [const aName: string]:  boolean       read getAsBoolean       write setAsBoolean;
     property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod  write setAsDeleteMethod;
     property  asInteger         [const aName: string]:  integer       read getAsInteger;
-    property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType;
+    property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType     write setAsMediaType;
     property  value             [const aName: string]:  string        read getValue           write setValue; default;
   end;
 
@@ -76,6 +77,7 @@ type
     procedure   setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function    getAsInteger      (const aName: string): integer;
     function    getAsMediaType    (const aName: string): TMediaType;
+    procedure   setAsMediaType    (const aName: string; const aMediaType: TMediaType);
     function    getValue          (const aName: string): string;
 
     procedure   setValue          (const aName: string; const aValue: string);
@@ -201,6 +203,16 @@ begin
     dmRecycle:  setValue(aName, 'recycle');
     dmStandard: setValue(aName, 'delete');
     dmShred:    setValue(aName, 'shred');
+  end;
+end;
+
+procedure TConfigFile.setAsMediaType(const aName: string; const aMediaType: TMediaType);
+begin
+  case aMediaType of
+    mtUnk:   setValue(aName, 'all');
+    mtAudio: setValue(aName, 'audio');
+    mtVideo: setValue(aName, 'video');
+    mtImage: setValue(aName, 'image');
   end;
 end;
 

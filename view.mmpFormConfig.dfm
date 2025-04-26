@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsDeletions
+    ActivePage = tsPlaylistFilter
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -57,11 +57,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
       object Label3: TLabel
@@ -199,11 +200,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
       object Label13: TLabel
@@ -244,7 +246,14 @@ object ConfigForm: TConfigForm
           '* deletion operations only ever affect the files in the current ' +
           'playlist folder.'#13#10'MMP never touches the contents of any subfolde' +
           'rs'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         WordWrap = True
+        StyleElements = [seClient, seBorder]
       end
       object Label16: TLabel
         Left = 64
@@ -389,6 +398,12 @@ object ConfigForm: TConfigForm
         Height = 17
         Alignment = taLeftJustify
         Caption = 'Recycle'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 6
         OnClick = rbRecycleClick
       end
@@ -399,6 +414,12 @@ object ConfigForm: TConfigForm
         Height = 17
         Alignment = taLeftJustify
         Caption = 'Standard Delete'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 7
         OnClick = rbStandardClick
       end
@@ -409,13 +430,25 @@ object ConfigForm: TConfigForm
         Height = 17
         Alignment = taLeftJustify
         Caption = 'Shred'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
         TabOrder = 8
         OnClick = rbShredClick
       end
     end
     object tsPlaylist: TTabSheet
       Caption = 'Playlist'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clTeal
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
       ImageIndex = 2
+      ParentFont = False
       object Label4: TLabel
         Left = 0
         Top = 316
@@ -427,12 +460,248 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
+      end
+      object Label21: TLabel
+        Left = 19
+        Top = 2
+        Width = 478
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          'When you launch MMP by [double-]clicking on a file in your file ' +
+          'explorer software,'#13#10'MMP builds a playlist from all the supported' +
+          ' file extensions in that folder and starts playing'
+      end
+      object Label22: TLabel
+        Left = 19
+        Top = 44
+        Width = 362
+        Height = 15
+        Caption = 
+          'MMP should move to the next folder and start playing a new playl' +
+          'ist:'
+      end
+      object Label23: TLabel
+        Left = 28
+        Top = 171
+        Width = 521
+        Height = 30
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          '* deletion operations only ever affect the files in the current ' +
+          'playlist folder.'#13#10'MMP never touches the contents of any subfolde' +
+          'rs'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        StyleElements = [seClient, seBorder]
+      end
+      object Label24: TLabel
+        Left = 27
+        Top = 274
+        Width = 521
+        Height = 24
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'Note: MMP will always ignore <drive>:\Windows\WinSxS\'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        StyleElements = [seClient, seBorder]
+      end
+      object Bevel1: TBevel
+        Left = 92
+        Top = 220
+        Width = 391
+        Height = 1
+      end
+      object chbNextFolderOnEnd: TCheckBox
+        Left = 73
+        Top = 63
+        Width = 430
+        Height = 33
+        Alignment = taLeftJustify
+        Caption = 'At the end of playing the current playlist'
+        TabOrder = 0
+        OnClick = chbNextFolderOnEndClick
+      end
+      object chbNextFolderOnEmpty: TCheckBox
+        Left = 70
+        Top = 102
+        Width = 430
+        Height = 63
+        Alignment = taLeftJustify
+        Caption = 
+          'When you empty the playlist folder by:'#13#10'   a) Ctrl-[Del]ete all ' +
+          'the remaining files in a folder* '#13#10'   b) Ctrl-[K]eep/delete all ' +
+          'except those marked as [K]eep files (start with a "!")'#13#10'   c) [D' +
+          ']elete the last remaining file in a folder'
+        TabOrder = 1
+        OnClick = chbNextFolderOnEmptyClick
+      end
+      object chbAllowIntoWindows: TCheckBox
+        Left = 103
+        Top = 235
+        Width = 369
+        Height = 33
+        Alignment = taLeftJustify
+        Caption = 
+          'MMP is allowed to look for media files in <drive>:\Windows\'#13#10'Not' +
+          ' recommended except for one-off occasions'
+        TabOrder = 2
+        OnClick = chbAllowIntoWindowsClick
+      end
+    end
+    object tsPlaylistFilter: TTabSheet
+      Caption = 'Playlist Filter'
+      ImageIndex = 7
+      object Label25: TLabel
+        Left = 83
+        Top = 2
+        Width = 427
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          'You can set MMP'#39's main media window to only play media files of ' +
+          'a certain type.'#13#10'Ctrl-[P] turns Playlist Filtering on and off'
+      end
+      object Label27: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label28: TLabel
+        Left = 170
+        Top = 72
+        Width = 393
+        Height = 201
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'When you first launch MMP'#13#10'it will build a playlist containing a' +
+          'll the supported media files in that folder'#13#10#13#10'MMP will always p' +
+          'lay the media file you clicked to launch it'#13#10#13#10'If you then turn ' +
+          'on Playlist Filtering'#13#10'MMP will ignore any files in the playlist' +
+          ' that don'#39't match your filter'#13#10#13#10'If you [or MMP] move to another' +
+          ' folder'#13#10'the new playlist will only contain files that match you' +
+          'r filter'#13#10#13#10'With the filter format set to Image'#13#10'Ctrl-[P]laylist' +
+          ' Filter on/off is the same as [Spacebar] slideshow on/off'
+        WordWrap = True
+      end
+      object Label26: TLabel
+        Left = 353
+        Top = 51
+        Width = 26
+        Height = 15
+        Caption = 'Note'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsUnderline]
+        ParentFont = False
+      end
+      object RadioGroup2: TRadioGroup
+        Left = 15
+        Top = 105
+        Width = 137
+        Height = 121
+        Caption = ' Playlist  Filter  Format '
+        TabOrder = 0
+      end
+      object rbFilterAll: TRadioButton
+        Left = 31
+        Top = 129
+        Width = 113
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'All'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        OnClick = rbFilterAllClick
+      end
+      object rbFilterAudio: TRadioButton
+        Left = 31
+        Top = 152
+        Width = 113
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Audio'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnClick = rbFilterAudioClick
+      end
+      object rbFilterVideo: TRadioButton
+        Left = 31
+        Top = 175
+        Width = 113
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Video'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 3
+        OnClick = rbFilterVideoClick
+      end
+      object rbFilterImage: TRadioButton
+        Left = 31
+        Top = 198
+        Width = 113
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Image'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 4
+        OnClick = rbFilterImageClick
       end
     end
     object tsUserFolders: TTabSheet
@@ -449,11 +718,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
     end
@@ -471,11 +741,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
     end
@@ -493,11 +764,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
     end
@@ -515,11 +787,12 @@ object ConfigForm: TConfigForm
           'changes are saved immediately - hit [Escape] to close this confi' +
           'g window'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
         Font.Style = [fsItalic]
         ParentFont = False
+        StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
       end
     end
