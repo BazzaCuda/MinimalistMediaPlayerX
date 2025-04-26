@@ -22,7 +22,7 @@ type
     Label5: TLabel;
     tsUserFolders: TTabSheet;
     tsExternalApps: TTabSheet;
-    TabSheet1: TTabSheet;
+    tsQuickRename: TTabSheet;
     chbOpenImage: TCheckBox;
     Label6: TLabel;
     Label7: TLabel;
@@ -127,6 +127,13 @@ type
     Label39: TLabel;
     spinImageDelayMs: TSpinEdit;
     Label40: TLabel;
+    tsScaleFactor: TTabSheet;
+    Label41: TLabel;
+    spinScaleFactor: TSpinEdit;
+    Label42: TLabel;
+    btnScaleFactorReset: TButton;
+    btnRepeatDelayDefault: TButton;
+    Label43: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -154,6 +161,9 @@ type
     procedure edtAppF10Change(Sender: TObject);
     procedure edtPrefixF1Change(Sender: TObject);
     procedure spinImageDelayMsChange(Sender: TObject);
+    procedure spinScaleFactorChange(Sender: TObject);
+    procedure btnRepeatDelayDefaultClick(Sender: TObject);
+    procedure btnScaleFactorResetClick(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -275,6 +285,16 @@ begin
   case sender = btnF10        of TRUE: edtF10.text        := vPrevFolder; end;
   case sender = btnF11        of TRUE: edtF11.text        := vPrevFolder; end;
   case sender = btnF12        of TRUE: edtF12.text        := vPrevFolder; end;
+end;
+
+procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
+begin
+  spinImageDelayMs.value := DEFAULT_REPEAT_DELAY_MS;
+end;
+
+procedure TConfigForm.btnScaleFactorResetClick(Sender: TObject);
+begin
+  spinScaleFactor.value := DEFAULT_SCALE_FACTOR;
 end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
@@ -459,6 +479,10 @@ begin
 
   var vMs                       := CF[CONF_REPEAT_DELAY_MS]; // get it as a string, so that we can control the default value not the spinEdit
   try spinImageDelayMs.value    := strToIntDef(vMs, DEFAULT_REPEAT_DELAY_MS); except spinImageDelayMs.value := DEFAULT_REPEAT_DELAY_MS; end; // if the entry is blank, default to
+
+  spinScaleFactor.minValue      := MIN_SCALE_FACTOR;
+  spinScaleFactor.maxValue      := MAX_SCALE_FACTOR;
+  spinScaleFactor.value         := CF.asInteger[CONF_SCALE_FACTOR];
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
@@ -475,6 +499,11 @@ procedure TConfigForm.spinImageDelayMsChange(Sender: TObject);
 begin
   case spinImageDelayMs.value = 0 of   TRUE: CF[CONF_REPEAT_DELAY_MS] := ' '; // reset to default blank entry
                                       FALSE: CF.asInteger[CONF_REPEAT_DELAY_MS] := spinImageDelayMs.value; end;
+end;
+
+procedure TConfigForm.spinScaleFactorChange(Sender: TObject);
+begin
+  CF.asInteger[CONF_SCALE_FACTOR] := spinScaleFactor.value;
 end;
 
 procedure TConfigForm.rbFilterAllClick(Sender: TObject);

@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = TabSheet2
+    ActivePage = tsScaleFactor
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -2377,7 +2377,7 @@ object ConfigForm: TConfigForm
         OnChange = edtAppF10Change
       end
     end
-    object TabSheet1: TTabSheet
+    object tsQuickRename: TTabSheet
       Caption = 'Quick Rename'
       ImageIndex = 5
       object Label10: TLabel
@@ -2610,7 +2610,7 @@ object ConfigForm: TConfigForm
         WordWrap = True
       end
       object Label40: TLabel
-        Left = 184
+        Left = 144
         Top = 293
         Width = 152
         Height = 15
@@ -2623,7 +2623,7 @@ object ConfigForm: TConfigForm
         ParentFont = False
       end
       object spinImageDelayMs: TSpinEdit
-        Left = 341
+        Left = 301
         Top = 289
         Width = 51
         Height = 24
@@ -2632,6 +2632,91 @@ object ConfigForm: TConfigForm
         TabOrder = 0
         Value = 100
         OnChange = spinImageDelayMsChange
+      end
+      object btnRepeatDelayDefault: TButton
+        Left = 357
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnRepeatDelayDefaultClick
+      end
+    end
+    object tsScaleFactor: TTabSheet
+      Caption = 'Scale Factor'
+      ImageIndex = 8
+      object Label41: TLabel
+        Left = 148
+        Top = 293
+        Width = 142
+        Height = 15
+        Caption = 'Scale Factor (percentage)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label42: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label43: TLabel
+        Left = 20
+        Top = 16
+        Width = 543
+        Height = 165
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP is developed on a large, wide-screen monitor with a resoluti' +
+          'on of 3440 x 1440'#13#10#13#10'While reasonable attempts are always made t' +
+          'o ensure that popup dialog boxes (in particular) are a suitable ' +
+          'size for typical monitors, it'#39's not always possible to suit ever' +
+          'ybody'#39's monitors'#13#10#13#10'If you find that the Delete Confirmation dia' +
+          'log looks too big on your monitor'#13#10'you can scale down its design' +
+          '-time size'#13#10#13#10'The recommended setting is 90% of the design-time ' +
+          'size'#13#10#13#10'Obviously, you can experiment to find a size you'#39're comf' +
+          'ortable with'#13#10#13#10'The minimum setting is 50% and the maximum is 10' +
+          '0%'
+        WordWrap = True
+      end
+      object spinScaleFactor: TSpinEdit
+        Left = 296
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinScaleFactorChange
+      end
+      object btnScaleFactorReset: TButton
+        Left = 352
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnScaleFactorResetClick
       end
     end
   end
