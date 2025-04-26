@@ -32,6 +32,7 @@ type
     function  getAsDeleteMethod (const aName: string): TDeleteMethod;
     procedure setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function  getAsInteger      (const aName: string): integer;
+    procedure setAsInteger      (const aName: string; const aInteger: integer);
     function  getAsMediaType    (const aName: string): TMediaType;
     procedure setAsMediaType    (const aName: string; const aMediaType: TMediaType);
     function  getValue          (const aName: string): string;
@@ -44,7 +45,7 @@ type
 
     property  asBoolean         [const aName: string]:  boolean       read getAsBoolean       write setAsBoolean;
     property  asDeleteMethod    [const aName: string]:  TDeleteMethod read getAsDeleteMethod  write setAsDeleteMethod;
-    property  asInteger         [const aName: string]:  integer       read getAsInteger;
+    property  asInteger         [const aName: string]:  integer       read getAsInteger       write setAsInteger;
     property  asMediaType       [const aName: string]:  TMediaType    read getAsMediaType     write setAsMediaType;
     property  value             [const aName: string]:  string        read getValue           write setValue; default;
   end;
@@ -76,6 +77,7 @@ type
     function    getAsDeleteMethod (const aName: string): TDeleteMethod;
     procedure   setAsDeleteMethod (const aName: string; const aDeleteMethod: TDeleteMethod);
     function    getAsInteger      (const aName: string): integer;
+    procedure   setAsInteger      (const aName: string; const aInteger: integer);
     function    getAsMediaType    (const aName: string): TMediaType;
     procedure   setAsMediaType    (const aName: string; const aMediaType: TMediaType);
     function    getValue          (const aName: string): string;
@@ -204,6 +206,11 @@ begin
     dmStandard: setValue(aName, 'delete');
     dmShred:    setValue(aName, 'shred');
   end;
+end;
+
+procedure TConfigFile.setAsInteger(const aName: string; const aInteger: integer);
+begin
+  setValue(aName, intToStr(aInteger));
 end;
 
 procedure TConfigFile.setAsMediaType(const aName: string; const aMediaType: TMediaType);

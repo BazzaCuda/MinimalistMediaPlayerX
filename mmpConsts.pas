@@ -70,6 +70,8 @@ const
   DARK_MODE_SILVER = $C0C0C0; // clSilver
   DARK_MODE_DKGRAY = $808080; // clDkGray
 
+  DEFAULT_REPEAT_DELAY_MS = 100;
+
   THUMB_DEFAULT_SIZE  = 160;
   THUMB_MARGIN        = 10;
   THUMB_NO_IMAGES     = 'No images in this folder';

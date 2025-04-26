@@ -179,7 +179,7 @@ begin
 
   CF.initConfigFile(mmpConfigFilePath);
   mmp.cmd(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
-  mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, 100);
+  mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, DEFAULT_REPEAT_DELAY_MS);
 
   Application.CreateForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);

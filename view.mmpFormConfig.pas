@@ -6,7 +6,7 @@ uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Samples.Spin;
 
 type
   TConfigForm = class(TForm)
@@ -124,6 +124,9 @@ type
     edtPrefixF3: TLabeledEdit;
     edtSuffixF4: TLabeledEdit;
     GroupBox2: TGroupBox;
+    Label39: TLabel;
+    spinImageDelayMs: TSpinEdit;
+    Label40: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -150,6 +153,7 @@ type
     procedure btnAppF10Click(Sender: TObject);
     procedure edtAppF10Change(Sender: TObject);
     procedure edtPrefixF1Change(Sender: TObject);
+    procedure spinImageDelayMsChange(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -339,7 +343,7 @@ procedure TConfigForm.edtAppF10Change(Sender: TObject);
 begin
   var vEdit := sender as TLabeledEdit;
   case fileExists(vEdit.text) of   TRUE: vEdit.font.color := DARK_MODE_SILVER;
-                                  FALSE: vEdit.font.color := clRed; end; // warn the user but them setup MMP as they want
+                                  FALSE: vEdit.font.color := clRed; end; // warn the user but let them setup MMP how they want
 
   case trim(vEdit.text) = '' of TRUE: vEdit.text := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
@@ -353,7 +357,7 @@ procedure TConfigForm.edtBaseFolderChange(Sender: TObject);
 begin
   var vText := edtBaseFolder.text;
   case directoryExists(vText) of   TRUE: edtBaseFolder.font.color := DARK_MODE_SILVER;
-                                  FALSE: edtBaseFolder.font.color := clRed; end; // warn the user but them setup MMP as they wish
+                                  FALSE: edtBaseFolder.font.color := clRed; end; // warn the user but them let setup MMP how they want
   case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
   CF[CONF_BASE_FOLDER] := vText;
 end;
@@ -452,6 +456,9 @@ begin
   edtPrefixF2.text              := CF[CONF_CAT_F2];
   edtPrefixF3.text              := CF[CONF_CAT_F3];
   edtSuffixF4.text              := CF[CONF_CAT_F4];
+
+  var vMs                       := CF[CONF_REPEAT_DELAY_MS]; // get it as a string, so that we can control the default value not the spinEdit
+  try spinImageDelayMs.value    := strToIntDef(vMs, DEFAULT_REPEAT_DELAY_MS); except spinImageDelayMs.value := DEFAULT_REPEAT_DELAY_MS; end; // if the entry is blank, default to
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
@@ -462,6 +469,12 @@ end;
 procedure TConfigForm.rbStandardClick(Sender: TObject);
 begin
   CF.asDeleteMethod[CONF_DELETE_METHOD] := dmStandard;
+end;
+
+procedure TConfigForm.spinImageDelayMsChange(Sender: TObject);
+begin
+  case spinImageDelayMs.value = 0 of   TRUE: CF[CONF_REPEAT_DELAY_MS] := ' '; // reset to default blank entry
+                                      FALSE: CF.asInteger[CONF_REPEAT_DELAY_MS] := spinImageDelayMs.value; end;
 end;
 
 procedure TConfigForm.rbFilterAllClick(Sender: TObject);

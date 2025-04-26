@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsUserFolders
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -2456,10 +2456,11 @@ object ConfigForm: TConfigForm
         StyleElements = [seClient, seBorder]
       end
       object Label38: TLabel
-        Left = 123
+        Left = 122
         Top = 176
         Width = 332
         Height = 30
+        Alignment = taCenter
         Caption = 
           'You can use F1 - F4 to set up to three prefixes and one suffix'#13#10 +
           'Any leading and/or trailing spaces you include will be recorded'
@@ -2581,6 +2582,56 @@ object ConfigForm: TConfigForm
         ParentFont = False
         StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
+      end
+      object Label39: TLabel
+        Left = 11
+        Top = 3
+        Width = 555
+        Height = 285
+        Caption = 
+          'This setting affects not only the Image && Thumbnail Browser, bu' +
+          't also MMP'#39's main media window when it'#39's displaying many images ' +
+          'in succession.'#13#10#13#10'When you hold down the left arrow key or the r' +
+          'ight arrow key, MMP will cycle through the images at the rate of' +
+          ' one every 100ms.'#13#10#13#10'This seems to be a reasonable speed for the' +
+          ' average image collection. However, if you have a mixture of [e.' +
+          'g.] 1MB images and 20MB images in the same folder, you may find ' +
+          'that the 20MB image hasn'#39't finished rendering to the screen befo' +
+          're the next image file gets loaded. Consequently it can appear t' +
+          'hat MMP has skipped past it.'#13#10#13#10'The problem is, if you drop the ' +
+          'speed down to [e.g.] 500ms, this might be appropriate for the 20' +
+          'MB images but now the 1MB images progress too slowly.'#13#10#13#10'There a' +
+          're two solutions to this:'#13#10'1) be aware that when you hold down a' +
+          'n arrow key you are not guaranteed to see every image. If you mu' +
+          'st see every image, tap the arrow keys rather than holding them ' +
+          'down.'#13#10'2) you can experiment with the following setting to find ' +
+          'a delay between images that suits your machine and the average s' +
+          'ize of your images.'
+        WordWrap = True
+      end
+      object Label40: TLabel
+        Left = 184
+        Top = 293
+        Width = 152
+        Height = 15
+        Caption = 'Repeat Delay (milliseconds)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object spinImageDelayMs: TSpinEdit
+        Left = 341
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinImageDelayMsChange
       end
     end
   end
