@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsExternalApps
+    ActivePage = tsUserFolders
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -251,8 +251,8 @@ object ConfigForm: TConfigForm
         AutoSize = False
         Caption = 
           '* deletion operations only ever affect the files in the current ' +
-          'playlist folder.'#13#10'MMP never touches the contents of any subfolde' +
-          'rs'
+          'playlist folder'#13#10'MMP never touches the contents of any subfolder' +
+          's'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua
         Font.Height = -12
@@ -486,15 +486,15 @@ object ConfigForm: TConfigForm
         ExplicitWidth = 380
       end
       object Label21: TLabel
-        Left = 19
+        Left = 49
         Top = 2
         Width = 478
         Height = 30
         Alignment = taCenter
         Caption = 
           'When you launch MMP by [double-]clicking on a file in your file ' +
-          'explorer software,'#13#10'MMP builds a playlist from all the supported' +
-          ' file extensions in that folder and starts playing'
+          'explorer software'#13#10'MMP builds a playlist from all the supported ' +
+          'file extensions in that folder and starts playing'
       end
       object Label22: TLabel
         Left = 19
@@ -514,8 +514,8 @@ object ConfigForm: TConfigForm
         AutoSize = False
         Caption = 
           '* deletion operations only ever affect the files in the current ' +
-          'playlist folder.'#13#10'MMP never touches the contents of any subfolde' +
-          'rs'
+          'playlist folder'#13#10'MMP never touches the contents of any subfolder' +
+          's'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua
         Font.Height = -12
@@ -589,14 +589,14 @@ object ConfigForm: TConfigForm
       Caption = 'Playlist Filter'
       ImageIndex = 7
       object Label25: TLabel
-        Left = 83
+        Left = 76
         Top = 2
-        Width = 427
+        Width = 424
         Height = 30
         Alignment = taCenter
         Caption = 
           'You can set MMP'#39's main media window to only play media files of ' +
-          'a certain type.'#13#10'Ctrl-[P] turns Playlist Filtering on and off'
+          'a certain type'#13#10'Ctrl-[P] turns Playlist Filtering on and off'
       end
       object Label27: TLabel
         Left = 0
@@ -748,18 +748,18 @@ object ConfigForm: TConfigForm
         ExplicitWidth = 380
       end
       object Label30: TLabel
-        Left = 60
+        Left = 74
         Top = 17
-        Width = 456
+        Width = 428
         Height = 75
         Alignment = taCenter
         Caption = 
           'Up to 15 user folders can be set for moving your files with one ' +
-          'keystroke.'#13#10'Each user folder can be specified as either the full' +
-          'y-qualified path to a folder, e.g. C:\....'#13#10'or it can specify it' +
-          ' is as the name of a subfolder within the Base Folder.'#13#10'You can ' +
-          'mix-and-match these settings according to your requirements.'#13#10'MM' +
-          'P will create a folder for you the first time you use it'
+          'keystroke'#13#10'Each folder can be specified as either the fully-qual' +
+          'ified path to a folder, e.g. C:\...'#13#10'or it can be the name of a ' +
+          'subfolder within the Base Folder'#13#10'You can mix-and-match these se' +
+          'ttings according to your requirements'#13#10'MMP will create a folder ' +
+          'for you the first time you use its key'
       end
       object Label31: TLabel
         Left = 209
@@ -1027,9 +1027,9 @@ object ConfigForm: TConfigForm
         Height = 30
         Alignment = taCenter
         Caption = 
-          'If you use one of the folders without configuring it'#13#10'MMP will a' +
-          'ssume that it'#39's a subfolder of the Base Folder and will use a de' +
-          'fault name for that subfolder'
+          'If you use one of these folders without configuring it'#13#10'MMP will' +
+          ' assume that it'#39's a subfolder of the Base Folder and will use a ' +
+          'default name for that subfolder'
         Color = clBtnFace
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua
@@ -1764,7 +1764,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 3
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtMoved: TLabeledEdit
         Left = 243
@@ -1786,7 +1786,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 2
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtCopied: TLabeledEdit
         Left = 61
@@ -1808,7 +1808,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 1
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF1: TLabeledEdit
         Left = 61
@@ -1830,7 +1830,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 4
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF2: TLabeledEdit
         Left = 61
@@ -1852,7 +1852,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 5
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF3: TLabeledEdit
         Left = 61
@@ -1874,7 +1874,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 6
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF4: TLabeledEdit
         Left = 60
@@ -1896,7 +1896,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 7
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF5: TLabeledEdit
         Left = 243
@@ -1918,7 +1918,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 8
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF7: TLabeledEdit
         Left = 244
@@ -1940,7 +1940,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 10
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF8: TLabeledEdit
         Left = 244
@@ -1962,7 +1962,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 11
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF9: TLabeledEdit
         Left = 421
@@ -1984,7 +1984,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 12
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF6: TLabeledEdit
         Left = 243
@@ -2006,7 +2006,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 9
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF10: TLabeledEdit
         Left = 421
@@ -2028,7 +2028,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 13
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF11: TLabeledEdit
         Left = 421
@@ -2050,7 +2050,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 14
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
       object edtF12: TLabeledEdit
         Left = 421
@@ -2072,7 +2072,7 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 15
         Text = ''
-        OnChange = edtCopiedChange
+        OnChange = edtCopiedChang
       end
     end
     object tsExternalApps: TTabSheet
@@ -2100,15 +2100,15 @@ object ConfigForm: TConfigForm
       object Label29: TLabel
         Left = 28
         Top = 2
-        Width = 520
+        Width = 517
         Height = 75
         Alignment = taCenter
         Caption = 
           'MMP'#39's main media window provides three function keys'#13#10'which you ' +
-          'can use to launch the current media file in another application.' +
-          #13#10'MMP defaults to three popular applications.'#13#10#13#10'MMP will start ' +
-          'the application passing the full path to the media file as a com' +
-          'mand line parameter.'
+          'can use to launch the current media file in another application'#13 +
+          #10'MMP defaults to three popular applications'#13#10#13#10'MMP will start th' +
+          'e application passing the full path to the media file as a comma' +
+          'nd line parameter'
       end
       object btnAppF10: TSpeedButton
         Left = 531
@@ -2383,6 +2383,166 @@ object ConfigForm: TConfigForm
         ParentFont = False
         StyleElements = [seClient, seBorder]
         ExplicitWidth = 380
+      end
+      object Label35: TLabel
+        Left = 87
+        Top = 10
+        Width = 414
+        Height = 120
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP'#39's main media window provides four function keys and [K]'#13#10'whi' +
+          'ch you can use to quickly rename the current media file'#13#10#13#10'[K]ee' +
+          'p renames the file with a leading ! (and a space)'#13#10'to bring all ' +
+          'such files to top of the folder listing in your file explorer so' +
+          'ftware'#13#10#13#10'You can then, if you wish, use Ctrl-[K]eep/delete to d' +
+          'elete all files in the folder*'#13#10'except those you designated as [' +
+          'K]eep'
+      end
+      object Label36: TLabel
+        Left = 79
+        Top = 284
+        Width = 419
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          'Note: although [K] and Ctrl-[K] are available in the Image && Th' +
+          'umbnail Browser'#13#10'the prefix/suffix keys aren'#39't as all the functi' +
+          'on keys are assigned to user folders'
+        Color = clBtnFace
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label37: TLabel
+        Left = 28
+        Top = 132
+        Width = 521
+        Height = 30
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          '* deletion operations only ever affect the files in the current ' +
+          'playlist folder'#13#10'MMP never touches the contents of any subfolder' +
+          's'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        StyleElements = [seClient, seBorder]
+      end
+      object Label38: TLabel
+        Left = 123
+        Top = 176
+        Width = 332
+        Height = 30
+        Caption = 
+          'You can use F1 - F4 to set up to three prefixes and one suffix'#13#10 +
+          'Any leading and/or trailing spaces you include will be recorded'
+      end
+      object GroupBox2: TGroupBox
+        Left = 40
+        Top = 0
+        Width = 521
+        Height = 168
+        TabOrder = 4
+      end
+      object edtPrefixF1: TLabeledEdit
+        Left = 129
+        Top = 218
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F1 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtPrefixF2: TLabeledEdit
+        Left = 127
+        Top = 250
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F2 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtPrefixF3: TLabeledEdit
+        Left = 323
+        Top = 218
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F3 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtSuffixF4: TLabeledEdit
+        Left = 323
+        Top = 250
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F4 Suffix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        Text = ''
+        OnChange = edtPrefixF1Change
       end
     end
     object TabSheet2: TTabSheet

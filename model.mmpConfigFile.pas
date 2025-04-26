@@ -170,7 +170,7 @@ end;
 function TConfigFile.getValue(const aName: string): string;
 begin
   checkForManualEdits;
-  result := trim(FFileContents.values[aName]);
+  result := FFileContents.values[aName]; // don't trim!
 end;
 
 function TConfigFile.initConfigFile(const aFilePath: string): boolean;

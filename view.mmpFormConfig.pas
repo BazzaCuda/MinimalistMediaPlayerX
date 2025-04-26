@@ -115,6 +115,15 @@ type
     edtAppF12: TLabeledEdit;
     btnAppF12: TSpeedButton;
     Label34: TLabel;
+    Label35: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
+    edtPrefixF1: TLabeledEdit;
+    edtPrefixF2: TLabeledEdit;
+    edtPrefixF3: TLabeledEdit;
+    edtSuffixF4: TLabeledEdit;
+    GroupBox2: TGroupBox;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -138,9 +147,10 @@ type
     procedure btnBaseFolderClick(Sender: TObject);
     procedure edtBaseFolderChange(Sender: TObject);
     procedure btnCopiedClick(Sender: TObject);
-    procedure edtCopiedChange(Sender: TObject);
+    procedure edtCopiedChang(Sender: TObject);
     procedure btnAppF10Click(Sender: TObject);
     procedure edtAppF10Change(Sender: TObject);
+    procedure edtPrefixF1Change(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -355,16 +365,12 @@ begin
   CF[CONF_BASE_FOLDER] := vText;
 end;
 
-procedure TConfigForm.edtCopiedChange(Sender: TObject);
+procedure TConfigForm.edtCopiedChang(Sender: TObject);
 begin
   var vEdit := sender as TLabeledEdit;
   var vText := vEdit.text;
 
-  case (length(vText) > 1) and (vText[2] = ':') of TRUE:
-    case directoryExists(vText) of FALSE: begin vEdit.font.color := clRed; EXIT; end;end;end;
-  vEdit.font.color := DARK_MODE_SILVER;
-
-  case trim(vText) = ''   of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
+  case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
   // I could have used tags and searched for the edt with the corresponding tag as the btn
   // but as this is an immutable list...meh!
@@ -383,6 +389,16 @@ begin
   case vEdit = edtF10     of TRUE: CF['folder10'] := vText; end;
   case vEdit = edtF11     of TRUE: CF['folder11'] := vText; end;
   case vEdit = edtF12     of TRUE: CF['folder12'] := vText; end;
+end;
+
+procedure TConfigForm.edtPrefixF1Change(Sender: TObject);
+begin
+  var vText := (sender as TLabeledEdit).text;
+  case vText = '' of TRUE: vText := ' '; end; // don't trim the user's leading or trailing spaces but also don't let CF delete the entry if the user blanks the text
+  case sender = edtPrefixF1 of TRUE: CF[CONF_CAT_F1] := vText; end;
+  case sender = edtPrefixF2 of TRUE: CF[CONF_CAT_F2] := vText; end;
+  case sender = edtPrefixF3 of TRUE: CF[CONF_CAT_F3] := vText; end;
+  case sender = edtSuffixF4 of TRUE: CF[CONF_CAT_F4] := vText; end;
 end;
 
 procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -415,26 +431,31 @@ begin
   rbFilterVideo.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtVideo;
   rbFilterImage.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtImage;
 
-  edtBaseFolder.text            := CF[CONF_BASE_FOLDER];
-  edtCopied.text                := CF['copied'];
-  edtMoved.text                 := CF['moved'];
-  edtSaved.text                 := CF['saved'];
-  edtF1.text                    := CF['folder1'];
-  edtF2.text                    := CF['folder2'];
-  edtF3.text                    := CF['folder3'];
-  edtF4.text                    := CF['folder4'];
-  edtF5.text                    := CF['folder5'];
-  edtF6.text                    := CF['folder6'];
-  edtF7.text                    := CF['folder7'];
-  edtF8.text                    := CF['folder8'];
-  edtF9.text                    := CF['folder9'];
-  edtF10.text                   := CF['folder10'];
-  edtF11.text                   := CF['folder11'];
-  edtF12.text                   := CF['folder12'];
+  edtBaseFolder.text            := trim(CF[CONF_BASE_FOLDER]);
+  edtCopied.text                := trim(CF['copied']);
+  edtMoved.text                 := trim(CF['moved']);
+  edtSaved.text                 := trim(CF['saved']);
+  edtF1.text                    := trim(CF['folder1']);
+  edtF2.text                    := trim(CF['folder2']);
+  edtF3.text                    := trim(CF['folder3']);
+  edtF4.text                    := trim(CF['folder4']);
+  edtF5.text                    := trim(CF['folder5']);
+  edtF6.text                    := trim(CF['folder6']);
+  edtF7.text                    := trim(CF['folder7']);
+  edtF8.text                    := trim(CF['folder8']);
+  edtF9.text                    := trim(CF['folder9']);
+  edtF10.text                   := trim(CF['folder10']);
+  edtF11.text                   := trim(CF['folder11']);
+  edtF12.text                   := trim(CF['folder12']);
 
-  edtAppF10.text                := mmpGetExternalApp(F10_APP);
-  edtAppF11.text                := mmpGetExternalApp(F11_APP);
-  edtAppF12.text                := mmpGetExternalApp(F12_APP);
+  edtAppF10.text                := trim(mmpGetExternalApp(F10_APP));
+  edtAppF11.text                := trim(mmpGetExternalApp(F11_APP));
+  edtAppF12.text                := trim(mmpGetExternalApp(F12_APP));
+
+  edtPrefixF1.text              := CF[CONF_CAT_F1];
+  edtPrefixF2.text              := CF[CONF_CAT_F2];
+  edtPrefixF3.text              := CF[CONF_CAT_F3];
+  edtSuffixF4.text              := CF[CONF_CAT_F4];
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
