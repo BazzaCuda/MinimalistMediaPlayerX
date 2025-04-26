@@ -146,8 +146,7 @@ type
     procedure rbFilterImageClick(Sender: TObject);
     procedure btnBaseFolderClick(Sender: TObject);
     procedure edtBaseFolderChange(Sender: TObject);
-    procedure btnCopiedClick(Sender: TObject);
-    procedure edtCopiedChang(Sender: TObject);
+    procedure edtCopiedChange(Sender: TObject);
     procedure btnAppF10Click(Sender: TObject);
     procedure edtAppF10Change(Sender: TObject);
     procedure edtPrefixF1Change(Sender: TObject);
@@ -191,7 +190,7 @@ begin
     fileName      := aPrevFolder;
     fileTypes.clear;
     case execute of  TRUE: result := mmpITBS(fileName);
-                    FALSE: result := aPrevFolder; end;
+                    FALSE: result := ''; end;
   end;
 end;
 
@@ -238,8 +237,9 @@ end;
 procedure TConfigForm.btnAppF10Click(Sender: TObject);
 {$J+} const vPrevFolder: string = ''; {$J-}
 begin
-  vPrevFolder := selectApplication(fileOpenDialog, vPrevFolder);
-  case vPrevFolder = '' of TRUE: EXIT; end;
+  var vNewFolder := selectApplication(fileOpenDialog, vPrevFolder);
+  case vNewFolder = '' of TRUE: EXIT; end;
+  vPrevFolder := vNewFolder;
 
   case sender = btnAppF10 of TRUE: edtAppF10.text := vPrevFolder; end;
   case sender = btnAppF11 of TRUE: edtAppF11.text := vPrevFolder; end;
@@ -249,35 +249,28 @@ end;
 procedure TConfigForm.btnBaseFolderClick(Sender: TObject);
 {$J+} const vPrevFolder: string = ''; {$J-}
 begin
-  vPrevFolder := selectFolder(fileOpenDialog, vPrevFolder);
-  case vPrevFolder = '' of TRUE: EXIT; end;
-
-  case sender = btnBaseFolder of TRUE: edtBaseFolder.text := vPrevFolder; end;
-end;
-
-procedure TConfigForm.btnCopiedClick(Sender: TObject);
-{$J+} const vPrevFolder: string = ''; {$J-}
-begin
-  vPrevFolder := selectFolder(fileOpenDialog, vPrevFolder);
-  case vPrevFolder = '' of TRUE: EXIT; end;
+  var vNewFolder := selectFolder(fileOpenDialog, vPrevFolder);
+  case vNewFolder = '' of TRUE: EXIT; end;
+  vPrevFolder := vNewFolder;
 
   // I could have used tags and searched for the edt with the corresponding tag as the btn
   // but as this is an immutable list...meh!
-  case sender = btnCopied of TRUE: edtCopied.text := vPrevFolder; end;
-  case sender = btnMoved  of TRUE: edtMoved.text  := vPrevFolder; end;
-  case sender = btnSaved  of TRUE: edtSaved.text  := vPrevFolder; end;
-  case sender = btnF1     of TRUE: edtF1.text     := vPrevFolder; end;
-  case sender = btnF2     of TRUE: edtF2.text     := vPrevFolder; end;
-  case sender = btnF3     of TRUE: edtF3.text     := vPrevFolder; end;
-  case sender = btnF4     of TRUE: edtF4.text     := vPrevFolder; end;
-  case sender = btnF5     of TRUE: edtF5.text     := vPrevFolder; end;
-  case sender = btnF6     of TRUE: edtF6.text     := vPrevFolder; end;
-  case sender = btnF7     of TRUE: edtF7.text     := vPrevFolder; end;
-  case sender = btnF8     of TRUE: edtF8.text     := vPrevFolder; end;
-  case sender = btnF9     of TRUE: edtF9.text     := vPrevFolder; end;
-  case sender = btnF10    of TRUE: edtF10.text    := vPrevFolder; end;
-  case sender = btnF11    of TRUE: edtF11.text    := vPrevFolder; end;
-  case sender = btnF12    of TRUE: edtF12.text    := vPrevFolder; end;
+  case sender = btnBaseFolder of TRUE: edtBaseFolder.text := vPrevFolder; end;
+  case sender = btnCopied     of TRUE: edtCopied.text     := vPrevFolder; end;
+  case sender = btnMoved      of TRUE: edtMoved.text      := vPrevFolder; end;
+  case sender = btnSaved      of TRUE: edtSaved.text      := vPrevFolder; end;
+  case sender = btnF1         of TRUE: edtF1.text         := vPrevFolder; end;
+  case sender = btnF2         of TRUE: edtF2.text         := vPrevFolder; end;
+  case sender = btnF3         of TRUE: edtF3.text         := vPrevFolder; end;
+  case sender = btnF4         of TRUE: edtF4.text         := vPrevFolder; end;
+  case sender = btnF5         of TRUE: edtF5.text         := vPrevFolder; end;
+  case sender = btnF6         of TRUE: edtF6.text         := vPrevFolder; end;
+  case sender = btnF7         of TRUE: edtF7.text         := vPrevFolder; end;
+  case sender = btnF8         of TRUE: edtF8.text         := vPrevFolder; end;
+  case sender = btnF9         of TRUE: edtF9.text         := vPrevFolder; end;
+  case sender = btnF10        of TRUE: edtF10.text        := vPrevFolder; end;
+  case sender = btnF11        of TRUE: edtF11.text        := vPrevFolder; end;
+  case sender = btnF12        of TRUE: edtF12.text        := vPrevFolder; end;
 end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
@@ -345,8 +338,8 @@ end;
 procedure TConfigForm.edtAppF10Change(Sender: TObject);
 begin
   var vEdit := sender as TLabeledEdit;
-  case fileExists(vEdit.text) of FALSE: begin vEdit.font.color := clRed; EXIT; end;end;
-  vEdit.font.color := DARK_MODE_SILVER;
+  case fileExists(vEdit.text) of   TRUE: vEdit.font.color := DARK_MODE_SILVER;
+                                  FALSE: vEdit.font.color := clRed; end; // warn the user but them setup MMP as they want
 
   case trim(vEdit.text) = '' of TRUE: vEdit.text := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
@@ -359,16 +352,19 @@ end;
 procedure TConfigForm.edtBaseFolderChange(Sender: TObject);
 begin
   var vText := edtBaseFolder.text;
-  case directoryExists(vText) of FALSE: begin edtBaseFolder.font.color := clRed; EXIT; end;end;
-  edtBaseFolder.font.color := DARK_MODE_SILVER;
-  case trim(vText) = '' of TRUE: vText := ' '; end;
+  case directoryExists(vText) of   TRUE: edtBaseFolder.font.color := DARK_MODE_SILVER;
+                                  FALSE: edtBaseFolder.font.color := clRed; end; // warn the user but them setup MMP as they wish
+  case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
   CF[CONF_BASE_FOLDER] := vText;
 end;
 
-procedure TConfigForm.edtCopiedChang(Sender: TObject);
+procedure TConfigForm.edtCopiedChange(Sender: TObject);
 begin
   var vEdit := sender as TLabeledEdit;
   var vText := vEdit.text;
+
+  case (length(vText) > 1) and (vText[2] = ':') and NOT directoryExists(vText) of  TRUE: vEdit.font.color := clRed;
+                                                                                  FALSE: vEdit.font.color := DARK_MODE_SILVER; end; // warn the user but let them setup MMP how they want
 
   case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 

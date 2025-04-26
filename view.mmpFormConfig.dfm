@@ -748,18 +748,18 @@ object ConfigForm: TConfigForm
         ExplicitWidth = 380
       end
       object Label30: TLabel
-        Left = 74
+        Left = 55
         Top = 17
-        Width = 428
+        Width = 466
         Height = 75
         Alignment = taCenter
         Caption = 
           'Up to 15 user folders can be set for moving your files with one ' +
           'keystroke'#13#10'Each folder can be specified as either the fully-qual' +
-          'ified path to a folder, e.g. C:\...'#13#10'or it can be the name of a ' +
-          'subfolder within the Base Folder'#13#10'You can mix-and-match these se' +
-          'ttings according to your requirements'#13#10'MMP will create a folder ' +
-          'for you the first time you use its key'
+          'ified path to a folder, e.g. C:\Pictures\'#13#10'or it can be the name' +
+          ' of a subfolder within the Base Folder'#13#10'You can mix-and-match th' +
+          'ese settings according to your requirements'#13#10'MMP will create a f' +
+          'older for you the first time you use its corresponding key'
       end
       object Label31: TLabel
         Left = 209
@@ -886,7 +886,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnMoved: TSpeedButton
         Left = 344
@@ -943,7 +943,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnCopied: TSpeedButton
         Left = 162
@@ -1000,7 +1000,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object Label32: TLabel
         Left = 97
@@ -1095,7 +1095,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF2: TSpeedButton
         Left = 162
@@ -1152,7 +1152,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF3: TSpeedButton
         Left = 162
@@ -1209,7 +1209,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF4: TSpeedButton
         Left = 163
@@ -1266,7 +1266,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF5: TSpeedButton
         Left = 346
@@ -1323,7 +1323,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF7: TSpeedButton
         Left = 347
@@ -1380,7 +1380,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF8: TSpeedButton
         Left = 347
@@ -1437,7 +1437,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF9: TSpeedButton
         Left = 523
@@ -1494,7 +1494,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF6: TSpeedButton
         Left = 346
@@ -1551,7 +1551,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF10: TSpeedButton
         Left = 523
@@ -1608,7 +1608,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF11: TSpeedButton
         Left = 523
@@ -1665,7 +1665,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object btnF12: TSpeedButton
         Left = 523
@@ -1722,7 +1722,7 @@ object ConfigForm: TConfigForm
           FFFFFFFFFFFFFFFFFFFFFFFF0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000}
-        OnClick = btnCopiedClick
+        OnClick = btnBaseFolderClick
       end
       object edtBaseFolder: TLabeledEdit
         Left = 176
@@ -1764,7 +1764,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 3
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtMoved: TLabeledEdit
         Left = 243
@@ -1786,7 +1787,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 2
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtCopied: TLabeledEdit
         Left = 61
@@ -1808,7 +1810,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 1
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF1: TLabeledEdit
         Left = 61
@@ -1830,7 +1833,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 4
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF2: TLabeledEdit
         Left = 61
@@ -1852,7 +1856,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 5
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF3: TLabeledEdit
         Left = 61
@@ -1874,7 +1879,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 6
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF4: TLabeledEdit
         Left = 60
@@ -1896,7 +1902,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 7
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF5: TLabeledEdit
         Left = 243
@@ -1918,7 +1925,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 8
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF7: TLabeledEdit
         Left = 244
@@ -1940,7 +1948,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 10
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF8: TLabeledEdit
         Left = 244
@@ -1962,7 +1971,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 11
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF9: TLabeledEdit
         Left = 421
@@ -1984,7 +1994,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 12
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF6: TLabeledEdit
         Left = 243
@@ -2006,7 +2017,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 9
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF10: TLabeledEdit
         Left = 421
@@ -2028,7 +2040,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 13
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF11: TLabeledEdit
         Left = 421
@@ -2050,7 +2063,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 14
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
       object edtF12: TLabeledEdit
         Left = 421
@@ -2072,7 +2086,8 @@ object ConfigForm: TConfigForm
         ShowHint = True
         TabOrder = 15
         Text = ''
-        OnChange = edtCopiedChang
+        StyleElements = [seClient, seBorder]
+        OnChange = edtCopiedChange
       end
     end
     object tsExternalApps: TTabSheet
