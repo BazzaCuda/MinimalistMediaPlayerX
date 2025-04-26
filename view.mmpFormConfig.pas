@@ -6,7 +6,7 @@ uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask;
 
 type
   TConfigForm = class(TForm)
@@ -70,6 +70,45 @@ type
     Label27: TLabel;
     Label28: TLabel;
     Label26: TLabel;
+    Label29: TLabel;
+    Label30: TLabel;
+    Label31: TLabel;
+    edtBaseFolder: TLabeledEdit;
+    btnBaseFolder: TSpeedButton;
+    edtSaved: TLabeledEdit;
+    btnSaved: TSpeedButton;
+    edtMoved: TLabeledEdit;
+    btnMoved: TSpeedButton;
+    edtCopied: TLabeledEdit;
+    btnCopied: TSpeedButton;
+    fileOpenDialog: TFileOpenDialog;
+    Label32: TLabel;
+    Label33: TLabel;
+    SpeedButton1: TSpeedButton;
+    edtF1: TLabeledEdit;
+    btnF1: TSpeedButton;
+    edtF2: TLabeledEdit;
+    btnF2: TSpeedButton;
+    edtF3: TLabeledEdit;
+    btnF3: TSpeedButton;
+    edtF4: TLabeledEdit;
+    btnF4: TSpeedButton;
+    edtF5: TLabeledEdit;
+    btnF5: TSpeedButton;
+    edtF7: TLabeledEdit;
+    btnF7: TSpeedButton;
+    edtF8: TLabeledEdit;
+    btnF8: TSpeedButton;
+    edtF9: TLabeledEdit;
+    btnF9: TSpeedButton;
+    edtF6: TLabeledEdit;
+    btnF6: TSpeedButton;
+    edtF10: TLabeledEdit;
+    btnF10: TSpeedButton;
+    edtF11: TLabeledEdit;
+    btnF11: TSpeedButton;
+    edtF12: TLabeledEdit;
+    btnF12: TSpeedButton;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -90,6 +129,10 @@ type
     procedure rbFilterAudioClick(Sender: TObject);
     procedure rbFilterVideoClick(Sender: TObject);
     procedure rbFilterImageClick(Sender: TObject);
+    procedure btnBaseFolderClick(Sender: TObject);
+    procedure edtBaseFolderChange(Sender: TObject);
+    procedure btnCopiedClick(Sender: TObject);
+    procedure edtCopiedChange(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -101,7 +144,7 @@ function mmpConfig: boolean;
 implementation
 
 uses
-  mmpConsts, mmpFuncProg, mmpGlobalState, mmpUtils,
+  mmpConsts, mmpFolderUtils, mmpFuncProg, mmpGlobalState, mmpUserFolders, mmpUtils,
   model.mmpConfigFile;
 
 function mmpConfig: boolean;
@@ -120,7 +163,55 @@ begin
   end;
 end;
 
+function selectFolder(const aFileOpenDialog: TFileOpenDialog; const aPrevFolder: string): string;
+begin
+  with aFileOpenDialog do begin
+    title         := 'Select Folder';
+    options       := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem, fdoNoValidate];
+    OKButtonLabel := 'Select';
+    defaultFolder := aPrevFolder;
+    fileName      := aPrevFolder;
+    fileTypes.clear;
+    case execute of  TRUE: result := mmpITBS(fileName);
+                    FALSE: result := aPrevFolder; end;
+  end;
+end;
+
 {$R *.dfm}
+
+procedure TConfigForm.btnBaseFolderClick(Sender: TObject);
+{$J+} const vPrevFolder: string = ''; {$J-}
+begin
+  vPrevFolder := selectFolder(fileOpenDialog, vPrevFolder);
+  case vPrevFolder = '' of TRUE: EXIT; end;
+
+  case sender = btnBaseFolder of TRUE: edtBaseFolder.text := vPrevFolder; end;
+end;
+
+procedure TConfigForm.btnCopiedClick(Sender: TObject);
+{$J+} const vPrevFolder: string = ''; {$J-}
+begin
+  vPrevFolder := selectFolder(fileOpenDialog, vPrevFolder);
+  case vPrevFolder = '' of TRUE: EXIT; end;
+
+  // I could have used tags and searched for the edt with the corresponding tag as the btn
+  // but as this is an immutable list...meh!
+  case sender = btnCopied of TRUE: edtCopied.text := vPrevFolder; end;
+  case sender = btnMoved  of TRUE: edtMoved.text  := vPrevFolder; end;
+  case sender = btnSaved  of TRUE: edtSaved.text  := vPrevFolder; end;
+  case sender = btnF1     of TRUE: edtF1.text     := vPrevFolder; end;
+  case sender = btnF2     of TRUE: edtF2.text     := vPrevFolder; end;
+  case sender = btnF3     of TRUE: edtF3.text     := vPrevFolder; end;
+  case sender = btnF4     of TRUE: edtF4.text     := vPrevFolder; end;
+  case sender = btnF5     of TRUE: edtF5.text     := vPrevFolder; end;
+  case sender = btnF6     of TRUE: edtF6.text     := vPrevFolder; end;
+  case sender = btnF7     of TRUE: edtF7.text     := vPrevFolder; end;
+  case sender = btnF8     of TRUE: edtF8.text     := vPrevFolder; end;
+  case sender = btnF9     of TRUE: edtF9.text     := vPrevFolder; end;
+  case sender = btnF10    of TRUE: edtF10.text    := vPrevFolder; end;
+  case sender = btnF11    of TRUE: edtF11.text    := vPrevFolder; end;
+  case sender = btnF12    of TRUE: edtF12.text    := vPrevFolder; end;
+end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
 begin
@@ -184,6 +275,45 @@ begin
   CF.asBoolean[CONF_VIDEO_DELETE] := chbVideo.checked;
 end;
 
+procedure TConfigForm.edtBaseFolderChange(Sender: TObject);
+begin
+  case directoryExists(edtBaseFolder.text) of  TRUE: edtBaseFolder.font.color := DARK_MODE_SILVER;
+                                              FALSE: edtBaseFolder.font.color := clRed; end;
+  case directoryExists(edtBaseFolder.text) of FALSE: EXIT; end;
+  CF[CONF_BASE_FOLDER] := edtBaseFolder.text;
+end;
+
+procedure TConfigForm.edtCopiedChange(Sender: TObject);
+begin
+  var vEdit := sender as TLabeledEdit;
+  var vText := vEdit.text;
+
+  case (length(vText) > 1) and (vText[2] = ':') of TRUE:
+    case directoryExists(vText) of FALSE: begin vEdit.font.color := clRed; EXIT; end;end;end;
+
+  vEdit.font.color := DARK_MODE_SILVER;
+
+  case trim(vText) = ''   of TRUE: vText := ' '; end; // allow the user to blank the folder name
+
+  // I could have used tags and searched for the edt with the corresponding tag as the btn
+  // but as this is an immutable list...meh!
+  case vEdit = edtCopied  of TRUE: CF['copied']   := vText; end;
+  case vEdit = edtMoved   of TRUE: CF['moved']    := vText; end;
+  case vEdit = edtSaved   of TRUE: CF['saved']    := vText; end;
+  case vEdit = edtF1      of TRUE: CF['folder1']  := vText; end;
+  case vEdit = edtF2      of TRUE: CF['folder2']  := vText; end;
+  case vEdit = edtF3      of TRUE: CF['folder3']  := vText; end;
+  case vEdit = edtF4      of TRUE: CF['folder4']  := vText; end;
+  case vEdit = edtF5      of TRUE: CF['folder5']  := vText; end;
+  case vEdit = edtF6      of TRUE: CF['folder6']  := vText; end;
+  case vEdit = edtF7      of TRUE: CF['folder7']  := vText; end;
+  case vEdit = edtF8      of TRUE: CF['folder8']  := vText; end;
+  case vEdit = edtF9      of TRUE: CF['folder9']  := vText; end;
+  case vEdit = edtF10     of TRUE: CF['folder10'] := vText; end;
+  case vEdit = edtF11     of TRUE: CF['folder11'] := vText; end;
+  case vEdit = edtF12     of TRUE: CF['folder12'] := vText; end;
+end;
+
 procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case key = VK_ESCAPE of TRUE: modalResult := mrOK; end;
@@ -193,7 +323,7 @@ function TConfigForm.loadConfig: boolean;
 begin
   chbAutoUpdate.checked         := CF.asBoolean[CONF_AUTO_UPDATE];
   chbStartInEditor.checked      := CF.asBoolean[CONF_START_IN_EDITOR];
-  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser';
+  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE])   = 'browser';
   chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = 'exitapp';
 
   chbAudio.checked              := CF.asBoolean[CONF_AUDIO_DELETE];
@@ -213,6 +343,23 @@ begin
   rbFilterAudio.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtAudio;
   rbFilterVideo.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtVideo;
   rbFilterImage.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtImage;
+
+  edtBaseFolder.text            := CF[CONF_BASE_FOLDER];
+  edtCopied.text                := CF['copied'];
+  edtMoved.text                 := CF['moved'];
+  edtSaved.text                 := CF['saved'];
+  edtF1.text                    := CF['folder1'];
+  edtF2.text                    := CF['folder2'];
+  edtF3.text                    := CF['folder3'];
+  edtF4.text                    := CF['folder4'];
+  edtF5.text                    := CF['folder5'];
+  edtF6.text                    := CF['folder6'];
+  edtF7.text                    := CF['folder7'];
+  edtF8.text                    := CF['folder8'];
+  edtF9.text                    := CF['folder9'];
+  edtF10.text                   := CF['folder10'];
+  edtF11.text                   := CF['folder11'];
+  edtF12.text                   := CF['folder12'];
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);

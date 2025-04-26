@@ -109,8 +109,6 @@ const
   CONF_CAT_F3               = 'catF3';
   CONF_CAT_F4               = 'catF4';
 
-  CONF_MOVE_FOLDER          = 'moveFolder';
-
   MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
 
 var

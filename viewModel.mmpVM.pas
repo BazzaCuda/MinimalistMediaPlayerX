@@ -926,7 +926,7 @@ begin
     rtKeepCatF2:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F2] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF3:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F3] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF4:  vNewName := mmpRenameFile(vOldName, mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
-    rtKeepMove:   vNewName := mmpITBS(CF[CONF_MOVE_FOLDER]) + extractFileName(vOldName);
+    rtKeepMove:   vNewName := mmpUserDstFolder('Moved') + extractFileName(vOldName);
     rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
 
@@ -934,8 +934,8 @@ begin
 
   case aRenameType of
     rtKeepMove: begin
-                  case forceDirectories(CF[CONF_MOVE_FOLDER]) of FALSE: EXIT; end;
-                  case directoryExists(CF[CONF_MOVE_FOLDER])  of FALSE: EXIT; end;
+                  case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
+                  case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
                   case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
@@ -963,7 +963,7 @@ begin
     rtKeepCatF2:  result := CF[CONF_CAT_F2] + ' ...';
     rtKeepCatF3:  result := CF[CONF_CAT_F3] + ' ...';
     rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
-    rtKeepMove:   result := 'Moved: ' + mmpITBS(CF[CONF_MOVE_FOLDER]);
+    rtKeepMove:   result := 'Moved: ' + mmpUserDstFolder('Moved');
     rtKeepSave:   result := 'Saved: ' + mmpUserDstFolder('Saved');
   end;
 end;

@@ -56,7 +56,7 @@ function mmpUserOverride(const aFolder: string): string;
 // destination folders can be absolute paths or relative to the base folder
 begin
   result := '';
-  var vValue := CF[aFolder];
+  var vValue := trim(CF[aFolder]); // trim() - allow the config window to set to a space to blank the folder name, but without CF then deleting the value
   case vValue <> '' of  TRUE: result := vValue;
                        FALSE: result := aFolder; end;
   case result <> '' of TRUE: result := mmpITBS(result); end;
