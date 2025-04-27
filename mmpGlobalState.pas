@@ -49,7 +49,7 @@ type
     ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
     function getActiveTasks:              integer;
     function getAutoCenter:               boolean;
-    function getIDD:                      integer;
+    function getIDDms:                    integer;
     function getImagesPaused:             boolean;
     function getMainForm:                 TForm;
     function getMaxSize:                  boolean;
@@ -76,7 +76,7 @@ type
 
     property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
     property autoCenter:                boolean             read getAutoCenter;
-    property IDD:                       integer             read getIDD;         // image-display-duration in seconds
+    property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
     property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
@@ -111,7 +111,7 @@ type
   strict private
     FActiveTasks:             integer;
     FAutoCenter:              boolean;
-    FIDD:                     integer;
+    FIDDms:                   integer;
     FImagesPaused:            boolean;
     FMainForm:                TForm;
     FMaxSize:                 boolean;
@@ -139,7 +139,7 @@ type
     destructor  Destroy; override;
     function    getActiveTasks:              integer;
     function    getAutoCenter:               boolean;
-    function    getIDD:                      integer;
+    function    getIDDms:                    integer;
     function    getImagesPaused:             boolean;
     function    getMainForm:                 TForm;
     function    getMaxSize:                  boolean;
@@ -197,9 +197,9 @@ begin
   result := FAutoCenter;
 end;
 
-function TGlobalState.getIDD: integer;
+function TGlobalState.getIDDms: integer;
 begin
-  result := FIDD;
+  result := FIDDms;
 end;
 
 function TGlobalState.getImagesPaused: boolean;
@@ -309,7 +309,7 @@ begin
   case aNotice.event of
     evGSActiveTasks:              FActiveTasks            := aNotice.integer;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
-    evGSIDD:                      FIDD                    := aNotice.integer;
+    evGSIDDms:                    FIDDms                  := aNotice.integer;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;
     evGSMaxSize:                  FMaxSize                := aNotice.tf;

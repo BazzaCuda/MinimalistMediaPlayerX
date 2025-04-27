@@ -30,7 +30,7 @@ type
 
     evAboutFormShow, evAboutGNULicenceShow, evAboutReleaseNotesFormShow,
 
-    evGSActiveTasks, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDD, evGSImagesPaused,
+    evGSActiveTasks, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDDMs, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
@@ -59,7 +59,7 @@ type
 
     evMPStateEnd, evMPStateLoading, evMPStatePlay,
 
-    evMPReqDuration, evMPReqFileName, evMPReqIDD, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
+    evMPReqDuration, evMPReqFileName, evMPReqIDDms, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
 
     evMXSysVolMax,
 

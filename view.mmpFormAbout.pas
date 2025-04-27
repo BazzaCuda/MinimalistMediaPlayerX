@@ -81,7 +81,7 @@ implementation
 
 uses
   shellAPI,
-  mmpFileUtils, mmpFuncProg, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpFuncProg, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 
@@ -268,7 +268,7 @@ begin
     FProgressForm.show;
     mmpProcessMessages;
     setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
-    FProgressForm.timer.interval  := 1000;
+    FProgressForm.timer.interval  := 1 * MILLISECONDS;
     FProgressForm.timer.OnTimer   := timerTimer;
     FProgressForm.timer.enabled   := TRUE;
   finally

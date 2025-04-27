@@ -179,7 +179,7 @@ end;
 
 function TMediaInfo.getAudioBitRate: string;
 begin
-  result := format('AR:  %d Kb/s', [round(FMD.mdAudioBitRate / 1000)]);
+  result := format('AR:  %d Kb/s', [round(FMD.mdAudioBitRate / MILLISECONDS)]);
 end;
 
 function TMediaInfo.getChapterCount: integer;
@@ -214,7 +214,7 @@ end;
 
 function TMediaInfo.getDuration: integer;
 begin
-  result := FMD.mdDuration div 1000;
+  result := FMD.mdDuration div MILLISECONDS;
 end;
 
 function TMediaInfo.getFileSize: string;
@@ -238,7 +238,7 @@ end;
 
 function TMediaInfo.getOverallBitRate: string;
 begin
-  result := format('BR:   %d Kb/s', [round(FMD.mdOverallBitRate / 1000)]);
+  result := format('BR:   %d Kb/s', [round(FMD.mdOverallBitRate / MILLISECONDS)]);
 end;
 
 function TMediaInfo.getOverallFrameRate: string;
@@ -265,7 +265,7 @@ end;
 
 function TMediaInfo.getVideoBitRate: string;
 begin
-  result := format('VR:  %d Kb/s', [round(FMD.mdVideoBitRate / 1000)]);
+  result := format('VR:  %d Kb/s', [round(FMD.mdVideoBitRate / MILLISECONDS)]);
 end;
 
 function TMediaInfo.getXY: string;

@@ -131,9 +131,15 @@ type
     Label41: TLabel;
     spinScaleFactor: TSpinEdit;
     Label42: TLabel;
-    btnScaleFactorReset: TButton;
+    btnScaleFactorDefault: TButton;
     btnRepeatDelayDefault: TButton;
     Label43: TLabel;
+    tsSlideshowIntervalMs: TTabSheet;
+    Label44: TLabel;
+    spinSlideshowIntervalMs: TSpinEdit;
+    btnSlideshowIntervalMsDefault: TButton;
+    Label45: TLabel;
+    Label46: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -163,7 +169,9 @@ type
     procedure spinImageDelayMsChange(Sender: TObject);
     procedure spinScaleFactorChange(Sender: TObject);
     procedure btnRepeatDelayDefaultClick(Sender: TObject);
-    procedure btnScaleFactorResetClick(Sender: TObject);
+    procedure btnScaleFactorDefaultClick(Sender: TObject);
+    procedure btnSlideshowIntervalMsDefaultClick(Sender: TObject);
+    procedure spinSlideshowIntervalMsChange(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -278,9 +286,14 @@ begin
   spinImageDelayMs.value := DEFAULT_REPEAT_DELAY_MS;
 end;
 
-procedure TConfigForm.btnScaleFactorResetClick(Sender: TObject);
+procedure TConfigForm.btnScaleFactorDefaultClick(Sender: TObject);
 begin
   spinScaleFactor.value := DEFAULT_SCALE_FACTOR;
+end;
+
+procedure TConfigForm.btnSlideshowIntervalMsDefaultClick(Sender: TObject);
+begin
+  spinSlideshowIntervalMs.value := IMAGE_DISPLAY_DURATION * MILLISECONDS;
 end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
@@ -440,6 +453,10 @@ begin
   spinScaleFactor.minValue      := MIN_SCALE_FACTOR;
   spinScaleFactor.maxValue      := MAX_SCALE_FACTOR;
   spinScaleFactor.value         := CF.asInteger[CONF_SCALE_FACTOR];
+
+  spinSlideshowIntervalMs.minValue := SLIDESHOW_DELTA_MS;
+  case CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS] = 0 of  TRUE: spinSlideshowIntervalMs.value := IMAGE_DISPLAY_DURATION;
+                                                       FALSE: spinSlideshowIntervalMs.value := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS]; end;
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
@@ -461,6 +478,11 @@ end;
 procedure TConfigForm.spinScaleFactorChange(Sender: TObject);
 begin
   CF.asInteger[CONF_SCALE_FACTOR] := spinScaleFactor.value;
+end;
+
+procedure TConfigForm.spinSlideshowIntervalMsChange(Sender: TObject);
+begin
+  CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS] := spinSlideshowIntervalMs.value;
 end;
 
 procedure TConfigForm.rbFilterAllClick(Sender: TObject);

@@ -72,6 +72,7 @@ const
   DARK_MODE_DKGRAY = $808080; // clDkGray
 
   DEFAULT_REPEAT_DELAY_MS = 100;
+  MILLISECONDS     = 1000;
 
   THUMB_DEFAULT_SIZE  = 160;
   THUMB_MARGIN        = 10;
@@ -82,37 +83,40 @@ const
   IMAGE_DISPLAY_DURATION        = 2;    // in seconds, to match the setting in mpv.conf
   IMAGE_DISPLAY_DURATION_STRING = '2';
 
-  CONF_ALLOW_INTO_WINDOWS   = 'allowIntoWindows';
-  CONF_AUDIO_DELETE         = 'audioDelete';
-  CONF_AUTO_UPDATE          = 'autoUpdate';
-  CONF_BASE_FOLDER          = 'baseFolder';
-  CONF_DELETE_METHOD        = 'deleteMethod';
-  CONF_EXIT_BROWSER         = 'exitBrowser';
-  CONF_FOLDER_DELETE        = 'folderDelete';
-  CONF_KEEP_DELETE          = 'keepDelete';
-  CONF_IMAGE_DELETE         = 'imageDelete';
-  CONF_LOGGING              = 'logging';
-  CONF_MAIN_CAPTION         = 'caption';
-  CONF_MUTED                = 'muted';
-  CONF_NEXT_FOLDER_ON_EMPTY = 'nextFolderOnEmpty';
-  CONF_NEXT_FOLDER_ON_END   = 'nextFolderOnEnd';
-  CONF_OPEN_IMAGE           = 'openImage';
-  CONF_PLAYLIST_FORMAT      = 'playlistFormat';
-  CONF_PROGRESS_BAR         = 'progressBar';
-  CONF_REPEAT_DELAY_MS      = 'repeatDelayMs';
-  CONF_SCALE_FACTOR         = 'scaleFactor';
-  CONF_SHOW_METADATA        = 'showMetaData';
-  CONF_START_IN_EDITOR      = 'startInEditor';
-  CONF_TIME_CAPTION         = 'timeCaption';
-  CONF_VIDEO_DELETE         = 'videoDelete';
-  CONF_VOLUME               = 'volume';
+  SLIDESHOW_DELTA_MS          = 100;
 
-  CONF_CAT_F1               = 'catF1';
-  CONF_CAT_F2               = 'catF2';
-  CONF_CAT_F3               = 'catF3';
-  CONF_CAT_F4               = 'catF4';
+  CONF_ALLOW_INTO_WINDOWS     = 'allowIntoWindows';
+  CONF_AUDIO_DELETE           = 'audioDelete';
+  CONF_AUTO_UPDATE            = 'autoUpdate';
+  CONF_BASE_FOLDER            = 'baseFolder';
+  CONF_DELETE_METHOD          = 'deleteMethod';
+  CONF_EXIT_BROWSER           = 'exitBrowser';
+  CONF_FOLDER_DELETE          = 'folderDelete';
+  CONF_KEEP_DELETE            = 'keepDelete';
+  CONF_IMAGE_DELETE           = 'imageDelete';
+  CONF_LOGGING                = 'logging';
+  CONF_MAIN_CAPTION           = 'caption';
+  CONF_MUTED                  = 'muted';
+  CONF_NEXT_FOLDER_ON_EMPTY   = 'nextFolderOnEmpty';
+  CONF_NEXT_FOLDER_ON_END     = 'nextFolderOnEnd';
+  CONF_OPEN_IMAGE             = 'openImage';
+  CONF_PLAYLIST_FORMAT        = 'playlistFormat';
+  CONF_PROGRESS_BAR           = 'progressBar';
+  CONF_REPEAT_DELAY_MS        = 'repeatDelayMs';
+  CONF_SCALE_FACTOR           = 'scaleFactor';
+  CONF_SHOW_METADATA          = 'showMetaData';
+  CONF_SLIDESHOW_INTERVAL_MS  = 'slideshowIntervalMs';
+  CONF_START_IN_EDITOR        = 'startInEditor';
+  CONF_TIME_CAPTION           = 'timeCaption';
+  CONF_VIDEO_DELETE           = 'videoDelete';
+  CONF_VOLUME                 = 'volume';
 
-  MPV_IMAGE_DISPLAY_DURATION = 'image-display-duration';
+  CONF_CAT_F1                 = 'catF1';
+  CONF_CAT_F2                 = 'catF2';
+  CONF_CAT_F3                 = 'catF3';
+  CONF_CAT_F4                 = 'catF4';
+
+  MPV_IMAGE_DISPLAY_DURATION  = 'image-display-duration';
 
   CONF_FOLDERS: array[1..16] of string
                             = ('baseFolder', 'copied', 'moved', 'saved', 'folder1', 'folder2', 'folder3', 'folder4', 'folder5', 'folder6',

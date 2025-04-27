@@ -655,7 +655,7 @@ begin
     // and the rename below would fail if we don't delete the output file or at least rename it. So we may as well delete it.
     case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE); end; // use the user's specified deleteMethod
 
-    while fileExists(filePathOUT) do mmpDelay(1000); // give the thread time to run.
+    while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 
     case vSegOneFN = '' of FALSE: begin
                                     renameFile(vSegOneFN, filePathOUT);

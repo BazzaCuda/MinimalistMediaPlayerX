@@ -52,8 +52,8 @@ type
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
   strict private
     mpv: IMPVBasePlayer;
-    FDurationResetSpeed:      double;
-    FImageDisplayDurationMs:  double;
+    FDurationResetSpeed:      integer;
+    FImageDisplayDurationMs:  integer;
     FInitialFilePath:         string;
     FInitialHost:             THostType;
     FKeyHandled:              boolean;
@@ -75,6 +75,7 @@ type
     function autoCenter:          boolean;
     function checkThumbsPerPage:  boolean;
     function deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
     function keepFile(const aFilePath: string): boolean;
     function maximizeWindow:      boolean;
     function minimizeWindow:      boolean;
@@ -261,7 +262,10 @@ begin
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
   vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
-  FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION) * 1000;                          // if the image-display-duration= entry isn't a valid integer
+  FImageDisplayDurationMs := trunc(strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION)) * MILLISECONDS;                  // if the image-display-duration= entry isn't a valid integer
+
+  FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // let the minimalistmediaplayer.conf override mpv.conf
+
   FDurationResetSpeed     := FImageDisplayDurationMs;
   FSlideshowDirection     := sdForwards;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
@@ -304,6 +308,12 @@ begin
   mmpSetWindowTop(SELF.handle);
 
   checkThumbsPerPage;
+end;
+
+function TThumbsForm.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
+begin
+  case CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS] <> 0 of  TRUE: result := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS];
+                                                        FALSE: result := aImageDisplayDurationMs; end;
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
@@ -471,7 +481,7 @@ begin
   case eState of
     mpsPlay,
     mpsEnd: begin FLocked := FALSE; // we don't always get an mpsEnd event!
-              case FPlayingSlideshow of TRUE: begin mmpDelay(trunc(FImageDisplayDurationMs));
+              case FPlayingSlideshow of TRUE: begin mmpDelay(FImageDisplayDurationMs);
                                                     case FPlayingSlideshow of // still playing slideshow after the delay?
                                                                               TRUE: case FSlideshowDirection of
                                                                                       sdForwards:  case playNext of FALSE: playFirst; end;
@@ -493,9 +503,11 @@ function TThumbsForm.pausePlay: boolean;
 begin
   FPlayingSlideshow := NOT FPlayingSlideshow;
 
+  FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // has the user changed .conf since the last pause/play
+
   case NOT FPlayingSlideshow of TRUE: mmpCancelDelay; end;
 
-  case FPlayingSlideshow of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, intToStr(trunc(FImageDisplayDurationMs) div 1000)); // doesn't really matter as long as it's valid and not 'inf'
+  case FPlayingSlideshow of  TRUE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, intToStr(FImageDisplayDurationMs div MILLISECONDS)); // doesn't really matter as long as it's valid and not 'inf'
                             FALSE: mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); end;
 
   case FPlayingSlideshow of  TRUE: showSlideshowDirection;
@@ -645,21 +657,21 @@ end;
 
 function TThumbsForm.speedDn: boolean;
 begin
-  FImageDisplayDurationMs := FImageDisplayDurationMs + 100;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationms)]));
+  FImageDisplayDurationMs := FImageDisplayDurationMs + SLIDESHOW_DELTA_MS;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDurationMs]));
 end;
 
 function TThumbsForm.speedReset: boolean;
 begin
   FImageDisplayDurationMs := FDurationResetSpeed;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDurationMs]));
 end;
 
 function TThumbsForm.speedUp: boolean;
 begin
-  case FImageDisplayDurationMs = 100 of TRUE: EXIT; end;
-  FImageDisplayDurationMs := FImageDisplayDurationMs - 100;
-  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [trunc(FImageDisplayDurationMs)]));
+  case FImageDisplayDurationMs = SLIDESHOW_DELTA_MS of TRUE: EXIT; end;// delta doubles as minimum interval/fastest speed
+  FImageDisplayDurationMs := FImageDisplayDurationMs - SLIDESHOW_DELTA_MS;
+  mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDurationMs]));
 end;
 
 procedure TThumbsForm.FStatusBarClick(Sender: TObject);

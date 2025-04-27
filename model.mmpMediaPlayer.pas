@@ -50,7 +50,7 @@ type
     FCheckCount:              integer;
     FDimensionsDone:          boolean;
     FIgnoreTicks:             boolean;
-    FImageDisplayDurationMs:  double;
+    FImageDisplayDurationMs:  integer;
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
     FNotifier:                INotifier;
@@ -73,6 +73,7 @@ type
   public
     constructor create;
     destructor  Destroy; override;
+    function    imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
     function    initMediaPlayer(const aHWND: HWND):   boolean;
     function    notify(const aNotice: INotice):       INotice;
 
@@ -99,9 +100,15 @@ end;
 
 destructor TMediaPlayer.Destroy;
 begin
-//  case mpv = NIL of FALSE: mpv.free; end;
   mpv := NIL;
   inherited;
+end;
+
+function TMediaPlayer.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
+begin
+  case CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS] <> 0 of  TRUE: result := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS];
+                                                        FALSE: result := aImageDisplayDurationMs; end;
+  FImageDisplayDurationMs := result;
 end;
 
 function TMediaPlayer.initMediaPlayer(const aHWND: HWND): boolean;
@@ -124,10 +131,12 @@ begin
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
   vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
-  FImageDisplayDurationMs := strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION);                                // if the image-display-duration= entry isn't a valid integer
-  mmp.cmd(evGSIDD, trunc(FImageDisplayDurationMs));                // stored as seconds, same as in mpv.conf
-  FImageDisplayDurationMs := FImageDisplayDurationMs * 1000;     // this property isn't currently used anywhere (see evMPReqIDD)
-  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');  // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
+  FImageDisplayDurationMs := trunc(strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION)) * MILLISECONDS;                  // if the image-display-duration= entry isn't a valid integer
+
+  FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // let the minimalistmediaplayer.conf override mpv.conf
+
+  mmp.cmd(evGSIDDms, FImageDisplayDurationMs);                // stored as milliseconds, 1000 * mpv.conf
+  mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf');      // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
 
   pausePlayImages; // default is paused;
 
@@ -201,7 +210,7 @@ begin
 
     evMPReqDuration:      aNotice.integer := mpvDuration(mpv);
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
-    evMPReqIDD:           aNotice.integer := trunc(FImageDisplayDurationMs); // not currently used
+    evMPReqIDDms:         aNotice.integer := imageDisplayDurationMs(aNotice.integer);
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
     evMPReqPosition:      aNotice.integer := mpvPosition(mpv);
     evMPReqVideoHeight:   aNotice.integer := mpvVideoHeight(mpv);

@@ -1016,7 +1016,7 @@ begin
 
   mmp.cmd(GS.imagesPaused, doNowt, procedure  begin
                                               FSlideshowTimer           := TTimer.create(NIL);
-                                              FSlideshowTimer.interval  := GS.IDD * 1000;
+                                              FSlideshowTimer.interval  := mmp.cmd(evMPReqIDDms, GS.IDDms).integer; // check if minimalistMediaPlayer.conf has changed since last slideshow
                                               FSlideshowTimer.OnTimer   := onSlideshowTimer;
                                               FSlideshowTimer.enabled   := TRUE; end);
 end;

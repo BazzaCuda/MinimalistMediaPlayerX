@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsUserFolders
+    ActivePage = tsSlideshowIntervalMs
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -2593,6 +2593,160 @@ object ConfigForm: TConfigForm
         OnChange = edtPrefixF1Change
       end
     end
+    object tsScaleFactor: TTabSheet
+      Caption = 'Scale Factor'
+      ImageIndex = 8
+      object Label41: TLabel
+        Left = 148
+        Top = 293
+        Width = 142
+        Height = 15
+        Caption = 'Scale Factor (percentage)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label42: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label43: TLabel
+        Left = 20
+        Top = 16
+        Width = 543
+        Height = 217
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP is developed on a large, wide-screen monitor with a resoluti' +
+          'on of 3440 x 1440'#13#10#13#10'While reasonable attempts are always made t' +
+          'o ensure that popup dialog boxes (in particular) are a suitable ' +
+          'size for typical monitors, it'#39's not always possible to suit ever' +
+          'ybody'#39's monitors'#13#10#13#10'If you find that the Delete Confirmation dia' +
+          'log looks too big on your monitor'#13#10'you can scale down its design' +
+          '-time size'#13#10#13#10'The recommended setting is 90% of the design-time ' +
+          'size'#13#10#13#10'Obviously, you can experiment to find a size you'#39're comf' +
+          'ortable with'#13#10#13#10'The minimum setting is 50% and the maximum is 10' +
+          '0%'
+        WordWrap = True
+      end
+      object spinScaleFactor: TSpinEdit
+        Left = 296
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinScaleFactorChange
+      end
+      object btnScaleFactorDefault: TButton
+        Left = 352
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnScaleFactorDefaultClick
+      end
+    end
+    object tsSlideshowIntervalMs: TTabSheet
+      Caption = 'Slideshow'
+      ImageIndex = 9
+      object Label44: TLabel
+        Left = 128
+        Top = 293
+        Width = 181
+        Height = 15
+        Caption = 'Slideshow Interval (milliseconds)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label45: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label46: TLabel
+        Left = 16
+        Top = 16
+        Width = 547
+        Height = 266
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP incorporates two image slideshows:'#13#10'one in the main media wi' +
+          'ndow and the other in the Image && Thumbnail Browser'#13#10#13#10'Both ope' +
+          'rate slightly differently. This is deliberate so that you can ch' +
+          'oose'#13#10'which of the two slideshows suits your particular requirem' +
+          'ents at any given time'#13#10#13#10'Depending on your settings, the main w' +
+          'indow slideshow can'#13#10'cycle through all the images on an entire d' +
+          'rive'#13#10#13#10'In the Image && Thumbnail Browser, the slideshow will co' +
+          'ntinuously'#13#10'loop through all the images in one folder.'#13#10'If you w' +
+          'ant the slideshow to move to a different folder'#13#10'you can use the' +
+          ' appropriate folder navigation keys'#13#10#13#10'Both slideshows use the s' +
+          'ame setting for the interval between images'#13#10'The minimum (fastes' +
+          't) is 100ms - There is no maximum'
+        WordWrap = True
+      end
+      object spinSlideshowIntervalMs: TSpinEdit
+        Left = 316
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinSlideshowIntervalMsChange
+      end
+      object btnSlideshowIntervalMsDefault: TButton
+        Left = 372
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnSlideshowIntervalMsDefaultClick
+      end
+    end
     object TabSheet2: TTabSheet
       Caption = 'Repeat Delay'
       ImageIndex = 6
@@ -2673,82 +2827,6 @@ object ConfigForm: TConfigForm
         Caption = 'Default'
         TabOrder = 1
         OnClick = btnRepeatDelayDefaultClick
-      end
-    end
-    object tsScaleFactor: TTabSheet
-      Caption = 'Scale Factor'
-      ImageIndex = 8
-      object Label41: TLabel
-        Left = 148
-        Top = 293
-        Width = 142
-        Height = 15
-        Caption = 'Scale Factor (percentage)'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label42: TLabel
-        Left = 0
-        Top = 316
-        Width = 576
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
-      end
-      object Label43: TLabel
-        Left = 20
-        Top = 16
-        Width = 543
-        Height = 217
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          'MMP is developed on a large, wide-screen monitor with a resoluti' +
-          'on of 3440 x 1440'#13#10#13#10'While reasonable attempts are always made t' +
-          'o ensure that popup dialog boxes (in particular) are a suitable ' +
-          'size for typical monitors, it'#39's not always possible to suit ever' +
-          'ybody'#39's monitors'#13#10#13#10'If you find that the Delete Confirmation dia' +
-          'log looks too big on your monitor'#13#10'you can scale down its design' +
-          '-time size'#13#10#13#10'The recommended setting is 90% of the design-time ' +
-          'size'#13#10#13#10'Obviously, you can experiment to find a size you'#39're comf' +
-          'ortable with'#13#10#13#10'The minimum setting is 50% and the maximum is 10' +
-          '0%'
-        WordWrap = True
-      end
-      object spinScaleFactor: TSpinEdit
-        Left = 296
-        Top = 289
-        Width = 51
-        Height = 24
-        MaxValue = 999999
-        MinValue = 0
-        TabOrder = 0
-        Value = 100
-        OnChange = spinScaleFactorChange
-      end
-      object btnScaleFactorReset: TButton
-        Left = 352
-        Top = 288
-        Width = 75
-        Height = 25
-        Caption = 'Default'
-        TabOrder = 1
-        OnClick = btnScaleFactorResetClick
       end
     end
   end
