@@ -44,8 +44,10 @@ Ctrl-Shift-**B** = reset caption color/brightness<br />
 
 **Other**<br />
 **Spacebar** = pause/play\*<br />
+Ctrl-**I** display this image in the Image & Thumbnail Browser<br />
 Ctrl-**R** = toggle infinite repeat<br />
 Ctrl-**S** = toggle [S]ubtitles<br />
+Ctrl-**W** go to the Wiki at MinimalistMediaPlayer.com<br />
 **T** show thumbnails if this is an image (else Tab)<br />
 **Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows<br />

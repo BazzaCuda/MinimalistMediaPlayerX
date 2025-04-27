@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsSlideshowIntervalMs
+    ActivePage = tsPlaylist
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -2705,9 +2705,9 @@ object ConfigForm: TConfigForm
         ExplicitWidth = 380
       end
       object Label46: TLabel
-        Left = 16
+        Left = 0
         Top = 16
-        Width = 547
+        Width = 574
         Height = 266
         Alignment = taCenter
         AutoSize = False
@@ -2716,14 +2716,15 @@ object ConfigForm: TConfigForm
           'ndow and the other in the Image && Thumbnail Browser'#13#10#13#10'Both ope' +
           'rate slightly differently. This is deliberate so that you can ch' +
           'oose'#13#10'which of the two slideshows suits your particular requirem' +
-          'ents at any given time'#13#10#13#10'Depending on your settings, the main w' +
-          'indow slideshow can'#13#10'cycle through all the images on an entire d' +
-          'rive'#13#10#13#10'In the Image && Thumbnail Browser, the slideshow will co' +
-          'ntinuously'#13#10'loop through all the images in one folder.'#13#10'If you w' +
-          'ant the slideshow to move to a different folder'#13#10'you can use the' +
-          ' appropriate folder navigation keys'#13#10#13#10'Both slideshows use the s' +
-          'ame setting for the interval between images'#13#10'The minimum (fastes' +
-          't) is 100ms - There is no maximum'
+          'ents at any given time'#13#10#13#10'Depending on your playlist settings, t' +
+          'he main window slideshow can'#13#10'cycle through all the images on an' +
+          ' entire drive'#13#10#13#10'In the Image && Thumbnail Browser, the slidesho' +
+          'w will continuously'#13#10'loop through all the images in one folder.'#13 +
+          #10'If you want the slideshow to move to a different folder you can' +
+          ' use the appropriate folder navigation keys'#13#10'You can also slow d' +
+          'own and speed up the slideshow using the [\] and [/] keys '#13#10#13#10'Bo' +
+          'th slideshows use the same setting for the interval between imag' +
+          'es'#13#10'The minimum (fastest) is 100ms - There is no maximum'
         WordWrap = True
       end
       object spinSlideshowIntervalMs: TSpinEdit

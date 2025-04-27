@@ -10,10 +10,10 @@ Ctrl-**G**, un[G]reater window size, hold<br />
 **J** ad[J]ust to image aspect ratio<br />
 **M** [M]aximize maintaining aspect ratio<br />
 **N** mi[N]imize window to taskbar<br />
-Numpad **Subtract**, reduce height\*<br />
-Numpad **Add**, increase height\*<br />
-Ctrl-Numpad **Subtract**, reduce width\*<br />
-Ctrl-Numpad **Add**, increase width\*<br />
+Numpad **Subtract**, reduce height by 1 pixel\*<br />
+Numpad **Add**, increase height by 1 pixel\*<br />
+Ctrl-Numpad **Subtract**, reduce width by 1 pixel\*<br />
+Ctrl-Numpad **Add**, increase width by 1 pixel\*<br />
 
 _\* add **SHIFT** for greater change_<br />
 _\** ignores exitBrowser setting_<br />
@@ -40,7 +40,9 @@ _\* add **SHIFT** for greater change_<br />
 **Other**<br />
 Ctrl-**A** show About Box<br />
 Ctrl-**H** toggle Help window<br />
+Ctrl-**W** go to the Wiki at MinimalistMediaPlayer.com<br />
 **T** show thumbnails<br />
 **Y** show thumbnails<br />
+
 
 
