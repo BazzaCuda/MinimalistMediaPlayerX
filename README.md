@@ -105,9 +105,12 @@ The following list may be missing some of the very latest - see the [Wiki](https
 
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
+Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `[5]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
+
 Control | Action
 ------- | ------
 `Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
+`Shift-\`               | display the `MMP` config dialog
 `ESCape`                | exit `[F]`ullscreen mode, or exit the app if not in `[F]`ullscreen mode. Also closes all popup dialog boxes and messages
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `Right-Click`           | pause/resume playback of audio/video. pause/resume slideshow of images
