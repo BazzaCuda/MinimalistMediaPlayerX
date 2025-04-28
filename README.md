@@ -176,8 +176,8 @@ Control | Action
 `Ctrl-K`                | `[K]`eep/delete: keep the `[K]ept` files in a folder, delete the others 
 `L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
 `N`                     | mi`[N]`imize window to the Windows taskbar
 `Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
 `O`                     | zoom `[O]`ut. Can be held down for rapid zooming
@@ -247,8 +247,8 @@ Control | Action
 `Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
 `R`                     | `[R]`ename the current media file
 `Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
