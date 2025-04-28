@@ -7,6 +7,9 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 
 _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended settings. After running `mmp-install.bat` to register all the file extensions that `MMP` supports, this will allow you to take full advantage of the image library management controls in the `Image & Thumbnail Browser` by operating `MMP` as [in effect] two applications in one: the main media window for playing (and editing) audio and video files, and the `Image & Thumbnail Browser` for managing your image library._
 
+`Ctrl-[H]` to view the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the many controls for audio, video, and images.
+
+`Shift-[\]` to view the `MMP` config window.
 
 **MMP: Minimalist Media Player**
 
