@@ -496,18 +496,9 @@ object ConfigForm: TConfigForm
           'explorer software'#13#10'MMP builds a playlist from all the supported ' +
           'file extensions in that folder and starts playing'
       end
-      object Label22: TLabel
-        Left = 19
-        Top = 44
-        Width = 362
-        Height = 15
-        Caption = 
-          'MMP should move to the next folder and start playing a new playl' +
-          'ist:'
-      end
       object Label23: TLabel
         Left = 28
-        Top = 171
+        Top = 185
         Width = 521
         Height = 30
         Alignment = taCenter
@@ -548,34 +539,84 @@ object ConfigForm: TConfigForm
         Width = 391
         Height = 1
       end
+      object Label47: TLabel
+        Left = 10
+        Top = 45
+        Width = 106
+        Height = 15
+        Caption = 'Next Folder on End'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label22: TLabel
+        Left = 10
+        Top = 84
+        Width = 121
+        Height = 15
+        Caption = 'Next Folder on Empty'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label48: TLabel
+        Left = 10
+        Top = 235
+        Width = 110
+        Height = 15
+        Caption = 'Allow into Windows'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label49: TLabel
+        Left = 159
+        Top = 84
+        Width = 359
+        Height = 30
+        Caption = 
+          'MMP should move to the next folder and start playing a new playl' +
+          'ist'#13#10'when you empty the current playlist folder using one of:'
+      end
       object chbNextFolderOnEnd: TCheckBox
-        Left = 73
-        Top = 63
-        Width = 430
+        Left = 156
+        Top = 45
+        Width = 391
         Height = 33
         Alignment = taLeftJustify
-        Caption = 'At the end of playing the current playlist'
+        Caption = 
+          'MMP should move to the next folder and start playing a new playl' +
+          'ist'#13#10'at the end of playing the current playlist'
         TabOrder = 0
         OnClick = chbNextFolderOnEndClick
       end
       object chbNextFolderOnEmpty: TCheckBox
-        Left = 70
-        Top = 102
-        Width = 430
+        Left = 199
+        Top = 117
+        Width = 348
         Height = 63
         Alignment = taLeftJustify
         Caption = 
-          'When you empty the playlist folder by:'#13#10'   a) Ctrl-[Del]ete all ' +
-          'the remaining files in a folder* '#13#10'   b) Ctrl-[K]eep/delete all ' +
-          'except those marked as [K]eep files (start with a "!")'#13#10'   c) [D' +
-          ']elete the last remaining file in a folder'
+          '   a) Ctrl-[Del]ete all the remaining files in a folder* '#13#10'   b)' +
+          ' Ctrl-[K]eep/Delete all except those marked as [K]eep files'#13#10'   ' +
+          '         ([K]eep files start with a "!")'#13#10'   c) [Del]ete the las' +
+          't remaining file in a folder'
         TabOrder = 1
         OnClick = chbNextFolderOnEmptyClick
       end
       object chbAllowIntoWindows: TCheckBox
-        Left = 103
+        Left = 156
         Top = 235
-        Width = 369
+        Width = 391
         Height = 33
         Alignment = taLeftJustify
         Caption = 

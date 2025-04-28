@@ -184,7 +184,9 @@ begin
   Application.CreateForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
-  application.onException := mmpException.handler;
+  try
+    application.onException := mmpException.handler;
+  except end;
 
   initUI(MMPUI);
 

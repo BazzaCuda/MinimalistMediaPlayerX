@@ -1,3 +1,21 @@
+{   MMP: Minimalist Media Player
+    Copyright (C) 2021-2099 Baz Cuda
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+}
 unit view.mmpFormConfig;
 
 interface
@@ -55,7 +73,6 @@ type
     Label21: TLabel;
     chbNextFolderOnEnd: TCheckBox;
     chbNextFolderOnEmpty: TCheckBox;
-    Label22: TLabel;
     Label23: TLabel;
     chbAllowIntoWindows: TCheckBox;
     Label24: TLabel;
@@ -140,6 +157,10 @@ type
     btnSlideshowIntervalMsDefault: TButton;
     Label45: TLabel;
     Label46: TLabel;
+    Label47: TLabel;
+    Label22: TLabel;
+    Label48: TLabel;
+    Label49: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
