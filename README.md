@@ -11,6 +11,8 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 `Shift-[\]` to view the `MMP` config window.
 
+`Ctrl-[E]` from the `Main Media Window` to open the `Timeline Editor` for fast, lossless editing of audio and video files.
+
 **MMP: Minimalist Media Player**
 
 A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
