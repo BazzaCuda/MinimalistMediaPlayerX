@@ -9,7 +9,7 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 - `Ctrl-[H]` to view the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the many controls for audio, video, and images.
 
-- `Shift-[\]` to view the `MMP` config window.
+- `Shift-[\]` to view the `MMP` config window - contains explanations of all the options.
 
 - `Ctrl-[E]` from the `Main Media Window` to open the `Timeline Editor` for fast, lossless editing of audio and video files.
 
