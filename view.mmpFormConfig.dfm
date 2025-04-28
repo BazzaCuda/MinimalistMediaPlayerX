@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsPlaylist
+    ActivePage = tsDeletions
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -394,7 +394,7 @@ object ConfigForm: TConfigForm
         Height = 40
         Alignment = taLeftJustify
         Caption = 
-          'Ctrl-[K]eep/delete can delete all the files in a folder*'#13#10'except' +
+          'Ctrl-[K]eep/Delete can delete all the files in a folder*'#13#10'except' +
           ' those marked as [K]eep files (start with a "!")'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
