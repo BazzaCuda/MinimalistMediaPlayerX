@@ -162,7 +162,7 @@ Control | Action
 `D`                     | navigate to the next `[D]`irectory aka Folder
 `Ctrl-D`                | navigate to the previous `[D]`irectory aka Folder 
 `E`                     | `[E]`ars - mute/unmute sound
-`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files
 `F`                     | show/cancel `[F]`ullScreen mode
 `Ctrl-F`                | open your `[F]`ile Explorer at the current folder
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
@@ -232,6 +232,7 @@ Control | Action
 `9`                     | increase contrast. Can be held down for rapid increase
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files|
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
