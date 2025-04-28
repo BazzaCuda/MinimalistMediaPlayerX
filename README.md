@@ -45,6 +45,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
+`MMP` (`v4.3.0`) Added a config dialog (`Shift-[\]`) to explain and configure all the settings in the `MinimalistMediaPlayer.conf` file
+
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
 
 `MMP` (`v4.0.2`) `Ctrl-Shift [C]` will clean-up your leftover audio and video editing files in the current playlist folder.
