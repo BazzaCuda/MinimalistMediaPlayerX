@@ -7,6 +7,11 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 
 _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended settings. After running `mmp-install.bat` to register all the file extensions that `MMP` supports, this will allow you to take full advantage of the image library management controls in the `Image & Thumbnail Browser` by operating `MMP` as [in effect] two applications in one: the main media window for playing (and editing) audio and video files, and the `Image & Thumbnail Browser` for managing your image library._
 
+- `Ctrl-[H]` to view the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the many controls for audio, video, and images.
+
+- `Shift-[\]` to view the `MMP` config window - contains explanations of all the options.
+
+- `Ctrl-[E]` from the `Main Media Window` to open the `Timeline Editor` for fast, lossless editing of audio and video files.
 
 **MMP: Minimalist Media Player**
 
@@ -18,7 +23,7 @@ The window resizes to fit the video perfectly, eliminating ugly black borders/ba
 
 This is a complete rewrite of (and supercedes) an earlier project which was based on Windows Media Player. As such, this incarnation of `MMP: Minimalist Media Player` provides far superior media file handling and playback functionality such as zoom, pan, step frame (forwards and backwards!), rotation, brightness control, playback speed, etc.
 ![Clipboard Image (1)](https://github.com/BazzaCuda/MinimalistMediaPlayerX/assets/22550919/dcf21a34-657a-4221-b926-58f06078d19e)
-`Ctrl-[H]` both in the main media window and in the `Image & Thumbnail Browser` to view the Help panel listing all the many controls for audio, video, and images.
+`Ctrl-[H]` both in the `Main Media Window` and in the `Image & Thumbnail Browser` to view the Help panel listing all the many controls for audio, video, and images.
 
 Media File Formats
 ------------------
@@ -44,6 +49,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 
 Significant Releases
 --------------------
+
+`MMP` (`v4.3.0`) Added a config dialog (`Shift-[\]`) to explain and configure all the settings in the `MinimalistMediaPlayer.conf` file
 
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
 
@@ -103,9 +110,12 @@ The following list may be missing some of the very latest - see the [Wiki](https
 
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
+Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `[5]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
+
 Control | Action
 ------- | ------
 `Ctrl-H`                | toggle the `[H]`elp panel listing all the keyboard and mouse functions
+`Shift-\`               | display the `MMP` config dialog
 `ESCape`                | exit `[F]`ullscreen mode, or exit the app if not in `[F]`ullscreen mode. Also closes all popup dialog boxes and messages
 `SPACEBAR`              | pause/resume playback of audio/video. pause/resume slideshow of images
 `Right-Click`           | pause/resume playback of audio/video. pause/resume slideshow of images
@@ -160,7 +170,7 @@ Control | Action
 `D`                     | navigate to the next `[D]`irectory aka Folder
 `Ctrl-D`                | navigate to the previous `[D]`irectory aka Folder 
 `E`                     | `[E]`ars - mute/unmute sound
-`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files
 `F`                     | show/cancel `[F]`ullScreen mode
 `Ctrl-F`                | open your `[F]`ile Explorer at the current folder
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
@@ -174,8 +184,8 @@ Control | Action
 `Ctrl-K`                | `[K]`eep/delete: keep the `[K]ept` files in a folder, delete the others 
 `L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
 `N`                     | mi`[N]`imize window to the Windows taskbar
 `Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
 `O`                     | zoom `[O]`ut. Can be held down for rapid zooming
@@ -230,6 +240,7 @@ Control | Action
 `9`                     | increase contrast. Can be held down for rapid increase
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files|
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
@@ -245,8 +256,8 @@ Control | Action
 `Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moveFolder=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
 `R`                     | `[R]`ename the current media file
 `Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
