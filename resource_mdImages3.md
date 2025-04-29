@@ -1,6 +1,6 @@
 **Window Control**<br />
 Ctrl-**0** close all instances of MMP
-**ESC**ape, exit fullscreen or Image Browser<br />
+**ESC**ape, exit fullscreen or dialog or Image Browser<br />
 **X** e[X]it fullscreen or Image Browser<br />
 Ctrl-**X** e[X]it to main MMP window\*\*<br />
 **F** show/cancel [F]ullscreen<br />
@@ -43,6 +43,7 @@ Ctrl-**H** toggle Help window<br />
 Ctrl-**W** go to the Wiki at MinimalistMediaPlayer.com<br />
 **T** show thumbnails<br />
 **Y** show thumbnails<br />
+Shift-**\\** show config dialog<br />
 
 
 

@@ -190,7 +190,7 @@ begin
 
   initUI(MMPUI);
 
-  MMPUI.viewModel.playlist      := newPlaylist;
+  MMPUI.viewModel.playlist := newPlaylist;
 
   mmp.cmd(evGSNoPlaylist, PS.noPlaylist);
 

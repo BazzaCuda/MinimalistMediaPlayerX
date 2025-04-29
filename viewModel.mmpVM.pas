@@ -741,6 +741,7 @@ begin
   moveHelp;
   movePlaylist;
   moveTimeline;
+  mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
   FResizingWindow := FALSE;
 end;
 
@@ -995,6 +996,8 @@ begin
   mmpSetWindowSize(GS.mainForm.handle, vPt);
 
   mmp.cmd(evWndResize); // reposition the help, playlist and timeline windows
+
+  mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
 
   FResizingWindow := FALSE;
   result          := TRUE;

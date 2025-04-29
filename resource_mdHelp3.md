@@ -1,5 +1,5 @@
 **Window Control**<br />
-**ESC**ape, exit fullscreen or app<br />
+**ESC**ape, exit fullscreen or dialog or app<br />
 **F** show/cancel [F]ullscreen<br />
 **G** [G]reater window size, hold<br />
 Ctrl-**G**, un[G]reater window size, hold<br />
@@ -52,6 +52,8 @@ Ctrl-**W** go to the Wiki at MinimalistMediaPlayer.com<br />
 **Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows<br />
 **X** = e[X]it fullscreen or app<br />
+Shift-**\\** show config dialog<br />
+
 
 \* for an image, toggles main slideshow playing/paused
 
