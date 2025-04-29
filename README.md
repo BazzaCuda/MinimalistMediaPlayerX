@@ -11,7 +11,7 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 - `Shift-[\]` to open the `MMP` config window - contains explanations of all the options.
 
-- `Ctrl-[E]` from the `Main Media Window` to open the `Timeline Editor` for fast, lossless editing of audio and video files.
+- `Ctrl-[E]` from the `Main Media Window` to open the `Audio & Video Timeline Editor` for fast, lossless editing of audio and video files.
 
 **MMP: Minimalist Media Player**
 
