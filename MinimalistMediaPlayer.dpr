@@ -191,7 +191,9 @@ begin
   initUI(MMPUI);
 
   MMPUI.viewModel.playlist      := newPlaylist;
-  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk));
+
+  case PS.noPlaylist of  TRUE:  MMPUI.viewModel.playlist.add(PS.fileFolderAndName);
+                        FALSE:  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk)); end;
 
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
 

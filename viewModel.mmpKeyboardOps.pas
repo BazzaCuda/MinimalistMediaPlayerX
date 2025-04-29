@@ -109,6 +109,7 @@ begin
     koPausePlay:          mmp.cmd(evPAPostToAll, WIN_PAUSE_PLAY);
     koPBReset:            begin mmp.cmd(evMCReset); mmp.cmd(evPBReset); mmp.cmd(evSTReset); end;
     koPrevChapter:        MP.notify(newNotice(evMPPrevChapter));
+    koPlayEdited:         mmp.cmd(evVMMPPlayEdited);
     koPlayFirst:          mmp.cmd(evVMMPPlayFirst);
     koPlayLast:           mmp.cmd(evVMMPPlayLast);
     koPlayNext:           mmp.cmd(evVMMPPlayNext);

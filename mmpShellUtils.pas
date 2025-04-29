@@ -84,7 +84,7 @@ end;
 
 function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
 begin
-  shellExecute(0, 'open', pChar(anExePath), pChar('"' + aParams + '"'), '', SW_SHOW);
+  shellExecute(0, 'open', pChar(anExePath), pChar(aParams), '', SW_SHOW);
 end;
 
 end.

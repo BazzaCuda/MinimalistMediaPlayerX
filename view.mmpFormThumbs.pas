@@ -839,7 +839,7 @@ begin
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
-    koExploreFolder:      mmpShellExec(FThumbs.currentFolder, '');
+    koExploreFolder:      mmpShellExec(FThumbs.currentFolder);
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);

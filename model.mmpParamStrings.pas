@@ -26,9 +26,11 @@ type
     function getFileFolder:         string;
     function getFileFolderAndName:  string;
     function getNoFile:             boolean;
+    function getNoPlaylist:         boolean;
     property fileFolder:            string      read getFileFolder;
     property fileFolderAndName:     string      read getFileFolderAndName;
     property noFile:                boolean     read getNoFile;
+    property noPlaylist:            boolean     read getNoPlaylist;
   end;
 
   TParamStrings = class(TInterfacedObject, IParamStrings)
@@ -36,6 +38,7 @@ type
     function getFileFolder:         string;
     function getFileName:           string;
     function getNoFile:             boolean;
+    function getNoPlaylist:         boolean;
     function getFileFolderAndName:  string;
   public
     property fileFolder:            string      read getFileFolder;
@@ -77,6 +80,11 @@ end;
 function TParamStrings.getNoFile: boolean;
 begin
   result := trim(fileFolderAndName) = '';
+end;
+
+function TParamStrings.getNoPlaylist: boolean;
+begin
+  result := lowerCase(trim(paramStr(2))) = 'noplaylist';
 end;
 
 end.

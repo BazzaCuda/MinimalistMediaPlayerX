@@ -31,6 +31,7 @@ type
 
   IPlaylist = interface
     ['{EAA8F4FC-4F65-4080-B25F-5F5CA08309D9}']
+    function    add(const anItem: string):                  boolean;
     function    clear:                                      boolean;
     function    copyToClipboard:                            string;
     function    count:                                      integer;
@@ -362,6 +363,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
+    evPLAddItem:            add(aNotice.text);
     evPLCopyToClipboard:    aNotice.text  := copyToClipboard;
     evPLDeleteIx:           aNotice.tf    := deleteIx(aNotice.integer);
     evPLFillPlaylist:       fillPlaylist(aNotice.text, [aNotice.mediaType]);

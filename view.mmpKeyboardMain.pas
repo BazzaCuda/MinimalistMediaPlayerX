@@ -31,6 +31,7 @@ implementation
 uses
   winApi.shellApi, winApi.windows,
   system.sysUtils, system.types,
+  vcl.Dialogs,
   _debugWindow;
 
 const
@@ -111,8 +112,9 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(C) and     ctrl and     shift                                of TRUE: result := koCleanup; end;
     case keyDn and keyIs(D) and     ctrl                                              of TRUE: result := koPlayPrevFolder; end;
     case keyDn and keyIs(D) and NOT ctrl                                              of TRUE: result := koPlayNextFolder; end;
-    case keyUp and keyIs(E) and     ctrl                                              of TRUE: result := koToggleEditMode; end;
-    case keyUp and keyIs(E) and NOT ctrl                                              of TRUE: result := koMuteUnmute; end;
+    case keyUp and keyIs(E) and     ctrl and NOT shift                                of TRUE: result := koToggleEditMode; end;
+    case keyUp and keyIs(E) and NOT ctrl and NOT shift                                of TRUE: result := koMuteUnmute; end;
+    case keyUp and keyIs(E) and NOT ctrl and     shift and      GS.showingTimeline    of TRUE: result := koPlayEdited; end;
     case keyUp and keyIs(F) and     ctrl                                              of TRUE: result := koExploreFolder; end;
     case keyUp and keyIs(F) and NOT ctrl                                              of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;
@@ -123,7 +125,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(J)                                                           of TRUE: result := koAdjustAspectRatio; end;
     case keyUp and keyIs(K) and     ctrl                                              of TRUE: result := koKeepDelete; end;
     case keyUp and keyIs(K) and NOT ctrl                                              of TRUE: result := koKeep; end;
-    case keyUp and keyIs(L)                             and NOT GS.showingTimeline    of TRUE: result := koReloadPlaylist; end;
+    case keyUp and keyIs(L) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koReloadPlaylist; end;
     case keyUp and keyIs(M) and     ctrl                                              of TRUE: result := koKeepMove; end;
     case keyUp and keyIs(M) and NOT ctrl and     shift                                of TRUE: result := koKeepMove; end;
     case keyUp and keyIs(M) and NOT ctrl and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koMaximize; end;
@@ -131,7 +133,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(N) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koMinimizeWindow; end;
     case keyDn and keyIs(O)                             and NOT GS.showingTimeline    of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(P)                                                           of TRUE: result := koTogglePlaylist; end;
-    case keyUp and keyIs(P) and     ctrl                                              of TRUE: result := koToggleFiltering; end;
+    case keyUp and keyIs(P) and     ctrl                and NOT GS.showingTimeline    of TRUE: result := koToggleFiltering; end;
     case keyUp and keyIs(Q)                                                           of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(R) and     ctrl                                              of TRUE: result := koToggleRepeat; end;
     case keyUp and keyIs(R) and NOT ctrl                                              of TRUE: result := koRenameFile; end;

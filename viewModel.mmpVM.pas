@@ -93,7 +93,7 @@ uses
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormConfirmDelete, mmpFormatting, mmpFuncProg, mmpGlobalState,
-  mmpKeyboardUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
+  mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
@@ -128,6 +128,7 @@ type
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
     function    doCleanup:            boolean;
+    function    doPlayEdited:         boolean;
     function    doPlayNext:           boolean;
     function    doPlayPrev:           boolean;
     function    doEscapeKey:          boolean;
@@ -351,6 +352,16 @@ end;
 function TVM.doEscapeKey: boolean;
 begin
   mmp.cmd(GS.mainForm.windowState = wsMaximized, evVMToggleFullscreen, evAppClose);
+end;
+
+function TVM.doPlayEdited: boolean;
+begin
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
+  var vPath := extractFilePath(vCurrentItem);
+  var vFile := mmpFileNameWithoutExtension(vCurrentItem);
+  var vExt  := extractFileExt(vCurrentItem);
+  var vFN   := vPath + vFile + ' [edited]' + vExt;
+  case fileExists(vFN) of TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
 end;
 
 function TVM.doPlayNext: boolean;
@@ -646,6 +657,7 @@ begin
     evVMMovePlaylist:       movePlaylist(aNotice.tf);
     evVMMoveTimeline:       moveTimeline(aNotice.tf);
     evVMMPPlayCurrent:      mmpPlayCurrent;
+    evVMMPPlayEdited:       doPlayEdited;
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
     evVMMPPlayNext:         doPlayNext;
