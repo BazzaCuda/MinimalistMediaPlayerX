@@ -183,8 +183,8 @@ begin
     evMPDuration:             setMax(aNotice.integer);
     evMPPosition:             FPB.position := aNotice.integer;
 
-    evSTBlankInTimeCaption:   setShowProgressBar(TRUE);
-    evSTBlankOutTimeCaption:  setShowProgressBar(FALSE);
+    evSTBlankInTimeCaption:   case FShowProgressBar of TRUE: setShowProgressBar(TRUE); end;
+    evSTBlankOutTimeCaption:  case FShowProgressBar of TRUE: setShowProgressBar(FALSE); end;
 
     evWndResize:              formResize;
   end;
