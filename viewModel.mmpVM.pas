@@ -598,7 +598,7 @@ begin
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  mmp.cmd(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
 
-    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
+    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
                       FMPDuration     := aNotice.integer;

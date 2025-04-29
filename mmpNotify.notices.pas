@@ -35,7 +35,7 @@ type
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
-    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig,
+    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 

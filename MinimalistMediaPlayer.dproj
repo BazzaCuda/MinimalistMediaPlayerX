@@ -120,6 +120,8 @@
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Release>1</VerInfo_Release>
+        <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\releases\full"
+$(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -1382,6 +1384,14 @@ $(PostBuildEvent)]]></PostBuildEvent>
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
+    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
+        <PreBuildEvent/>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\releases\full&quot;</PostBuildEvent>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
         <PreBuildEvent/>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
