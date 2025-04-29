@@ -171,6 +171,7 @@ Control | Action
 `Ctrl-D`                | navigate to the previous `[D]`irectory aka Folder 
 `E`                     | `[E]`ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files
+`Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window 
 `F`                     | show/cancel `[F]`ullScreen mode
 `Ctrl-F`                | open your `[F]`ile Explorer at the current folder
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
