@@ -11,7 +11,7 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 - `Shift-[\]` to open the `MMP` config window - contains explanations of all the options.
 
-- `Ctrl-[E]` from the `Main Media Window` to open the `Timeline Editor` for fast, lossless editing of audio and video files.
+- `Ctrl-[E]` from the `Main Media Window` to open the `Audio & Video Timeline Editor` for fast, lossless editing of audio and video files.
 
 **MMP: Minimalist Media Player**
 
@@ -110,7 +110,7 @@ The following list may be missing some of the very latest - see the [Wiki](https
 
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
-Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `[5]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
+Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `Ctrl-[S]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
 
 Control | Action
 ------- | ------
@@ -171,6 +171,7 @@ Control | Action
 `Ctrl-D`                | navigate to the previous `[D]`irectory aka Folder 
 `E`                     | `[E]`ars - mute/unmute sound
 `Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files
+`Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window 
 `F`                     | show/cancel `[F]`ullScreen mode
 `Ctrl-F`                | open your `[F]`ile Explorer at the current folder
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
@@ -184,8 +185,8 @@ Control | Action
 `Ctrl-K`                | `[K]`eep/delete: keep the `[K]ept` files in a folder, delete the others 
 `L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `N`                     | mi`[N]`imize window to the Windows taskbar
 `Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
 `O`                     | zoom `[O]`ut. Can be held down for rapid zooming
@@ -196,7 +197,7 @@ Control | Action
 `Ctrl-R`                | toggle infinite `[R]`epeat of the current media file
 `S`                     | re`[S]`tart the current media file from the beginning, aka `[S]`tartover
 `Ctrl-S`                | toggle `[S]`ubtitles on/off
-`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
+`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` user folder in .conf file
 `T`                     | `[T]`ab through the audio or video file. See below in Category section
 `T`                     | if viewing an image, open the `Image & [T]humbnail Browser` 
 `U`                     | `[U]`nzoom, i.e. re-fit the video to the window
@@ -240,7 +241,8 @@ Control | Action
 `9`                     | increase contrast. Can be held down for rapid increase
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
-`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files|
+`Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files 
+`Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window 
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
@@ -256,10 +258,10 @@ Control | Action
 `Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` setting in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `R`                     | `[R]`ename the current media file
-`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` setting in .conf file
+`Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` user folder in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
 `F2`                    | rename media file with category prefix 2 defined in `MinimalistMediaPlayer.conf`
 `F3`                    | rename media file with category prefix 3 defined in `MinimalistMediaPlayer.conf`
@@ -328,7 +330,7 @@ Control | Action
 `}`                     | increase saturation. Can be held down for rapid increase
 `;`                     | reset saturation to normal
 **Screenshots** | 
-`F5`                    | save a screenshot of the current frame or the currently displayed image
+`F5`                    | save a screenshot of the current frame or the currently displayed image. The resulting image file will have the same dimensions as the `MMP` window
 **Speed** | 
 `Numpad -`              | decrease playback speed. Can be held down for rapid decrease
 `\`                     | decrease playback speed. Can be held down for rapid decrease
@@ -386,7 +388,7 @@ Control | Action
 `F12`                   | open media file in ShotCut editor (assumes default installation folder) - can be overridden in .conf
 `Ctrl-A`                | show `[A]`bout Box. Checks for updates if _autoUpdate=yes_ is in .conf
 `Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing
-`Ctrl-F`                | open your `[F]`ile Explorer at the current [F]older
+`Ctrl-F`                | open your `[F]`ile Explorer at the current `[F]`older
 `Ctrl-H`                | show `[H]`elp panel of all keyboard and mouse controls
 `Ctrl-I`                | open an `[I]`mage in the `[I]mage & Thumbnail Browser`
 `Ctrl-R`                | toggle infinite `[R]`epeat of the current media file
