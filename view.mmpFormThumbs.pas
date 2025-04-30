@@ -107,8 +107,10 @@ type
     function whichHost:           THostType;
     function windowSize(const aKeyOp: TKeyOp): boolean;
   protected
+    procedure beginDrag;
     procedure CreateParams(var params: TCreateParams); override;
     procedure onDoubleClick(sender: TObject);
+    procedure onMouseDown(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage); message WM_MOVE;
@@ -194,6 +196,12 @@ begin
   case GS.autoCenter of TRUE: mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;
 end;
 
+procedure TThumbsForm.beginDrag;
+begin
+  releaseCapture; // Release any existing mouse capture
+  perform(WM_SYSCOMMAND, $F012, 0); // SC_MOVE | HTCAPTION to simulate title bar drag
+end;
+
 function TThumbsForm.checkThumbsPerPage: boolean;
 begin
   var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
@@ -245,11 +253,12 @@ end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
-  FMPVHost            := TMPVHost.create(SELF);
-  FMPVHost.parent     := SELF;
-  FMPVHost.onDblClick := onDoubleClick;
-  FMPVHost.onOpenFile := onOpenFile;
-  FMPVHost.onMouseUp  := onMouseUp;
+  FMPVHost              := TMPVHost.create(SELF);
+  FMPVHost.parent       := SELF;
+  FMPVHost.onDblClick   := onDoubleClick;
+  FMPVHost.onOpenFile   := onOpenFile;
+  FMPVHost.onMouseDown  := onMouseDown;
+  FMPVHost.onMouseUp    := onMouseUp;
 
   mmpInitStatusBar(FStatusBar);
 
@@ -436,6 +445,13 @@ end;
 procedure TThumbsForm.onDoubleClick(sender: TObject);
 begin
   SELF.windowState := mmp.use<TWindowState>(SELF.windowState = wsMaximized, wsNormal, wsMaximized);
+end;
+
+procedure TThumbsForm.onMouseDown(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
+begin
+  case button = mbLeft of FALSE: EXIT; end;
+  case whichHost = htMPVHost of FALSE: EXIT; end;
+  beginDrag;
 end;
 
 procedure TThumbsForm.onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
