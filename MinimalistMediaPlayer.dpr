@@ -198,6 +198,7 @@ begin
                         FALSE:  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk)); end;
 
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
+  mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
   MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy
 

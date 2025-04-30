@@ -141,7 +141,7 @@ begin
     koThumbnails:         mmp.cmd(evVMShowThumbs);
     koToggleProgressBar:  mmp.cmd(evPBToggleProgressBar);
     koToggleControls:     mmp.cmd(evPAPostToAll, WIN_TOGGLE_CONTROLS);
-    koToggleEditMode:     mmp.cmd(evVMToggleEditMode);
+    koToggleEditMode:     mmp.cmd(evPAPostToAll, WIN_TOGGLE_EDIT_MODE);
     koToggleFiltering:    mmp.cmd(evVMToggleFiltering);
     koToggleHelp:         mmp.cmd(evVMToggleHelp);
     koToggleNumlock:      mmpToggleNumlock;

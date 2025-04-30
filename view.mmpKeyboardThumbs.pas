@@ -106,6 +106,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(D)           and NOT ctrl                              of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(E)                                                     of TRUE: result := koPrevFolder; end;
     case keyUp and keyIs(F)           and     ctrl                              of TRUE: result := koExploreFolder; end;
+    case keyUp and keyIs(F)           and NOT ctrl                              of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                     of TRUE: result := koGreaterWindow; end;
     case keyUp and keyIs(H)           and     ctrl                              of TRUE: result := koToggleHelp; end;
     case keyUp and keyIs(H)           and NOT ctrl                              of TRUE: result := koCentreWindow; end;
@@ -179,9 +180,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
 //    case keyUp and keyIs(_5)                                    of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_6)                                    of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_7)                                    of TRUE: result := koNone; end;
-//    case keyUp and keyIs(_9) and ctrl                           of TRUE: result := koNone; end;
 //    case keyUp and keyIs(V)                                     of TRUE: result := koNone; end;
-//    case keyUp and keyIs(E) and ctrl                            of TRUE: result := koNone; end;
   end;
 
 begin

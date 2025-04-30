@@ -840,6 +840,7 @@ begin
     koContrastReset:      mpvContrastReset(mpv);
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
     koExploreFolder:      mmpShellExec(FThumbs.currentFolder);
+    koFullscreen:         onDoubleClick(NIL);
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
@@ -893,7 +894,6 @@ begin
     koWindowWider:        windowSize(aKeyOp);
 
     koShowCaption:;
-    koFullscreen:;
     koToggleControls:;
     koToggleBlackout:;
     koBrighterPB:;

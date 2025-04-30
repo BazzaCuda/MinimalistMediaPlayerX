@@ -42,20 +42,21 @@ const
   MAX_SCALE_FACTOR      = 100;
   DEFAULT_SCALE_FACTOR  =  90;
 
-  WIN_AUTOCENTER_OFF  = WM_APP + 2001;
-  WIN_CAPTION         = WM_APP + 2002;
-  WIN_CLOSEAPP        = WM_APP + 2003;
-  WIN_GREATER         = WM_APP + 2004;
-  WIN_MAX_SIZE_OFF    = WM_APP + 2005;
-  WIN_PAUSE_PLAY      = WM_APP + 2006;
-  WIN_RESIZE          = WM_APP + 2007;
-  WIN_START_OVER      = WM_APP + 2008;
-  WIN_SYNC_MEDIA      = WM_APP + 2009;
-  WIN_TAB             = WM_APP + 2010;
-  WIN_TABTAB          = WM_APP + 2011;
-  WIN_TOGGLE_CONTROLS = WM_APP + 2012;
-  WIN_TOGGLE_REPEAT   = WM_APP + 2013;
-  WIN_MUTE_UNMUTE     = WM_APP + 2014;
+  WIN_AUTOCENTER_OFF    = WM_APP + 2001;
+  WIN_CAPTION           = WM_APP + 2002;
+  WIN_CLOSEAPP          = WM_APP + 2003;
+  WIN_GREATER           = WM_APP + 2004;
+  WIN_MAX_SIZE_OFF      = WM_APP + 2005;
+  WIN_PAUSE_PLAY        = WM_APP + 2006;
+  WIN_RESIZE            = WM_APP + 2007;
+  WIN_START_OVER        = WM_APP + 2008;
+  WIN_SYNC_MEDIA        = WM_APP + 2009;
+  WIN_TAB               = WM_APP + 2010;
+  WIN_TABTAB            = WM_APP + 2011;
+  WIN_TOGGLE_CONTROLS   = WM_APP + 2012;
+  WIN_TOGGLE_EDIT_MODE  = WM_APP + 2013;
+  WIN_TOGGLE_REPEAT     = WM_APP + 2014;
+  WIN_MUTE_UNMUTE       = WM_APP + 2015;
 
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';

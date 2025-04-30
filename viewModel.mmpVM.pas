@@ -72,6 +72,7 @@ type
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
+    procedure   onWinToggleEditMode(var msg: TMessage);
     procedure   onWinToggleRepeat(var msg: TMessage);
 
     procedure   setMediaPlayer(const aValue: IMediaPlayer);
@@ -183,6 +184,7 @@ type
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
+    procedure   onWinToggleEditMode(var msg: TMessage);
     procedure   onWinToggleRepeat(var msg: TMessage);
 
     function    onMPNotify(const aNotice: INotice):   INotice;
@@ -789,6 +791,11 @@ begin
   sendOpInfo(tab(mmpCapsLockOn, -1));
 end;
 
+procedure TVM.onWinToggleEditMode(var msg: TMessage);
+begin
+  mmp.cmd(evVMToggleEditMode);
+end;
+
 procedure TVM.onWinToggleRepeat(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPToggleRepeat));
@@ -934,11 +941,11 @@ begin
   vOldName := mmp.cmd(evPLReqCurrentItem).text;
   case aRenameType of
     rtUser:       vNewName := mmpRenameFile(vOldName);
-    rtKeep:       vNewName := mmpRenameFile(vOldName, '! '      + mmpFileNameWithoutExtension(vOldName));
+    rtKeep:       vNewName := mmpRenameFile(vOldName, '! '            + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF1:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F1] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF2:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F2] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF3:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F3] + mmpFileNameWithoutExtension(vOldName));
-    rtKeepCatF4:  vNewName := mmpRenameFile(vOldName, mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
+    rtKeepCatF4:  vNewName := mmpRenameFile(vOldName,                   mmpFileNameWithoutExtension(vOldName) + CF[CONF_CAT_F4]);
     rtKeepMove:   vNewName := mmpUserDstFolder('Moved') + extractFileName(vOldName);
     rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
