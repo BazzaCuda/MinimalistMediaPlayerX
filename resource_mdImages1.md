@@ -1,12 +1,14 @@
 
 **Brightness**<br />
-**\-** decrease  :hold to repeat<br />
-**=** increase  :hold to repeat<br />
+**\-** decrease<br />
+**=** increase<br />
+_(hold for rapid repeat)_<br />
 **0** reset brightness<br />
 
 **Contrast**<br />
-**8** decrease :hold to repeat<br />
-**9** increase  :hold to repeat<br />
+**8** decrease<br />
+**9** increase<br />
+_(hold for rapid repeat)_<br />
 **2** reset contrast<br />
 
 **File Control**<br />
@@ -26,8 +28,9 @@ _**\*** can be specified in Shift-_**\\** _Config Dialog_<br />
 _**&loz;** doesn't touch the contents of subfolders_<br />
 
 **Gamma**<br />
-**[** decrease :hold to repeat<br />
-**] **increase :hold to repeat<br />
+**[** decrease<br />
+**] **increase<br />
+_(hold for rapid repeat)_<br />
 **'** reset gamma<br />
 
 **Mouse**<br />
@@ -40,6 +43,7 @@ Double-click image, toggle Fullscreen<br />
 &darr; Ctrl-**Dn arrow**, pan down<br />
 &larr; Ctrl-**Left arrow**, pan left<br />
 &rarr; Ctrl-**Right arrow**, pan right<br />
+_(hold for rapid repeat)_<br />
 Mouse wheel up/down, pan up/down<br />
 Alt-Mouse wheel up/down, pan left/right<br />
 **3** reset panning<br />

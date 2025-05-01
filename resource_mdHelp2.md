@@ -62,16 +62,19 @@ CAPS LOCK+**T**, tab forward 200th duration<br />
 CAPS LOCK+CTRL-**T**, tab back 200th duration<br />
 _(hold for rapid repeat)_<br />
 
-_B hold down **TAB** or **T** to fast forward or fast reverse_br />
+_hold down **TAB** or **T** to fast forward or fast reverse_<br />
 
 **Volume**<br />
 &uarr; **Up** arrow, increase<br />
 &darr; **Dn** arrow, decrease<br />
 **Vol+** media key, increase<br />
 **Vol-** media key, decrease<br />
-_(hold for rapid repeat)_br />
-Vol **mute** media key, mute<br />
-**E** [E]ars, mute / unmute<br />
+_(hold for rapid repeat)_<br />
+
 Mouse wheel **Up**, vol up<br />
 Mouse wheel **Dn**, vol down<br />
+
+Vol **mute** media key, mute / unmute<br />
+**E** [E]ars, mute / unmute<br />
+
 Ctrl-**V** set Sys [V]ol Max<br />
