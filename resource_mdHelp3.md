@@ -16,7 +16,7 @@ Ctrl-**0** close all instances of MMP<br />
 **Zoom**\*<br />
 **I** zoom [I]n<br />
 **O** zoom [O]out<br />
-_hold for rapid repeat)_br />
+_(hold for rapid repeat)_<br />
 **U** [U]nzoom, i.e. cancel zoom<br />
 
 _\*(add **SHIFT** for quicker zooming)_<br />

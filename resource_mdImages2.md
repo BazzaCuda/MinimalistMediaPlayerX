@@ -44,8 +44,8 @@ Ctrl-**S**, save hi-res screenshot of altered image<br />
 **Slideshow**<br />
 **Spacebar** = pause/play slideshow<br />
 Ctrl-**Spacebar** reverse slideshow direction<br />
-**/**, increase speed, hold<br />
-**\\**, decrease speed, hold<br />
+**/**, increase speed<br />
+**\\**, decrease speed<br />
 _(hold for rapid repeat)_<br />
 **1** reset speed to [1]00% of default<br />
 

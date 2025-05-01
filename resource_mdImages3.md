@@ -19,6 +19,7 @@ Numpad **Add**, increase height by 1 pixel\*<br />
 Ctrl-Numpad **Subtract**, reduce width by 1 pixel\*<br />
 Ctrl-Numpad **Add**, increase width by 1 pixel\*<br />
 _(hold for rapid repeat)_<br />
+
 _\* add **SHIFT** for greater change_<br />
 
 _\** ignores exitBrowser setting_<br />
@@ -45,7 +46,7 @@ _\* add **SHIFT** for greater change_<br />
 
 **Other**<br />
 Ctrl-**A** show [A]bout Box<br />
-Ctrl-**H** toggle [H]elp window<br />
+Ctrl-**H** toggle [H]elp window open/close<br />
 Ctrl-**N** toggle [N]umlock on/off<br />
 Ctrl-**W** go to the [W]iki at MinimalistMediaPlayer.com<br />
 **T** show thumbnails<br />

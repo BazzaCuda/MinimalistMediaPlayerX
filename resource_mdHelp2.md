@@ -18,9 +18,9 @@ On an Image:<br />
 &uarr; **Up arrow**, previous folder<br />
 
 Other:<br />
-**P** toggle the [P]laylist panel<br />
-Ctrl-**P** toggle [P]laylist filter<br />
-Ctrl-**R** = toggle infinite repeat<br />
+**P** toggle the [P]laylist panel open/close<br />
+Ctrl-**P** toggle [P]laylist filter on/off<br />
+Ctrl-**R** = toggle infinite repeat on/off<br />
 **S** re[S]tart current media file<br />
 **L** re[L]oad playlist from folder<br />
 
