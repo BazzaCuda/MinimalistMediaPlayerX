@@ -127,6 +127,8 @@ end;
 
 function TPlaylist.add(const anItem: string): boolean;
 begin
+  case fileExists(anItem) of FALSE: EXIT; end;
+  FCurrentFolder := extractFilePath(anItem);
   result := FPlayList.add(anItem) <> 0;
 end;
 
