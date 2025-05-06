@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsDeletions
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -49,7 +49,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -63,6 +63,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label3: TLabel
         Left = 128

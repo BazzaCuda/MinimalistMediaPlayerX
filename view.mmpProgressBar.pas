@@ -64,11 +64,12 @@ type
 
     procedure   setMax(const aValue: integer);
     function    setNewPosition(const x: integer): integer;
-    procedure   setShowProgressBar(const aValue: boolean);
 
     procedure   onHintShow(var message: TCMHintShow); message CM_HINTSHOW;
     procedure   progressBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure   progressBarMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure   setProgressBarVisible(const aValue: boolean);
+    procedure   toggleShowProgressBar;
   public
     constructor create;
     destructor  Destroy; override;
@@ -175,7 +176,7 @@ begin
     evPBPosition:             FPB.position := aNotice.integer;
     evPBReset:                resetColor;
     evPBSetNewPosition:       aNotice.integer := setNewPosition(aNotice.integer);
-    evPBToggleProgressBar:    setShowProgressBar(NOT FShowProgressBar);
+    evPBToggleProgressBar:    toggleShowProgressBar;
 
     evPBReqMax:               aNotice.integer := FPB.max;
     evPBReqPosition:          aNotice.integer := FPB.position;
@@ -183,8 +184,8 @@ begin
     evMPDuration:             setMax(aNotice.integer);
     evMPPosition:             FPB.position := aNotice.integer;
 
-    evSTBlankInTimeCaption:   case FShowProgressBar of TRUE: setShowProgressBar(TRUE); end;
-    evSTBlankOutTimeCaption:  case FShowProgressBar of TRUE: setShowProgressBar(FALSE); end;
+    evSTBlankInTimeCaption:   setProgressBarVisible(TRUE);
+    evSTBlankOutTimeCaption:  setProgressBarVisible(FALSE);
 
     evWndResize:              formResize;
   end;
@@ -247,10 +248,16 @@ begin
   result := FPB.position;
 end;
 
-procedure TProgressBar.setShowProgressBar(const aValue: boolean);
+procedure TProgressBar.setProgressBarVisible(const aValue: boolean);
 begin
-  FShowProgressBar  := aValue;
-  FPB.visible       := FShowProgressBar;
+  case aValue of   TRUE: case FShowProgressBar of TRUE: FPB.visible := TRUE; end;
+                  FALSE: FPB.visible := FALSE; end;
+end;
+
+procedure TProgressBar.toggleShowProgressBar;
+begin
+  FShowProgressBar := NOT FShowProgressBar;
+  setProgressBarVisible(FShowProgressBar);
 end;
 
 end.
