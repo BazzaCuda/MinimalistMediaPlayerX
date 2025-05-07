@@ -40,7 +40,7 @@ A brief description for each of the keyboard controls follows below. Note that i
 
 _(For a quick run-down of the options in the `MinimalistMediaPlayer.conf` file, see [the wiki page](https://minimalistmediaplayer.com/mmp/config))_
 
-_Note that `openImage=browser` is the recommended setting._
+_Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended settings to the get the most out of `MMP`'s capabilities._
 
 Delphi Developers
 -----------------
