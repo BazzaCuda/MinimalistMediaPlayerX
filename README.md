@@ -32,7 +32,7 @@ Media File Formats
 WIKI
 ----
 
-`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) (constantly being added to)
+`MMP: Minimalist Media Player` now has its own [domain](https://minimalistmediaplayer.com) and its own [wiki](https://minimalistmediaplayer.com) which is constantly being added to. Feel free to request additional clarification on any aspect of `MMP` and the Wiki will be updated accordingly.
 
 Keyboard Controls
 -----------------
