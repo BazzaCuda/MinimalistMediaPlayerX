@@ -249,6 +249,8 @@ begin
 end;
 
 procedure TProgressBar.setProgressBarVisible(const aValue: boolean);
+// when switching from an image to a video (evSTBlankInTimeCaption),
+// only show the progressBar if that's what the user wants.
 begin
   case aValue of   TRUE: case FShowProgressBar of TRUE: FPB.visible := TRUE; end;
                   FALSE: FPB.visible := FALSE; end;

@@ -465,7 +465,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.activeTasks = 0 of TRUE: EXIT; end;
-  mmp.cmd(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Tasks: %d', [GS.activeTasks])); end);
+  mmp.cmd(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Shredding: %d', [GS.activeTasks])); end);
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);

@@ -637,7 +637,7 @@ begin
 
   case aNotice.event of
     evAppClose:             doAppClose;
-    evGSActiveTasks:        sendOpInfo(format('Tasks: %d', [GS.activeTasks]));
+    evGSActiveTasks:        sendOpInfo(format('Shredding: %d', [GS.activeTasks]));
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
@@ -704,7 +704,7 @@ begin
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
 
-  case GS.activeTasks = 0 of  FALSE: mmp.cmd(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
+//  case GS.activeTasks = 0 of  FALSE: mmp.cmd(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
 end;
 
 procedure TVM.onVideoPanelDblClick(sender: TObject);
