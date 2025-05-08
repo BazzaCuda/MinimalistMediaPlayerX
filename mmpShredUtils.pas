@@ -207,7 +207,12 @@ begin
       EXIT;
     end;
     bytesWritten.quadPart := bytesWritten.quadPart + bytesToWrite;
+//    var vPercent := trunc(bytesWritten.quadPart / fileLength.quadPart * 100);
+//    case vPercent mod 10 = 0 of TRUE: mmp.cmd(evVMActiveTaskPercent, vPercent); end;
+    mmp.cmd(evSTActiveTaskPercent, trunc(bytesWritten.quadPart / fileLength.quadPart * 100));
   end;
+
+  mmp.cmd(evSTActiveTaskPercent, -1);
 
 	// Done!
 	closeHandle(hFile);

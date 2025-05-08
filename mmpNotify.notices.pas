@@ -75,7 +75,7 @@ type
     evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm,
 
     evSTBlankInTimeCaption, evSTBlankOutTimeCaption, evSTBrighter, evSTDarker, evSTDisplayTime, evSTDisplayXY, evSTOpInfo, evSTReset, evSTToggleCaptions, evSTUpdateMetaData,
-    evSTForceCaptions,
+    evSTForceCaptions, evSTActiveTaskPercent,
 
     evTickTimer,
 

@@ -51,6 +51,7 @@ type
     FTimeLabel:     TLabel;
 
     FOpInfo:        TLabel;
+    FOpInfo2:       TLabel;
     FShowTime:      boolean;
     FShowData:      boolean;
     FUIWidth:       integer;
@@ -60,6 +61,7 @@ type
     function    getHWND:          HWND;
     procedure   setDisplayTime(const aValue: string);
     procedure   setOpInfo(const aValue: string);
+    procedure   setOpInfo2(const aValue: integer);
     procedure   setShowData(const aValue: boolean);
     procedure   setShowTime(const aValue: boolean);
     function    getColor:         TColor;
@@ -184,6 +186,15 @@ begin
   FOpInfo.autoSize        := FALSE;
   FOpInfo.width           := FTimeLabel.width;
   FOpInfo.top             := FTimeLabel.top - FOpInfo.height;
+
+  FOpInfo2                 := TLabel.create(FInfoPanel);
+  FOpInfo2.parent          := FInfoPanel;
+  mmpInitTransparentLabel(FOpInfo2);
+  defaultFontEtc(FOpInfo2);
+  FOpInfo2.autoSize        := FALSE;
+  FOpInfo2.width           := FTimeLabel.width;
+  FOpInfo2.top             := FOpInfo.top - FOpInfo2.height;
+
   formResize;
 
   FTimeLabel.caption      := ' ';
@@ -305,6 +316,12 @@ begin
   ST.resetTimer;
 end;
 
+procedure TCaptionsForm.setOpInfo2(const aValue: integer);
+begin
+  case aValue < 0 of  TRUE: FOpInfo2.caption := '';
+                     FALSE: FOpInfo2.caption := format('Shred: %d%%', [aValue]); end;
+end;
+
 procedure TCaptionsForm.setShowData(const aValue: boolean);
 begin
   FShowData := aValue;
@@ -408,6 +425,7 @@ begin
     evSTBrighter:             FCaptionsForm.brighter;
     evSTDarker:               FCaptionsForm.darker;
     evSTReset:                FCaptionsForm.resetColor;
+    evSTActiveTaskPercent:    FCaptionsForm.setOpInfo2(aNotice.integer);
   end;
 end;
 
