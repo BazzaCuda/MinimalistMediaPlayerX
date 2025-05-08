@@ -86,7 +86,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpConsts, mmpFuncProg, mmpKeyboardUtils, mmpTickTimer,
+  mmpConsts, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer,
   view.mmpThemeUtils,
   _debugWindow;
 
@@ -425,7 +425,7 @@ begin
     evSTBrighter:             FCaptionsForm.brighter;
     evSTDarker:               FCaptionsForm.darker;
     evSTReset:                FCaptionsForm.resetColor;
-    evSTActiveTaskPercent:    FCaptionsForm.setOpInfo2(aNotice.integer);
+    evSTOpInfo2:              FCaptionsForm.setOpInfo2(aNotice.integer);
   end;
 end;
 

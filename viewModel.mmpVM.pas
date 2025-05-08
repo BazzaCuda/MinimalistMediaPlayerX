@@ -1014,6 +1014,7 @@ function TVM.sendOpInfo(const aOpInfo: string): boolean;
 begin
   result := FALSE;
   mmp.cmd(evSTOpInfo, aOpInfo);
+  mmp.cmd(evSTOpInfo2, GS.activeTaskPercent);
   result := TRUE;
 end;
 

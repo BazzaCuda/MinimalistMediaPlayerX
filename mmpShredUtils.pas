@@ -207,12 +207,8 @@ begin
       EXIT;
     end;
     bytesWritten.quadPart := bytesWritten.quadPart + bytesToWrite;
-//    var vPercent := trunc(bytesWritten.quadPart / fileLength.quadPart * 100);
-//    case vPercent mod 10 = 0 of TRUE: mmp.cmd(evVMActiveTaskPercent, vPercent); end;
-    mmp.cmd(evSTActiveTaskPercent, trunc(bytesWritten.quadPart / fileLength.quadPart * 100));
+    mmp.cmd(evGSActiveTaskPercent, trunc(bytesWritten.quadPart / fileLength.quadPart * 100));
   end;
-
-  mmp.cmd(evSTActiveTaskPercent, -1);
 
 	// Done!
 	closeHandle(hFile);
@@ -324,6 +320,7 @@ begin
     mmp.cmd(evGSActiveTasks, gCount);
     mmpDelay(100);
   until gCount = 0;
+  mmp.cmd(evSTOpInfo2, -1);
   mmp.cmd(evGSActiveTasks, gCount);
   gTasks.clear;
   result := TRUE;

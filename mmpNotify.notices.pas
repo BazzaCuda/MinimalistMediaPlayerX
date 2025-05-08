@@ -30,7 +30,7 @@ type
 
     evAboutFormShow, evAboutGNULicenceShow, evAboutReleaseNotesFormShow,
 
-    evGSActiveTasks, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDDms, evGSImagesPaused,
+    evGSActiveTasks, evGSActiveTaskPercent, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDDms, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
@@ -75,7 +75,7 @@ type
     evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm,
 
     evSTBlankInTimeCaption, evSTBlankOutTimeCaption, evSTBrighter, evSTDarker, evSTDisplayTime, evSTDisplayXY, evSTOpInfo, evSTReset, evSTToggleCaptions, evSTUpdateMetaData,
-    evSTForceCaptions, evSTActiveTaskPercent,
+    evSTForceCaptions, evSTOpInfo2,
 
     evTickTimer,
 

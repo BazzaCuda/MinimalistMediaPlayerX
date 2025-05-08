@@ -48,6 +48,7 @@ type
   IGlobalState = interface
     ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
     function getActiveTasks:              integer;
+    function getActiveTaskPercent:        integer;
     function getAutoCenter:               boolean;
     function getIDDms:                    integer;
     function getImagesPaused:             boolean;
@@ -76,6 +77,7 @@ type
     function notify(const aNotice: INotice): INotice;
 
     property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
+    property activeTaskPercent:         integer             read getActiveTaskPercent;
     property autoCenter:                boolean             read getAutoCenter;
     property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
     property imagesPaused:              boolean             read getImagesPaused;
@@ -112,6 +114,7 @@ type
   TGlobalState = class(TInterfacedObject, IGlobalState)
   strict private
     FActiveTasks:             integer;
+    FActiveTaskPercent:       integer;
     FAutoCenter:              boolean;
     FIDDms:                   integer;
     FImagesPaused:            boolean;
@@ -141,6 +144,7 @@ type
     constructor create;
     destructor  Destroy; override;
     function    getActiveTasks:              integer;
+    function    getActiveTaskPercent:        integer;
     function    getAutoCenter:               boolean;
     function    getIDDms:                    integer;
     function    getImagesPaused:             boolean;
@@ -189,6 +193,11 @@ begin
   appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
   inherited;
+end;
+
+function TGlobalState.getActiveTaskPercent: integer;
+begin
+  result := FActiveTaskPercent;
 end;
 
 function TGlobalState.getActiveTasks: integer;
@@ -317,6 +326,7 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evGSActiveTasks:              FActiveTasks            := aNotice.integer;
+    evGSActiveTaskPercent:        FActiveTaskPercent      := aNotice.integer;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
     evGSIDDms:                    FIDDms                  := aNotice.integer;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
