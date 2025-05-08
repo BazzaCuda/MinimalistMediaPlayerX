@@ -186,6 +186,7 @@ constructor TGlobalState.create;
 begin
   inherited;
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
+  FActiveTaskPercent := -1;
 end;
 
 destructor TGlobalState.Destroy;
