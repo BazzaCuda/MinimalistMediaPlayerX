@@ -134,6 +134,7 @@ begin
   case FTimeLabel.font.color = $FFFFFF of TRUE: EXIT; end;
   FTimeLabel.font.color   := FTimeLabel.font.color  + $010101;
   FOpInfo.font.color      := FOpInfo.font.color     + $010101;
+  FOpInfo2.font.color     := FOpInfo2.font.color    + $010101;
   FDataMemo.font.color    := FDataMemo.font.color   + $010101;
   result                  := FTimeLabel.font.color;
   CF[CONF_TIME_CAPTION]   := CF.toHex(result);
@@ -230,6 +231,7 @@ begin
   case FTimeLabel.font.color = $010101 of TRUE: EXIT; end;
   FTimeLabel.font.color     := FTimeLabel.font.color  - $010101;
   FOpInfo.font.color        := FOpInfo.font.color     - $010101;
+  FOpInfo2.font.color       := FOpInfo2.font.color    - $010101;
   FDataMemo.font.color      := FDataMemo.font.color   - $010101;
   result := FTimeLabel.font.color;
   CF[CONF_TIME_CAPTION]     := CF.toHex(result);
@@ -278,6 +280,7 @@ begin
 
   case aColor <> 0 of TRUE: FTimeLabel.font.color := aColor; end;
   FOpInfo.font.color      := FTimeLabel.font.color;
+  FOpInfo2.font.color     := FTimeLabel.font.color;
   FDataMemo.font.color    := FTimeLabel.font.color;
 
 //  handy for debugging
@@ -292,6 +295,7 @@ function TCaptionsForm.resetColor: integer;
 begin
   FTimeLabel.font.color   := ST_DEFAULT_COLOR;
   FOpInfo.font.color      := ST_DEFAULT_COLOR;
+  FOpInfo2.font.color     := ST_DEFAULT_COLOR;
   FDataMemo.font.color    := ST_DEFAULT_COLOR;
   result                  := ST_DEFAULT_COLOR;
   CF[CONF_TIME_CAPTION]   := CF.toHex(result);
