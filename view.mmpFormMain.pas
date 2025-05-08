@@ -85,7 +85,7 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils,
+  mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   view.mmpFormTimeline,
   _debugWindow;
 
@@ -109,7 +109,7 @@ end;
 
 procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  application.processMessages;
+  mmpProcessMessages;
 end;
 
 procedure TMMPUI.FormCreate(Sender: TObject);

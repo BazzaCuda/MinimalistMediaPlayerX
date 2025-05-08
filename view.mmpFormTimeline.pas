@@ -885,7 +885,7 @@ begin
   FPosition := value;
   case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                         FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
-  application.processMessages;
+  mmpProcessMessages;
   gTimelineForm.updatePositionDisplay(value);
 end;
 
