@@ -323,7 +323,7 @@ end;
 procedure TCaptionsForm.setOpInfo2(const aValue: integer);
 begin
   case aValue < 0 of  TRUE: FOpInfo2.caption := '';
-                     FALSE: FOpInfo2.caption := format('Shred: %d%%', [aValue]); end;
+                     FALSE: FOpInfo2.caption := format('Shred: %.2d%%', [aValue]); end;
 end;
 
 procedure TCaptionsForm.setShowData(const aValue: boolean);
