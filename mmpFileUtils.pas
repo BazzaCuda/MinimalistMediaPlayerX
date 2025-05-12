@@ -269,7 +269,7 @@ begin
                                                   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                                   EXIT; end;end;
 
-  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrNO of TRUE: EXIT; end;
+  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrYES of FALSE: EXIT; end;
 
   case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
     repeat
