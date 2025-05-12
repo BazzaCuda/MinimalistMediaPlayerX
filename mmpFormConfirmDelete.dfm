@@ -4894,6 +4894,15 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     ParentFont = False
     TabOrder = 1
   end
+  object chbDeleteFolder: TCheckBox
+    Left = 8
+    Top = 416
+    Width = 97
+    Height = 17
+    Caption = 'Are you Sure?'
+    TabOrder = 2
+    OnClick = chbDeleteFolderClick
+  end
   object ImageList: TImageList
     Height = 56
     Width = 56

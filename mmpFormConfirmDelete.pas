@@ -53,8 +53,10 @@ type
     lblGoneMeansGone: TLabel;
     Label1: TLabel;
     lblKeepFiles: TLabel;
+    chbDeleteFolder: TCheckBox;
     procedure FormActivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure chbDeleteFolderClick(Sender: TObject);
   private
   public
     constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
@@ -102,6 +104,11 @@ end;
 
 { TConfirmDeleteForm }
 
+procedure TConfirmDeleteForm.chbDeleteFolderClick(Sender: TObject);
+begin
+  btnYes.enabled := chbDeleteFolder.checked;
+end;
+
 constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
 const
   TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files', 'Cleanup Timeline Editing Files');
@@ -109,6 +116,8 @@ const
   TYPE_CAPTIONS:    array[TDeletionObject]  of string = (' File?', ' Folder?', ' non-"[K]eep" files?', ' Timeline Editing Files?');
 begin
   inherited create(NIL);
+
+  borderIcons := [];
 
   label1.caption            := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
   var vCaption              := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width - 100); // -100 to create a minimum 50-pixel margin on each end
@@ -118,6 +127,9 @@ begin
 
   imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
   imgDeleteFile.visible     := aDeletionObject = doFile;
+
+  chbDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
+  btnYes.enabled            := chbDeleteFolder.checked;
 
   lblTitle.caption          := TITLE_CAPTIONS[aDeletionObject];
 

@@ -363,7 +363,8 @@ begin
   var vFile := mmpFileNameWithoutExtension(vCurrentItem);
   var vExt  := extractFileExt(vCurrentItem);
   var vFN   := vPath + vFile + ' [edited]' + vExt;
-  case fileExists(vFN) of TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
+//  case fileExists(vFN) of FALSE: vFN := vPath + vFile + ' [copy]' + vExt; end;
+  case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
 end;
 
 function TVM.doPlayNext: boolean;

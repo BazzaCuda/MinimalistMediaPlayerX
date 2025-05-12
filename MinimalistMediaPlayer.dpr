@@ -114,7 +114,7 @@ uses
   mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
   mmpExceptionHandler in 'mmpExceptionHandler.pas',
-  view.mmpFormConfig in 'view.mmpFormConfig.pas' {ConfigForm};
+  view.mmpFormConfig in 'view.mmpFormConfig.pas';
 
 procedure setupRunMode;
 begin

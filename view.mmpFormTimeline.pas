@@ -90,7 +90,7 @@ type
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
     function    filePathLOG: string;
     function    filePathMMP: string;
-    function    filePathOUT: string;
+    function    filePathOUT(aSuffix: string = ' [edited]'): string;
     function    filePathSEG: string;
     function    lengthenSegment(const aSegment: TSegment): boolean;
     function    loadChapters: TStringList;
@@ -214,6 +214,8 @@ begin
 
   gTimelineForm.show;
   winAPI.Windows.setWindowPos(gTimelineForm.handle, HWND_TOP, aPt.X, aPt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
+
+  TL.position := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
 
@@ -452,12 +454,15 @@ begin
   var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
   aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
-  case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
+//  case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
   case bDeleteRight   of TRUE: delSegment(newSegment); end;
 
   case aSegment.isLast of  TRUE: segments.add(newSegment);
                           FALSE: segments.insert(aSegment.ix + 1, newSegment); end;
+
+  case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // EXPERIMENTAL - issue with losing the correct duration when cutting the final segment
+
   result := TRUE;
 end;
 
@@ -519,9 +524,9 @@ begin
   mmpApplySegments(segments, FMax, bResetHeight);
 end;
 
-function TTimeline.filePathOUT: string;
+function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
 begin
-  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + ' [edited]' + extractFileExt(FMediaFilePath);
+  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
 end;
 
 function TTimeline.filePathLOG: string;
@@ -587,6 +592,11 @@ var
   vMaps:      string;
   vID:        integer;
   vSegOneFN:  string;
+
+  function maxSegment: boolean;
+  begin
+    result := (TSegment.includedCount = 1) and (segments[0].startSS = 0) and (segments[0].endSS = FMax);
+  end;
 begin
   result      := TRUE;
   FCancelled  := FALSE;
@@ -630,6 +640,7 @@ begin
           case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
 
           cmdLine := cmdLine + ' -y "' + segFile + '"';
+//          case maxSegment of TRUE: cmdLine := ' -i "' + FMediaFilePath + '"'  + ' -c copy -y "' + segFile + '"'; end; // do a straight copy instead
           log(cmdLine);
 
           vProgressForm.subHeading.caption := extractFileName(segFile);
@@ -650,7 +661,6 @@ begin
 
     case result of FALSE: EXIT; end;
 
-
     // Previously, FFmpeg would have overwritten the output file, except now we don't run FFmpeg if we only have one segment
     // and the rename below would fail if we don't delete the output file or at least rename it. So we may as well delete it.
     case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE); end; // use the user's specified deleteMethod
@@ -658,6 +668,8 @@ begin
     while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 
     case vSegOneFN = '' of FALSE: begin
+//                                    case maxSegment of   TRUE: renameFile(vSegOneFN, filePathOut(' [copy]')); // we did a straight copy instead
+//                                                        FALSE: renameFile(vSegOneFN, filePathOUT); end;
                                     renameFile(vSegOneFN, filePathOUT);
                                     EXIT; end;end;
 
@@ -683,6 +695,8 @@ begin
   result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
 
+  {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
+
   FCriticalSection.acquire;
   try
     segments.clear;
@@ -699,6 +713,8 @@ begin
                                   FALSE: begin
                                            var  vSL := loadChapters;
                                            case vSL  = NIL of FALSE: begin addUndo(loadSegments(vSL, TRUE)); vSL.free; end;end;end;end;
+
+  position := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   drawSegments(TRUE);
 
