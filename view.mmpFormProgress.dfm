@@ -23,12 +23,10 @@ object ProgressForm: TProgressForm
     Margins.Bottom = 10
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 307
-    ExplicitHeight = 95
     object FSubHeading: TLabel
       Left = 6
       Top = 35
-      Width = 313
+      Width = 298
       Height = 31
       Margins.Top = 10
       Alignment = taCenter
@@ -45,12 +43,20 @@ object ProgressForm: TProgressForm
     object FHeading: TLabel
       Left = 5
       Top = 8
-      Width = 313
+      Width = 297
       Height = 15
       Margins.Top = 10
       Alignment = taCenter
       AutoSize = False
       Caption = 'FHeading'
+    end
+    object dummyLabel: TLabel
+      Left = 11
+      Top = 59
+      Width = 70
+      Height = 15
+      Caption = 'dummyLabel'
+      Visible = False
     end
     object btnIgnore: TButton
       Left = 201

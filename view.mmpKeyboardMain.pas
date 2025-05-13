@@ -108,7 +108,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(B) and NOT ctrl and     shift                                of TRUE: result := koDarkerPB; end;
     case keyUp and keyIs(B) and     ctrl and     shift                                of TRUE: result := koPBReset; end;
     case keyUp and keyIs(B) and NOT ctrl and NOT shift                                of TRUE: result := koToggleProgressBar; end;
-    case keyUp and keyIs(C)              and NOT shift                                of TRUE: result := koToggleControls; end;
+    case keyUp and keyIs(C) and NOT ctrl and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koToggleControls; end;
     case keyUp and keyIs(C) and     ctrl and     shift                                of TRUE: result := koCleanup; end;
     case keyDn and keyIs(D) and     ctrl                                              of TRUE: result := koPlayPrevFolder; end;
     case keyDn and keyIs(D) and NOT ctrl                                              of TRUE: result := koPlayNextFolder; end;

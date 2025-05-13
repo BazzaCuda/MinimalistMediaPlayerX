@@ -349,6 +349,8 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
+    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position);
+
     ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, TRUE);
     ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, FALSE, TRUE);
 
@@ -643,7 +645,8 @@ begin
 //          case maxSegment of TRUE: cmdLine := ' -i "' + FMediaFilePath + '"'  + ' -c copy -y "' + segFile + '"'; end; // do a straight copy instead
           log(cmdLine);
 
-          vProgressForm.subHeading.caption := extractFileName(segFile);
+          vProgressForm.dummyLabel.caption := extractFileName(segFile);
+          vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
           case execAndWait(cmdLine) of  TRUE: vSL.add(segFileEntry(segFile));
                                        FALSE: begin
@@ -671,6 +674,7 @@ begin
 //                                    case maxSegment of   TRUE: renameFile(vSegOneFN, filePathOut(' [copy]')); // we did a straight copy instead
 //                                                        FALSE: renameFile(vSegOneFN, filePathOUT); end;
                                     renameFile(vSegOneFN, filePathOUT);
+                                    mmp.cmd(evVMMPPlayEdited);
                                     EXIT; end;end;
 
   // concatenate exported segments
@@ -683,11 +687,13 @@ begin
   log(cmdLine);
 
   result := execAndWait(cmdLine);
-  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: execAndWait(cmdLine, rtCMD); end;end;
+  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := execAndWait(cmdLine, rtCMD); end;end;
 
   finally
     vProgressForm.free;
   end;
+
+  case result of TRUE: mmp.cmd(evVMMPPlayEdited); end;
 end;
 
 function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
@@ -930,9 +936,11 @@ begin
 end;
 
 function TTimeline.validKey(key: WORD): boolean;
-const validKeys = 'ILMNORSXYZ';
+const
+  validKeys1 = 'CILMNORSX';
+  validKeys2 = 'YZ';
 begin
-  result := validKeys.contains(char(key));
+  result := (validKeys1.contains(char(key)) and NOT mmpCtrlKeyDown and NOT mmpShiftKeyDown) or (validKeys2.contains(char(key)) and mmpCtrlKeyDown);
 end;
 
 initialization

@@ -83,7 +83,7 @@ uses
   mmpProgramUpdates in 'mmpProgramUpdates.pas',
   view.mmpFormDownload in 'view.mmpFormDownload.pas',
   mmpFormInputBox in 'mmpFormInputBox.pas',
-  mmpFormConfirmDelete in 'mmpFormConfirmDelete.pas',
+  view.mmpFormConfirmDelete in 'view.mmpFormConfirmDelete.pas',
   view.mmpFormProgress in 'view.mmpFormProgress.pas',
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
   view.mmpFormAbout in 'view.mmpFormAbout.pas',
@@ -114,7 +114,13 @@ uses
   mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
   mmpExceptionHandler in 'mmpExceptionHandler.pas',
-  view.mmpFormConfig in 'view.mmpFormConfig.pas';
+  view.mmpFormConfig in 'view.mmpFormConfig.pas' {;
+
+procedure setupRunMode;
+begin
+  reportMemoryLeaksOnShutdown: mmpEnvironmentVariable;
+  FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
+  {$if BazDebugWindow};
 
 procedure setupRunMode;
 begin
@@ -204,7 +210,7 @@ begin
 
   mmp.cmd(evSTForceCaptions);
 
-  mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown, evVMToggleEditMode);
+  mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown and NOT GS.noPlaylist, evVMToggleEditMode);
 
   mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 

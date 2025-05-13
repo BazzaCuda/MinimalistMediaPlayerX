@@ -93,7 +93,7 @@ begin
   case ssCtrl in aShiftState of  TRUE: vDeletionObject := doFolder;
                                 FALSE: vDeletionObject := doFile; end;
 
-  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrYes;
+  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYes;
 end;
 
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
@@ -269,7 +269,7 @@ begin
                                                   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                                   EXIT; end;end;
 
-  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mrYES of FALSE: EXIT; end;
+  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYES of FALSE: EXIT; end;
 
   case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
     repeat

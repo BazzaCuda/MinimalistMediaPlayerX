@@ -34,6 +34,7 @@ type
     btnCancel:  TButton;
     btnRerun:   TButton;
     FTimer:     TTimer;
+    dummyLabel: TLabel;
     procedure   btnCancelClick(Sender: TObject);
     procedure   FormCreate(Sender: TObject);
   private

@@ -209,7 +209,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpProgramUpdates.pas"/>
         <DCCReference Include="view.mmpFormDownload.pas"/>
         <DCCReference Include="mmpFormInputBox.pas"/>
-        <DCCReference Include="mmpFormConfirmDelete.pas"/>
+        <DCCReference Include="view.mmpFormConfirmDelete.pas"/>
         <DCCReference Include="view.mmpFormProgress.pas"/>
         <DCCReference Include="mmpKeyboardUtils.pas"/>
         <DCCReference Include="view.mmpFormAbout.pas"/>
@@ -285,6 +285,7 @@ begin
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdImages3</ResourceId>
         </RcItem>
+        <None Include="bazDebugWindow.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -339,6 +340,12 @@ begin
                 <DeployFile LocalName="Win64\Release\MinimalistMediaPlayer.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>MinimalistMediaPlayer.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="bazDebugWindow.inc" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

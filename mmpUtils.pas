@@ -33,11 +33,13 @@ function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 function mmpProcessMessages: boolean;
+function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;
 
 implementation
 
 uses
   system.math,
+  mmpFuncProg,
   _debugWindow;
 
 var
@@ -156,5 +158,25 @@ begin
   application.processMessages;
   result := TRUE;
 end;
+
+function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;
+var TF, FF: TSFunc;
+begin
+  TF := function:string begin
+                          var vChop := length(aText) div 2;
+                          repeat
+                            inc(vChop);
+                          until bFileName or (vChop > length(aText)) or (aText[vChop] = '\');
+                          var vLine1 := copy(aText, 1, vChop) + '...';
+                          var vBackslash:string := '\';
+                          case bFileName of TRUE: vBackSlash := ''; end;
+                          var vLine2 := '...' + vBackslash + copy(aText, vChop + 1);
+                          result := vLine1 + #13#10 + vLine2; end;
+
+  FF := function:string begin result := aText; end;
+
+  result := mmp.cmd(aTextWidth > aMaxWidth, TF, FF);
+end;
+
 
 end.

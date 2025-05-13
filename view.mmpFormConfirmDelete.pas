@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpFormConfirmDelete;
+unit view.mmpFormConfirmDelete;
 
 interface
 
@@ -59,47 +59,29 @@ type
     procedure chbDeleteFolderClick(Sender: TObject);
   private
   public
-    constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
+    constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
   end;
   {$ENDREGION}
 
-function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer): TModalResult;
 
 implementation
 
 {$R *.dfm}
 
 uses
-  mmpFuncProg, mmpGlobalState,
-  model.mmpConfigFile,
+  mmpFuncProg, mmpGlobalState, mmpUtils,
   _debugWindow;
 
-function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod): TModalResult;
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer): TModalResult;
 begin
   result := mrNo;
   mmp.cmd(evGSUserInput, TRUE);
-  with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod) do begin
+  with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod, aConfigString, aScaleFactor) do begin
     result := showModal;
     free;
   end;
   mmp.cmd(evGSUserInput, FALSE);
-end;
-
-function wrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer): string;
-var TF, FF: TSFunc;
-begin
-  TF := function:string begin
-                          var vChop := length(aText) div 2;
-                          repeat
-                            inc(vChop);
-                          until (vChop > length(aText)) or (aText[vChop] = '\');
-                          var vLine1 := copy(aText, 1, vChop) + '...';
-                          var vLine2 := '...\' + copy(aText, vChop + 1);
-                          result := vLine1 + #13#10 + vLine2; end;
-
-  FF := function:string begin result := aText; end;
-
-  result := mmp.cmd(aTextWidth > aMaxWidth, TF, FF);
 end;
 
 { TConfirmDeleteForm }
@@ -109,7 +91,7 @@ begin
   btnYes.enabled := chbDeleteFolder.checked;
 end;
 
-constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod);
+constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
 const
   TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files', 'Cleanup Timeline Editing Files');
   CONFIRM_CAPTIONS: array[TDeleteMethod]    of string = ('Confirm Recycle', 'Confirm Delete', 'Confirm Shred');
@@ -120,9 +102,10 @@ begin
   borderIcons := [];
 
   label1.caption            := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
-  var vCaption              := wrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width - 100); // -100 to create a minimum 50-pixel margin on each end
+  var vCaption              := mmpWrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width - 50); // -50 to create a minimum 25-pixel margin on each end
 
-  case aDeletionObject of doFile: vCaption := vCaption + #13#10 + extractFileName(aPath); end;
+  label1.caption            := extractFileName(aPath);
+  case aDeletionObject of doFile: vCaption := mmpWrapText(extractFileName(aPath), label1.width, lblItemToDelete.width - 50, TRUE); end;
   lblItemToDelete.caption   := vCaption;
 
   imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
@@ -136,7 +119,7 @@ begin
   lblSubFolders.visible     := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
   lblKeepFiles.visible      := aDeletionObject = doKeepDelete;
 
-  lblDeleteMethod.caption   := 'deleteMethod=' + CF[CONF_DELETE_METHOD];
+  lblDeleteMethod.caption   := 'deleteMethod=' + aConfigString;
 
   lblConfirm.caption        := CONFIRM_CAPTIONS[aDeleteMethod];
 
@@ -150,7 +133,7 @@ begin
 
   imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
 
-  var vScaleFactor          := CF.asInteger[CONF_SCALE_FACTOR];
+  var vScaleFactor          := aScaleFactor;
   vScaleFactor              := mmp.use(vScaleFactor <  MIN_SCALE_FACTOR, MIN_SCALE_FACTOR, vScaleFactor);
   vScaleFactor              := mmp.use(vScaleFactor >  MAX_SCALE_FACTOR, MAX_SCALE_FACTOR, vScaleFactor);
   SELF.scaleBy(vScaleFactor, MAX_SCALE_FACTOR);

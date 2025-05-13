@@ -340,7 +340,7 @@ begin
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
-  mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD]) = mryes, procedure  begin
+  mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mryes, procedure  begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup in progress');
                                                                                                                       newCleanup.cleanup(vFolder);
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
