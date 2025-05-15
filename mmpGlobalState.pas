@@ -50,6 +50,7 @@ type
     function getActiveTasks:              integer;
     function getActiveTaskPercent:        integer;
     function getAutoCenter:               boolean;
+    function getCleanup:                  boolean;
     function getIDDms:                    integer;
     function getImagesPaused:             boolean;
     function getMainForm:                 TForm;
@@ -79,6 +80,7 @@ type
     property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
     property activeTaskPercent:         integer             read getActiveTaskPercent;
     property autoCenter:                boolean             read getAutoCenter;
+    property cleanup:                   boolean             read getCleanup;
     property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
     property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
@@ -116,6 +118,7 @@ type
     FActiveTasks:             integer;
     FActiveTaskPercent:       integer;
     FAutoCenter:              boolean;
+    FCleanup:                 boolean;
     FIDDms:                   integer;
     FImagesPaused:            boolean;
     FMainForm:                TForm;
@@ -146,6 +149,7 @@ type
     function    getActiveTasks:              integer;
     function    getActiveTaskPercent:        integer;
     function    getAutoCenter:               boolean;
+    function    getCleanup:                  boolean;
     function    getIDDms:                    integer;
     function    getImagesPaused:             boolean;
     function    getMainForm:                 TForm;
@@ -209,6 +213,11 @@ end;
 function TGlobalState.getAutoCenter: boolean;
 begin
   result := FAutoCenter;
+end;
+
+function TGlobalState.getCleanup: boolean;
+begin
+  result := FCleanup;
 end;
 
 function TGlobalState.getIDDms: integer;
@@ -329,6 +338,7 @@ begin
     evGSActiveTasks:              FActiveTasks            := aNotice.integer;
     evGSActiveTaskPercent:        FActiveTaskPercent      := aNotice.integer;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
+    evGSCleanup:                  FCleanup                := aNotice.tf;
     evGSIDDms:                    FIDDms                  := aNotice.integer;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;

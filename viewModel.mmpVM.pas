@@ -93,9 +93,9 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormConfirmDelete, mmpFormatting, mmpFuncProg, mmpGlobalState,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpFuncProg, mmpGlobalState,
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
+  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
@@ -528,9 +528,9 @@ end;
 var SS: TSnapshot;
 procedure TVM.onKeyDown(key: Word; shift: TShiftState);
 begin
-  case GS.userInput                             of TRUE: EXIT; end;
-  case GS.showingTimeline and TL.validKey(key)  of TRUE: begin focusTimeline; EXIT; end;end;
-  case GS.showingThumbs                         of TRUE: begin focusThumbs;   EXIT; end;end;
+  case GS.userInput                                   of TRUE: EXIT; end;
+  case GS.showingTimeline and TL.validKey(key, shift) of TRUE: begin focusTimeline; EXIT; end;end;
+  case GS.showingThumbs                               of TRUE: begin focusThumbs;   EXIT; end;end;
 
   SS                  := default(TSnapshot);
   SS.key              := key;
@@ -542,10 +542,10 @@ end;
 
 procedure TVM.onKeyUp(key: Word; shift: TShiftState);
 begin
-  case SS.handled                               of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
-  case GS.userInput                             of TRUE: EXIT; end;
-  case GS.showingTimeline and TL.validKey(key)  of TRUE: begin focusTimeline; EXIT; end;end;
-  case GS.showingThumbs                         of TRUE: begin focusThumbs;   EXIT; end;end;
+  case SS.handled                                     of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
+  case GS.userInput                                   of TRUE: EXIT; end;
+  case GS.showingTimeline and TL.validKey(key, shift) of TRUE: begin focusTimeline; EXIT; end;end;
+  case GS.showingThumbs                               of TRUE: begin focusThumbs;   EXIT; end;end;
 
   SS.key              := key;
   SS.shiftState       := shift;
@@ -1072,7 +1072,7 @@ begin
 
   GS.mainForm.show;
   setActiveWindow(GS.mainForm.handle);
-  mmpCheckPlaylistItemExists(FPlaylist, FMP, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
+  mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
 end;
 
 function TVM.showUI: boolean;

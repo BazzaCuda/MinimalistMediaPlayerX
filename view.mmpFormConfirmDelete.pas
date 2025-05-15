@@ -101,6 +101,8 @@ begin
 
   borderIcons := [];
 
+  mmp.cmd(evGSCleanup, aDeletionObject = doCleanup);
+
   label1.caption            := extractFilePath(aPath); // lblItemToDelete.canvas.textWidth(...) wasn't even close for some reason
   var vCaption              := mmpWrapText(extractFilePath(aPath), label1.width, lblItemToDelete.width - 50); // -50 to create a minimum 25-pixel margin on each end
 

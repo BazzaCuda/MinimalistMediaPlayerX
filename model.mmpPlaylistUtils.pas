@@ -24,9 +24,9 @@ uses
   system.sysUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState,
-  model.mmpConfigFile, model.mmpMediaPlayer, model.mmpPlaylist;
+  model.mmpConfigFile, model.mmpPlaylist;
 
-function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
 function mmpPlayCurrent:                            boolean;
 function mmpPlayFirst:                              boolean;
 function mmpPlayLast:                               boolean;
@@ -42,7 +42,7 @@ uses
   mmpFuncProg, mmpUtils,
   _debugWindow;
 
-function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const aMP: IMediaPlayer; const bNextFolderOnEmpty: boolean): boolean;
+function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
 begin
   var vIx := aPL.currentIx;
   var vCI := aPL.currentItem;
@@ -68,14 +68,18 @@ function mmpPlayCurrent: boolean;
 begin
   GS.notify(newNotice(evGSOpeningURL, TRUE));             // for TVM.reInitTimeline - gets reset in model.mmpMediaPlayer.openURL when all the new info is available
   mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text); // for TVM.reInitTimeline - will reset evGSOpenigURL when it's finished
-  while GS.openingURL do mmpProcessMessages;     // for TVM.reInitTimeline - wait for MP to finish opening the URL
+  while GS.openingURL do mmpProcessMessages;              // for TVM.reInitTimeline - wait for MP to finish opening the URL
+
+
 
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: begin mmp.cmd(evVMShutTimeline); EXIT; end;end; // close the timeline if we're now displaying an image
 
   case GS.showingTimeline of TRUE:  begin
                                       var vMPDuration := 0;
-                                      while vMPDuration <= 0 do vMPDuration := mmp.cmd(evMPReqDuration).integer; // wait until MPV notifies MPVBasePlayer of the details
-                                      mmp.cmd(evVMReInitTimeline, vMPDuration); end;end;                         // reInit the timeline with the new media file details
+                                      while vMPDuration <= 0 do begin
+                                                                  vMPDuration := mmp.cmd(evMPReqDuration).integer; // wait until MPV notifies MPVBasePlayer of the details
+                                                                  mmpProcessMessages; end;
+                                      mmp.cmd(evVMReInitTimeline, vMPDuration); end;end;                           // reInit the timeline with the new media file details
 end;
 
 function mmpPlayFirst: boolean;

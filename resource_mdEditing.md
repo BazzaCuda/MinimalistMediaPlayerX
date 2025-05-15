@@ -9,6 +9,7 @@ Control | Action
 **Segment under the cursor** ||
 **`I`**                     | [I]n point: split segment under the cursor and mark the left-hand segment as e[X]cluded, i.e. deleted
 **`O`**                     | [O]ut point: split segment under the cursor and mark the right-hand segment as e[X]cluded, i.e. deleted
+**`C`**                     | [C]ut: split segment under the cursor into two segments
 **select a Segment, then...** || 
 **`L`**                     | [L]engthen the selected segment by one second - can be held down for rapid repeat
 **`S`**                     | [S]horten the selected segment by one second - can be held down for rapid repeat

@@ -114,7 +114,7 @@ type
     function    notify(const aNotice: INotice): INotice;
     function    redo:           boolean;
     function    undo:           boolean;
-    function    validKey(key: WORD):              boolean;
+    function    validKey(key: WORD; aShift: TShiftState): boolean;
 
     property    cancelled:      boolean               read FCancelled;
     property    dragging:       boolean               read FDragging      write FDragging;
@@ -314,7 +314,7 @@ begin
   lblPosition.caption := '';
 
   doubleBuffered            := TRUE;
-  keyPreview       := TRUE;
+//  keyPreview       := TRUE; EXPERIMENTAL
 
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
@@ -344,7 +344,8 @@ end;
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 // For VK_ keys we only get a formKeyDown event
 begin
-  case TL.validKey(key) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
+  case (key = 67) and GS.cleanup of TRUE: begin mmp.cmd(evGSCleanup, FALSE); key := 0; EXIT; end;end; // block the invalid C-up after Ctrl-Shift-C
+  case TL.validKey(key, shift) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
   var vSaveUndo := FALSE;
 
@@ -374,7 +375,7 @@ begin
   TL.drawSegments;
   updatePositionDisplay(TL.position);
 
-  case TL.validKey(key) of TRUE: key := 0; end; // trap the key if we did something with it
+  case TL.validKey(key, shift) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
 
 procedure TTimelineForm.FormResize(Sender: TObject);
@@ -453,7 +454,7 @@ begin
   var newStartSS := aPosition;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS);
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS); // this will be the righthand segment of the two. The old segment will finish to the left of it.
   aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
 //  case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
@@ -935,12 +936,15 @@ begin
                                       end;end;
 end;
 
-function TTimeline.validKey(key: WORD): boolean;
+function TTimeline.validKey(key: WORD; aShift: TShiftState): boolean;
 const
   validKeys1 = 'CILMNORSX';
   validKeys2 = 'YZ';
 begin
-  result := (validKeys1.contains(char(key)) and NOT mmpCtrlKeyDown and NOT mmpShiftKeyDown) or (validKeys2.contains(char(key)) and mmpCtrlKeyDown);
+  var vCtrlKeyDown  := ssCtrl   in aShift;
+  var vShiftKeyDown := ssShift  in aShift;
+
+  result := (validKeys1.contains(char(key)) and NOT (vCtrlKeyDown or vShiftKeyDown)) or (validKeys2.contains(char(key)) and vCtrlKeyDown);
 end;
 
 initialization

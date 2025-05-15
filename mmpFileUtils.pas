@@ -46,7 +46,8 @@ uses
   winApi.windows,
   system.ioUtils, system.regularExpressions,
   vcl.controls, vcl.dialogs,
-  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormConfirmDelete, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
+  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
+  view.mmpFormConfirmDelete,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove,
   _debugWindow;
 
