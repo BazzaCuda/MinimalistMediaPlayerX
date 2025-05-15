@@ -419,5 +419,6 @@ Dependencies
 
 9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file.
 
-10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org). `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
+10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release.
+    `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
 
