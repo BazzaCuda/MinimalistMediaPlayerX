@@ -82,6 +82,7 @@ type
 
     procedure   setMax(const Value: integer);
     procedure   setPosition(const Value: integer);
+    procedure   setPosOnly(const Value: integer);
 
     function    addUndo(const aAction: string): string;
     function    cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -121,6 +122,7 @@ type
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
     property    position:       integer               read getPosition    write setPosition;
+    property    posOnly:        integer                                   write setPosOnly;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
     property    segCount:       integer               read getSegCount;
     property    segments:       TObjectList<TSegment> read getSegments;
@@ -282,12 +284,13 @@ begin
   vPrevX := X;
 
   case TL.dragging of  TRUE:  begin
-                                cursorPos := cursorPos + (X - pnlCursor.width div 2);
+                                cursorPos := cursorPos + (X - pnlCursor.width div 2); // just sets pnlCursor.left
                                 case cursorPos < 0 of TRUE: cursorPos := 0; end;
                                 var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer; // PB returns the x position converted to SS
                                 mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
-                                TL.position := vNewPos;
-                                updatePositionDisplay(TL.position);
+//                                TL.position := vNewPos;                               // this also sets pnlCursor.left. hmmm
+                                TL.posOnly := vNewPos; // just set TL.position with none of the side-effects
+                                updatePositionDisplay(TL.position);                   // TL.position has just done this! hmmm
                                 var vSeg := TL.segmentAtSS(TL.position);
                                 case vSeg = NIL of FALSE: vSeg.invalidate; end; // it's really not clear which is best here, repaint or invalidate
                               end;end;
@@ -910,6 +913,11 @@ begin
                         FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   mmpProcessMessages;
   gTimelineForm.updatePositionDisplay(value);
+end;
+
+procedure TTimeline.setPosOnly(const Value: integer);
+begin
+  FPosition := value;
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
