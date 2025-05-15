@@ -417,7 +417,7 @@ Dependencies
 
 8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
 
-9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file.
+9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file, lossless and without re-encoding _(i.e. copy/paste)_
 
 10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release.
     `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
