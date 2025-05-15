@@ -415,7 +415,7 @@ Dependencies
 
 7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
 
-8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file. `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
+8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
 
 9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file.
 
