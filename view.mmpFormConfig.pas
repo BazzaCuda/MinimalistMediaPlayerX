@@ -161,6 +161,13 @@ type
     Label22: TLabel;
     Label48: TLabel;
     Label49: TLabel;
+    tsEditing: TTabSheet;
+    Label50: TLabel;
+    chbPlayEdited: TCheckBox;
+    Label51: TLabel;
+    Label52: TLabel;
+    Label53: TLabel;
+    Label54: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -193,6 +200,7 @@ type
     procedure btnScaleFactorDefaultClick(Sender: TObject);
     procedure btnSlideshowIntervalMsDefaultClick(Sender: TObject);
     procedure spinSlideshowIntervalMsChange(Sender: TObject);
+    procedure chbPlayEditedClick(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -369,6 +377,11 @@ begin
                                 FALSE: CF[CONF_OPEN_IMAGE] := 'main'; end;
 end;
 
+procedure TConfigForm.chbPlayEditedClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_PLAY_EDITED] := chbPlayEdited.checked;
+end;
+
 procedure TConfigForm.chbStartInEditorClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_START_IN_EDITOR] := chbStartInEditor.checked;
@@ -478,6 +491,8 @@ begin
   spinSlideshowIntervalMs.minValue := SLIDESHOW_DELTA_MS;
   case CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS] = 0 of  TRUE: spinSlideshowIntervalMs.value := IMAGE_DISPLAY_DURATION;
                                                        FALSE: spinSlideshowIntervalMs.value := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS]; end;
+
+  chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);

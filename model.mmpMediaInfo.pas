@@ -492,6 +492,7 @@ begin
     evMIGetMediaInfo:   getMediaInfo(aNotice.text, aNotice.mediaType);
     evMIFillMetaData:   getMetaData(aNotice.component as TMemo);
     evMIReqHasCoverArt: aNotice.tf := getHasCoverArt;
+    evMIReqDuration:    aNotice.integer := duration;
   end;
 end;
 

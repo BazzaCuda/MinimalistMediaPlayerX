@@ -35,13 +35,13 @@ type
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
-    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup,
+    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
     evMCBrighter, evMCCaption, evMCDarker, evMCReset, evMCReshowCaption,
 
-    evMIFillMetaData, evMIGetMediaInfo, evMIReqHasCoverArt,
+    evMIFillMetaData, evMIGetMediaInfo, evMIReqHasCoverArt, evMIReqDuration,
 
     evMPBrightnessDn, evMPBrightnessReset, evMPBrightnessUp,
     evMPCycleAudio, evMPCycleSubs,

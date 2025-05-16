@@ -253,6 +253,8 @@ begin
 
   canvas.fillRect(rect);
 
+  case isLast and (segments.count > 1) of TRUE: rect.right := rect.right - 4; end; // no idea! :D
+
   case selected of  TRUE: Frame3D(canvas, rect, clTeal, clTeal, 1);
                    FALSE: Frame3D(canvas, rect, color, color, 1); end;
 end;

@@ -101,6 +101,7 @@ const
   CONF_NEXT_FOLDER_ON_EMPTY   = 'nextFolderOnEmpty';
   CONF_NEXT_FOLDER_ON_END     = 'nextFolderOnEnd';
   CONF_OPEN_IMAGE             = 'openImage';
+  CONF_PLAY_EDITED            = 'playEdited';
   CONF_PLAYLIST_FORMAT        = 'playlistFormat';
   CONF_PROGRESS_BAR           = 'progressBar';
   CONF_REPEAT_DELAY_MS        = 'repeatDelayMs';

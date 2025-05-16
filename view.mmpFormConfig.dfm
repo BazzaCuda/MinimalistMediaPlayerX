@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsGeneral
+    ActivePage = tsEditing
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -469,7 +469,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -483,6 +483,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label21: TLabel
         Left = 49
@@ -641,7 +642,7 @@ object ConfigForm: TConfigForm
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -655,6 +656,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label28: TLabel
         Left = 170
@@ -770,7 +772,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -784,6 +786,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label30: TLabel
         Left = 55
@@ -2166,7 +2169,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2180,6 +2183,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label29: TLabel
         Left = 28
@@ -2452,7 +2456,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2466,6 +2470,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label35: TLabel
         Left = 87
@@ -2648,7 +2653,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2662,6 +2667,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label43: TLabel
         Left = 20
@@ -2723,7 +2729,7 @@ object ConfigForm: TConfigForm
       object Label45: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2737,6 +2743,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label46: TLabel
         Left = 0
@@ -2788,7 +2795,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2802,6 +2809,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label39: TLabel
         Left = 11
@@ -2861,6 +2869,109 @@ object ConfigForm: TConfigForm
         Caption = 'Default'
         TabOrder = 1
         OnClick = btnRepeatDelayDefaultClick
+      end
+    end
+    object tsEditing: TTabSheet
+      Caption = 'Editing'
+      ImageIndex = 10
+      object Label50: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label51: TLabel
+        Left = 131
+        Top = 30
+        Width = 445
+        Height = 32
+        AutoSize = False
+        Caption = 
+          'Determines whether MMP will autoplay the [edited] audio or video' +
+          ' file after successfully exporting and joining the segments from' +
+          ' your Timeline*'
+        WordWrap = True
+      end
+      object Label52: TLabel
+        Left = 217
+        Top = 9
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label53: TLabel
+        Left = 20
+        Top = 73
+        Width = 543
+        Height = 212
+        AutoSize = False
+        Caption = 
+          '1. MMP will play the [edited] file in a new instance of MMP'#13#10#13#10'2' +
+          '. In the new MMP, the [edited] file will be the only file in the' +
+          ' playlist'#13#10#13#10'3. Playback will stop when MMP reaches the end of t' +
+          'he file and will ignore '#13#10'    the nextFolderOnEnd [of playlist] ' +
+          'setting so that you can further review your edits'#13#10#13#10'4. You can ' +
+          '[Esc]ape to close the second MMP and return to your editing, or'#13 +
+          #10'    You might Ctrl-[M]ove your successful edit to an e.g. "Fina' +
+          'l Edits" folder, or'#13#10'    You can open the Audio && Video Timelin' +
+          'e Editor in the second MMP and edit your [edited] file'#13#10'    to c' +
+          'reate an "[edited] [edited]" file'#13#10#13#10'5. If you [Del]ete the [edi' +
+          'ted] file with nextFolderOnEmpty=no, '#13#10'    the second MMP will c' +
+          'lose and return you to your editing session'
+        WordWrap = True
+      end
+      object Label54: TLabel
+        Left = 41
+        Top = 288
+        Width = 494
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* Shift-[E] will also play the [edited] version of an audio or v' +
+          'ideo file in a new instance of MMP'#13#10'Shift-[E] is available while' +
+          ' the Audio && Video Timeline Editor is open'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object chbPlayEdited: TCheckBox
+        Left = 20
+        Top = 30
+        Width = 101
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Play Edited'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbPlayEditedClick
       end
     end
   end

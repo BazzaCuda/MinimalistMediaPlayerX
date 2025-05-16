@@ -59,6 +59,7 @@ type
     function getMPVScreenshotDirectory:   string;
     function getNoPlaylist:               boolean;
     function getOpeningURL:               boolean;
+    function getRenameFile:               boolean;
     function getRepeatDelayMs:            integer;
     function getShowingAbout:             boolean;
     function getShowingConfig:            boolean;
@@ -86,10 +87,11 @@ type
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
     property mediaType:                 TMediaType          read getMediaType;
-    property openingURL:                boolean             read getOpeningURL;
-    property repeatDelayMs:             integer             read getRepeatDelayMs;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
     property noPlaylist:                boolean             read getNoPlaylist;
+    property openingURL:                boolean             read getOpeningURL;
+    property repeatDelayMs:             integer             read getRepeatDelayMs;
+    property renameFile:                boolean             read getRenameFile;
     property showingAbout:              boolean             read getShowingAbout;
     property showingConfig:             boolean             read getShowingConfig;
     property showingHelp:               boolean             read getShowingHelp;
@@ -127,6 +129,7 @@ type
     FMPVScreenshotDirectory:  string;
     FNoPlaylist:              boolean;
     FOpeningURL:              boolean;
+    FRenameFile:              boolean;
     FRepeatDelayMs:           integer;
     FShowingAbout:            boolean;
     FShowingConfig:           boolean;
@@ -158,6 +161,7 @@ type
     function    getMPVScreenshotDirectory:   string;
     function    getNoPlaylist:               boolean;
     function    getOpeningURL:               boolean;
+    function    getRenameFile:               boolean;
     function    getRepeatDelayMs:            integer;
     function    getShowingAbout:             boolean;
     function    getShowingConfig:            boolean;
@@ -260,6 +264,11 @@ begin
   result := FOpeningURL;
 end;
 
+function TGlobalState.getRenameFile: boolean;
+begin
+  result := FRenameFile;
+end;
+
 function TGlobalState.getRepeatDelayMs: integer;
 begin
   result := FRepeatDelayMs;
@@ -347,6 +356,7 @@ begin
     evGSMPVScreenshotDirectory:   FMPVScreenshotDirectory := aNotice.text;
     evGSNoPlaylist:               FNoPlaylist             := aNotice.tf;
     evGSOpeningURL:               FOpeningURL             := aNotice.tf;
+    evGSRenameFile:               FRenameFile             := aNotice.tf;
     evGSRepeatDelayMs:            FRepeatDelayMs          := aNotice.integer;
     evGSShowingAbout:             FShowingAbout           := aNotice.tf;
     evGSShowingConfig:            FShowingConfig          := aNotice.tf;

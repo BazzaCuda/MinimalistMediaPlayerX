@@ -64,6 +64,7 @@ type
     FDragging:                boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
+    FPlayEdited:              boolean;
     FPosition:                integer;
     FPrevAction:              string;
     FUndoList:                TObjectStack<TStringList>;
@@ -121,6 +122,7 @@ type
     property    dragging:       boolean               read FDragging      write FDragging;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
+    property    playEdited:     boolean               read FPlayEdited    write FPlayEdited;
     property    position:       integer               read getPosition    write setPosition;
     property    posOnly:        integer                                   write setPosOnly;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
@@ -129,7 +131,7 @@ type
   end;
 
 function focusTimeline: boolean;
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bCreateNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bCreateNew: boolean = TRUE): boolean;
 function shutTimeline: boolean;
 function TL: TTimeline;
 
@@ -204,7 +206,7 @@ begin
   setForegroundWindow(gTimelineForm.handle); // so this window also receives keyboard keystrokes
 end;
 
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bCreateNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bCreateNew: boolean = TRUE): boolean;
 begin
   case (gTimelineForm = NIL) and bCreateNew of TRUE: gTimelineForm := TTimelineForm.create(NIL); end;
   case gTimelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
@@ -217,7 +219,8 @@ begin
   gTimelineForm.show;
   winAPI.Windows.setWindowPos(gTimelineForm.handle, HWND_TOP, aPt.X, aPt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 
-  TL.position := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
+  TL.playEdited := bPlayEdited;
+  TL.position   := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
 
@@ -288,9 +291,9 @@ begin
                                 case cursorPos < 0 of TRUE: cursorPos := 0; end;
                                 var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer; // PB returns the x position converted to SS
                                 mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
-//                                TL.position := vNewPos;                               // this also sets pnlCursor.left. hmmm
-                                TL.posOnly := vNewPos; // just set TL.position with none of the side-effects
-                                updatePositionDisplay(TL.position);                   // TL.position has just done this! hmmm
+                                TL.position := vNewPos;                               // this also sets pnlCursor.left. hmmm
+//                                TL.posOnly := vNewPos; // just set TL.position with none of the side-effects
+//                                updatePositionDisplay(TL.position);                   // TL.position has just done this! hmmm
                                 var vSeg := TL.segmentAtSS(TL.position);
                                 case vSeg = NIL of FALSE: vSeg.invalidate; end; // it's really not clear which is best here, repaint or invalidate
                               end;end;
@@ -347,7 +350,8 @@ end;
 procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 // For VK_ keys we only get a formKeyDown event
 begin
-  case (key = 67) and GS.cleanup of TRUE: begin mmp.cmd(evGSCleanup, FALSE); key := 0; EXIT; end;end; // block the invalid C-up after Ctrl-Shift-C
+  case (key = 67) and GS.cleanup    of TRUE: begin mmp.cmd(evGSCleanup, FALSE);     key := 0; EXIT; end;end; // block the spurious C-up after Ctrl-Shift-C
+  case (key = 82) and GS.renameFile of TRUE: begin mmp.cmd(evGSRenameFile, FALSE);  key := 0; EXIT; end;end;  // block the spurious R-up after Ctrl-R
   case TL.validKey(key, shift) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
   var vSaveUndo := FALSE;
@@ -697,7 +701,7 @@ begin
     vProgressForm.free;
   end;
 
-  case result of TRUE: mmp.cmd(evVMMPPlayEdited); end;
+  case result and FPlayEdited of TRUE: mmp.cmd(evVMMPPlayEdited); end;
 end;
 
 function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;

@@ -516,7 +516,7 @@ end;
 function TVM.moveTimeline(const bCreateNew: boolean = FALSE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
-  showTimeline(vPt, FVideoPanel.width, bCreateNew);
+  showTimeline(vPt, FVideoPanel.width, CF.asBoolean[CONF_SHOW_METADATA], bCreateNew);
 end;
 
 procedure TVM.onFormResize;
@@ -964,17 +964,17 @@ begin
                   case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;end;
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
-  case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin
+  case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin                           // remove from the current folder's playlist
                                                             mmp.cmd(evMPStop);
                                                             mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
                                                             mmp.cmd(evVMMPPlayNext); end; // play the next item if there is one or force nextFolderOnEmpty/End
-                                    FALSE:  begin
-                                              mmp.cmd(evPLReplaceCurrentItem, vNewName);
-                                              mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
-                                              sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
+                                                  FALSE:  begin
+                                                            mmp.cmd(evPLReplaceCurrentItem, vNewName);  // update the playlist with the new name
+                                                            mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
+                                                            sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
 
   mmp.cmd(evPLFormLoadBox);
-  case GS.showingTimeline of TRUE: mmp.cmd(evTLRename, vNewName); end;
+  case GS.showingTimeline of TRUE: mmp.cmd(evTLRename, vNewName); end; // notify the Timeline that its current .mmp file has been renamed
   case aRenameType in [rtKeepMove, rtKeepSave] of FALSE: mmpRenameMMPFile(vOldName, vNewName); end;
 
   case aRenameType of
@@ -987,6 +987,8 @@ begin
     rtKeepMove:   result := 'Moved: ' + mmpUserDstFolder('Moved');
     rtKeepSave:   result := 'Saved: ' + mmpUserDstFolder('Saved');
   end;
+
+  mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
 end;
 
 function TVM.resizeWindow: boolean;
