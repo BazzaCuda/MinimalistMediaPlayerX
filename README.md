@@ -413,4 +413,12 @@ Dependencies
 
 6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing.
 
-7. Uses JCL (https://github.com/project-jedi/jcl) to populate the stackTrace string in Delphi exceptions, reported in mmpExceptionHandler.pas
+7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
+
+8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
+
+9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file, lossless and without re-encoding _(i.e. copy/paste)_
+
+10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release.
+    `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
+
