@@ -294,8 +294,8 @@ begin
   var vIx := mmp.cmd(evPLReqCurrentIx).integer;
   mmp.cmd(evPLDeleteIx, vIx);
 
-  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose);
-                                                                       FALSE: mmp.cmd(evAppClose); end;end;
+  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and NOT GS.noPlaylist of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose);
+                                                                                              FALSE: mmp.cmd(evAppClose); end;end;
   F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
 
   mmp.cmd(nothingToPlay, T, F);
@@ -370,6 +370,7 @@ end;
 function TVM.doPlayNext: boolean;
 var T, F: TProc;
 begin
+  case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
@@ -387,6 +388,7 @@ end;
 function TVM.doPlayPrev: boolean;
 var T, F: TProc;
 begin
+  case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
@@ -966,8 +968,9 @@ begin
 
   case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin                           // remove from the current folder's playlist
                                                             mmp.cmd(evMPStop);
-                                                            mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); // this decrements PL's FPlayIx
-                                                            mmp.cmd(evVMMPPlayNext); end; // play the next item if there is one or force nextFolderOnEmpty/End
+                                                            mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer);      // this decrements PL's FPlayIx
+                                                            case GS.noPlaylist of  TRUE: begin mmp.cmd(evAppClose); EXIT; end;
+                                                                                  FALSE: mmp.cmd(evVMMPPlayNext); end;end; // play the next item if there is one or force nextFolderOnEmpty/End
                                                   FALSE:  begin
                                                             mmp.cmd(evPLReplaceCurrentItem, vNewName);  // update the playlist with the new name
                                                             mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
