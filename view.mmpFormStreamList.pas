@@ -159,7 +159,7 @@ end;
 
 function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 begin
-  {$if BazDebugWindow} debugFormat('applySegments: %d', [aMax]); {$endif}
+//  {$if BazDebugWindow} debugFormat('applySegments: %d', [aMax]); {$endif}
 
   FSegments := aSegments;
   clSegments.itemCount := 0;

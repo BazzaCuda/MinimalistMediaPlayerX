@@ -117,6 +117,7 @@ begin
     koPlayPrev:           mmp.cmd(evVMMPPlayPrev);
     koPlayPrevFolder:     mmp.cmd(evVMPlayPrevFolder);
     koReloadPlaylist:     mmp.cmd(evVMReloadPlaylist);
+    koRenameCleanFile:    mmp.cmd(evVMRenameCleanFile);
     koRenameFile:         mmp.cmd(evVMRenameCurrentItem);
     koResetAll:           MP.notify(newNotice(evMPResetAll));
     koRotateL:            MP.notify(newNotice(evMPRotateLeft));

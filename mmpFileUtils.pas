@@ -26,6 +26,7 @@ uses
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
+function mmpCleanFile(const aFileName: string): string;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
@@ -84,6 +85,15 @@ end;
 function mmpConfigFilePath: string;
 begin
   result := mmpExePath + 'MinimalistMediaPlayer.conf';
+end;
+
+function mmpCleanFile(const aFileName: string): string;
+const DIRTY_CHARS = '!@#$^{}+=_`.%^''';
+begin
+  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', CF[CONF_DIRTY_CHARS], DIRTY_CHARS);
+  result := aFileName;
+  for var i := 1 to length(result) do
+    case vDirtyChars.contains(result[i]) of TRUE: result[i] := ' '; end;
 end;
 
 function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState): boolean;

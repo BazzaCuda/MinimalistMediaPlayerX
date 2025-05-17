@@ -91,6 +91,7 @@ const
   CONF_AUTO_UPDATE            = 'autoUpdate';
   CONF_BASE_FOLDER            = 'baseFolder';
   CONF_DELETE_METHOD          = 'deleteMethod';
+  CONF_DIRTY_CHARS            = 'dirtyChars';
   CONF_EXIT_BROWSER           = 'exitBrowser';
   CONF_FOLDER_DELETE          = 'folderDelete';
   CONF_KEEP_DELETE            = 'keepDelete';
@@ -138,11 +139,11 @@ type
             koToggleHelp, koBrighterPB, koDarkerPB, koTogglePlaylist, koCloseEvery, koArrangeAll, koSyncMedia, koScreenshot, koToggleSubtitles, koToggleRepeat,
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
-            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave, koConfig, koPlayEdited);
+            koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave, koConfig, koPlayEdited, koRenameCleanFile);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
-  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove, rtKeepSave);
+  TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove, rtKeepSave, rtKeepClean);
 
   TSnapshot = record
     key:              WORD;

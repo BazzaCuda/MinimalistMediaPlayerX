@@ -671,6 +671,7 @@ begin
     evVMPlayPrevFolder:     playPrevFolder;
     evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
+    evVMRenameCleanFile:    sendOpInfo(renameCurrentItem(rtKeepClean));
     evVMRenameCurrentItem:  sendOpInfo(renameCurrentItem(rtUser));
     evVMReloadPlaylist:     reloadPlaylist;
     evVMResizeWindow:       resizeWindow;
@@ -944,6 +945,7 @@ begin
   vOldName := mmp.cmd(evPLReqCurrentItem).text;
   case aRenameType of
     rtUser:       vNewName := mmpRenameFile(vOldName);
+    rtKeepClean:  vNewName := mmpRenameFile(vOldName,                   mmpCleanFile(mmpFileNameWithoutExtension(vOldName)));
     rtKeep:       vNewName := mmpRenameFile(vOldName, '! '            + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF1:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F1] + mmpFileNameWithoutExtension(vOldName));
     rtKeepCatF2:  vNewName := mmpRenameFile(vOldName, CF[CONF_CAT_F2] + mmpFileNameWithoutExtension(vOldName));
@@ -989,6 +991,7 @@ begin
     rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
     rtKeepMove:   result := 'Moved: ' + mmpUserDstFolder('Moved');
     rtKeepSave:   result := 'Saved: ' + mmpUserDstFolder('Saved');
+    rtKeepClean:  result := 'Cleaned';
   end;
 
   mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
