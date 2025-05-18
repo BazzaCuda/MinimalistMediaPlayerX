@@ -168,6 +168,12 @@ type
     Label52: TLabel;
     Label53: TLabel;
     Label54: TLabel;
+    tsCleanFile: TTabSheet;
+    Label55: TLabel;
+    edtDirtyChars: TLabeledEdit;
+    lblDirtyChars: TLabel;
+    btnDirtyCharsDefault: TButton;
+    Label56: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -201,6 +207,8 @@ type
     procedure btnSlideshowIntervalMsDefaultClick(Sender: TObject);
     procedure spinSlideshowIntervalMsChange(Sender: TObject);
     procedure chbPlayEditedClick(Sender: TObject);
+    procedure edtDirtyCharsChange(Sender: TObject);
+    procedure btnDirtyCharsDefaultClick(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -308,6 +316,11 @@ begin
   var vTag := TSpeedButton(sender).tag;
   for var i := 0 to tsUserFolders.controlCount - 1 do
     case (tsUserFolders.controls[i] is TLabeledEdit) and (TLabeledEdit(tsUserFolders.controls[i]).tag = vTag) of TRUE: TLabeledEdit(tsUserFolders.controls[i]).text := vPrevFolder; end;
+end;
+
+procedure TConfigForm.btnDirtyCharsDefaultClick(Sender: TObject);
+begin
+  CF[CONF_DIRTY_CHARS] := ' ';
 end;
 
 procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
@@ -428,6 +441,11 @@ begin
   CF[CONF_FOLDERS[vEdit.tag]] := vText;
 end;
 
+procedure TConfigForm.edtDirtyCharsChange(Sender: TObject);
+begin
+  CF[CONF_DIRTY_CHARS] := mmpIfThenElse(edtDirtyChars.text <> DIRTY_CHARS, edtDirtyChars.text, ' ');
+end;
+
 procedure TConfigForm.edtPrefixF1Change(Sender: TObject);
 begin
   var vText := (sender as TLabeledEdit).text;
@@ -493,6 +511,8 @@ begin
                                                        FALSE: spinSlideshowIntervalMs.value := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS]; end;
 
   chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
+
+  edtDirtyChars.text            := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);

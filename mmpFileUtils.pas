@@ -88,7 +88,6 @@ begin
 end;
 
 function mmpCleanFile(const aFileName: string): string;
-const DIRTY_CHARS = '!@#$^{}+=_`.%^''';
 begin
   var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', CF[CONF_DIRTY_CHARS], DIRTY_CHARS);
   result := aFileName;

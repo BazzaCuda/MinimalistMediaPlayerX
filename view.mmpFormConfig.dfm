@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsEditing
+    ActivePage = tsCleanFile
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -226,7 +226,7 @@ object ConfigForm: TConfigForm
           'When you issue commands such as [Del]ete,  Ctrl-[D]elete and Ctr' +
           'l-[K]eep/Delete,'#13#10'MMP checks whether you have enabled that opera' +
           'tion here. '#13#10'If you haven'#39't, MMP will not proceed to the delete ' +
-          'confirmation dialog'
+          'confirmation dialog**'
         WordWrap = True
       end
       object Label14: TLabel
@@ -269,9 +269,9 @@ object ConfigForm: TConfigForm
         Height = 30
         Alignment = taCenter
         Caption = 
-          'Note: Ctrl-Shift-[C]leanup goes straight to the delete confirmat' +
-          'ion dialog'#13#10'because deleting your Timeline Editing files won'#39't a' +
-          'ffect your original audio or video files'
+          '** Note: Ctrl-Shift-[C]leanup goes straight to the delete confir' +
+          'mation dialog'#13#10'because deleting your Timeline Editing files won'#39 +
+          't affect your original audio or video files'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua
         Font.Height = -12
@@ -2491,13 +2491,13 @@ object ConfigForm: TConfigForm
       object Label36: TLabel
         Left = 79
         Top = 284
-        Width = 419
+        Width = 429
         Height = 30
         Alignment = taCenter
         Caption = 
           'Note: although [K] and Ctrl-[K] are available in the Image && Th' +
           'umbnail Browser'#13#10'the prefix/suffix keys aren'#39't as all the functi' +
-          'on keys are assigned to user folders'
+          'on keys can be assigned to user folders'
         Color = clBtnFace
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua
@@ -2972,6 +2972,94 @@ object ConfigForm: TConfigForm
         ParentFont = False
         TabOrder = 0
         OnClick = chbPlayEditedClick
+      end
+    end
+    object tsCleanFile: TTabSheet
+      Caption = 'Clean File Name'
+      ImageIndex = 11
+      object Label55: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object lblDirtyChars: TLabel
+        Left = 36
+        Top = 10
+        Width = 500
+        Height = 120
+        Alignment = taCenter
+        Caption = 
+          'Ctrl-Shift-[R] will clean the current file name by replacing cer' +
+          'tain characters with a space'#13#10#13#10'Some of these characters must be' +
+          ' removed in order to open the Audio && Video Timeline Editor'#13#10'as' +
+          ' they will break the FFMPEG command line when you try to Export ' +
+          'your edits to a new file*'#13#10#13#10'Other characters are simply unneces' +
+          'sary and add no value to the name of the file'#13#10#13#10'Ctrl-Shift-[R] ' +
+          'regards the following characters as "dirty":'
+      end
+      object Label56: TLabel
+        Left = 159
+        Top = 292
+        Width = 257
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* in particular, ampersand (&&) and apostrophe ('#39')'#13#10'Note: any .m' +
+          'mp file will also be renamed'
+        Color = clBtnFace
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object edtDirtyChars: TLabeledEdit
+        Left = 154
+        Top = 152
+        Width = 185
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 61
+        EditLabel.Height = 23
+        EditLabel.Caption = 'Dirty Chars'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Text = ''
+        OnChange = edtDirtyCharsChange
+      end
+      object btnDirtyCharsDefault: TButton
+        Left = 344
+        Top = 152
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnDirtyCharsDefaultClick
       end
     end
   end

@@ -131,7 +131,7 @@ type
   end;
 
 function focusTimeline: boolean;
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bCreateNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
 function shutTimeline: boolean;
 function TL: TTimeline;
 
@@ -206,7 +206,7 @@ begin
   setForegroundWindow(gTimelineForm.handle); // so this window also receives keyboard keystrokes
 end;
 
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bCreateNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
 begin
   case (gTimelineForm = NIL) and bCreateNew of TRUE: gTimelineForm := TTimelineForm.create(NIL); end;
   case gTimelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
@@ -222,7 +222,7 @@ begin
   TL.playEdited := bPlayEdited;
   TL.position   := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
-  mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew);
+  case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew); end;
 
   mmp.cmd(evMPKeepOpen, TRUE);
   mmp.cmd(evGSShowingTimeline, TRUE);

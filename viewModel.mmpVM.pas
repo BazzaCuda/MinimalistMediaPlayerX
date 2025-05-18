@@ -518,7 +518,7 @@ end;
 function TVM.moveTimeline(const bCreateNew: boolean = FALSE): boolean;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
-  showTimeline(vPt, FVideoPanel.width, CF.asBoolean[CONF_SHOW_METADATA], bCreateNew);
+  showTimeline(vPt, FVideoPanel.width, CF.asBoolean[CONF_PLAY_EDITED], NOT mouseDown, bCreateNew);
 end;
 
 procedure TVM.onFormResize;
@@ -578,6 +578,7 @@ begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
   case button = mbLeft  of TRUE: mouseDown := FALSE; end;
   case button = mbRight of TRUE: onWINPausePlay(msg); end;
+  case FDragged         of TRUE: mmp.cmd(evVMMoveTimeline); end;
 //  case button = mbRight of TRUE: FMenu := newMMPMenu.popup(X, Y); end;
 end;
 
@@ -707,6 +708,8 @@ begin
 
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
+
+  case FDragged of TRUE: mmp.cmd(evVMMoveTimeline); end;
 
 //  case GS.activeTasks = 0 of  FALSE: mmp.cmd(evSTOpInfo, format('Shredding: %d', [GS.activeTasks])); end; // also a good place to do this
 end;
