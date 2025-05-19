@@ -194,6 +194,7 @@ Control | Action
 `Ctrl-P`                | toggle `[P]`laylist filtering on and off
 `Q`                     | play the previous media file in the `[Q]`ueue/playlist
 `R`                     | `[R]`ename the current media file
+`Ctrl-Shift-R`          | `[R]`ename to clean file name by replacing dirty characters with spaces
 `Ctrl-R`                | toggle infinite `[R]`epeat of the current media file
 `S`                     | re`[S]`tart the current media file from the beginning, aka `[S]`tartover
 `Ctrl-S`                | toggle `[S]`ubtitles on/off
@@ -242,15 +243,17 @@ Control | Action
 `2`                     | reset contrast to normal 
 **Editing** (Ctrl-E) |
 `Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files 
-`Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window 
+`Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
+`C`                     | `[C]`ut: split segment at cursor into two segments
 `L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
 `S`                     | `[S]`horten the selected segment by one second. Can be held down for rapid repeat
 `M`                     | `[M]`erge the selected segment with the segment to its right
 `N`                     | `[N]`erge the selected segment with the segment to its left
 `R`                     | `[R]`estore the selected e[X]cluded segment
 `X`                     | e`[X]`clude the selected segment from the final edit
+`Ctrl-S`                | toggle `auto-[S]kip` of excluded segments during playback
 **File Control** | 
 `INSERT`                | copy media file name (without the extension) to the clipboard. e.g. for saving the project file after `[F12]`
 `DEL`                   | `[D]`elete current media file (after confirmation)
@@ -261,6 +264,7 @@ Control | Action
 `Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `R`                     | `[R]`ename the current media file
+`Ctrl-Shift-R`          | `[R]`ename to clean file name by replacing dirty characters with spaces
 `Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` user folder in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
 `F2`                    | rename media file with category prefix 2 defined in `MinimalistMediaPlayer.conf`
