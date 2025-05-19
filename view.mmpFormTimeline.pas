@@ -913,14 +913,13 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  var vNewPos := skipExcludedSegments(value);
+  FPosition := skipExcludedSegments(value);
 
-  FPosition := value;
   case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                         FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   mmpProcessMessages;
 
-  gTimelineForm.updatePositionDisplay(vNewPos);
+  gTimelineForm.updatePositionDisplay(FPosition);
 end;
 
 procedure TTimeline.setPosOnly(const Value: integer);
