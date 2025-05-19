@@ -191,6 +191,7 @@ begin
     evMPSaturationReset:  sendOpInfo(mpvSaturationReset(mpv));
     evMPSaturationUp:     sendOpInfo(mpvSaturationUp(mpv));
     evMPScreenshot:       mpvTakeScreenshot(mpv, aNotice.text);
+    evMPSeek:             mpvSeek(mpv, aNotice.integer);
     evMPSpeedDn:          sendOpInfo(mpvSpeedDn(mpv));
     evMPSpeedReset:       sendOpInfo(mpvSpeedReset(mpv));
     evMPSpeedUp:          sendOpInfo(mpvSpeedUp(mpv));

@@ -35,7 +35,7 @@ type
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
-    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile,
+    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile, evGSSkipExcluded,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
@@ -55,7 +55,7 @@ type
     evMPRotateLeft, evMPRotateReset, evMPRotateRight,
     evMPSaturationDn, evMPSaturationUp, evMPSaturationReset, evMPScreenshot, evMPSpeedDn, evMPSpeedUp, evMPSpeedReset, evMPStartOver, evMPStop,
     evMPToggleRepeat, evMPToggleSubtitles,
-    evMPVolDn, evMPVolUp, evMPZoomIn, evMPZoomOut, evMPZoomReset,
+    evMPVolDn, evMPVolUp, evMPZoomIn, evMPZoomOut, evMPZoomReset, evMPSeek,
 
     evMPStateEnd, evMPStateLoading, evMPStatePlay,
 
@@ -87,7 +87,7 @@ type
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
     evVMToggleFiltering,
     evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem, evVMReInitTimeline, evVMConfig,
-    evVMMPPlayEdited, evVMRenameCleanFile,
+    evVMMPPlayEdited, evVMRenameCleanFile, evVMToggleSkipExcluded,
 
     evAppClose, evAppCloseAll,
 

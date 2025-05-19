@@ -105,6 +105,7 @@ type
     function    segFileEntry(const aSegFile: string): string;
     function    segmentAtSS(const aSS: integer): TSegment;
     function    shortenSegment(const aSegment: TSegment): boolean;
+    function    skipExcludedSegments(const aPosition: integer): integer;
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
@@ -912,11 +913,14 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
+  var vNewPos := skipExcludedSegments(value);  // EXPERIMENTAL
+
   FPosition := value;
   case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                         FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   mmpProcessMessages;
-  gTimelineForm.updatePositionDisplay(value);
+
+  gTimelineForm.updatePositionDisplay(vNewPos);
 end;
 
 procedure TTimeline.setPosOnly(const Value: integer);
@@ -930,6 +934,20 @@ begin
   case aSegment.isLast of TRUE: EXIT; end;
   aSegment.endSS := aSegment.endSS - 1;
   segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS - 1;
+end;
+
+function TTimeline.skipExcludedSegments(const aPosition: integer): integer;
+begin
+  result {newPos} := aPosition;
+  case GS.skipExcluded of FALSE: EXIT; end;
+
+  while result < FMax do  begin
+                            var vSeg := segmentAtSS(result);
+                            case vSeg = NIL   of   TRUE: BREAK; end;
+                            case vSeg.deleted of  FALSE: BREAK; end;
+                            result := vSeg.endSS + 1; end;
+
+  case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
 end;
 
 function TTimeline.undo: boolean;
@@ -950,7 +968,7 @@ end;
 
 function TTimeline.validKey(key: WORD; aShift: TShiftState): boolean;
 const
-  validKeys1 = 'CILMNORSX';
+  validKeys1 = 'CIOMNRXLS';
   validKeys2 = 'YZ';
 begin
   var vCtrlKeyDown  := ssCtrl   in aShift;

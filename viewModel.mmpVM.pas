@@ -155,6 +155,7 @@ type
     function    toggleFullscreen:     boolean;
     function    toggleHelp:           boolean;
     function    togglePlaylist:       boolean;
+    function    toggleSkipExcluded:   string;
   protected
     procedure   onFormResize;
     procedure   onKeyDown(key: Word; Shift: TShiftState);
@@ -363,7 +364,6 @@ begin
   var vFile := mmpFileNameWithoutExtension(vCurrentItem);
   var vExt  := extractFileExt(vCurrentItem);
   var vFN   := vPath + vFile + ' [edited]' + vExt;
-//  case fileExists(vFN) of FALSE: vFN := vPath + vFile + ' [copy]' + vExt; end;
   case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
 end;
 
@@ -683,6 +683,7 @@ begin
     evVMToggleHelp:         begin toggleHelp;     resizeWindow; end;
     evVMToggleFullscreen:   toggleFullscreen;
     evVMTogglePlaylist:     begin togglePlaylist; resizeWindow; end;
+    evVMToggleSkipExcluded: sendOpInfo(toggleSkipExcluded);
     evWndResize:            begin moveHelp; movePlaylist; moveTimeline; end;
   end;
 end;
@@ -1152,8 +1153,8 @@ begin
   result := FALSE;
   mmp.cmd(evGSImagesPaused, NOT GS.imagesPaused);
   setupSlideshowTimer;
-  case GS.imagesPaused of  TRUE: mmp.cmd(evSTOpInfo, 'Playlist filtering OFF');
-                          FALSE: mmp.cmd(evSTOpInfo, 'Playlist filtering ON'); end;
+  case GS.imagesPaused of  TRUE: mmp.cmd(evSTOpInfo, 'Playlist filtering off');
+                          FALSE: mmp.cmd(evSTOpInfo, 'Playlist filtering on'); end;
   result := TRUE;
 end;
 
@@ -1189,6 +1190,13 @@ begin
                             procedure begin mmp.cmd(evPLFormShutForm); end);
 
   result := TRUE;
+end;
+
+function TVM.toggleSkipExcluded: string;
+begin
+  mmp.cmd(evGSSkipExcluded, NOT GS.skipExcluded);
+  case GS.skipExcluded of  TRUE: result := 'skip excluded on';
+                          FALSE: result := 'skip excluded off'; end;
 end;
 
 end.

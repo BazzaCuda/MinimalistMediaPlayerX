@@ -283,6 +283,7 @@ function TMediaInfo.getMediaInfo(const aURL: string; const aMediaType: TMediaTyp
 var
   vBitRate:     string;
   vDuration:    string;
+  vDurationStr: string;
   vFormat:      string;
   vLanguage:    string;
   vTitle:       string;
@@ -416,7 +417,7 @@ begin
     FMD.mdFrameRate :=  mediaInfo_Get(FHandle, Stream_General,      0, 'FrameRate',       Info_Text, Info_Name);
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FMD.mdOverallBitRate)    of FALSE: FMD.mdOverallBitRate   := 0; end;
 
-    var vDurationStr := mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name);
+    vDurationStr := mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name);
     case pos('.', vDurationStr) > 0 of  TRUE:  begin
                                                     var vDurationFloat:double;
                                                     case tryStrToFloat(vDurationStr, vDurationFloat) of FALSE: vDurationFloat := 0; end;
@@ -455,6 +456,8 @@ begin
       case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
       case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createTextStream (vStreamIx); end;
     end;
+
+    {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
 
     case aMediaType of mtAudio, mtVideo: createChapters; end;
 

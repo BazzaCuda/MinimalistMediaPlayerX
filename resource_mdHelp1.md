@@ -30,6 +30,7 @@ Ctrl-**K** [K]eep/Delete all non-[K]eep files in folder\*\*<br />
 Ctrl-**M** [M]ove file to folder in moved= user folder<br />
 Shift-**M** [M]ove file to folder in moved= user folder<br />
 **R** [R]ename file<br />
+Ctrl-Shift-**R** [R]ename to clean file name<br />
 Shift-**S** [S]ave file to folder in saved= user folder<br />
 
 _\*\* doesn't touch the contents of subfolders_<br />

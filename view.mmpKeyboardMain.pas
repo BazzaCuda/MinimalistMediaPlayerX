@@ -142,6 +142,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(S) and NOT ctrl and     shift                                of TRUE: result := koKeepSave; end;
     case keyUp and keyIs(S) and     ctrl and NOT shift                                of TRUE: result := koToggleSubtitles; end;
     case keyUp and keyIs(S) and NOT ctrl and NOT shift  and NOT GS.showingTimeline    of TRUE: result := koStartOver; end;
+    case keyUp and keyIs(S) and     ctrl                and     GS.showingTimeline    of TRUE: result := koToggleSkipExcluded; end;
     case keyUp and keyIs(T)                             and (GS.mediaType = mtImage)  of TRUE: result := koThumbnails; end;
     case keyDn and keyIs(T)                             and (GS.mediaType <> mtImage) of TRUE: result := koTab; end;
     case keyUp and keyIs(U)                                                           of TRUE: result := koZoomReset; end;

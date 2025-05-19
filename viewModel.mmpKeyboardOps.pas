@@ -140,14 +140,15 @@ begin
     koScreenshot:         MP.notify(newNotice(evMPScreenshot, mmpScreenshotFolder));
     koSyncMedia:          mmp.cmd(evPAPostToEveryEx, message(WIN_SYNC_MEDIA, MP.notify(newNotice(evMPReqPosition)).integer, 0));
     koThumbnails:         mmp.cmd(evVMShowThumbs);
-    koToggleProgressBar:  mmp.cmd(evPBToggleProgressBar);
     koToggleControls:     mmp.cmd(evPAPostToAll, WIN_TOGGLE_CONTROLS);
     koToggleEditMode:     mmp.cmd(evPAPostToAll, WIN_TOGGLE_EDIT_MODE);
     koToggleFiltering:    mmp.cmd(evVMToggleFiltering);
     koToggleHelp:         mmp.cmd(evVMToggleHelp);
     koToggleNumlock:      mmpToggleNumlock;
     koTogglePlaylist:     mmp.cmd(evVMTogglePlaylist);
+    koToggleProgressBar:  mmp.cmd(evPBToggleProgressBar);
     koToggleRepeat:       mmp.cmd(evPAPostToAll, WIN_TOGGLE_REPEAT);
+    koToggleSkipExcluded: mmp.cmd(evVMToggleSkipExcluded);
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));
     koVolUp:              MP.notify(newNotice(evMPVolUp));
