@@ -352,7 +352,7 @@ procedure TTimelineForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftS
 // For VK_ keys we only get a formKeyDown event
 begin
   case (key = 67) and GS.cleanup    of TRUE: begin mmp.cmd(evGSCleanup, FALSE);     key := 0; EXIT; end;end; // block the spurious C-up after Ctrl-Shift-C
-  case (key = 82) and GS.renameFile of TRUE: begin mmp.cmd(evGSRenameFile, FALSE);  key := 0; EXIT; end;end;  // block the spurious R-up after Ctrl-R
+  case (key = 82) and GS.renameFile of TRUE: begin mmp.cmd(evGSRenameFile, FALSE);  key := 0; EXIT; end;end; // block the spurious R-up after Ctrl-R
   case TL.validKey(key, shift) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
   var vSaveUndo := FALSE;
@@ -913,7 +913,7 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  var vNewPos := skipExcludedSegments(value);  // EXPERIMENTAL
+  var vNewPos := skipExcludedSegments(value);
 
   FPosition := value;
   case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;

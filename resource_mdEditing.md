@@ -15,8 +15,8 @@ Control | Action
 **`[S]`**                     | [S]horten the selected segment by one second - can be held down for rapid repeat
 **`[M]`**                     | [M]erge the selected segment with the segment to its right
 **`[N]`**                     | [N]erge the selected segment with the segment to its left
-**`[R]`**                     | [R]estore the selected e[X]cluded segment
 **`[X]`**                     | e[X]clude the selected segment from the final edit
+**`[R]`**                     | [R]estore the selected e[X]cluded segment
 **Additional** ||
 **`Ctrl-[R]`**                | [R]ename file
 **`Ctrl-[S]`**                | toggle [S]kip excluded segments during playback
