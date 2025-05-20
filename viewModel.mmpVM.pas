@@ -959,6 +959,7 @@ begin
     rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
 
+  case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;
   case vNewName = vOldName of TRUE: EXIT; end;
 
   case aRenameType of
@@ -995,7 +996,7 @@ begin
     rtKeepCatF4:  result := '... ' + CF[CONF_CAT_F4];
     rtKeepMove:   result := 'Moved: ' + mmpUserDstFolder('Moved');
     rtKeepSave:   result := 'Saved: ' + mmpUserDstFolder('Saved');
-    rtKeepClean:  result := 'Cleaned';
+    rtKeepClean:  result := 'Rename Cleaned';
   end;
 
   mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
