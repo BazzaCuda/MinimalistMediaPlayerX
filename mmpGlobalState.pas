@@ -51,6 +51,7 @@ type
     function getActiveTaskPercent:        integer;
     function getAutoCenter:               boolean;
     function getCleanup:                  boolean;
+    function getDuration:                 integer;
     function getIDDms:                    integer;
     function getImagesPaused:             boolean;
     function getMainForm:                 TForm;
@@ -83,6 +84,7 @@ type
     property activeTaskPercent:         integer             read getActiveTaskPercent;
     property autoCenter:                boolean             read getAutoCenter;
     property cleanup:                   boolean             read getCleanup;
+    property duration:                  integer             read getDuration;
     property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
     property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
@@ -123,6 +125,7 @@ type
     FActiveTaskPercent:       integer;
     FAutoCenter:              boolean;
     FCleanup:                 boolean;
+    FDuration:                integer;
     FIDDms:                   integer;
     FImagesPaused:            boolean;
     FMainForm:                TForm;
@@ -156,6 +159,7 @@ type
     function    getActiveTaskPercent:        integer;
     function    getAutoCenter:               boolean;
     function    getCleanup:                  boolean;
+    function    getDuration:                 integer;
     function    getIDDms:                    integer;
     function    getImagesPaused:             boolean;
     function    getMainForm:                 TForm;
@@ -226,6 +230,11 @@ end;
 function TGlobalState.getCleanup: boolean;
 begin
   result := FCleanup;
+end;
+
+function TGlobalState.getDuration: integer;
+begin
+  result := FDuration;
 end;
 
 function TGlobalState.getIDDms: integer;
@@ -357,6 +366,7 @@ begin
     evGSActiveTaskPercent:        FActiveTaskPercent      := aNotice.integer;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
     evGSCleanup:                  FCleanup                := aNotice.tf;
+    evGSDuration:                 FDuration               := aNotice.integer;
     evGSIDDms:                    FIDDms                  := aNotice.integer;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;

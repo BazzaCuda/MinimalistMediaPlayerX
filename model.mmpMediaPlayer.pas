@@ -209,7 +209,7 @@ begin
 
     evPBClick:            setPosition(aNotice.integer);
 
-    evMPReqDuration:      aNotice.integer := mpvDuration(mpv);
+//    evMPReqDuration:      aNotice.integer := mpvDuration(mpv); EXPERIMENTAL - always use MI's info
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
     evMPReqIDDms:         aNotice.integer := imageDisplayDurationMs(aNotice.integer);
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
@@ -282,10 +282,14 @@ function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
   result          := FALSE;
   FIgnoreTicks    := TRUE;
+
+  FMediaType      := MT.mediaType(aURL);
+  mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
+
   mpvSetKeepOpen(mpv, TRUE);  // VITAL! Prevents the slideshow from going haywire - so the next line won't immediately issue an mpsEnd for an image
   mpvOpenFile(mpv, aURL);     // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file
 
-  FMediaType      := MT.mediaType(aURL);
+//  FMediaType      := MT.mediaType(aURL);
   FDimensionsDone := FMediaType in [mtAudio, mtImage]; // only applies to video
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE); end; // ideally, we only want audio and video files to issue mpsEnd events at end of playback
 
@@ -295,7 +299,7 @@ begin
   FIgnoreTicks  := FALSE; // react in onTickTimer
 
   mmp.cmd(evGSMediaType, FMediaType);
-  mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
+//  mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
   mmp.cmd(evSTUpdateMetaData);
   mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
 

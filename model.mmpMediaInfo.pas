@@ -22,7 +22,7 @@ interface
 
 uses
   system.generics.collections,
-  vcl.stdCtrls,
+  vcl.forms, vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   TMediaStreamClass;
@@ -417,13 +417,15 @@ begin
     FMD.mdFrameRate :=  mediaInfo_Get(FHandle, Stream_General,      0, 'FrameRate',       Info_Text, Info_Name);
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FMD.mdOverallBitRate)    of FALSE: FMD.mdOverallBitRate   := 0; end;
 
-    vDurationStr := mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name);
+    vDurationStr :=     mediaInfo_Get(FHandle, Stream_General,      0, 'Duration',        Info_Text, Info_Name);
     case pos('.', vDurationStr) > 0 of  TRUE:  begin
                                                     var vDurationFloat:double;
                                                     case tryStrToFloat(vDurationStr, vDurationFloat) of FALSE: vDurationFloat := 0; end;
                                                     FMD.mdDuration := trunc(vDurationFloat); end;
                                           FALSE:
                                                     case tryStrToInt(vDurationStr, FMD.mdDuration) of FALSE: FMD.mdDuration := 0; end;end;
+    FMD.mdDuration := FMD.mdDuration div MILLISECONDS;
+    mmp.cmd(evGSDuration, FMD.mdDuration);
 
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdAudioBitRate)      of FALSE: FMD.mdAudioBitRate     := 0; end;
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FMD.mdWidth)             of FALSE: FMD.mdWidth            := 0; end;

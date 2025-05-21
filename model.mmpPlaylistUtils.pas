@@ -72,7 +72,7 @@ begin
 
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: begin mmp.cmd(evVMShutTimeline); EXIT; end;end; // close the timeline if we're now displaying an image
 
-  case GS.showingTimeline of TRUE: begin  var  vMPDuration := mmp.cmd(evMIReqDuration).integer;
+  case GS.showingTimeline of TRUE: begin  var  vMPDuration := GS.duration;
                                           case vMPDuration > 0 of  TRUE: mmp.cmd(evVMReInitTimeline, vMPDuration); // reInit the timeline with the new media file details
                                                                   FALSE: mmp.cmd(evVMShutTimeline); end;end;end;
 end;

@@ -35,7 +35,7 @@ type
     evGSRepeatDelayMs,
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput,
-    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile, evGSSkipExcluded,
+    evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile, evGSSkipExcluded, evGSDuration,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
@@ -59,7 +59,7 @@ type
 
     evMPStateEnd, evMPStateLoading, evMPStatePlay,
 
-    evMPReqDuration, evMPReqFileName, evMPReqIDDms, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
+    {evMPReqDuration,} evMPReqFileName, evMPReqIDDms, evMPReqPlaying, evMPReqPosition, evMPReqVideoHeight, evMPReqVideoWidth,
 
     evMXSysVolMax,
 

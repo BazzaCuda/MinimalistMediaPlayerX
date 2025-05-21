@@ -107,9 +107,6 @@ type
     FVideoPanel:            TPanel;
 
     FMPDuration:            integer;
-    FMPPosition:            integer;
-
-    FMPPrevPosition:        integer;
 
     FMenu:                  IMMPMenu;
     FMP:                    IMediaPlayer;
@@ -593,6 +590,11 @@ begin
 end;
 
 function TVM.onMPNotify(const aNotice: INotice): INotice;
+{$J+}
+const
+  vMPPosition:      integer = -1;
+  vMPPrevPosition:  integer = -1;
+{$J-}
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
@@ -607,18 +609,18 @@ begin
     evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
-                      FMPDuration     := aNotice.integer;
-                      FMPPrevPosition := -1; // reset for each new audio/video, see below
-                      mmp.cmd(evPBMax, aNotice.integer);
-                      mmp.cmd(GS.showingTimeline, evTLMax, aNotice.integer);
+                      FMPDuration     := GS.duration; // EXPERIMENTAL  aNotice.integer;
+                      vMPPrevPosition := -1; // reset for each new audio/video, see below
+                      mmp.cmd(evPBMax, FMPDuration);
+                      mmp.cmd(GS.showingTimeline, evTLMax, FMPDuration);
                     end;
 
-    evMPPosition:   case aNotice.integer <> FMPPrevPosition of   TRUE:  begin // ignore multiple WM_ mouse messages for the same position when the mouse is held down while grabbing the timeline cursor
-                                                                          FMPPosition     := aNotice.integer;
-                                                                          FMPPrevPosition := FMPPosition;
-                                                                          mmp.cmd(evPBPosition, aNotice.integer);
+    evMPPosition:   case aNotice.integer <> vMPPrevPosition of   TRUE:  begin // ignore multiple WM_ mouse messages for the same position when the mouse is held down while grabbing the timeline cursor
+                                                                          vMPPosition     := aNotice.integer;
+                                                                          vMPPrevPosition := vMPPosition;
+                                                                          mmp.cmd(evPBPosition, vMPPosition);
                                                                           mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration));
-                                                                          case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, aNotice.integer)); end;end;end;
+                                                                          case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, vMPPosition)); end;end;end;
   end;
 end;
 
@@ -1109,7 +1111,7 @@ begin
 
   vFactor := mmp.use(ssShift in mmpShiftState, 50, vFactor);
 
-  vDuration := FMP.notify(newNotice(evMPReqDuration)).integer;
+  vDuration := GS.duration; //   FMP.notify(newNotice(evMPReqDuration)).integer; EXPERIMENTAL
   VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
   vTab := trunc(vDuration / vFactor);

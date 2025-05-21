@@ -65,7 +65,7 @@ type
     FMax:                     integer;
     FMediaFilePath:           string;
     FPlayEdited:              boolean;
-    FPosition:                integer;
+    FPositionSS:              integer;
     FPrevAction:              string;
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
@@ -86,7 +86,7 @@ type
     procedure   setPosOnly(const Value: integer);
 
     function    addUndo(const aAction: string): string;
-    function    cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
+    function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
@@ -124,7 +124,7 @@ type
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
     property    playEdited:     boolean               read FPlayEdited    write FPlayEdited;
-    property    position:       integer               read getPosition    write setPosition;
+    property    positionSS:     integer               read getPosition    write setPosition;
     property    posOnly:        integer                                   write setPosOnly;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
     property    segCount:       integer               read getSegCount;
@@ -221,7 +221,7 @@ begin
   winAPI.Windows.setWindowPos(gTimelineForm.handle, HWND_TOP, aPt.X, aPt.Y, 0, 0, SWP_SHOWWINDOW + SWP_NOSIZE);
 
   TL.playEdited := bPlayEdited;
-  TL.position   := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
+  TL.positionSS := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, gTimelineForm.exportSegments, bCreateNew); end;
 
@@ -261,7 +261,7 @@ end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  TL.dragging := TRUE;
+  case button = mbLeft of TRUE: TL.dragging := TRUE; end;
 end;
 
 procedure TTimelineForm.pnlCursorMouseEnter(Sender: TObject);
@@ -284,7 +284,7 @@ begin
   getWindowRect(SELF.handle, vRect);
   case (vCursorPt.x <= vRect.location.x) or (vCursorPt.x >= vRect.bottomRight.x) of TRUE: EXIT; end; // prevent dragging outside the bounds of the timeline
 
-  case x = vPrevX of TRUE: EXIT; end; // filter out hundreds of repeating messages when the mouse is being held down but being moved
+  case x = vPrevX of TRUE: EXIT; end; // filter out hundreds of repeating messages when the mouse is being held down but not being moved
   vPrevX := X;
 
   case TL.dragging of  TRUE:  begin
@@ -292,10 +292,10 @@ begin
                                 case cursorPos < 0 of TRUE: cursorPos := 0; end;
                                 var vNewPos := mmp.cmd(evPBSetNewPosition, cursorPos).integer; // PB returns the x position converted to SS
                                 mmp.cmd(evSTDisplayTime, mmpFormatTime(vNewPos) + ' / ' + mmpFormatTime(TL.max));
-                                TL.position := vNewPos;                               // this also sets pnlCursor.left. hmmm
+                                TL.positionSS := vNewPos;                               // this also sets pnlCursor.left. hmmm
 //                                TL.posOnly := vNewPos; // just set TL.position with none of the side-effects
 //                                updatePositionDisplay(TL.position);                   // TL.position has just done this! hmmm
-                                var vSeg := TL.segmentAtSS(TL.position);
+                                var vSeg := TL.segmentAtSS(TL.positionSS);
                                 case vSeg = NIL of FALSE: vSeg.invalidate; end; // it's really not clear which is best here, repaint or invalidate
                               end;end;
 
@@ -303,7 +303,7 @@ end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  TL.dragging := FALSE;
+  case button = mbLeft of TRUE: TL.dragging := FALSE; end;
 end;
 
 procedure TTimelineForm.setCursorPos(const Value: integer);
@@ -321,7 +321,7 @@ begin
   lblPosition.caption := '';
 
   doubleBuffered            := TRUE;
-//  keyPreview       := TRUE; EXPERIMENTAL
+  keyPreview                := TRUE; // EXPERIMENTAL
 
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
@@ -358,10 +358,10 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
-    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position);
+    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS);
 
-    ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, TRUE);
-    ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.position), TL.position, FALSE, TRUE);
+    ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS, TRUE);
+    ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS, FALSE, TRUE);
 
     ord('M'): vSaveUndo := TL.mergeRight(TSegment.selSeg);
     ord('N'): vSaveUndo := TL.mergeLeft(TSegment.selSeg);
@@ -381,7 +381,7 @@ begin
   end;
 
   TL.drawSegments;
-  updatePositionDisplay(TL.position);
+  updatePositionDisplay(TL.positionSS);
 
   case TL.validKey(key, shift) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
@@ -402,7 +402,7 @@ procedure TTimelineForm.lblPositionClick(Sender: TObject);
 begin
   case lblPosition.tag = 0 of  TRUE: lblPosition.tag := 1;
                               FALSE: lblPosition.tag := 0; end;
-  updatePositionDisplay(TL.position);
+  updatePositionDisplay(TL.positionSS);
 end;
 
 function TTimelineForm.updatePositionDisplay(const aPosition: integer): boolean;
@@ -454,18 +454,17 @@ begin
   FCriticalSection      := TCriticalSection.create;
 end;
 
-function TTimeline.cutSegment(const aSegment: TSegment; const aPosition: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
+function TTimeline.cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
 begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
 
-  var newStartSS := aPosition;
+  var newStartSS := aPositionSS;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS); // this will be the righthand segment of the two. The old segment will finish to the left of it.
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS); // this will be the righthand segment of the two. The old segment will finish 1 second to the left of it.
   aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
-//  case mmpCtrlKeyDown of TRUE: delSegment(aSegment); end;
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
   case bDeleteRight   of TRUE: delSegment(newSegment); end;
 
@@ -512,6 +511,8 @@ begin
       case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
                               FALSE: vSegment.left := trunc((vSegment.startSS / FMax) * gTimelineForm.width); end;
       vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
+      case vSegment.isLast of TRUE: vSegment.width := gTimelineForm.width - vSegment.left; end;
+
       vSegment.caption := '';
       vSegment.segID   := format('%.2d', [n]);
       vSegment.setDisplayDetails;
@@ -527,6 +528,7 @@ begin
       setWindowPos(vSegment.handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
       inc(n);
     end;
+    case segCount > 1 of TRUE: segments[0].width := segments[1].left - 1; end;
   finally
     FCriticalSection.release;
   end;
@@ -562,7 +564,7 @@ end;
 
 function TTimeline.getPosition: integer;
 begin
-  result := FPosition;
+  result := FPositionSS;
 end;
 
 function TTimeline.getSegCount: integer;
@@ -729,7 +731,7 @@ begin
                                            var  vSL := loadChapters;
                                            case vSL  = NIL of FALSE: begin addUndo(loadSegments(vSL, TRUE)); vSL.free; end;end;end;end;
 
-  position := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
+  positionSS := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   drawSegments(TRUE);
 
@@ -913,18 +915,19 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  FPosition := skipExcludedSegments(value);
+  FPositionSS := skipExcludedSegments(value);
+  {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
 
-  case FPosition = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
-                        FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPosition / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
+  case FPositionSS = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
+                          FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPositionSS / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   mmpProcessMessages;
 
-  gTimelineForm.updatePositionDisplay(FPosition);
+  gTimelineForm.updatePositionDisplay(FPositionSS);
 end;
 
 procedure TTimeline.setPosOnly(const Value: integer);
 begin
-  FPosition := value;
+  FPositionSS := value;
 end;
 
 function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
