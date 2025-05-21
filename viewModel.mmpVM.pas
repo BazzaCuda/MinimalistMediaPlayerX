@@ -962,6 +962,7 @@ begin
   end;
 
   case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;
+  mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
   case vNewName = vOldName of TRUE: EXIT; end;
 
   case aRenameType of
@@ -1001,7 +1002,6 @@ begin
     rtKeepClean:  result := 'Rename Cleaned';
   end;
 
-  mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
 end;
 
 function TVM.resizeWindow: boolean;

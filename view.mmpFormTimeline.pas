@@ -321,7 +321,7 @@ begin
   lblPosition.caption := '';
 
   doubleBuffered            := TRUE;
-  keyPreview                := TRUE; // EXPERIMENTAL
+//  keyPreview                := TRUE; // EXPERIMENTAL
 
   pnlCursor.height := SELF.height;
   pnlCursor.top    := 0;
