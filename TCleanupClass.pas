@@ -71,9 +71,9 @@ var SR: TSearchRec;
 
   function extOK: boolean;
   begin
-    var vExt := lowerCase(extractFileExt(SR.name)) + ' ';
-    case vExt = '.seg ' of TRUE: processSegFile; end;
-    result := '.log .mmp .seg '.contains(vExt);
+    var vExt := lowerCase(extractFileExt(SR.name)) + '.';
+    case vExt = '.seg.' of TRUE: processSegFile; end;
+    result := '.log.mmp.seg.key.'.contains(vExt);
   end;
 
 begin

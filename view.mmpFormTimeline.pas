@@ -144,7 +144,7 @@ uses
   vcl.dialogs,
   mmpConsts, mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
-  model.mmpKeyFrames, model.mmpMediaInfo,
+  model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
 
 function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
@@ -736,8 +736,10 @@ begin
 
   drawSegments(TRUE);
 
-  mmpGetKeyFrames(aMediaFilePath);
-  mmpSetKeyFrames(aMediaFilePath);
+  mmpClearKeyFrames; // don't reuse a previous file's keyframes
+  case CF.asBoolean[CONF_KEYFRAMES] of TRUE:  begin
+                                                mmpGetKeyFrames(aMediaFilePath);
+                                                mmpSetKeyFrames(aMediaFilePath); end;end;
 
   result := TRUE;
 end;
@@ -928,8 +930,11 @@ begin
 
   gTimelineForm.updatePositionDisplay(FPositionSS);
 
+  // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline
   case mmpOnKeyframe(FPositionSS, 0.5, 1.0) of   TRUE: gTimelineForm.pnlCursor.color := clBlue; // within 0.5 to 1.0 seconds of the previous key frame
                                                 FALSE: gTimelineForm.pnlCursor.color := clBtnFace; end;
+
+  gTimelineForm.pnlCursor.bringToFront;
   gTimelineForm.pnlCursor.invalidate;
   mmpProcessMessages;
 end;
