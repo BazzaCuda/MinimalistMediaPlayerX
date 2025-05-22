@@ -114,13 +114,20 @@ uses
   mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
   mmpExceptionHandler in 'mmpExceptionHandler.pas',
-  view.mmpFormConfig in 'view.mmpFormConfig.pas';
+  view.mmpFormConfig in 'view.mmpFormConfig.pas' {;
+
+procedure setupRunMode;
+begin
+  reportMemoryLeaksOnShutdown: mmpEnvironmentVariable;
+  FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
+  {$if BazDebugWindow},
+  model.mmpKeyFrames in 'model.mmpKeyFrames.pas';
 
 procedure setupRunMode;
 begin
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-//  {$if BazDebugWindow} debugClear; {$endif}
+  {$if BazDebugWindow} debugClear; {$endif}
 
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}

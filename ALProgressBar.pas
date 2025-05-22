@@ -26,7 +26,7 @@ interface
 
 uses
   winApi.windows,
-  system.classes,
+  system.classes, system.generics.collections,
   vcl.controls, vcl.graphics;
 
 type
@@ -35,6 +35,7 @@ type
   TALProgressBar = class(TCustomControl)
   strict private
     FBackgroundColor: TColor;
+    FKeyFrames:       TList<double>;
     FPosition:        integer;
     FMin:             integer;
     FMax:             integer;
@@ -42,8 +43,10 @@ type
     FOnHintShow:      TShowHintEvent; // BAZ
   private
     procedure   adjustBarLength;
+    procedure   plotKeyFrames;
     procedure   setBackgroundColor(const aValue: TColor);
     procedure   setBarColor(const aValue: TColor);
+    procedure   setKeyFrames(const aValue: string);
     procedure   setMax(const aValue: Integer);
     procedure   setPosition(const aValue: Integer);
   protected
@@ -55,6 +58,7 @@ type
   published
     property    backgroundColor:  TColor          read FBackgroundColor       write setBackgroundColor;
     property    barColor:         TColor          read FBarColor              write setBarColor;
+    property    keyFrames:        string                                      write setKeyFrames;
     property    max:              integer         read FMax                   write setMax;
     property    onHintShow:       TShowHintEvent  read FOnHintShow            write FOnHintShow; // BAZ
     property    onMouseDown;
@@ -66,9 +70,12 @@ type
 implementation
 
 uses
-  math,
+  system.math, system.sysUtils,
   mmpConsts, mmpFuncProg,
   _debugWindow;
+
+const
+  BAR_HEIGHT = 10;
 
 { TALProgressBar }
 
@@ -81,7 +88,7 @@ constructor TALProgressBar.Create(AOwner: TComponent);
 begin
   inherited;
 
-  height            := 10;
+  height            := BAR_HEIGHT;
   doubleBuffered    := TRUE;
 
   FBackgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
@@ -91,11 +98,14 @@ begin
   FMin              := 0;
   FMax              := 100;
 
-  cursor            := crHandPoint; // BAZ
+  cursor            := crHandPoint;
+
+  FKeyFrames        := TList<double>.create;
 end;
 
 destructor TALProgressBar.Destroy;
 begin
+  case FKeyFrames = NIL of FALSE: FKeyFrames.free; end;
   inherited;
 end;
 
@@ -104,6 +114,7 @@ begin
   inherited;
 
   adjustBarLength;
+//  plotKeyFrames;
 end;
 
 procedure TALProgressBar.adjustBarLength;
@@ -116,19 +127,46 @@ begin
   var vBarLength := mmp.use(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
   canvas.brush.color := FBarColor;
-  canvas.fillRect(rect(0, 0, vBarLength, 10));
+  canvas.fillRect(rect(0, 0, vBarLength, BAR_HEIGHT));
 end;
 
-procedure TALProgressBar.SetBackgroundColor(const aValue: TColor);
+procedure TALProgressBar.plotKeyFrames;
+const WIN_SIZE = 60;
+var
+  vVisibleStartSS: double;
+  vVisibleEndSS:   double;
+
+  procedure doCalc;
+  begin
+    vVisibleStartSS := system.math.max(0.0, min(FPosition - (WIN_SIZE div 2), FMax - WIN_SIZE));
+    vVisibleEndSS   := vVisibleStartSS + WIN_SIZE;
+    vVisibleEndSS   := min(FMax, vVisibleEndSS);
+  end;
+
+begin
+  var vPixelsPerSS:double := SELF.width / WIN_SIZE; // our n-second window
+  doCalc;
+
+  canvas.brush.color := clTeal;
+  for var i := 0 to FKeyFrames.count - 1 do begin
+    case FKeyFrames[i] = -1 of TRUE: CONTINUE; end;
+    var vKeyFrame := round(FKeyFrames[i] * vPixelsPerSS);
+    case (FKeyFrames[i] > vVisibleStartSS) and (FKeyFrames[i] < vVisibleEndSS)
+        of TRUE: canvas.fillRect(rect(vKeyFrame, 0, vKeyFrame + 2, BAR_HEIGHT)); end; // 2 is the width of the vertical
+  end;
+end;
+
+procedure TALProgressBar.setBackgroundColor(const aValue: TColor);
 begin
   FBackgroundColor := aValue;
   invalidate;
 end;
 
-procedure TALProgressBar.SetPosition(const aValue: Integer);
+procedure TALProgressBar.setPosition(const aValue: Integer);
 begin
-  FPosition := aValue;
-  invalidate;
+  case FPosition = aValue of FALSE: begin
+                                      FPosition := aValue;
+                                      invalidate; end;end;
 end;
 
 procedure TALProgressBar.setMax(const aValue: Integer);
@@ -141,6 +179,18 @@ procedure TALProgressBar.setBarColor(const aValue: TColor);
 begin
   FBarColor := aValue;
   invalidate;
+end;
+
+procedure TALProgressBar.setKeyFrames(const aValue: string);
+begin
+  FKeyFrames.clear;
+  var vSL := TStringlist.create;
+  try
+    vSL.text := aValue;
+    for var i := 0 to vSL.count - 1 do FKeyFrames.add(strToFloatDef(vSL[i], -1));
+  finally
+    vSL.free;
+  end;
 end;
 
 end.

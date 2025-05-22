@@ -38,8 +38,9 @@ function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 implementation
 
 uses
+  system.classes,
   vcl.forms,
-  mmpFuncProg, mmpUtils,
+  mmpFileUtils, mmpFuncProg, mmpUtils,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
@@ -67,7 +68,9 @@ end;
 function mmpPlayCurrent: boolean;
 begin
   GS.notify(newNotice(evGSOpeningURL, TRUE));             // for TVM.reInitTimeline - gets reset in model.mmpMediaPlayer.openURL when all the new info is available
-  mmp.cmd(evMPOpenUrl, mmp.cmd(evPLReqCurrentItem).text); // for TVM.reInitTimeline - will reset evGSOpeningURL when it's finished
+  var vURL := mmp.cmd(evPLReqCurrentItem).text;
+
+  mmp.cmd(evMPOpenUrl, vURL); // for TVM.reInitTimeline - will reset evGSOpeningURL when it's finished
   while GS.openingURL do mmpProcessMessages;              // for TVM.reInitTimeline - wait for MP to finish opening the URL
 
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: begin mmp.cmd(evVMShutTimeline); EXIT; end;end; // close the timeline if we're now displaying an image

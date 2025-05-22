@@ -459,7 +459,7 @@ begin
       case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createTextStream (vStreamIx); end;
     end;
 
-    {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
+    // {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
 
     case aMediaType of mtAudio, mtVideo: createChapters; end;
 

@@ -144,7 +144,7 @@ uses
   vcl.dialogs,
   mmpConsts, mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
-  model.mmpMediaInfo,
+  model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
 
 function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
@@ -323,10 +323,11 @@ begin
   doubleBuffered            := TRUE;
 //  keyPreview                := TRUE; // EXPERIMENTAL
 
-  pnlCursor.height := SELF.height;
-  pnlCursor.top    := 0;
-  pnlCursor.left   := -1;
-  pnlCursor.width  := pnlCursor.width + 1;
+  pnlCursor.height      := SELF.height;
+  pnlCursor.top         := 0;
+  pnlCursor.left        := -1;
+  pnlCursor.width       := pnlCursor.width + 1;
+  pnlCursor.bevelOuter  := bvNone;
 
   lblPosition.styleElements := [seFont];
   lblPosition.borderStyle   := bsNone;
@@ -712,7 +713,7 @@ begin
   result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
 
-  {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
+  // {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
 
   FCriticalSection.acquire;
   try
@@ -734,6 +735,9 @@ begin
   positionSS := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
   drawSegments(TRUE);
+
+  mmpGetKeyFrames(aMediaFilePath);
+  mmpSetKeyFrames(aMediaFilePath);
 
   result := TRUE;
 end;
@@ -916,13 +920,18 @@ end;
 procedure TTimeline.setPosition(const Value: integer);
 begin
   FPositionSS := skipExcludedSegments(value);
-  {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
+  // {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
 
   case FPositionSS = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                           FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPositionSS / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
   mmpProcessMessages;
 
   gTimelineForm.updatePositionDisplay(FPositionSS);
+
+  case mmpOnKeyframe(FPositionSS, 0.5, 1.0) of   TRUE: gTimelineForm.pnlCursor.color := clBlue; // within 0.5 to 1.0 seconds of the previous key frame
+                                                FALSE: gTimelineForm.pnlCursor.color := clBtnFace; end;
+  gTimelineForm.pnlCursor.invalidate;
+  mmpProcessMessages;
 end;
 
 procedure TTimeline.setPosOnly(const Value: integer);
