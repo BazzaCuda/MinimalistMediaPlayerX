@@ -643,7 +643,7 @@ begin
     evGSActiveTasks:        sendOpInfo(format('Shredding: %d', [GS.activeTasks]));
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
-    evVMCenterWindow:       mmpCenterWindow(GS.mainForm.handle, noPoint);
+    evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
     evVMCleanup:            doCleanup;
     evVMConfig:             mmpConfig;
     evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
