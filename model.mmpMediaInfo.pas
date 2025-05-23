@@ -424,7 +424,7 @@ begin
                                                     FMD.mdDuration := trunc(vDurationFloat); end;
                                           FALSE:
                                                     case tryStrToInt(vDurationStr, FMD.mdDuration) of FALSE: FMD.mdDuration := 0; end;end;
-    FMD.mdDuration := FMD.mdDuration div MILLISECONDS;
+    case FMD.mdDuration = 0 of FALSE: FMD.mdDuration := FMD.mdDuration div MILLISECONDS; end;
     mmp.cmd(evGSDuration, FMD.mdDuration);
 
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdAudioBitRate)      of FALSE: FMD.mdAudioBitRate     := 0; end;

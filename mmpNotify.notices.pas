@@ -66,7 +66,7 @@ type
     evPAPostToAll, evPAPostToAllEx, evPAPostToEvery, evPAPostToEveryEx, evPAReqCount,
 
     evPBBrighter, evPBClick, evPBDarker, evPBMax, evPBPosition, evPBReset, evPBSetNewPosition, evPBToggleProgressBar,
-    evPBReqMax, evPBReqPosition, evPBKeyFrames,
+    evPBReqMax, evPBReqPosition, {evPBKeyFrames,}
 
     evPLCopyToClipboard, evPLDeleteIx, evPLFillListBox, evPLFillPlaylist, evPLFind, evPLFirst, evPLLast, evPLNewPlaylist, evPLNext, evPLPrev, evPLReplaceCurrentItem,
     evPLReqCurrentFolder, evPLReqCurrentItem, evPLReqCurrentIx, evPLReqFormattedItem, evPLReqHasItems, evPLReqIsLast, evPLReqIsSpecialImage, evPLReqThisItem,

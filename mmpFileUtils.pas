@@ -27,6 +27,7 @@ uses
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 function mmpCleanFile(const aFileName: string): string;
+function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
@@ -93,6 +94,19 @@ begin
   result := aFileName;
   for var i := 1 to length(result) do
     case vDirtyChars.contains(result[i]) of TRUE: result[i] := ' '; end;
+end;
+
+function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
+begin
+  result := FALSE;
+
+  case NOT TFile.exists(aFile1) of TRUE: EXIT; end;
+  case NOT TFile.exists(aFile2) of TRUE: EXIT; end;
+
+  var vTimestamp1: TDateTime := TFile.getLastWriteTime(aFile1);
+  var vTimestamp2: TDateTime := TFile.getLastWriteTime(aFile2);
+
+  result := vTimestamp1 < vTimestamp2;
 end;
 
 function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState): boolean;

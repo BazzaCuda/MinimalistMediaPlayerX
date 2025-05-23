@@ -106,8 +106,6 @@ type
   strict private
     FVideoPanel:            TPanel;
 
-    FMPDuration:            integer;
-
     FMenu:                  IMMPMenu;
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
@@ -148,7 +146,7 @@ type
     function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
     function    tab(const aCapsLock:  boolean; const aFactor: integer = 0): string;
     function    toggleEditMode:       boolean;
-    function    toggleFiltering:      boolean;
+    function    toggleFiltering:      string;
     function    toggleFullscreen:     boolean;
     function    toggleHelp:           boolean;
     function    togglePlaylist:       boolean;
@@ -609,17 +607,16 @@ begin
     evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
-                      FMPDuration     := GS.duration; // EXPERIMENTAL  aNotice.integer;
                       vMPPrevPosition := -1; // reset for each new audio/video, see below
-                      mmp.cmd(evPBMax, FMPDuration);
-                      mmp.cmd(GS.showingTimeline, evTLMax, FMPDuration);
+                      mmp.cmd(evPBMax, GS.duration);
+                      mmp.cmd(GS.showingTimeline, evTLMax, GS.duration);
                     end;
 
     evMPPosition:   case aNotice.integer <> vMPPrevPosition of   TRUE:  begin // ignore multiple WM_ mouse messages for the same position when the mouse is held down while grabbing the timeline cursor
                                                                           vMPPosition     := aNotice.integer;
                                                                           vMPPrevPosition := vMPPosition;
                                                                           mmp.cmd(evPBPosition, vMPPosition);
-                                                                          mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(FMPDuration));
+                                                                          mmp.cmd(evSTDisplayTime, mmpFormatTime(aNotice.integer) + ' / ' + mmpFormatTime(GS.duration));
                                                                           case GS.showingTimeline of TRUE: TL.notify(newNotice(evTLPosition, vMPPosition)); end;end;end;
   end;
 end;
@@ -681,7 +678,7 @@ begin
     evVMShowThumbs:         showThumbnails(htThumbsHost);
     evVMShutTimeline:       shutTimeline;
     evVMToggleEditMode:     begin toggleEditMode; resizeWindow; end;
-    evVMToggleFiltering:    toggleFiltering;
+    evVMToggleFiltering:    sendOpInfo(toggleFiltering);
     evVMToggleHelp:         begin toggleHelp;     resizeWindow; end;
     evVMToggleFullscreen:   toggleFullscreen;
     evVMTogglePlaylist:     begin togglePlaylist; resizeWindow; end;
@@ -979,7 +976,7 @@ begin
   case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin                           // remove from the current folder's playlist
                                                             mmp.cmd(evMPStop);
                                                             mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer);      // this decrements PL's FPlayIx
-                                                            case GS.noPlaylist of  TRUE: begin mmp.cmd(evAppClose); EXIT; end;
+                                                            case GS.noPlaylist of  TRUE: begin mmp.cmd(evAppClose); EXIT; end; // no feedback reqd
                                                                                   FALSE: mmp.cmd(evVMMPPlayNext); end;end; // play the next item if there is one or force nextFolderOnEmpty/End
                                                   FALSE:  begin
                                                             mmp.cmd(evPLReplaceCurrentItem, vNewName);  // update the playlist with the new name
@@ -992,6 +989,7 @@ begin
 
   case aRenameType of
     rtUser:       result := 'Renamed';
+
     rtKeep:       result := 'Kept';
     rtKeepCatF1:  result := CF[CONF_CAT_F1] + ' ...';
     rtKeepCatF2:  result := CF[CONF_CAT_F2] + ' ...';
@@ -1146,19 +1144,18 @@ begin
   mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
 
-  mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, FMPDuration); end);
+  debugInteger('GS.duration', GS.duration);
+  mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, GS.duration); end);
 
   result := TRUE;
 end;
 
-function TVM.toggleFiltering: boolean;
+function TVM.toggleFiltering: string;
 begin
-  result := FALSE;
   mmp.cmd(evGSImagesPaused, NOT GS.imagesPaused);
   setupSlideshowTimer;
-  case GS.imagesPaused of  TRUE: mmp.cmd(evSTOpInfo, 'Playlist filtering off');
-                          FALSE: mmp.cmd(evSTOpInfo, 'Playlist filtering on'); end;
-  result := TRUE;
+  case GS.imagesPaused of  TRUE: result := 'Playlist filtering off';
+                          FALSE: result := 'Playlist filtering on'; end;
 end;
 
 function TVM.toggleFullscreen: boolean;

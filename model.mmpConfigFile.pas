@@ -90,7 +90,7 @@ type
   end;
 
 function CF: IConfigFile;
-{$J+} const gCF: IConfigFile = NIL; {J-}
+{$J+} const gCF: IConfigFile = NIL; {$J-}
 begin
   case gCF = NIL of TRUE: gCF := TConfigFile.create; end;
   result := gCF;

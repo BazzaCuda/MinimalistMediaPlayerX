@@ -172,7 +172,7 @@ begin
   case aNotice.event of
     evPBBrighter:             brighter;
     evPBDarker:               darker;
-    evPBKeyFrames:            FPB.keyFrames := aNotice.text;
+//    evPBKeyFrames:            FPB.keyFrames := aNotice.text;
     evPBMax:                  setMax(aNotice.integer);
     evPBPosition:             FPB.position := aNotice.integer;
     evPBReset:                resetColor;

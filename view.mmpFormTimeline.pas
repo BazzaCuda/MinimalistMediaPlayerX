@@ -62,6 +62,7 @@ type
   strict private
     FCancelled:               boolean;
     FDragging:                boolean;
+    FKeyFrames:               boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
     FPlayEdited:              boolean;
@@ -106,6 +107,7 @@ type
     function    segmentAtSS(const aSS: integer): TSegment;
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
+    function    toggleKeyFrames: string;
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
@@ -383,6 +385,8 @@ begin
 
   TL.drawSegments;
   updatePositionDisplay(TL.positionSS);
+
+  case key = ord('F') of TRUE: TL.toggleKeyFrames; end;
 
   case TL.validKey(key, shift) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
@@ -713,7 +717,7 @@ begin
   result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
 
-  // {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
+  {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
 
   FCriticalSection.acquire;
   try
@@ -736,10 +740,8 @@ begin
 
   drawSegments(TRUE);
 
-  mmpClearKeyFrames; // don't reuse a previous file's keyframes
-  case CF.asBoolean[CONF_KEYFRAMES] of TRUE:  begin
-                                                mmpGetKeyFrames(aMediaFilePath);
-                                                mmpSetKeyFrames(aMediaFilePath); end;end;
+  mmpClearKeyFrames;
+  case FKeyFrames of TRUE: mmpDoKeyFrames(aMediaFilePath); end;
 
   result := TRUE;
 end;
@@ -847,9 +849,9 @@ begin
   case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
-    evTLMax:      setMax(aNotice.integer);
-    evTLPosition: case FDragging of FALSE: setPosition(aNotice.integer); end;
-    evTLRename:   FMediaFilePath := mmpRenameMMPFile(FMediaFilePath, aNotice.text);
+    evTLMax:              setMax(aNotice.integer);
+    evTLPosition:         case FDragging of FALSE: setPosition(aNotice.integer); end;
+    evTLRename:           FMediaFilePath := aNotice.text; // mmpVM renames the mmp file // := mmpRenameMMPFile(FMediaFilePath, aNotice.text); // rename both the .mmp and the file being edited
   end;
 end;
 
@@ -930,9 +932,16 @@ begin
 
   gTimelineForm.updatePositionDisplay(FPositionSS);
 
-  // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline
-  case mmpOnKeyframe(FPositionSS, 0.5, 1.0) of   TRUE: gTimelineForm.pnlCursor.color := clBlue; // within 0.5 to 1.0 seconds of the previous key frame
-                                                FALSE: gTimelineForm.pnlCursor.color := clBtnFace; end;
+  var vColor    := clBtnFace;
+
+  case FKeyFrames of TRUE:  begin
+                              // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
+                              var vProximity := mmpKeyFrameProximity(FPositionSS);
+                              case (vProximity  > 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clTeal;     end;
+                              case  vProximity <= 0.5                           of TRUE: vColor := clYellow;   end;
+                              case  vProximity  < 0.0                           of TRUE: vColor := clBtnFace;  end;end;end; // override clYellow if -1 was returned
+
+  gTimeLineForm.pnlCursor.color := vColor;
 
   gTimelineForm.pnlCursor.bringToFront;
   gTimelineForm.pnlCursor.invalidate;
@@ -966,6 +975,15 @@ begin
   case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
 end;
 
+function TTimeline.toggleKeyFrames: string;
+begin
+  FKeyFrames := NOT FKeyFrames;
+  case FKeyFrames of   TRUE: result := 'keyframes on';
+                      FALSE: result := 'keyframes off'; end;
+  mmp.cmd(evSTOpInfo, result);
+  case FKeyFrames of TRUE: mmpDoKeyFrames(FMediaFilePath); end;
+end;
+
 function TTimeline.undo: boolean;
 // discard the most recent action [by moving it straight to the redo list] and apply the subsequent actions from the stack
 begin
@@ -984,7 +1002,7 @@ end;
 
 function TTimeline.validKey(key: WORD; aShift: TShiftState): boolean;
 const
-  validKeys1 = 'CIOMNRXLS';
+  validKeys1 = 'CFIOMNRXLS';
   validKeys2 = 'YZ';
 begin
   var vCtrlKeyDown  := ssCtrl   in aShift;

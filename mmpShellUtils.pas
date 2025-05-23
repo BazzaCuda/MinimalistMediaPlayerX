@@ -72,7 +72,7 @@ begin
 
     case aRunType of
       rtWait:     lpParameters := pChar(aCmdLine);
-      rtDontWait: lpParameters := pChar(' /K ' + aCmdLine);
+      rtDontWait: lpParameters := pChar(' /c ' + aCmdLine);
     end;
 
     lpDirectory := pWideChar(mmpExePath);
