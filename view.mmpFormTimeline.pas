@@ -386,7 +386,7 @@ begin
   TL.drawSegments;
   updatePositionDisplay(TL.positionSS);
 
-  case key = ord('F') of TRUE: TL.toggleKeyFrames; end;
+  case key = ord('F') of TRUE: mmp.cmd(evSTOpInfo, TL.toggleKeyFrames); end;
 
   case TL.validKey(key, shift) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
@@ -717,7 +717,7 @@ begin
   result := FALSE;
   case FMediaFilePath = aMediaFilePath of TRUE: EXIT; end;
 
-  {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
+  // {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
 
   FCriticalSection.acquire;
   try
@@ -977,10 +977,14 @@ end;
 
 function TTimeline.toggleKeyFrames: string;
 begin
+  result := 'not applicable to audio';
+  case (FKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
+
   FKeyFrames := NOT FKeyFrames;
   case FKeyFrames of   TRUE: result := 'keyframes on';
                       FALSE: result := 'keyframes off'; end;
-  mmp.cmd(evSTOpInfo, result);
+
+  case FKeyFrames of TRUE: mmp.cmd(evSTOpInfo, 'keyframes...'); end;
   case FKeyFrames of TRUE: mmpDoKeyFrames(FMediaFilePath); end;
 end;
 

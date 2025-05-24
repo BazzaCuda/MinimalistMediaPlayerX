@@ -1144,7 +1144,6 @@ begin
   mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
 
-  debugInteger('GS.duration', GS.duration);
   mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, GS.duration); end);
 
   result := TRUE;
