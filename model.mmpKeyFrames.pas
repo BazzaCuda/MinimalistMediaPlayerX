@@ -121,6 +121,7 @@ begin
   result := FALSE;
   var vSysMessage: string;
   var vKeyFramesFile := mmpKeyFile(aURL);
+  case fileExists(mmpKeyFile(aURL)) of FALSE: EXIT; end;
   case mmpIsFileInUse(vKeyFramesFile, vSysMessage) of TRUE: EXIT; end; // only use the .key file when ffprobe has finished writing to it
 
   var vSL := TStringList.create;
@@ -134,6 +135,7 @@ begin
   finally
     vSL.free;
   end;
+  mmp.cmd(evSTOpInfo, 'keyframes on');
   result := TRUE;
 end;
 

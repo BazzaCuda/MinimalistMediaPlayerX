@@ -63,7 +63,7 @@ type
     FCancelled:               boolean;
     FDragging:                boolean;
     FGotKeyFrames:            boolean;
-    FKeyFrames:               boolean;
+    FUseKeyFrames:            boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
     FPlayEdited:              boolean;
@@ -742,7 +742,7 @@ begin
 
   mmpClearKeyFrames;
   FGotKeyFrames := FALSE;
-  case FKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpDoKeyFrames(aMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
+  case FUseKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpDoKeyFrames(aMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
 
   result := TRUE;
 end;
@@ -935,15 +935,18 @@ begin
 
   var vColor    := clWhite;
 
-  case FKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
+  case GS.mediaType of
+    mtVideo:  begin
+                case FUseKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
 
-  case FKeyFrames and FGotKeyFrames of TRUE:  begin
-                                                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
-                                                var vProximity := mmpKeyFrameProximity(FPositionSS);
-                                                // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
-                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clFuchsia;  end;
-                                                case  vProximity <  0.5                           of TRUE: vColor := clYellow;   end;
-                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;    end;end;end; // override clYellow if -1 was returned
+                case FUseKeyFrames and FGotKeyFrames of TRUE: begin
+                                                                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
+                                                                var vProximity := mmpKeyFrameProximity(FPositionSS);
+                                                                // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
+                                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clFuchsia;  end;
+                                                                case  vProximity <  0.5                           of TRUE: vColor := clYellow;   end;
+                                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;    end;end;end; // override clYellow if -1 was returned
+  end;end;
 
   gTimeLineForm.pnlCursor.color := vColor;
 
@@ -981,16 +984,18 @@ end;
 
 function TTimeline.toggleKeyFrames: string;
 begin
-  result := 'not applicable to audio';
-  case (FKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
-
-  FKeyFrames := NOT FKeyFrames;
-  case FKeyFrames of   TRUE: result := 'keyframes on';
-                      FALSE: result := 'keyframes off'; end;
-
   FGotKeyFrames := FALSE;
-  case FKeyFrames of TRUE: mmp.cmd(evSTOpInfo, 'keyframes...'); end;
-  case FKeyFrames of TRUE: FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
+  result := 'not applicable to audio';
+  case (FUseKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
+
+  FUseKeyFrames := NOT FUseKeyFrames;
+
+  case FUseKeyFrames of FALSE:  begin
+                                  result := 'keyframes off';
+                                  EXIT; end;end;
+
+  result := 'keyframes...';
+  FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); // combined mmpGetKeyFrames and mmpSetKeyFrames
 end;
 
 function TTimeline.undo: boolean;
