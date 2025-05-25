@@ -121,12 +121,16 @@ begin
   result := FALSE;
   var vSysMessage: string;
   var vKeyFramesFile := mmpKeyFile(aURL);
-  while mmpIsFileInUse(vKeyFramesFile, vSysMessage) do begin mmpDelay(100); mmpProcessMessages; end; // wait for ffprobe to finish writing .key file
+  case mmpIsFileInUse(vKeyFramesFile, vSysMessage) of TRUE: EXIT; end; // only use the .key file when ffprobe has finished writing to it
 
   var vSL := TStringList.create;
   try
     vSL.loadFromFile(vKeyFramesFile);
     for var i := 0 to vSL.count - 1 do case strToFloatDef(vSL[i], 0) <> 0 of TRUE: mmpKeyFrames.add(strToFloatDef(vSL[i], -1)); end;
+    mmpKeyFrames.sort; // ffprobe sometimes reports them out of sequence, especially the first two
+//    vSL.clear;
+//    for var aValue in mmpKeyFrames do vSL.add(floatToStr(aValue));
+//    vSL.saveToFile('B:\Downloads\New Folder\sorted.key');
   finally
     vSL.free;
   end;

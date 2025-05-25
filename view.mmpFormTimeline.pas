@@ -62,6 +62,7 @@ type
   strict private
     FCancelled:               boolean;
     FDragging:                boolean;
+    FGotKeyFrames:            boolean;
     FKeyFrames:               boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
@@ -171,7 +172,7 @@ begin
 
     case aRunType of
       rtFFMpeg: lpParameters := pChar(aCmdLine);
-      rtCMD:    lpParameters := pChar(' /K ffmpeg ' + aCmdLine);
+      rtCMD:    lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
     end;
 
     lpDirectory := pWideChar(mmpExePath);
@@ -637,7 +638,7 @@ begin
         for var vSegment in segments do begin
           case vSegment.deleted of TRUE: CONTINUE; end;
 
-          cmdLine := '-hide_banner';
+          cmdLine := '-hide_banner'; // -v debug';
 
           cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
           cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
@@ -658,7 +659,6 @@ begin
           case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
 
           cmdLine := cmdLine + ' -y "' + segFile + '"';
-//          case maxSegment of TRUE: cmdLine := ' -i "' + FMediaFilePath + '"'  + ' -c copy -y "' + segFile + '"'; end; // do a straight copy instead
           log(cmdLine);
 
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
@@ -741,7 +741,8 @@ begin
   drawSegments(TRUE);
 
   mmpClearKeyFrames;
-  case FKeyFrames of TRUE: mmpDoKeyFrames(aMediaFilePath); end;
+  FGotKeyFrames := FALSE;
+  case FKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpDoKeyFrames(aMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
 
   result := TRUE;
 end;
@@ -932,14 +933,17 @@ begin
 
   gTimelineForm.updatePositionDisplay(FPositionSS);
 
-  var vColor    := clBtnFace;
+  var vColor    := clWhite;
 
-  case FKeyFrames of TRUE:  begin
-                              // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
-                              var vProximity := mmpKeyFrameProximity(FPositionSS);
-                              case (vProximity  > 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clTeal;     end;
-                              case  vProximity <= 0.5                           of TRUE: vColor := clYellow;   end;
-                              case  vProximity  < 0.0                           of TRUE: vColor := clBtnFace;  end;end;end; // override clYellow if -1 was returned
+  case FKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
+
+  case FKeyFrames and FGotKeyFrames of TRUE:  begin
+                                                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
+                                                var vProximity := mmpKeyFrameProximity(FPositionSS);
+                                                // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
+                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clFuchsia;  end;
+                                                case  vProximity <  0.5                           of TRUE: vColor := clYellow;   end;
+                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;    end;end;end; // override clYellow if -1 was returned
 
   gTimeLineForm.pnlCursor.color := vColor;
 
@@ -984,8 +988,9 @@ begin
   case FKeyFrames of   TRUE: result := 'keyframes on';
                       FALSE: result := 'keyframes off'; end;
 
+  FGotKeyFrames := FALSE;
   case FKeyFrames of TRUE: mmp.cmd(evSTOpInfo, 'keyframes...'); end;
-  case FKeyFrames of TRUE: mmpDoKeyFrames(FMediaFilePath); end;
+  case FKeyFrames of TRUE: FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
 end;
 
 function TTimeline.undo: boolean;

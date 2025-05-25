@@ -79,7 +79,6 @@ type
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
-    FSegments:  TObjectList<TSegment>;
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
@@ -161,7 +160,6 @@ function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; c
 begin
 //  {$if BazDebugWindow} debugFormat('applySegments: %d', [aMax]); {$endif}
 
-  FSegments := aSegments;
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
 
@@ -222,17 +220,19 @@ end;
 
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
-  lblSegID.caption        := FSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
-  lblSegDetails.caption   := format('%ds - %ds', [FSegments[aIndex].startSS, FSegments[aIndex].EndSS]);
-  lblDuration.caption     := format('Duration: %d secs (%s)', [FSegments[aIndex].duration, mmpFormatSeconds(FSegments[aIndex].duration)]);
-  lblTitle.caption        := FSegments[aIndex].title;
-  shape1.brush.color      := FSegments[aIndex].color;
+  var vSegments := TL.segments;
+  case (vSegments.count = 0) or (aIndex > vSegments.count - 1) of TRUE: EXIT; end;
+  lblSegID.caption        := vSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
+  lblSegDetails.caption   := format('%ds - %ds', [vSegments[aIndex].startSS, vSegments[aIndex].EndSS]);
+  lblDuration.caption     := format('Duration: %d secs (%s)', [vSegments[aIndex].duration, mmpFormatSeconds(vSegments[aIndex].duration)]);
+  lblTitle.caption        := vSegments[aIndex].title;
+  shape1.brush.color      := vSegments[aIndex].color;
   shape1.brush.style      := bsSolid;
   shape1.pen.color        := $7E7E7E;
   shape1.margins.top      := 1;
   shape1.margins.bottom   := 1;
   shape1.alignWithMargins := TRUE;
-  imgTrashCan.visible     := FSegments[aIndex].deleted;
+  imgTrashCan.visible     := vSegments[aIndex].deleted;
   imgTrashCan.left        := clSegments.width - imgTrashCan.width - 8;
 end;
 
@@ -383,6 +383,7 @@ function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; co
   function sumExportSS: integer;
   begin
     result := 0;
+    case aSegments.count = 0 of TRUE: EXIT; end;
     for var vSegment in aSegments do case vSegment.deleted of FALSE: result := result + vSegment.duration; end;
   end;
 begin
