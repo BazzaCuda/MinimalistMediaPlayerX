@@ -58,6 +58,8 @@ const
   WIN_TOGGLE_REPEAT     = WM_APP + 2014;
   WIN_MUTE_UNMUTE       = WM_APP + 2015;
 
+  WIN_TERMINATE         = WM_APP + 3000;
+
   POT_PLAYER   = 'C:\Program Files\DAUM\PotPlayer\PotPlayerMini64.exe';
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';

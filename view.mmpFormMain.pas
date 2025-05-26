@@ -71,6 +71,8 @@ type
     procedure   WINTabTab         (var msg: TMessage);      message WIN_TABTAB;
     procedure   WINToggleEditMode (var msg: TMessage);      message WIN_TOGGLE_EDIT_MODE;
     procedure   WINToggleRepeat   (var msg: TMessage);      message WIN_TOGGLE_REPEAT;
+
+    procedure   WINTerminate      (var msg: TMessage);      message WIN_TERMINATE;
   public
     function    getViewModel: IViewModel;
     procedure   setViewModel(const aValue: IViewModel);
@@ -233,6 +235,12 @@ procedure TMMPUI.WINTabTab(var msg: TMessage);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWINTabTab(msg);
+end;
+
+procedure TMMPUI.WINTerminate(var msg: TMessage);
+begin
+  FViewModel := NIL;
+  close;
 end;
 
 procedure TMMPUI.WINToggleEditMode(var msg: TMessage);
