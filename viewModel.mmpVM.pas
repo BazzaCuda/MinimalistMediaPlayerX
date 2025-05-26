@@ -314,13 +314,15 @@ begin
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
-//  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
   FMP.notify(newNotice(evMPStop));
-//  appEvents.unsubscribeAll;
-//  FMP.unsubscribeAll;
-//  TT.unsubscribeAll;
+
+  TT.unsubscribeAll;
+  FMP.unsubscribeAll;
+  appEvents.unsubscribeAll;
+
   GS.mainForm.close;
-  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no (answers on a postcard!)
+  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
+//  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no (answers on a postcard!)
 end;
 
 function TVM.doCleanup: boolean;

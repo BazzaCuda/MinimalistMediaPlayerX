@@ -135,7 +135,7 @@ begin
   finally
     vSL.free;
   end;
-  mmp.cmd(evSTOpInfo, 'keyframes on');
+  mmp.cmd(evSTOpInfo, 'keyframes on'); // at last!
   result := TRUE;
 end;
 

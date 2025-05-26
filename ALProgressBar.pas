@@ -152,7 +152,7 @@ begin
     case FKeyFrames[i] = -1 of TRUE: CONTINUE; end;
     var vKeyFrame := round(FKeyFrames[i] * vPixelsPerSS);
     case (FKeyFrames[i] > vVisibleStartSS) and (FKeyFrames[i] < vVisibleEndSS)
-        of TRUE: canvas.fillRect(rect(vKeyFrame, 0, vKeyFrame + 2, BAR_HEIGHT)); end; // 2 is the width of the vertical
+        of TRUE: canvas.fillRect(rect(vKeyFrame, 0, vKeyFrame + 2, BAR_HEIGHT)); end; // 2 is the width of the vertical cursor
   end;
 end;
 
