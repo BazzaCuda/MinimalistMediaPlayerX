@@ -66,6 +66,7 @@ type
     FUseKeyFrames:            boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
+    FNewestIx:                integer;
     FPlayEdited:              boolean;
     FPositionSS:              integer;
     FPrevAction:              string;
@@ -474,8 +475,10 @@ begin
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
   case bDeleteRight   of TRUE: delSegment(newSegment); end;
 
-  case aSegment.isLast of  TRUE: segments.add(newSegment);
-                          FALSE: segments.insert(aSegment.ix + 1, newSegment); end;
+  case aSegment.isLast of  TRUE:  FNewestIx := segments.add(newSegment);
+                          FALSE:  begin
+                                    segments.insert(aSegment.ix + 1, newSegment);
+                                    FNewestIx := aSegment.ix + 1; end;end;
 
   case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // EXPERIMENTAL - issue with losing the correct duration when cutting the final segment
 
@@ -541,6 +544,7 @@ begin
 
   gTimelineForm.pnlCursor.bringToFront;
   mmpApplySegments(segments, FMax, bResetHeight);
+  mmpScrollTo(FNewestIx);
 end;
 
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
@@ -659,7 +663,7 @@ begin
           case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
 
           cmdLine := cmdLine + ' -y "' + segFile + '"';
-          log(cmdLine);
+          log(cmdLine); log('');
 
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
           vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
@@ -700,7 +704,7 @@ begin
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
   cmdLine := cmdLine + STD_SEG_PARAMS;
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
-  log(cmdLine);
+  log(cmdLine); log('');
 
   result := execAndWait(cmdLine);
   case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := execAndWait(cmdLine, rtCMD); end;end;
@@ -924,8 +928,10 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  FPositionSS := skipExcludedSegments(value);
+  FPositionSS := skipExcludedSegments(value); // will do a seek if needed
   // {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
+
+//  var vPositionSS := mmp.cmd(evMPReqPrecisePos).double;
 
   case FPositionSS = 0 of  TRUE:  gTimelineForm.pnlCursor.left := 0;
                           FALSE:  case FMax = 0 of FALSE: gTimelineForm.pnlCursor.left := trunc((FPositionSS / FMax) * gTimelineForm.width) - (gTimelineForm.pnlCursor.width div 2); end;end;
@@ -943,9 +949,9 @@ begin
                                                                 // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
                                                                 var vProximity := mmpKeyFrameProximity(FPositionSS);
                                                                 // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
-                                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clFuchsia;  end;
-                                                                case  vProximity <  0.5                           of TRUE: vColor := clYellow;   end;
-                                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;    end;end;end; // override clYellow if -1 was returned
+                                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clYellow;  end;
+                                                                case  vProximity <  0.5                           of TRUE: vColor := clFuchsia; end;
+                                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;   end;end;end; // override clFuchsia if -1 was returned
   end;end;
 
   gTimeLineForm.pnlCursor.color := vColor;

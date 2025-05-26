@@ -75,6 +75,7 @@ type
     //===== Event Notices with the INotice returned (no boolean test)
     class function cmd(const aEvent: TNoticeEvent): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aBoolean: boolean): INotice; overload; static;
+    class function cmd(const aEvent: TNoticeEvent; const aDouble: double): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aInteger: integer): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aString: string): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aText: string; const aMediaType: TMediaType): INotice; overload; static;
@@ -270,6 +271,11 @@ end;
 class procedure mmp.cmd(const aBoolean: boolean; const aProcVar: TProcVar);
 begin
   case aBoolean of TRUE: aProcVar(); end;
+end;
+
+class function mmp.cmd(const aEvent: TNoticeEvent; const aDouble: double): INotice;
+begin
+  result := notifyApp(newNotice(aEvent, aDouble));
 end;
 
 function testSyntax: boolean;

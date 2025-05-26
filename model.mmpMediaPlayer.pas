@@ -214,6 +214,7 @@ begin
     evMPReqIDDms:         aNotice.integer := imageDisplayDurationMs(aNotice.integer);
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;
     evMPReqPosition:      aNotice.integer := mpvPosition(mpv);
+    evMPReqPrecisePos:    aNotice.double  := mpvDoublePos(mpv);
     evMPReqVideoHeight:   aNotice.integer := mpvVideoHeight(mpv);
     evMPReqVideoWidth:    aNotice.integer := mpvVideoWidth(mpv);
   end;

@@ -27,7 +27,8 @@ interface
 uses
   winApi.windows,
   system.classes, system.generics.collections,
-  vcl.controls, vcl.graphics;
+  vcl.controls, vcl.graphics,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
   TShowHintEvent = procedure(var Message: TCMHintShow) of object; // BAZ
@@ -47,8 +48,8 @@ type
     procedure   setBackgroundColor(const aValue: TColor);
     procedure   setBarColor(const aValue: TColor);
     procedure   setKeyFrames(const aValue: string);
-    procedure   setMax(const aValue: Integer);
-    procedure   setPosition(const aValue: Integer);
+    procedure   setMax(const aValue: integer);
+    procedure   setPosition(const aValue: integer);
   protected
     procedure   CMHintShow(var message: TCMHintShow); message CM_HINTSHOW;
     procedure   Paint; override;
@@ -64,7 +65,7 @@ type
     property    onMouseDown;
     property    onMouseMove;
     property    onMouseUp;
-    property    position:         integer         read FPosition              write setPosition;
+    property    position:         integer          read FPosition              write setPosition;
   end;
 
 implementation
@@ -124,6 +125,8 @@ begin
 
   case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
 
+//  var vPosition := mmp.cmd(evMPReqPrecisePos).double;
+
   var vBarLength := mmp.use(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
   canvas.brush.color := FBarColor;
@@ -162,7 +165,7 @@ begin
   invalidate;
 end;
 
-procedure TALProgressBar.setPosition(const aValue: Integer);
+procedure TALProgressBar.setPosition(const aValue: integer);
 begin
   case FPosition = aValue of FALSE: begin
                                       FPosition := aValue;

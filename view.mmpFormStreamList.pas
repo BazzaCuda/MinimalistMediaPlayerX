@@ -86,6 +86,7 @@ type
     function    applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
     function    updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;
     procedure   createParams(var Params: TCreateParams);
+    function    scrollTo(const aIx: integer): boolean;
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMSize            (var msg: TWMSize);       message WM_SIZE;
@@ -97,6 +98,7 @@ function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: in
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 function mmpShutStreamList: boolean;
+function mmpScrollTo(const aIx: integer): boolean;
 
 implementation
 
@@ -152,6 +154,11 @@ begin
   mmp.cmd(evGSWidthStreamlist, 0);
 end;
 
+function mmpScrollTo(const aIx: integer): boolean;
+begin
+  gStreamListForm.scrollTo(aIx);
+end;
+
 {$R *.dfm}
 
 { TStreamListForm }
@@ -174,6 +181,7 @@ begin
                                                                   SELF.height := SELF.height + clSegments.itemHeight;
                                                                   winApi.windows.setWindowPos(HANDLE, HWND_TOP, SELF.left, SELF.top - clSegments.itemHeight, 0, 0, SWP_NOSIZE); // Y - itemHeight
                                                                 end;
+
   focusTimeline;
 end;
 
@@ -367,6 +375,12 @@ end;
 procedure TStreamListForm.pageControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   focusTimeline;
+end;
+
+function TStreamListForm.scrollTo(const aIx: integer): boolean;
+begin
+  case clSegments.itemCount = 0 of TRUE: EXIT; end;
+  clSegments.itemIndex := aIx;
 end;
 
 function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;

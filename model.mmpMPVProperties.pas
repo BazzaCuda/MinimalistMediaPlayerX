@@ -27,6 +27,7 @@ uses
   _debugWindow;
 
 function mpvAdjusted    (const mpv: IMPVBasePlayer): boolean;
+function mpvDoublePos   (const mpv: IMPVBasePlayer): double;
 function mpvDuration    (const mpv: IMPVBasePlayer): integer;
 function mpvFileName    (const mpv: IMPVBasePlayer): string;
 function mpvPosition    (const mpv: IMPVBasePlayer): integer;
@@ -75,6 +76,13 @@ begin
 //  debugBoolean('mpvAdjusted', result);
 end;
 
+function mpvDoublePos(const mpv: IMPVBasePlayer): double;
+begin
+  result := 0;
+  case mpv = NIL of TRUE: EXIT; end;
+  result := mpv.currentSeconds;
+end;
+
 function mpvDuration(const mpv: IMPVBasePlayer): integer;
 begin
   result := 0;
@@ -93,7 +101,10 @@ function mpvPosition(const mpv: IMPVBasePlayer): integer;
 begin
   result := 0;
   case mpv = NIL of TRUE: EXIT; end;
-  result := trunc(mpv.currentSeconds);
+  case mpv.getState of
+    mpsEnd:  result := trunc(mpv.currentSeconds);
+  else       result := round(mpv.currentSeconds); // EXPERIMENTAL
+  end;
 end;
 
 function mpvState(const mpv: IMPVBasePlayer): TMPVPlayerState;
