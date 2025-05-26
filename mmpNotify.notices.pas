@@ -104,7 +104,6 @@ type
     function  getEvent:       TNoticeEvent;
     function  getBoolean:     boolean;
     function  getComponent:   TComponent;
-    function  getDouble:      double;
     function  getInteger:     integer;
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
@@ -116,7 +115,6 @@ type
     procedure setEvent(const aValue: TNoticeEvent);
     procedure setBoolean(const aValue: boolean);
     procedure setComponent(const aValue: TComponent);
-    procedure setDouble(const aValue: double);
     procedure setInteger(const aValue: integer);
     procedure setMediaType(const aValue: TMediaType);
     procedure setMessage(const aValue: TMessage);
@@ -127,7 +125,6 @@ type
 
     property  event:          TNoticeEvent        read getEvent          write setEvent;
     property  component:      TComponent          read getComponent      write setComponent;
-    property  double:         double              read getDouble         write setDouble;
     property  integer:        integer             read getInteger        write setInteger;
     property  mediaType:      TMediaType          read getMediaType      write setMediaType;
     property  msg:            TMessage            read getMessage        write setMessage;
@@ -162,7 +159,6 @@ type
 function newNotice:                                                                                         INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aBoolean:    boolean):                                 INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aComponent:  TComponent):                              INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aDouble:     double):                                  INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aInteger:    integer):                                 INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aMediaType:  TMediaType):                              INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):                                INotice; overload;
@@ -194,7 +190,6 @@ type
 
     function  getBoolean:     boolean;
     function  getComponent:   TComponent;
-    function  getDouble:      double;
     function  getInteger:     integer;
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
@@ -207,7 +202,6 @@ type
 
     procedure setBoolean    (const aValue: boolean);
     procedure setComponent  (const aValue: TComponent);
-    procedure setDouble(const aValue: double);
     procedure setInteger    (const aValue: integer);
     procedure setMediaType  (const aValue: TMediaType);
     procedure setMessage    (const aValue: TMessage);
@@ -250,13 +244,6 @@ begin
   result            := newNotice;
   result.event      := aEvent;
   result.component  := aComponent;
-end;
-
-function newNotice(const aEvent: TNoticeEvent; const aDouble: double): INotice; overload;
-begin
-  result            := newNotice;
-  result.event      := aEvent;
-  result.double     := aDouble;
 end;
 
 function newNotice(const aEvent: TNoticeEvent; const aInteger: integer): INotice; overload;
@@ -318,11 +305,6 @@ begin
   result := FComponent;
 end;
 
-function TNotice.getDouble: double;
-begin
-  result := FDouble;
-end;
-
 function TNotice.getEvent: TNoticeEvent;
 begin
   result := FEvent;
@@ -376,11 +358,6 @@ end;
 procedure TNotice.setComponent(const aValue: TComponent);
 begin
   FComponent := aValue;
-end;
-
-procedure TNotice.setDouble(const aValue: double);
-begin
-  FDouble := aValue;
 end;
 
 procedure TNotice.setEvent(const aValue: TNoticeEvent);

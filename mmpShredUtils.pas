@@ -320,6 +320,7 @@ begin
     mmp.cmd(evGSActiveTasks, gCount);
     mmpDelay(100);
   until gCount = 0;
+
   mmp.cmd(evSTOpInfo2, -1);
   mmp.cmd(evGSActiveTaskPercent, -1); // suppress mmpVM from sending anything to mmpFormCaptions.OpInfo2 for display
   mmp.cmd(evGSActiveTasks, gCount);

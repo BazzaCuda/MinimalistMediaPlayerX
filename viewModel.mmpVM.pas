@@ -1033,7 +1033,7 @@ function TVM.sendOpInfo(const aOpInfo: string): boolean;
 begin
   result := FALSE;
   mmp.cmd(evSTOpInfo, aOpInfo);
-  mmp.cmd(evSTOpInfo2, GS.activeTaskPercent); // mmpShredUtils sets this to -1 to suppress OpInfo2 from displaying anything
+  mmp.cmd(evSTOpInfo2, GS.activeTaskPercent); // mmpShredUtils sets this to -1 to clear OpInfo2
   result := TRUE;
 end;
 
