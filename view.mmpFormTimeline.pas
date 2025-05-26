@@ -856,7 +856,7 @@ begin
   case aNotice.event of
     evTLMax:              setMax(aNotice.integer);
     evTLPosition:         case FDragging of FALSE: setPosition(aNotice.integer); end;
-    evTLRename:           FMediaFilePath := aNotice.text; // mmpVM renames the mmp file // := mmpRenameMMPFile(FMediaFilePath, aNotice.text); // rename both the .mmp and the file being edited
+    evTLRename:           FMediaFilePath := aNotice.text; // mmpVM renames the mmp file
   end;
 end;
 

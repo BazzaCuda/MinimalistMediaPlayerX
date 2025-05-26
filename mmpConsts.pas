@@ -64,6 +64,8 @@ const
   LOSSLESS_CUT = 'C:\Program Files\LosslessCut-win-x64\LosslessCut.exe';
   SHOTCUT      = 'C:\Program Files\Shotcut\shotcut.exe';
 
+  PB_DEFAULT_BACKGROUND_COLOR = $000000 + 1; // clBlack + 1; just enough to be different from the clBlack transparent color
+
   PB_DEFAULT_COLOR = $202020; // higher is lighter
   ST_DEFAULT_COLOR = $707070;
   TL_DEFAULT_COLOR = $3F3F3F;

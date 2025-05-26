@@ -37,6 +37,7 @@ implementation
 
 uses
   system.classes, system.sysUtils,
+  vcl.graphics,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpFileUtils, mmpFuncProg, mmpShellUtils, mmpUtils,
   _debugWindow;
@@ -46,6 +47,14 @@ uses
 function mmpClearKeyFrames: boolean;
 begin
   case gKeyFrames = NIL of FALSE: mmpKeyFrames.clear; end; // don't create it by calling mmpKeyFrames if we don't need it
+end;
+
+function mmpDoKeyFrames(const aURL: string): boolean;
+begin
+  result := FALSE;
+  mmpClearKeyFrames; // don't reuse a previous file's keyframes
+  mmpGetKeyFrames(aURL);
+  result := mmpSetKeyFrames(aURL);
 end;
 
 function mmpKeyFile(const aURL: string): string;
@@ -73,19 +82,10 @@ begin
   end;
 end;
 
-function mmpDoKeyFrames(const aURL: string): boolean;
-begin
-  result := FALSE;
-  mmpClearKeyFrames; // don't reuse a previous file's keyframes
-  mmpGetKeyFrames(aURL);
-  result := mmpSetKeyFrames(aURL);
-end;
-
 function mmpKeyFrameProximity(const aKeyFrame: double): double;
 // lowest valid return value is 0.0 when a direct match with a keyFrame is found
 var
   vInsertIx:  integer;
-  vDiff:      double;
 begin
   result := -1;
 
@@ -136,6 +136,7 @@ begin
     vSL.free;
   end;
   mmp.cmd(evSTOpInfo, 'keyframes on'); // at last!
+  mmp.cmd(evPBBackgroundColor, clFuchsia); // TALProgressBar.setPosition will reset the color on the next tick
   result := TRUE;
 end;
 

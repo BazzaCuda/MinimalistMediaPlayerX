@@ -161,13 +161,15 @@ end;
 
 procedure TALProgressBar.setBackgroundColor(const aValue: TColor);
 begin
-  FBackgroundColor := aValue;
-  invalidate;
+  case FBackgroundColor = aValue of FALSE:  begin
+                                              FBackgroundColor := aValue;
+                                              invalidate; end;end;
 end;
 
 procedure TALProgressBar.setPosition(const aValue: integer);
 begin
   case FPosition = aValue of FALSE: begin
+                                      setBackgroundColor(PB_DEFAULT_BACKGROUND_COLOR);
                                       FPosition := aValue;
                                       invalidate; end;end;
 end;

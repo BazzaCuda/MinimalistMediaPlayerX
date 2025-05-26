@@ -23,6 +23,7 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.classes,
+  vcl.graphics,
   mmpConsts;
 
 type
@@ -65,7 +66,7 @@ type
 
     evPAPostToAll, evPAPostToAllEx, evPAPostToEvery, evPAPostToEveryEx, evPAReqCount,
 
-    evPBBrighter, evPBClick, evPBDarker, evPBMax, evPBPosition, evPBReset, evPBSetNewPosition, evPBToggleProgressBar,
+    evPBBackgroundColor, evPBBrighter, evPBClick, evPBDarker, evPBMax, evPBPosition, evPBReset, evPBSetNewPosition, evPBToggleProgressBar,
     evPBReqMax, evPBReqPosition, {evPBKeyFrames,}
 
     evPLCopyToClipboard, evPLDeleteIx, evPLFillListBox, evPLFillPlaylist, evPLFind, evPLFirst, evPLLast, evPLNewPlaylist, evPLNext, evPLPrev, evPLReplaceCurrentItem,

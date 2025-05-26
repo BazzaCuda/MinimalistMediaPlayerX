@@ -148,7 +148,7 @@ begin
   FPB.parent           := aForm;
   FPB.align            := alBottom;
   FPB.height           := 10;
-  FPB.backgroundColor  := clBlack + 1; // just enough to be different from the clBlack transparent color.
+  FPB.backgroundColor  := PB_DEFAULT_BACKGROUND_COLOR; // clBlack + 1; just enough to be different from the clBlack transparent color
   FPB.barColor         := PB_DEFAULT_COLOR + aColorDelta;
   FPB.onHintShow       := onHintShow;
   FPB.showHint         := TRUE;
@@ -171,6 +171,7 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evPBBrighter:             brighter;
+    evPBBackgroundColor:      FPB.backgroundColor := aNotice.integer;
     evPBDarker:               darker;
 //    evPBKeyFrames:            FPB.keyFrames := aNotice.text;
     evPBMax:                  setMax(aNotice.integer);
