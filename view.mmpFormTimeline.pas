@@ -853,10 +853,16 @@ begin
   result := aNotice;
   case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
+
+  case aNotice.event of
+    evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // on the next tick after mmpSetKeyFrames below
+  end;
+
   case aNotice.event of
     evTLMax:              setMax(aNotice.integer);
     evTLPosition:         case FDragging of FALSE: setPosition(aNotice.integer); end;
     evTLRename:           FMediaFilePath := aNotice.text; // mmpVM renames the mmp file
+    evTickTimer:          case FUseKeyFrames and NOT FGotKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
   end;
 end;
 
@@ -943,7 +949,7 @@ begin
 
   case GS.mediaType of
     mtVideo:  begin
-                case FUseKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
+//                case FUseKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
 
                 case FUseKeyFrames and FGotKeyFrames of TRUE: begin
                                                                 // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
@@ -1000,8 +1006,9 @@ begin
                                   result := 'keyframes off';
                                   EXIT; end;end;
 
-  result := 'keyframes...';
+  result := '';
   FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); // combined mmpGetKeyFrames and mmpSetKeyFrames
+  case FGotKeyFrames of TRUE: result := 'keyframes on'; end
 end;
 
 function TTimeline.undo: boolean;

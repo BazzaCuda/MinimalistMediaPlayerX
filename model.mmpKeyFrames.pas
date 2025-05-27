@@ -65,6 +65,8 @@ end;
 function mmpGetKeyFrames(const aURL: string): boolean;
 begin
   result := FALSE;
+  mmp.cmd(evSTOpInfo, 'keyframes...');
+
   case mmpCompareFileTimestamps(aURL, mmpKeyFile(aURL)) of TRUE: EXIT; end; // already got the most up to date .key file
   try
     var vFFprobe  := mmpExePath + 'ffprobe.exe';
@@ -122,20 +124,23 @@ begin
   var vSysMessage: string;
   var vKeyFramesFile := mmpKeyFile(aURL);
   case fileExists(mmpKeyFile(aURL)) of FALSE: EXIT; end;
-  case mmpIsFileInUse(vKeyFramesFile, vSysMessage) of TRUE: EXIT; end; // only use the .key file when ffprobe has finished writing to it
+  case mmpIsFileInUse(vKeyFramesFile, vSysMessage) of TRUE: begin
+                                                              mmp.cmd(evSTOpInfo, 'keyframes...');
+                                                              EXIT; end;end; // only use the .key file when ffprobe has finished writing to it
 
   var vSL := TStringList.create;
   try
     vSL.loadFromFile(vKeyFramesFile);
     for var i := 0 to vSL.count - 1 do case strToFloatDef(vSL[i], 0) <> 0 of TRUE: mmpKeyFrames.add(strToFloatDef(vSL[i], -1)); end;
     mmpKeyFrames.sort; // ffprobe sometimes reports them out of sequence, especially the first two
-//    vSL.clear;
-//    for var aValue in mmpKeyFrames do vSL.add(floatToStr(aValue));
-//    vSL.saveToFile('B:\Downloads\New Folder\sorted.key');
+                                                                          //    vSL.clear;
+                                                                          //    for var aValue in mmpKeyFrames do vSL.add(floatToStr(aValue));
+                                                                          //    vSL.saveToFile('B:\Downloads\MMP testing\sorted.key');
   finally
     vSL.free;
   end;
-  mmp.cmd(evSTOpInfo, 'keyframes on'); // at last!
+
+  mmp.cmd(evSTOpInfo, 'keyframes on');     // at last!
   mmp.cmd(evPBBackgroundColor, clFuchsia); // TALProgressBar.setPosition will reset the color on the next tick
   result := TRUE;
 end;
