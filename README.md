@@ -50,7 +50,7 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
-`MMP` (`v5.0.0`) Keyframes for video editing: You can now use keyframes to accurately determine where to start segments so that your exported segments closely match your desired start point and length
+`MMP` (`v5.0.0`) Keyframes for video editing: You can now use keyframes to accurately determine where to start segments so that your exported segments even more closely match your desired start point and length
 
 `MMP` (`v4.3.0`) Added a config dialog (`Shift-[\]`) to explain and configure all the settings in the `MinimalistMediaPlayer.conf` file
 
