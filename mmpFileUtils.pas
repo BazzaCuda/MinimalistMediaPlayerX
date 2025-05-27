@@ -37,6 +37,7 @@ function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
+function mmpIsFileInUseExclusive(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpKeepDelete(const aFolderPath: string): boolean;
 function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
 function mmpRenameMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
@@ -265,10 +266,54 @@ begin
   aSysErrorMessage  := '';
   setLastError(ERROR_SUCCESS);
 
-  var hFile := createFile(PWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ OR FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
-  result := hFile = INVALID_HANDLE_VALUE;
-  case result of  TRUE: aSysErrorMessage := sysErrorMessage(getLastError);
-                 FALSE: closeHandle(hFile); end;
+  try
+    var hFile := createFile(PWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ OR FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
+    result := hFile = INVALID_HANDLE_VALUE;
+    case result of  TRUE: aSysErrorMessage := sysErrorMessage(getLastError);
+                   FALSE: closeHandle(hFile); end;
+  except
+    result := FALSE; // hopefully only an EFOpenError
+  end;
+end;
+
+function mmpIsFileInUseExclusive(const aFilePath: string; out aSysErrorMessage: string): boolean;
+var
+  hFile: THandle;
+  vLastError: DWORD;
+begin
+  aSysErrorMessage := '';
+  setLastError(ERROR_SUCCESS);
+
+  // Attempt to open the file with exclusive access (dwShareMode = 0).
+  // GENERIC_READ is sufficient for just checking if a lock can be acquired.
+  // OPEN_EXISTING means the file must already exist for this check to be meaningful.
+  hFile := createFile(PWideChar(aFilePath), GENERIC_READ, 0, NIL, OPEN_EXISTING, 0, 0);
+
+  // Determine if the file is "in use" based on the handle status
+  result := hFile = INVALID_HANDLE_VALUE; // Initial assumption if CreateFile fails
+
+  case result of
+     TRUE:  begin // CreateFile failed, meaning hFile is INVALID_HANDLE_VALUE
+              vLastError := getLastError;
+              aSysErrorMessage := sysErrorMessage(vLastError);
+              // Refine 'result' based on the specific error code
+              case vLastError of
+                ERROR_SHARING_VIOLATION, // File is locked by another process
+                ERROR_ACCESS_DENIED:     // Access denied can also mean a lock (e.g., by system or AV)
+                  ; // result is already TRUE, so do nothing.
+                else
+                  // Any other error (e.g., file not found, path invalid, access denied for other reasons)
+                  // means it's NOT "in use" due to a lock, but rather some other issue.
+                  result := FALSE;
+              end;
+              EXIT;
+            end;
+    FALSE:  begin // createFile succeeded, meaning hFile is a valid handle
+              closeHandle(hFile); // Immediately close the handle we opened
+              // result is already FALSE, as the file was NOT in use by another process.
+              EXIT;
+            end;
+  end;
 end;
 
 function mmpKeepDelete(const aFolderPath: string): boolean;

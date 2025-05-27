@@ -71,11 +71,14 @@ begin
   try
     var vFFprobe  := mmpExePath + 'ffprobe.exe';
     var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 ';
-    var vInFile   := '"' + aURL + '"';
-    var vRedirect := ' > ';
-    var vKeyFile  := '"' + mmpKeyFile(aURL) + '"';
+    var vKeyFile  := ' -o ' + '"' + mmpKeyFile(aURL) + '"';
+    var vInFile   := ' "' + aURL + '"';
+//    var vRedirect := ' > ';
+//    var vKeyFile  := '"' + mmpKeyFile(aURL) + '"';
 
-    mmpExecAndWait(vFFProbe + vParams + vInFile + vRedirect + vKeyFile, rtDontWait);
+    mmpExecAndWait(vFFProbe + vParams + vKeyFile + vInFile, rtDontWait);
+
+//    mmpExecAndWait(vFFProbe + vParams + vInFile + vRedirect + vKeyFile, rtDontWait);
 
 //    mmpExecAndWait(mmpExePath + 'ffprobe.exe' + ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 "' +
 //                  aURL + '" > "' + changeFileExt(aURL, '.key') + '"', rtDontWait);
@@ -123,10 +126,10 @@ begin
   result := FALSE;
   var vSysMessage: string;
   var vKeyFramesFile := mmpKeyFile(aURL);
-  case fileExists(mmpKeyFile(aURL)) of FALSE: EXIT; end;
-  case mmpIsFileInUse(vKeyFramesFile, vSysMessage) of TRUE: begin
-                                                              mmp.cmd(evSTOpInfo, 'keyframes...');
-                                                              EXIT; end;end; // only use the .key file when ffprobe has finished writing to it
+  case fileExists(vKeyFramesFile) of FALSE: EXIT; end;
+  case mmpIsFileInUseExclusive(vKeyFramesFile, vSysMessage) of TRUE:  begin
+                                                                        mmp.cmd(evSTOpInfo, 'keyframes...');
+                                                                        EXIT; end;end; // only use the .key file when ffprobe has finished writing to it
 
   var vSL := TStringList.create;
   try
@@ -142,6 +145,8 @@ begin
 
   mmp.cmd(evSTOpInfo, 'keyframes on');     // at last!
   mmp.cmd(evPBBackgroundColor, clFuchsia); // TALProgressBar.setPosition will reset the color on the next tick
+  mmpDelay(100);
+  mmp.cmd(evPBBackgroundColor, clFuchsia); // make sure it gets seen during a tick cycle
   result := TRUE;
 end;
 
