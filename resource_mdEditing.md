@@ -18,7 +18,7 @@ Control | Action
 **`[X]`**                     | e[X]clude the selected segment from the final edit
 **`[R]`**                     | [R]estore the selected e[X]cluded segment
 **Additional** ||
+**`[F]`**                     | toggle key[F]rames on and off
 **`Ctrl-[R]`**                | [R]ename file
 **`Ctrl-[S]`**                | toggle [S]kip excluded segments during playback
-
 **_All other controls operate on the `Main Media Window` as normal_**
