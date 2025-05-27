@@ -120,6 +120,7 @@
         <VerInfo_MinorVer>5</VerInfo_MinorVer>
         <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\"
+copy "$(OutputDir)\$(OutputName).exe"  "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\"
 $(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -1404,7 +1405,7 @@ begin
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\&quot;</PostBuildEvent>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).exe&quot;  &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v4_0_\&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">

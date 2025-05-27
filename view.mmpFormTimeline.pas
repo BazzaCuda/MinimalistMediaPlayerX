@@ -947,18 +947,14 @@ begin
 
   var vColor    := clWhite;
 
-  case GS.mediaType of
-    mtVideo:  begin
-//                case FUseKeyFrames and NOT FGotKeyFrames of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
-
-                case FUseKeyFrames and FGotKeyFrames of TRUE: begin
-                                                                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
-                                                                var vProximity := mmpKeyFrameProximity(FPositionSS);
-                                                                // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
-                                                                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clYellow;  end;
-                                                                case  vProximity <  0.5                           of TRUE: vColor := clFuchsia; end;
-                                                                case  vProximity <  0.0                           of TRUE: vColor := clWhite;   end;end;end; // override clFuchsia if -1 was returned
-  end;end;
+  case FUseKeyFrames and FGotKeyFrames // FGotKeyFrames can only be true when (GS.mediaType = mtVideo)
+    of TRUE:  begin
+                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
+                var vProximity := mmpKeyFrameProximity(FPositionSS);
+                // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
+                case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clYellow;  end;
+                case  vProximity <  0.5                           of TRUE: vColor := clFuchsia; end;
+                case  vProximity <  0.0                           of TRUE: vColor := clWhite;   end;end;end; // override clFuchsia if -1 was returned
 
   gTimeLineForm.pnlCursor.color := vColor;
 

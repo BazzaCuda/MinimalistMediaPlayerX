@@ -73,15 +73,9 @@ begin
     var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 ';
     var vKeyFile  := ' -o ' + '"' + mmpKeyFile(aURL) + '"';
     var vInFile   := ' "' + aURL + '"';
-//    var vRedirect := ' > ';
-//    var vKeyFile  := '"' + mmpKeyFile(aURL) + '"';
 
     mmpExecAndWait(vFFProbe + vParams + vKeyFile + vInFile, rtDontWait);
 
-//    mmpExecAndWait(vFFProbe + vParams + vInFile + vRedirect + vKeyFile, rtDontWait);
-
-//    mmpExecAndWait(mmpExePath + 'ffprobe.exe' + ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 "' +
-//                  aURL + '" > "' + changeFileExt(aURL, '.key') + '"', rtDontWait);
     result := TRUE;
   finally
   end;
