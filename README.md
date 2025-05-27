@@ -50,6 +50,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
+`MMP` (`v5.0.0`) Keyframes for video editing: You can now use keyframes to accurately determine where to start segments so that your exported segments closely match your desired start point and length
+
 `MMP` (`v4.3.0`) Added a config dialog (`Shift-[\]`) to explain and configure all the settings in the `MinimalistMediaPlayer.conf` file
 
 `MMP` (`v4.0.6`) Added support for .jxl and .vtx image formats, in addition to .jpg, .jpeg, .bmp, .png, .webp, and animated .gif, .avif, .jfif
@@ -173,6 +175,7 @@ Control | Action
 `Ctrl-E`                | toggle the media timeline `[E]`diting tools for lossless editing of audio and video files
 `Shift-E`               | play the `[E]`xported/`[E]`dited media file in a new `MMP` window 
 `F`                     | show/cancel `[F]`ullScreen mode
+`F`                     | when editing a video, toggle key`[F]rames` on and off
 `Ctrl-F`                | open your `[F]`ile Explorer at the current folder
 `G`                     | `[G]`reater window size. Can be held down for rapid increase
 `Ctrl-G`                | reduce, i.e. un`[G]`reater, the window size. Can be held down for rapid decrease
@@ -247,6 +250,7 @@ Control | Action
 `I`                     | `[I]`n point: split segment at cursor and mark left-hand segment as e`[X]`cluded, i.e. deleted
 `O`                     | `[O]`ut point: split segment at cursor and mark right-hand segment as e`[X]`cluded, i.e. deleted
 `C`                     | `[C]`ut: split segment at cursor into two segments
+`F`                     | when editing a video, toggle key`[F]`rames on and off
 `L`                     | `[L]`engthen the selected segment by one second. Can be held down for rapid repeat
 `S`                     | `[S]`horten the selected segment by one second. Can be held down for rapid repeat
 `M`                     | `[M]`erge the selected segment with the segment to its right
