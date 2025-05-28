@@ -47,7 +47,7 @@ implementation
 
 uses
   winApi.windows,
-  system.ioUtils, system.regularExpressions,
+  system.ioUtils,
   vcl.controls, vcl.dialogs,
   mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
   view.mmpFormConfirmDelete,
@@ -75,10 +75,12 @@ begin
   F := procedure  begin
                     mmp.cmd(evMPPause);
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
-                                                       + 'The <path>\<filename> contains a single quote, double quote, ampersand, etc.'#13#10
-                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
+                                                       + 'The <path>\<filename> contains a single quote '' '#13#10
+                                                       + 'or a character defined in dirtyChars= in the .conf file'#13#10
+//                                                       + 'The <path>\<filename> contains a single quote, double quote, ampersand, etc.'#13#10
+//                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
                                                        + 'This will cause the Export and Join command line operations to fail.'#13#10#13#10
-                                                       + 'Rename the path or filename first to remove special characters.', mtInformation, [MBOK]); end;
+                                                       + 'Rename the path or filename first to remove dirty characters.', mtInformation, [MBOK]); end;
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);
@@ -248,16 +250,19 @@ begin
                                   end;end;
 end;
 
+
+//const
+//  VALID_CHARS   = '^([a-zA-Z]:\\)([\w\s.~!@#$%^()\[\]{}+\-=_\\`,])*$'; // valid Windows file path minus & and | and '
+//  INVALID_CHARS = '[<>''"/|?*&]'; {explicitly disallow these: < (less than), > (greater than), ' (single quote), " (double quote), / (slash), | (vertical bar or pipe), ? (question mark), * (asterisk), & (ampersand) }
+//  INVALID_CHAR = ''''; // only a single quote seems to be a problem because of how ffmpeg will parse the .seg file during concatenation
+
 function mmpIsEditFriendly(const aFilePath: string): boolean;
-const
-  VALID_CHARS   = '^([a-zA-Z]:\\)([\w\s.~!@#$%^()\[\]{}+\-=_\\`,])*$'; // valid Windows file path minus & and | and '
-  INVALID_CHARS = '[<>''"/|?*&]'; {explicitly disallow these: < (less than), > (greater than), ' (single quote), " (double quote), / (slash), | (vertical bar or pipe), ? (question mark), * (asterisk), & (ampersand) }
 begin
   result := FALSE;
-  try
-    result := TRegEx.isMatch(aFilePath, VALID_CHARS);
-  except
-  end;
+  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', CF[CONF_DIRTY_CHARS], DIRTY_CHARS);
+  for var i := 1 to length(aFilePath) do
+    case vDirtyChars.contains(aFilePath[i]) of TRUE: EXIT; end;
+  result := TRUE;
 end;
 
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
