@@ -320,11 +320,18 @@ begin
   FMP.unsubscribeAll;
   appEvents.unsubscribeAll;
 
+  FMenu         := NIL;
+  FMP           := NIL;
+  FPlaylist     := NIL; // THIS! was the culprit preventing the app from closing
+  FPB           := NIL;
+  FSubscriber   := NIL;
+  FSubscriberTT := NIL;
+
   // inspiration is a wonderful thing! :D
-  sendMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0);
+  postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0);
 
 //  GS.mainForm.close;
-//  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
+  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 //  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no (answers on a postcard!)
 end;
 
