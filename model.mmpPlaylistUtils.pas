@@ -31,7 +31,7 @@ function mmpPlayCurrent:                            boolean;
 function mmpPlayFirst:                              boolean;
 function mmpPlayLast:                               boolean;
 function mmpPlayNext(const aMediaType: TMediaType): boolean;
-function mmpPlayPrev:                               boolean;
+function mmpPlayPrev(const aMediaType: TMediaType): boolean;
 function mmpScreenshotFolder:                       string;
 function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 
@@ -98,9 +98,9 @@ begin
   case result of TRUE: mmpPlayCurrent; end;
 end;
 
-function mmpPlayPrev: boolean;
+function mmpPlayPrev(const aMediaType: TMediaType): boolean;
 begin
-  result := mmp.cmd(evPLPrev).tf;
+  result := mmp.cmd(evPLPrev, aMediaType).tf;
   case result of TRUE: mmpPlayCurrent; end;
 end;
 

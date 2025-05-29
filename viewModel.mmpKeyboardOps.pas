@@ -25,7 +25,7 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   mmpKeyboardUtils, mmpShellUtils,
-  model.mmpMediaPlayer;
+  model.mmpConfigFile, model.mmpMediaPlayer;
 
 function mmpProcessKeyOp(const MP: IMediaPlayer; var SS: TSnapshot): boolean;
 
@@ -112,8 +112,8 @@ begin
     koPlayEdited:         mmp.cmd(evVMMPPlayEdited);
     koPlayFirst:          mmp.cmd(evVMMPPlayFirst);
     koPlayLast:           mmp.cmd(evVMMPPlayLast);
-    koPlayNext:           mmp.cmd(evVMMPPlayNext);
-    koPlayNextFolder:     mmp.cmd(evVMPlayNextFolder);
+    koPlayNext:           mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]);
+    koPlayNextFolder:     mmp.cmd(evVMPlayNextFolder, TRUE);
     koPlayPrev:           mmp.cmd(evVMMPPlayPrev);
     koPlayPrevFolder:     mmp.cmd(evVMPlayPrevFolder);
     koReloadPlaylist:     mmp.cmd(evVMReloadPlaylist);

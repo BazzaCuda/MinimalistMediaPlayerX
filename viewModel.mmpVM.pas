@@ -124,24 +124,24 @@ type
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
     function    doCleanup:            boolean;
-    function    playEdited:         boolean;
+    function    playEdited:           boolean;
     function    playNext(const bRecurseFolders: boolean): boolean;
-    function    playPrev:           boolean;
+    function    playPrev:             boolean;
     function    doEscapeKey:          boolean;
     function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
     function    keepDelete:           boolean;
     function    minimizeWindow:       boolean;
-    function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
-    function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
-    function    moveTimeline(const bCreateNew: boolean = FALSE): boolean;
-    function    playNextFolder(const bRecurseFolders: boolean): boolean;
+    function    moveHelp      (const bCreateNew: boolean = FALSE):  boolean;
+    function    movePlaylist  (const bCreateNew: boolean = FALSE):  boolean;
+    function    moveTimeline  (const bCreateNew: boolean = FALSE):  boolean;
+    function    playNextFolder(const bRecurseFolders: boolean):     boolean;
     function    playPrevFolder:       boolean;
-    function    playSomething(const aIx: integer): boolean;
+    function    playSomething (const aIx: integer): boolean;
     function    reInitTimeline(const aDuration: integer): boolean;
     function    reloadPlaylist:       boolean;
-    function    renameCurrentItem(const aRenameType: TRenameType): string;
-    function    resizeWindow: boolean;
-    function    sendOpInfo(const aOpInfo: string): boolean;
+    function    renameCurrentItem(const aRenameType: TRenameType):  string;
+    function    resizeWindow:         boolean;
+    function    sendOpInfo    (const aOpInfo: string):              boolean;
     function    setupSlideshowTimer:  boolean;
     function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
     function    tab(const aCapsLock:  boolean; const aFactor: integer = 0): string;
@@ -639,7 +639,7 @@ begin
     evVMMPPlayNext:         playNext(aNotice.tf);
     evVMMPPlayPrev:         playPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder(aNotice.tf);
-    evVMPlayPrevFolder:     playPrevFolder;
+    evVMPlayPrevFolder:     aNotice.tf := playPrevFolder;
     evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
     evVMRenameCleanFile:    sendOpInfo(renameCurrentItem(rtKeepClean));
@@ -841,8 +841,10 @@ begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
-  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
+//  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
+  case mmpPlayNext(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the next media type specified in playlistFormat=, which will be mtUnk if no filter set
 
+  // run out of things to play in this folder, navigate to the next folder with multimedia content
   T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder, bRecurseFolders).tf, evNone, evAppClose); end;
   F :=  procedure begin
                     FLocked := FALSE;
@@ -859,12 +861,14 @@ begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
-  case mmpPlayPrev of TRUE: EXIT; end;
+//  case mmpPlayPrev(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the prev mtUnk or the media type specified in playlistFormat=
+  case mmpPlayPrev(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the prev media type specified in playlistFormat=, which will be mtUnk if no filter set
 
-  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
+  // run out of things to play in this folder, navigate to the previous folder with multimedia content...
+  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]).tf, evNone, evAppClose); end; // navigate to prev folder with multimedia content
   F :=  procedure begin FLocked := FALSE; end;
 
-  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
+  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F); // ...if the user has set Next Folder on End
 end;
 
 function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
@@ -876,18 +880,19 @@ begin
 
   mmp.cmd(evSTOpInfo, vNextFolder);
 
-  T := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder); end;
-  F := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  // try to build a playlist from this folder
+  T := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  F := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end; // the format that the "slideshow" is playing through
 
-  mmp.cmd(GS.imagesPaused, T, F);
+  mmp.cmd(GS.imagesPaused, T, F); // all navigation now applies the playlist filter if it's set, not just the "slideshow"
 
   mmp.cmd(evPLFormLoadBox);
 
   T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
-  F := procedure begin case bRecurseFolders of   TRUE: mmp.cmd(evVMPlayNextFolder, bRecurseFolders);
-                                                FALSE: mmp.cmd(evAppClose); end;end; // if the folder is empty we want a blank screen; do we?
+  F := procedure begin case bRecurseFolders of   TRUE: mmp.cmd(evVMPlayNextFolder, bRecurseFolders); // navigate to the next folder with multimedia content
+                                                FALSE: mmp.cmd(evAppClose); end;end;
 
-  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F);
+  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F); // if the current folder has no multimedia content, try the next folder
 
   result := vNextFolder <> '';
 end;
@@ -897,21 +902,22 @@ function TVM.playPrevFolder: boolean;
 var T, F: TProc;
 begin
   var vPrevFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmp.cmd(vPrevFolder = '', evAppClose);
+  mmp.cmd(vPrevFolder = '', evAppClose); // start of the current drive
 
   mmp.cmd(evSTOpInfo, vPrevFolder);
 
-  T := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder); end;
-  F := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  // try to build a playlist from this folder
+  T := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
+  F := procedure begin mmp.cmd(evPLFillPlaylist, vPrevFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end; // the format that the "slideshow" is playing through
 
-  mmp.cmd(GS.imagesPaused, T, F);
+  mmp.cmd(GS.imagesPaused, T, F); // all navigation now applies the playlist filter if it's set, not just the "slideshow"
 
   mmp.cmd(evPLFormLoadBox);
 
   T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
-  F := procedure begin mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evMPStop); end; // if the folder is empty we want a blank screen
+  F := procedure begin mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayPrevFolder, evAppClose); end; // navigate to the previous folder with multimedia content
 
-  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F);
+  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F); // if the current folder has no multimedia content, try the previous folder
 
   result := vPrevFolder <> '';
 end;

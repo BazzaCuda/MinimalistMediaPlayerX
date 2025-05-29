@@ -51,7 +51,7 @@ type
     function    next(const aMediaType: TMediaType = mtUnk): boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev:                                       boolean;
+    function    prev(const aMediaType: TMediaType = mtUnk): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -111,7 +111,7 @@ type
     function    next(const aMediaType: TMediaType = mtUnk): boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev:                                       boolean;
+    function    prev(const aMediaType: TMediaType = mtUnk): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -375,7 +375,7 @@ begin
     evPLFirst:              aNotice.tf    := first;
     evPLLast:               aNotice.tf    := last;
     evPLNext:               aNotice.tf    := next(aNotice.mediaType);
-    evPLPrev:               aNotice.tf    := prev;
+    evPLPrev:               aNotice.tf    := prev(aNotice.mediaType);
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
 
     evPLReqCurrentFolder:   aNotice.text    := currentFolder;
@@ -399,12 +399,25 @@ begin
   end;
 end;
 
-function TPlaylist.prev: boolean;
+function TPlaylist.prev(const aMediaType: TMediaType = mtUnk): boolean;
+
+  function findPrev: boolean;
+  var vMediaType: TMediaType;
+  begin
+    result := FALSE;
+    repeat
+      dec(FPlayIx);
+      vMediaType := MT.mediaType(currentItem);
+      case isFirst and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
+    until (aMediaType in [mtUnk, vMediaType]) or isFirst; // order of shortcut logic is important here
+    result := TRUE;
+  end;
+
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
-  case isFirst of TRUE: EXIT; end;
-  dec(FPlayIx);
+  case isFirst  of TRUE:  EXIT; end;
+  case findPrev of FALSE: EXIT; end;
   result := TRUE;
 end;
 
