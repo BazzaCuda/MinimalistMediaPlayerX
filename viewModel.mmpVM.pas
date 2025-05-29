@@ -290,9 +290,10 @@ begin
   var vIx := mmp.cmd(evPLReqCurrentIx).integer;
   mmp.cmd(evPLDeleteIx, vIx);
 
-  T := procedure begin case GS.noPlaylist of   TRUE: mmp.cmd(evAppClose);
-                                              FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of TRUE:
-                                                           mmp.cmd(mmp.cmd(evVMPlayNextFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]).tf, evNone, evAppClose); end;end;end;
+  T := procedure begin case GS.noPlaylist of
+                               TRUE: mmp.cmd(evAppClose);
+                              FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]).tf, evNone, evAppClose);
+                                                                                      FALSE: mmp.cmd(evAppClose); end;end;end;
   F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
 
   mmp.cmd(nothingToPlay, T, F);

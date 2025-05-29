@@ -388,6 +388,10 @@ begin
   var vOldMMP := changeFileExt(aOldFilePath, '.mmp');
   var vNewMMP := changeFileExt(aNewFilePath, '.mmp');
   case fileExists(vOldMMP) of TRUE: renameFile(vOldMMP, vNewMMP); end;
+
+  var vOldKey := changeFileExt(aOldFilePath, '.key');
+  var vNewKey := changeFileExt(aNewFilePath, '.key');
+  case fileExists(vOldKey) of TRUE: renameFile(vOldKey, vNewKey); end;
 end;
 
 
