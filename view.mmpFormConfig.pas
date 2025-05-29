@@ -320,7 +320,7 @@ end;
 
 procedure TConfigForm.btnDirtyCharsDefaultClick(Sender: TObject);
 begin
-  CF[CONF_DIRTY_CHARS] := ' ';
+  edtDirtyChars.text := ' '; // don't specify an empty string otherwise CF will delete the entry in the .conf file
 end;
 
 procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
@@ -443,7 +443,7 @@ end;
 
 procedure TConfigForm.edtDirtyCharsChange(Sender: TObject);
 begin
-  CF[CONF_DIRTY_CHARS] := mmpIfThenElse(edtDirtyChars.text <> DIRTY_CHARS, edtDirtyChars.text, ' ');
+  CF[CONF_DIRTY_CHARS] := trim(edtDirtyChars.text) + ' ';
 end;
 
 procedure TConfigForm.edtPrefixF1Change(Sender: TObject);
@@ -512,7 +512,7 @@ begin
 
   chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
 
-  edtDirtyChars.text            := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
+  edtDirtyChars.text            := trim(CF[CONF_DIRTY_CHARS]);
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
