@@ -364,7 +364,7 @@ begin
     vExt              := extractFileExt(vOldFileNamePart);
     vOldFileNamePart  := mmpFileNameWithoutExtension(vOldFileNamePart);
 
-    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart; // the calling code has already supplied the new name without the extension
+    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart; // the calling code has already supplied the new name part without the extension
                                    FALSE: begin
                                             try
                                               s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
