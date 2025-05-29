@@ -124,9 +124,9 @@ type
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
     function    doCleanup:            boolean;
-    function    doPlayEdited:         boolean;
-    function    doPlayNext:           boolean;
-    function    doPlayPrev:           boolean;
+    function    playEdited:         boolean;
+    function    playNext(const bRecurseFolders: boolean): boolean;
+    function    playPrev:           boolean;
     function    doEscapeKey:          boolean;
     function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
     function    keepDelete:           boolean;
@@ -134,7 +134,7 @@ type
     function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
     function    moveTimeline(const bCreateNew: boolean = FALSE): boolean;
-    function    playNextFolder: boolean;
+    function    playNextFolder(const bRecurseFolders: boolean): boolean;
     function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
     function    reInitTimeline(const aDuration: integer): boolean;
@@ -290,8 +290,9 @@ begin
   var vIx := mmp.cmd(evPLReqCurrentIx).integer;
   mmp.cmd(evPLDeleteIx, vIx);
 
-  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and NOT GS.noPlaylist of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder, TRUE).tf, evNone, evAppClose);
-                                                                                              FALSE: mmp.cmd(evAppClose); end;end;
+  T := procedure begin case GS.noPlaylist of   TRUE: mmp.cmd(evAppClose);
+                                              FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of TRUE:
+                                                           mmp.cmd(mmp.cmd(evVMPlayNextFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]).tf, evNone, evAppClose); end;end;end;
   F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
 
   mmp.cmd(nothingToPlay, T, F);
@@ -362,49 +363,6 @@ end;
 function TVM.doEscapeKey: boolean;
 begin
   mmp.cmd(GS.mainForm.windowState = wsMaximized, evVMToggleFullscreen, evAppClose);
-end;
-
-function TVM.doPlayEdited: boolean;
-begin
-  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
-  var vPath := extractFilePath(vCurrentItem);
-  var vFile := mmpFileNameWithoutExtension(vCurrentItem);
-  var vExt  := extractFileExt(vCurrentItem);
-  var vFN   := vPath + vFile + ' [edited]' + vExt;
-  case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
-end;
-
-function TVM.doPlayNext: boolean;
-var T, F: TProc;
-begin
-  case GS.noPlaylist of TRUE: EXIT; end;
-  case FLocked of TRUE: EXIT; end;
-  FLocked := TRUE;
-
-  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
-
-  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
-  F :=  procedure begin
-                    FLocked := FALSE;
-                    mmp.cmd(GS.mediaType <> mtImage, evAppClose);
-                  end;
-
-  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
-end;
-
-function TVM.doPlayPrev: boolean;
-var T, F: TProc;
-begin
-  case GS.noPlaylist of TRUE: EXIT; end;
-  case FLocked of TRUE: EXIT; end;
-  FLocked := TRUE;
-
-  case mmpPlayPrev of TRUE: EXIT; end;
-
-  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
-  F :=  procedure begin FLocked := FALSE; end;
-
-  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
 end;
 
 function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
@@ -485,7 +443,7 @@ function TVM.keepDelete: boolean;
 var T, F: TProc;
 begin
   case mmpKeepDelete(mmp.cmd(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
-  T := procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose); end;
+  T := procedure begin mmp.cmd(mmp.cmd(evVMMPPlayNext, TRUE).tf, evNone, evAppClose); end;
   F := procedure begin mmp.cmd(evAppClose); end;
   mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);
 end;
@@ -616,7 +574,8 @@ begin
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  mmp.cmd(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
 
-    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
+//    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
+    evMPStateEnd:   case (GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist of TRUE: mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end; // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
                       vMPPrevPosition := -1; // reset for each new audio/video, see below
@@ -674,12 +633,12 @@ begin
     evVMMovePlaylist:       movePlaylist(aNotice.tf);
     evVMMoveTimeline:       moveTimeline(aNotice.tf);
     evVMMPPlayCurrent:      mmpPlayCurrent;
-    evVMMPPlayEdited:       doPlayEdited;
+    evVMMPPlayEdited:       playEdited;
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
-    evVMMPPlayNext:         doPlayNext;
-    evVMMPPlayPrev:         doPlayPrev;
-    evVMPlayNextFolder:     aNotice.tf := playNextFolder;
+    evVMMPPlayNext:         playNext(aNotice.tf);
+    evVMMPPlayPrev:         playPrev;
+    evVMPlayNextFolder:     aNotice.tf := playNextFolder(aNotice.tf);
     evVMPlayPrevFolder:     playPrevFolder;
     evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
@@ -865,7 +824,50 @@ begin
   newRect^.right := newRect^.left + GS.mainForm.width;
 end;
 
-function TVM.playNextFolder: boolean;
+function TVM.playEdited: boolean;
+begin
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
+  var vPath := extractFilePath(vCurrentItem);
+  var vFile := mmpFileNameWithoutExtension(vCurrentItem);
+  var vExt  := extractFileExt(vCurrentItem);
+  var vFN   := vPath + vFile + ' [edited]' + vExt;
+  case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
+end;
+
+function TVM.playNext(const bRecurseFolders: boolean): boolean;
+var T, F: TProc;
+begin
+  case GS.noPlaylist of TRUE: EXIT; end;
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
+
+  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
+
+  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder, bRecurseFolders).tf, evNone, evAppClose); end;
+  F :=  procedure begin
+                    FLocked := FALSE;
+                    mmp.cmd(GS.mediaType <> mtImage, evAppClose);
+                  end;
+
+  mmp.cmd(bRecurseFolders, T, F);
+end;
+
+function TVM.playPrev: boolean;
+var T, F: TProc;
+begin
+  case GS.noPlaylist of TRUE: EXIT; end;
+  case FLocked of TRUE: EXIT; end;
+  FLocked := TRUE;
+
+  case mmpPlayPrev of TRUE: EXIT; end;
+
+  T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder).tf, evNone, evAppClose); end;
+  F :=  procedure begin FLocked := FALSE; end;
+
+  mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], T, F);
+end;
+
+function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
 // reload playlist from vNextFolder and play first item
 var T, F: TProc;
 begin
@@ -882,7 +884,8 @@ begin
   mmp.cmd(evPLFormLoadBox);
 
   T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
-  F := procedure begin mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_END], evVMPlayNextFolder, evMPStop); end; // if the folder is empty we want a blank screen
+  F := procedure begin case bRecurseFolders of   TRUE: mmp.cmd(evVMPlayNextFolder, bRecurseFolders);
+                                                FALSE: mmp.cmd(evAppClose); end;end; // if the folder is empty we want a blank screen; do we?
 
   mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F);
 
