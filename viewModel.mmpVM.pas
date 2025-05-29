@@ -134,7 +134,7 @@ type
     function    moveHelp(const bCreateNew: boolean = FALSE): boolean;
     function    movePlaylist(const bCreateNew: boolean = FALSE): boolean;
     function    moveTimeline(const bCreateNew: boolean = FALSE): boolean;
-    function    playNextFolder:       boolean;
+    function    playNextFolder: boolean;
     function    playPrevFolder:       boolean;
     function    playSomething(const aIx: integer): boolean;
     function    reInitTimeline(const aDuration: integer): boolean;
@@ -290,7 +290,7 @@ begin
   var vIx := mmp.cmd(evPLReqCurrentIx).integer;
   mmp.cmd(evPLDeleteIx, vIx);
 
-  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and NOT GS.noPlaylist of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder).tf, evNone, evAppClose);
+  T := procedure begin case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] and NOT GS.noPlaylist of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder, TRUE).tf, evNone, evAppClose);
                                                                                               FALSE: mmp.cmd(evAppClose); end;end;
   F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
 
@@ -316,24 +316,23 @@ begin
   mmp.cmd(evVMShutTimeline);
   FMP.notify(newNotice(evMPStop));
 
-  TT.unsubscribeAll;
-  FMP.unsubscribeAll;
-  appEvents.unsubscribeAll;
+//  TT.unsubscribeAll;
+//  FMP.unsubscribeAll;
+//  appEvents.unsubscribeAll;
 
-  FMenu         := NIL;
-  FMP           := NIL;
-  FPlaylist     := NIL; // THIS! was the culprit preventing the app from closing
-  FPB           := NIL;
-  FSubscriber   := NIL;
-  FSubscriberTT := NIL;
+// this will prevent the app from closing. So does setting mpv = NIL in TMediaPlayer
+//  FMP           := NIL;
+
+//  FMenu         := NIL;
+//  FPlaylist     := NIL;
+//  FPB           := NIL;
+//  FSubscriber   := NIL;
+//  FSubscriberTT := NIL;
 
   // inspiration is a wonderful thing! :D
   postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0);
 
-  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
-
-//  GS.mainForm.close;
-//  GS.mainForm.close; // required when the final video in a folder ends, and nextFolderOnEnd=no (answers on a postcard!)
+//  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 end;
 
 function TVM.doCleanup: boolean;

@@ -25,7 +25,6 @@ object ReleaseNotesForm: TReleaseNotesForm
     PrintMarginLeft = 2.000000000000000000
     PrintMarginRight = 2.000000000000000000
     PrintMarginTop = 2.000000000000000000
-    OnHotSpotClick = mdHotSpotClick
     Align = alClient
     TabOrder = 0
     FileName = 'B:\Win64_Dev\Programs\MediaPlayerX\README.md'
@@ -826,8 +825,6 @@ object ReleaseNotesForm: TReleaseNotesForm
         '3. Massive credit and thanks are due to Edward Guo for his excel' +
         'lent port of the MPV API (libmpv) to Delphi, https://github.com/' +
         'nbuyer/libmpvdelphi.')
-    ExplicitWidth = 1219
-    ExplicitHeight = 367
   end
   object Panel1: TPanel
     Left = 0
@@ -836,8 +833,6 @@ object ReleaseNotesForm: TReleaseNotesForm
     Height = 41
     Align = alBottom
     TabOrder = 1
-    ExplicitTop = 373
-    ExplicitWidth = 1225
     object Label1: TLabel
       Left = 16
       Top = 13

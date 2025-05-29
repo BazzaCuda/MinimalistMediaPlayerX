@@ -2438,4 +2438,8 @@ object AboutForm: TAboutForm
     TabOrder = 2
     OnClick = btnLicenceClick
   end
+  object mnuPopup: TPopupMenu
+    Left = 40
+    Top = 144
+  end
 end

@@ -70,6 +70,7 @@ end;
 
 procedure TReleaseNotesForm.FormCreate(Sender: TObject);
 begin
+  md.onHotSpotClick := mdHotSpotClick;
   initReleaseNotes;
 end;
 

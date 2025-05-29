@@ -77,8 +77,6 @@ begin
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
                                                        + 'The <path>\<filename> contains a single quote '' '
                                                        + 'or a character defined in dirtyChars= in the .conf file.'#13#10#13#10
-//                                                       + 'The <path>\<filename> contains a single quote, double quote, ampersand, etc.'#13#10
-//                                                       + 'or special characters which are not in this set: \!@#$^()[]{}+-=_.,`/'#13#10#13#10
                                                        + 'The single quote alone will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove the dirty characters.'#13#10#13#10
                                                        + 'Ctrl-Shift-[R] will cleanup the file name (but not the path) for you '
@@ -95,7 +93,7 @@ end;
 
 function mmpCleanFile(const aFileName: string): string;
 begin
-  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', DIRTY_CHARS + CF[CONF_DIRTY_CHARS], DIRTY_CHARS);
+  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', DIRTY_CHARS + trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
   result := aFileName;
   for var i := 1 to length(result) do
     case vDirtyChars.contains(result[i]) of TRUE: result[i] := ' '; end;
@@ -255,9 +253,10 @@ end;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 begin
   result := FALSE;
-  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', DIRTY_CHARS + CF[CONF_DIRTY_CHARS], DIRTY_CHARS);
-  for var i := 1 to length(aFilePath) do
-    case vDirtyChars.contains(aFilePath[i]) of TRUE: EXIT; end;
+  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', DIRTY_CHARS + trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
+  var vNoExt      := extractFilePath(aFilePath) + mmpFileNameWithoutExtension(aFilePath);
+  for var i := 1 to length(vNoExt) do
+    case vDirtyChars.contains(vNoExt[i]) of TRUE: EXIT; end;
   result := TRUE;
 end;
 

@@ -24,7 +24,7 @@ uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.Menus;
 
 
 type
@@ -55,6 +55,7 @@ type
     Label3: TLabel;
     lblWikiURL: TLabel;
     btnLicence: TButton;
+    mnuPopup: TPopupMenu;
     procedure lblWebsiteURLClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure lblWebsiteURLMouseEnter(Sender: TObject);
@@ -65,6 +66,8 @@ type
     procedure lblWikiURLMouseEnter(Sender: TObject);
     procedure lblWikiURLMouseLeave(Sender: TObject);
     procedure btnLicenceClick(Sender: TObject);
+  private
+    procedure menuClick(sender: TObject);
   protected
     function setBuildVersion(const aBuild: string): boolean;
     function setCopyrightYear(const aYear: WORD): boolean;
@@ -72,6 +75,7 @@ type
     function setReleaseVersion(const aRelease: string): boolean;
     function setNoStyle: boolean;
     function setWhatsNew(const aHasReleaseNotes: boolean): boolean;
+    function checkPreviousReleaseNotes: boolean;
     function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
   public
   end;
@@ -80,7 +84,7 @@ type
 implementation
 
 uses
-  shellAPI,
+  winApi.shellAPI,
   mmpConsts, mmpFileUtils, mmpFuncProg, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
@@ -97,6 +101,7 @@ type
     function    showForm(const thisVersion: string; const buildVersion: string): boolean; overload;
     function    showForm:         boolean; overload;
     function    showProgressForm: boolean;
+  protected
   public
     constructor create;
     destructor  Destroy; override;
@@ -124,7 +129,56 @@ end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
-  AB.notify(newNotice(evAboutReleaseNotesFormShow));
+  case TComponent(sender).tag of
+      0: AB.notify(newNotice(evAboutReleaseNotesFormShow));
+    999: AB.notify(newNotice(evAboutPreviousReleaseNotes, TButton(sender).caption)); end;
+end;
+
+procedure TAboutForm.menuClick(sender: TObject);
+begin
+  btnWhatsNew.caption := TMenuItem(sender).caption;
+  btnWhatsNewClick(btnWhatsNew);
+end;
+
+function TAboutForm.checkPreviousReleaseNotes: boolean;
+  function releaseTags(const aReleaseNotesPath: string): TArray<string>;
+  var
+    RC: integer;
+    SR: TSearchRec;
+    FN: string;
+  begin
+    setLength(result, 0);
+    RC := findFirst(aReleaseNotesPath + '*.md', faAnyFile, SR);
+    while RC = 0 do begin
+      setLength(result, length(result) + 1);
+      FN := mmpFileNameWithoutExtension(SR.name);
+      delete(FN, 1, pos('v', FN) - 1);
+      result[high(result)] := FN;
+      RC := findNext(SR);
+    end;
+  end;
+begin
+  result := FALSE;
+  case btnWhatsNew.visible of TRUE: EXIT; end;
+
+  mnuPopup.autoHotKeys      := maManual; // prevent spurious & accelerator-key characters from being added to the menuItem captions
+
+  btnWhatsNew.style         := bsSplitButton;
+  btnWhatsNew.caption       := 'Release Notes';
+  btnWhatsNew.tag           := 999;
+  btnWhatsNew.dropDownMenu  := mnuPopup;
+  btnWhatsNew.visible       := TRUE;
+
+  var vTags := releaseTags(mmpReleaseNotesFolder);
+
+  for var i := 0 to high(vTags) do  begin
+                                      var vMenuItem             := TMenuItem.create(mnuPopup);
+                                      vMenuItem.caption         := vTags[i];
+                                      vMenuItem.onClick         := menuClick;
+                                      mnuPopup.items.add(vMenuItem); end;
+
+  setLength(vTags, 0);
+  result := TRUE;
 end;
 
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
@@ -227,12 +281,13 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
     evAboutFormShow:                showForm;
-    evAboutReleaseNotesFormShow:    showReleaseNotes('Release Notes ' + FProgramUpdates.releaseTag, FProgramUpdates.getReleaseNotesFilePath(FProgramUpdates.releaseTag));
+    evAboutReleaseNotesFormShow:    showReleaseNotes('Release Notes ' + FProgramUpdates.releaseTag, mmpReleaseNotesFilePath(FProgramUpdates.releaseTag));
+    evAboutPreviousReleaseNotes:    showReleaseNotes('Release Notes ' + aNotice.text, mmpReleaseNotesFilePath(aNotice.text));
     evAboutGNULicenceShow:          showReleaseNotes('GNU General Public License', mmpExePath + 'license');
   end;
 end;
 
-function TAboutFormProxy.showForm(const thisVersion, buildVersion: string): boolean;
+function TAboutFormProxy.showForm(const thisVersion: string; const buildVersion: string): boolean;
 begin
   mmp.cmd(evGSShowingAbout, TRUE);
   showProgressForm;
@@ -245,6 +300,7 @@ begin
     setLatestReleaseVersion(FProgramUpdates.releaseTag);        // if the releaseTag is got, PU also downloads the release zip file and the release notes
     compareVersions(thisVersion, FProgramUpdates.releaseTag);
     setWhatsNew(FProgramUpdates.hasReleaseNotes(FProgramUpdates.releaseTag));
+    checkPreviousReleaseNotes;
     showModal;
   finally
     free;

@@ -29,7 +29,7 @@ uses
 type
   TNoticeEvent = (evNone,
 
-    evAboutFormShow, evAboutGNULicenceShow, evAboutReleaseNotesFormShow,
+    evAboutFormShow, evAboutGNULicenceShow, evAboutReleaseNotesFormShow, evAboutPreviousReleaseNotes,
 
     evGSActiveTasks, evGSActiveTaskPercent, evGSAppWnd, evGSAutoCenter, evGSHasCoverArt, evGSIDDms, evGSImagesPaused,
     evGSMainForm, evGSMaxSize, evGSMediaType, evGSMPVScreenshotDirectory,
@@ -109,6 +109,7 @@ type
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
     function  getPoint:       TPoint;
+    function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
     function  getText:        string;
     function  getWndRec:      TWndRec;
@@ -120,6 +121,7 @@ type
     procedure setMediaType(const aValue: TMediaType);
     procedure setMessage(const aValue: TMessage);
     procedure setPoint(const aValue: TPoint);
+    procedure setReasonType(const aValue: TReasonType);
     procedure setShiftState(const aValue: TShiftState);
     procedure setText(const aValue: string);
     procedure setWndRec(const aValue: TWndRec);
@@ -130,6 +132,7 @@ type
     property  mediaType:      TMediaType          read getMediaType      write setMediaType;
     property  msg:            TMessage            read getMessage        write setMessage;
     property  point:          TPoint              read getPoint          write setPoint;
+    property  reasonType:     TReasonType         read getReasonType     write setReasonType;
     property  shiftState:     TShiftState         read getShiftState     write setShiftState;
     property  text:           string              read getText           write setText;
     property  tf:             boolean             read getBoolean        write setBoolean;
@@ -164,6 +167,7 @@ function newNotice(const aEvent: TNoticeEvent; const aInteger:    integer):     
 function newNotice(const aEvent: TNoticeEvent; const aMediaType:  TMediaType):                              INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):                                INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aPt:         TPoint):                                  INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aReasonType: TReasonType):                             INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState):                             INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aText:       string = ''):                             INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aText:       string; const aMediaType: TMediaType):    INotice; overload;
@@ -183,6 +187,7 @@ type
     FMediaType:     TMediaType;
     FMessage:       TMessage;
     FPoint:         TPoint;
+    FReasonType:    TReasonType;
     FShiftState:    TShiftState;
     FText:          string;
     FWndRec:        TWndRec;
@@ -195,6 +200,7 @@ type
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
     function  getPoint:       TPoint;
+    function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
     function  getText:        string;
     function  getWndRec:      TWndRec;
@@ -207,6 +213,7 @@ type
     procedure setMediaType  (const aValue: TMediaType);
     procedure setMessage    (const aValue: TMessage);
     procedure setPoint      (const aValue: TPoint);
+    procedure setReasonType (const aValue: TReasonType);
     procedure setShiftState (const aValue: TShiftState);
     procedure setText       (const aValue: string);
     procedure setWndRec     (const aValue: TWndRec);
@@ -275,6 +282,13 @@ begin
   result.point      := aPt;
 end;
 
+function newNotice(const aEvent: TNoticeEvent; const aReasonType: TReasonType): INotice; overload;
+begin
+  result            := newNotice;
+  result.event      := aEvent;
+  result.reasonType := aReasonType;
+end;
+
 function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState): INotice; overload;
 begin
   result            := newNotice;
@@ -331,6 +345,11 @@ begin
   result := FPoint;
 end;
 
+function TNotice.getReasonType: TReasonType;
+begin
+  result := FReasonType;
+end;
+
 function TNotice.getShiftState: TShiftState;
 begin
   result := FShiftState;
@@ -384,6 +403,11 @@ end;
 procedure TNotice.setPoint(const aValue: TPoint);
 begin
   FPoint := aValue;
+end;
+
+procedure TNotice.setReasonType(const aValue: TReasonType);
+begin
+  FReasonType := aValue;
 end;
 
 procedure TNotice.setShiftState(const aValue: TShiftState);

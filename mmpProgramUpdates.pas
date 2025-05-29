@@ -27,13 +27,15 @@ uses
 type
   IProgramUpdates = interface
     ['{6C5FC828-6B3A-49C5-A610-657C954953D0}']
-    function getReleaseNotesFilePath(const aReleaseTag: string): string;
     function getReleaseTag: string;
     function hasReleaseNotes(const aReleaseTag: string): boolean;
     property releaseTag:    string read getReleaseTag; // has a couple of side-effects ;)
   end;
 
 function newProgramUpdates: IProgramUpdates;
+function mmpCleanTag(const aReleaseTag: string): string;
+function mmpReleaseNotesFilePath(const aReleaseTag: string): string;
+function mmpReleaseNotesFolder: string;
 
 implementation
 
@@ -60,8 +62,6 @@ type
     function  saveReleaseNotes(const aReleaseTag: string): boolean;
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
-    function  getReleaseNotesFilePath(const aReleaseTag: string): string;
-    function  getReleaseNotesFolder: string;
     function  getReleaseTag: string;
     function  hasReleaseNotes(const aReleaseTag: string): boolean;
   end;
@@ -77,14 +77,25 @@ var
   gProgressBar:   IProgressBar;
   gDownloadForm:  TDownloadForm;
 
+function mmpCleanTag(const aReleaseTag: string): string;
+begin
+  result := replaceStr(aReleaseTag, '.', '_');
+end;
+
+function mmpReleaseNotesFilePath(const aReleaseTag: string): string;
+begin
+  result := format('%s%s%s%s', [mmpReleaseNotesFolder, 'releaseNotes ', mmpCleanTag(aReleaseTag), '.md'])
+end;
+
+function mmpReleaseNotesFolder: string;
+begin
+  result := mmpExePath + 'releaseNotes\';
+  forceDirectories(result);
+end;
+
 function newProgramUpdates: IProgramUpdates;
 begin
   result := TProgramUpdates.create;
-end;
-
-function cleanTag(const aReleaseTag: string): string;
-begin
-  result := replaceStr(aReleaseTag, '.', '_');
 end;
 
 function fetchURL(const aURL: string; aFileStream: TStream = NIL; const aSuccess: string = ''): string;
@@ -136,7 +147,7 @@ end;
 
 function updateFile(const aReleaseTag: string): string;
 begin
-  result := mmpExePath + 'update_' + cleanTag(aReleaseTag) + '.zip';
+  result := mmpExePath + 'update_' + mmpCleanTag(aReleaseTag) + '.zip';
 end;
 
 { TWorkProgress }
@@ -166,10 +177,10 @@ function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): boolean
 // As of v4.1.3 this just modifies the release notes so each URL for an image is replaced with a local path to the file in the releaseNotes folder
 // The files themselves are now included in the zip file
 begin
-  case fileExists(getReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
+  case fileExists(mmpReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
   var vNotes := TStringList.create;
   try
-    vNotes.loadFromFile(getReleaseNotesFilePath(aReleaseTag));
+    vNotes.loadFromFile(mmpReleaseNotesFilePath(aReleaseTag));
     for var i := 0 to vNotes.count - 1 do begin
       var vPos1 := pos('(https://github.com/', vNotes[i]);
       case vPos1 = 0 of TRUE: CONTINUE; end;
@@ -193,7 +204,7 @@ begin
       vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
     end;
 
-    vNotes.saveToFile(getReleaseNotesFilePath(aReleaseTag));
+    vNotes.saveToFile(mmpReleaseNotesFilePath(aReleaseTag));
   finally
     vNotes.free;
   end;
@@ -220,7 +231,7 @@ begin
   case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)       of TRUE: EXIT; end; // we're running the latest release
   case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
 
-  result := downloadAsset('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + cleanTag(aReleaseTag) + '.full.zip', updateFile(aReleaseTag), aReleaseTag);
+  result := downloadAsset('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + mmpCleanTag(aReleaseTag) + '.full.zip', updateFile(aReleaseTag), aReleaseTag);
 end;
 
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
@@ -255,7 +266,7 @@ var
   function getDevJson(const aTag: string): string;
   begin
     with TStringList.create do begin
-      loadFromFile(getReleaseNotesFilePath(aTag)); // you need to create this file manually
+      loadFromFile(mmpReleaseNotesFilePath(aTag)); // you need to create this file manually
       result := text;
       free;
     end;
@@ -287,17 +298,6 @@ begin
 ////=== DEV ONLY ===
 end;
 
-function TProgramUpdates.getReleaseNotesFilePath(const aReleaseTag: string): string;
-begin
-  result := format('%s%s%s%s', [getReleaseNotesFolder, 'releaseNotes ', cleanTag(aReleaseTag), '.md'])
-end;
-
-function TProgramUpdates.getReleaseNotesFolder: string;
-begin
-  result := mmpExePath + 'releaseNotes\';
-  forceDirectories(result);
-end;
-
 function TProgramUpdates.getReleaseTag: string;
 begin
   result := FReleaseTag;
@@ -320,7 +320,7 @@ end;
 
 function TProgramUpdates.hasReleaseNotes(const aReleaseTag: string): boolean;
 begin
-  result := fileExists(getReleaseNotesFilePath(aReleaseTag));
+  result := fileExists(mmpReleaseNotesFilePath(aReleaseTag));
 end;
 
 function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): boolean;
@@ -329,7 +329,7 @@ begin
 
   with TStringList.create do begin
     text := FReleaseNotes;
-    saveToFile(getReleaseNotesFilePath(aReleaseTag));
+    saveToFile(mmpReleaseNotesFilePath(aReleaseTag));
     free;
   end;
 end;

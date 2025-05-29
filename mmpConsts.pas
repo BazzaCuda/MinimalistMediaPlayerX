@@ -150,6 +150,7 @@ type
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);
   TRenameType   = (rtUser, rtKeep, rtKeepCatF1, rtKeepCatF2, rtKeepCatF3, rtKeepCatF4, rtKeepMove, rtKeepSave, rtKeepClean);
+  TReasonType   = (rtNextFolderUser, rtNextFolderOnEnd, rtNextFolderOnEmpty);
 
   TSnapshot = record
     key:              WORD;
