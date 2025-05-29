@@ -21,6 +21,7 @@ Ctrl-**K** [K]eep/Delete all non-[K]eep files in folder**&loz;**<br />
 **S** Save/Move to "Saved" folder**\***<br />
 Ctrl-**S** Save altered image to new file<br />
 **R** [R]ename file<br />
+Ctrl-Shift-**R** [R]ename to a clean file name<br />
 **F1-F12** Save/Move to user-defined folder**\***<br />
 Ctrl-**U** undo Save/Move<br />
 

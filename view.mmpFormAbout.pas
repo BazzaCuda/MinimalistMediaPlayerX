@@ -85,6 +85,7 @@ implementation
 
 uses
   winApi.shellAPI,
+  system.types,
   mmpConsts, mmpFileUtils, mmpFuncProg, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
@@ -159,13 +160,11 @@ function TAboutForm.checkPreviousReleaseNotes: boolean;
   end;
 begin
   result := FALSE;
-  case btnWhatsNew.visible of TRUE: EXIT; end;
+//  case btnWhatsNew.tag = 0 of TRUE: EXIT; end;
 
   mnuPopup.autoHotKeys      := maManual; // prevent spurious & accelerator-key characters from being added to the menuItem captions
 
   btnWhatsNew.style         := bsSplitButton;
-  btnWhatsNew.caption       := 'Release Notes';
-  btnWhatsNew.tag           := 999;
   btnWhatsNew.dropDownMenu  := mnuPopup;
   btnWhatsNew.visible       := TRUE;
 
@@ -181,10 +180,69 @@ begin
   result := TRUE;
 end;
 
+function versionLessThan(const aVersion1: string; const aVersion2: string): boolean;
+var
+  vParts1: TStringDynArray;
+  vParts2: TStringDynArray;
+  vMajor1: integer;
+  vMinor1: integer;
+  vPatch1: integer;
+  vMajor2: integer;
+  vMinor2: integer;
+  vPatch2: integer;
+begin
+  vParts1 := (stringReplace(aVersion1, 'v', '', [rfReplaceAll])).split(['.']);
+  vParts2 := (stringReplace(aVersion2, 'v', '', [rfReplaceAll])).split(['.']);
+
+  vMajor1 := strToInt(vParts1[0]);
+  vMinor1 := strToInt(vParts1[1]);
+  vPatch1 := strToInt(vParts1[2]);
+
+  vMajor2 := strToInt(vParts2[0]);
+  vMinor2 := strToInt(vParts2[1]);
+  vPatch2 := strToInt(vParts2[2]);
+
+  if vMajor1 < vMajor2 then
+  begin
+    result := TRUE;
+    EXIT;
+  end;
+  if vMajor1 > vMajor2 then
+  begin
+    result := FALSE;
+    EXIT;
+  end;
+
+  if vMinor1 < vMinor2 then
+  begin
+    result := TRUE;
+    EXIT;
+  end;
+  if vMinor1 > vMinor2 then
+  begin
+    result := FALSE;
+    EXIT;
+  end;
+
+  if vPatch1 < vPatch2 then
+  begin
+    result := TRUE;
+    EXIT;
+  end;
+  if vPatch1 > vPatch2 then
+  begin
+    result := FALSE;
+    EXIT;
+  end;
+
+  result := FALSE;
+end;
+
 function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
 begin
   case latestVersion[1] = 'v' of FALSE: EXIT; end;
-  case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
+  case versionLessThan(thisVersion, latestVersion) of TRUE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
+//  case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
 procedure TAboutForm.FormShow(Sender: TObject);
@@ -246,12 +304,16 @@ end;
 
 function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
 begin
-  lblReleaseVersion.Caption := aRelease;
+  lblReleaseVersion.caption := aRelease;
 end;
 
 function TAboutForm.setWhatsNew(const aHasReleaseNotes: boolean): boolean;
 begin
-  btnWhatsNew.visible := aHasReleaseNotes;
+  btnWhatsNew.visible := TRUE;
+  case aHasReleaseNotes of  TRUE: btnWhatsNew.caption := 'What''s New?';
+                           FALSE: begin
+                                    btnWhatsNew.tag := 999;
+                                    btnWhatsNew.caption := 'Release Notes'; end;end;
   btnWhatsNew.default := aHasReleaseNotes;
 end;
 

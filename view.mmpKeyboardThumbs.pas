@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder, koCloseToMain, koConfig
+            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -120,7 +120,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(N)           and NOT ctrl                              of TRUE: result := koMinimizeWindow; end;
     case keyDn and keyIs(O)                                                     of TRUE: result := koZoomOut; end;
     case keyUp and keyIs(Q)                                                     of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(R)                                                     of TRUE: result := koRenameFile; end;
+    case keyUp and keyIs(R)           and NOT ctrl                              of TRUE: result := koRenameFile; end;
+    case keyUp and keyIs(R)           and     ctrl  and     shift               of TRUE: result := koRenameCleanFile; end;
     case keyUp and keyIs(S)           and     ctrl                              of TRUE: result := koScreenshot; end; // in Image Browser, all F-keys are reserved
     case keyUp and keyIs(S)           and NOT ctrl                              of TRUE: result := koSaveMove; end;
     case keyDn and keyIs(T)                                                     of TRUE: result := koPlayThumbs; end;

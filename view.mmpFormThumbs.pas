@@ -92,7 +92,7 @@ type
     function playPrev:            boolean;
     function playPrevFolder:      boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
-    function renameFile(const aFilePath: string): boolean;
+    function renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): boolean;
     function reverseSlideshow: boolean;
     function saveCopyFile(const aFilePath: string): boolean;
     function saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
@@ -612,13 +612,15 @@ begin
   FThumbsHost.visible := aHostType = htThumbsHost;
 end;
 
-function TThumbsForm.renameFile(const aFilePath: string): boolean;
+function TThumbsForm.renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): boolean;
 var
   vNewName: string;
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
-  vNewName := mmpRenameFile(aFilePath);
+  case bCleanFile of   TRUE: vNewName := mmpRenameFile(aFilePath, mmpCleanFile(mmpFileNameWithoutExtension(aFilePath)));
+                      FALSE: vNewName := mmpRenameFile(aFilePath); end;
+
   mmp.cmd(vNewName <> aFilePath,  procedure begin
                                             FThumbs.playlist.replaceCurrentItem(vNewName);
                                             mmpSetPanelText(FStatusBar, pnFold, 'Renamed: ' + aFilePath); end);
@@ -885,6 +887,7 @@ begin
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
+    koRenameCleanFile:    case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem, TRUE); end;
     koReverseSlideshow:   case whichHost of htMPVHost: reverseSlideshow; end;
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
