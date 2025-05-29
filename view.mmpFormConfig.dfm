@@ -3012,14 +3012,14 @@ object ConfigForm: TConfigForm
           'regards the following characters as "dirty":'
       end
       object Label56: TLabel
-        Left = 159
+        Left = 180
         Top = 292
-        Width = 257
+        Width = 216
         Height = 30
         Alignment = taCenter
         Caption = 
-          '* in particular, ampersand (&&) and apostrophe ('#39')'#13#10'Note: any .m' +
-          'mp file will also be renamed'
+          '* in particular, an apostrophe ( '#39' )'#13#10'Note: any .mmp file will a' +
+          'lso be renamed'
         Color = clBtnFace
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua

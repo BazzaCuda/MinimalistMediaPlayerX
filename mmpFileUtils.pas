@@ -75,7 +75,7 @@ begin
   F := procedure  begin
                     mmp.cmd(evMPPause);
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
-                                                       + 'The <path>\<filename> contains a single quote '' '#13#10
+                                                       + 'The <path>\<filename> contains at least one single quote '' '#13#10
                                                        + 'A single quote will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove the dirty characters.'#13#10#13#10
                                                        + 'Ctrl-Shift-[R] will cleanup the file name (but not the path) for you '

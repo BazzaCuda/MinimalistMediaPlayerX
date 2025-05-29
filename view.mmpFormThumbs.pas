@@ -574,10 +574,12 @@ var
   vNextFolder: string;
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mpvStop(mpv); // EXPERIMENTAL // if the folder is empty we want a blank screen
+  case vNextFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
   mmp.cmd(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
-  mpvStop(mpv); // if the folder is empty we want a blank screen
-  playCurrentItem;
-  result := vNextFolder <> '';
+  case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
+                                    FALSE: playNextFolder; end;
+  result := FThumbs.playlist.hasItems;
 end;
 
 function TThumbsForm.playPrev: boolean;
@@ -596,10 +598,12 @@ var
   vPrevFolder: string;
 begin
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  mpvStop(mpv); // EXPERIMENTAL // if the folder is empty we want a blank screen
+  case vPrevFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
   mmp.cmd(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
-  mpvStop(mpv); // if the folder is empty we want a blank screen
-  playCurrentItem;
-  result := vPrevFolder <> '';
+  case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
+                                    FALSE: playPrevFolder; end;
+  result := FThumbs.playlist.hasItems;
 end;
 
 function TThumbsForm.showHost(const aHostType: THostType): boolean;
