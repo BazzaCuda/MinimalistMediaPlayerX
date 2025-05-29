@@ -268,7 +268,7 @@ Control | Action
 `Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
 `R`                     | `[R]`ename the current media file
-`Ctrl-Shift-R`          | `[R]`ename to clean file name by replacing dirty characters with spaces
+`Ctrl-Shift-R`          | `[R]`ename to a clean file name by replacing dirty characters with spaces
 `Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` user folder in .conf file
 `F1`                    | rename media file with category prefix 1 defined in `MinimalistMediaPlayer.conf`
 `F2`                    | rename media file with category prefix 2 defined in `MinimalistMediaPlayer.conf`
