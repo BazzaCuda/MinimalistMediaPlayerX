@@ -563,7 +563,7 @@ begin
   case whichHost of
     htMPVHost:    begin case FLocked of TRUE: EXIT; end;
                         FLocked := TRUE;
-                        result := FThumbs.playlist.next;
+                        result := FThumbs.playlist.next; // NB: this ignores the two optional parameters
                         playCurrentItem; end;
     htThumbsHost: playCurrentItem;
   end;

@@ -48,7 +48,7 @@ type
     function    isFirst:                                    boolean;
     function    isLast:                                     boolean;
     function    last:                                       boolean;
-    function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
@@ -67,7 +67,7 @@ uses
   winApi.windows,
   system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
-  mmpFileUtils, mmpFuncProg, mmpUtils,
+  mmpFileUtils, mmpGlobalState, mmpFuncProg, mmpUtils,
   model.mmpMediaTypes,
   TListHelperClass,
   _debugWindow;
@@ -109,7 +109,7 @@ type
     function    isFirst:                                    boolean;
     function    isLast:                                     boolean;
     function    last:                                       boolean;
-    function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
@@ -336,7 +336,7 @@ begin
   result := FPlayIx <> -1;
 end;
 
-function TPlaylist.next(const aMediaType: TMediaType = mtUnk): boolean;
+function TPlaylist.next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
 
   function findNext: boolean;
   var vMediaType: TMediaType;
@@ -350,11 +350,31 @@ function TPlaylist.next(const aMediaType: TMediaType = mtUnk): boolean;
     result := TRUE;
   end;
 
+  function findRandom: boolean;
+  begin
+    result := FALSE;
+
+    // compile a list of FPlaylist indexes that match the required mediaType
+    var vIxArray: TArray<integer>;
+    setLength(vIxArray, 0);
+    for var i := 0 to FPlaylist.count - 1 do
+      case (aMediaType = mtUnk) or (MT.mediaType(FPlaylist[i]) = aMediaType) of TRUE: begin
+                                                                                        setLength(vIxArray, length(vIxArray) + 1);
+                                                                                        vIxArray[high(vIxArray)] := i; end;end;
+    case length(vIxArray) = 0 of TRUE: EXIT; end;
+
+    var vIx := random(length(vIxArray)); // pick a random ix OF vIxArray
+    FPlayIx := vIxArray[vIx];            // use the FPlaylist.itemIndex stored in it
+    result := TRUE;
+  end;
+
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
-  case isLast   of TRUE:  EXIT; end;
-  case findNext of FALSE: EXIT; end;
+  case bShuffle of   TRUE:  case findRandom of FALSE: EXIT; end;
+                    FALSE:  begin
+                              case isLast   of TRUE:  EXIT; end;
+                              case findNext of FALSE: EXIT; end;end;end;
   result := TRUE;
 end;
 
@@ -382,7 +402,7 @@ begin
     evPLFind:               aNotice.tf    := find(aNotice.text);
     evPLFirst:              aNotice.tf    := first;
     evPLLast:               aNotice.tf    := last;
-    evPLNext:               aNotice.tf    := next(aNotice.mediaType);
+    evPLNext:               aNotice.tf    := next(aNotice.mediaType, GS.shuffle);
     evPLPrev:               aNotice.tf    := prev(aNotice.mediaType);
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
 
@@ -474,5 +494,8 @@ begin
   case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
   result := TRUE;
 end;
+
+initialization
+  randomize;
 
 end.

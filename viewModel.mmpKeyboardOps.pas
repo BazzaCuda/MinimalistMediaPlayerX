@@ -148,6 +148,7 @@ begin
     koTogglePlaylist:     mmp.cmd(evVMTogglePlaylist);
     koToggleProgressBar:  mmp.cmd(evPBToggleProgressBar);
     koToggleRepeat:       mmp.cmd(evPAPostToAll, WIN_TOGGLE_REPEAT);
+    koToggleShuffle:      mmp.cmd(evVMToggleShuffle);
     koToggleSkipExcluded: mmp.cmd(evVMToggleSkipExcluded);
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));

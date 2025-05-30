@@ -69,6 +69,7 @@ type
     function getShowingStreamlist:        boolean;
     function getShowingThumbs:            boolean;
     function getShowingTimeline:          boolean;
+    function getShuffle:                  boolean;
     function getSkipExcluded:             boolean;
     function getTimelineHeight:           integer;
     function getUserInput:                boolean;
@@ -102,6 +103,7 @@ type
     property showingStreamlist:         boolean             read getShowingStreamlist;
     property showingThumbs:             boolean             read getShowingThumbs;
     property showingTimeline:           boolean             read getShowingTimeline;
+    property shuffle:                   boolean             read getShuffle;
     property skipExcluded:              boolean             read getSkipExcluded;
     property timelineHeight:            integer             read getTimelineHeight;
     property userInput:                 boolean             read getUserInput;
@@ -143,6 +145,7 @@ type
     FShowingStreamlist:       boolean;
     FShowingThumbs:           boolean;
     FShowingTimeline:         boolean;
+    FShuffle:                 boolean;
     FSkipExcluded:            boolean;
     FWidthHelp:               integer;
     FWidthPlaylist:           integer;
@@ -177,6 +180,7 @@ type
     function    getShowingStreamlist:        boolean;
     function    getShowingThumbs:            boolean;
     function    getShowingTimeline:          boolean;
+    function    getShuffle:                  boolean;
     function    getSkipExcluded:             boolean;
     function    getTimelineHeight:           integer;
     function    getUserInput:                boolean;
@@ -322,6 +326,11 @@ begin
   result := FShowingTimeline;
 end;
 
+function TGlobalState.getShuffle: boolean;
+begin
+  result := FShuffle;
+end;
+
 function TGlobalState.getSkipExcluded: boolean;
 begin
   result := FSkipExcluded;
@@ -384,6 +393,7 @@ begin
     evGSShowingStreamlist:        FShowingStreamlist      := aNotice.tf;
     evGSShowingThumbs:            FShowingThumbs          := aNotice.tf;
     evGSShowingTimeline:          FShowingTimeline        := aNotice.tf;
+    evGSShuffle:                  FShuffle                := aNotice.tf;
     evGSSkipExcluded:             FSkipExcluded           := aNotice.tf;
     evGSTimelineHeight:           FTimelineHeight         := aNotice.integer;
     evGSUserInput:                FUserInput              := aNotice.tf;

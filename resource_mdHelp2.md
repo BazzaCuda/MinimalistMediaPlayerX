@@ -4,6 +4,8 @@ Last: **Z** or **END**<br />
 Next: **W** [W]atch next or Numpad **ENTER**<br />
 Prev: **Q** or Ctrl-Numpad **ENTER**<br />
 <br />
+Shift-**HOME** toggle Shuffle on/off<br />
+<br />
 Folder:<br />
 **D** navigate to next folder<br />
 Ctrl-**D** navigate to previous folder<br />

@@ -150,6 +150,7 @@ type
     function    toggleFullscreen:     boolean;
     function    toggleHelp:           boolean;
     function    togglePlaylist:       boolean;
+    function    toggleShuffle:        string;
     function    toggleSkipExcluded:   string;
   protected
     procedure   onFormResize;
@@ -654,6 +655,7 @@ begin
     evVMToggleHelp:         begin toggleHelp;     resizeWindow; end;
     evVMToggleFullscreen:   toggleFullscreen;
     evVMTogglePlaylist:     begin togglePlaylist; resizeWindow; end;
+    evVMToggleShuffle:      sendOpInfo(toggleShuffle);
     evVMToggleSkipExcluded: sendOpInfo(toggleSkipExcluded);
     evWndResize:            begin moveHelp; movePlaylist; moveTimeline; end;
   end;
@@ -845,7 +847,7 @@ begin
 //  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
   case mmpPlayNext(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the next media type specified in playlistFormat=, which will be mtUnk if no filter set
 
-  // run out of things to play in this folder, navigate to the next folder with multimedia content
+  // have run out of things to play in this folder, navigate to the next folder with multimedia content
   T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayNextFolder, bRecurseFolders).tf, evNone, evAppClose); end;
   F :=  procedure begin
                     FLocked := FALSE;
@@ -865,7 +867,7 @@ begin
 //  case mmpPlayPrev(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the prev mtUnk or the media type specified in playlistFormat=
   case mmpPlayPrev(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the prev media type specified in playlistFormat=, which will be mtUnk if no filter set
 
-  // run out of things to play in this folder, navigate to the previous folder with multimedia content...
+  // have run out of things to play in this folder, navigate to the previous folder with multimedia content...
   T :=  procedure begin mmp.cmd(mmp.cmd(evVMPlayPrevFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]).tf, evNone, evAppClose); end; // navigate to prev folder with multimedia content
   F :=  procedure begin FLocked := FALSE; end;
 
@@ -1211,6 +1213,13 @@ begin
                             procedure begin mmp.cmd(evPLFormShutForm); end);
 
   result := TRUE;
+end;
+
+function TVM.toggleShuffle: string;
+begin
+  mmp.cmd(evGSShuffle, NOT GS.shuffle);
+  case GS.shuffle of   TRUE: result := 'shuffle on';
+                      FALSE: result := 'shuffle off'; end; // "...this mortal coil" - Hamlet
 end;
 
 function TVM.toggleSkipExcluded: string;
