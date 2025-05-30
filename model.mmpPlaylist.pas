@@ -50,7 +50,7 @@ type
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev(const aMediaType: TMediaType = mtUnk): boolean;
+    function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -80,6 +80,7 @@ type
   private
     function    add(const anItem: string):          boolean;
     function    displayItem:                        string;
+    function    expandSetOfMediaType(const aSetOfMediaType: TSetOfMediaType): TSetOfMediaType;
     function    extractNumericPart(const aString: string): integer;
     function    formattedItem:                      string;
     function    getPlaylist(aListBox: TListBox):    boolean;
@@ -111,7 +112,7 @@ type
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
-    function    prev(const aMediaType: TMediaType = mtUnk): boolean;
+    function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -206,6 +207,12 @@ begin
   result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
 end;
 
+function TPlaylist.expandSetOfMediaType(const aSetOfMediaType: TSetOfMediaType): TSetOfMediaType;
+begin
+  result := aSetOfMediaType;
+  case mtAudioVideo in result of TRUE: result := result - [mtAudioVideo] + [mtAudio, mtVideo]; end;
+end;
+
 function TPlaylist.extractNumericPart(const aString: string): Integer;
 var
   vMatch: TMatch;
@@ -235,8 +242,7 @@ var
 begin
   result := FALSE;
 
-  vSetOfMediaType := aSetOfMediaType;
-  case mtAudioVideo in vSetOfMediaType of TRUE: vSetOfMediaType := vSetOfMediaType - [mtAudioVideo] + [mtAudio, mtVideo]; end;
+  vSetOfMediaType := expandSetOfMediaType(aSetOfMediaType);
 
   clear;
   case aFolder = '' of TRUE: EXIT; end;
@@ -378,8 +384,7 @@ begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
 
-  vSetOfMediaType := aSetOfMediaType;
-  case mtAudioVideo in vSetOfMediaType of TRUE: vSetOfMediaType := vSetOfMediaType - [mtAudioVideo] + [mtAudio, mtVideo]; end;
+  vSetOfMediaType := expandSetOfMediaType(aSetOfMediaType);
 
 //  for var vMediaType: TMediaType := low(TMediaType) to high(TMediaType) do
 //    case vMediaType in vSetOfMediaType of TRUE: TDebug.debugEnum<TMediaType>('media type', vMediaType); end;
@@ -416,7 +421,7 @@ begin
     evPLFirst:              aNotice.tf    := first;
     evPLLast:               aNotice.tf    := last;
     evPLNext:               aNotice.tf    := next([aNotice.mediaType], GS.shuffle);
-    evPLPrev:               aNotice.tf    := prev(aNotice.mediaType);
+    evPLPrev:               aNotice.tf    := prev([aNotice.mediaType]);
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
 
     evPLReqCurrentFolder:   aNotice.text    := currentFolder;
@@ -440,7 +445,9 @@ begin
   end;
 end;
 
-function TPlaylist.prev(const aMediaType: TMediaType = mtUnk): boolean;
+function TPlaylist.prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
+// in the context of the playlist, mtUnk is a synonym for mtAny
+var vSetOfMediaType: TSetOfMediaType;
 
   function findPrev: boolean;
   var vMediaType: TMediaType;
@@ -449,8 +456,8 @@ function TPlaylist.prev(const aMediaType: TMediaType = mtUnk): boolean;
     repeat
       dec(FPlayIx);
       vMediaType := MT.mediaType(currentItem);
-      case isFirst and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
-    until (aMediaType in [mtUnk, vMediaType]) or isFirst; // order of shortcut logic is important here
+      case isFirst and NOT (mtUnk in vSetOfMediaType) and NOT (vMediaType in vSetOfMediaType) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
+    until (mtUnk in vSetOfMediaType) or (vMediaType in vSetOfMediaType);
     result := TRUE;
   end;
 
@@ -458,6 +465,9 @@ begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
   case isFirst  of TRUE:  EXIT; end;
+
+  vSetOfMediaType := expandSetOfMediaType(aSetOfMediaType);
+
   case findPrev of FALSE: EXIT; end;
   result := TRUE;
 end;
