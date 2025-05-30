@@ -578,7 +578,7 @@ begin
   case vNextFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
   mmp.cmd(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
-                                    FALSE: playNextFolder; end;
+                                    FALSE: playNextFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
 end;
 
@@ -602,7 +602,7 @@ begin
   case vPrevFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
   mmp.cmd(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
-                                    FALSE: playPrevFolder; end;
+                                    FALSE: playPrevFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
 end;
 
@@ -651,9 +651,15 @@ function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: s
 begin
   case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
   FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
-  case FThumbs.playlist.hasItems of FALSE: begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar); end;
-                                     TRUE: case FThumbs.playlist.isFirst of  TRUE: playCurrentItem;
-                                                                            FALSE: playNext; end;end; // because playlist.delete decrements FPlayIx
+  case FThumbs.playlist.hasItems of FALSE:  begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar);
+                                              case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end;
+                                                                                              FALSE: begin close; mmp.cmd(evAppClose); end;
+                                              end;
+                                            end;
+                                     TRUE:  begin
+                                              FThumbs.playlist.nextIx; // because playlist.deleteIx decrements FPlayIx
+                                              playCurrentItem;
+                                            end;end;
 end;
 
 function TThumbsForm.saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;

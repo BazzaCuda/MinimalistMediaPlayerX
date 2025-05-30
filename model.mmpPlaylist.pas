@@ -49,6 +49,7 @@ type
     function    isLast:                                     boolean;
     function    last:                                       boolean;
     function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
     function    prev(const aMediaType: TMediaType = mtUnk): boolean;
@@ -109,6 +110,7 @@ type
     function    isLast:                                     boolean;
     function    last:                                       boolean;
     function    next(const aMediaType: TMediaType = mtUnk): boolean;
+    function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
     function    prev(const aMediaType: TMediaType = mtUnk): boolean;
@@ -354,6 +356,12 @@ begin
   case isLast   of TRUE:  EXIT; end;
   case findNext of FALSE: EXIT; end;
   result := TRUE;
+end;
+
+function TPlaylist.nextIx: boolean;
+begin
+  case FPlayIx + 1 > FPlaylist.count - 1 of TRUE: EXIT; end;
+  inc(FPlayIx);
 end;
 
 function TPlaylist.notify(const aNotice: INotice): INotice;
