@@ -164,9 +164,10 @@ begin
   checkForManualEdits;
   var vPlaylistFormat := lowercase(FFileContents.values[aName]);
   result := mtUnk;
-  case vPlaylistFormat = 'audio' of TRUE: result := mtAudio; end;
-  case vPlaylistFormat = 'video' of TRUE: result := mtVideo; end;
-  case vPlaylistFormat = 'image' of TRUE: result := mtImage; end;
+  case vPlaylistFormat = 'audio'      of TRUE: result := mtAudio;       end;
+  case vPlaylistFormat = 'video'      of TRUE: result := mtVideo;       end;
+  case vPlaylistFormat = 'image'      of TRUE: result := mtImage;       end;
+  case vPlaylistFormat = 'audiovideo' of TRUE: result := mtAudioVideo;  end;
 end;
 
 function TConfigFile.getValue(const aName: string): string;
@@ -216,10 +217,11 @@ end;
 procedure TConfigFile.setAsMediaType(const aName: string; const aMediaType: TMediaType);
 begin
   case aMediaType of
-    mtUnk:   setValue(aName, 'all');
-    mtAudio: setValue(aName, 'audio');
-    mtVideo: setValue(aName, 'video');
-    mtImage: setValue(aName, 'image');
+    mtUnk:        setValue(aName, 'all');
+    mtAudio:      setValue(aName, 'audio');
+    mtVideo:      setValue(aName, 'video');
+    mtImage:      setValue(aName, 'image');
+    mtAudioVideo: setValue(aName, 'audiovideo');
   end;
 end;
 

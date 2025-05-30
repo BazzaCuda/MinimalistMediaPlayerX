@@ -161,7 +161,8 @@ type
     handled:          boolean;
   end;
 
-  TMediaType = (mtUnk, mtAudio, mtVideo, mtImage);
+  TMediaType = (mtUnk, mtAudio, mtVideo, mtImage, mtAudioVideo);
+  TSetOfMediaType = set of TMediaType;
   TMediaTypeRec = record
     mimeType: string;
     mediaType: TMediaType;

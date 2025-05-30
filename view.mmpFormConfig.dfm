@@ -29,7 +29,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsCleanFile
+    ActivePage = tsPlaylistFilter
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -693,7 +693,7 @@ object ConfigForm: TConfigForm
         Left = 15
         Top = 105
         Width = 137
-        Height = 121
+        Height = 138
         Caption = ' Playlist  Filter  Format '
         TabOrder = 0
       end
@@ -750,7 +750,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterImage: TRadioButton
         Left = 31
-        Top = 198
+        Top = 221
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -764,6 +764,23 @@ object ConfigForm: TConfigForm
         TabOrder = 4
         TabStop = True
         OnClick = rbFilterImageClick
+      end
+      object rbFilterAudioVideo: TRadioButton
+        Left = 31
+        Top = 198
+        Width = 113
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Audio && Video'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 5
+        TabStop = True
+        OnClick = rbFilterAudioVideoClick
       end
     end
     object tsUserFolders: TTabSheet

@@ -27,8 +27,6 @@ uses
   mmpConsts;
 
 type
-  TSetOfMediaType = set of TMediaType;
-
   IPlaylist = interface
     ['{EAA8F4FC-4F65-4080-B25F-5F5CA08309D9}']
     function    add(const anItem: string):                  boolean;
@@ -48,7 +46,7 @@ type
     function    isFirst:                                    boolean;
     function    isLast:                                     boolean;
     function    last:                                       boolean;
-    function    next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
+    function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
@@ -109,7 +107,7 @@ type
     function    isFirst:                                    boolean;
     function    isLast:                                     boolean;
     function    last:                                       boolean;
-    function    next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
+    function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
     function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
@@ -221,19 +219,25 @@ begin
 end;
 
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
+// in the context of the playlist, mtUnk is a synonym for mtAny
 const
   faFilesOnly = faAnyFile AND NOT faDirectory {AND NOT faHidden} AND NOT faSysFile;
 var
   vSR: TSearchRec;
+  vSetOfMediaType: TSetOfMediaType;
 
   function fileExtOK: boolean;
   begin
     var vMT := MT.mediaType(vSR.name);
-    result  := (vMT <> mtUnk) and ((mtUnk in aSetOfMediaType) or (vMT in aSetOfMediaType));
+    result  := (vMT <> mtUnk) and ((mtUnk in vSetOfMediaType) or (vMT in vSetOfMediaType));
   end;
 
 begin
   result := FALSE;
+
+  vSetOfMediaType := aSetOfMediaType;
+  case mtAudioVideo in vSetOfMediaType of TRUE: vSetOfMediaType := vSetOfMediaType - [mtAudioVideo] + [mtAudio, mtVideo]; end;
+
   clear;
   case aFolder = '' of TRUE: EXIT; end;
   case directoryExists(aFolder) of FALSE: EXIT; end;
@@ -336,7 +340,9 @@ begin
   result := FPlayIx <> -1;
 end;
 
-function TPlaylist.next(const aMediaType: TMediaType = mtUnk; const bShuffle: boolean = FALSE): boolean;
+function TPlaylist.next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
+// in the context of the playlist, mtUnk is a synonym for mtAny
+var vSetOfMediaType: TSetOfMediaType;
 
   function findNext: boolean;
   var vMediaType: TMediaType;
@@ -345,8 +351,8 @@ function TPlaylist.next(const aMediaType: TMediaType = mtUnk; const bShuffle: bo
     repeat
       inc(FPlayIx);
       vMediaType := MT.mediaType(currentItem);
-      case isLast and NOT (aMediaType in [mtUnk, vMediaType]) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
-    until (aMediaType in [mtUnk, vMediaType]) or isLast; // order of shortcut logic is important here
+      case isLast and NOT (mtUnk in vSetOfMediaType) and NOT (vMediaType in vSetOfMediaType) of TRUE: EXIT; end; // bypass result := TRUE if the final iteration fails to find a match
+    until (mtUnk in vSetOfMediaType) or (vMediaType in vSetOfMediaType);
     result := TRUE;
   end;
 
@@ -358,9 +364,9 @@ function TPlaylist.next(const aMediaType: TMediaType = mtUnk; const bShuffle: bo
     var vIxArray: TArray<integer>;
     setLength(vIxArray, 0);
     for var i := 0 to FPlaylist.count - 1 do
-      case (aMediaType = mtUnk) or (MT.mediaType(FPlaylist[i]) = aMediaType) of TRUE: begin
-                                                                                        setLength(vIxArray, length(vIxArray) + 1);
-                                                                                        vIxArray[high(vIxArray)] := i; end;end;
+      case (mtUnk in vSetOfMediaType) or (MT.mediaType(FPlaylist[i]) in vSetOfMediaType) of TRUE: begin
+                                                                                                    setLength(vIxArray, length(vIxArray) + 1);
+                                                                                                    vIxArray[high(vIxArray)] := i; end;end;
     case length(vIxArray) = 0 of TRUE: EXIT; end;
 
     var vIx := random(length(vIxArray)); // pick a random ix OF vIxArray
@@ -371,6 +377,13 @@ function TPlaylist.next(const aMediaType: TMediaType = mtUnk; const bShuffle: bo
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
+
+  vSetOfMediaType := aSetOfMediaType;
+  case mtAudioVideo in vSetOfMediaType of TRUE: vSetOfMediaType := vSetOfMediaType - [mtAudioVideo] + [mtAudio, mtVideo]; end;
+
+//  for var vMediaType: TMediaType := low(TMediaType) to high(TMediaType) do
+//    case vMediaType in vSetOfMediaType of TRUE: TDebug.debugEnum<TMediaType>('media type', vMediaType); end;
+
   case bShuffle of   TRUE:  case findRandom of FALSE: EXIT; end;
                     FALSE:  begin
                               case isLast   of TRUE:  EXIT; end;
@@ -402,7 +415,7 @@ begin
     evPLFind:               aNotice.tf    := find(aNotice.text);
     evPLFirst:              aNotice.tf    := first;
     evPLLast:               aNotice.tf    := last;
-    evPLNext:               aNotice.tf    := next(aNotice.mediaType, GS.shuffle);
+    evPLNext:               aNotice.tf    := next([aNotice.mediaType], GS.shuffle);
     evPLPrev:               aNotice.tf    := prev(aNotice.mediaType);
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
 

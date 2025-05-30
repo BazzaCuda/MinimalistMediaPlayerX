@@ -1222,6 +1222,7 @@ begin
   CF.asBoolean[CONF_SHUFFLE_MODE] := GS.shuffle;
   case GS.shuffle of   TRUE: result := 'shuffle on';
                       FALSE: result := 'shuffle off'; end; // "...this mortal coil" - Hamlet
+  mmp.cmd(evPLFormLoadBox, TRUE);
 end;
 
 function TVM.toggleSkipExcluded: string;

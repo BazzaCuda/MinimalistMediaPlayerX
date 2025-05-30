@@ -57,7 +57,7 @@ type
     procedure   createParams(var params: TCreateParams);
   public
     function    highlightCurrentItem: boolean;
-    function    loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
+    function    loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
   end;
   {$ENDREGION}
 
@@ -213,11 +213,11 @@ begin
   FMouseOver := FALSE;
 end;
 
-function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
-var vShuffle: string;
+function TPlaylistForm.loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
 begin
-  vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', '');
+  var vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', '');
   lblFolder.caption := format('%sFolder: %s', [vShuffle, mmp.cmd(evPLReqCurrentFolder).text]);
+  case bCaptionOnly of TRUE: EXIT; end;
   mmp.cmd(evPLFillListBox, LB);
   highlightCurrentItem;
 end;
@@ -292,7 +292,7 @@ begin
   case aNotice.event of
     evPLFormMove:       moveForm(aNotice.wndRec);
     evPLFormShutForm:   shutForm;
-    evPLFormLoadBox:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox; end;
+    evPLFormLoadBox:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox(aNotice.tf); end;
     evPLFormHighlight:  case FPlaylistForm = NIL of FALSE: FPlaylistForm.highlightCurrentItem; end;
     evPLFormShow:       showForm;
     evPLNewPlaylist:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox; end;

@@ -174,6 +174,7 @@ type
     lblDirtyChars: TLabel;
     btnDirtyCharsDefault: TButton;
     Label56: TLabel;
+    rbFilterAudioVideo: TRadioButton;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -209,6 +210,7 @@ type
     procedure chbPlayEditedClick(Sender: TObject);
     procedure edtDirtyCharsChange(Sender: TObject);
     procedure btnDirtyCharsDefaultClick(Sender: TObject);
+    procedure rbFilterAudioVideoClick(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -484,6 +486,7 @@ begin
   rbFilterAll.checked           := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtUnk;
   rbFilterAudio.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtAudio;
   rbFilterVideo.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtVideo;
+  rbFilterAudioVideo.checked    := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtAudioVideo;
   rbFilterImage.checked         := CF.asMediaType[CONF_PLAYLIST_FORMAT] = mtImage;
 
   // each TLabeledEdit and each TSpeedButton have tags 1 - 16
@@ -549,6 +552,11 @@ end;
 procedure TConfigForm.rbFilterAudioClick(Sender: TObject);
 begin
   CF.asMediaType[CONF_PLAYLIST_FORMAT] := mtAudio;
+end;
+
+procedure TConfigForm.rbFilterAudioVideoClick(Sender: TObject);
+begin
+  CF.asMediaType[CONF_PLAYLIST_FORMAT] := mtAudioVideo;
 end;
 
 procedure TConfigForm.rbFilterImageClick(Sender: TObject);
