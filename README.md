@@ -316,8 +316,9 @@ Control | Action
 `S`                     | re`[S]`tart the current media file from the beginning, aka `[S]`tartover
 `F8`                    | skip to the previous chapter, if there is one
 `F9`                    | skip to the next chapter, if there is one
-`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
-`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
+`Right Arrow`           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping
+`Left Arrow`            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping
+`Shift-Home`            | toggle shuffle mode on and off
 **Playlist** | 
 `A`                     | play the first media file in the playlist (`[Z]`/`[END]` plays last)
 `HOME`                  | play the first media file in the playlist (`[Z]`/`[END]` plays last)
