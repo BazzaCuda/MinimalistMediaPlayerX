@@ -84,6 +84,8 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
   end;
 
   function getKeyOp: TKeyOp;
+  // check keyUp for keys which should be pressed once
+  // check keyDn for keys which can be held down for rapid repeat
   begin
     result := koNone;
     case GS.showingThumbs of TRUE: EXIT; end;
@@ -194,9 +196,9 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_LEFT)   and     ctrl                                      of TRUE: result := koPanLeft; end;
     case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType = mtVideo)  of TRUE: result := koFrameBackwards; end;
     case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(VK_NEXT)                       and NOT GS.showingPlaylist    of TRUE: result := koRotateR; end;
-    case keyDn and keyIs(VK_RETURN) and     ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayPrev; end;
-    case keyDn and keyIs(VK_RETURN) and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_NEXT)                       and NOT GS.showingPlaylist    of TRUE: result := koRotateR; end;
+    case keyUp and keyIs(VK_RETURN) and     ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayPrev; end;
+    case keyUp and keyIs(VK_RETURN) and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT)  and     ctrl                                      of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl        and (GS.mediaType = mtVideo)  of TRUE: result := koFrameForwards; end;
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayNext; end;
@@ -205,7 +207,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(VK_UP)     and NOT ctrl        and NOT GS.showingPlaylist
                                                         and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayPrevFolder; end;
-    case keyUp and keyIs(VK_PRIOR)                      and NOT GS.showingPlaylist    of TRUE: result := koRotateL; end;
+    case keyDn and keyIs(VK_PRIOR)                      and NOT GS.showingPlaylist    of TRUE: result := koRotateL; end;
     case keyUp and keyIs(VK_SPACE)                                                    of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT)                                                 of TRUE: result := koSpeedDn; end;
     case keyDn and keyIs(VK_TAB)                                                      of TRUE: result := koTabTab; end;

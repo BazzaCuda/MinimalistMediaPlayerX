@@ -214,8 +214,10 @@ begin
 end;
 
 function TPlaylistForm.loadPlaylistBox(const forceReload: boolean = FALSE): boolean;
+var vShuffle: string;
 begin
-  lblFolder.caption := format('Folder: %s', [mmp.cmd(evPLReqCurrentFolder).text]);
+  vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', '');
+  lblFolder.caption := format('%sFolder: %s', [vShuffle, mmp.cmd(evPLReqCurrentFolder).text]);
   mmp.cmd(evPLFillListBox, LB);
   highlightCurrentItem;
 end;

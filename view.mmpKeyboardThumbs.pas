@@ -86,6 +86,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
   end;
 
   function getKeyOp: TKeyOp;
+  // check keyUp for keys which should be pressed once
+  // check keyDn for keys which can be held down for rapid repeat
   begin
     result := koNone;
 
@@ -158,10 +160,10 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(VK_INSERT)                                             of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)     and     ctrl                              of TRUE: result := koPanLeft; end;
     case keyDn and keyIs(VK_LEFT)     and NOT ctrl                              of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(VK_NEXT)                  and NOT GS.showingPlaylist   of TRUE: result := koRotateR; end;
-    case keyUp and keyIs(VK_PRIOR)                 and NOT GS.showingPlaylist   of TRUE: result := koRotateL; end;
-    case keyDn and keyIs(VK_RETURN)   and     ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayPrev; end;
-    case keyDn and keyIs(VK_RETURN)   and NOT ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_NEXT)                  and NOT GS.showingPlaylist   of TRUE: result := koRotateR; end;
+    case keyDn and keyIs(VK_PRIOR)                 and NOT GS.showingPlaylist   of TRUE: result := koRotateL; end;
+    case keyUp and keyIs(VK_RETURN)   and     ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayPrev; end;
+    case keyUp and keyIs(VK_RETURN)   and NOT ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT)    and     ctrl                              of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT)    and NOT ctrl                              of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(VK_SPACE)    and     ctrl                              of TRUE: result := koReverseSlideshow; end;

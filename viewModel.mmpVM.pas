@@ -437,8 +437,9 @@ begin
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
 
-  GS.notify(newNotice(evGSAutoCenter, TRUE));
-  GS.notify(newNotice(evGSMaxSize, TRUE));
+  mmp.cmd(evGSAutoCenter, TRUE);
+  mmp.cmd(evGSMaxSize, TRUE);
+  mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
 end;
 
 function TVM.keepDelete: boolean;
@@ -1218,6 +1219,7 @@ end;
 function TVM.toggleShuffle: string;
 begin
   mmp.cmd(evGSShuffle, NOT GS.shuffle);
+  CF.asBoolean[CONF_SHUFFLE_MODE] := GS.shuffle;
   case GS.shuffle of   TRUE: result := 'shuffle on';
                       FALSE: result := 'shuffle off'; end; // "...this mortal coil" - Hamlet
 end;

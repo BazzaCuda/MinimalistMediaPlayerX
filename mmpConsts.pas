@@ -112,6 +112,7 @@ const
   CONF_REPEAT_DELAY_MS        = 'repeatDelayMs';
   CONF_SCALE_FACTOR           = 'scaleFactor';
   CONF_SHOW_METADATA          = 'showMetaData';
+  CONF_SHUFFLE_MODE           = 'shuffleMode';
   CONF_SLIDESHOW_INTERVAL_MS  = 'slideshowIntervalMs';
   CONF_START_IN_EDITOR        = 'startInEditor';
   CONF_TIME_CAPTION           = 'timeCaption';
