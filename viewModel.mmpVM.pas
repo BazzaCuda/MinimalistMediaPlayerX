@@ -797,7 +797,10 @@ begin
       setLength(vFilePath, fileNameLength);
       dragQueryFile(hDrop, i, PChar(vFilePath), fileNameLength + 1);
 
-      mmp.cmd(evPLFillPlaylist, extractFilePath(vFilePath), mtUnk);
+      mmp.cmd(evPLFillPlaylist, extractFilePath(vFilePath), CF.asMediaType[CONF_PLAYLIST_FORMAT]);
+      FPlaylist.add(vFilePath); // always include the file the user dropped MMP even if it doesn't match the playlist filter
+      FPlaylist.sort;           // force a resort now we've manually added a file at the end of the playlist
+
       mmp.cmd(evPLFind, vFilePath);
       mmp.cmd(mmp.cmd(evPLReqHasItems).tf, evVMMPPlayCurrent);
 
@@ -845,7 +848,6 @@ begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
-//  case mmpPlayNext(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the next mtUnk or the media type specified in playlistFormat=
   case mmpPlayNext(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the next media type specified in playlistFormat=, which will be mtUnk if no filter set
 
   // have run out of things to play in this folder, navigate to the next folder with multimedia content
@@ -865,7 +867,6 @@ begin
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
 
-//  case mmpPlayPrev(mmp.use<TMediaType>(GS.imagesPaused, mtUnk, CF.asMediaType[CONF_PLAYLIST_FORMAT])) of TRUE: EXIT; end; // play the prev mtUnk or the media type specified in playlistFormat=
   case mmpPlayPrev(CF.asMediaType[CONF_PLAYLIST_FORMAT]) of TRUE: EXIT; end; // play the prev media type specified in playlistFormat=, which will be mtUnk if no filter set
 
   // have run out of things to play in this folder, navigate to the previous folder with multimedia content...
@@ -952,7 +953,7 @@ function TVM.reloadPlaylist: boolean;
 begin
   result := FALSE;
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
-  mmp.cmd(evPLFillPlaylist, mmp.cmd(evPLReqCurrentFolder).text, mtUnk);
+  mmp.cmd(evPLFillPlaylist, mmp.cmd(evPLReqCurrentFolder).text, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
   mmp.cmd(mmp.cmd(evPLFind, vCurrentItem).tf, evPLFirst);
   mmp.cmd(evPLFormLoadBox);
   result := TRUE;

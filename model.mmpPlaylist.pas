@@ -226,7 +226,7 @@ begin
 end;
 
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
-// in the context of the playlist, mtUnk is a synonym for mtAny
+// in the context of the playlist, mtUnk is a synonym for mtAny except when it's being used to identify unsupported file types
 const
   faFilesOnly = faAnyFile AND NOT faDirectory {AND NOT faHidden} AND NOT faSysFile;
 var
@@ -347,7 +347,7 @@ begin
 end;
 
 function TPlaylist.next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
-// in the context of the playlist, mtUnk is a synonym for mtAny
+// in the context of the playlist, mtUnk is a synonym for mtAny except when it's being used to identify unsupported file types
 var vSetOfMediaType: TSetOfMediaType;
 
   function findNext: boolean;
@@ -437,7 +437,7 @@ begin
 end;
 
 function TPlaylist.prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
-// in the context of the playlist, mtUnk is a synonym for mtAny
+// in the context of the playlist, mtUnk is a synonym for mtAny except when it's being used to identify unsupported file types
 var vSetOfMediaType: TSetOfMediaType;
 
   function findPrev: boolean;
