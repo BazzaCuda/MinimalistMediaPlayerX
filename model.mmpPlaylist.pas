@@ -49,8 +49,8 @@ type
     function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
-    function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
     function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
+    function    sort:                                       boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -86,7 +86,6 @@ type
     function    getPlaylist(aListBox: TListBox):    boolean;
     function    isSpecialImage:                     boolean;
     function    onNotify(const aNotice: INotice):   INotice;
-    function    sort:                               boolean;
   protected
     procedure   setCurrentFolder(const aValue: string);
   public
@@ -111,10 +110,10 @@ type
     function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
     function    nextIx:                                     boolean;
     function    notify(const aNotice: INotice):             INotice;
-    function    notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): INotice;
     function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
+    function    sort:                                       boolean;
     function    thisItem(const ix: integer):                string;
     function    validIx(const ix: integer):                 boolean;
   end;
@@ -129,6 +128,7 @@ end;
 function TPlaylist.add(const anItem: string): boolean;
 begin
   result := FALSE;
+  case FPlaylist.indexOf(anItem) = -1 of FALSE: EXIT; end;
   case fileExists(anItem) of FALSE: EXIT; end;
   FCurrentFolder := extractFilePath(anItem);
   result := FPlayList.add(anItem) <> 0;
@@ -434,15 +434,6 @@ begin
     evPLReqFormattedItem:   aNotice.text    := formattedItem; // return to sender
   end;
   result := aNotice;
-end;
-
-function TPlaylist.notifyEx(const aNotice: INotice; const aSetOfMediaType: TSetOfMediaType): INotice;
-begin
-  result := aNotice;
-  case aNotice = NIL of TRUE: EXIT; end;
-  case aNotice.event of
-    evPLFillPlaylist: fillPlaylist(aNotice.text, aSetOfMediaType);
-  end;
 end;
 
 function TPlaylist.prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;

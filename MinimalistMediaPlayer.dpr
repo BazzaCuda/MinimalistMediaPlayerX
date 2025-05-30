@@ -195,8 +195,10 @@ begin
 
   mmp.cmd(evGSNoPlaylist, PS.noPlaylist);
 
-  case GS.noPlaylist of  TRUE:  MMPUI.viewModel.playlist.add(PS.fileFolderAndName);
-                        FALSE:  MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, mtUnk)); end;
+  case GS.noPlaylist of FALSE: MMPUI.viewModel.playlist.notify(newNotice(evPLFillPlaylist, PS.fileFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT])); end;
+
+  MMPUI.viewModel.playlist.add(PS.fileFolderAndName); // always include the file the user used to launch MMP, which includes the [edited] file from the Timeline
+  MMPUI.viewModel.playlist.sort;                      // force a resort now we've manually added a file at the end of the playlist
 
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
