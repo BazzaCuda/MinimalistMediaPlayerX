@@ -954,8 +954,9 @@ begin
   result := FALSE;
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   mmp.cmd(evPLFillPlaylist, mmp.cmd(evPLReqCurrentFolder).text, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
-  mmp.cmd(mmp.cmd(evPLFind, vCurrentItem).tf, evPLFirst);
+  mmp.cmd(NOT mmp.cmd(evPLFind, vCurrentItem).tf, evPLSetNoItem); // any "play next" will now play item[0] in the playlist
   mmp.cmd(evPLFormLoadBox);
+  mmp.cmd(evMCReshowCaption);
   result := TRUE;
 end;
 

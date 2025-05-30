@@ -423,6 +423,7 @@ begin
     evPLNext:               aNotice.tf    := next([aNotice.mediaType], GS.shuffle);
     evPLPrev:               aNotice.tf    := prev([aNotice.mediaType]);
     evPLReplaceCurrentItem: replaceCurrentItem(aNotice.text);
+    evPLSetNoItem:          FPlayIx       := -1;
 
     evPLReqCurrentFolder:   aNotice.text    := currentFolder;
     evPLReqCurrentIx:       aNotice.integer := FPlayIx;
