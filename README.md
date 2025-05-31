@@ -50,6 +50,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
+`MMP` (`v5.1.0`) Shuffle Mode added, and an `Audio & Video` playlist filter for when your music folder contains a mixture of audio files and music videos
+
 `MMP` (`v5.0.0`) Keyframes for video editing: You can now use keyframes to accurately determine where to start segments so that your exported segments even more closely match your desired start point and length
 
 `MMP` (`v4.3.0`) Added a config dialog (`Shift-[\]`) to explain and configure all the settings in the `MinimalistMediaPlayer.conf` file
