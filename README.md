@@ -412,24 +412,25 @@ Control | Action
 
 Dependencies
 ------------
-1. `MMP: Minimalist Media Player` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
+1. `MMP: Minimalist Media Player` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
 
-2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
+2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi
 
-3. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources.
+3. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources
 
 4. Acknowledgement is due to the author of Perpetual Notes v4.05 (https://www.enselsoftware.com/product/PerpetualNotes.html) for being the only RTF editor I could find on the entire internet that could actually [,accurately] read back in what it had written out! (And I tested some big players during my search!)
 
 5. Uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder.
 
-6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing.
+6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing
 
 7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
 
-8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
+8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable
 
 9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file, lossless and without re-encoding _(i.e. copy/paste)_
+    
+10. Uses FFPROBE.exe (https://ffmpeg.org) to obtain the timestamps of all the keyframes in a video. This allows for greater precision _(and more accurate cuts)_ when deciding where to start a new segment during video editing
 
-10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release.
-    `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
+11. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release. `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable
 
