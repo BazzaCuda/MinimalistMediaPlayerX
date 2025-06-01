@@ -422,7 +422,7 @@ Dependencies
 
 5. Uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder.
 
-6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing
+6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing
 
 7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
 
