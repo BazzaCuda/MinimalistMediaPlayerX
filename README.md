@@ -412,7 +412,7 @@ Control | Action
 
 Dependencies
 ------------
-1. `MMP: Minimalist Media Player` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
+1. `MMP: Minimalist Media Player` requires libmpv-2.dll _(MPV as a library)_ to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
 
 2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi
 
