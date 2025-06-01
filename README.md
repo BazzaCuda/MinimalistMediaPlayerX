@@ -36,7 +36,7 @@ WIKI
 
 Keyboard Controls
 -----------------
-A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboardMain.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardMain.pas) and in [_view.mmpKeyboardThumbs.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardThumbs.pas) will tell you what actions you can take in the main media-playing window and in the `Image & Thumbnail Browser`, respectively.
+A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the `Main Media Window` but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboardMain.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardMain.pas) and in [_view.mmpKeyboardThumbs.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardThumbs.pas) will tell you what actions you can take in the `Main Media Window` and in the `Image & Thumbnail Browser`, respectively.
 
 _(For a quick run-down of the options in the `MinimalistMediaPlayer.conf` file, see [the wiki page](https://minimalistmediaplayer.com/mmp/config))_
 
@@ -90,7 +90,7 @@ Significant Releases
 
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. `[F7]` will cycle through all the subtitle tracks in the media file.
 
-- Full-resolution screenshots can be saved for individual frames and for a displayed image. Adjusting the size of either the main media window or the `Image & Thumbnail Browser` will set the pixel dimensions of the saved image.
+- Full-resolution screenshots can be saved for individual frames and for a displayed image. Adjusting the size of either the `Main Media Window` or the `Image & Thumbnail Browser` will set the pixel dimensions of the saved image.
 
 - All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing `Ctrl-[H]`. The full functionality of `MMP: Minimalist Media Player` can be used while this panel is showing so you can try things out.
 
@@ -106,15 +106,15 @@ Significant Releases
 
 - N.B. Many keys can be held down for rapid repitition.
 
-The following list may be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features, for both the main `MMP` media window and the `Image & Thumbnail Browser`.
+The following list may be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features, for both the `Main Media Window` and the `Image & Thumbnail Browser`.
 
-### Keyboard Controls (Main Window*)
+### Keyboard Controls (Main Media Window*)
 ---------------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
 
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
-Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `Ctrl-[S]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
+Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the `Main Media Window` uses //(e.g `Ctrl-[S]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
 
 Control | Action
 ------- | ------
@@ -154,7 +154,7 @@ Control | Action
 `;`                     | reset saturation to normal
 `'` (single quote)      | reset gamma to normal
 
-### Alphabetic and Numeric Controls (Main Window*)
+### Alphabetic and Numeric Controls (Main Media Window*)
 ---------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser
 
@@ -228,7 +228,7 @@ Control | Action
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous `MMP` videos
 `Ctrl-0`                | close all running instances of `MMP`
 
-### Full List of Controls By Category (Main Window*)
+### Full List of Controls By Category (Main Media Window*)
 ---------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
 
