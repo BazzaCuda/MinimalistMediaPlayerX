@@ -39,7 +39,7 @@ const
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
-  OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
+  OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186; TICK = 223;
 
 function KBCapsLock: boolean;
 begin
@@ -168,6 +168,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(SEMICOLON)                                                   of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                                of TRUE: result := koGammaReset; end;
     case keyDn and keyIs(SLASH)                                                       of TRUE: result := koSpeedUp; end;
+    case keyUp and keyIs(TICK)                                                        of TRUE: result := koStartOver; end;
 
     case keyDn and keyIs(VK_ADD)                                                      of TRUE: result := koSpeedUp; end;
     case keyUp and keyIs(VK_DELETE)                                                   of TRUE: result := koDeleteCurrentItem; end;
@@ -190,8 +191,9 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(VK_F10)                                                      of TRUE: result := koRunPot; end;
     case keyUp and keyIs(VK_F11)                                                      of TRUE: result := koRunCut; end;
     case keyUp and keyIs(VK_F12)                                                      of TRUE: result := koRunShot; end;
-    case keyUp and keyIs(VK_HOME)        and NOT shift                                of TRUE: result := koPlayFirst; end;
-    case keyUp and keyIs(VK_HOME)        and     shift                                of TRUE: result := koToggleShuffle; end;
+    case keyUp and keyIs(VK_HOME)   and NOT ctrl and NOT shift                        of TRUE: result := koPlayFirst; end;
+    case keyUp and keyIs(VK_HOME)   and NOT ctrl and     shift                        of TRUE: result := koToggleShuffle; end;
+    case keyUp and keyIs(VK_HOME)   and     ctrl and NOT shift                        of TRUE: result := koStartOver; end;
     case keyUp and keyIs(VK_INSERT)                                                   of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)   and     ctrl                                      of TRUE: result := koPanLeft; end;
     case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType = mtVideo)  of TRUE: result := koFrameBackwards; end;

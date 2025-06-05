@@ -64,7 +64,7 @@ end;
 
 procedure TProgressForm.FormCreate(Sender: TObject);
 begin
-  SetWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
+  setWindowLong(handle, GWL_STYLE, GetWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));
   color := DARK_MODE_DARK;
 
   styleElements     := []; // don't allow any theme alterations
@@ -83,7 +83,7 @@ begin
     margins.left     := 10;
     margins.right    := 10;
     margins.top      := 10;
-    AlignWithMargins := TRUE;
+    alignWithMargins := TRUE;
     panel1.color     := DARK_MODE_LIGHT;
   end;
   setModal(FALSE);

@@ -28,6 +28,7 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL): TModalResult;
+function mmpUserOK(const aMsg: string): boolean;
 
 implementation
 
@@ -66,6 +67,11 @@ begin
     mmp.cmd(evGSUserInput, FALSE);
     coUninitialize;
   end;
+end;
+
+function mmpUserOK(const aMsg: string): boolean;
+begin
+  result := mmpShowOKCancelMsgDlg(aMsg, mtWarning, [mbYes, mbNo], mbNo) = mrYes;
 end;
 
 end.

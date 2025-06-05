@@ -36,7 +36,8 @@ implementation
 
 uses
   system.classes, system.ioUtils,
-  mmpConsts,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts,  mmpFuncProg,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -63,7 +64,9 @@ procedure TMMPExceptionHandler.appExceptionHandler(sender: TObject; e: Exception
 begin
    // trap all exceptions but don't inconvenience the user.
    // the developer on the other hand...meh! let him have it.
-  case reportMemoryLeaksOnShutdown of FALSE: EXIT; end;
+  case reportMemoryLeaksOnShutdown of FALSE: begin
+                                              case e is EAccessViolation of TRUE: mmp.cmd(evMPStop); end;
+                                              EXIT; end;end;
 
   {$if BazDebugWindow} debugFormat('e: class=%s, %s', [e.className, e.message]); {$endif}
 

@@ -138,7 +138,7 @@ begin
   end;
 
   mmp.cmd(evSTOpInfo, 'keyframes on');     // at last!
-  mmp.cmd(evPBBackgroundColor, clFuchsia); // TALProgressBar.setPosition will reset the color on the next tick
+  mmp.cmd(evPBBackgroundColor, clFuchsia); // mmpFormTimeline will reset the color (evPBBackgroundColor) on the next tick
   mmpDelay(100);
   mmp.cmd(evPBBackgroundColor, clFuchsia); // make sure it gets seen during a tick cycle
   result := TRUE;

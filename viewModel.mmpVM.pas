@@ -347,7 +347,7 @@ begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
   mmp.cmd(vWasPlaying, evMPPausePlay);
 
-  vFolder   := mmp.cmd(evPLReqCurrentFolder).text;
+  vFolder := mmp.cmd(evPLReqCurrentFolder).text;
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
@@ -877,7 +877,7 @@ begin
 end;
 
 function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
-// reload playlist from vNextFolder and play first item
+// rebuild playlist from vNextFolder and play first item
 var T, F: TProc;
 begin
   var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
@@ -903,7 +903,7 @@ begin
 end;
 
 function TVM.playPrevFolder: boolean;
-// reload playlist from vPrevFolder and play first item
+// rebuild playlist from vPrevFolder and play first item
 var T, F: TProc;
 begin
   var vPrevFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);

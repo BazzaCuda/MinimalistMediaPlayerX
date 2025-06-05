@@ -228,6 +228,9 @@ function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): boolean;
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
+  var vCheckWithUser := (ssCtrl in aShiftState) and mmpPlaylistFolderContains(FThumbs.playlist.currentItem, [mtAudioVideo]);
+  case vCheckWithUser and NOT mmpUserOK('This folder also contains audio/video files'#13#10#13#10'Continue?') of TRUE: EXIT; end;
+
   case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState)
                                           of TRUE:  begin
                                                       var vIx := FThumbs.playlist.currentIx;

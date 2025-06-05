@@ -32,14 +32,16 @@ function mmpDelay(const dwMilliseconds: DWORD): boolean;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
+function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
 function mmpProcessMessages: boolean;
 function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;
 
 implementation
 
 uses
-  system.math,
+  system.math, system.sysUtils,
   mmpFuncProg,
+  model.mmpPlaylist,
   _debugWindow;
 
 var
@@ -49,6 +51,14 @@ function mmpCancelDelay: boolean;
 begin
   gCancel := TRUE;
   result := gCancel;
+end;
+
+function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
+begin
+  result := FALSE;
+  var vPlaylist := newPlaylist;
+  vPlaylist.fillPlaylist(extractFilePath(aFilePath), aSetOfMediaType);
+  result := vPlaylist.hasItems;
 end;
 
 function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
