@@ -1,7 +1,7 @@
 MMP: Minimalist Media Player
 =====================
 
-An all-in-one media player, image library manager (with built-in image and thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
+An all-in-one media player, image library manager (with built-in image & thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
 Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you. What additional features would you like to see in `MMP`?
 
@@ -17,7 +17,7 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
 
-`MMP: Minimalist Media Player` provides a minimalist keyboard- and mouse-operated user interface. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
+`MMP: Minimalist Media Player` provides a minimalist keyboard- and mouse-operated user interface _(with nearly 200 functions)_. Minimal on-screen clutter allows videos to be viewed without distractions. There are no window borders and no window title bar/caption, and keyboard options allow you to also have no progress bar and no audio/video timestamp, if that's what you want.
 
 The window resizes to fit the video perfectly, eliminating ugly black borders/bands around the video, particularly above and below. All of this provides an immersive viewing experience even when played in window mode rather than full-screen. Despite all this, `MMP: Minimalist Media Player`provides a wealth of functions via the keyboard and mouse for manipulating the user-interface and the media files themselves.
 
@@ -36,7 +36,7 @@ WIKI
 
 Keyboard Controls
 -----------------
-A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the main media-playing window but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboardMain.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardMain.pas) and in [_view.mmpKeyboardThumbs.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardThumbs.pas) will tell you what actions you can take in the main media-playing window and in the `Image & Thumbnail Browser`, respectively.
+A brief description for each of the keyboard controls follows below. Note that it contains all of the controls in the `Main Media Window` but not necessarily every control that is available in the `Image & Thumbnail Browser`. The `Ctrl-[H]` Help panel for each window will give a concise list of what's available. For an even quicker grasp of what keyboard controls are available to you and of `MMP`'s capabilities, a quick look through the keyboard actions listed in [_view.mmpKeyboardMain.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardMain.pas) and in [_view.mmpKeyboardThumbs.pas_](https://github.com/BazzaCuda/MinimalistMediaPlayerX/blob/main/view.mmpKeyboardThumbs.pas) will tell you what actions you can take in the `Main Media Window` and in the `Image & Thumbnail Browser`, respectively.
 
 _(For a quick run-down of the options in the `MinimalistMediaPlayer.conf` file, see [the wiki page](https://minimalistmediaplayer.com/mmp/config))_
 
@@ -49,6 +49,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 
 Significant Releases
 --------------------
+
+`MMP` (`v5.1.0`) Shuffle Mode added, and a combined `Audio & Video` playlist filter for when your music folder contains a mixture of audio files and music videos
 
 `MMP` (`v5.0.0`) Keyframes for video editing: You can now use keyframes to accurately determine where to start segments so that your exported segments even more closely match your desired start point and length
 
@@ -88,7 +90,7 @@ Significant Releases
 
 - If a corresponding subtitle file exists for the media file (.srt file, for example), or if the media file contains subtitles, the subtitles will be shown automatically. `[F7]` will cycle through all the subtitle tracks in the media file.
 
-- Full-resolution screenshots can be saved for individual frames and for a displayed image. Adjusting the size of either the main media window or the `Image & Thumbnail Browser` will set the pixel dimensions of the saved image.
+- Full-resolution screenshots can be saved for individual frames and for a displayed image. Adjusting the size of either the `Main Media Window` or the `Image & Thumbnail Browser` will set the pixel dimensions of the saved image.
 
 - All the keyboard and mouse functions are listed in a handy help panel which can be shown or hidden by pressing `Ctrl-[H]`. The full functionality of `MMP: Minimalist Media Player` can be used while this panel is showing so you can try things out.
 
@@ -104,15 +106,15 @@ Significant Releases
 
 - N.B. Many keys can be held down for rapid repitition.
 
-The following list may be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features, for both the main `MMP` media window and the `Image & Thumbnail Browser`.
+The following list may be missing some of the very latest - see the [Wiki](https://minimalistmediaplayer.com) for an up to date and detailed description of all of `MMP`'s many controls and features, for both the `Main Media Window` and the `Image & Thumbnail Browser`.
 
-### Keyboard Controls (Main Window*)
+### Keyboard Controls (Main Media Window*)
 ---------------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
 
 Although there are a lot of keyboard controls, the alphabetic letters have been applied intuitively. The action description will therefore help to associate the action with the letter.
 
-Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the ``Main Media Window`` uses //(e.g `Ctrl-[S]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
+Many of these controls also apply to the `Image & Thumbnail Browser`. However, in some cases, the `Image & Thumbnail Browser` uses a different key for the action described below than what the `Main Media Window` uses //(e.g `Ctrl-[S]` vs `[F5]` for screenshots)//. Also, the `Image & Thumbnail Browser` has additional key controls specific to managing your image library which are not available in the `Main Media Window`. Refer to the `Ctrl-[H]` Help Panel in both the `Main Media Window` and in the `Image & Thumbnail Browser` if you're unsure. In both cases, the Help Panel can be left open while you use the full functionality of `MMP`, in order to help you learn the many controls available to you.
 
 Control | Action
 ------- | ------
@@ -152,7 +154,7 @@ Control | Action
 `;`                     | reset saturation to normal
 `'` (single quote)      | reset gamma to normal
 
-### Alphabetic and Numeric Controls (Main Window*)
+### Alphabetic and Numeric Controls (Main Media Window*)
 ---------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser
 
@@ -188,8 +190,8 @@ Control | Action
 `Ctrl-K`                | `[K]`eep/delete: keep the `[K]ept` files in a folder, delete the others 
 `L`                     | re`[L]`oad the playlist with all supported media files from the current folder. Useful when you have knowingly changed the folder contents while the app is running. Saves having to restart the app to access the new folder contents
 `M`                     | `[M]`aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moved=` user folder in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moved=` user folder in .conf file
 `N`                     | mi`[N]`imize window to the Windows taskbar
 `Ctrl-N`                | toggle `[NUMLOCK]` on and off. For controlling multiple `MMP` windows
 `O`                     | zoom `[O]`ut. Can be held down for rapid zooming
@@ -226,7 +228,7 @@ Control | Action
 `Ctrl-9`                | Auto-arrange up to 4 (or more) simultaneous `MMP` videos
 `Ctrl-0`                | close all running instances of `MMP`
 
-### Full List of Controls By Category (Main Window*)
+### Full List of Controls By Category (Main Media Window*)
 ---------------
 \* For the additional controls available in the `Image & Thumbnail Browser` see the `Ctrl-[H]` help panel in `MMP`'s image browser.
 
@@ -265,8 +267,8 @@ Control | Action
 `Ctrl-Shift-C`          | `[C]`leanup leftover audio and video editing files in the current playlist folder (.log, .mmp, .seg, etc.)
 `K`                     | mark this media file as `[K]`eep (renames with a leading ! and space to bring to top of folder)
 `Ctrl-K`                | `[K]`eep/delete: delete all but the `[K]ept` files in a folder
-`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
-`Shift-M`               | `[M]`ove the current media file to the folder specified in the `move=` user folder in .conf file
+`Ctrl-M`                | `[M]`ove the current media file to the folder specified in the `moved=` user folder in .conf file
+`Shift-M`               | `[M]`ove the current media file to the folder specified in the `moved=` user folder in .conf file
 `R`                     | `[R]`ename the current media file
 `Ctrl-Shift-R`          | `[R]`ename to a clean file name by replacing dirty characters with spaces
 `Shift-S`               | `[S]`ave the current media file to the folder specified in the `saved=` user folder in .conf file
@@ -410,24 +412,25 @@ Control | Action
 
 Dependencies
 ------------
-1. `MMP: Minimalist Media Player` requires libmpv-2.dll to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences.
+1. `MMP: Minimalist Media Player` requires libmpv-2.dll _(MPV as a library)_ to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
 
-2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi.
+2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi
 
-3. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources.
+3. The VCL component in MarkdownHelpViewer (https://github.com/EtheaDev/MarkdownHelpViewer) allowed the original RTF help file to be replaced with much more convenient and flexible .md markdown resources
 
 4. Acknowledgement is due to the author of Perpetual Notes v4.05 (https://www.enselsoftware.com/product/PerpetualNotes.html) for being the only RTF editor I could find on the entire internet that could actually [,accurately] read back in what it had written out! (And I tested some big players during my search!)
 
-5. Uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) uncomment one conditional compiler directive at the top of the .dpr project file, 2) create an MMP_CHECK=MMP_CHECK environment variable and, 3) include FastMM_FullDebugMode64.dll in the executable's folder.
+5. Uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder
 
-6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts' DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing.
+6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing
 
 7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
 
-8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable.
+8. Uses MediaInfo (https://mediaarea.net/en/MediaInfo) to rapidly extract vital characteristics from any media file (dimensions, duration, chapters, etc). `MMP: Minimalist Media Player` requires MediaInfo.dll to be in the same folder as the executable
 
 9. Uses FFMPEG.exe (https://ffmpeg.org/) to rapidly extract segments from an audio or video file and then stitch them together to create a new audio or video file, lossless and without re-encoding _(i.e. copy/paste)_
+    
+10. Uses FFPROBE.exe (https://ffmpeg.org) to obtain the timestamps of all the keyframes in a video. This allows for greater precision _(and more accurate cuts)_ when deciding where to start a new segment during video editing
 
-10. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release.
-    `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable.
+11. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release. `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable
 
