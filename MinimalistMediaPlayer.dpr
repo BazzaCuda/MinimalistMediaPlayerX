@@ -126,7 +126,7 @@ begin
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
                                               {$ifdef useFastMM5MemoryLeakReporting}
-                                              FastMM_DeleteEventLogFile;
+                                              // FastMM_DeleteEventLogFile;
                                               FastMM_EnterDebugMode;
                                               FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
                                               FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary];

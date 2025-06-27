@@ -163,7 +163,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_NEXT)                  and NOT GS.showingPlaylist   of TRUE: result := koRotateR; end;
     case keyDn and keyIs(VK_PRIOR)                 and NOT GS.showingPlaylist   of TRUE: result := koRotateL; end;
     case keyUp and keyIs(VK_RETURN)   and     ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayPrev; end;
-    case keyUp and keyIs(VK_RETURN)   and NOT ctrl and NOT GS.showingPlaylist   of TRUE: result := koPlayNext; end;
+    case keyUp and keyIs(VK_RETURN)   and NOT ctrl and NOT GS.showingPlaylist and NOT GS.userInput   of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT)    and     ctrl                              of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT)    and NOT ctrl                              of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(VK_SPACE)    and     ctrl                              of TRUE: result := koReverseSlideshow; end;

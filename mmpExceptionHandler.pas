@@ -64,9 +64,7 @@ procedure TMMPExceptionHandler.appExceptionHandler(sender: TObject; e: Exception
 begin
    // trap all exceptions but don't inconvenience the user.
    // the developer on the other hand...meh! let him have it.
-  case reportMemoryLeaksOnShutdown of FALSE: begin
-                                              case e is EAccessViolation of TRUE: mmp.cmd(evMPStop); end;
-                                              EXIT; end;end;
+  case reportMemoryLeaksOnShutdown of FALSE: HALT; end;
 
   {$if BazDebugWindow} debugFormat('e: class=%s, %s', [e.className, e.message]); {$endif}
 

@@ -101,7 +101,7 @@ end;
 
 { mmp }
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: int64;    aFalseValue: int64   ):  int64;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: int64; aFalseValue: int64):  int64;
 begin
   result := mmp.use<int64>(aBoolean, aTrueValue, aFalseValue);
 end;

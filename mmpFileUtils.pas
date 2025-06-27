@@ -367,8 +367,10 @@ begin
     case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart; // the calling code has already supplied the new name part without the extension
                                    FALSE: begin
                                             try
+                                              mmp.cmd(evGSUserInput, TRUE);
                                               s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
                                             finally
+                                              mmp.cmd(evGSUserInput, FALSE);
                                             end;end;end;
   except
     s := '';   // any funny business, force the rename to be abandoned
