@@ -993,10 +993,12 @@ begin
     rtKeepMove: begin
                   case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
+                  mmp.cmd(evMPStop); // EXPERIMENTAL
                   case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
+                  mmp.cmd(evMPStop); // EXPERIMENTAL
                   case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;end;
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
