@@ -182,6 +182,7 @@ function TPlaylist.deleteIx(const ix: integer = -1): boolean;
 begin
   result := FALSE;
   case hasItems of FALSE: EXIT; end;
+
   case ix = -1 of  TRUE:  begin
                             FPlaylist.delete(FPlayIx);
                             dec(FPlayIx); end;
@@ -190,7 +191,7 @@ begin
                             FPlaylist.delete(ix);
                             dec(FPlayIx); end;end;
 
-  case (FPlayIx < 0) and (FPlaylist.count > 0) of TRUE: FPlayIx := 0; end; // the item at index 0 was deleted so point to the new item[0]
+  case (ix <> -1) and (FPlayIx < 0) and (FPlaylist.count > 0) of TRUE: FPlayIx := 0; end; // the item at index 0 was deleted so point to the new item[0] unless -1 overrides this
   result := TRUE;
 end;
 
