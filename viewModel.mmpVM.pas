@@ -1006,9 +1006,8 @@ begin
                                                             mmp.cmd(evMPStop);
                                                             mmp.cmd(evPLDeleteIx, -1);    // this decrements PL's FPlayIx [to -1 if necessary so we can do a playNext to play item 0]
                                                             case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end; // no feedback reqd
-                                                            case mmp.cmd(evPLReqCurrentIx).integer = -1 of
-                                                                                   TRUE: mmp.cmd(evVMMPPlayNext); // play the next item if there is one or force nextFolderOnEmpty/End
-                                                                                  FALSE: mmp.cmd(evVMMPPlayCurrent); end;end;
+                                                            // play the next item if there is one or force nextFolderOnEmpty/End
+                                                            mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end;
                                                   FALSE:  begin
                                                             mmp.cmd(evPLReplaceCurrentItem, vNewName);  // update the playlist with the new name
                                                             mmp.cmd(evMCCaption, mmp.cmd(evPLReqFormattedItem).text);
@@ -1020,7 +1019,6 @@ begin
 
   case aRenameType of
     rtUser:       result := 'Renamed';
-
     rtKeep:       result := 'Kept';
     rtKeepCatF1:  result := CF[CONF_CAT_F1] + ' ...';
     rtKeepCatF2:  result := CF[CONF_CAT_F2] + ' ...';
