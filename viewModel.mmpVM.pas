@@ -993,19 +993,20 @@ begin
     rtKeepMove: begin
                   case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
-                  mmp.cmd(evMPStop); // EXPERIMENTAL
-                  case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;end;
+                  mmp.cmd(evMPStop);
+                  case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;
+                  case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
-                  mmp.cmd(evMPStop); // EXPERIMENTAL
-                  case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;end;
+                  mmp.cmd(evMPStop);
+                  case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;
+                  case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
   case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin                           // remove from the current folder's playlist
                                                             mmp.cmd(evMPStop);
                                                             mmp.cmd(evPLDeleteIx, -1);    // this decrements PL's FPlayIx [to -1 if necessary so we can do a playNext to play item 0]
-                                                            case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end; // no feedback reqd
                                                             // play the next item if there is one or force nextFolderOnEmpty/End
                                                             mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end;
                                                   FALSE:  begin

@@ -191,6 +191,8 @@ var
   vVMiddle:           integer;
 begin
   result := FALSE;
+
+  mmp.cmd(evGSArrangeAll, TRUE); // ignore MMPs showing the Image & Thumbnail Browser
   vCount := mmp.cmd(evPAReqCount).integer;
 
   mmp.cmd(evGSAutoCenter, vCount = 1);
@@ -207,7 +209,7 @@ begin
     else     vMsg.WParam := mmpScreenWidth  div vCount;
   end;
   vMsg.msg := WIN_RESIZE;
-  mmp.cmd(evPAPostToEveryEx, vMsg);
+  mmp.cmd(evPAPostToEveryEx, vMsg); // this rebuilds the list of HWNDs
 
   mmpProcessMessages; // make sure this window has resized before continuing
 
@@ -220,6 +222,8 @@ begin
 
   vCount    := mmp.cmd(evPAReqCount).integer;
   var vHWND := 0;
+
+  mmp.cmd(evGSArrangeAll, FALSE); // ensure that subsequent universal commands go to all MMPs
 
   case vCount = 2 of TRUE: begin
                              mmpPosWinXY(PA[1], vZero,    (vScreenHeight - vHeight) div 2);
@@ -242,6 +246,9 @@ begin
   case vCount > 4 of TRUE: for var i := 1 to vCount do mmpPosWinXY(PA[i], ((mmpScreenWidth div vCount) * (i - 1)), 100); end;
 
   case vHWND <> 0 of TRUE: begin mmpDelay(100); mmpPosWinXY(vHWND, mmpScreenCentre - vWidth, mmpWinXY(vHWND).Y); end;end; // hack for tall, narrow, TikTok-type windows
+
+  setForegroundWindow(aWnd);
+
   result := TRUE;
 end;
 

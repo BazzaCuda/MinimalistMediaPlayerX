@@ -49,6 +49,7 @@ type
     ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
     function getActiveTasks:              integer;
     function getActiveTaskPercent:        integer;
+    function getArrangeAll:               boolean;
     function getAutoCenter:               boolean;
     function getCleanup:                  boolean;
     function getDuration:                 integer;
@@ -83,6 +84,7 @@ type
 
     property activeTasks:               integer             read getActiveTasks; // Unfortunately, Delphi requires getters and setters for interface properties :(
     property activeTaskPercent:         integer             read getActiveTaskPercent;
+    property arrangeAll:                boolean             read getArrangeAll;
     property autoCenter:                boolean             read getAutoCenter;
     property cleanup:                   boolean             read getCleanup;
     property duration:                  integer             read getDuration;
@@ -125,6 +127,7 @@ type
   strict private
     FActiveTasks:             integer;
     FActiveTaskPercent:       integer;
+    FArrangeAll:              boolean;
     FAutoCenter:              boolean;
     FCleanup:                 boolean;
     FDuration:                integer;
@@ -160,6 +163,7 @@ type
     destructor  Destroy; override;
     function    getActiveTasks:              integer;
     function    getActiveTaskPercent:        integer;
+    function    getArrangeAll:               boolean;
     function    getAutoCenter:               boolean;
     function    getCleanup:                  boolean;
     function    getDuration:                 integer;
@@ -224,6 +228,11 @@ end;
 function TGlobalState.getActiveTasks: integer;
 begin
   result := FActiveTasks;
+end;
+
+function TGlobalState.getArrangeAll: boolean;
+begin
+  result := FArrangeAll;
 end;
 
 function TGlobalState.getAutoCenter: boolean;
@@ -373,6 +382,7 @@ begin
   case aNotice.event of
     evGSActiveTasks:              FActiveTasks            := aNotice.integer;
     evGSActiveTaskPercent:        FActiveTaskPercent      := aNotice.integer;
+    evGSArrangeAll:               FArrangeAll             := aNotice.tf;
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
     evGSCleanup:                  FCleanup                := aNotice.tf;
     evGSDuration:                 FDuration               := aNotice.integer;

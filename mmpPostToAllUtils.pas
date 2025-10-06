@@ -72,6 +72,8 @@ var
   windowName : array[0..255] of char;
   className  : array[0..255] of char;
 begin
+  case GS.arrangeAll of TRUE: case isWindowVisible(handle) of FALSE: EXIT; end;end; // Ctrl-9: ignore MMP's which are displaying The Image & Thumbnail Browser
+
   case getClassName(handle, className, sizeOf(className)) > 0
     of TRUE: case strComp(className, 'TMMPUI') = 0 of TRUE: PA.addWnd(handle); end;end;
   result := TRUE;
