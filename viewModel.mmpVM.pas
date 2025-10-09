@@ -304,7 +304,7 @@ begin
                                                                                       FALSE: mmp.cmd(evAppClose); end;end;end;
 
 //  F := procedure begin mmp.cmd(evVMPlaySomething, mmp.cmd(evPLReqCurrentIx).integer); end; // EXPERIMENTAL: was vIX
-  F := procedure begin mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end;
+  F := procedure begin mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end;
 
   mmp.cmd(nothingToPlay, T, F);
   mmp.cmd(evPLFormLoadBox);
@@ -935,7 +935,7 @@ begin
   result := vPrevFolder <> '';
 end;
 
-function TVM.playSomething(const aIx: integer): boolean;
+function TVM.playSomething(const aIx: integer): boolean; // no longer called
 begin
   result := FALSE;
 
