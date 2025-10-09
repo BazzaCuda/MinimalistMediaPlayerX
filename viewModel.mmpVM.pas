@@ -286,19 +286,27 @@ begin
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
 
+//  var vIx := mmp.cmd(evPLReqCurrentIx).integer;
+//  debugInteger('FPlayIx', vIx);
+
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
 
-  var vIx := mmp.cmd(evPLReqCurrentIx).integer;
-  mmp.cmd(evPLDeleteIx, vIx);
+  mmp.cmd(evPLDeleteIx, -1); // EXPERIMENTAL was vIx
+//  var vNewIx := mmp.cmd(evPLReqCurrentIx).integer;
+
+//  debugInteger('just deleted Ix', vIx);
+//  debugInteger('new ix', vNewIx);
+//  debugInteger('current ix', mmp.cmd(evPLReqCurrentIx).integer);
 
   T := procedure begin case GS.noPlaylist of
                                TRUE: mmp.cmd(evAppClose);
                               FALSE: case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of   TRUE: mmp.cmd(mmp.cmd(evVMPlayNextFolder, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]).tf, evNone, evAppClose);
                                                                                       FALSE: mmp.cmd(evAppClose); end;end;end;
-  F := procedure begin mmp.cmd(evVMPlaySomething, vIx); end;
+
+//  F := procedure begin mmp.cmd(evVMPlaySomething, mmp.cmd(evPLReqCurrentIx).integer); end; // EXPERIMENTAL: was vIX
+  F := procedure begin mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end;
 
   mmp.cmd(nothingToPlay, T, F);
-
   mmp.cmd(evPLFormLoadBox);
 end;
 
@@ -930,6 +938,13 @@ end;
 function TVM.playSomething(const aIx: integer): boolean;
 begin
   result := FALSE;
+
+  // PL's FPlayIx was decremented [to -1 if necessary so we can do a playNext to play item 0]
+  // play the next item if there is one or force nextFolderOnEmpty/End
+  mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]);
+
+  EXIT;
+
   mmp.cmd((aIx = 0) or mmp.cmd(evPLReqIsLast).tf,
                                               evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
                                               evVMMPPlayNext);    // ...hence, playNext
@@ -993,19 +1008,18 @@ begin
     rtKeepMove: begin
                   case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
-                  mmp.cmd(evMPStop);
+                  mmp.cmd(evMPPause);
                   case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;
                   case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
-                  mmp.cmd(evMPStop);
+                  mmp.cmd(evMPPause);
                   case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;
                   case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 
   case aRenameType in [rtKeepMove, rtKeepSave] of  TRUE:  begin                           // remove from the current folder's playlist
-                                                            mmp.cmd(evMPStop);
                                                             mmp.cmd(evPLDeleteIx, -1);    // this decrements PL's FPlayIx [to -1 if necessary so we can do a playNext to play item 0]
                                                             // play the next item if there is one or force nextFolderOnEmpty/End
                                                             mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end;

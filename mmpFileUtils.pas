@@ -188,7 +188,7 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
-  mmp.cmd(evMPStop); // EXPERIMENTAL - try to fix access violations on videos being deleted
+  mmp.cmd(evMPPause); // EXPERIMENTAL - try to fix access violations on videos being deleted
 
   case ssCtrl in aShiftState of  TRUE: mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
                                 FALSE: mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file

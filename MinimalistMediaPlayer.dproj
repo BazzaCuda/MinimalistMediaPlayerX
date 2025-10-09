@@ -119,6 +119,7 @@
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_0_\"
+copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Release>4</VerInfo_Release>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
@@ -1411,7 +1412,7 @@ begin
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_0_\&quot;</PostBuildEvent>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_0_\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">

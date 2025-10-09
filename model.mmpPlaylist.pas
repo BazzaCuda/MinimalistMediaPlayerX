@@ -184,8 +184,11 @@ begin
   case hasItems of FALSE: EXIT; end;
 
   case ix = -1 of  TRUE:  begin
+                            // debugInteger('deleting FPlayIx', FPlayIx);
                             FPlaylist.delete(FPlayIx);
-                            dec(FPlayIx); end;
+                            dec(FPlayIx);
+                            // debugInteger('decremented FPlayIx', FPlayIx);
+                          end;
                   FALSE:  begin
                             case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
                             FPlaylist.delete(ix);
