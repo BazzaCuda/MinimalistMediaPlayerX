@@ -1008,13 +1008,15 @@ begin
     rtKeepMove: begin
                   case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
-                  mmp.cmd(evMPPause);
+                  mmp.cmd(evMPPause); // EXPERIMENTAL was Pause
+                  mmpDelay(500);      // EXPERIMENTAL
                   case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;
                   case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
-                  mmp.cmd(evMPPause);
+                  mmp.cmd(evMPPause); // EXPERIMENTAL was Pause
+                  mmpDelay(500);      // EXPERIMENTAL
                   case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;
                   case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;

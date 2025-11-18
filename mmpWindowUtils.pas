@@ -263,7 +263,8 @@ var
   begin
     result      := FALSE;
     var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
-    vHPos       := (mmpScreenWidth  - vR.width - vDelta)  div 2;
+    vHPos       := ((mmpScreenWidth  - vR.width) div 2); // ((mmpScreenWidth  - vR.width)  div 2) - vDelta; // (mmpScreenWidth  - vR.width - vDelta)  div 2; EXPERIMENTAL
+    case vHPos + vR.width + vDelta > mmpScreenWidth of TRUE: vHPos := vHPos - vDelta; end;
     vVPos       := (mmpScreenHeight - vR.height)          div 2;
     result      := (vR.left = vHPos) and (vR.top = vVPos);
   end;
