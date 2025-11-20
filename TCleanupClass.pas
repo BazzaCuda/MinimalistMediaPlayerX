@@ -20,6 +20,10 @@ unit TCleanupClass;
 
 interface
 
+uses
+  mmpNotify.notices;
+
+
 type
   ICleanup = interface
   ['{EEC91FA7-48B3-419B-B5EC-63210CBA7DDF}']
@@ -32,7 +36,7 @@ implementation
 
 uses
   system.classes, system.strUtils, system.sysUtils,
-  mmpFileUtils;
+  mmpFileUtils, mmpFuncProg, mmpUtils;
 
 type
   TCleanup = class(TInterfacedObject, ICleanup)
@@ -78,6 +82,9 @@ var SR: TSearchRec;
 
 begin
   result := FALSE;
+  mmp.cmd(evMPPause); // EXPERIMENTAL - try to fix access violations on videos being deleted
+  mmpDelay(500);      // EXPERIMENTAL
+
   case findFirst(aFolderPath + '*.*', filesOnly, SR) = 0 of TRUE:
     repeat
       case extOK of TRUE: mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE); end;
