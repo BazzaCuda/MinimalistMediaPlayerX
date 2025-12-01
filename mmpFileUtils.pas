@@ -88,8 +88,6 @@ begin
   mmp.cmd(result, NIL, F);
 end;
 
-//function mmpCheckDontRecycle
-
 function mmpCheckRecycleBin(const aFilePath: string): boolean;
 begin
   result := TRUE;
@@ -132,7 +130,7 @@ begin
   result := vTimestamp1 < vTimestamp2;
 end;
 
-function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState): boolean;
+function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState; const aDeleteMethod: TDeleteMethod): boolean;
 var vDeletionObject: TDeletionObject;
 begin
   result := FALSE;
@@ -140,7 +138,7 @@ begin
   case ssCtrl in aShiftState of  TRUE: vDeletionObject := doFolder;
                                 FALSE: vDeletionObject := doFile; end;
 
-  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYes;
+  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, aDeleteMethod, CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYes;
 end;
 
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
@@ -233,12 +231,17 @@ function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftSta
 var vSysMessage: string;
 begin
   result := FALSE;
+
+  var vDeleteMethod := CF.asDeleteMethod[CONF_DELETE_METHOD];
+  case (NOT mmpDriveFixed(aFilePath)) or (NOT mmpDriveFixedRecycle(aFilePath)) of TRUE: vDeleteMethod := dmStandard; end;
+  // TDebug.debugEnum<TDeleteMethod>('vDeleteMethod', vDeleteMethod);
+
   case bSilentDelete of FALSE: begin
     case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
                                                               mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
                                                               EXIT; end;end;
 
-    case mmpConfirmDelete(aFilePath, aShiftState) of FALSE: EXIT; end;
+    case mmpConfirmDelete(aFilePath, aShiftState, vDeleteMethod) of FALSE: EXIT; end;
   end;end;
 
   case mmpIsFileInUse(aFilePath, vSysMessage) of TRUE:  begin
@@ -247,11 +250,9 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
-//  mmp.cmd(evMPPause); // EXPERIMENTAL - try to fix access violations on videos being deleted
-//  mmpDelay(500);      // EXPERIMENTAL
 
-  case ssCtrl in aShiftState of  TRUE: result := mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
-                                FALSE: result := mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file
+  case ssCtrl in aShiftState of  TRUE: result := mmpShredThis(extractFilePath(aFilePath), vDeleteMethod); // folder contents but not subfolders
+                                FALSE: result := mmpShredThis(aFilePath, vDeleteMethod); end;             // one individual file
 
   case bRunTasks of  TRUE: result := mmpRunTasks;
                     FALSE: result := TRUE; end;
