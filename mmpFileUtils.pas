@@ -26,11 +26,13 @@ uses
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
+function mmpCheckRecycleBin(const aFilePath: string): boolean;
 function mmpCleanFile(const aFileName: string): string;
 function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
+function mmpDriveHasRecycleBin(const aFilePath: string): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
@@ -83,6 +85,16 @@ begin
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);
+end;
+
+function mmpCheckRecycleBin(const aFilePath: string): boolean;
+begin
+  result := TRUE;
+  case (CF.asDeleteMethod[CONF_DELETE_METHOD] = dmRecycle) and NOT mmpDriveHasRecycleBin(aFilePath) of TRUE:
+    result := mmpUserOK(aFilePath + #13#10#13#10 +
+                  'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10 +
+                  'If you continue, Windows will simply delete the file(s)'#13#10#13#10 +
+                  'Do you want to continue?'); end;
 end;
 
 function mmpConfigFilePath: string;
@@ -159,6 +171,15 @@ begin
   end;
 end;
 
+function mmpDriveHasRecycleBin(const aFilePath: string): boolean;
+begin
+  result := FALSE;
+
+  var vDriveRoot := extractFileDrive(aFilePath);
+
+  result := getDriveType(PChar(vDriveRoot)) = DRIVE_FIXED; // large external USB SSDs present as fixed; micro SDs don't
+end;
+
 function mmpExePath: string;
 begin
   result := mmpITBS(extractFilePath(paramStr(0)));
@@ -190,8 +211,8 @@ begin
 //  mmp.cmd(evMPPause); // EXPERIMENTAL - try to fix access violations on videos being deleted
 //  mmpDelay(500);      // EXPERIMENTAL
 
-  case ssCtrl in aShiftState of  TRUE: mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
-                                FALSE: mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file
+  case ssCtrl in aShiftState of  TRUE: result := mmpShredThis(extractFilePath(aFilePath), CF.asDeleteMethod[CONF_DELETE_METHOD]); // folder contents but not subfolders
+                                FALSE: result := mmpShredThis(aFilePath, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;             // one individual file
 
   case bRunTasks of  TRUE: result := mmpRunTasks;
                     FALSE: result := TRUE; end;

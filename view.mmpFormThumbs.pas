@@ -230,6 +230,7 @@ begin
 
   var vCheckWithUser := (ssCtrl in aShiftState) and mmpPlaylistFolderContains(FThumbs.playlist.currentItem, [mtAudioVideo]);
   case vCheckWithUser and NOT mmpUserOK('This folder also contains audio/video files'#13#10#13#10'Do you want to continue?') of TRUE: EXIT; end;
+  case mmpCheckRecycleBin(FThumbs.playlist.currentItem) of FALSE: EXIT; end;
 
   case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState)
                                           of TRUE:  begin

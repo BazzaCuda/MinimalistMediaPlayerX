@@ -85,10 +85,11 @@ begin
   mmp.cmd(evMPPause); // EXPERIMENTAL - try to fix access violations on videos being deleted
   mmpDelay(500);      // EXPERIMENTAL
 
+  var vResult: boolean := FALSE;
   case findFirst(aFolderPath + '*.*', filesOnly, SR) = 0 of TRUE:
     repeat
-      case extOK of TRUE: mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE); end;
-    until findNext(SR) <> 0;
+      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE); end;
+    until (findNext(SR) <> 0) or NOT vResult;
   end;
   findClose(SR);
   mmpRunTasks;

@@ -37,7 +37,7 @@ implementation
 uses
   winApi.shellApi,
   system.generics.collections, system.threading,
-  mmpFuncProg, mmpGlobalState,
+  mmpDialogs, mmpFuncProg, mmpGlobalState,
   _debugWindow;
 
 const
@@ -237,25 +237,63 @@ begin
   findClose(vSR);
 end;
 
-function recycleDeleteFile(const aFilePath: string): integer;
+function recycleFile(const aFilePath: string): boolean;
 var
-  vFileOp: TSHFileOpStruct;
+  vFileOp: TSHFileOpStructW;
 begin
-  result := -1;
-  case integer(getFileAttributes(PChar(aFilePath))) = -1 of TRUE: EXIT; end;
+  result := FALSE;
 
-  zeroMemory(@vFileOp, sizeOf(vFileOp));
+  fillChar(vFileOp, sizeOf(vFileOp), 0);
   vFileOp.wFunc   := FO_DELETE;
-  vFileOp.pFrom   := PChar(aFilePath);
-  vFileOp.fFlags  := FOF_ALLOWUNDO OR FOF_SILENT OR FOF_NOCONFIRMATION;
-  result          := SHFileOperation(vFileOp);
+  vFileOp.pFrom   := PWideChar(aFilePath + #0); // double-null-terminated
+  vFileOp.fFlags  := FOF_ALLOWUNDO OR FOF_SILENT OR FOF_NOCONFIRMATION; // FOF_ALLOWUNDO is a request not a demand
+
+  result          := SHFileOperationW(vFileOp) = 0;
 end;
 
-function standardDeleteFile(const aFilePath: string): integer;
+function driveSupportsRecycleBin(const aFilePath: string): boolean;
+// currently redundant. Superseded by mmpCheckRecycleBin and mmpDriveHasRecycleBin in mmpFileUtils
 begin
-  result := -1;
+  var vDrive      := mmpITBS(extractFileDrive(aFilePath));
+  var vRecycleBin := vDrive + '$RECYCLE.BIN';
+
+  result := TRUE;
+  case directoryExists(vRecycleBin) of TRUE: EXIT; end;
+
+  var vTempFilePath := vDrive + '__MMP_RECYCLE_BIN_TEST__';
+
+  var vHandle: THandle := createFileW(PWideChar(vTempFilePath),
+    GENERIC_WRITE,
+    0,
+    NIL,
+    CREATE_ALWAYS,
+    FILE_ATTRIBUTE_NORMAL,
+    0);
+
+  result := FALSE;
+  case vHandle = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
+
+  closeHandle(vHandle);
+
+  recycleFile(vTempFilePath);
+
+  result := directoryExists(vRecycleBin);
+end;
+
+function recycleDeleteFile(const aFilePath: string): boolean;
+var
+  vFileOp: TSHFileOpStructW;
+begin
+  result := FALSE;
+  case integer(getFileAttributesW(PWideChar(aFilePath))) = -1 of TRUE: EXIT; end;
+  result := recycleFile(aFilePath);
+end;
+
+function standardDeleteFile(const aFilePath: string): boolean;
+begin
+  result := FALSE;
   case deleteFile(aFilePath) of FALSE: EXIT; end;
-  result := 0;
+  result := TRUE;
 end;
 
 type
@@ -266,7 +304,7 @@ type
 
 var gTasks: TList<ITask>;
     gCount: integer = 0;
-function threadIt(const aFilePath: string): integer;
+function threadIt(const aFilePath: string): boolean;
 var vTask: ITask;
 begin
   vTask := TTask.create(
@@ -279,6 +317,7 @@ begin
                           except end;
                         end);
   gTasks.add(vTask);
+  result := TRUE;
 end;
 
 function shredIt(const aFilePath: string; const aDeleteMethod: TDeleteMethod): boolean;
@@ -287,13 +326,13 @@ var
   vThreadRec: PThreadRec;
 begin
   case aDeleteMethod of
-    dmRecycle:  recycleDeleteFile(aFilepath);
-    dmStandard: standardDeleteFile(aFilePath);
-    dmShred:    threadIt(aFilePath);
+    dmRecycle:  result := recycleDeleteFile(aFilepath);
+    dmStandard: result := standardDeleteFile(aFilePath);
+    dmShred:    result := threadIt(aFilePath);
   end;
 end;
 
-function shredFolderFiles(const aFolderPath: string; const aDeleteMethod: TDeleteMethod): integer;
+function shredFolderFiles(const aFolderPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 const
   faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
 var
@@ -303,7 +342,7 @@ begin
   vFolderPath := mmpITBS(aFolderPath);
   case findFirst(vFolderPath + '*.*', faFilesOnly, SR) = 0 of TRUE:
     repeat
-      shredIt(vFolderPath + SR.name, aDeleteMethod);
+      result := shredIt(vFolderPath + SR.name, aDeleteMethod);
     until findNext(SR) <> 0;
   end;
   findClose(SR);
@@ -335,8 +374,8 @@ end;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
-  case fileExists(aFullPath) of  TRUE: shredIt(aFullPath, aDeleteMethod);
-                                FALSE: case directoryExists(aFullPath) of TRUE: shredFolderFiles(aFullPath, aDeleteMethod); end;end;
+  case fileExists(aFullPath) of  TRUE: result := shredIt(aFullPath, aDeleteMethod);
+                                FALSE: case directoryExists(aFullPath) of TRUE: result := shredFolderFiles(aFullPath, aDeleteMethod); end;end;
 end;
 
 initialization

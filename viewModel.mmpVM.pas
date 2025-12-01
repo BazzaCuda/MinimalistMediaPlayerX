@@ -286,6 +286,8 @@ begin
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
 
+  case mmpCheckRecycleBin(vCurrentItem) of FALSE: EXIT; end;
+
 //  var vIx := mmp.cmd(evPLReqCurrentIx).integer;
 //  debugInteger('FPlayIx', vIx);
 
