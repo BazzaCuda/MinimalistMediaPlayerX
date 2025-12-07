@@ -250,12 +250,21 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
+  mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
+  mmp.cmd(evMPStop);
+  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
 
-  case ssCtrl in aShiftState of  TRUE: result := mmpShredThis(extractFilePath(aFilePath), vDeleteMethod); // folder contents but not subfolders
-                                FALSE: result := mmpShredThis(aFilePath, vDeleteMethod); end;             // one individual file
+  try
 
-  case bRunTasks of  TRUE: result := mmpRunTasks;
-                    FALSE: result := TRUE; end;
+    case ssCtrl in aShiftState of  TRUE: mmpShredThis(extractFilePath(aFilePath), vDeleteMethod); // folder contents but not subfolders
+                                  FALSE: mmpShredThis(aFilePath, vDeleteMethod); end;             // one individual file
+
+    case bRunTasks of  TRUE: result := mmpRunTasks;
+                      FALSE: result := TRUE; end;
+
+  finally
+    mmp.cmd(evGSSuspended, FALSE); // this won't have any effect until evVMMPPlayNext etc
+  end;
 end;
 
 function mmpFileSize(const aFilePath: string): int64;
@@ -400,16 +409,30 @@ begin
                                                   mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
                                                   EXIT; end;end;
 
+  mmp.cmd(evMPPause);
+
+  case mmpCheckRecycleBin(aFolderPath) of FALSE: EXIT; end;
   case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYES of FALSE: EXIT; end;
 
-  case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
-    repeat
-      case fileOK of TRUE: mmpShredThis(aFolderPath + vSR.Name, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;
-    until findNext(vSR) <> 0;
+  mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
+  mmp.cmd(evMPStop);
+  mmpDelay(250);                // give MPV time to stop
+
+  try
+
+    case findFirst(aFolderPath + '*.*', faFilesOnly, vSR) = 0 of  TRUE:
+      repeat
+        case fileOK of TRUE: mmpShredThis(aFolderPath + vSR.Name, CF.asDeleteMethod[CONF_DELETE_METHOD]); end;
+      until findNext(vSR) <> 0;
+    end;
+
+    system.sysUtils.findClose(vSR);
+    mmpRunTasks;
+
+  finally
+    mmp.cmd(evGSSuspended, FALSE);
   end;
 
-  system.sysUtils.findClose(vSR);
-  mmpRunTasks;
   result := TRUE;
 end;
 

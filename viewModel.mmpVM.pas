@@ -281,7 +281,7 @@ var T, F: TProc;
   end;
 begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
-  mmp.cmd(vWasPlaying, evMPPausePlay);
+  mmp.cmd(vWasPlaying, evMPPause); // EXPERIMENTAL - was evMPPausePlay but I have no idea why
 
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
@@ -570,6 +570,7 @@ const
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+  case GS.suspended of TRUE: EXIT; end; // EXPERIMENTAL
 
   case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;
                                                     mtAudio,mtVideo: FLocked := FALSE; end;end;
@@ -578,7 +579,6 @@ begin
     evVMMPOnOpen:   onMPOpen(aNotice);
     evMPStatePlay:  mmp.cmd(GS.mediaType = mtImage, evSTBlankOutTimeCaption, evSTBlankInTimeCaption);
 
-//    evMPStateEnd:   mmp.cmd((GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist, evVMMPPlayNext); // for mtImage ignore everything. Let onSlideshowTimer handle it.
     evMPStateEnd:   case (GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist of TRUE: mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end; // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
@@ -994,23 +994,30 @@ begin
   end;
 
   case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;
-  mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's spurious keyUp for 'R' coming
+  mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's a spurious keyUp for 'R' coming
   case vNewName = vOldName of TRUE: EXIT; end;
 
   case aRenameType of
     rtKeepMove: begin
                   case forceDirectories(mmpUserDstFolder('Moved')) of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Moved'))  of FALSE: EXIT; end;
-                  mmp.cmd(evMPPause); // EXPERIMENTAL was Pause
-                  mmpDelay(500);      // EXPERIMENTAL
-                  case renameFile(vOldName, vNewName)         of FALSE: EXIT; end;
-                  case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
+                end;
     rtKeepSave: begin
                   case forceDirectories(mmpUserDstFolder('Saved'))  of FALSE: EXIT; end;
                   case directoryExists(mmpUserDstFolder('Saved'))   of FALSE: EXIT; end;
-                  mmp.cmd(evMPPause); // EXPERIMENTAL was Pause
-                  mmpDelay(500);      // EXPERIMENTAL
-                  case renameFile(vOldName, vNewName)               of FALSE: EXIT; end;
+                end;end;
+
+  case aRenameType of
+    rtKeepMove,
+    rtKeepSave: begin
+                  mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
+                  mmp.cmd(evMPStop);   // EXPERIMENTAL was Pause
+                  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
+                  try
+                    case renameFile(vOldName, vNewName) of FALSE: EXIT; end;
+                  finally
+                    mmp.cmd(evGSSuspended, FALSE);
+                  end;
                   case GS.noPlaylist of TRUE: begin mmp.cmd(evAppClose); EXIT; end;end;end; // no feedback reqd
   else case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;end;
 

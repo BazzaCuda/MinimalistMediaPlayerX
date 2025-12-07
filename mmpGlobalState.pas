@@ -72,6 +72,7 @@ type
     function getShowingTimeline:          boolean;
     function getShuffle:                  boolean;
     function getSkipExcluded:             boolean;
+    function getSuspended:                boolean;
     function getTimelineHeight:           integer;
     function getUserInput:                boolean;
     function getWidthHelp:                integer;
@@ -107,6 +108,7 @@ type
     property showingTimeline:           boolean             read getShowingTimeline;
     property shuffle:                   boolean             read getShuffle;
     property skipExcluded:              boolean             read getSkipExcluded;
+    property suspended:                 boolean             read getSuspended;
     property timelineHeight:            integer             read getTimelineHeight;
     property userInput:                 boolean             read getUserInput;
     property widthHelp:                 integer             read getWidthHelp;
@@ -150,6 +152,7 @@ type
     FShowingTimeline:         boolean;
     FShuffle:                 boolean;
     FSkipExcluded:            boolean;
+    FSuspended:               boolean;
     FWidthHelp:               integer;
     FWidthPlaylist:           integer;
     FWidthStreamlist:         integer;
@@ -186,6 +189,7 @@ type
     function    getShowingTimeline:          boolean;
     function    getShuffle:                  boolean;
     function    getSkipExcluded:             boolean;
+    function    getSuspended:                boolean;
     function    getTimelineHeight:           integer;
     function    getUserInput:                boolean;
     function    getWidthHelp:                integer;
@@ -345,6 +349,11 @@ begin
   result := FSkipExcluded;
 end;
 
+function TGlobalState.getSuspended: boolean;
+begin
+  result := FSuspended;
+end;
+
 function TGlobalState.getTimelineHeight: integer;
 begin
   result := FTimelineHeight;
@@ -405,6 +414,7 @@ begin
     evGSShowingTimeline:          FShowingTimeline        := aNotice.tf;
     evGSShuffle:                  FShuffle                := aNotice.tf;
     evGSSkipExcluded:             FSkipExcluded           := aNotice.tf;
+    evGSSuspended:                FSuspended              := aNotice.tf;
     evGSTimelineHeight:           FTimelineHeight         := aNotice.integer;
     evGSUserInput:                FUserInput              := aNotice.tf;
     evGSWidthHelp:                FWidthHelp              := aNotice.integer;
