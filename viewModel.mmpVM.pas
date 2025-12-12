@@ -283,6 +283,8 @@ begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
   mmp.cmd(vWasPlaying, evMPPause); // EXPERIMENTAL - was evMPPausePlay but I have no idea why
 
+  case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
+
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   case vCurrentItem = '' of TRUE: EXIT; end;
 
@@ -340,24 +342,27 @@ begin
 end;
 
 function TVM.doCleanup: boolean;
-var
-  vFolder:  string;
 begin
   result := FALSE;
 
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
-  mmp.cmd(vWasPlaying, evMPPausePlay);
+  mmp.cmd(vWasPlaying, evMPPause);
 
-  vFolder := mmp.cmd(evPLReqCurrentFolder).text;
+  case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
+
+  var vFolder := mmp.cmd(evPLReqCurrentFolder).text;
+  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
   mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mryes, procedure  begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup in progress');
-                                                                                                                      newCleanup.cleanup(vFolder);
+                                                                                                                      newCleanup.cleanup(vFolder, vCurrentItem);
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                                                                                     end);
 
+  mmp.cmd(evPLFind, vCurrentItem);
+  mmp.cmd(evPLFormLoadBox);
   mmp.cmd(vWasPlaying, evMPResume);
 
   result := TRUE;
@@ -446,6 +451,7 @@ end;
 function TVM.keepDelete: boolean;
 var T, F: TProc;
 begin
+  case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
   case mmpKeepDelete(mmp.cmd(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
   T := procedure begin mmp.cmd(mmp.cmd(evVMMPPlayNext, TRUE).tf, evNone, evAppClose); end;
   F := procedure begin mmp.cmd(evAppClose); end;

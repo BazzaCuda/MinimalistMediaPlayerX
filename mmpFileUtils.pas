@@ -31,7 +31,7 @@ function mmpCleanFile(const aFileName: string): string;
 function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE; const bStopMPV: boolean = TRUE): boolean;
 function mmpDriveFixed(const aFilePath: string): boolean;
 function mmpDriveFixedRecycle(const aFilePath: string): boolean;
 function mmpExePath: string;
@@ -227,7 +227,7 @@ begin
   result := TPath.getFileNameWithoutExtension(aFilePath);
 end;
 
-function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE): boolean;
+function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE; const bStopMPV: boolean = TRUE): boolean;
 var vSysMessage: string;
 begin
   result := FALSE;
@@ -250,8 +250,9 @@ begin
                                                                                 vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
+  case bStopMPV of TRUE: mmp.cmd(evMPStop); end;
+
   mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
-  mmp.cmd(evMPStop);
 
   try
 

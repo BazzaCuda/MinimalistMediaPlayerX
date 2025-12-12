@@ -23,11 +23,10 @@ interface
 uses
   mmpNotify.notices;
 
-
 type
   ICleanup = interface
   ['{EEC91FA7-48B3-419B-B5EC-63210CBA7DDF}']
-    function cleanup(const aFolderPath: string): boolean;
+    function cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
   end;
 
 function newCleanup: ICleanup;
@@ -42,7 +41,7 @@ uses
 type
   TCleanup = class(TInterfacedObject, ICleanup)
   public
-    function cleanup(const aFolderPath: string): boolean;
+    function cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
   end;
 
 function newCleanup: ICleanup;
@@ -52,7 +51,7 @@ end;
 
 { TCleanup }
 
-function TCleanup.cleanup(const aFolderPath: string): boolean;
+function TCleanup.cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
 const filesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden and NOT faSysFile;
 var SR: TSearchRec;
 
@@ -67,8 +66,12 @@ var SR: TSearchRec;
     for var i := 0 to vSL.count - 1 do begin
       vFN := copy(vSL[i], 7);
       delete(vFN, length(vFN), 1); // delete the trailing quote
-      replaceStr(vFN, '\\', '\');
-      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE); end;
+      vFN := replaceStr(vFN, '\\', '\');
+
+      var vFound := mmp.cmd(evPLFind, vFN).tf;
+
+      case fileExists(vFN) and vFound of TRUE: mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); end;
+      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE, sameText(vFN, aCurrentItem)); end;
     end;
     vSL.free;
     result := TRUE;
@@ -87,7 +90,7 @@ begin
   var vResult: boolean := FALSE;
   case findFirst(aFolderPath + '*.*', filesOnly, SR) = 0 of TRUE:
     repeat
-      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE); end;
+      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE, FALSE); end;
     until (findNext(SR) <> 0);
   end;
   findClose(SR);
