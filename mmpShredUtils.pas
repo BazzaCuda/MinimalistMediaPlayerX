@@ -362,7 +362,7 @@ begin
 
   mmp.cmd(evSTOpInfo2, -1);
   mmp.cmd(evGSActiveTaskPercent, -1); // suppress mmpVM from sending anything to mmpFormCaptions.OpInfo2 for display
-  mmp.cmd(evGSActiveTasks, gCount);
+  mmp.cmd(evGSActiveTasks, 0);        // was gCount
   gTasks.clear;
 
   result := TRUE;

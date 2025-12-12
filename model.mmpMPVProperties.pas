@@ -103,7 +103,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   case mpv.getState of
     mpsEnd:  result := trunc(mpv.currentSeconds);
-  else       result := round(mpv.currentSeconds); // EXPERIMENTAL
+  else       result := round(mpv.currentSeconds);
   end;
 end;
 

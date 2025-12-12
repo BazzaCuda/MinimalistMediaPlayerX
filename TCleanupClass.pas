@@ -70,7 +70,7 @@ var SR: TSearchRec;
 
       var vFound := mmp.cmd(evPLFind, vFN).tf;
 
-      case fileExists(vFN) and vFound of TRUE: mmp.cmd(evPLDeleteIx, mmp.cmd(evPLReqCurrentIx).integer); end;
+      case fileExists(vFN) and vFound of TRUE: mmp.cmd(evPLDeleteIx, -1); end;
       case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE, sameText(vFN, aCurrentItem)); end;
     end;
     vSL.free;

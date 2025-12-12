@@ -578,8 +578,8 @@ var
   vNextFolder: string;
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mpvStop(mpv); // EXPERIMENTAL // if the folder is empty we want a blank screen
-  case vNextFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  case vNextFolder = '' of TRUE: EXIT; end;
   mmp.cmd(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playNextFolder; end; // find a folder with images
@@ -602,8 +602,8 @@ var
   vPrevFolder: string;
 begin
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mpvStop(mpv); // EXPERIMENTAL // if the folder is empty we want a blank screen
-  case vPrevFolder = '' of TRUE: EXIT; end; // EXPERIMENTAL
+  mpvStop(mpv); // if the folder is empty we want a blank screen
+  case vPrevFolder = '' of TRUE: EXIT; end;
   mmp.cmd(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playPrevFolder; end; // find a folder with images

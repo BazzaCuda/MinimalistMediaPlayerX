@@ -480,7 +480,7 @@ begin
                                     segments.insert(aSegment.ix + 1, newSegment);
                                     FNewestIx := aSegment.ix + 1; end;end;
 
-  case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // EXPERIMENTAL - issue with losing the correct duration when cutting the final segment
+  case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // issue with losing the correct duration when cutting the final segment
 
   result := TRUE;
 end;

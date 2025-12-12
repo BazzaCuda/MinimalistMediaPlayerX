@@ -281,7 +281,7 @@ var T, F: TProc;
   end;
 begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
-  mmp.cmd(vWasPlaying, evMPPause); // EXPERIMENTAL - was evMPPausePlay but I have no idea why
+  mmp.cmd(vWasPlaying, evMPPause);
 
   case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
 
@@ -292,7 +292,7 @@ begin
 
   case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
 
-  mmp.cmd(evPLDeleteIx, -1); // EXPERIMENTAL was vIx
+  mmp.cmd(evPLDeleteIx, -1);
 
   T := procedure begin case GS.noPlaylist of
                                TRUE: mmp.cmd(evAppClose);
@@ -350,8 +350,9 @@ begin
 
   case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
 
-  var vFolder := mmp.cmd(evPLReqCurrentFolder).text;
-  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
+  var vFolder       := mmp.cmd(evPLReqCurrentFolder).text;
+  var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
+  var vIx           := mmp.cmd(evPLReqCurrentIx).integer;
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
@@ -361,7 +362,7 @@ begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                                                                                     end);
 
-  mmp.cmd(evPLFind, vCurrentItem);
+  case mmp.cmd(evPLFind, vCurrentItem).tf of FALSE: case vIx > mmp.cmd(evPLReqLastIx).integer of TRUE: mmp.cmd(evPLLast); end;end; // did we remove the playing item
   mmp.cmd(evPLFormLoadBox);
   mmp.cmd(vWasPlaying, evMPResume);
 
@@ -1161,7 +1162,7 @@ begin
 
   vFactor := mmp.use(ssShift in mmpShiftState, 50, vFactor);
 
-  vDuration := GS.duration; //   FMP.notify(newNotice(evMPReqDuration)).integer; EXPERIMENTAL
+  vDuration := GS.duration; //   FMP.notify(newNotice(evMPReqDuration)).integer;
   VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
   vTab := trunc(vDuration / vFactor);

@@ -434,6 +434,7 @@ begin
     evPLReqHasItems:        aNotice.tf      := hasItems;
     evPLReqIsLast:          aNotice.tf      := isLast;
     evPLReqIsSpecialImage:  aNotice.tf      := isSpecialImage;
+    evPLReqLastIx:          aNotice.integer := FPlayList.count - 1;
     evPLReqThisItem:        aNotice.text    := thisItem(aNotice.integer);
     evPLReqCurrentItem:     aNotice.text    := currentItem;
     evPLReqFormattedItem:   aNotice.text    := formattedItem; // return to sender

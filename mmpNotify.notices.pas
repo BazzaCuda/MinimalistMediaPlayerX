@@ -72,7 +72,7 @@ type
 
     evPLCopyToClipboard, evPLDeleteIx, evPLFillListBox, evPLFillPlaylist, evPLFind, evPLFirst, evPLLast, evPLNewPlaylist, evPLNext, evPLPrev, evPLReplaceCurrentItem,
     evPLReqCurrentFolder, evPLReqCurrentItem, evPLReqCurrentIx, evPLReqFormattedItem, evPLReqHasItems, evPLReqIsLast, evPLReqIsSpecialImage, evPLReqThisItem,
-    evPLAddItem, evPLSetNoItem,
+    evPLAddItem, evPLSetNoItem, evPLReqLastIx,
 
     evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm,
 
