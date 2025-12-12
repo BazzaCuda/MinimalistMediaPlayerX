@@ -374,6 +374,7 @@ end;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
+  while gTasks.count > 0 do mmpProcessMessages;
   case fileExists(aFullPath) of  TRUE: result := shredIt(aFullPath, aDeleteMethod);
                                 FALSE: case directoryExists(aFullPath) of TRUE: result := shredFolderFiles(aFullPath, aDeleteMethod); end;end;
 end;

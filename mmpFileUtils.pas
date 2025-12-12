@@ -252,7 +252,6 @@ begin
 
   mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
   mmp.cmd(evMPStop);
-  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
 
   try
 
