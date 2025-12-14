@@ -173,35 +173,38 @@ end;
 { TProgramUpdates }
 
 function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): boolean;
-// download any and all images in the release notes
+// download any and all images in the release notes (nope: GitHub broke direct access and redirect access - see comment below)
 // As of v4.1.3 this just modifies the release notes so each URL for an image is replaced with a local path to the file in the releaseNotes folder
-// The files themselves are now included in the zip file
+// The image files themselves are now included in the zip file
+// v5.1.7: GitHub changed image URLS again:
+// <img width="576" height="275" alt="2025-12-01_181634 png recyclebin2" src="https://github.com/user-attachments/assets/73576cbd-5151-40ea-b20e-bbfab3bf6b97" />
 begin
   case fileExists(mmpReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
   var vNotes := TStringList.create;
   try
     vNotes.loadFromFile(mmpReleaseNotesFilePath(aReleaseTag));
     for var i := 0 to vNotes.count - 1 do begin
-      var vPos1 := pos('(https://github.com/', vNotes[i]);
+
+      var vPos1 := pos('<img ', vNotes[i]);
       case vPos1 = 0 of TRUE: CONTINUE; end;
 
-      var vPos4 := pos('/assets/', vNotes[i]);
-      case vPos4 = 0 of TRUE: CONTINUE; end;
-
-      var vAssetURL := copy(vNotes[i], vPos1 + 1, 255);
-      var vPos2 := pos(')', vAssetURL);
+      var vPos2 := pos('" />', vNotes[i]); // could have used lastDelimiter('"', vNotes[i])
       case vPos2 = 0 of TRUE: CONTINUE; end;
 
-      delete(vAssetURL, vPos2, 255);
+      var vAssetURL := vNotes[i];
 
-      var vPos3 := LastDelimiter('/', vAssetURL);
+      delete(vAssetURL, vPos2, 255); // remove all characters after the filename
+
+      var vPos3 := lastDelimiter('/', vAssetURL); // the slash before the filename
       case vPos3 = 0 of TRUE: CONTINUE; end;
 
       var vFileName := copy(vAssetURL, vPos3 + 1, 255);
 
+// GitHub broke direct access to the images in release notes. We now have to distribute the images with the release
 //      downloadAsset(vAssetURL, getReleaseNotesFolder + vFileName); // this now gives 404 for the latest images on github which redirect to amazonaws
 
-      vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
+//      vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
+      vNotes[i] := format('%s%s%s', ['![] (releaseNotes\', vFileName, ')']); // markdown e.g. ![] (releaseNotes\73576cbd-5151-40ea-b20e-bbfab3bf6b97)
     end;
 
     vNotes.saveToFile(mmpReleaseNotesFilePath(aReleaseTag));

@@ -1019,7 +1019,7 @@ begin
     rtKeepSave: begin
                   mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
                   mmp.cmd(evMPStop);   // EXPERIMENTAL was Pause
-                  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
+//                  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
                   try
                     case renameFile(vOldName, vNewName) of FALSE: EXIT; end;
                   finally
@@ -1038,8 +1038,10 @@ begin
                                                             sendOpInfo(mmp.cmd(evPLReqFormattedItem).text); end;end;
 
   mmp.cmd(evPLFormLoadBox);
-  case GS.showingTimeline of TRUE: mmp.cmd(evTLRename, vNewName); end; // notify the Timeline that its current .mmp file has been renamed
-  case aRenameType in [rtKeepMove, rtKeepSave] of FALSE: mmpRenameMMPFile(vOldName, vNewName); end;
+
+  case aRenameType in [rtKeepMove, rtKeepSave] of FALSE:  begin
+                                                            case GS.showingTimeline of TRUE: mmp.cmd(evTLRename, vNewName); end; // notify the Timeline that its current .mmp file has been renamed
+                                                            mmpRenameMMPFile(vOldName, vNewName); end;end;
 
   case aRenameType of
     rtUser:       result := 'Renamed';
