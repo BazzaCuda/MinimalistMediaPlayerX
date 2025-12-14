@@ -413,7 +413,7 @@ Control | Action
 Project Dependencies
 ------------
 
-_NB required binaries are distributed with each release of `MMP` - this section is simply a hat-tip to all the developers represented below, without whom `MMP` would not have been possible_
+_NB required binaries are distributed with each release of `MMP` - this section is simply a hat-tip to all the developers represented below, without whom `MMP` would not be possible_
 
 1. `MMP: Minimalist Media Player` requires libmpv-2.dll _(MPV as a library)_ to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
 
