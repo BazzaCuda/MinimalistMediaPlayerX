@@ -410,8 +410,11 @@ Control | Action
 `T`                     | on an image, display the `Image & [T]humbnail Browser`; on an audio or video file, `[T]`ab as normal
 `Y`                     | display the `Image & Thumbnail Browser` regardless of what type of media file is currently showing
 
-Dependencies
+Project Dependencies
 ------------
+
+_NB required binaries are distributed with each release of `MMP`_
+
 1. `MMP: Minimalist Media Player` requires libmpv-2.dll _(MPV as a library)_ to be in the same folder as the executable. If you have an mpv.conf file in the same folder, MPV will take it into account when initializing, for example to specify your audio output preferences
 
 2. Massive credit and thanks are due to Edward Guo for his excellent port of the MPV API (libmpv) to Delphi, https://github.com/nbuyer/libmpvdelphi
