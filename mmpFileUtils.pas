@@ -31,6 +31,7 @@ function mmpCleanFile(const aFileName: string): string;
 function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
 function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
+function mmpCopyMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE; const bStopMPV: boolean = TRUE): boolean;
 function mmpDriveFixed(const aFilePath: string): boolean;
 function mmpDriveFixedRecycle(const aFilePath: string): boolean;
@@ -176,6 +177,19 @@ begin
     end;end;
   finally
   end;
+end;
+
+function mmpCopyMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
+// leave the original .seg file so cleanUp will delete any leftover .segnn. files listed in it
+begin
+  result := aNewFilePath;
+  var vOldMMP := changeFileExt(aOldFilePath, '.mmp');
+  var vNewMMP := changeFileExt(aNewFilePath, '.mmp');
+  case fileExists(vOldMMP) of TRUE: TFile.copy(vOldMMP, vNewMMP, TRUE); end;
+
+  var vOldKey := changeFileExt(aOldFilePath, '.key');
+  var vNewKey := changeFileExt(aNewFilePath, '.key');
+  case fileExists(vOldKey) of TRUE: TFile.copy(vOldKey, vNewKey, TRUE); end;
 end;
 
 function mmpDriveFixed(const aFilePath: string): boolean;
@@ -481,7 +495,6 @@ begin
   var vNewKey := changeFileExt(aNewFilePath, '.key');
   case fileExists(vOldKey) of TRUE: renameFile(vOldKey, vNewKey); end;
 end;
-
 
 function mmpRunTasks: boolean;
 begin

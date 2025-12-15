@@ -577,7 +577,7 @@ const
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
-  case GS.suspended of TRUE: EXIT; end; // EXPERIMENTAL
+  case GS.suspended of TRUE: EXIT; end;
 
   case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;
                                                     mtAudio,mtVideo: FLocked := FALSE; end;end;
@@ -1018,8 +1018,7 @@ begin
     rtKeepMove,
     rtKeepSave: begin
                   mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
-                  mmp.cmd(evMPStop);   // EXPERIMENTAL was Pause
-//                  mmpDelay(250);       // EXPERIMENTAL - give MPV time to stop
+                  mmp.cmd(evMPStop);
                   try
                     case renameFile(vOldName, vNewName) of FALSE: EXIT; end;
                   finally

@@ -89,6 +89,7 @@ type
     procedure   setPosOnly(const Value: integer);
 
     function    addUndo(const aAction: string): string;
+    function    copySourceFile: boolean;
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
@@ -450,6 +451,51 @@ begin
   segments.clear;
 end;
 
+function TTimeline.copySourceFile: boolean;
+const
+  COPY_PARAMS = ' -map 0 -c copy';
+var
+  cmdLine: string;
+begin
+  result := FALSE;
+
+  var vProgressForm := TProgressForm.create(NIL);
+  vProgressForm.heading.caption     := 'Copying source file';
+  vProgressForm.subHeading.caption  := 'Please wait';
+  vProgressForm.btnCancel.enabled   := FALSE;
+  vProgressForm.show;
+
+  try
+    cmdLine := '-hide_banner';
+    cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
+    cmdLine := cmdLine + COPY_PARAMS;
+    var vFilePathOUT := filePathOUT(' [c]');
+    cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
+    log(cmdLine); log('');
+
+    result := execAndWait(cmdLine);
+
+    case result of TRUE:  begin
+                            vProgressForm.heading.caption := 'Loading Copy';
+                            mmp.cmd(evVMReloadPlaylist);
+                            mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
+                            var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
+                            var vPosition   := mmp.cmd(evMPReqPosition).integer;
+                            mmp.cmd(evPLFind, vFilePathOUT);
+                            mmp.cmd(evPLFormLoadBox);
+                            FMediaFilePath := vFilePathOUT;
+                            mmp.cmd(evVMMPPlayCurrent);
+                            while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
+                            mmp.cmd(evMPSeek, vPosition);
+                            case vWasPlaying of FALSE: mmp.cmd(evMPPause); end;
+                          end;end;
+
+  finally
+    vProgressForm.free;
+  end;
+
+end;
+
 constructor TTimeline.create;
 begin
   inherited;
@@ -623,6 +669,11 @@ var
 begin
   result      := TRUE;
   FCancelled  := FALSE;
+
+  case mmpCtrlKeyDown and mmpShiftKeyDown of TRUE:  begin
+                                                      copySourceFile;
+                                                      EXIT;
+                                                    end;end;
 
   vSegOneFN   := '';
 

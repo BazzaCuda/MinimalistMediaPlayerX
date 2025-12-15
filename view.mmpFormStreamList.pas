@@ -211,7 +211,8 @@ end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
 begin
-  case mmpCtrlKeyDown of   TRUE: btnExport.caption := 'Join';
+  case mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
+                                                          FALSE: btnExport.caption := 'Join'; end;
                           FALSE: btnExport.caption := 'Export'; end;
 end;
 
@@ -222,7 +223,8 @@ end;
 
 procedure TStreamListForm.btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  case mmpCtrlKeyDown of   TRUE: btnExport.caption := 'Join';
+  case mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
+                                                          FALSE: btnExport.caption := 'Join'; end;
                           FALSE: btnExport.caption := 'Export'; end;
 end;
 

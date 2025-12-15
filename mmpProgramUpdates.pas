@@ -203,7 +203,6 @@ begin
 // GitHub broke direct access to the images in release notes. We now have to distribute the images with the release
 //      downloadAsset(vAssetURL, getReleaseNotesFolder + vFileName); // this now gives 404 for the latest images on github which redirect to amazonaws
 
-//      vNotes[i] := replaceStr(vNotes[i], vAssetURL, 'releaseNotes\' + vFileName);
       vNotes[i] := format('%s%s%s', ['![] (releaseNotes\', vFileName, ')']); // markdown e.g. ![] (releaseNotes\73576cbd-5151-40ea-b20e-bbfab3bf6b97)
     end;
 
