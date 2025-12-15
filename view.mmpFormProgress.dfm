@@ -59,7 +59,7 @@ object ProgressForm: TProgressForm
       Visible = False
     end
     object btnIgnore: TButton
-      Left = 201
+      Left = 190
       Top = 70
       Width = 75
       Height = 25
@@ -68,7 +68,7 @@ object ProgressForm: TProgressForm
       TabOrder = 2
     end
     object btnCancel: TButton
-      Left = 128
+      Left = 117
       Top = 70
       Width = 75
       Height = 25
@@ -78,7 +78,7 @@ object ProgressForm: TProgressForm
       OnClick = btnCancelClick
     end
     object btnRerun: TButton
-      Left = 55
+      Left = 44
       Top = 70
       Width = 75
       Height = 25
