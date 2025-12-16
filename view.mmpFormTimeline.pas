@@ -29,7 +29,7 @@ uses
   TSegmentClass;
 
 type
-  TRunType = (rtFFMpeg, rtCMD);
+  TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow);
 
   TTimelineForm = class(TForm)
     pnlCursor:          TPanel;
@@ -70,6 +70,7 @@ type
     FPlayEdited:              boolean;
     FPositionSS:              integer;
     FPrevAction:              string;
+    FProcessHandle:           THandle;
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
@@ -114,6 +115,7 @@ type
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
+    procedure   onCancelCopy(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
   public
     function    clear:          boolean;
@@ -132,6 +134,7 @@ type
     property    positionSS:     integer               read getPosition    write setPosition;
     property    posOnly:        integer                                   write setPosOnly;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
+    property    processHandle:  THandle                                   write FProcessHandle;
     property    segCount:       integer               read getSegCount;
     property    segments:       TObjectList<TSegment> read getSegments;
   end;
@@ -152,7 +155,7 @@ uses
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
 
-function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFMpeg): boolean;
+function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
 // rtCMD: a segment export failed, so we rerun showing the cmd prompt box so the user can view the FFMPeg error messages
 var
@@ -168,29 +171,34 @@ begin
     lpVerb  := 'open';
 
     case aRunType of
-      rtFFMPeg: lpFile := 'ffmpeg';
-      rtCMD:    lpFile := 'cmd';
+      rtFFmPeg,
+      rtFFmpegShow: lpFile := 'ffmpeg';
+      rtCMD:        lpFile := 'cmd';
     end;
 
     case aRunType of
-      rtFFMpeg: lpParameters := pChar(aCmdLine);
-      rtCMD:    lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
+      rtFFmpeg,
+      rtFFmpegShow: lpParameters := pChar(aCmdLine);
+      rtCMD:        lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
     end;
 
     lpDirectory := pWideChar(mmpExePath);
 
     case aRunType of
-      rtFFMpeg: nShow := SW_HIDE;
-      rtCMD:    nShow := SW_SHOW;
+      rtFFmpeg:     nShow := SW_HIDE;
+      rtCMD:        nShow := SW_SHOW;
+      rtFFmpegShow: nShow := SW_SHOW;
     end;
 
   end;
 
   result := ShellExecuteEx(@vExecInfo);
+  TL.ProcessHandle := vExecInfo.hProcess;
 
   case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
                                                       case aRunType of
-                                                        rtFFMpeg: begin
+                                                        rtFFmpeg, rtFFmpegShow:
+                                                                  begin
                                                                     repeat
                                                                       case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
                                                                                                                                                                                     FALSE: BREAK; end;
@@ -457,16 +465,14 @@ const
 var
   cmdLine: string;
 begin
-  result := FALSE;
+  result      := FALSE;
+  FCancelled  := FALSE;
 
   var vProgressForm := TProgressForm.create(NIL);
   vProgressForm.heading.caption     := 'Copying source file';
   vProgressForm.subHeading.caption  := 'Please wait';
-  vProgressForm.btnCancel.enabled   := FALSE;
+  vProgressForm.onCancel            := onCancelCopy;
   vProgressForm.show;
-
-  var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
-  var vPosition   := mmp.cmd(evMPReqPosition).integer;
 
   try
     cmdLine := '-hide_banner';
@@ -476,10 +482,12 @@ begin
     cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
     log(cmdLine); log('');
 
-    result := execAndWait(cmdLine);
+    result := execAndWait(cmdLine, rtFFmpegShow);
 
     case result of TRUE:  begin
                             case fileExists(vFilePathOUT) of FALSE: EXIT; end;
+                            var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
+                            var vPosition   := mmp.cmd(evMPReqPosition).integer;
                             vProgressForm.heading.caption := 'Loading Copy';
                             mmp.cmd(evVMReloadPlaylist);
                             mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
@@ -899,6 +907,12 @@ end;
 procedure TTimeline.onCancelButton(sender: TObject);
 begin
   FCancelled := TRUE;
+end;
+
+procedure TTimeline.onCancelCopy(sender: TObject);
+begin
+  FCancelled := TRUE;
+  terminateProcess(FProcessHandle, 1);
 end;
 
 function TTimeline.onNotify(const aNotice: INotice): INotice;
