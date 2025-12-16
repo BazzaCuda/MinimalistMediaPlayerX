@@ -486,17 +486,25 @@ begin
 
     case result of TRUE:  begin
                             case fileExists(vFilePathOUT) of FALSE: EXIT; end;
+
                             var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
                             var vPosition   := mmp.cmd(evMPReqPosition).integer;
+                            var vWasMuted   := CF.asBoolean[CONF_MUTED];
+
                             vProgressForm.heading.caption := 'Loading Copy';
+
                             mmp.cmd(evVMReloadPlaylist);
                             mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
                             mmp.cmd(evPLFind, vFilePathOUT);
                             mmp.cmd(evPLFormLoadBox);
+
+                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // mute while we load and reposition the copy
                             FMediaFilePath := vFilePathOUT;
                             mmp.cmd(evVMMPPlayCurrent);
                             while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
                             mmp.cmd(evMPSeek, vPosition);
+                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // unmute now we're at the correct timestamp
+
                             case vWasPlaying of FALSE: mmp.cmd(evMPPause); end;
                           end;end;
 
