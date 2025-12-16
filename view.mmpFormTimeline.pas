@@ -465,6 +465,9 @@ begin
   vProgressForm.btnCancel.enabled   := FALSE;
   vProgressForm.show;
 
+  var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
+  var vPosition   := mmp.cmd(evMPReqPosition).integer;
+
   try
     cmdLine := '-hide_banner';
     cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
@@ -476,11 +479,10 @@ begin
     result := execAndWait(cmdLine);
 
     case result of TRUE:  begin
+                            case fileExists(vFilePathOUT) of FALSE: EXIT; end;
                             vProgressForm.heading.caption := 'Loading Copy';
                             mmp.cmd(evVMReloadPlaylist);
                             mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
-                            var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
-                            var vPosition   := mmp.cmd(evMPReqPosition).integer;
                             mmp.cmd(evPLFind, vFilePathOUT);
                             mmp.cmd(evPLFormLoadBox);
                             FMediaFilePath := vFilePathOUT;
