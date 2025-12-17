@@ -27,6 +27,7 @@ uses
 type
   TMediaStream = class(TObject)
   strict private
+    FIx:          integer;
     FID:          string;
     FBitRate:     string;
     FDuration:    string;
@@ -41,9 +42,11 @@ type
     FInfo:        string;
     FSelected:    boolean;
   public
-    constructor   create( const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
+    constructor   create( const aIx: integer;
+                          const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
                           const aInfo: string; const aIconIx: integer);
 
+    property      Ix:          integer read FIx          write FIx;
     property      ID:          string  read FID          write FID;
     property      streamType:  string  read FStreamType  write FStreamType;
     property      duration:    string  read FDuration    write FDuration;
@@ -63,9 +66,11 @@ implementation
 
 { TMediaStream }
 
-constructor TMediaStream.create(const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
+constructor TMediaStream.create(const aIx: integer;
+                                const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
                                 const aInfo: string; const aIconIx: integer);
 begin
+  FIx         := aIx;
   FID         := aID;
   FStreamType := aStreamType;
   FDuration   := aDuration;

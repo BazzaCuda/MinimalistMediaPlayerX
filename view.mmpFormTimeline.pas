@@ -720,9 +720,10 @@ begin
           vMaps := '';
           for var vMediaStream in MI.mediaStreams do
             case vMediaStream.selected of TRUE: begin
-                                                  vID := strToIntDef(vMediaStream.ID, 0);
-                                                  case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
-                                                  vMaps := vMaps + format(' -map 0:%d ', [vID]);
+//                                                  vID := strToIntDef(vMediaStream.ID, 0);
+//                                                  case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
+//                                                  vMaps := vMaps + format(' -map 0:%d ', [vID]);
+                                                  vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]);
                                                 end;end;
           vMaps   := vMaps + ' -c copy';
           cmdLine := cmdLine + vMaps;
