@@ -461,7 +461,7 @@ end;
 
 function TTimeline.copySourceFile: boolean;
 const
-  COPY_PARAMS = ' -map 0 -c copy';
+  COPY_PARAMS = ' -map 0 -c copy -ignore_unknown';
 var
   cmdLine: string;
 begin
