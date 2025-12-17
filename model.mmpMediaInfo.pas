@@ -283,8 +283,6 @@ var
   vInfo:        string;
   vStreamType:  string;
 
-  vIx:          integer;
-
   function createVideoStream(aStreamIx: integer): boolean;
   begin
 //    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
@@ -304,8 +302,7 @@ var
     vBitRate := stringReplace(vBitRate, ' ', ',', []);
     case pos(' (', vDuration) > 1 of TRUE: vDuration := copy(vDuration, 1, pos(' (', vDuration) - 1); end;
 
-    inc(vIx);
-    FMediaStreams.add(TMediaStream.create(vIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
+    FMediaStreams.add(TMediaStream.create(-1, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
   end;
 
   function createAudioStream(aStreamIx: integer): boolean;
@@ -320,8 +317,7 @@ var
     vStreamType := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'StreamKind',              Info_Text, Info_Name);
     vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',     Info_Text, Info_Name);
 
-    inc(vIx);
-    FMediaStreams.add(TMediaStream.create(vIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
+    FMediaStreams.add(TMediaStream.create(-1, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
   function createTextStream(aStreamIx: integer): boolean;
@@ -336,8 +332,7 @@ var
     vStreamType := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'StreamKind',               Info_Text, Info_Name);
     vInfo       := '';
 
-    inc(vIx);
-    FMediaStreams.add(TMediaStream.create(vIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
+    FMediaStreams.add(TMediaStream.create(-1, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
   function cleanChapterTitle(const aChapterTitle: string): string;
@@ -449,7 +444,6 @@ begin
 
     FMD.mdHasCoverArt := mediaInfo_Get(FHandle, Stream_General,     0, 'Cover',           Info_Text, Info_Name);
 
-    vIx := -1;
     for var vStreamIx := 0 to streamCount - 1 do begin
       case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
       case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
@@ -460,7 +454,12 @@ begin
 
     case aMediaType of mtAudio, mtVideo: createChapters; end;
 
+    for var ix := 0 to FMediaStreams.count - 1 do
+      case length(FMediaStreams[ix].ID) = 1 of TRUE: FMediaStreams[ix].ID := '0' + FMediaStreams[ix].ID; end;
+
     sortStreams; // sort by ID
+    for var ix := 0 to FMediaStreams.count - 1 do
+      FMediaStreams[ix].Ix := ix;
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;
@@ -508,8 +507,6 @@ begin
   FMediaStreams.sort(TComparer<TMediaStream>.construct(
       function (const L, R: TMediaStream): integer
       begin
-         case length(L.ID) = 1 of TRUE: L.ID := '0' + L.ID; end;
-         case length(R.ID) = 1 of TRUE: R.ID := '0' + R.ID; end;
          result := compareText(L.ID, R.ID)
       end
       ));
