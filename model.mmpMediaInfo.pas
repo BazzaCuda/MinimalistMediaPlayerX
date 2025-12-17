@@ -66,7 +66,6 @@ type
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
-    function getLowestID:           integer;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaInfo(const aURL: string; const aMediaType: TMediaType): boolean;
     function getMediaStreams: TObjectList<TMediaStream>;
@@ -79,7 +78,6 @@ type
     property chapterCount:      integer                     read getChapterCount;
     property imageHeight:       integer                     read getImageHeight;
     property imageWidth:        integer                     read getImageWidth;
-    property lowestID:          integer                     read getLowestID;
     property mediaChapters:     TObjectList<TMediaChapter>  read getMediaChapters;
     property mediaStreams:      TObjectList<TMediaStream>   read getMediaStreams;
     property selectedCount:     integer                     read getSelectedCount;
@@ -91,7 +89,6 @@ type
     FMD:                TMetaData;
     FHandle:            THandle;
 
-    FLowestID:          integer;
     FMediaChapters:     TObjectList<TMediaChapter>;
     FMediaStreams:      TObjectList<TMediaStream>;
     FURL:               string;
@@ -115,7 +112,6 @@ type
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
-    function getLowestID:           integer;
     function getMediaInfo(const aURL: string; const aMediaType: TMediaType): boolean;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaStreams:       TObjectList<TMediaStream>;
@@ -200,11 +196,6 @@ end;
 function TMediaInfo.getImageWidth: integer;
 begin
   result := FMD.mdImageWidth;
-end;
-
-function TMediaInfo.getLowestID: integer;
-begin
-  result := FLowestID;
 end;
 
 function TMediaInfo.getDisplayAspectRatio: string;
@@ -470,9 +461,6 @@ begin
     case aMediaType of mtAudio, mtVideo: createChapters; end;
 
     sortStreams; // sort by ID
-
-    FLowestID := 0; // in case strToIntDef raises an exception
-    case MI.mediaStreams.count > 0 of TRUE: FLowestID := strToIntDef(MI.mediaStreams[0].ID, 0); end;
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;

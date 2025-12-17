@@ -677,7 +677,6 @@ const
 var
   cmdLine:    string;
   vMaps:      string;
-  vID:        integer;
   vSegOneFN:  string;
 
   function maxSegment: boolean;
@@ -719,12 +718,7 @@ begin
 
           vMaps := '';
           for var vMediaStream in MI.mediaStreams do
-            case vMediaStream.selected of TRUE: begin
-//                                                  vID := strToIntDef(vMediaStream.ID, 0);
-//                                                  case MI.lowestID = 1 of TRUE: vID := vID - 1; end;
-//                                                  vMaps := vMaps + format(' -map 0:%d ', [vID]);
-                                                  vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]);
-                                                end;end;
+            case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;
           vMaps   := vMaps + ' -c copy';
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
