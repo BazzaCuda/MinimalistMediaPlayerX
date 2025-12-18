@@ -392,7 +392,7 @@ end;
 
 function TStreamListForm.updateStreamsCaption: boolean;
 begin
-  tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.streamCount]);
+  tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.avsStreamCount]);
 end;
 
 function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;

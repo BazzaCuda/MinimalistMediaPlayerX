@@ -63,6 +63,7 @@ type
 
   IMediaInfo = interface
     ['{993AE566-A6CC-4681-B166-813C8CCD53EE}']
+    function getAVSStreamCount:     integer;
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
@@ -75,6 +76,7 @@ type
 
     function sortStreams: boolean;
 
+    property avsStreamCount:    integer                     read getAVSStreamCount;
     property chapterCount:      integer                     read getChapterCount;
     property imageHeight:       integer                     read getImageHeight;
     property imageWidth:        integer                     read getImageWidth;
@@ -109,6 +111,7 @@ type
     constructor create;
     destructor Destroy; override;
 
+    function getAVSStreamCount:     integer;
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
@@ -176,6 +179,11 @@ end;
 function TMediaInfo.getAudioBitRate: string;
 begin
   result := format('AR:  %d Kb/s', [round(FMD.mdAudioBitRate / MILLISECONDS)]);
+end;
+
+function TMediaInfo.getAVSStreamCount: integer;
+begin
+  result := FMD.mdVideoCount + FMD.mdAudioCount + FMD.mdTextCount;
 end;
 
 function TMediaInfo.getChapterCount: integer;
