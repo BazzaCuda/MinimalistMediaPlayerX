@@ -5,7 +5,6 @@ Control | Action
 **`Ctrl-[0]`**                | close all running instances of MMP
 **`Ctrl-[E]`**                | show/hide the audio/video Timeline [E]diting tools for lossless editing
 **`Shift-[E]`**               | play the [E]xported, [E]dited file in a new MMP window
-**`Ctrl-Shift`**              | change Export button to Copy after export errors
 **`[X]`**                     | see below
 **Segment under the cursor** ||
 **`[I]`**                     | [I]n point: split segment under the cursor and mark the left-hand segment as e[X]cluded, i.e. deleted
@@ -22,4 +21,5 @@ Control | Action
 **`[F]`**                     | toggle key[F]rames on and off
 **`Ctrl-[R]`**                | [R]ename file
 **`Ctrl-[S]`**                | toggle [S]kip excluded segments during playback
+**`Ctrl-Shift`**              | change Export button to Copy after export errors
 **_All other controls operate on the `Main Media Window` as normal_**

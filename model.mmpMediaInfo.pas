@@ -467,7 +467,7 @@ begin
 
     sortStreams; // sort by ID
     for var ix := 0 to FMediaStreams.count - 1 do
-      FMediaStreams[ix].Ix := ix;
+      FMediaStreams[ix].Ix := ix; // assign stream indices
 
   finally mediaInfo_close(FHandle); end;
     result := TRUE;

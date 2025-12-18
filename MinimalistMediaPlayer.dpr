@@ -30,7 +30,7 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-  FastMM5 in '..\..\3P\FastMM5\FastMM5.pas',
+  FastMM5 in 'FastMM5\FastMM5.pas',
   system.sysUtils,
   vcl.dialogs,
   vcl.extCtrls,
@@ -109,7 +109,7 @@ uses
   mmpShredUtils in 'mmpShredUtils.pas',
   TCleanupClass in 'TCleanupClass.pas',
   mmpMenu in 'mmpMenu.pas',
-  MarkDownViewerComponents in '..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas',
+  MarkDownViewerComponents in 'MarkdownViewerComponents\MarkDownViewerComponents.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',

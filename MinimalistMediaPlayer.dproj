@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -119,7 +119,7 @@
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\"
-copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
+rem copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
     </PropertyGroup>
@@ -144,7 +144,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.1.1.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.1.1.1;Comments=</VerInfo_Keys>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <Debugger_RunParams>&quot;B:\Movies\Bourne 4 - The Bourne Legacy (2012).mp4&quot;</Debugger_RunParams>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
         <Icon_MainIcon>MMP_Icon1.ico</Icon_MainIcon>
@@ -153,8 +152,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <PostBuildEvent><![CDATA[copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\"
 copy "$(OutputDir)\$(OutputName).map" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\"
-copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
-copy "$(OutputDir)\$(OutputName).map" "X:\MMP\"
+rem copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
+rem copy  "$(OutputDir)\$(OutputName).map" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
         <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
@@ -165,7 +164,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\..\3P\FastMM5\FastMM5.pas"/>
+        <DCCReference Include="FastMM5\FastMM5.pas"/>
         <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
         <DCCReference Include="view.mmpFormMain.pas"/>
         <DCCReference Include="mmpNotify.notices.pas"/>
@@ -238,21 +237,12 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpShredUtils.pas"/>
         <DCCReference Include="TCleanupClass.pas"/>
         <DCCReference Include="mmpMenu.pas"/>
-        <DCCReference Include="..\..\3P\MarkdownHelpViewer\Source\Components\MarkDownViewerComponents.pas"/>
+        <DCCReference Include="MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpFuncProg.pas"/>
         <DCCReference Include="mmpStackTrace.pas"/>
         <DCCReference Include="mmpExceptionHandler.pas"/>
-        <DCCReference Include="view.mmpFormConfig.pas">
-            <Form>;
-
-procedure setupRunMode;
-begin
-  reportMemoryLeaksOnShutdown</Form>
-            <DesignClass>mmpEnvironmentVariable;
-  FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-  {$if BazDebugWindow</DesignClass>
-        </DCCReference>
+        <DCCReference Include="view.mmpFormConfig.pas"/>
         <DCCReference Include="model.mmpKeyFrames.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
@@ -313,6 +303,9 @@ begin
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsvcl_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsvcl_XE12.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreports_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreports_XE12.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsfm_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsfm_XE12.bpl not found</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
@@ -1413,7 +1406,7 @@ begin
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\&quot;&amp;&amp;rem copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
@@ -1421,7 +1414,7 @@ begin
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).map&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).map&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
+        <PostBuildEvent>copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;&amp;&amp;copy &quot;$(OutputDir)\$(OutputName).map&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;&amp;&amp;rem copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;&amp;&amp;rem copy  &quot;$(OutputDir)\$(OutputName).map&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>
