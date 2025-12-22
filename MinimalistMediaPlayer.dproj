@@ -110,14 +110,13 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=MMP: Minimalist Media Player;FileVersion=5.3.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu\</DCC_DcuOutput>
         <VerInfo_MajorVer>5</VerInfo_MajorVer>
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
         <Debugger_RunParams>&quot;B:\Movies\Bourne 4 - The Bourne Legacy (2012).mp4&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
-        <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\")
 if exist "X:\" copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
@@ -143,7 +142,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.1.1.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.1.1.1;Comments=</VerInfo_Keys>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu\</DCC_DcuOutput>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
         <Icon_MainIcon>MMP_Icon1.ico</Icon_MainIcon>
@@ -155,7 +154,6 @@ if exist "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" (copy "$(OutputDir)
 if exist "X:\" (copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\")
 if exist "X:\" (copy  "$(OutputDir)\$(OutputName).map" "X:\MMP\")
 $(PostBuildEvent)]]></PostBuildEvent>
-        <DCC_UnitSearchPath>B:\Win64_Dev\3P\jcl\jcl\source\common;B:\Win64_Dev\3P\jcl\jcl\source\windows;B:\Win64_Dev\3P\jcl\jcl\source\include;B:\Win64_Dev\3P\mORMot;B:\Win64_Dev\Programs\MediaPlayerX\libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
