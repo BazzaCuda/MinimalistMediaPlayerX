@@ -31,13 +31,13 @@ program MinimalistMediaPlayer;
 
 uses
   FastMM5 in 'FastMM5\FastMM5.pas',
+  _debugWindow in '_debugWindow\_debugWindow.pas',
   system.sysUtils,
   vcl.dialogs,
   vcl.extCtrls,
   vcl.forms,
   vcl.styles,
   vcl.themes,
-  _debugWindow in '..\DebugWindow\_debugWindow.pas',
   view.mmpFormMain in 'view.mmpFormMain.pas',
   mmpNotify.notices in 'mmpNotify.notices.pas',
   mmpNotify.notifier in 'mmpNotify.notifier.pas',

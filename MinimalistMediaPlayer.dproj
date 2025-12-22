@@ -163,7 +163,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="FastMM5\FastMM5.pas"/>
-        <DCCReference Include="..\DebugWindow\_debugWindow.pas"/>
+        <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="view.mmpFormMain.pas"/>
         <DCCReference Include="mmpNotify.notices.pas"/>
         <DCCReference Include="mmpNotify.notifier.pas"/>
@@ -277,7 +277,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdImages3</ResourceId>
         </RcItem>
-        <None Include="bazDebugWindow.inc"/>
+        <None Include="_debugWindow\bazDebugWindow.inc"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -338,13 +338,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="bazDebugWindow.inc" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_debugWindow\bazDebugWindow.inc" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="bazDebugWindow.inc" Configuration="Release" Class="ProjectFile">
+                <DeployFile LocalName="bazDebugWindow.inc" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
