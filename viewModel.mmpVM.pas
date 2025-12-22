@@ -317,6 +317,9 @@ end;
 
 function TVM.doAppClose: boolean;
 begin
+  mmp.cmd(evGSSuspended, TRUE); // EXPERIMENTAL
+  mmp.cmd(evMPStop);            // EXPERIMENTAL
+
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
