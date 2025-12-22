@@ -115,8 +115,8 @@
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
         <Debugger_RunParams>&quot;B:\Movies\Bourne 4 - The Bourne Legacy (2012).mp4&quot;</Debugger_RunParams>
-        <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
+        <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\")
 if exist "X:\" copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
@@ -145,9 +145,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu\</DCC_DcuOutput>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
-        <Icon_MainIcon>MMP_Icon1.ico</Icon_MainIcon>
-        <UWP_DelphiLogo44>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>B:\Images\BazzaCuda_IDs\_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
+        <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
+        <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\")
 if exist "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" (copy "$(OutputDir)\$(OutputName).map" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\")
@@ -318,13 +318,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="B:\Images\BazzaCuda_IDs\_Cap'n Cuda 128x128.png" Configuration="Release" Class="UWP_DelphiLogo44">
-                    <Platform Name="Win64">
-                        <RemoteDir>Assets\</RemoteDir>
-                        <RemoteName>Logo44x44.png</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="MinimalistMediaPlayer.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win64\Debug\MinimalistMediaPlayer.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
@@ -335,6 +328,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <DeployFile LocalName="Win64\Release\MinimalistMediaPlayer.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
                         <RemoteName>MinimalistMediaPlayer.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_Cap'n Cuda 128x128.png" Configuration="Release" Class="UWP_DelphiLogo44">
+                    <Platform Name="Win64">
+                        <RemoteDir>Assets\</RemoteDir>
+                        <RemoteName>Logo44x44.png</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
