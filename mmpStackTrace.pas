@@ -27,6 +27,9 @@ uses
 
 implementation
 
+uses
+  mmpShellUtils;
+
 function GetExceptionStackInfoProc(P: PExceptionRecord): Pointer;
 var
   LLines: TStringList;
@@ -62,6 +65,7 @@ begin
 end;
 
 initialization
+  reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
 // Start the Jcl exception tracking and register our Exception stack trace provider
   case reportMemoryLeaksOnShutdown and JclStartExceptionTracking of  TRUE:  begin
                                                                               Exception.GetExceptionStackInfoProc := GetExceptionStackInfoProc;

@@ -24,6 +24,7 @@ Other:<br />
 Ctrl-**P** toggle [P]laylist filter on/off<br />
 Ctrl-**R** = toggle infinite repeat on/off<br />
 **S** re[S]tart current media file<br />
+**`** re[S]tart current media file (back tick)<br />
 **L** re[L]oad playlist from folder<br />
 
 **Rotating**<br />

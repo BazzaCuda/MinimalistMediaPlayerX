@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -108,18 +108,18 @@
         <DCC_ExeOutput>.\$(Platform)\$(Config)\</DCC_ExeOutput>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=MMP: Minimalist Media Player;FileVersion=5.3.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=MMP: Minimalist Media Player;FileVersion=5.3.1.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.0.0.0;Comments=</VerInfo_Keys>
         <DCC_DcpOutput>.\$(Platform)\$(Config)\</DCC_DcpOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu\</DCC_DcuOutput>
         <VerInfo_MajorVer>5</VerInfo_MajorVer>
         <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
-        <DCC_Define>notplayAfterLoad;$(DCC_Define)</DCC_Define>
         <Debugger_RunParams>&quot;B:\Movies\Bourne 4 - The Bourne Legacy (2012).mp4&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_3_\")
 if exist "X:\" copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
 $(PostBuildEvent)]]></PostBuildEvent>
+        <VerInfo_Release>1</VerInfo_Release>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
