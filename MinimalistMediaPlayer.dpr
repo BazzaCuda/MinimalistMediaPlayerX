@@ -119,7 +119,7 @@ uses
 
 procedure setupRunMode;
 begin
-  {reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;} // has already been set in mmpStackTrace initialization section
+  reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // has already been set in mmpStackTrace initialization section - unless that unit has been commented out
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
   {$if BazDebugWindow} debugClear; {$endif}
 
