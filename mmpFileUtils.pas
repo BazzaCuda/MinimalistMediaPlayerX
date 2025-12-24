@@ -83,7 +83,7 @@ begin
                                                        + 'A single quote will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove the dirty characters.'#13#10#13#10
                                                        + 'Ctrl-Shift-[R] will cleanup the file name (but not the path) for you '
-                                                       + 'by replacing each dirty char with a space.', mtInformation, [MBOK]); end;
+                                                       + 'by replacing each dirty char with a space.', mtInformation, [MBOK], mbOK, 'Audio & Video Timeline Editor'); end;
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);

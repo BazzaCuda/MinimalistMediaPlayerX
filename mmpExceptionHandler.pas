@@ -109,6 +109,6 @@ begin
 end;
 
 initialization
-  TMMPExceptionHandler.clearLogFile;
+  // TMMPExceptionHandler.clearLogFile;
 
 end.
