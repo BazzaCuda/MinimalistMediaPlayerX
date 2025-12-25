@@ -142,7 +142,7 @@ begin
                     mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                         + 'or to permanently associate media file types with this application.'#13#10#13#10
                                         + 'Alternatively, you can drag and drop a media file onto the window.',
-                                          mtInformation, [MBOK]); end;
+                                          mtInformation, [MBOK], mbOK); end;
   mmp.cmd(PS.noFile, T);
   result := TRUE;
 end;

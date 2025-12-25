@@ -28,7 +28,7 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = ''): TModalResult;
+                               const aCaption:      string         = 'MMP: Minimalist Media Player'): TModalResult;
 function mmpUserOK(const aMsg: string): boolean;
 
 implementation
@@ -42,7 +42,7 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = ''): TModalResult;
+                               const aCaption:      string         = 'MMP: Minimalist Media Player'): TModalResult;
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
 begin
@@ -55,7 +55,7 @@ begin
     font.size := 12;
     height    := height +  50;
     width     := width  + 200;
-    case aCaption = '' of FALSE: caption := aCaption; end;
+    caption   := aCaption;
 
     for var i := 0 to controlCount - 1 do begin
       mmp.cmd(controls[i] is  TLabel, procedure begin with controls[i] do width  := width + 200; end);
