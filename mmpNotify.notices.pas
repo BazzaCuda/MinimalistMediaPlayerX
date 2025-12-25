@@ -170,7 +170,7 @@ function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):    
 function newNotice(const aEvent: TNoticeEvent; const aPt:         TPoint):                                  INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aReasonType: TReasonType):                             INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState):                             INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aText:       string = ''):                             INotice; overload;
+function newNotice(const aEvent: TNoticeEvent; const aText:       string = EMPTY):                          INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aText:       string; const aMediaType: TMediaType):    INotice; overload;
 function newNotice(const aEvent: TNoticeEvent; const aWndRec:     TWndRec):                                 INotice; overload;
 
@@ -226,7 +226,7 @@ begin
   result := TNotice.create;
 end;
 
-function newNotice(const aEvent: TNoticeEvent; const aText: string = ''): INotice;
+function newNotice(const aEvent: TNoticeEvent; const aText: string = EMPTY): INotice;
 begin
   result        := newNotice;
   result.event  := aEvent;

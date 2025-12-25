@@ -92,7 +92,7 @@ end;
 
 function mpvFileName(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.fileName;
 end;

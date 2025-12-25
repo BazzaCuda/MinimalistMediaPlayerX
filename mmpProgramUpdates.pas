@@ -55,7 +55,7 @@ type
     FReleaseTag: string;
   protected
     function  analyseReleaseNotes(const aReleaseTag: string): boolean;
-    function  downloadAsset(const aURL, aFilePath: string; const aSuccess: string = ''): string;
+    function  downloadAsset(const aURL, aFilePath: string; const aSuccess: string = EMPTY): string;
     function  downloadRelease(const aReleaseTag: string): string;
     function  extractRelease(const aReleaseTag: string): boolean;
     function  getJSONReleaseTag: string;
@@ -98,7 +98,7 @@ begin
   result := TProgramUpdates.create;
 end;
 
-function fetchURL(const aURL: string; aFileStream: TStream = NIL; const aSuccess: string = ''): string;
+function fetchURL(const aURL: string; aFileStream: TStream = NIL; const aSuccess: string = EMPTY): string;
 var
   http:       TidHTTP;
   sslHandler: TidSSLIOHandlerSocketOpenSSL;
@@ -212,7 +212,7 @@ begin
   end;
 end;
 
-function TProgramUpdates.downloadAsset(const aURL: string; const aFilePath: string; const aSuccess: string = ''): string;
+function TProgramUpdates.downloadAsset(const aURL: string; const aFilePath: string; const aSuccess: string = EMPTY): string;
 begin
   case fileExists(aFilePath) of TRUE: EXIT; end;
 
@@ -229,9 +229,9 @@ begin
   result := aReleaseTag;
 //  EXIT; // for testing release notes only without affecting the download stats
 
-  case  aReleaseTag = ''                                                                of TRUE: EXIT; end; // couldn't obtain latest release tag
-  case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)       of TRUE: EXIT; end; // we're running the latest release
-  case (aReleaseTag <> '') AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
+  case  aReleaseTag =  EMPTY                                                               of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case (aReleaseTag <> EMPTY) AND (mmpFileVersionFmt(EMPTY, 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case (aReleaseTag <> EMPTY) AND (fileExists(updateFile(aReleaseTag)))                    of TRUE: EXIT; end; // we've already downloaded the release file
 
   result := downloadAsset('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/download/' + aReleaseTag + '/MinimalistMediaPlayer_' + mmpCleanTag(aReleaseTag) + '.full.zip', updateFile(aReleaseTag), aReleaseTag);
 end;
@@ -239,12 +239,12 @@ end;
 function TProgramUpdates.extractRelease(const aReleaseTag: string): boolean;
   function backupName: string;
   begin
-    result := 'MinimalistMediaPlayer ' + mmpFileVersionFmt('', 'v%d_%d_%d');
+    result := 'MinimalistMediaPlayer ' + mmpFileVersionFmt(EMPTY, 'v%d_%d_%d');
   end;
 begin
   result := FALSE;
-  case  aReleaseTag = ''                                                             of TRUE: EXIT; end; // couldn't obtain latest release tag
-  case (aReleaseTag <> '') AND (mmpFileVersionFmt('', 'v%d.%d.%d') = aReleaseTag)    of TRUE: EXIT; end; // we're running the latest release
+  case  aReleaseTag =  EMPTY                                                            of TRUE: EXIT; end; // couldn't obtain latest release tag
+  case (aReleaseTag <> EMPTY) AND (mmpFileVersionFmt(EMPTY, 'v%d.%d.%d') = aReleaseTag) of TRUE: EXIT; end; // we're running the latest release
 
   case fileExists(mmpExePath + backupName + '.exe')    of FALSE: mmpRenameFile(paramStr(0), backupName); end;
   case fileExists(paramStr(0))                         of FALSE: with TZipFile.create do begin
@@ -277,7 +277,7 @@ var
 //  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/tags/v2.0.0'); // for DEV only
 
 begin
-  result := '';
+  result := EMPTY;
   json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
 
 ////=== DEV ONLY ===
@@ -303,14 +303,14 @@ end;
 function TProgramUpdates.getReleaseTag: string;
 begin
   result := FReleaseTag;
-  case result <> '' of TRUE: EXIT; end;
+  case result <> EMPTY of TRUE: EXIT; end;
 
   result := '(autoUpdate=no)';
   case CF.asBoolean[CONF_AUTO_UPDATE] of FALSE: EXIT; end;
 
   result := '(not available)';
   FReleaseTag := getJSONReleaseTag;
-  case FReleaseTag = '' of TRUE: EXIT; end;
+  case FReleaseTag = EMPTY of TRUE: EXIT; end;
 
   saveReleaseNotes(FReleaseTag);
   analyseReleaseNotes(FReleaseTag);
@@ -327,7 +327,7 @@ end;
 
 function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): boolean;
 begin
-  case FReleaseNotes = '' of TRUE: EXIT; end;
+  case FReleaseNotes = EMPTY of TRUE: EXIT; end;
 
   with TStringList.create do begin
     text := FReleaseNotes;

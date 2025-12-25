@@ -143,7 +143,7 @@ end;
 
 function TPlaylist.copyToClipboard: string;
 begin
-  result := '';
+  result := EMPTY;
   clipboard.AsText := mmpFileNameWithoutExtension(currentItem);
   result := 'Copied to clipboard';
 end;
@@ -168,7 +168,7 @@ end;
 
 function TPlaylist.currentItem: string;
 begin
-  result := '';
+  result := EMPTY;
   case FPlayIx = -1 of TRUE: EXIT; end;
   result := FPlaylist[FPlayIx];
 end;
@@ -249,7 +249,7 @@ begin
   vSetOfMediaType := expandSetOfMediaType(aSetOfMediaType);
 
   clear;
-  case aFolder = '' of TRUE: EXIT; end;
+  case aFolder = EMPTY of TRUE: EXIT; end;
   case directoryExists(aFolder) of FALSE: EXIT; end;
   FCurrentFolder := aFolder;
 
@@ -501,7 +501,7 @@ end;
 
 function TPlaylist.thisItem(const ix: integer): string;
 begin
-  result := '';
+  result := EMPTY;
   case hasItems of FALSE: EXIT; end;
   case (ix < 0) or (ix > FPlaylist.count - 1) of TRUE: EXIT; end;
   result := FPlaylist[ix];

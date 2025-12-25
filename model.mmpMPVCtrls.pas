@@ -24,10 +24,11 @@ uses
   winApi.windows,
   system.classes,
   MPVBasePlayer, MPVConst,
+  mmpConsts,
   model.mmpMPVFormatting;
 
 function mpvCreate    (var   mpv: IMPVBasePlayer): boolean;
-function mpvInitPlayer(const mpv: IMPVBasePlayer; const sWinHandle: HWND; const sScrShotDir: string; const sConfigDir: string; const sLogFile: string = ''; fEventWait: double = 0.5): TMPVErrorCode;
+function mpvInitPlayer(const mpv: IMPVBasePlayer; const sWinHandle: HWND; const sScrShotDir: string; const sConfigDir: string; const sLogFile: string = EMPTY; fEventWait: double = 0.5): TMPVErrorCode;
 function mpvOpenFile  (const mpv: IMPVBasePlayer; aURL: string): TMPVErrorCode;
 
 function mpvBrightnessDn    (const mpv: IMPVBasePlayer): string;
@@ -82,7 +83,7 @@ implementation
 uses
   system.sysUtils,
   vcl.forms,
-  mmpConsts, mmpKeyboardUtils,
+  mmpKeyboardUtils,
   model.mmpConfigFile, model.mmpMPVProperties,
   _debugWindow;
 
@@ -92,7 +93,7 @@ begin
   result := mpv <> NIL;
 end;
 
-function mpvInitPlayer(const mpv: IMPVBasePlayer; const sWinHandle: HWND; const sScrShotDir: string; const sConfigDir: string; const sLogFile: string = ''; fEventWait: double = 0.5): TMPVErrorCode;
+function mpvInitPlayer(const mpv: IMPVBasePlayer; const sWinHandle: HWND; const sScrShotDir: string; const sConfigDir: string; const sLogFile: string = EMPTY; fEventWait: double = 0.5): TMPVErrorCode;
 begin
   result := mpv.initPlayer(intToStr(sWinHandle), sScrShotDir, sConfigDir, sLogFile, fEventWait);  // THIS RECREATES THE INTERNAL MPV OBJECT
 end;
@@ -110,7 +111,7 @@ function mpvBrightnessDn(const mpv: IMPVBasePlayer): string;
 var
   brightness: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('brightness', brightness);
   mpv.setPropertyInt64('brightness', brightness - 1);
@@ -119,7 +120,7 @@ end;
 
 function mpvBrightnessReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('brightness', 0);
   result := 'Brightness reset';
@@ -129,7 +130,7 @@ function mpvBrightnessUp(const mpv: IMPVBasePlayer): string;
 var
   brightness: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('brightness', brightness);
   mpv.setPropertyInt64('brightness', brightness + 1);
@@ -154,7 +155,7 @@ function mpvContrastDn(const mpv: IMPVBasePlayer): string;
 var
   contrast: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('contrast', contrast);
   mpv.setPropertyInt64('contrast', contrast - 1);
@@ -163,7 +164,7 @@ end;
 
 function mpvContrastReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('contrast', 0);
   result := 'Contrast reset';
@@ -173,7 +174,7 @@ function mpvContrastUp(const mpv: IMPVBasePlayer): string;
 var
   contrast: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('contrast', contrast);
   mpv.setPropertyInt64('contrast', contrast + 1);
@@ -212,7 +213,7 @@ function mpvGammaDn(const mpv: IMPVBasePlayer): string;
 var
   gamma: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('gamma', gamma);
   mpv.setPropertyInt64('gamma', gamma - 1);
@@ -221,7 +222,7 @@ end;
 
 function mpvGammaReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('gamma', 0);
   result := 'Gamma reset';
@@ -231,7 +232,7 @@ function mpvGammaUp(const mpv: IMPVBasePlayer): string;
 var
   gamma: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('gamma', gamma);
   mpv.setPropertyInt64('gamma', gamma + 1);
@@ -241,7 +242,7 @@ end;
 function mpvMute(const mpv: IMPVBasePlayer; const aValue: boolean): string;
 var vValue: boolean;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpvSetMute(mpv, aValue);
   mpvGetMute(mpv, vValue);
@@ -254,7 +255,7 @@ end;
 function mpvMuteUnmute(const mpv: IMPVBasePlayer): string;
 var vValue: boolean;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpvGetMute(mpv, vValue);
   mpvSetMute(mpv, NOT vValue);
@@ -270,7 +271,7 @@ var
   panY: double;
   multiplier: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: multiplier := 2;
@@ -286,7 +287,7 @@ var
   panX: double;
   multiplier: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: multiplier := 2;
@@ -299,7 +300,7 @@ end;
 
 function mpvPanReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('video-pan-x', 0.0);
   mpv.setPropertyDouble('video-pan-y', 0.0);
@@ -311,7 +312,7 @@ var
   panX: double;
   multiplier: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: multiplier := 2;
@@ -327,7 +328,7 @@ var
   panY: double;
   multiplier: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: multiplier := 2;
@@ -347,7 +348,7 @@ end;
 
 function mpvPausePlay(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   case mpvState(mpv) of
     mpsPlay:  mpvPause(mpv);
@@ -361,7 +362,7 @@ end;
 
 function mpvResetAll(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpvBrightnessReset(mpv);
   mpvContrastReset(mpv);
@@ -385,7 +386,7 @@ function mpvRotateLeft(const mpv: IMPVBasePlayer): string;
 var
   rot: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot - 45);
@@ -394,7 +395,7 @@ end;
 
 function mpvRotateReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('video-rotate', 0);
   result := 'Rotate reset';
@@ -404,7 +405,7 @@ function mpvRotateRight(const mpv: IMPVBasePlayer): string;
 var
   rot: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot + 45);
@@ -415,7 +416,7 @@ function mpvSaturationDn(const mpv: IMPVBasePlayer): string;
 var
   saturation: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('saturation', saturation);
   mpv.setPropertyInt64('saturation', saturation - 1);
@@ -424,7 +425,7 @@ end;
 
 function mpvSaturationReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('saturation', 0);
   result := 'Saturation reset';
@@ -441,7 +442,7 @@ function mpvSaturationUp(const mpv: IMPVBasePlayer): string;
 var
   saturation: int64;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('saturation', saturation);
   mpv.setPropertyInt64('saturation', saturation + 1);
@@ -452,7 +453,7 @@ function mpvSpeedDn(const mpv: IMPVBasePlayer): string;
 var
   speed: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('speed', speed);
   mpv.setPropertyDouble('speed', speed - 0.01);
@@ -461,7 +462,7 @@ end;
 
 function mpvSpeedReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('speed', 1.00);
   result := 'Speed reset';
@@ -471,7 +472,7 @@ function mpvSpeedUp(const mpv: IMPVBasePlayer): string;
 var
   speed: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('speed', speed);
   mpv.setPropertyDouble('speed', speed + 0.01);
@@ -480,7 +481,7 @@ end;
 
 function mpvStartOver(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.seek(0, FALSE);
   result := 'Start over';
@@ -504,7 +505,7 @@ end;
 function mpvToggleRepeat(const mpv: IMPVBasePlayer): string;
 var vLoop: string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyString('loop-file', vLoop);
   case vLoop = 'no' of  TRUE: mpv.setPropertyString('loop-file', 'yes');
@@ -517,7 +518,7 @@ end;
 function mpvToggleSubtitles(const mpv: IMPVBasePlayer): string;
 var vSid: string;
 begin
-  result := '';
+  result := EMPTY;
   mpv.getPropertyString('sub', vSid);
   case vSid = 'no' of  TRUE: mpv.setPropertyString('sub', 'auto');
                       FALSE: mpv.setPropertyString('sub', 'no'); end;
@@ -528,7 +529,7 @@ end;
 
 function mpvVolDown(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume - 1;
@@ -538,7 +539,7 @@ end;
 
 function mpvVolUp(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpvMute(mpv, FALSE);
   mpv.volume := mpv.volume + 1;
@@ -551,7 +552,7 @@ var
   zoomX, zoomY: double;
   dx: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: dx := 0.10;
@@ -569,7 +570,7 @@ var
   zoomX, zoomY: double;
   dx: double;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
 
   case ssShift in mmpShiftState of  TRUE: dx := 0.10;
@@ -584,7 +585,7 @@ end;
 
 function mpvZoomReset(const mpv: IMPVBasePlayer): string;
 begin
-  result := '';
+  result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('video-pan-x', 0.0);
   mpv.setPropertyDouble('video-pan-y', 0.0);

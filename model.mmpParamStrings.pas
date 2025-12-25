@@ -51,7 +51,8 @@ function PS: IParamStrings;
 implementation
 
 uses
-  system.sysUtils;
+  system.sysUtils,
+  mmpConsts;
 
 function PS: IParamStrings;
 {$J+} const gPS: IParamStrings = NIL; {$J-}
@@ -79,12 +80,12 @@ end;
 
 function TParamStrings.getNoFile: boolean;
 begin
-  result := trim(fileFolderAndName) = '';
+  result := trim(fileFolderAndName) = EMPTY;
 end;
 
 function TParamStrings.getNoPlaylist: boolean;
 begin
-  result := lowerCase(trim(paramStr(2))) = 'noplaylist';
+  result := lowerCase(trim(paramStr(2))) = CMDLINE_OPTION_NOPLAYLIST;
 end;
 
 end.

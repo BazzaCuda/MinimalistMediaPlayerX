@@ -32,7 +32,7 @@ function mmpExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtWai
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
-function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
+function mmpShellExec(const anExePath: string; const aParams: string = EMPTY): boolean;
 
 implementation
 
@@ -111,7 +111,7 @@ var
   vProcInfo:   TProcessInformation;
 begin
   result := FALSE;
-  case trim(aCommandLIne) = ''  of TRUE: EXIT; end;
+  case trim(aCommandLIne) = EMPTY of TRUE: EXIT; end;
 
   fillChar(vStartInfo,  sizeOf(TStartupInfo), #0);
   fillChar(vProcInfo,   sizeOf(TProcessInformation), #0);
@@ -129,10 +129,10 @@ function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
 begin
   result := CF[mmpFnnKeyAppToString(aFnnKeyApp)]; // has the user overridden the default app in the config file?
 
-  case result = '' of TRUE: case aFnnKeyApp of // No
-                                F10_APP: result := POT_PLAYER;
-                                F11_APP: result := LOSSLESS_CUT;
-                                F12_APP: result := SHOTCUT; end;end;
+  case result = EMPTY of TRUE:  case aFnnKeyApp of // No
+                                  F10_APP: result := POT_PLAYER;
+                                  F11_APP: result := LOSSLESS_CUT;
+                                  F12_APP: result := SHOTCUT; end;end;
 end;
 
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
@@ -140,9 +140,9 @@ begin
   mmpShellExec(mmpGetExternalApp(aFnnKeyApp), aParams);
 end;
 
-function mmpShellExec(const anExePath: string; const aParams: string = ''): boolean;
+function mmpShellExec(const anExePath: string; const aParams: string = EMPTY): boolean;
 begin
-  shellExecute(0, 'open', pChar(anExePath), pChar(aParams), '', SW_SHOW);
+  shellExecute(0, 'open', pChar(anExePath), pChar(aParams), EMPTY, SW_SHOW);
 end;
 
 end.

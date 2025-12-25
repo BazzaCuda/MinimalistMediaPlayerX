@@ -106,8 +106,8 @@ end;
 
 function mmpScreenshotFolder: string;
 begin
-  case GS.MPVScreenshotDirectory = '' of   TRUE: result := mmp.cmd(evPLReqCurrentFolder).text;
-                                          FALSE: result := GS.MPVScreenshotDirectory; end;
+  case GS.MPVScreenshotDirectory = EMPTY of  TRUE: result := mmp.cmd(evPLReqCurrentFolder).text;
+                                            FALSE: result := GS.MPVScreenshotDirectory; end;
 end;
 
 function mmpValidatePlaylist(const aPL: IPlaylist): boolean;

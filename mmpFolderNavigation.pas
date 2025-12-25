@@ -20,10 +20,13 @@ unit mmpFolderNavigation;
 
 interface
 
+uses
+  mmpConsts;
+
 type
   TNextFolderDirection = (nfForwards, nfBackwards);
 
-function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderDirection; const bAllowIntoWindows: boolean; const aPrevFolderPath: string = ''): string;
+function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderDirection; const bAllowIntoWindows: boolean; const aPrevFolderPath: string = EMPTY): string;
 
 implementation
 
@@ -56,7 +59,7 @@ begin
   aFolderList.customSort(naturalSort);
 end;
 
-function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderDirection; const bAllowIntoWindows: boolean; const aPrevFolderPath: string = ''): string;
+function mmpNextFolder(const aFolderPath: string; const aDirection: TNextFolderDirection; const bAllowIntoWindows: boolean; const aPrevFolderPath: string = EMPTY): string;
 var
   folderList: TStringList;
   ix: integer;
@@ -87,7 +90,7 @@ begin
         findSubFolders(folderList, aFolderPath, bAllowIntoWindows);       //  does this folder have subfolders ?
         case folderList.count <> 0 of                                     //  if it does.....
           TRUE: begin
-                  case aPrevFolderPath = '' of                            //  ... and we haven't used any so far....
+                  case aPrevFolderPath = EMPTY of                         //  ... and we haven't used any so far....
                     TRUE: result := folderList[0];                        //  ... just return the first in the list
                    FALSE: begin
                             ix := folderList.indexOf(aPrevFolderPath);    //  ... otherwise find the previous used in the list of subfolders...

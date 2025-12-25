@@ -153,7 +153,7 @@ constructor TCaptionsForm.create(aOwner: TComponent);
     aLabel.margins.bottom := 0;
     aLabel.margins.left   := 0;
     aLabel.margins.right  := 3;
-    aLabel.caption        := '';
+    aLabel.caption        := EMPTY;
     aLabel.wordWrap       := FALSE;
     aLabel.font.style     := [fsBold];
     aLabel.styleElements  := [];
@@ -322,7 +322,7 @@ end;
 
 procedure TCaptionsForm.setOpInfo2(const aValue: integer);
 begin
-  case aValue < 0 of   TRUE: FOpInfo2.caption := '';
+  case aValue < 0 of   TRUE: FOpInfo2.caption := EMPTY;
                       FALSE: FOpInfo2.caption := format('Shred: %.2d%%', [aValue]); end;
 end;
 
@@ -342,7 +342,7 @@ end;
 procedure TCaptionsForm.setShowTime(const aValue: boolean);
 begin
   FShowTime := aValue;
-  case FShowTime of FALSE: FTimeLabel.caption := ''; end;
+  case FShowTime of FALSE: FTimeLabel.caption := EMPTY; end;
 end;
 
 function TCaptionsForm.toggleCaptions(const aShiftState: TShiftState): boolean;
@@ -436,10 +436,10 @@ end;
 function TCaptionsProxy.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
-  case FCaptionsForm.FOpInfo.caption = '' of TRUE: EXIT; end;
+  case FCaptionsForm.FOpInfo.caption = EMPTY of TRUE: EXIT; end;
   inc(FTImerCount);
   case FTimerCount < 2 of TRUE: EXIT; end;
-  FCaptionsForm.setOpInfo('');
+  FCaptionsForm.setOpInfo(EMPTY);
 end;
 
 function TCaptionsProxy.resetTimer: boolean;

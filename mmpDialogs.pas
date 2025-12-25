@@ -22,13 +22,14 @@ interface
 
 uses
   vcl.controls, vcl.dialogs,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = 'MMP: Minimalist Media Player'): TModalResult;
+                               const aCaption:      string         = MMP_TITLE): TModalResult;
 function mmpUserOK(const aMsg: string): boolean;
 
 implementation
@@ -42,7 +43,7 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
                                const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
                                const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = 'MMP: Minimalist Media Player'): TModalResult;
+                               const aCaption:      string         = MMP_TITLE): TModalResult;
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
 begin

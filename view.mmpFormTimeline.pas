@@ -25,6 +25,7 @@ uses
   system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts,
   view.mmpFormProgress,
   TSegmentClass;
 
@@ -94,7 +95,7 @@ type
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
-    function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
+    function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
     function    filePathLOG: string;
     function    filePathMMP: string;
     function    filePathOUT(aSuffix: string = ' [edited]'): string;
@@ -150,7 +151,7 @@ uses
   winApi.shellApi,
   system.math,
   vcl.dialogs,
-  mmpConsts, mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpFuncProg, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
@@ -331,7 +332,7 @@ end;
 
 procedure TTimelineForm.FormCreate(Sender: TObject);
 begin
-  lblPosition.caption := '';
+  lblPosition.caption := EMPTY;
 
   doubleBuffered            := TRUE;
 //  keyPreview                := TRUE; // EXPERIMENTAL
@@ -480,7 +481,7 @@ begin
     cmdLine := cmdLine + COPY_PARAMS;
     var vFilePathOUT := filePathOUT(' [c]');
     cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
-    log(cmdLine); log('');
+    log(cmdLine); log(EMPTY);
 
     result := execAndWait(cmdLine, rtFFmpegShow);
 
@@ -586,7 +587,7 @@ begin
       vSegment.width   := trunc((vSegment.duration / FMax) * gTimelineForm.width);
       case vSegment.isLast of TRUE: vSegment.width := gTimelineForm.width - vSegment.left; end;
 
-      vSegment.caption := '';
+      vSegment.caption := EMPTY;
       vSegment.segID   := format('%.2d', [n]);
       vSegment.setDisplayDetails;
       vSegment.StyleElements := [];
@@ -657,10 +658,10 @@ begin
   result := format('0-%d,0', [aMax]);
 end;
 
-function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = ''): TModalResult;
+function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
-  case aSegID = '' of  TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
-                      FALSE: aProgressForm.subHeading.caption := format('Export of seg%s failed', [aSegID]); end;
+  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
+                          FALSE: aProgressForm.subHeading.caption := format('Export of seg%s failed', [aSegID]); end;
 
   aProgressForm.modal := TRUE;
 
@@ -692,12 +693,12 @@ begin
                                                       EXIT;
                                                     end;end;
 
-  vSegOneFN   := '';
+  vSegOneFN   := EMPTY;
 
   var vProgressForm       := TProgressForm.create(NIL);
   vProgressForm.onCancel  := onCancelButton;
-  var vS1 := ''; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
-  var vS2 := ''; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
+  var vS1 := EMPTY; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
+  var vS2 := EMPTY; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
   vProgressForm.heading.caption := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
   vProgressForm.show;
 
@@ -716,7 +717,7 @@ begin
           cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
           cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
 
-          vMaps := '';
+          vMaps := EMPTY;
           for var vMediaStream in MI.mediaStreams do
             case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;
           vMaps   := vMaps + ' -c copy';
@@ -727,7 +728,7 @@ begin
           case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
 
           cmdLine := cmdLine + ' -y "' + segFile + '"';
-          log(cmdLine); log('');
+          log(cmdLine); log(EMPTY);
 
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
           vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
@@ -754,12 +755,12 @@ begin
 
     while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 
-    case vSegOneFN = '' of FALSE: begin
-//                                    case maxSegment of   TRUE: renameFile(vSegOneFN, filePathOut(' [copy]')); // we did a straight copy instead
-//                                                        FALSE: renameFile(vSegOneFN, filePathOUT); end;
-                                    renameFile(vSegOneFN, filePathOUT);
-                                    mmp.cmd(evVMMPPlayEdited);
-                                    EXIT; end;end;
+    case vSegOneFN = EMPTY of FALSE:  begin
+//                                      case maxSegment of   TRUE: renameFile(vSegOneFN, filePathOut(' [copy]')); // we did a straight copy instead
+//                                                          FALSE: renameFile(vSegOneFN, filePathOUT); end;
+                                        renameFile(vSegOneFN, filePathOUT);
+                                        mmp.cmd(evVMMPPlayEdited);
+                                        EXIT; end;end;
 
   // concatenate exported segments
   vProgressForm.subHeading.caption := 'Joining segments';
@@ -768,7 +769,7 @@ begin
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
   cmdLine := cmdLine + STD_SEG_PARAMS;
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
-  log(cmdLine); log('');
+  log(cmdLine); log(EMPTY);
 
   result := execAndWait(cmdLine);
   case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := execAndWait(cmdLine, rtCMD); end;end;
@@ -824,7 +825,7 @@ var
   posHyphen:  integer;
   posComma:   integer;
 begin
-  result := '';
+  result := EMPTY;
   segments.clear;
   vSL := TStringList.create;
   try
@@ -832,7 +833,7 @@ begin
                                FALSE: vSL.loadFromFile(filePathMMP); end;
 
     for var i := 0 to vSL.count - 1 do begin
-      case trim(vSL[i]) = '' of TRUE: CONTINUE; end;
+      case trim(vSL[i]) = EMPTY of TRUE: CONTINUE; end;
       posHyphen := pos('-', vSL[i]);
       vStartSS  := strToInt(copy(vSL[i], 1, posHyphen - 1));
       posComma  := pos(',', vSL[i]);
@@ -1072,7 +1073,7 @@ begin
                                   result := 'keyframes off';
                                   EXIT; end;end;
 
-  result := '';
+  result := EMPTY;
   FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); // combined mmpGetKeyFrames and mmpSetKeyFrames
   case FGotKeyFrames of TRUE: result := 'keyframes on'; end
 end;

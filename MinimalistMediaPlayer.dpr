@@ -174,7 +174,7 @@ begin
   application.showMainForm      := FALSE;
   application.mainFormOnTaskbar := TRUE;
   TStyleManager.trySetStyle('Charcoal Dark Slate');
-  application.title             := 'MMP: Minimalist Media Player';
+  application.title             := MMP_TITLE;
 
   checkParam;
 

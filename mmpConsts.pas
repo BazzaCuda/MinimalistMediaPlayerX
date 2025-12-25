@@ -26,10 +26,13 @@ uses
   vcl.extCtrls;
 
 const
+  MMP_TITLE           = 'MMP: Minimalist Media Player';
   MMP_CHECK           = 'MMP_CHECK';
 
+  EMPTY               = '';
   BACKSLASH           = '\';
   MPV_ERROR_SUCCESS   = 0;
+  SINGLE_SPACE        = ' ';
 
   _1KB = 1024;
   _1MB = 1024 * 1024;
@@ -90,17 +93,22 @@ const
 
   SLIDESHOW_DELTA_MS          = 100;
 
+  CMDLINE_OPTION_NOPLAYLIST   = 'noplaylist';
+
   CONF_ALLOW_INTO_WINDOWS     = 'allowIntoWindows';
   CONF_AUDIO_DELETE           = 'audioDelete';
   CONF_AUTO_UPDATE            = 'autoUpdate';
   CONF_BASE_FOLDER            = 'baseFolder';
+  CONF_BROWSER                = 'browser';
   CONF_DELETE_METHOD          = 'deleteMethod';
   CONF_DIRTY_CHARS            = 'dirtyChars';
+  CONF_EXIT_APP               = 'exitApp';
   CONF_EXIT_BROWSER           = 'exitBrowser';
   CONF_FOLDER_DELETE          = 'folderDelete';
   CONF_KEEP_DELETE            = 'keepDelete';
   CONF_IMAGE_DELETE           = 'imageDelete';
   CONF_LOGGING                = 'logging';
+  CONF_MAIN                   = 'main';
   CONF_MAIN_CAPTION           = 'caption';
   CONF_MUTED                  = 'muted';
   CONF_NEXT_FOLDER_ON_EMPTY   = 'nextFolderOnEmpty';

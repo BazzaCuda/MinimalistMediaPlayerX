@@ -39,12 +39,12 @@ end;
 
 function mmpUserBaseFolder(const aFolder: string): string;
 begin
-  result := '';
+  result := EMPTY;
 
   case pos(':', mmpUserOverride(aFolder)) > 0 of TRUE: EXIT; end; // don't use the base folder if an override is an absolute path, e.g. "C:\....."
 
   result := CF[CONF_BASE_FOLDER];
-  case result <> '' of TRUE: result := mmpITBS(result); end;
+  case result <> EMPTY of TRUE: result := mmpITBS(result); end;
 end;
 
 function mmpUserDstFolder(const aFolder: string): string;
@@ -55,11 +55,11 @@ end;
 function mmpUserOverride(const aFolder: string): string;
 // destination folders can be absolute paths or relative to the base folder
 begin
-  result := '';
+  result := EMPTY;
   var vValue := trim(CF[aFolder]); // trim() - allow the config window to set to a space to blank the folder name, but without CF then deleting the value
-  case vValue <> '' of  TRUE: result := vValue;
-                       FALSE: result := aFolder; end;
-  case result <> '' of TRUE: result := mmpITBS(result); end;
+  case vValue <> EMPTY of  TRUE: result := vValue;
+                          FALSE: result := aFolder; end;
+  case result <> EMPTY of  TRUE: result := mmpITBS(result); end;
 end;
 
 end.

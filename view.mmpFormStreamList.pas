@@ -331,8 +331,8 @@ begin
   clSegments.itemCount  := 0;
   clStreams.itemCount   := 0;
 
-  lblExportSS.caption   := '';
-  lblTotalSS.caption    := '';
+  lblExportSS.caption   := EMPTY;
+  lblTotalSS.caption    := EMPTY;
   lblExportSS.left      := pnlButtons.width - lblExportSS.width - 6;
   lblTotalSS.Left       := lblExportSS.left;
   lblExport.left        := lblExportSS.left - lblExport.width - 2;

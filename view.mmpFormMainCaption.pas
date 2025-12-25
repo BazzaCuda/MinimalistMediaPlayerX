@@ -156,7 +156,7 @@ function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: T
     aLabel.margins.left   := 0;
     aLabel.margins.right  := 0;
     aLabel.wordWrap       := FALSE;
-    aLabel.caption        := '';
+    aLabel.caption        := EMPTY;
   end;
 begin
   case FInitialized of TRUE: EXIT; end;
@@ -200,7 +200,7 @@ procedure TMainCaptionForm.setCaption(const aValue: string);
 begin
   FCaption.caption      := aValue; // show the new caption immediately
   FCaption.invalidate;
-  case aValue = '' of FALSE: FCaptionCopy := aValue; end;
+  case aValue = EMPTY of FALSE: FCaptionCopy := aValue; end;
   mmpProcessMessages;
   MC.resetTimer;
 end;
@@ -256,10 +256,10 @@ end;
 function TMainCaptionProxy.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
-  case FMainCaptionForm.FCaption.caption = '' of TRUE: EXIT; end;
+  case FMainCaptionForm.FCaption.caption = EMPTY of TRUE: EXIT; end;
   inc(FTImerCount);
   case FTimerCount < 5 of TRUE: EXIT; end;
-  FMainCaptionForm.setCaption('');
+  FMainCaptionForm.setCaption(EMPTY);
 end;
 
 function TMainCaptionProxy.resetTimer: boolean;

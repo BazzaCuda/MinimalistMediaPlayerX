@@ -27,7 +27,7 @@ uses
   system.math, system.sysUtils, system.win.comObj,
   mmpMMDevApi_tlb,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpFuncProg;
+  mmpConsts, mmpFuncProg;
 
 type
   IMixer = interface
@@ -315,7 +315,7 @@ end;
 
 function TMixer.setSysVolMax: string;
 begin
-  result := '';
+  result := EMPTY;
   setMute(FALSE);
   setVolume(65535);
   result := 'Sys Vol Max';

@@ -59,13 +59,13 @@ begin
   mmpResetPanelHelp(aStatusBar);
 
   mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
-  mmpSetPanelText(aStatusBar, pnNumb, '');
-  mmpSetPanelText(aStatusBar, pnSize, '');
-  mmpSetPanelText(aStatusBar, pnXXYY, '');
-  mmpSetPanelText(aStatusBar, pnDDXY, '');
-  mmpSetPanelText(aStatusBar, pnTick, '');
-  mmpSetPanelText(aStatusBar, pnFold, '');
-  mmpSetPanelText(aStatusBar, pnHelp, '');
+  mmpSetPanelText(aStatusBar, pnNumb, EMPTY);
+  mmpSetPanelText(aStatusBar, pnSize, EMPTY);
+  mmpSetPanelText(aStatusBar, pnXXYY, EMPTY);
+  mmpSetPanelText(aStatusBar, pnDDXY, EMPTY);
+  mmpSetPanelText(aStatusBar, pnTick, EMPTY);
+  mmpSetPanelText(aStatusBar, pnFold, EMPTY);
+  mmpSetPanelText(aStatusBar, pnHelp, EMPTY);
 end;
 
 function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
@@ -88,11 +88,11 @@ end;
 function mmpPartClearStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
   mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
-  mmpSetPanelText(aStatusBar, pnNumb, '');
-  mmpSetPanelText(aStatusBar, pnSize, '');
-  mmpSetPanelText(aStatusBar, pnXXYY, '');
-  mmpSetPanelText(aStatusBar, pnDDXY, '');
-  mmpSetPanelText(aStatusBar, pnTick, '');
+  mmpSetPanelText(aStatusBar, pnNumb, EMPTY);
+  mmpSetPanelText(aStatusBar, pnSize, EMPTY);
+  mmpSetPanelText(aStatusBar, pnXXYY, EMPTY);
+  mmpSetPanelText(aStatusBar, pnDDXY, EMPTY);
+  mmpSetPanelText(aStatusBar, pnTick, EMPTY);
 end;
 
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;

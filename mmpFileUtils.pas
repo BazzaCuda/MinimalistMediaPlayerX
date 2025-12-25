@@ -22,7 +22,8 @@ interface
 
 uses
   system.classes, system.sysUtils,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpConsts;
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
@@ -38,12 +39,12 @@ function mmpDriveFixedRecycle(const aFilePath: string): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
-function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
+function mmpFileVersionFmt(const aFilePath: string = EMPTY; const fmt: string = 'v%d.%d.%d.%d'): string;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpIsFileInUseExclusive(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpKeepDelete(const aFolderPath: string): boolean;
-function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = EMPTY): string;
 function mmpRenameMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
 function mmpRunTasks: boolean;
 
@@ -53,7 +54,7 @@ uses
   winApi.windows,
   system.ioUtils, system.win.registry,
   vcl.controls, vcl.dialogs,
-  mmpConsts, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
+  mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpFuncProg, mmpShellUtils, mmpShredUtils, mmpUtils,
   view.mmpFormConfirmDelete,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove,
   _debugWindow;
@@ -94,15 +95,15 @@ begin
   result := TRUE;
   case (CF.asDeleteMethod[CONF_DELETE_METHOD] = dmRecycle) of FALSE: EXIT; end;
 
-  var vMsg:string := '';
+  var vMsg:string := EMPTY;
 
   case mmpDriveFixed(aFilePath)         of FALSE: vMsg := 'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10; end;
   case mmpDriveFixedRecycle(aFilePath)  of FALSE: vMsg := 'This FIXED drive is set to not use the Recycle Bin'#13#10#13#10; end;
 
-  case vMsg = '' of FALSE:  result := mmpUserOK(aFilePath + #13#10#13#10 +
-                                                vMsg +
-                                                'If you continue, Windows will simply delete the file(s)'#13#10#13#10 +
-                                                'Do you want to continue?'); end;
+  case vMsg = EMPTY of FALSE: result := mmpUserOK(aFilePath + #13#10#13#10 +
+                                                  vMsg +
+                                                  'If you continue, Windows will simply delete the file(s)'#13#10#13#10 +
+                                                  'Do you want to continue?'); end;
 end;
 
 function mmpConfigFilePath: string;
@@ -112,7 +113,7 @@ end;
 
 function mmpCleanFile(const aFileName: string): string;
 begin
-  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> '', DIRTY_CHARS + trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
+  var vDirtyChars := mmpIfThenElse(trim(CF[CONF_DIRTY_CHARS]) <> EMPTY, DIRTY_CHARS + trim(CF[CONF_DIRTY_CHARS]), DIRTY_CHARS);
   result := aFileName;
   for var i := 1 to length(result) do
     case vDirtyChars.contains(result[i]) of TRUE: result[i] := ' '; end;
@@ -294,7 +295,7 @@ begin
                                                     result := (int64(vRec.nFileSizeHigh) shl 32) + vRec.nFileSizeLow; end;end;end;
 end;
 
-function mmpFileVersionFmt(const aFilePath: string = ''; const fmt: string = 'v%d.%d.%d.%d'): string;
+function mmpFileVersionFmt(const aFilePath: string = EMPTY; const fmt: string = 'v%d.%d.%d.%d'): string;
 var
   vFilePath:    string;
   iBufferSize:  DWORD;
@@ -304,14 +305,14 @@ var
   iVer:         array[1..4] of WORD;
 begin
   // set default value
-  result    := '';
+  result    := EMPTY;
   // get filename of exe/dll if no filename is specified
   vFilePath := aFilePath;
-  case vFilePath = '' of TRUE:  begin
-                                  // prepare buffer for path and terminating #0
-                                  setLength(vFilePath, MAX_PATH + 1);
-                                  setLength(vFilePath, getModuleFileName(hInstance, PChar(vFilePath), MAX_PATH + 1));
-                                end;end;
+  case vFilePath = EMPTY of TRUE: begin
+                                    // prepare buffer for path and terminating #0
+                                    setLength(vFilePath, MAX_PATH + 1);
+                                    setLength(vFilePath, getModuleFileName(hInstance, PChar(vFilePath), MAX_PATH + 1));
+                                  end;end;
 
   // get size of version info (0 if no version info exists)
   iBufferSize := getFileVersionInfoSize(PChar(vFilePath), iDummy);
@@ -348,7 +349,7 @@ end;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 begin
   result            := FALSE;
-  aSysErrorMessage  := '';
+  aSysErrorMessage  := EMPTY;
   setLastError(ERROR_SUCCESS);
 
   try
@@ -366,7 +367,7 @@ var
   hFile: THandle;
   vLastError: DWORD;
 begin
-  aSysErrorMessage := '';
+  aSysErrorMessage := EMPTY;
   setLastError(ERROR_SUCCESS);
 
   // Attempt to open the file with exclusive access (dwShareMode = 0).
@@ -450,7 +451,7 @@ begin
   result := TRUE;
 end;
 
-function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = ''): string;
+function mmpRenameFile(const aFilePath: string; const aNewFileNamePart: string = EMPTY): string;
 // the user gets to edit the filename part without the path and the extension
 var
   vOldFileNamePart: string;
@@ -464,18 +465,18 @@ begin
     vExt              := extractFileExt(vOldFileNamePart);
     vOldFileNamePart  := mmpFileNameWithoutExtension(vOldFileNamePart);
 
-    case aNewFileNamePart <> '' of  TRUE: s := aNewFileNamePart; // the calling code has already supplied the new name part without the extension
-                                   FALSE: begin
-                                            try
-                                              mmp.cmd(evGSUserInput, TRUE);
-                                              s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
-                                            finally
-                                              mmp.cmd(evGSUserInput, FALSE);
-                                            end;end;end;
+    case aNewFileNamePart <> EMPTY of  TRUE:  s := aNewFileNamePart; // the calling code has already supplied the new name part without the extension
+                                      FALSE:  begin
+                                              try
+                                                mmp.cmd(evGSUserInput, TRUE);
+                                                s := mmpInputBoxForm(vOldFileNamePart); // the form returns the edited filename or the original if the user pressed cancel
+                                              finally
+                                                mmp.cmd(evGSUserInput, FALSE);
+                                              end;end;end;
   except
-    s := '';   // any funny business, force the rename to be abandoned
+    s := EMPTY;   // any funny business, force the rename to be abandoned
   end;
-  case (s = '') OR (s = vOldFileNamePart) of TRUE: EXIT; end; // nothing to do
+  case (s = EMPTY) OR (s = vOldFileNamePart) of TRUE: EXIT; end; // nothing to do
 
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
 

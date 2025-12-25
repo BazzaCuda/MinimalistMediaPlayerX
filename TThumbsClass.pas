@@ -36,7 +36,7 @@ type
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function    playCurrentItem:    boolean;
     function    playPrevThumbsPage: boolean;
-    function    playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
+    function    playThumbs(const aFilePath: string = EMPTY; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
     function    showDisplayDimensions(const aHost: THostType): boolean;
     function    thumbColCount:      integer;
@@ -109,7 +109,7 @@ type
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function    playCurrentItem:    boolean;
     function    playPrevThumbsPage: boolean;
-    function    playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
+    function    playThumbs(const aFilePath: string = EMPTY; const aPlayType: TPlayType = ptGenerateThumbs): integer;
     function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
     function    showDisplayDimensions(const aHost: THostType): boolean;
     function    thumbColCount:      integer;
@@ -194,7 +194,7 @@ var
     var vPageNo := (((FPlaylist.currentIx - 1) + tpp) div tpp) + 1;   // was tpp + 1
     case FPlaylist.isLast of TRUE: vPageNo := vPageNo + extra; end;
 
-    var vA := '';
+    var vA := EMPTY;
     case (FPlaylist.currentIx <> ((FPlaylist.count - 1) - (thumbsPerPage - 1))) and ((FPlaylist.currentIx mod thumbsPerPage) <> 0) of TRUE: vA := 'a'; end;
 
     mmpSetPanelText(FStatusBar, pnHelp, mmpFormatPageNumber(vPageNo, (FPlaylist.count div tpp) + extra, vA));
@@ -286,14 +286,14 @@ begin
   end;end;
 end;
 
-function TThumbs.playThumbs(const aFilePath: string = ''; const aPlayType: TPlayType = ptGenerateThumbs): integer;
+function TThumbs.playThumbs(const aFilePath: string = EMPTY; const aPlayType: TPlayType = ptGenerateThumbs): integer;
 begin
   result := -1;
-  case aFilePath <> '' of TRUE: begin
-                                  FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
-                                  mmpInitStatusBar(FStatusBar);
-                                  mmpSetPanelText(FStatusBar, pnFold, FCurrentFolder);
-                                  fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
+  case aFilePath <> EMPTY of TRUE:  begin
+                                      FCurrentFolder := extractFilePath(aFilePath);                // need to keep track of current folder in case it contains no images
+                                      mmpInitStatusBar(FStatusBar);
+                                      mmpSetPanelText(FStatusBar, pnFold, FCurrentFolder);
+                                      fillPlaylist(FPlaylist, aFilePath, FCurrentFolder); end;end; // in which case, the playlist's currentFolder will be void
 
   FCancel := FALSE;
   case aPlayType of ptGenerateThumbs: result := generateThumbs(FPlaylist.currentIx); end;
@@ -320,15 +320,15 @@ begin
 
   case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatFileSize(mmpFileSize(aURL)));
                                                                FALSE: mmpSetPanelText(FStatusBar, pnSize, mmpFormatFileSize(0)); end;
-                             FALSE: mmpSetPanelText(FStatusBar, pnSize, ''); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnSize, EMPTY); end;
 
 
   case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: begin
                                                                         MI.getMediaInfo(aURL, mtImage);
                                                                         mmpSetPanelText(FStatusBar, pnXXYY, format('%d x %d', [MI.imageWidth, MI.imageHeight]));
                                                                       end;
-                                                               FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
-                             FALSE: mmpSetPanelText(FStatusBar, pnXXYY, ''); end;
+                                                               FALSE: mmpSetPanelText(FStatusBar, pnXXYY, EMPTY); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnXXYY, EMPTY); end;
 
   case whichHost of htMPVHost:    showDisplayDimensions(htMPVHost);
                     htThumbsHost: showDisplayDimensions(htThumbsHost); end;
@@ -356,7 +356,7 @@ function TThumbs.showDisplayDimensions(const aHost: THostType): boolean;
 begin
   case FPlaylist.hasItems of  TRUE: case aHost of htMPVHost:    mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FMPVHost.width, FMPVHost.height]));
                                                   htThumbsHost: mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FThumbsHost.width, FThumbsHost.height])); end;
-                             FALSE: mmpSetPanelText(FStatusBar, pnDDXY, ''); end;
+                             FALSE: mmpSetPanelText(FStatusBar, pnDDXY, EMPTY); end;
 end;
 
 function TThumbs.thumbColCount: integer;

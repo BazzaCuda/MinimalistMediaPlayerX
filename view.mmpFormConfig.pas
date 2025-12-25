@@ -251,7 +251,7 @@ begin
     fileName      := aPrevFolder;
     fileTypes.clear;
     case execute of  TRUE: result := mmpITBS(fileName);
-                    FALSE: result := ''; end;
+                    FALSE: result := EMPTY; end;
   end;
 end;
 
@@ -289,17 +289,17 @@ begin
     fileTypeIndex := 0;
 
     case execute of  TRUE: result := fileName;
-                    FALSE: result := ''; end;
+                    FALSE: result := EMPTY; end;
   end;
 end;
 
 {$R *.dfm}
 
 procedure TConfigForm.btnAppF10Click(Sender: TObject);
-{$J+} const vPrevFolder: string = ''; {$J-}
+{$J+} const vPrevFolder: string = EMPTY; {$J-}
 begin
   var vNewFolder := selectApplication(fileOpenDialog, vPrevFolder);
-  case vNewFolder = '' of TRUE: EXIT; end;
+  case vNewFolder = EMPTY of TRUE: EXIT; end;
   vPrevFolder := vNewFolder;
 
   case sender = btnAppF10 of TRUE: edtAppF10.text := vPrevFolder; end;
@@ -308,10 +308,10 @@ begin
 end;
 
 procedure TConfigForm.btnBaseFolderClick(Sender: TObject);
-{$J+} const vPrevFolder: string = ''; {$J-}
+{$J+} const vPrevFolder: string = EMPTY; {$J-}
 begin
   var vNewFolder := selectFolder(fileOpenDialog, vPrevFolder);
-  case vNewFolder = '' of TRUE: EXIT; end;
+  case vNewFolder = EMPTY of TRUE: EXIT; end;
   vPrevFolder := vNewFolder;
 
   // each TLabeledEdit and each TSpeedButton have tags 1 - 16
@@ -357,8 +357,8 @@ end;
 
 procedure TConfigForm.chbExitBrowserClick(Sender: TObject);
 begin
-  case chbExitBrowser.checked of   TRUE: CF[CONF_EXIT_BROWSER] := 'exitApp';
-                                  FALSE: CF[CONF_EXIT_BROWSER] := 'main'; end;
+  case chbExitBrowser.checked of   TRUE: CF[CONF_EXIT_BROWSER] := CONF_EXIT_APP;
+                                  FALSE: CF[CONF_EXIT_BROWSER] := CONF_MAIN end;
 end;
 
 procedure TConfigForm.chbFolderDeleteClick(Sender: TObject);
@@ -388,8 +388,8 @@ end;
 
 procedure TConfigForm.chbOpenImageClick(Sender: TObject);
 begin
-  case chbOpenImage.checked of   TRUE: CF[CONF_OPEN_IMAGE] := 'browser';
-                                FALSE: CF[CONF_OPEN_IMAGE] := 'main'; end;
+  case chbOpenImage.checked of   TRUE: CF[CONF_OPEN_IMAGE] := CONF_BROWSER;
+                                FALSE: CF[CONF_OPEN_IMAGE] := CONF_MAIN; end;
 end;
 
 procedure TConfigForm.chbPlayEditedClick(Sender: TObject);
@@ -413,7 +413,7 @@ begin
   case fileExists(vEdit.text) of   TRUE: vEdit.font.color := DARK_MODE_SILVER;
                                   FALSE: vEdit.font.color := clRed; end; // warn the user but let them setup MMP how they want
 
-  case trim(vEdit.text) = '' of TRUE: vEdit.text := ' '; end; // allow the user to blank the folder name without CF deleting the entry
+  case trim(vEdit.text) = EMPTY of TRUE: vEdit.text := ' '; end; // allow the user to blank the folder name without CF deleting the entry
 
   // if the .conf file entry hasn't changed, or the edit box contains the default app for the Fnn key, don't write to the .conf file
   case (vEdit = edtAppF10) and NOT (edtAppF10.text = mmpGetExternalApp(F10_APP)) of TRUE: CF[mmpFnnKeyAppToString(F10_APP)] := vEdit.text; end;
@@ -426,7 +426,7 @@ begin
   var vText := edtBaseFolder.text;
   case directoryExists(vText) of   TRUE: edtBaseFolder.font.color := DARK_MODE_SILVER;
                                   FALSE: edtBaseFolder.font.color := clRed; end; // warn the user but them let setup MMP how they want
-  case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
+  case trim(vText) = EMPTY of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
   CF[CONF_BASE_FOLDER] := vText;
 end;
 
@@ -438,20 +438,20 @@ begin
   case (length(vText) > 1) and (vText[2] = ':') and NOT directoryExists(vText) of  TRUE: vEdit.font.color := clRed;
                                                                                   FALSE: vEdit.font.color := DARK_MODE_SILVER; end; // warn the user but let them setup MMP how they want
 
-  case trim(vText) = '' of TRUE: vText := ' '; end; // allow the user to blank the folder name without CF deleting the entry
+  case trim(vText) = EMPTY of TRUE: vText := SINGLE_SPACE; end; // allow the user to blank the folder name without CF deleting the entry
 
   CF[CONF_FOLDERS[vEdit.tag]] := vText;
 end;
 
 procedure TConfigForm.edtDirtyCharsChange(Sender: TObject);
 begin
-  CF[CONF_DIRTY_CHARS] := trim(edtDirtyChars.text) + ' ';
+  CF[CONF_DIRTY_CHARS] := trim(edtDirtyChars.text) + SINGLE_SPACE;
 end;
 
 procedure TConfigForm.edtPrefixF1Change(Sender: TObject);
 begin
   var vText := (sender as TLabeledEdit).text;
-  case vText = '' of TRUE: vText := ' '; end; // don't trim the user's leading or trailing spaces but also don't let CF delete the entry if the user blanks the text
+  case vText = EMPTY of TRUE: vText := SINGLE_SPACE; end; // don't trim the user's leading or trailing spaces but also don't let CF delete the entry if the user blanks the text
   case sender = edtPrefixF1 of TRUE: CF[CONF_CAT_F1] := vText; end;
   case sender = edtPrefixF2 of TRUE: CF[CONF_CAT_F2] := vText; end;
   case sender = edtPrefixF3 of TRUE: CF[CONF_CAT_F3] := vText; end;
@@ -467,8 +467,8 @@ function TConfigForm.loadConfig: boolean;
 begin
   chbAutoUpdate.checked         := CF.asBoolean[CONF_AUTO_UPDATE];
   chbStartInEditor.checked      := CF.asBoolean[CONF_START_IN_EDITOR];
-  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE])   = 'browser';
-  chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = 'exitapp';
+  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE])   = CONF_BROWSER;
+  chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = lowerCase(CONF_EXIT_APP);
 
   chbAudio.checked              := CF.asBoolean[CONF_AUDIO_DELETE];
   chbVideo.checked              := CF.asBoolean[CONF_VIDEO_DELETE];

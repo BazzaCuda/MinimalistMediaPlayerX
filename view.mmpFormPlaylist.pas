@@ -215,7 +215,7 @@ end;
 
 function TPlaylistForm.loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
 begin
-  var vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', '');
+  var vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', EMPTY);
   lblFolder.caption := format('%sFolder: %s', [vShuffle, mmp.cmd(evPLReqCurrentFolder).text]);
   case bCaptionOnly of TRUE: EXIT; end;
   mmp.cmd(evPLFillListBox, LB);

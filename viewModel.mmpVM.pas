@@ -286,7 +286,7 @@ begin
   case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
 
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
-  case vCurrentItem = '' of TRUE: EXIT; end;
+  case vCurrentItem = EMPTY of TRUE: EXIT; end;
 
   case mmpCheckRecycleBin(vCurrentItem) of FALSE: EXIT; end;
 
@@ -892,7 +892,7 @@ function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
 var T, F: TProc;
 begin
   var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmp.cmd(vNextFolder = '', evAppClose); // end of the current drive
+  mmp.cmd(vNextFolder = EMPTY, evAppClose); // end of the current drive
 
   mmp.cmd(evSTOpInfo, vNextFolder);
 
@@ -910,7 +910,7 @@ begin
 
   mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F); // if the current folder has no multimedia content, try the next folder
 
-  result := vNextFolder <> '';
+  result := vNextFolder <> EMPTY;
 end;
 
 function TVM.playPrevFolder: boolean;
@@ -918,7 +918,7 @@ function TVM.playPrevFolder: boolean;
 var T, F: TProc;
 begin
   var vPrevFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  mmp.cmd(vPrevFolder = '', evAppClose); // start of the current drive
+  mmp.cmd(vPrevFolder = EMPTY, evAppClose); // start of the current drive
 
   mmp.cmd(evSTOpInfo, vPrevFolder);
 
@@ -935,7 +935,7 @@ begin
 
   mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F); // if the current folder has no multimedia content, try the previous folder
 
-  result := vPrevFolder <> '';
+  result := vPrevFolder <> EMPTY;
 end;
 
 function TVM.playSomething(const aIx: integer): boolean; // no longer called
@@ -984,7 +984,7 @@ var
   vNewName:         string;
   vWasPlaying:      boolean;
 begin
-  result := '';
+  result := EMPTY;
   mmp.cmd(evGSImagesPaused, TRUE); // stop any running slideshow at the earliest possible
   case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end;
   vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;

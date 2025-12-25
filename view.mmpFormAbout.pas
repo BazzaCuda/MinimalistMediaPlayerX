@@ -191,8 +191,8 @@ var
   vMinor2: integer;
   vPatch2: integer;
 begin
-  vParts1 := (stringReplace(aVersion1, 'v', '', [rfReplaceAll])).split(['.']);
-  vParts2 := (stringReplace(aVersion2, 'v', '', [rfReplaceAll])).split(['.']);
+  vParts1 := (stringReplace(aVersion1, 'v', EMPTY, [rfReplaceAll])).split(['.']);
+  vParts2 := (stringReplace(aVersion2, 'v', EMPTY, [rfReplaceAll])).split(['.']);
 
   vMajor1 := strToInt(vParts1[0]);
   vMinor1 := strToInt(vParts1[1]);
@@ -372,7 +372,7 @@ end;
 
 function TAboutFormProxy.showForm: boolean;
 begin
-  showForm(mmpFileVersionFmt('', 'v%d.%d.%d'), mmpFileVersionFmt);
+  showForm(mmpFileVersionFmt(EMPTY, 'v%d.%d.%d'), mmpFileVersionFmt);
 end;
 
 function TAboutFormProxy.showProgressForm: boolean;

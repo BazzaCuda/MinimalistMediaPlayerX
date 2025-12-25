@@ -179,7 +179,7 @@ begin
                           until bFileName or (vChop > length(aText)) or (aText[vChop] = '\');
                           var vLine1 := copy(aText, 1, vChop) + '...';
                           var vBackslash:string := '\';
-                          case bFileName of TRUE: vBackSlash := ''; end;
+                          case bFileName of TRUE: vBackSlash := EMPTY; end;
                           var vLine2 := '...' + vBackslash + copy(aText, vChop + 1);
                           result := vLine1 + #13#10 + vLine2; end;
 

@@ -52,6 +52,7 @@ function UM: IUndoMove;
 implementation
 
 uses
+  mmpConsts,
   _debugWindow;
 
 function UM: IUndoMove;
@@ -86,8 +87,8 @@ end;
 
 function TUndoMove.undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
 begin
-  aSrcFilePath  := '';
-  aDstFilePath  := '';
+  aSrcFilePath  := EMPTY;
+  aDstFilePath  := EMPTY;
   result        := FALSE;
   case FUndoRecs.count = 0 of TRUE: EXIT; end;
 

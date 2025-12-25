@@ -269,7 +269,7 @@ begin
   mpvCreate(mpv); // if you ever create an IMediaPlayer here, you'll need to appEvents.unsubscribe it (in TMediaPlayer.destroy) when the form closes
   mpv.onInitMPV    := onInitMPV;
   mpv.OnStateChged := onStateChange;
-  mpvInitPlayer(mpv, FMPVHost.handle, '', extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
+  mpvInitPlayer(mpv, FMPVHost.handle, EMPTY, extractFilePath(paramStr(0)));  // THIS RECREATES THE INTERNAL MPV OBJECT in TMPVBasePlayer
   mpvToggleRepeat(mpv); // so that any GIFs will remain visible rather than going black after one cycle
 
   var vImageDisplayDuration: string;
@@ -579,8 +579,8 @@ var
 begin
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mpvStop(mpv); // if the folder is empty we want a blank screen
-  case vNextFolder = '' of TRUE: EXIT; end;
-  mmp.cmd(vNextFolder <> '', procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+  case vNextFolder = EMPTY of TRUE: EXIT; end;
+  mmp.cmd(vNextFolder <> EMPTY, procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playNextFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
@@ -603,8 +603,8 @@ var
 begin
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mpvStop(mpv); // if the folder is empty we want a blank screen
-  case vPrevFolder = '' of TRUE: EXIT; end;
-  mmp.cmd(vPrevFolder <> '', procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+  case vPrevFolder = EMPTY of TRUE: EXIT; end;
+  mmp.cmd(vPrevFolder <> EMPTY, procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playPrevFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
@@ -744,8 +744,8 @@ begin
   var vScreenshotDirectory: string;
   mpvGetPropertyString(mpv, 'screenshot-directory', vScreenshotDirectory);
 
-  case vScreenshotDirectory = '' of  TRUE: mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
-                                    FALSE: mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
+  case vScreenshotDirectory = EMPTY of   TRUE: mpvTakeScreenshot(mpv, extractFilePath(mpvFileName(mpv)));   // otherwise screenshots of an image go to Windows/System32 !!
+                                        FALSE: mpvTakeScreenshot(mpv, vScreenshotDirectory); end;
 end;
 
 procedure TThumbsForm.timerTimer(Sender: TObject);

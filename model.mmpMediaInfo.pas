@@ -224,7 +224,7 @@ end;
 function TMediaInfo.getMetaData(const aMemo: TMemo): boolean;
 begin
   aMemo.clear;
-  aMemo.lines.add('');
+  aMemo.lines.add(EMPTY);
   aMemo.lines.add(XY);
   aMemo.lines.add(displayAspectRatio);
   aMemo.lines.add(overallFrameRate);
@@ -242,8 +242,8 @@ end;
 
 function TMediaInfo.getOverallFrameRate: string;
 begin
-  case FMD.mdFrameRate = '' of   TRUE: result := 'FR: ';
-                                FALSE: result := format('FR:   %s fps', [FMD.mdFrameRate]); end;
+  case FMD.mdFrameRate = EMPTY of  TRUE: result := 'FR: ';
+                                  FALSE: result := format('FR:   %s fps', [FMD.mdFrameRate]); end;
 end;
 
 function TMediaInfo.getSelectedCount: integer;
@@ -338,7 +338,7 @@ var
     vTitle      := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Title',                    Info_Text, Info_Name);
 
     vStreamType := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'StreamKind',               Info_Text, Info_Name);
-    vInfo       := '';
+    vInfo       := EMPTY;
 
     FMediaStreams.add(TMediaStream.create(-1, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
@@ -453,9 +453,9 @@ begin
     FMD.mdHasCoverArt := mediaInfo_Get(FHandle, Stream_General,     0, 'Cover',           Info_Text, Info_Name);
 
     for var vStreamIx := 0 to streamCount - 1 do begin
-      case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createVideoStream(vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createAudioStream(vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> '' of TRUE: createTextStream (vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createVideoStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createAudioStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createTextStream (vStreamIx); end;
     end;
 
     // {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
