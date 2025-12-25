@@ -30,7 +30,7 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-  FastMM5 in 'FastMM5\FastMM5.pas',
+  {$ifdef FastMM5} FastMM5 in 'FastMM5\FastMM5.pas', {$endif}
   _debugWindow in '_debugWindow\_debugWindow.pas',
 // {Third Party}
   ALProgressBar in 'ALProgressBar.pas',
@@ -120,9 +120,12 @@ uses
 
 procedure setupRunMode;
 begin
-  reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // has already been set in mmpStackTrace initialization section - unless that unit has been commented out
+  reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
+  {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
+
+  {$ifdef FastMM5}
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-  {$if BazDebugWindow} debugClear; {$endif}
+//  {$if BazDebugWindow} debugClear; {$endif}            // done already in mmpStackTrace initialization section - unless that unit has been commented out
 
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
@@ -133,6 +136,7 @@ begin
                                               FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary];
                                               {$endif}
                                             end;end;
+  {$endif}
 end;
 
 function checkParam: boolean;
@@ -169,11 +173,11 @@ end;
 
 begin
   setupRunMode;
+  TVCLStyleManager.trySetStyle('Charcoal Dark Slate');
 
   app.initialize;
   app.showMainForm      := FALSE;
   app.mainFormOnTaskbar := TRUE;
-  TVCLStyleManager.trySetStyle('Charcoal Dark Slate');
   app.title             := MMP_TITLE;
 
   checkParam;
@@ -182,7 +186,7 @@ begin
   mmp.cmd(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
   mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, DEFAULT_REPEAT_DELAY_MS);
 
-  app.CreateForm(TMMPUI, MMPUI);
+  app.createForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
   try

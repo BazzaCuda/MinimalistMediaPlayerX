@@ -64,6 +64,7 @@ type
     function    onNotify(const aNotice: INotice):     INotice;
     function    onTickTimer(const aNotice: INotice):  INotice;
 
+    function    detachStates: boolean;
     function    openURL(const aURL: string):          boolean;
     function    pausePlay:                            string;
     function    pausePlayImages:                      string;
@@ -102,6 +103,13 @@ destructor TMediaPlayer.Destroy;
 begin
   mpv := NIL;
   inherited;
+end;
+
+function TMediaPlayer.detachStates: boolean;
+begin
+  mpv.onFileOpen    := NIL;
+  mpv.onStateChged  := NIL;
+  mpv.onInitMPV     := NIL;
 end;
 
 function TMediaPlayer.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
@@ -166,6 +174,7 @@ begin
     evMPContrastUp:       sendOpInfo(mpvContrastUp(mpv));
     evMPCycleAudio:       mpvCycleAudio(mpv);
     evMPCycleSubs:        mpvCycleSubs(mpv);
+    evMPDetachStates:     detachStates;
     evMPFrameBackwards:   mpvFrameBackwards(mpv);
     evMPFrameForwards:    mpvFrameForwards(mpv);
     evMPGammaDn:          sendOpInfo(mpvGammaDn(mpv));

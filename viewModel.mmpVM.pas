@@ -317,6 +317,7 @@ end;
 
 function TVM.doAppClose: boolean;
 begin
+  mmp.cmd(evMPDetachStates);    // EXPERIMENTAL
   mmp.cmd(evGSSuspended, TRUE); // EXPERIMENTAL
   mmp.cmd(evMPStop);            // EXPERIMENTAL
 

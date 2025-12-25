@@ -47,7 +47,7 @@ type
 
     evMPBrightnessDn, evMPBrightnessReset, evMPBrightnessUp,
     evMPCycleAudio, evMPCycleSubs,
-    evMPContrastDn, evMPContrastReset, evMPContrastUp,
+    evMPContrastDn, evMPContrastReset, evMPContrastUp, evMPDetachStates,
     evMPDuration,
     evMPFrameBackwards, evMPFrameForwards,
     evMPGammaDn, evMPGammaReset, evMPGammaUp,

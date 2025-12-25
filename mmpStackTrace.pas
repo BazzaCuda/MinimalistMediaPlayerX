@@ -23,63 +23,68 @@ interface
 {$ifopt D+}
 
 uses
-  SysUtils, Classes, JclDebug;
+  sysUtils, classes, jclDebug;
 
 implementation
 
 uses
-  mmpShellUtils;
+  mmpShellUtils,
+  _debugWindow;
 
-function GetExceptionStackInfoProc(P: PExceptionRecord): Pointer;
+function getExceptionStackInfoProc(P: PExceptionRecord): pointer;
 var
-  LLines: TStringList;
-  LText: String;
-  LResult: PChar;
-  jcl_sil: TJclStackInfoList;
+  vLines: TStringList;
+  vText: String;
+  vResult: PChar;
+  vJcl_sil: TJclStackInfoList;
 begin
-  LLines := TStringList.Create;
+  vLines := TStringList.Create;
   try
-    jcl_sil:=TJclStackInfoList.Create(True, 7, p.ExceptAddr, False, nil, nil);
+    vJcl_sil:=TJclStackInfoList.Create(True, 7, p.ExceptAddr, False, nil, nil);
     try
-      jcl_sil.AddToStrings(LLines, true, true, true, true);
+      vJcl_sil.addToStrings(vLines, true, true, true, true);
     finally
-      FreeAndNil(jcl_sil);
+      FreeAndNil(vJcl_sil);
     end;
-    LText := LLines.Text;
-    LResult := StrAlloc(Length(LText));
-    StrCopy(LResult, PChar(LText));
-    Result := LResult;
+    vText := vLines.Text;
+    vResult := strAlloc(length(vText));
+    strCopy(vResult, PChar(vText));
+    result := vResult;
   finally
-    LLines.Free;
+    vLines.Free;
   end;
 end;
 
-function GetStackInfoStringProc(Info: Pointer): string;
+function getStackInfoStringProc(info: pointer): string;
 begin
-  Result := string(PChar(Info));
+  result := string(PChar(info));
 end;
 
-procedure CleanUpStackInfoProc(Info: Pointer);
+procedure cleanUpStackInfoProc(info: pointer);
 begin
-  StrDispose(PChar(Info));
+  strDispose(PChar(info));
 end;
 
 initialization
+  {$if BazDebugWindow} debugClear; {$endif}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
+  {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 // Start the Jcl exception tracking and register our Exception stack trace provider
-  case reportMemoryLeaksOnShutdown and JclStartExceptionTracking of  TRUE:  begin
-                                                                              Exception.GetExceptionStackInfoProc := GetExceptionStackInfoProc;
-                                                                              Exception.GetStackInfoStringProc    := GetStackInfoStringProc;
-                                                                              Exception.CleanUpStackInfoProc      := CleanUpStackInfoProc; end;
+  case reportMemoryLeaksOnShutdown and jclStartExceptionTracking of  TRUE:  begin
+                                                                              {$if BazDebugWindow} debugBoolean('jclStartExceptionTracking', TRUE); {$endif}
+                                                                              exception.getExceptionStackInfoProc := getExceptionStackInfoProc;
+                                                                              exception.getStackInfoStringProc    := getStackInfoStringProc;
+                                                                              exception.cleanUpStackInfoProc      := cleanUpStackInfoProc; end;
 end;
 
 finalization
 // Stop Jcl exception tracking and unregister our provider
-  case reportMemoryLeaksOnShutdown and JclExceptionTrackingActive of  TRUE: begin
-                                                                              Exception.GetExceptionStackInfoProc := NIL;
-                                                                              Exception.GetStackInfoStringProc    := NIL;
-                                                                              Exception.CleanUpStackInfoProc      := NIL;
-                                                                              JclStopExceptionTracking; end;
+  case reportMemoryLeaksOnShutdown and jclExceptionTrackingActive of  TRUE: begin
+                                                                              {$if BazDebugWindow} debugBoolean('jclStopExceptionTracking', TRUE); {$endif}
+                                                                              exception.getExceptionStackInfoProc := NIL;
+                                                                              exception.getStackInfoStringProc    := NIL;
+                                                                              exception.cleanUpStackInfoProc      := NIL;
+                                                                              jclStopExceptionTracking; end;
 end;
 {$else}
 implementation

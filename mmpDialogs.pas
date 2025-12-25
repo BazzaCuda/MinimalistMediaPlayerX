@@ -77,7 +77,7 @@ end;
 
 function mmpUserOK(const aMsg: string): boolean;
 begin
-  result := mmpShowOKCancelMsgDlg(MMP_TITLE, aMsg, mtWarning, [mbYes, mbNo], mbNo) = mrYes;
+  result := mmpShowOKCancelMsgDlg(aMsg, MMP_TITLE, mtWarning, [mbYes, mbNo], mbNo) = mrYes;
 end;
 
 end.
