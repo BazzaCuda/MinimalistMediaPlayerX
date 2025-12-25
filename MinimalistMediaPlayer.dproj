@@ -164,84 +164,85 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DelphiCompile>
         <DCCReference Include="FastMM5\FastMM5.pas"/>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
-        <DCCReference Include="view.mmpFormMain.pas"/>
+        <DCCReference Include="ALProgressBar.pas"/>
+        <DCCReference Include="MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
+        <DCCReference Include="MediaInfoDLL.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
+        <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
+        <DCCReference Include="TMPVHostClass.pas"/>
+        <DCCReference Include="mmpConsts.pas"/>
+        <DCCReference Include="mmpDesktopUtils.pas"/>
+        <DCCReference Include="mmpDialogs.pas"/>
+        <DCCReference Include="mmpExceptionHandler.pas"/>
+        <DCCReference Include="mmpFileUtils.pas"/>
+        <DCCReference Include="mmpFolderNavigation.pas"/>
+        <DCCReference Include="mmpFolderUtils.pas"/>
+        <DCCReference Include="mmpFormatting.pas"/>
+        <DCCReference Include="mmpFormInputBox.pas"/>
+        <DCCReference Include="mmpFuncProg.pas"/>
+        <DCCReference Include="mmpGlobalState.pas"/>
+        <DCCReference Include="mmpImageUtils.pas"/>
+        <DCCReference Include="mmpKeyboardUtils.pas"/>
+        <DCCReference Include="mmpMarkDownUtils.pas"/>
+        <DCCReference Include="mmpMenu.pas"/>
+        <DCCReference Include="mmpMMDevApi_tlb.pas"/>
         <DCCReference Include="mmpNotify.notices.pas"/>
         <DCCReference Include="mmpNotify.notifier.pas"/>
         <DCCReference Include="mmpNotify.subscriber.pas"/>
-        <DCCReference Include="mmpGlobalState.pas"/>
-        <DCCReference Include="view.mmpThemeUtils.pas"/>
-        <DCCReference Include="mmpDesktopUtils.pas"/>
-        <DCCReference Include="view.mmpFormCaptions.pas"/>
-        <DCCReference Include="view.mmpFormMainCaption.pas"/>
-        <DCCReference Include="mmpUtils.pas"/>
-        <DCCReference Include="mmpPostToAllUtils.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
-        <DCCReference Include="model.mmpMediaPlayer.pas"/>
-        <DCCReference Include="model.mmpConfigFile.pas"/>
-        <DCCReference Include="viewModel.mmpVM.pas"/>
-        <DCCReference Include="mmpFileUtils.pas"/>
-        <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="view.mmpProgressBar.pas"/>
-        <DCCReference Include="model.mmpMPVFormatting.pas"/>
-        <DCCReference Include="model.mmpParamStrings.pas"/>
-        <DCCReference Include="mmpDialogs.pas"/>
-        <DCCReference Include="model.mmpPlaylist.pas"/>
-        <DCCReference Include="TlistHelperClass.pas"/>
-        <DCCReference Include="model.mmpMediaTypes.pas"/>
-        <DCCReference Include="model.mmpMPVCtrls.pas"/>
-        <DCCReference Include="model.mmpMPVProperties.pas"/>
-        <DCCReference Include="mmpTickTimer.pas"/>
-        <DCCReference Include="view.mmpKeyboardMain.pas"/>
-        <DCCReference Include="mmpShellUtils.pas"/>
-        <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
-        <DCCReference Include="mmpMMDevApi_tlb.pas"/>
-        <DCCReference Include="model.mmpMixer.pas"/>
-        <DCCReference Include="view.mmpFormHelp.pas"/>
-        <DCCReference Include="mmpMarkDownUtils.pas"/>
-        <DCCReference Include="MediaInfoDLL.pas"/>
-        <DCCReference Include="model.mmpMediaInfo.pas"/>
-        <DCCReference Include="TMediaStreamClass.pas"/>
-        <DCCReference Include="view.mmpFormPlaylist.pas"/>
-        <DCCReference Include="model.mmpPlaylistUtils.pas"/>
-        <DCCReference Include="model.mmpBookmark.pas"/>
-        <DCCReference Include="view.mmpFormReleaseNotes.pas"/>
-        <DCCReference Include="mmpProgramUpdates.pas"/>
-        <DCCReference Include="view.mmpFormDownload.pas"/>
-        <DCCReference Include="mmpFormInputBox.pas"/>
-        <DCCReference Include="view.mmpFormConfirmDelete.pas"/>
-        <DCCReference Include="view.mmpFormProgress.pas"/>
-        <DCCReference Include="mmpKeyboardUtils.pas"/>
-        <DCCReference Include="view.mmpFormAbout.pas"/>
-        <DCCReference Include="mmpWindowUtils.pas"/>
-        <DCCReference Include="mmpFolderNavigation.pas"/>
-        <DCCReference Include="mmpFolderUtils.pas"/>
-        <DCCReference Include="model.mmpUndoMove.pas"/>
-        <DCCReference Include="view.mmpFormTimeline.pas"/>
-        <DCCReference Include="TSegmentClass.pas"/>
-        <DCCReference Include="view.mmpFormStreamList.pas"/>
-        <DCCReference Include="mmpImageUtils.pas"/>
-        <DCCReference Include="view.mmpFormThumbs.pas"/>
-        <DCCReference Include="view.mmpKeyboardThumbs.pas"/>
-        <DCCReference Include="TMPVHostClass.pas"/>
-        <DCCReference Include="TThumbsClass.pas"/>
-        <DCCReference Include="TThumbClass.pas"/>
-        <DCCReference Include="mmpThumbUtils.pas"/>
         <DCCReference Include="mmpPanelCtrls.pas"/>
-        <DCCReference Include="TStatusBarHelperClass.pas"/>
-        <DCCReference Include="mmpUserFolders.pas"/>
-        <DCCReference Include="mmpTicker.pas"/>
-        <DCCReference Include="mmpFormatting.pas"/>
+        <DCCReference Include="mmpPostToAllUtils.pas"/>
+        <DCCReference Include="mmpProgramUpdates.pas"/>
+        <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="mmpShredUtils.pas"/>
-        <DCCReference Include="TCleanupClass.pas"/>
-        <DCCReference Include="mmpMenu.pas"/>
-        <DCCReference Include="MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
-        <DCCReference Include="mmpConsts.pas"/>
-        <DCCReference Include="mmpFuncProg.pas"/>
         <DCCReference Include="mmpStackTrace.pas"/>
-        <DCCReference Include="mmpExceptionHandler.pas"/>
-        <DCCReference Include="view.mmpFormConfig.pas"/>
+        <DCCReference Include="mmpThumbUtils.pas"/>
+        <DCCReference Include="mmpTicker.pas"/>
+        <DCCReference Include="mmpTickTimer.pas"/>
+        <DCCReference Include="mmpUserFolders.pas"/>
+        <DCCReference Include="mmpUtils.pas"/>
+        <DCCReference Include="mmpVCL.pas"/>
+        <DCCReference Include="mmpWindowUtils.pas"/>
+        <DCCReference Include="TCleanupClass.pas"/>
+        <DCCReference Include="TlistHelperClass.pas"/>
+        <DCCReference Include="TMediaStreamClass.pas"/>
+        <DCCReference Include="TSegmentClass.pas"/>
+        <DCCReference Include="TStatusBarHelperClass.pas"/>
+        <DCCReference Include="TThumbClass.pas"/>
+        <DCCReference Include="TThumbsClass.pas"/>
+        <DCCReference Include="model.mmpBookmark.pas"/>
+        <DCCReference Include="model.mmpConfigFile.pas"/>
         <DCCReference Include="model.mmpKeyFrames.pas"/>
+        <DCCReference Include="model.mmpMediaInfo.pas"/>
+        <DCCReference Include="model.mmpMediaPlayer.pas"/>
+        <DCCReference Include="model.mmpMediaTypes.pas"/>
+        <DCCReference Include="model.mmpMixer.pas"/>
+        <DCCReference Include="model.mmpMPVCtrls.pas"/>
+        <DCCReference Include="model.mmpMPVFormatting.pas"/>
+        <DCCReference Include="model.mmpMPVProperties.pas"/>
+        <DCCReference Include="model.mmpParamStrings.pas"/>
+        <DCCReference Include="model.mmpPlaylist.pas"/>
+        <DCCReference Include="model.mmpPlaylistUtils.pas"/>
+        <DCCReference Include="model.mmpUndoMove.pas"/>
+        <DCCReference Include="view.mmpFormAbout.pas"/>
+        <DCCReference Include="view.mmpFormCaptions.pas"/>
+        <DCCReference Include="view.mmpFormConfig.pas"/>
+        <DCCReference Include="view.mmpFormConfirmDelete.pas"/>
+        <DCCReference Include="view.mmpFormDownload.pas"/>
+        <DCCReference Include="view.mmpFormHelp.pas"/>
+        <DCCReference Include="view.mmpFormMain.pas"/>
+        <DCCReference Include="view.mmpFormMainCaption.pas"/>
+        <DCCReference Include="view.mmpFormPlaylist.pas"/>
+        <DCCReference Include="view.mmpFormProgress.pas"/>
+        <DCCReference Include="view.mmpFormReleaseNotes.pas"/>
+        <DCCReference Include="view.mmpFormStreamList.pas"/>
+        <DCCReference Include="view.mmpFormThumbs.pas"/>
+        <DCCReference Include="view.mmpFormTimeline.pas"/>
+        <DCCReference Include="view.mmpKeyboardMain.pas"/>
+        <DCCReference Include="view.mmpKeyboardThumbs.pas"/>
+        <DCCReference Include="view.mmpProgressBar.pas"/>
+        <DCCReference Include="view.mmpThemeUtils.pas"/>
+        <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
+        <DCCReference Include="viewModel.mmpVM.pas"/>
         <RcItem Include="resource_mdEditing.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
@@ -338,13 +339,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_debugWindow\bazDebugWindow.inc" Configuration="Release" Class="ProjectFile">
+                <DeployFile LocalName="_debugWindow\bazDebugWindow.inc" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="bazDebugWindow.inc" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_debugWindow\bazDebugWindow.inc" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

@@ -26,10 +26,11 @@ uses
   mmpConsts;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
+                               const aCaption:      string         = MMP_TITLE;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
-                               const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                               const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = MMP_TITLE): TModalResult;
+                               const msgDlgButtons: TMsgDlgButtons = [MBOK];
+                               const defButton:     TMsgDlgBtn     = MBOK
+                              ): TModalResult;
 function mmpUserOK(const aMsg: string): boolean;
 
 implementation
@@ -40,10 +41,11 @@ uses
   mmpFuncProg, mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
+                               const aCaption:      string         = MMP_TITLE;
                                const msgDlgType:    TMsgDlgType    = mtConfirmation;
-                               const msgDlgButtons: TMsgDlgButtons = MBOKCANCEL;
-                               const defButton:     TMsgDlgBtn     = MBCANCEL;
-                               const aCaption:      string         = MMP_TITLE): TModalResult;
+                               const msgDlgButtons: TMsgDlgButtons = [MBOK];
+                               const defButton:     TMsgDlgBtn     = MBOK
+                              ): TModalResult;
 // We modify the standard dialog to make everything bigger, especially the width so that long folder names and files display properly
 // The standard dialog would unhelpfully truncate them.
 begin
@@ -75,7 +77,7 @@ end;
 
 function mmpUserOK(const aMsg: string): boolean;
 begin
-  result := mmpShowOKCancelMsgDlg(aMsg, mtWarning, [mbYes, mbNo], mbNo) = mrYes;
+  result := mmpShowOKCancelMsgDlg(MMP_TITLE, aMsg, mtWarning, [mbYes, mbNo], mbNo) = mrYes;
 end;
 
 end.

@@ -32,90 +32,91 @@ program MinimalistMediaPlayer;
 uses
   FastMM5 in 'FastMM5\FastMM5.pas',
   _debugWindow in '_debugWindow\_debugWindow.pas',
-  system.sysUtils,
-  vcl.dialogs,
-  vcl.extCtrls,
-  vcl.forms,
-  vcl.styles,
-  vcl.themes,
-  view.mmpFormMain in 'view.mmpFormMain.pas',
+// {Third Party}
+  ALProgressBar in 'ALProgressBar.pas',
+  MarkDownViewerComponents in 'MarkdownViewerComponents\MarkDownViewerComponents.pas',
+  MediaInfoDLL in 'MediaInfoDLL.pas',
+  MPVConst in 'libMPVDelphi\MPVConst.pas',
+  MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
+  TMPVHostClass in 'TMPVHostClass.pas',
+// {MMP General}
+  mmpConsts in 'mmpConsts.pas',
+  mmpDesktopUtils in 'mmpDesktopUtils.pas',
+  mmpDialogs in 'mmpDialogs.pas',
+  mmpExceptionHandler in 'mmpExceptionHandler.pas',
+  mmpFileUtils in 'mmpFileUtils.pas',
+  mmpFolderNavigation in 'mmpFolderNavigation.pas',
+  mmpFolderUtils in 'mmpFolderUtils.pas',
+  mmpFormatting in 'mmpFormatting.pas',
+  mmpFormInputBox in 'mmpFormInputBox.pas',
+  mmpFuncProg in 'mmpFuncProg.pas',
+  mmpGlobalState in 'mmpGlobalState.pas',
+  mmpImageUtils in 'mmpImageUtils.pas',
+  mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
+  mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
+  mmpMenu in 'mmpMenu.pas',
+  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
   mmpNotify.notices in 'mmpNotify.notices.pas',
   mmpNotify.notifier in 'mmpNotify.notifier.pas',
   mmpNotify.subscriber in 'mmpNotify.subscriber.pas',
-  mmpGlobalState in 'mmpGlobalState.pas',
-  view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
-  mmpDesktopUtils in 'mmpDesktopUtils.pas',
-  view.mmpFormCaptions in 'view.mmpFormCaptions.pas',
-  view.mmpFormMainCaption in 'view.mmpFormMainCaption.pas',
-  mmpUtils in 'mmpUtils.pas',
-  mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
-  MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
-  MPVConst in 'libMPVDelphi\MPVConst.pas',
-  model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
-  model.mmpConfigFile in 'model.mmpConfigFile.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas',
-  mmpFileUtils in 'mmpFileUtils.pas',
-  ALProgressBar in 'ALProgressBar.pas',
-  view.mmpProgressBar in 'view.mmpProgressBar.pas',
-  model.mmpMPVFormatting in 'model.mmpMPVFormatting.pas',
-  model.mmpParamStrings in 'model.mmpParamStrings.pas',
-  mmpDialogs in 'mmpDialogs.pas',
-  model.mmpPlaylist in 'model.mmpPlaylist.pas',
-  TlistHelperClass in 'TlistHelperClass.pas',
-  model.mmpMediaTypes in 'model.mmpMediaTypes.pas',
-  model.mmpMPVCtrls in 'model.mmpMPVCtrls.pas',
-  model.mmpMPVProperties in 'model.mmpMPVProperties.pas',
-  mmpTickTimer in 'mmpTickTimer.pas',
-  view.mmpKeyboardMain in 'view.mmpKeyboardMain.pas',
-  mmpShellUtils in 'mmpShellUtils.pas',
-  viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  mmpMMDevApi_tlb in 'mmpMMDevApi_tlb.pas',
-  model.mmpMixer in 'model.mmpMixer.pas',
-  view.mmpFormHelp in 'view.mmpFormHelp.pas',
-  mmpMarkDownUtils in 'mmpMarkDownUtils.pas',
-  MediaInfoDLL in 'MediaInfoDLL.pas',
-  model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
-  TMediaStreamClass in 'TMediaStreamClass.pas',
-  view.mmpFormPlaylist in 'view.mmpFormPlaylist.pas',
-  model.mmpPlaylistUtils in 'model.mmpPlaylistUtils.pas',
-  model.mmpBookmark in 'model.mmpBookmark.pas',
-  view.mmpFormReleaseNotes in 'view.mmpFormReleaseNotes.pas',
-  mmpProgramUpdates in 'mmpProgramUpdates.pas',
-  view.mmpFormDownload in 'view.mmpFormDownload.pas',
-  mmpFormInputBox in 'mmpFormInputBox.pas',
-  view.mmpFormConfirmDelete in 'view.mmpFormConfirmDelete.pas',
-  view.mmpFormProgress in 'view.mmpFormProgress.pas',
-  mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
-  view.mmpFormAbout in 'view.mmpFormAbout.pas',
-  mmpWindowUtils in 'mmpWindowUtils.pas',
-  mmpFolderNavigation in 'mmpFolderNavigation.pas',
-  mmpFolderUtils in 'mmpFolderUtils.pas',
-  model.mmpUndoMove in 'model.mmpUndoMove.pas',
-  view.mmpFormTimeline in 'view.mmpFormTimeline.pas',
-  TSegmentClass in 'TSegmentClass.pas',
-  view.mmpFormStreamList in 'view.mmpFormStreamList.pas',
-  mmpImageUtils in 'mmpImageUtils.pas',
-  view.mmpFormThumbs in 'view.mmpFormThumbs.pas',
-  view.mmpKeyboardThumbs in 'view.mmpKeyboardThumbs.pas',
-  TMPVHostClass in 'TMPVHostClass.pas',
-  TThumbsClass in 'TThumbsClass.pas',
-  TThumbClass in 'TThumbClass.pas',
-  mmpThumbUtils in 'mmpThumbUtils.pas',
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
-  TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
-  mmpUserFolders in 'mmpUserFolders.pas',
-  mmpTicker in 'mmpTicker.pas',
-  mmpFormatting in 'mmpFormatting.pas',
+  mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
+  mmpProgramUpdates in 'mmpProgramUpdates.pas',
+  mmpShellUtils in 'mmpShellUtils.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
-  TCleanupClass in 'TCleanupClass.pas',
-  mmpMenu in 'mmpMenu.pas',
-  MarkDownViewerComponents in 'MarkdownViewerComponents\MarkDownViewerComponents.pas',
-  mmpConsts in 'mmpConsts.pas',
-  mmpFuncProg in 'mmpFuncProg.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
-  mmpExceptionHandler in 'mmpExceptionHandler.pas',
+  mmpThumbUtils in 'mmpThumbUtils.pas',
+  mmpTicker in 'mmpTicker.pas',
+  mmpTickTimer in 'mmpTickTimer.pas',
+  mmpUserFolders in 'mmpUserFolders.pas',
+  mmpUtils in 'mmpUtils.pas',
+  mmpVCL in 'mmpVCL.pas',
+  mmpWindowUtils in 'mmpWindowUtils.pas',
+// {MMP Classes}
+  TCleanupClass in 'TCleanupClass.pas',
+  TlistHelperClass in 'TlistHelperClass.pas',
+  TMediaStreamClass in 'TMediaStreamClass.pas',
+  TSegmentClass in 'TSegmentClass.pas',
+  TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
+  TThumbClass in 'TThumbClass.pas',
+  TThumbsClass in 'TThumbsClass.pas',
+// {MMP MVVM Model}
+  model.mmpBookmark in 'model.mmpBookmark.pas',
+  model.mmpConfigFile in 'model.mmpConfigFile.pas',
+  model.mmpKeyFrames in 'model.mmpKeyFrames.pas',
+  model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
+  model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
+  model.mmpMediaTypes in 'model.mmpMediaTypes.pas',
+  model.mmpMixer in 'model.mmpMixer.pas',
+  model.mmpMPVCtrls in 'model.mmpMPVCtrls.pas',
+  model.mmpMPVFormatting in 'model.mmpMPVFormatting.pas',
+  model.mmpMPVProperties in 'model.mmpMPVProperties.pas',
+  model.mmpParamStrings in 'model.mmpParamStrings.pas',
+  model.mmpPlaylist in 'model.mmpPlaylist.pas',
+  model.mmpPlaylistUtils in 'model.mmpPlaylistUtils.pas',
+  model.mmpUndoMove in 'model.mmpUndoMove.pas',
+// {MMP MVVM View}
+  view.mmpFormAbout in 'view.mmpFormAbout.pas',
+  view.mmpFormCaptions in 'view.mmpFormCaptions.pas',
   view.mmpFormConfig in 'view.mmpFormConfig.pas',
-  model.mmpKeyFrames in 'model.mmpKeyFrames.pas';
+  view.mmpFormConfirmDelete in 'view.mmpFormConfirmDelete.pas',
+  view.mmpFormDownload in 'view.mmpFormDownload.pas',
+  view.mmpFormHelp in 'view.mmpFormHelp.pas',
+  view.mmpFormMain in 'view.mmpFormMain.pas',
+  view.mmpFormMainCaption in 'view.mmpFormMainCaption.pas',
+  view.mmpFormPlaylist in 'view.mmpFormPlaylist.pas',
+  view.mmpFormProgress in 'view.mmpFormProgress.pas',
+  view.mmpFormReleaseNotes in 'view.mmpFormReleaseNotes.pas',
+  view.mmpFormStreamList in 'view.mmpFormStreamList.pas',
+  view.mmpFormThumbs in 'view.mmpFormThumbs.pas',
+  view.mmpFormTimeline in 'view.mmpFormTimeline.pas',
+  view.mmpKeyboardMain in 'view.mmpKeyboardMain.pas',
+  view.mmpKeyboardThumbs in 'view.mmpKeyboardThumbs.pas',
+  view.mmpProgressBar in 'view.mmpProgressBar.pas',
+  view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
+// {MMP MVVM ViewModel}
+  viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
+  viewModel.mmpVM in 'viewModel.mmpVM.pas';
 
 procedure setupRunMode;
 begin
@@ -135,21 +136,20 @@ begin
 end;
 
 function checkParam: boolean;
-var T: TProc;
+var T: TVCLProc;
 begin
   result := FALSE;
   T := procedure  begin
                     mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                         + 'or to permanently associate media file types with this application.'#13#10#13#10
-                                        + 'Alternatively, you can drag and drop a media file onto the window.',
-                                          mtInformation, [MBOK], mbOK); end;
+                                        + 'Alternatively, you can drag and drop a media file onto the window.'); end;
   mmp.cmd(PS.noFile, T);
   result := TRUE;
 end;
 
-function initUI(const aMainForm: TForm): boolean;
+function initUI(const aMainForm: TVCLForm): boolean;
 var
-  vVideoPanel: TPanel;
+  vVideoPanel: TVCLPanel;
 begin
   result := FALSE;
 
@@ -170,11 +170,11 @@ end;
 begin
   setupRunMode;
 
-  application.initialize;
-  application.showMainForm      := FALSE;
-  application.mainFormOnTaskbar := TRUE;
-  TStyleManager.trySetStyle('Charcoal Dark Slate');
-  application.title             := MMP_TITLE;
+  app.initialize;
+  app.showMainForm      := FALSE;
+  app.mainFormOnTaskbar := TRUE;
+  TVCLStyleManager.trySetStyle('Charcoal Dark Slate');
+  app.title             := MMP_TITLE;
 
   checkParam;
 
@@ -182,11 +182,11 @@ begin
   mmp.cmd(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
   mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, DEFAULT_REPEAT_DELAY_MS);
 
-  Application.CreateForm(TMMPUI, MMPUI);
+  app.CreateForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
   try
-    application.onException := mmpException.handler;
+    app.onException := mmpException.handler;
   except end;
 
   initUI(MMPUI);
@@ -209,7 +209,7 @@ begin
 
   mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown and NOT GS.noPlaylist, evVMToggleEditMode);
 
-  mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = 'browser') and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
+  mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
-  application.Run; // now it's ok to raise test exceptions
+  app.Run; // now it's ok to raise test exceptions
 end.

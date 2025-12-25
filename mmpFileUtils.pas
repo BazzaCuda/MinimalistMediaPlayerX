@@ -84,7 +84,7 @@ begin
                                                        + 'A single quote will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove the dirty characters.'#13#10#13#10
                                                        + 'Ctrl-Shift-[R] will cleanup the file name (but not the path) for you '
-                                                       + 'by replacing each dirty char with a space.', mtInformation, [MBOK], mbOK, 'Audio & Video Timeline Editor'); end;
+                                                       + 'by replacing each dirty char with a space.', 'Audio & Video Timeline Editor'); end;
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);
@@ -253,7 +253,7 @@ begin
 
   case bSilentDelete of FALSE: begin
     case mmpCanDeleteThis(aFilePath, aShiftState) of FALSE: begin
-                                                              mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation', mtInformation, [mbOK]);
+                                                              mmpShowOKCancelMsgDlg('MinimalistMediaPlayer.conf settings prevented this deletion operation');
                                                               EXIT; end;end;
 
     case mmpConfirmDelete(aFilePath, aShiftState, vDeleteMethod) of FALSE: EXIT; end;
@@ -262,7 +262,7 @@ begin
   case mmpIsFileInUse(aFilePath, vSysMessage) of TRUE:  begin
                                                           mmpShowOkCancelMsgDlg(aFilePath + #13#10#13#10 +
                                                                                 'This file won''t be deleted or moved'#13#10#13#10 +
-                                                                                vSysMessage, TMsgDlgType.mtWarning, [mbOK]);
+                                                                                vSysMessage, MMP_TITLE, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
   case bStopMPV of TRUE: mmp.cmd(evMPStop); end;
@@ -421,7 +421,7 @@ begin
                                                   var vMsg := 'keepDelete=no'#13#10#13#10;
                                                       vMsg := vMsg + 'To use this functionality, you must explicitly enable it'#13#10;
                                                       vMsg := vMsg + 'in MinimalistMediaPlayer.conf with keepDelete=yes';
-                                                  mmpShowOKCancelMsgDlg(vMsg, TMsgDlgType.mtInformation, [mbOK]);
+                                                  mmpShowOKCancelMsgDlg(vMsg);
                                                   EXIT; end;end;
 
   mmp.cmd(evMPPause);
@@ -481,7 +481,7 @@ begin
   vNewFilePath := extractFilePath(aFilePath) + s + vExt;  // construct the full path and new filename with the original extension
 
   case system.sysUtils.renameFile(aFilePath, vNewFilePath) of  TRUE: result := vNewFilePath;
-                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10#13#10 +  sysErrorMessage(getlasterror), mtError, [mbOK]); end;
+                                                              FALSE: mmpShowOKCancelMsgDlg('Rename failed:' + #13#10#13#10 +  sysErrorMessage(getlasterror), MMP_TITLE, mtError, [mbOK]); end;
 end;
 
 function mmpRenameMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
