@@ -30,16 +30,16 @@ program MinimalistMediaPlayer;
 {$R *.dres}
 
 uses
-  {$ifdef FastMM5} FastMM5 in 'FastMM5\FastMM5.pas', {$endif}
+  {$ifdef FastMM5}
+  FastMM5 in 'FastMM5\FastMM5.pas',
+  {$endif }
   _debugWindow in '_debugWindow\_debugWindow.pas',
-// {Third Party}
   ALProgressBar in 'ALProgressBar.pas',
   MarkDownViewerComponents in 'MarkdownViewerComponents\MarkDownViewerComponents.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   MPVConst in 'libMPVDelphi\MPVConst.pas',
   MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
-// {MMP General}
   mmpConsts in 'mmpConsts.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   mmpDialogs in 'mmpDialogs.pas',
@@ -72,7 +72,6 @@ uses
   mmpUtils in 'mmpUtils.pas',
   mmpVCL in 'mmpVCL.pas',
   mmpWindowUtils in 'mmpWindowUtils.pas',
-// {MMP Classes}
   TCleanupClass in 'TCleanupClass.pas',
   TlistHelperClass in 'TlistHelperClass.pas',
   TMediaStreamClass in 'TMediaStreamClass.pas',
@@ -80,7 +79,6 @@ uses
   TStatusBarHelperClass in 'TStatusBarHelperClass.pas',
   TThumbClass in 'TThumbClass.pas',
   TThumbsClass in 'TThumbsClass.pas',
-// {MMP MVVM Model}
   model.mmpBookmark in 'model.mmpBookmark.pas',
   model.mmpConfigFile in 'model.mmpConfigFile.pas',
   model.mmpKeyFrames in 'model.mmpKeyFrames.pas',
@@ -95,7 +93,6 @@ uses
   model.mmpPlaylist in 'model.mmpPlaylist.pas',
   model.mmpPlaylistUtils in 'model.mmpPlaylistUtils.pas',
   model.mmpUndoMove in 'model.mmpUndoMove.pas',
-// {MMP MVVM View}
   view.mmpFormAbout in 'view.mmpFormAbout.pas',
   view.mmpFormCaptions in 'view.mmpFormCaptions.pas',
   view.mmpFormConfig in 'view.mmpFormConfig.pas',
@@ -114,7 +111,6 @@ uses
   view.mmpKeyboardThumbs in 'view.mmpKeyboardThumbs.pas',
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
-// {MMP MVVM ViewModel}
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
   viewModel.mmpVM in 'viewModel.mmpVM.pas';
 
