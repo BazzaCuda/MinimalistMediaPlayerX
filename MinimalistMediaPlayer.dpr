@@ -112,7 +112,9 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas',
+  Vcl.Themes,
+  Vcl.Styles;
 
 procedure setupRunMode;
 begin
