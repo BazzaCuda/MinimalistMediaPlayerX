@@ -924,6 +924,7 @@ begin
   result := aNotice;
   case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
+  case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
 
   case aNotice.event of
     evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // on the next tick after mmpSetKeyFrames below
@@ -1005,6 +1006,8 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
+  case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
+
   FPositionSS := skipExcludedSegments(value); // will do a seek if needed
   // {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
 

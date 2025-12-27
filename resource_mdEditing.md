@@ -19,6 +19,7 @@ Control | Action
 **`[R]`**                     | [R]estore the selected e[X]cluded segment
 **Additional** ||
 **`[F]`**                     | toggle key[F]rames on and off
+**\`** (back tick)          | restart/startover from beginning of media file
 **`Ctrl-[R]`**                | [R]ename file
 **`Ctrl-[S]`**                | toggle [S]kip excluded segments during playback
 **`Ctrl-Shift`**              | change Export button to Copy after export errors

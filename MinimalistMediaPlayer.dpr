@@ -123,7 +123,7 @@ begin
 
   {$ifdef FastMM5}
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-//  {$if BazDebugWindow} debugClear; {$endif}            // done already in mmpStackTrace initialization section - unless that unit has been commented out
+//  {$if BazDebugWindow} debugClear; {$endif}            // done already in mmpStackTrace initialization section - unless that unit has been commented out or we have D+ set
 
   case reportMemoryLeaksOnShutdown of TRUE: begin
                                               {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
