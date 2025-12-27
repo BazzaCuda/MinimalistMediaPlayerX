@@ -83,15 +83,16 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <Icon_MainIcon>MinimalistMediaPlayer_Icon1.ico</Icon_MainIcon>
-        <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
-        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
+        <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
+        <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+        <DCC_UnitSearchPath>.\_libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -161,13 +162,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="FastMM5\FastMM5.pas"/>
+        <DCCReference Include="_FastMM5\FastMM5.pas"/>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
-        <DCCReference Include="MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
+        <DCCReference Include="_MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVConst.pas"/>
-        <DCCReference Include="libMPVDelphi\MPVBasePlayer.pas"/>
+        <DCCReference Include="_libMPVDelphi\MPVConst.pas"/>
+        <DCCReference Include="_libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>

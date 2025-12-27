@@ -33,14 +33,14 @@ program MinimalistMediaPlayer;
 
 uses
   {$ifdef FastMM5}
-  FastMM5 in 'FastMM5\FastMM5.pas',
+  FastMM5 in '_FastMM5\FastMM5.pas',
   {$endif }
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
-  MarkDownViewerComponents in 'MarkdownViewerComponents\MarkDownViewerComponents.pas',
+  MarkDownViewerComponents in '_MarkdownViewerComponents\MarkDownViewerComponents.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
-  MPVConst in 'libMPVDelphi\MPVConst.pas',
-  MPVBasePlayer in 'libMPVDelphi\MPVBasePlayer.pas',
+  MPVConst in '_libMPVDelphi\MPVConst.pas',
+  MPVBasePlayer in '_libMPVDelphi\MPVBasePlayer.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
