@@ -18,10 +18,12 @@
 }
 program MinimalistMediaPlayer;
 
-{$ifopt D+}
-  {$define UseFastMM5MemoryLeakReporting}
-  {$ifdef UseFastMM5MemoryLeakReporting}
-    {$define FastMM_DebugLibraryStaticDependency}
+{$ifdef FastMM5}
+  {$ifopt D+}
+    {$define UseFastMM5MemoryLeakReporting}
+    {$ifdef UseFastMM5MemoryLeakReporting}
+      {$define FastMM_DebugLibraryStaticDependency}
+    {$endif}
   {$endif}
 {$endif}
 
@@ -112,9 +114,7 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas',
-  Vcl.Themes,
-  Vcl.Styles;
+  viewModel.mmpVM in 'viewModel.mmpVM.pas';
 
 procedure setupRunMode;
 begin
@@ -171,7 +171,7 @@ end;
 
 begin
   setupRunMode;
-  TVCLStyleManager.trySetStyle('Charcoal Dark Slate');
+  TVCLStyleManager.trySetStyle(MMP_STYLE_DARKMODE);
 
   app.initialize;
   app.showMainForm      := FALSE;

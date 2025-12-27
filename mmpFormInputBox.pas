@@ -45,7 +45,6 @@ function mmpInputBoxForm(const aPrompt: string): string;
 implementation
 
 uses
-  vcl.styles, vcl.themes,
   mmpFuncProg, mmpGlobalState, mmpTickTimer, mmpUtils,
   _debugWindow;
 

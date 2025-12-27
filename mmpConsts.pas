@@ -28,6 +28,7 @@ uses
 const
   MMP_TITLE           = 'MMP: Minimalist Media Player';
   MMP_CHECK           = 'MMP_CHECK';
+  MMP_STYLE_DARKMODE  = 'DarkMode';
 
   EMPTY               = '';
   BACKSLASH           = '\';

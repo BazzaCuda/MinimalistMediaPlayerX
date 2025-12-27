@@ -24,7 +24,8 @@ uses
   system.sysUtils,
   vcl.extCtrls,
   vcl.forms,
-  vcl.themes;
+  vcl.styles, // required to initialize TStyleManager
+  vcl.themes; // required to access TStyleManager
 
 type
   TVCLForm          = TForm;
