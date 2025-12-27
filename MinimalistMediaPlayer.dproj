@@ -69,6 +69,7 @@
         <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>2057</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=;CFBundleName=</VerInfo_Keys>
+        <Custom_Styles>&quot;Charcoal Dark Slate|VCLSTYLE|$(BDSCOMMONDIR)\Styles\CharcoalDarkSlate.vsf&quot;</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -145,7 +146,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCC_DcuOutput>.\$(Platform)\$(Config)\dcu\</DCC_DcuOutput>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
-        <Icon_MainIcon>MMP_Icon.ico</Icon_MainIcon>
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>

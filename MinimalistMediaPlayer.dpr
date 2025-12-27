@@ -27,6 +27,10 @@ program MinimalistMediaPlayer;
   {$endif}
 {$endif}
 
+{$ifopt D+}
+//  {$define designTimeThemes} // comment out when not required
+{$endif}
+
 {$R *.res}
 
 {$R *.dres}
@@ -34,6 +38,11 @@ program MinimalistMediaPlayer;
 uses
   {$ifdef FastMM5}
   FastMM5 in '_FastMM5\FastMM5.pas',
+  {$endif }
+  {$ifdef designTimeThemes}
+  vcl.forms,
+  vcl.styles,
+  vcl.themes,
   {$endif }
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
@@ -138,7 +147,7 @@ begin
 end;
 
 function checkParam: boolean;
-var T: TVCLProc;
+var T: TProc;
 begin
   result := FALSE;
   T := procedure  begin
@@ -149,9 +158,9 @@ begin
   result := TRUE;
 end;
 
-function initUI(const aMainForm: TVCLForm): boolean;
+function initUI(const aMainForm: TForm): boolean;
 var
-  vVideoPanel: TVCLPanel;
+  vVideoPanel: TPanel;
 begin
   result := FALSE;
 
@@ -170,8 +179,17 @@ begin
 end;
 
 begin
+  {$ifdef designTimeThemes} // design-time only - not for actual builds
+  application.Initialize;
+  TStyleManager.trySetStyle('Charcoal Dark Slate');
+  var mainUI: TMMPUI;
+  application.createForm(TMMPUI, mainUI);
+  application.run;
+  {$else}
+
   setupRunMode;
-  TVCLStyleManager.trySetStyle(MMP_STYLE_DARKMODE);
+
+  TStyleManager.trySetStyle(MMP_STYLE_DARKMODE);
 
   app.initialize;
   app.showMainForm      := FALSE;
@@ -214,4 +232,5 @@ begin
   mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
   app.Run; // now it's ok to raise test exceptions
+  {$endif}
 end.

@@ -28,10 +28,10 @@ uses
   vcl.themes; // required to access TStyleManager
 
 type
-  TVCLForm          = TForm;
-  TVCLPanel         = TPanel;
-  TVCLProc          = TProc;
-  TVCLStyleManager  = TStyleManager;
+  TForm          = vcl.forms.TForm;
+  TPanel         = vcl.extCtrls.TPanel;
+  TProc          = system.sysUtils.TProc;
+  TStyleManager  = vcl.themes.TStyleManager;
 
 function app: TApplication;
 function lowerCase(const s: string): string;
