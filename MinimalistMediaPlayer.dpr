@@ -179,7 +179,10 @@ begin
 end;
 
 begin
-  {$ifdef designTimeThemes} // design-time only - not for actual builds
+  {$ifdef designTimeThemes}
+  // design-time only - not for actual builds
+  // this is purely to get around the Delphi IDE's nonsense of needing these lines
+  // in order to show Project/Options/Appearance and use the selected VCL style at design time
   application.Initialize;
   TStyleManager.trySetStyle('Charcoal Dark Slate');
   var mainUI: TMMPUI;
