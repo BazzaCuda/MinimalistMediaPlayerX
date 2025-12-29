@@ -108,7 +108,7 @@ type
   protected
     procedure   formResize(const aUIWidth: integer = 0);
   public
-    constructor create(const aOwner: TForm);
+    constructor Create(const aOwner: TForm);
     destructor  Destroy; override;
     function    blankInTimeCaption: boolean;
     function    blankOutTimeCaption: boolean;
@@ -140,7 +140,7 @@ begin
   CF[CONF_TIME_CAPTION]   := CF.toHex(result);
 end;
 
-constructor TCaptionsForm.create(aOwner: TComponent);
+constructor TCaptionsForm.Create(aOwner: TComponent);
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     result                := FALSE;
@@ -374,9 +374,9 @@ begin
 
 end;
 
-constructor TCaptionsProxy.create(const aOwner: TForm);
+constructor TCaptionsProxy.Create(const aOwner: TForm);
 begin
-  inherited create;
+  inherited Create;
   FCaptionsForm := TCaptionsForm.create(aOwner);
   FSubscriber   := appEvents.subscribe(newSubscriber(onNotify));
   FSubscriberTT := TT.subscribe(newSubscriber(onTickTimer));

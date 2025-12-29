@@ -89,7 +89,7 @@ type
   protected
     procedure   setCurrentFolder(const aValue: string);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    clear:                                      boolean;
     function    copyToClipboard:                            string;
@@ -153,7 +153,7 @@ begin
   result := FPlaylist.count;
 end;
 
-constructor TPlaylist.create;
+constructor TPlaylist.Create;
 begin
   inherited;
   FPlaylist   := TList<string>.create;

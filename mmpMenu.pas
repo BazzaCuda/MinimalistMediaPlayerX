@@ -48,7 +48,7 @@ type
   protected
     procedure   onClick(sender: TObject);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    popup(x, y: integer): IMMPMenu;
   end;
@@ -60,7 +60,7 @@ end;
 
 { TMMPMenu }
 
-constructor TMMPMenu.create;
+constructor TMMPMenu.Create;
 begin
   inherited;
 end;

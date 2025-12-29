@@ -69,7 +69,7 @@ type
     function    checkForManualEdits: boolean;
     function    saveConfigFile: boolean;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
 
     function    getAsBoolean      (const aName: string): boolean;
@@ -98,7 +98,7 @@ end;
 
 { TConfigFile }
 
-constructor TConfigFile.create;
+constructor TConfigFile.Create;
 begin
   inherited;
   FFileContents                 := TStringList.create;

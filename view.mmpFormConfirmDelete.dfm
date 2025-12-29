@@ -4759,7 +4759,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
   object lblSubFolders: TLabel
     Left = 288
     Top = 46
-    Width = 249
+    Width = 250
     Height = 15
     Caption = 'The contents of sub-folders will not be affected'
   end

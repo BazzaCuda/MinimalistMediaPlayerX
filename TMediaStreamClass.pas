@@ -42,7 +42,7 @@ type
     FInfo:        string;
     FSelected:    boolean;
   public
-    constructor   create( const aIx: integer;
+    constructor   Create( const aIx: integer;
                           const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
                           const aInfo: string; const aIconIx: integer);
 
@@ -66,7 +66,7 @@ implementation
 
 { TMediaStream }
 
-constructor TMediaStream.create(const aIx: integer;
+constructor TMediaStream.Create(const aIx: integer;
                                 const aID: string; const aStreamType: string; const aDuration: string; const aFormat: string; const aBitRate: string; const aTitle: string; const aLanguage: string;
                                 const aInfo: string; const aIconIx: integer);
 begin

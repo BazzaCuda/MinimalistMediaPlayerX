@@ -103,7 +103,7 @@ type
     procedure   setThumbSize(const Value: integer);
     procedure   setStatusBar(const Value: TStatusBar);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    cancel:             boolean;
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
@@ -138,7 +138,7 @@ begin
   FCancel := TRUE;
 end;
 
-constructor TThumbs.create;
+constructor TThumbs.Create;
 begin
   inherited;
   FPlaylist   := newPlaylist;

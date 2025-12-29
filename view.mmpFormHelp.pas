@@ -45,7 +45,7 @@ type
     md3:          TMarkdownViewer;
     procedure   FormResize(Sender: TObject);
   protected
-    constructor create(const aHeight: integer; const aHelpType: THelpType);
+    constructor Create(const aHeight: integer; const aHelpType: THelpType);
     procedure   CreateParams(var Params: TCreateParams);
   public
   end;
@@ -72,7 +72,7 @@ type
     function    showForm: boolean;
     function    shutForm: boolean;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    notify(const aNotice: INotice): INotice;
   end;
@@ -88,9 +88,9 @@ end;
 
 { THelpForm }
 
-constructor THelpForm.create(const aHeight: integer; const aHelpType: THelpType);
+constructor THelpForm.Create(const aHeight: integer; const aHelpType: THelpType);
 begin
-  inherited create(NIL);
+  inherited Create(NIL);
 
   initMarkDownViewer(md1);
   initMarkDownViewer(md2);
@@ -156,7 +156,7 @@ end;
 
 { THelpProxy }
 
-constructor THelpFormProxy.create;
+constructor THelpFormProxy.Create;
 begin
   inherited;
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));

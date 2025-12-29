@@ -43,7 +43,7 @@ type
     procedure   setMute(aValue: boolean);   virtual; abstract;
     procedure   setVolume(aValue: integer); virtual; abstract;
   public
-    constructor create;
+    constructor Create;
     function    notify(const aNotice: INotice): INotice;
     function    setSysVolMax: string;
     property    muted:  boolean read getMute   write setMute;
@@ -61,7 +61,7 @@ type
     procedure   setMute(aValue: boolean);   override;
     procedure   setVolume(aValue: integer); override;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
   end;
 
@@ -76,7 +76,7 @@ type
     procedure   setMute(aValue: boolean);   override;
     procedure   setVolume(aValue: integer); override;
   public
-    constructor create;
+    constructor Create;
   end;
 
 function MX: IMixer;
@@ -104,7 +104,7 @@ begin
   raise exception.create(strPas(pChar(s)));
 end;
 
-constructor TXPMixer.create;
+constructor TXPMixer.Create;
 begin
   inherited;
   Fmxct := MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
@@ -294,7 +294,7 @@ end;
 
 { TMixer }
 
-constructor TMixer.create;
+constructor TMixer.Create;
 begin
   appEvents.subscribe(newSubscriber(onNotify));
 end;

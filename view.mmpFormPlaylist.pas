@@ -85,7 +85,7 @@ type
     function    showForm: boolean;
     function    shutForm: boolean;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    notify(const aNotice: INotice): INotice;
   end;
@@ -236,7 +236,7 @@ end;
 
 { TPlayListFormProxy }
 
-constructor TPlayListFormProxy.create;
+constructor TPlayListFormProxy.Create;
 begin
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;

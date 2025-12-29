@@ -72,7 +72,7 @@ type
   protected
     procedure   setPosition(const aValue: integer);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
     function    initMediaPlayer(const aHWND: HWND):   boolean;
@@ -92,7 +92,7 @@ end;
 
 { TMediaPlayer }
 
-constructor TMediaPlayer.create;
+constructor TMediaPlayer.Create;
 begin
   FNotifier := newNotifier;
   TT.subscribe(newSubscriber(onTickTimer));

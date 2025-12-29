@@ -104,7 +104,7 @@ type
     function    showProgressForm: boolean;
   protected
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    notify(const aNotice: INotice): INotice;
   end;
@@ -319,7 +319,7 @@ end;
 
 { TAboutBoxFormProxy }
 
-constructor TAboutFormProxy.create;
+constructor TAboutFormProxy.Create;
 begin
   inherited;
   FSubscriber     := appEvents.subscribe(newSubscriber(onNotify));

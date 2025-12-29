@@ -45,7 +45,7 @@ type
     procedure   notifySubscribers(const aNotice: INotice);
     procedure   unsubscribeAll;
 
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
   end;
 
@@ -70,7 +70,7 @@ end;
 
 { TNotifier }
 
-constructor TNotifier.create;
+constructor TNotifier.Create;
 begin
   inherited;
   FSubscribers := TList<ISubscriber>.Create;

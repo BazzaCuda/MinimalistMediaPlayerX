@@ -162,7 +162,7 @@ type
   private
     function onNotify(const aNotice: INotice): INotice;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    getActiveTasks:              integer;
     function    getActiveTaskPercent:        integer;
@@ -210,7 +210,7 @@ end;
 
 { TGlobalState }
 
-constructor TGlobalState.create;
+constructor TGlobalState.Create;
 begin
   inherited;
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));

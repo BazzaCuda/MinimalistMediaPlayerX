@@ -108,7 +108,7 @@ type
     function loadDLL:               boolean;
     function onNotify(const aNotice: INotice): INotice;
   public
-    constructor create;
+    constructor Create;
     destructor Destroy; override;
 
     function getAVSStreamCount:     integer;
@@ -159,7 +159,7 @@ end;
 
 { TMediaInfo }
 
-constructor TMediaInfo.create;
+constructor TMediaInfo.Create;
 begin
   inherited;
   FMediaStreams               := TObjectList<TMediaStream>.create;

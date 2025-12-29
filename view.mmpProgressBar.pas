@@ -71,7 +71,7 @@ type
     procedure   setProgressBarVisible(const aValue: boolean);
     procedure   toggleShowProgressBar;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    initProgressBar(const aForm: TForm; const aColor: TColor; const aColorDelta: TColor): IProgressBar;
     function    notify(const aNotice: INotice): INotice;
@@ -101,7 +101,7 @@ begin
   result := TRUE;
 end;
 
-constructor TProgressBar.create;
+constructor TProgressBar.Create;
 begin
   inherited;
   FPB             := TALProgressBar.create(NIL);

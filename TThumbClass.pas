@@ -74,7 +74,7 @@ type
     function  getThumbParent: TWinControl;
     procedure setThumbParent(const Value: TWinControl);
   public
-    constructor create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+    constructor Create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
     destructor  Destroy; override;
 
     property onThumbClick: TNotifyEvent read getOnThumbClick write setOnThumbClick;
@@ -93,9 +93,9 @@ end;
 
 { TThumb }
 
-constructor TThumb.create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+constructor TThumb.Create(const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 begin
-  inherited create;
+  inherited Create;
 
   FThumb := TImage.create(NIL);
 

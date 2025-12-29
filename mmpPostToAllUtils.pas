@@ -52,7 +52,7 @@ type
     function    postToAllCount: integer;
     function    postToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
 
     function    addWnd(const aHWND: HWND): boolean;
@@ -94,7 +94,7 @@ begin
   result := TRUE;
 end;
 
-constructor TPostToAll.create;
+constructor TPostToAll.Create;
 begin
   inherited;
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));

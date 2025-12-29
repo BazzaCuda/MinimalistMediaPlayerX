@@ -46,7 +46,7 @@ type
     procedure   setCaption(const aValue: string);
   protected
   public
-    constructor create(const aOwner: TForm);
+    constructor Create(const aOwner: TForm);
     procedure   formResize(Sender: TObject);
     function    brighter:       integer;
     function    darker:         integer;
@@ -80,7 +80,7 @@ type
     function    onNotify(const aNotice: INotice): INotice;
     function    onTickTimer(const aNotice: INotice): INotice;
   public
-    constructor create(const aOwner: TForm);
+    constructor Create(const aOwner: TForm);
     destructor  Destroy; override;
     function    initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
     function    notify(const aNotice: INotice): INotice;
@@ -105,9 +105,9 @@ begin
   CF[CONF_MAIN_CAPTION] := CF.toHex(result);
 end;
 
-constructor TMainCaptionForm.create(const aOwner: TForm);
+constructor TMainCaptionForm.Create(const aOwner: TForm);
 begin
-  inherited create(aOwner);
+  inherited Create(aOwner);
   height    := 80;
   FCaption  := TLabel.create(SELF);
 end;
@@ -212,9 +212,9 @@ end;
 
 { TMainCaptionProxy }
 
-constructor TMainCaptionProxy.create(const aOwner: TForm);
+constructor TMainCaptionProxy.Create(const aOwner: TForm);
 begin
-  inherited create;
+  inherited Create;
   FMainCaptionForm  := TMainCaptionForm.create(aOwner);
   FSubscriber       := appEvents.subscribe(newSubscriber(onNotify));
   FSubscriberTT     := TT.subscribe(newSubscriber(onTickTimer));

@@ -59,7 +59,7 @@ type
     procedure chbDeleteFolderClick(Sender: TObject);
   private
   public
-    constructor create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
+    constructor Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
   end;
   {$ENDREGION}
 
@@ -91,13 +91,13 @@ begin
   btnYes.enabled := chbDeleteFolder.checked;
 end;
 
-constructor TConfirmDeleteForm.create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
+constructor TConfirmDeleteForm.Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
 const
   TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files', 'Cleanup Timeline Editing Files');
   CONFIRM_CAPTIONS: array[TDeleteMethod]    of string = ('Confirm Recycle', 'Confirm Delete', 'Confirm Shred');
   TYPE_CAPTIONS:    array[TDeletionObject]  of string = (' File?', ' Folder?', ' non-"[K]eep" files?', ' Timeline Editing Files?');
 begin
-  inherited create(NIL);
+  inherited Create(NIL);
 
   borderIcons := [];
 

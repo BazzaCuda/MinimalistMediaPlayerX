@@ -46,7 +46,7 @@ type
   private
     procedure   timerEvent(aSender: TObject);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
 
     // ISubscribable
@@ -64,7 +64,7 @@ end;
 
 { TTickTimer }
 
-constructor TTickTimer.create;
+constructor TTickTimer.Create;
 begin
   inherited;
   FNotifier       := newNotifier;

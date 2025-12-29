@@ -78,7 +78,7 @@ type
 
     FCriticalSection:         TCriticalSection;
   private
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
 
     function    getMax:       integer;
@@ -515,7 +515,7 @@ begin
 
 end;
 
-constructor TTimeline.create;
+constructor TTimeline.Create;
 begin
   inherited;
   FUndoList             := TObjectStack<TStringList>.create;

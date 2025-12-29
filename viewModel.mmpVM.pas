@@ -199,7 +199,7 @@ type
     procedure   setPlaylist(const aValue: IPlaylist);
     procedure   setProgressBar(const aValue: IProgressBar);
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
     function    showUI:                 boolean;
@@ -266,7 +266,7 @@ begin
   FResizingWindow := FALSE;
 end;
 
-constructor TVM.create;
+constructor TVM.Create;
 begin
   inherited;
   FSubscriber   := appEvents.subscribe(newSubscriber(onNotify));

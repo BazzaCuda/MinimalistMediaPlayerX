@@ -40,7 +40,7 @@ type
     FUndoRecs: TObjectStack<TUndoRec>;
   protected
   public
-    constructor create;
+    constructor Create;
     destructor  Destroy; override;
     function    recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
     function    undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
@@ -64,7 +64,7 @@ end;
 
 { TUndoMove }
 
-constructor TUndoMove.create;
+constructor TUndoMove.Create;
 begin
   inherited;
   FUndoRecs := TObjectStack<TUndoRec>.create;
