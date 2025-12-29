@@ -29,7 +29,6 @@ function appEvents: ISubscribable;
 function newNotifier: INotifier;
 
 function notifyApp(const aNotice: INotice): INotice;
-// function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice; overload;
 
 implementation
 
@@ -68,13 +67,6 @@ begin
   case aNotice  = NIL of TRUE: EXIT; end;
   (appEvents as INotifier).notifySubscribers(aNotice);
 end;
-
-//function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice;
-//begin
-//  result := aNotice;
-//  case (aNotifier = NIL) or (aNotice = NIL) of TRUE: EXIT; end;
-//  aNotifier.notifySubscribers(aNotice);
-//end;
 
 { TNotifier }
 
