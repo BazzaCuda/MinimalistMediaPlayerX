@@ -29,7 +29,7 @@ function appEvents: ISubscribable;
 function newNotifier: INotifier;
 
 function notifyApp(const aNotice: INotice): INotice;
-function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice; overload;
+// function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice; overload;
 
 implementation
 
@@ -69,12 +69,12 @@ begin
   (appEvents as INotifier).notifySubscribers(aNotice);
 end;
 
-function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice;
-begin
-  result := aNotice;
-  case (aNotifier = NIL) or (aNotice = NIL) of TRUE: EXIT; end;
-  aNotifier.notifySubscribers(aNotice);
-end;
+//function notifySubscribers(const aNotifier: INotifier; const aNotice: INotice): INotice;
+//begin
+//  result := aNotice;
+//  case (aNotifier = NIL) or (aNotice = NIL) of TRUE: EXIT; end;
+//  aNotifier.notifySubscribers(aNotice);
+//end;
 
 { TNotifier }
 
@@ -106,12 +106,14 @@ end;
 
 procedure TNotifier.unsubscribe(const aSubscriber: ISubscriber);
 begin
+  aSubscriber.notifyMethod := NIL;
   FSubscribers.remove(aSubscriber);
 end;
 
 procedure TNotifier.unsubscribeAll;
 begin
-  for var vSubscriber in FSubscribers do unsubscribe(vSubscriber); // aka FSubscribers.clear
+  for var vSubscriber in FSubscribers do vSubscriber.notifyMethod := NIL;
+  FSubscribers.clear;
 end;
 
 end.
