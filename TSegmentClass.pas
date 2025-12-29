@@ -62,7 +62,7 @@ type
 
   protected
     procedure doClick(Sender: TObject);
-    procedure paint; override;
+    procedure Paint; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
@@ -245,7 +245,7 @@ begin
   result := FTitle.caption;
 end;
 
-procedure TSegment.paint;
+procedure TSegment.Paint;
 begin
   var rect := getClientRect;
 
