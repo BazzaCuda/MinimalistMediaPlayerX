@@ -22,7 +22,6 @@ interface
 
 uses mmpNotify.notices;
 
-function newSubscriber: ISubscriber; overload;
 function newSubscriber(const aNotifyMethod: TNotifyMethod): ISubscriber; overload;
 
 implementation
@@ -36,7 +35,7 @@ type
     procedure setNotifyMethod(const aNotifyMethod: TNotifyMethod);
   end;
 
-function newSubscriber: ISubscriber;
+function newSubscriber: ISubscriber; overload;
 begin
   result := TSubscriber.create;
 end;
@@ -46,6 +45,7 @@ begin
   result              := newSubscriber;
   result.notifyMethod := aNotifyMethod;
 end;
+
 { TSubscriber }
 
 procedure TSubscriber.setNotifyMethod(const aNotifyMethod: TNotifyMethod);
