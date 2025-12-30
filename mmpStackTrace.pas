@@ -33,25 +33,25 @@ uses
 
 function getExceptionStackInfoProc(P: PExceptionRecord): pointer;
 var
-  vLines: TStringList;
-  vText: String;
-  vResult: PChar;
+  vLines:   TStringList;
+  vText:    string;
+  vResult:  PChar;
   vJcl_sil: TJclStackInfoList;
 begin
-  vLines := TStringList.Create;
+  vLines := TStringList.create;
   try
-    vJcl_sil:=TJclStackInfoList.Create(True, 7, p.ExceptAddr, False, nil, nil);
+    vJcl_sil:=TJclStackInfoList.Create(True, 7, p.ExceptAddr, FALSE, NIL, NIL);
     try
-      vJcl_sil.addToStrings(vLines, true, true, true, true);
+      vJcl_sil.addToStrings(vLines, TRUE, TRUE, TRUE, TRUE);
     finally
-      FreeAndNil(vJcl_sil);
+      freeAndNil(vJcl_sil);
     end;
     vText := vLines.Text;
     vResult := strAlloc(length(vText));
     strCopy(vResult, PChar(vText));
     result := vResult;
   finally
-    vLines.Free;
+    vLines.free;
   end;
 end;
 
