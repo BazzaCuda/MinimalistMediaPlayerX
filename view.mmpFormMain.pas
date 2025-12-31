@@ -38,7 +38,7 @@ type
   end;
 
   {$REGION}
-  TMMPUI = class(TForm)
+  TMMPUI = class(TForm, IUIView)
     applicationEvents: TApplicationEvents;
     procedure   applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
     procedure   FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -74,6 +74,7 @@ type
 
     procedure   WINTerminate      (var msg: TMessage);      message WIN_TERMINATE;
   public
+    // IUIView
     function    getViewModel: IViewModel;
     procedure   setViewModel(const aValue: IViewModel);
     property    viewModel:    IViewModel      read getViewModel write setViewModel;

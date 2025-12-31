@@ -16,28 +16,24 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpVCL;
+unit mmpRTL;
 
 interface
 
 uses
-  vcl.extCtrls,
-  vcl.forms,
-  vcl.styles, // required to initialize TStyleManager
-  vcl.themes; // required to access TStyleManager
+  system.sysUtils;
 
 type
-  TForm          = vcl.forms.TForm;
-  TPanel         = vcl.extCtrls.TPanel;
-  TStyleManager  = vcl.themes.TStyleManager;
+  TProc          = system.sysUtils.TProc;
 
-function app: TApplication;
+function lowerCase(const s: string): string;
 
 implementation
 
-function app: TApplication;
+function lowerCase(const s: string): string;
 begin
-  result := application;
+  result := system.sysUtils.lowerCase(s);
 end;
+
 
 end.

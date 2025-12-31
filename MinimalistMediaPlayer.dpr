@@ -41,8 +41,6 @@ uses
   {$endif }
   {$ifdef designTimeThemes}
   vcl.forms,
-  vcl.styles,
-  vcl.themes,
   {$endif }
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
@@ -123,7 +121,8 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas',
+  mmpRTL in 'mmpRTL.pas';
 
 procedure setupRunMode;
 begin
