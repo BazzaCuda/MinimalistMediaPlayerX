@@ -56,7 +56,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpFuncProg,
+  mmpCmd,
   _debugWindow;
 
 type

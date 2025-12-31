@@ -110,7 +110,7 @@ function mediaInfoDLL_Load(const LibPath: string): boolean;
 
 implementation
 
-uses mmpFuncProg;
+uses mmpCmd;
 
 var
   libHandle: THandle = 0;

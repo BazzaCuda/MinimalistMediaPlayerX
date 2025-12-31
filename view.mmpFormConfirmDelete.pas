@@ -70,7 +70,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpFuncProg, mmpGlobalState, mmpUtils,
+  mmpCmd, mmpGlobalState, mmpUtils,
   _debugWindow;
 
 function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer): TModalResult;

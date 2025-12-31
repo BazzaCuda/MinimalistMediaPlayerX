@@ -72,7 +72,7 @@ implementation
 
 uses
   system.math, system.sysUtils,
-  mmpConsts, mmpFuncProg,
+  mmpConsts, mmpCmd,
   _debugWindow;
 
 const

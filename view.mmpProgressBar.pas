@@ -41,7 +41,7 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpConsts, mmpFormatting, mmpFuncProg, mmpGlobalState,
+  mmpConsts, mmpFormatting, mmpCmd, mmpGlobalState,
   _debugWindow;
 
 type

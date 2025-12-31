@@ -222,7 +222,7 @@ function mmpConfig: boolean;
 implementation
 
 uses
-  mmpConsts, mmpFolderUtils, mmpFuncProg, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
+  mmpConsts, mmpFolderUtils, mmpCmd, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
   model.mmpConfigFile;
 
 function mmpConfig: boolean;

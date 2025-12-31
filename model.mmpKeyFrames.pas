@@ -39,7 +39,7 @@ uses
   system.classes, system.sysUtils,
   vcl.graphics,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpFileUtils, mmpFuncProg, mmpShellUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpCmd, mmpShellUtils, mmpUtils,
   _debugWindow;
 
 {$J+} const gKeyFrames: TList<double> = NIL; {$J-}

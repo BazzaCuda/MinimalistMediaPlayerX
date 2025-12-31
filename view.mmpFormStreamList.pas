@@ -104,7 +104,7 @@ implementation
 
 uses
   system.math,
-  mmpFormatting, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
+  mmpFormatting, mmpCmd, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;

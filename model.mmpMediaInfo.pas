@@ -147,7 +147,7 @@ implementation
 uses
   system.generics.defaults, system.sysUtils, system.timeSpan,
   mediaInfoDLL,
-  mmpFileUtils, mmpFormatting, mmpFuncProg, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpCmd, mmpUtils,
   _debugWindow;
 
 function MI: IMediaInfo;

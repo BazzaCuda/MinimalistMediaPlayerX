@@ -40,7 +40,7 @@ implementation
 uses
   system.classes,
   vcl.forms,
-  mmpFileUtils, mmpFuncProg, mmpUtils,
+  mmpFileUtils, mmpCmd, mmpUtils,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;

@@ -86,7 +86,7 @@ implementation
 {$R *.dfm}
 
 uses
-  mmpConsts, mmpFuncProg, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer,
+  mmpConsts, mmpCmd, mmpGlobalState, mmpKeyboardUtils, mmpTickTimer,
   view.mmpThemeUtils,
   _debugWindow;
 

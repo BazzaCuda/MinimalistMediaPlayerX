@@ -35,7 +35,7 @@ function newMMPMenu: IMMPMenu;
 implementation
 
 uses
-  mmpFuncProg,
+  mmpCmd,
   model.mmpConfigFile,
   _debugWindow;
 

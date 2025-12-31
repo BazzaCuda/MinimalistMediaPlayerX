@@ -45,7 +45,7 @@ function mmpInputBoxForm(const aPrompt: string): string;
 implementation
 
 uses
-  mmpFuncProg, mmpGlobalState, mmpTickTimer, mmpUtils,
+  mmpCmd, mmpGlobalState, mmpTickTimer, mmpUtils,
   _debugWindow;
 
 {$R *.dfm}
