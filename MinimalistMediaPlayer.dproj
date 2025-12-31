@@ -170,6 +170,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="_libMPVDelphi\MPVConst.pas"/>
         <DCCReference Include="_libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
+        <DCCReference Include="mmpAction.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
@@ -179,7 +180,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpFolderUtils.pas"/>
         <DCCReference Include="mmpFormatting.pas"/>
         <DCCReference Include="mmpFormInputBox.pas"/>
-        <DCCReference Include="mmpFuncProg.pas"/>
+        <DCCReference Include="mmpCmd.pas"/>
         <DCCReference Include="mmpGlobalState.pas"/>
         <DCCReference Include="mmpImageUtils.pas"/>
         <DCCReference Include="mmpKeyboardUtils.pas"/>
@@ -192,6 +193,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpPanelCtrls.pas"/>
         <DCCReference Include="mmpPostToAllUtils.pas"/>
         <DCCReference Include="mmpProgramUpdates.pas"/>
+        <DCCReference Include="mmpRTL.pas"/>
         <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="mmpShredUtils.pas"/>
         <DCCReference Include="mmpStackTrace.pas"/>
@@ -243,7 +245,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
-        <DCCReference Include="mmpRTL.pas"/>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>

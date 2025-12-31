@@ -49,6 +49,7 @@ uses
   MPVConst in '_libMPVDelphi\MPVConst.pas',
   MPVBasePlayer in '_libMPVDelphi\MPVBasePlayer.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
+  mmpAction in 'mmpAction.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   mmpDialogs in 'mmpDialogs.pas',
@@ -58,7 +59,7 @@ uses
   mmpFolderUtils in 'mmpFolderUtils.pas',
   mmpFormatting in 'mmpFormatting.pas',
   mmpFormInputBox in 'mmpFormInputBox.pas',
-  mmpFuncProg in 'mmpFuncProg.pas',
+  mmpCmd in 'mmpCmd.pas',
   mmpGlobalState in 'mmpGlobalState.pas',
   mmpImageUtils in 'mmpImageUtils.pas',
   mmpKeyboardUtils in 'mmpKeyboardUtils.pas',
@@ -71,6 +72,7 @@ uses
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
   mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
   mmpProgramUpdates in 'mmpProgramUpdates.pas',
+  mmpRTL in 'mmpRTL.pas',
   mmpShellUtils in 'mmpShellUtils.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
@@ -121,8 +123,7 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas',
-  mmpRTL in 'mmpRTL.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas';
 
 procedure setupRunMode;
 begin
