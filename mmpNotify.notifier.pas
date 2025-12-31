@@ -25,7 +25,7 @@ uses
   system.classes, system.generics.collections,
   mmpNotify.notices;
 
-function appEvents: ISubscribable;
+function appEvents: INotifier; // EXPERIMENTAL - was ISubscribable
 function newNotifier: INotifier;
 
 function notifyApp(const aNotice: INotice): INotice;
@@ -54,8 +54,8 @@ begin
   result := TNotifier.create;
 end;
 
-function appEvents: ISubscribable;
-{$J+} const gAppEvents: ISubscribable = NIL; {$J-}
+function appEvents: INotifier; // EXPERIMENTAL - was ISubscribable
+{$J+} const gAppEvents: INotifier = NIL; {$J-} // EXPERIMENTAL - was ISubscribable
 begin
   case gAppEvents = NIL of TRUE: gAppEvents := newNotifier; end;
   result := gAppEvents;
@@ -65,7 +65,8 @@ function notifyApp(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice  = NIL of TRUE: EXIT; end;
-  (appEvents as INotifier).notifySubscribers(aNotice);
+//  (appEvents as INotifier).notifySubscribers(aNotice);
+  appEvents.notifySubscribers(aNotice); // EXPERIMENTAL
 end;
 
 { TNotifier }
@@ -79,6 +80,7 @@ end;
 destructor TNotifier.Destroy;
 begin
   for var vSubscriber in FSubscribers do unsubscribe(vSubscriber);
+  FSubscribers.clear;
   FSubscribers.free;
   inherited;
 end;
@@ -99,7 +101,6 @@ end;
 procedure TNotifier.unsubscribe(const aSubscriber: ISubscriber);
 begin
   aSubscriber.notifyMethod := NIL;
-  FSubscribers.remove(aSubscriber);
 end;
 
 procedure TNotifier.unsubscribeAll;
