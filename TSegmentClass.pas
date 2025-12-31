@@ -119,7 +119,8 @@ end;
 
 class function TSegment.clearFocus: boolean;
 begin
-  for var vSegment in FSegments do vSegment.selected := FALSE;
+//  for var vSegment in FSegments do vSegment.selected := FALSE;
+  for var i := 0 to FSegments.count - 1 do FSegments[i].selected := FALSE; // EXPERIMENTAL
   FSelSeg := NIL;
 end;
 

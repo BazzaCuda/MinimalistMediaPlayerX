@@ -76,7 +76,7 @@ type
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
 
-    FCriticalSection:         TCriticalSection;
+//    FCriticalSection:         TCriticalSection;
   private
     constructor Create;
     destructor  Destroy; override;
@@ -523,7 +523,7 @@ begin
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
   FSubscriber           := appEvents.subscribe(newSubscriber(onNotify));
-  FCriticalSection      := TCriticalSection.create;
+//  FCriticalSection      := TCriticalSection.create;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -559,15 +559,15 @@ end;
 
 destructor TTimeline.Destroy;
 begin
-  FCriticalSection.acquire;
+//  FCriticalSection.acquire;
   try
     segments.clear;
   finally
-    FCriticalSection.release;
+//    FCriticalSection.release;
   end;
   FUndoList.free;
   FRedoList.free;
-  case FCriticalSection = NIL of FALSE: FCriticalSection.free; end;
+//  case FCriticalSection = NIL of FALSE: FCriticalSection.free; end;
   inherited;
 end;
 
@@ -577,9 +577,11 @@ begin
   case FMax = 0 of TRUE: EXIT; end;
 
   var n := 1;
-  FCriticalSection.acquire;
+//  FCriticalSection.acquire;
   try
-    for var vSegment in segments do begin
+//    for var vSegment in segments do begin // EXPERIMENTAL
+    for var i := 0 to segments.count - 1 do begin
+      var vSegment := segments[i];
       vSegment.top     := 0;
       vSegment.height  := gTimelineForm.height;
       case vSegment.ix = 0 of  TRUE: vSegment.left := 0;
@@ -604,7 +606,7 @@ begin
     end;
     case segCount > 1 of TRUE: segments[0].width := segments[1].left - 1; end;
   finally
-    FCriticalSection.release;
+//    FCriticalSection.release;
   end;
 
   gTimelineForm.pnlCursor.bringToFront;
@@ -788,11 +790,11 @@ begin
 
   // {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
 
-  FCriticalSection.acquire;
+//  FCriticalSection.acquire;
   try
     segments.clear;
   finally
-    FCriticalSection.release;
+//    FCriticalSection.release;
   end;
 
   FUndoList.clear; FRedoList.clear;
@@ -990,12 +992,12 @@ end;
 function TTimeline.segmentAtSS(const aSS: integer): TSegment;
 begin
   result := NIL;
-  FCriticalSection.acquire;
+//  FCriticalSection.acquire;
   try
     for var vSegment in segments do
       case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
   finally
-    FCriticalSection.release;
+//    FCriticalSection.release;
   end;
 end;
 
