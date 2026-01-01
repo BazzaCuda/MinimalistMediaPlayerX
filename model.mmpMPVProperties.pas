@@ -193,7 +193,7 @@ begin
     setPropertyBool('keep-open', FALSE); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
     setPropertyBool('keep-open-pause', FALSE);
 
-    setPropertyString('sub-font', 'Segoe UI');
+    setPropertyString('sub-font', FONT_SEGOE_UI);
     setPropertyString('sub-color', '#808080');
     setPropertyString('osd-color', '#808080');
     setPropertyString('osd-bold',  'yes');

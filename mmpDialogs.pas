@@ -54,7 +54,7 @@ begin
   with createMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
     mmp.cmd(evGSUserInput, TRUE);
-    font.name := 'Segoe UI';
+    font.name := FONT_SEGOE_UI;
     font.size := 12;
     height    := height +  50;
     width     := width  + 200;

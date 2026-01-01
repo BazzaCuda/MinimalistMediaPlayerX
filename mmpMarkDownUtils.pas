@@ -52,7 +52,7 @@ begin
   aMD.defHotSpotColor  := DARK_MODE_SILVER;
   aMD.defOverLinkColor := DARK_MODE_SILVER;
   aMD.borderStyle      := htNone;
-  aMD.defFontName      := 'Tahoma';
+  aMD.defFontName      := FONT_TAHOMA;
   aMD.defFontSize      := 11;
   aMD.scrollBars       := ssVertical;
   aMD.htOptions        := [htOverLinksActive];

@@ -153,7 +153,7 @@ begin
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));
     koVolUp:              MP.notify(newNotice(evMPVolUp));
-    koWiki:               mmpShellExec('https://minimalistmediaplayer.com');
+    koWiki:               mmpShellExec(MMP_WIKI_URL);
     koZoomIn:             MP.notify(newNotice(evMPZoomIn));
     koZoomOut:            MP.notify(newNotice(evMPZoomOut));
     koZoomReset:          MP.notify(newNotice(evMPZoomReset));

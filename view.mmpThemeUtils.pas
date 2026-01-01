@@ -113,7 +113,7 @@ function mmpThemeInitForm(const aForm: TForm): boolean;
     aForm.Left := 0;
     aForm.Top := 0;
     aForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
-    aForm.Caption := 'MMP: Minimalist Media Player';
+    aForm.Caption := MMP_TITLE;
     aForm.Color := clGray;
     aForm.CustomTitleBar.Height := 31;
     aForm.CustomTitleBar.SystemHeight := False;
@@ -136,7 +136,7 @@ function mmpThemeInitForm(const aForm: TForm): boolean;
     aForm.Font.Charset := DEFAULT_CHARSET;
     aForm.Font.Color := clWindowText;
     aForm.Font.Height := -11;
-    aForm.Font.Name := 'Tahoma';
+    aForm.Font.Name := FONT_TAHOMA;
     aForm.Font.Style := [];
   end;
 

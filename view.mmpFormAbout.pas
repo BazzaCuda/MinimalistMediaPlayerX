@@ -267,7 +267,7 @@ end;
 
 procedure TAboutForm.lblWikiURLClick(Sender: TObject);
 begin
-  mmpShellExec('https://minimalistmediaplayer.com');
+  mmpShellExec(MMP_WIKI_URL);
 end;
 
 procedure TAboutForm.lblWikiURLMouseEnter(Sender: TObject);
@@ -380,7 +380,7 @@ begin
   try
     FProgressForm.modal               := FALSE;
     FProgressForm.buttons             := FALSE;
-    FProgressForm.heading.caption     := 'MMP: Minimalist Media Player';
+    FProgressForm.heading.caption     := MMP_TITLE;
     FProgressForm.subHeading.caption  := 'Loading About Box...';
     FProgressForm.show;
     mmpProcessMessages;

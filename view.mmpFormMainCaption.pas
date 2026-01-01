@@ -140,13 +140,13 @@ function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: T
     SELF.Font.Charset := DEFAULT_CHARSET;
     SELF.Font.Color   := clWindowText;
     SELF.Font.Height  := -11;
-    SELF.Font.Name    := 'Tahoma';
+    SELF.Font.Name    := FONT_TAHOMA;
     SELF.Font.Style   := [];
   end;
 
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
-    aLabel.font.name      := 'Tahoma';
+    aLabel.font.name      := FONT_TAHOMA;
     aLabel.font.color     := ST_DEFAULT_COLOR;
     aLabel.font.size      := 10;
     aLabel.font.style     := [fsBold];

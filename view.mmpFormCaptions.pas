@@ -143,7 +143,7 @@ constructor TCaptionsForm.Create(aOwner: TComponent);
   function defaultFontEtc(aLabel: TLabel): boolean;
   begin
     result                := FALSE;
-    aLabel.font.name      := 'Tahoma';
+    aLabel.font.name      := FONT_TAHOMA;
     aLabel.font.color     := ST_DEFAULT_COLOR;
     aLabel.font.size      := 10;
     aLabel.align          := alBottom; // WE MUST USE ALIGN OTHERWISE SIBLING CONTROLS DON'T GET DRAWN OVER THE VIDEO!!!!!!
@@ -214,7 +214,7 @@ begin
   FDataMemo.margins.bottom  := 20; // otherwise the bottom line displays behind the progressBar
   FDataMemo.readOnly        := TRUE;
   FDataMemo.tabStop         := FALSE;
-  FDataMemo.font.name       := 'Tahoma';
+  FDataMemo.font.name       := FONT_TAHOMA;
   FDataMemo.font.color      := ST_DEFAULT_COLOR;
   FDataMemo.font.size       := 10;
   FDataMemo.font.style      := [fsBold];

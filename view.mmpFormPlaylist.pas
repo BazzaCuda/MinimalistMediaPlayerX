@@ -31,7 +31,7 @@ type
 
   {$REGION}
   // this should be in the implementation section but that would cause problems with the IDE
-  TPlaylistForm = class(TForm)
+  TPlaylistForm = class(TForm, IPlaylistForm)
     backPanel:          TPanel;
     buttonPanel:        TPanel;
     shiftLabel:         TLabel;

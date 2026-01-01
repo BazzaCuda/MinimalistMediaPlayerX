@@ -29,6 +29,7 @@ const
   MMP_TITLE           = 'MMP: Minimalist Media Player';
   MMP_CHECK           = 'MMP_CHECK';
   MMP_STYLE_DARKMODE  = 'DarkMode';
+  MMP_WIKI_URL        = 'https://minimalistmediaplayer.com';
 
   EMPTY               = '';
   BACKSLASH           = '\';
@@ -79,6 +80,9 @@ const
   DARK_MODE_LIGHT  = $232323;
   DARK_MODE_SILVER = $C0C0C0; // clSilver
   DARK_MODE_DKGRAY = $808080; // clDkGray
+
+  FONT_TAHOMA      = 'Tahoma';
+  FONT_SEGOE_UI    = 'Segoe UI';
 
   DEFAULT_REPEAT_DELAY_MS = 100;
   MILLISECONDS     = 1000;
