@@ -31,7 +31,6 @@ type
   TDeletionObject = (doFile, doFolder, doKeepDelete, doCleanup);
 
   IConfirmDeleteForm = interface
-    ['{96B437DD-E174-4008-9DCA-C55BE40D5BF2}']
   end;
 
   {$REGION}

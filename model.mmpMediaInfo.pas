@@ -62,7 +62,6 @@ type
   end;
 
   IMediaInfo = interface
-    ['{993AE566-A6CC-4681-B166-813C8CCD53EE}']
     function getAVSStreamCount:     integer;
     function getChapterCount:       integer;
     function getImageHeight:        integer;

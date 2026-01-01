@@ -31,7 +31,6 @@ uses
 type
   // we're not currently using this because of TComponent problems via TForm :(
   IUIView = interface
-    ['{C3ED06CD-FB6F-403E-A8DA-228771E51166}']
     function    getViewModel: IViewModel;
     procedure   setViewModel(const aValue: IViewModel);
     property    viewModel:    IViewModel  read getViewModel write setViewModel;

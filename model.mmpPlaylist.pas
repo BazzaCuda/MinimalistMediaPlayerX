@@ -28,7 +28,6 @@ uses
 
 type
   IPlaylist = interface
-    ['{EAA8F4FC-4F65-4080-B25F-5F5CA08309D9}']
     function    add(const anItem: string):                  boolean;
     function    clear:                                      boolean;
     function    copyToClipboard:                            string;

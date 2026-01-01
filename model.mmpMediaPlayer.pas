@@ -26,7 +26,6 @@ uses
 
 type
   IMediaPlayer = interface(ISubscribable)
-    ['{7666FECA-9BF6-4422-BB68-8EEAF6A6E6F7}']
     function  initMediaPlayer(const aHWND: HWND): boolean;
     function  notify(const aNotice: INotice): INotice;
   end;

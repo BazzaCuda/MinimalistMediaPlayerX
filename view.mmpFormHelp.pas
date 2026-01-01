@@ -30,7 +30,6 @@ uses
 
 type
   IHelpForm = interface
-    ['{1FF2B312-F655-4254-800D-C489EE2A712B}']
   end;
 
   {$REGION}

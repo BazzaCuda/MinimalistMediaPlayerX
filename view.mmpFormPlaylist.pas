@@ -27,7 +27,6 @@ uses
 
 type
   IPlaylistForm = interface
-    ['{AA9DD8D3-6275-4C84-A7BA-FB2D2BA3C41F}']
   end;
 
   {$REGION}

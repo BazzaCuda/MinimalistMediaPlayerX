@@ -27,7 +27,6 @@ uses
 
 type
   ITickTimer = interface(ISubscribable)
-    ['{520972A9-0FDF-4557-A9A2-BE8B3D5B143A}']
   end;
 
 function TT: ITickTimer;

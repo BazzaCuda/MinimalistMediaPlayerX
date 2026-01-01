@@ -24,7 +24,7 @@ uses
   system.sysUtils;
 
 type
-  TProc          = system.sysUtils.TProc;
+  TProc = system.sysUtils.TProc;
 
 function lowerCase(const s: string): string;
 

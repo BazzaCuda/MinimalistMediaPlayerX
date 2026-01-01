@@ -29,7 +29,6 @@ uses
 
 type
   ICaptions = interface
-    ['{1F91FC41-F900-499E-82D7-5BE4733A9F19}']
     function    blankInTimeCaption: boolean;
     function    blankOutTimeCaption: boolean;
     function    getCaptionsForm: TForm;

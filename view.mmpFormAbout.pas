@@ -29,7 +29,6 @@ uses
 
 type
   IAboutForm = interface
-    ['{958B8D00-5F85-401C-80F8-390721F9AE39}']
     function notify(const aNotice: INotice): INotice;
   end;
 

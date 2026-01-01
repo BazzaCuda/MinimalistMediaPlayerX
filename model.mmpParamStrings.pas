@@ -22,7 +22,6 @@ interface
 
 type
   IParamStrings = interface
-    ['{0F0C2795-ED4D-4FE1-917F-5BB980FC9481}']
     function getFileFolder:         string;
     function getFileFolderAndName:  string;
     function getNoFile:             boolean;

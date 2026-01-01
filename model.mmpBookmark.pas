@@ -25,7 +25,6 @@ uses
 
 type
   IBookmark = interface
-    ['{316364FE-FE36-47F3-BE39-410EA778C6BA}']
     function delete   (const aURL: string): string;
     function position (const aURL: string): integer;
     function save     (const aURL: string; const aPosition: integer): string;

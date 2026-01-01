@@ -26,8 +26,6 @@ uses
 
 type
   IThumb = interface
-    ['{AE24966D-C533-4F73-84D9-B095706CB665}']
-
     function  getOnThumbClick: TNotifyEvent;
     procedure setOnThumbClick(const Value: TNotifyEvent);
     function  getThumbHint: string;

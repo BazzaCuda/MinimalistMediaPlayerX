@@ -25,7 +25,6 @@ uses
 
 type
   IMediaTypes = interface
-    ['{DE35A42E-3D19-4DBF-9491-8E6D8A175CE1}']
     function mediaType(const aExt: string): TMediaType;
   end;
 

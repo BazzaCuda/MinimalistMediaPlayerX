@@ -26,7 +26,6 @@ uses
 
 type
   IMMPExceptionHandler = interface
-    ['{FB33F347-340D-4E75-929D-36AC2880FA49}']
     function handler: TExceptionEvent;
   end;
 

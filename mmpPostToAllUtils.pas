@@ -25,7 +25,6 @@ uses
 
 type
   IPostToAll = interface
-    ['{CBB88DF1-32F6-4669-8F3A-CCE148884AF9}']
     function  addWnd(const aHWND: HWND): boolean;
     function  getHWND(ix: integer): HWND;
     property  HWND[ix: integer]:    HWND read getHWND; default;

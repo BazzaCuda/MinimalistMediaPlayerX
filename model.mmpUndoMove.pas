@@ -25,7 +25,6 @@ uses
 
 type
   IUndoMove = interface
-    ['{593A73F9-5CC7-42A2-A0C5-CA761D3D9EFB}']
     function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
     function undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
   end;

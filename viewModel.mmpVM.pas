@@ -37,7 +37,6 @@ type
   TWMMessage            = procedure(var msg: TMessage) of object;
 
   IViewModel = interface
-    ['{D9293E74-93D4-4576-A5B9-66A806E6BA42}']
     function    getMediaPlayer:       IMediaPlayer;
     function    getPlaylist:          IPlaylist;
     function    getProgressBar:       IProgressBar;

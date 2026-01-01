@@ -26,7 +26,6 @@ uses
 
 type
   IProgramUpdates = interface
-    ['{6C5FC828-6B3A-49C5-A610-657C954953D0}']
     function getReleaseTag: string;
     function hasReleaseNotes(const aReleaseTag: string): boolean;
     property releaseTag:    string read getReleaseTag; // has a couple of side-effects ;)

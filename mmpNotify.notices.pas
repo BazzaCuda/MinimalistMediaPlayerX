@@ -102,7 +102,6 @@ type
   TNoticeEvents = set of TNoticeEvent; // not currently used
 
   INotice = interface
-    ['{2BB04DBB-6D61-4E4F-8C70-8BCC8E36FDE4}']
     function  getEvent:       TNoticeEvent;
     function  getBoolean:     boolean;
     function  getComponent:   TComponent;
@@ -143,21 +142,18 @@ type
   TNotifyMethod = function(const aNotice: INotice): INotice of object;
 
   ISubscriber = interface
-    ['{955BF992-F4FA-4141-9C0F-04600C582C00}']
     function  notifySubscriber(const aNotice: INotice): INotice;
     procedure setNotifyMethod(const aNotifyMethod: TNotifyMethod);
     property  notifyMethod: TNotifyMethod write setNotifyMethod;
   end;
 
   ISubscribable = interface
-    ['{6E55B835-3C16-404E-AAA0-8C4354BBEB59}']
     function  subscribe(const aSubscriber: ISubscriber): ISubscriber;
     procedure unsubscribe(const aSubscriber: ISubscriber);
     procedure unsubscribeAll;
   end;
 
   INotifier = interface(ISubscribable)
-    ['{DD326AE1-5049-43AA-9215-DF53DB5FC958}']
     procedure notifySubscribers(const aNotice: INotice);
   end;
 

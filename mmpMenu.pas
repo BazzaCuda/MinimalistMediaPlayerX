@@ -26,7 +26,6 @@ uses
 
 type
   IMMPMenu = interface
-  ['{146B714B-47E1-4B6D-BF9F-AFE5D349B1A8}']
     function popup(x, y: integer): IMMPMenu;
   end;
 

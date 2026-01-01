@@ -46,7 +46,6 @@ uses
 
 type
   IGlobalState = interface
-    ['{0DA7E51A-C0BC-4872-9A7E-9BD14E0DBB62}']
     function getActiveTasks:              integer;
     function getActiveTaskPercent:        integer;
     function getArrangeAll:               boolean;

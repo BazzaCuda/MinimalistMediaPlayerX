@@ -30,7 +30,6 @@ uses
 
 type
   IProgressBar = interface
-    ['{2CF981F3-CE41-48EA-A365-13E9F7986238}']
     function    initProgressBar(const aForm: TForm; const aColor: TColor; const aColorDelta: TColor): IProgressBar;
     function    notify(const aNotice: INotice): INotice;
   end;

@@ -28,7 +28,6 @@ uses
 
 type
   IMainCaption = interface
-    ['{DA3C189F-C595-4EAD-B417-586DC9E30834}']
     function initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
     function resetTimer: boolean;
   end;

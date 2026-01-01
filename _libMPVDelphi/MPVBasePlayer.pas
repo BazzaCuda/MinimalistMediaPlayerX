@@ -55,7 +55,6 @@ type
   TMPVStateChanged = procedure (cSender: TObject; eState: TMPVPlayerState) of object;
 
   IMPVBasePlayer = interface
-    ['{E4A6B57C-7858-4110-A15E-F61C3D4D7BE8}']
     function  getOnFileOpen: TMPVFileOpen;
     procedure setOnFileOpen(const Value: TMPVFileOpen);
     function  getOnInitMPV: TNotifyEvent;

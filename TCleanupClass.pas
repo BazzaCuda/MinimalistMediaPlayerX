@@ -25,7 +25,6 @@ uses
 
 type
   ICleanup = interface
-  ['{EEC91FA7-48B3-419B-B5EC-63210CBA7DDF}']
     function cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
   end;
 

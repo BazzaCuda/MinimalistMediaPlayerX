@@ -31,7 +31,6 @@ type
   TPlayType = (ptGenerateThumbs, ptPlaylistOnly);
 
   IThumbs = interface
-    ['{BAA8AD99-5696-442E-B97B-2DBDD2FAE55E}']
     function    cancel:             boolean;
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function    playCurrentItem:    boolean;

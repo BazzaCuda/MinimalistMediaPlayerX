@@ -26,7 +26,6 @@ uses
 
 type
   IConfigFile = interface
-    ['{32AB825C-CC48-47F2-8717-8F471C059BAD}']
     function  getAsBoolean      (const aName: string): boolean;
     procedure setAsBoolean      (const aName: string; const aValue: boolean);
     function  getAsDeleteMethod (const aName: string): TDeleteMethod;
