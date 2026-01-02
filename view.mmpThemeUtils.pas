@@ -38,12 +38,12 @@ implementation
 
 function mmpThemeCreateVideoPanel(const aForm: TForm): TPanel;
 begin
-  result             := TPanel.create(aForm);
-  result.parent      := aForm;
-  result.align       := alClient;
-  result.color       := clBlack;
-  result.bevelOuter  := bvNone;
-  result.caption := 'videoPanel';
+  result              := TPanel.create(aForm);
+  result.parent       := aForm;
+  result.align        := alClient;
+  result.color        := clBlack;
+  result.bevelOuter   := bvNone;
+  result.caption      := 'videoPanel';
 end;
 
 function mmpInitTransparentForm(const aForm: TForm): TForm;
@@ -110,34 +110,34 @@ function mmpThemeInitForm(const aForm: TForm): boolean;
 
   function copiedFromDFM: boolean;
   begin
-    aForm.Left := 0;
-    aForm.Top := 0;
+    aForm.Left        := 0;
+    aForm.Top         := 0;
     aForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
-    aForm.Caption := MMP_TITLE;
-    aForm.Color := clGray;
-    aForm.CustomTitleBar.Height := 31;
-    aForm.CustomTitleBar.SystemHeight := False;
-    aForm.CustomTitleBar.ShowCaption := False;
-    aForm.CustomTitleBar.ShowIcon := False;
-    aForm.CustomTitleBar.SystemColors := False;
-    aForm.CustomTitleBar.SystemButtons := False;
-    aForm.CustomTitleBar.BackgroundColor := clBlack;
-    aForm.CustomTitleBar.ForegroundColor := clWhite;
-    aForm.CustomTitleBar.InactiveBackgroundColor := clBlack;
-    aForm.CustomTitleBar.InactiveForegroundColor := clWhite;
-    aForm.CustomTitleBar.ButtonForegroundColor := clWhite;
-    aForm.CustomTitleBar.ButtonBackgroundColor := clBlack;
-    aForm.CustomTitleBar.ButtonHoverForegroundColor := clWhite;
-    aForm.CustomTitleBar.ButtonHoverBackgroundColor := 1381653;
-    aForm.CustomTitleBar.ButtonPressedForegroundColor := clWhite;
-    aForm.CustomTitleBar.ButtonPressedBackgroundColor := 3487029;
-    aForm.CustomTitleBar.ButtonInactiveForegroundColor := clWhite;
-    aForm.CustomTitleBar.ButtonInactiveBackgroundColor := clBlack;
-    aForm.Font.Charset := DEFAULT_CHARSET;
-    aForm.Font.Color := clWindowText;
-    aForm.Font.Height := -11;
-    aForm.Font.Name := FONT_TAHOMA;
-    aForm.Font.Style := [];
+    aForm.Caption     := MMP_TITLE;
+    aForm.Color       := clGray;
+    aForm.CustomTitleBar.Height                         := 31;
+    aForm.CustomTitleBar.SystemHeight                   := False;
+    aForm.CustomTitleBar.ShowCaption                    := False;
+    aForm.CustomTitleBar.ShowIcon                       := False;
+    aForm.CustomTitleBar.SystemColors                   := False;
+    aForm.CustomTitleBar.SystemButtons                  := False;
+    aForm.CustomTitleBar.BackgroundColor                := clBlack;
+    aForm.CustomTitleBar.ForegroundColor                := clWhite;
+    aForm.CustomTitleBar.InactiveBackgroundColor        := clBlack;
+    aForm.CustomTitleBar.InactiveForegroundColor        := clWhite;
+    aForm.CustomTitleBar.ButtonForegroundColor          := clWhite;
+    aForm.CustomTitleBar.ButtonBackgroundColor          := clBlack;
+    aForm.CustomTitleBar.ButtonHoverForegroundColor     := clWhite;
+    aForm.CustomTitleBar.ButtonHoverBackgroundColor     := 1381653;
+    aForm.CustomTitleBar.ButtonPressedForegroundColor   := clWhite;
+    aForm.CustomTitleBar.ButtonPressedBackgroundColor   := 3487029;
+    aForm.CustomTitleBar.ButtonInactiveForegroundColor  := clWhite;
+    aForm.CustomTitleBar.ButtonInactiveBackgroundColor  := clBlack;
+    aForm.Font.Charset  := DEFAULT_CHARSET;
+    aForm.Font.Color    := clWindowText;
+    aForm.Font.Height   := -11;
+    aForm.Font.Name     := FONT_TAHOMA;
+    aForm.Font.Style    := [];
   end;
 
 begin

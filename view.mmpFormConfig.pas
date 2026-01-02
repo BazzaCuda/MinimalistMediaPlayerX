@@ -21,9 +21,14 @@ unit view.mmpFormConfig;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
+  {$endif}
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Samples.Spin;
 
 type

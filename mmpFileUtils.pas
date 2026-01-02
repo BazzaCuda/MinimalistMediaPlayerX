@@ -265,9 +265,10 @@ begin
                                                                                 vSysMessage, MMP_TITLE, TMsgDlgType.mtWarning, [mbOK]);
                                                           EXIT; end;end;
 
-  case bStopMPV of TRUE: mmp.cmd(evMPStop); end;
-
-  mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
+  case bStopMPV of TRUE:  begin
+                            {$if BazDebugWindow} debug('mmpDeleteThisFile evMPStop'); {$endif}
+                            mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
+                            mmp.cmd(evMPStop); end;end;
 
   try
 

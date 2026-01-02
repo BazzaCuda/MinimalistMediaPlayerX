@@ -21,9 +21,14 @@ unit view.mmpFormConfirmDelete;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.windows, winApi.Messages,
   system.imageList, system.sysUtils, system.variants, system.classes, vcl.graphics,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
+  {$endif}
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 

@@ -21,9 +21,14 @@ unit view.mmpFormMainCaption;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
+  {$endif}
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type

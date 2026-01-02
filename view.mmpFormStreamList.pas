@@ -21,9 +21,14 @@ unit view.mmpFormStreamList;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winapi.Windows,
   system.classes, system.generics.collections, system.imageList, system.sysUtils, system.variants,
   vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
+  {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,

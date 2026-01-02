@@ -21,9 +21,14 @@ unit view.mmpFormThumbs;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.classes, vcl.graphics, system.sysUtils, system.variants,
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
+  {$endif}
   MPVBasePlayer,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
@@ -73,6 +78,7 @@ type
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio:   boolean;
     function autoCenter:          boolean;
+    function checkAudioVideo:     boolean;
     function checkThumbsPerPage:  boolean;
     function deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
@@ -188,7 +194,7 @@ procedure TThumbsForm.applicationEventsHint(Sender: TObject);
 begin
   case length(application.hint) > 1 of
     TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT), -1, TRUE);
-                                           FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
+                                           FALSE: case FThumbs.hasAudioVideo of FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;end;
 end;
 
 function TThumbsForm.autoCenter: boolean;
@@ -200,6 +206,15 @@ procedure TThumbsForm.beginDrag;
 begin
   releaseCapture; // Release any existing mouse capture
   perform(WM_SYSCOMMAND, $F012, 0); // SC_MOVE | HTCAPTION to simulate title bar drag
+end;
+
+function TThumbsForm.checkAudioVideo: boolean;
+begin
+  // EXPERIMENTAL
+  case FThumbs.playlist.hasItems of TRUE: begin
+                                            FThumbs.hasAudioVideo := mmpPlaylistFolderContains(FThumbs.playlist.currentItem, [mtAudioVideo]);
+                                            case FThumbs.hasAudioVideo of TRUE: mmpSetPanelText(FStatusBar, pnTick, 'A / V'); end;end;end;
+  // EXPERIMENTAL
 end;
 
 function TThumbsForm.checkThumbsPerPage: boolean;
@@ -581,6 +596,9 @@ begin
   mpvStop(mpv); // if the folder is empty we want a blank screen
   case vNextFolder = EMPTY of TRUE: EXIT; end;
   mmp.cmd(vNextFolder <> EMPTY, procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+
+  checkAudioVideo; // EXPERIMENTAL
+
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playNextFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
@@ -605,6 +623,9 @@ begin
   mpvStop(mpv); // if the folder is empty we want a blank screen
   case vPrevFolder = EMPTY of TRUE: EXIT; end;
   mmp.cmd(vPrevFolder <> EMPTY, procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
+
+  checkAudioVideo; // EXPERIMENTAL
+
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playPrevFolder; end; // find a folder with images
   result := FThumbs.playlist.hasItems;
@@ -761,6 +782,7 @@ begin
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
+                    checkAudioVideo; // EXPERIMENTAL
                     playCurrentItem; end;end;
 
   case GS.showingConfig of FALSE: focusThumbs; end;

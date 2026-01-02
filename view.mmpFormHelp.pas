@@ -21,9 +21,14 @@ unit view.mmpFormHelp;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
+  {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;

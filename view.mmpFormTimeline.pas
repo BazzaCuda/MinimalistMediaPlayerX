@@ -21,9 +21,14 @@ unit view.mmpFormTimeline;
 interface
 
 uses
+  {$ifopt D+}
+    {$define designTime} // comment out when not designing this form
+  {$endif}
+  {$ifdef designTime}
   winApi.messages, winApi.Windows,
   system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  {$endif}
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   view.mmpFormProgress,

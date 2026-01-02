@@ -42,17 +42,20 @@ type
     function    thumbsPerPage:      integer;
     function    thumbRowCount:      integer;
 
-    function    getCurrentFolder: string;
-    function    getCurrentIx: integer;
-    function    getWhichHost: THostType;
+    function    getHasAudioVideo:      boolean;
+    procedure   setHasAudioVideo(const aValue: boolean);
+    function    getCurrentFolder:   string;
+    function    getCurrentIx:       integer;
+    function    getWhichHost:       THostType;
     procedure   setFoldPanelReserved(const Value: boolean);
-    function    getOnThumbClick: TNotifyEvent;
+    function    getOnThumbClick:    TNotifyEvent;
     procedure   setOnThumbClick(const Value: TNotifyEvent);
-    function    getPlaylist: IPlaylist;
+    function    getPlaylist:        IPlaylist;
     procedure   setStatusBar(const Value: TStatusBar);
-    function    getThumbSize: integer;
+    function    getThumbSize:       integer;
     procedure   setThumbSize(const Value: integer);
 
+    property    hasAudioVideo:         boolean    read getHasAudioVideo write setHasAudioVideo;
     property    currentFolder:      string        read getCurrentFolder;
     property    currentIx:          integer       read getCurrentIx;
     property    foldPanelReserved:  boolean                             write setFoldPanelReserved;
@@ -78,8 +81,10 @@ uses
 type
   TThumbs = class(TInterfacedObject, IThumbs)
   strict private
-    FCancel: boolean;
+    FCancel:            boolean;
+
     FCurrentFolder:     string;
+    FHasAudioVideo:     boolean;
     FMPVHost:           TMPVHost;
     FOnThumbClick:      TNotifyEvent;
     FPlaylist:          IPlaylist;
@@ -92,6 +97,8 @@ type
     function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function    generateThumbs(const aItemIx: integer): integer;
     function    getCurrentIx: integer;
+    function    getHasAudioVideo:      boolean;
+    procedure   setHasAudioVideo(const aValue: boolean);
     function    getWhichHost: THostType;
     function    getCurrentFolder: string;
     procedure   setFoldPanelReserved(const Value: boolean);
@@ -115,6 +122,7 @@ type
     function    thumbsPerPage:      integer;
     function    thumbRowCount:      integer;
 
+    property    hasAudioVideo:      boolean       read getHasAudioVideo write setHasAudioVideo;
     property    currentFolder:      string        read getCurrentFolder;
     property    currentIx:          integer       read getCurrentIx;
     property    foldPanelReserved:  boolean                             write setFoldPanelReserved;
@@ -244,6 +252,11 @@ begin
   result := FPlaylist.currentIx;
 end;
 
+function TThumbs.getHasAudioVideo: boolean;
+begin
+  result := FHasAudioVideo;
+end;
+
 function TThumbs.getOnThumbClick: TNotifyEvent;
 begin
   result := FOnThumbClick;
@@ -304,6 +317,11 @@ begin
  FFoldPanelReserved := value;
 end;
 
+procedure TThumbs.setHasAudioVideo(const aValue: boolean);
+begin
+  FHasAudioVideo := aValue;
+end;
+
 procedure TThumbs.setOnThumbClick(const Value: TNotifyEvent);
 begin
   FOnThumbClick := value;
@@ -332,7 +350,7 @@ begin
   case whichHost of htMPVHost:    showDisplayDimensions(htMPVHost);
                     htThumbsHost: showDisplayDimensions(htThumbsHost); end;
 
-  case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
+  case aTickCount <> -1 of TRUE: case hasAudioVideo of FALSE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;end;
 
   case FFoldPanelReserved of  TRUE: FFoldPanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnFold, FPlaylist.currentFolder); end;

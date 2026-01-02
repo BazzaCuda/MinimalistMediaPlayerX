@@ -40,7 +40,7 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpConsts, mmpFormatting, mmpCmd, mmpGlobalState,
+  mmpCmd, mmpConsts, mmpFormatting, mmpGlobalState,
   _debugWindow;
 
 type
@@ -103,21 +103,22 @@ end;
 constructor TProgressBar.Create;
 begin
   inherited;
-  FPB             := TALProgressBar.create(NIL);
-  FPB.onMouseMove := progressBarMouseMove;
-  FPB.onMouseUp   := progressBarMouseUp;
+  FPB               := TALProgressBar.create(NIL);
+  FPB.onMouseMove   := progressBarMouseMove;
+  FPB.onMouseUp     := progressBarMouseUp;
 
-  FShowProgressBar := TRUE;
+  FShowProgressBar  := TRUE;
 
-  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
+  FSubscriber       := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 function TProgressBar.darker: integer;
 begin
-  result            := FPB.barColor;
+  result                := FPB.barColor;
   case FPB.barColor = $010101 of TRUE: EXIT; end;
-  FPB.barColor      := FPB.barColor - $010101;
-  result            := FPB.barColor;
+
+  FPB.barColor          := FPB.barColor - $010101;
+  result                := FPB.barColor;
   CF[CONF_PROGRESS_BAR] := CF.toHex(result);
 end;
 

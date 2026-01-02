@@ -277,6 +277,7 @@ var T, F: TProc;
   function nothingToPlay: boolean;
   begin
     result := (ssCtrl in aShiftState) or NOT mmp.cmd(evPLReqHasItems).tf;
+    // {$if BazDebugWindow} debugBoolean('nothingToPlay', result); {$endif}
   end;
 begin
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
@@ -300,6 +301,7 @@ begin
 
   F := procedure begin mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end;
 
+  // {$if BazDebugWindow} debug('finding something to play'); {$endif}
   mmp.cmd(nothingToPlay, T, F);
   mmp.cmd(evPLFormLoadBox);
 end;
@@ -891,8 +893,13 @@ function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
 // rebuild playlist from vNextFolder and play first item
 var T, F: TProc;
 begin
+  result := FALSE;
+  // {$if BazDebugWindow} debug('TVM.playNextFolder'); {$endif}
   var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+  // {$if BazDebugWindow} debugString('vNextFolder', vNextFolder); {$endif}
   mmp.cmd(vNextFolder = EMPTY, evAppClose); // end of the current drive
+
+  case vNextFolder = EMPTY of TRUE: EXIT; end;
 
   mmp.cmd(evSTOpInfo, vNextFolder);
 
