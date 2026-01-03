@@ -24,6 +24,7 @@ uses
   {$ifopt D+}
     {$define designTime} // comment out when not designing this form
   {$endif}
+  {$define designTime} // temporary until we sort out the uses clause
   {$ifdef designTime}
   winApi.messages, winApi.Windows,
   system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
