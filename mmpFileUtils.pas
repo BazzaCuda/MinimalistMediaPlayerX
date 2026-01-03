@@ -78,7 +78,7 @@ function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 var F: TProc;
 begin
   F := procedure  begin
-                    mmp.cmd(evMPPause);
+                    // mmp.cmd(evMPPause); // EXPERIMENTAL
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
                                                        + 'The <path>\<filename> contains at least one single quote '' '#13#10
                                                        + 'A single quote will cause the Export and Join command line operations to fail.'#13#10#13#10
@@ -340,8 +340,8 @@ end;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 begin
   result := FALSE;
-  var vDirtyChars:string := DIRTY_CHARS;
-  var vNoExt      := extractFilePath(aFilePath) + mmpFileNameWithoutExtension(aFilePath);
+  var vDirtyChars:string  := DIRTY_CHARS;
+  var vNoExt              := extractFilePath(aFilePath) + mmpFileNameWithoutExtension(aFilePath);
   for var i := 1 to length(vNoExt) do
     case vDirtyChars.contains(vNoExt[i]) of TRUE: EXIT; end;
   result := TRUE;
