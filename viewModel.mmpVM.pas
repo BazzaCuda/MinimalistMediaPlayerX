@@ -892,31 +892,24 @@ end;
 
 function TVM.playNextFolder(const bRecurseFolders: boolean): boolean;
 // rebuild playlist from vNextFolder and play first item
-var T, F: TProc;
 begin
-  result := FALSE;
-  // {$if BazDebugWindow} debug('TVM.playNextFolder'); {$endif}
-  var vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
-  // {$if BazDebugWindow} debugString('vNextFolder', vNextFolder); {$endif}
-  mmp.cmd(vNextFolder = EMPTY, evAppClose); // end of the current drive
+  result          := FALSE;
+  var vNextFolder := EMPTY; // next folder containing relevant media files
 
-  case vNextFolder = EMPTY of TRUE: EXIT; end; // return FALSE!
+  while bRecurseFolders do begin
+    vNextFolder := mmpNextFolder(mmp.cmd(evPLReqCurrentFolder).text, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
+    mmp.cmd(vNextFolder = EMPTY, evAppClose);         // end of the current drive
+    case vNextFolder    = EMPTY of TRUE: EXIT; end;   // return FALSE!
 
-  mmp.cmd(evSTOpInfo, vNextFolder);
+    mmp.cmd(evSTOpInfo, vNextFolder);
 
-  // try to build a playlist from this folder
-  T := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end;
-  F := procedure begin mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]); end; // the format that the "slideshow" is playing through
+    // try to build a playlist from this folder
+    mmp.cmd(evPLFillPlaylist, vNextFolder, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
 
-  mmp.cmd(GS.imagesPaused, T, F); // all navigation now applies the playlist filter if it's set, not just the "slideshow"
-
-  mmp.cmd(evPLFormLoadBox);
-
-  T := procedure begin mmp.cmd(evVMMPPlayCurrent); end;
-  F := procedure begin case bRecurseFolders of   TRUE: mmp.cmd(evVMPlayNextFolder, bRecurseFolders); // navigate to the next folder with multimedia content
-                                                FALSE: mmp.cmd(evAppClose); end;end;
-
-  mmp.cmd(mmp.cmd(evPLReqHasItems).tf, T, F); // if the current folder has no multimedia content, try the next folder
+    case mmp.cmd(evPLReqHasItems).tf of  TRUE:  begin
+                                                  mmp.cmd(evVMMPPlayCurrent);
+                                                  BREAK; end;end;
+  end;
 
   result := vNextFolder <> EMPTY;
 end;

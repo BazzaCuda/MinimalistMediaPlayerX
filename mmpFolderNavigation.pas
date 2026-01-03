@@ -79,6 +79,7 @@ var
     end;
   end;
 begin
+  result := '';
   case (aDirection = nfForwards) and (aFolderPath = aPrevFolderPath) of TRUE: EXIT; end; //  reached the end of the folders on this drive
 
   folderList := TStringList.Create;

@@ -77,7 +77,11 @@ begin
   case e is EAccessViolation of TRUE: vCallStackPrefix := 'Access Violation stackTrace:'; end;
   case e is EInvalidPointer  of TRUE: vCallStackPrefix := 'Invalid Pointer Operation stackTrace:'; end;
 
-  vLogEntry := vLogEntry + format('%s%s%s%s', [vCallStackPrefix, sLineBreak, e.stackTrace, sLineBreak]); // stackTrace is populated by mmpStackTrace
+  try
+    vLogEntry := vLogEntry + format('%s%s%s%s', [vCallStackPrefix, sLineBreak, e.stackTrace, sLineBreak]); // stackTrace is populated by mmpStackTrace
+  except
+    {$if BazDebugWindow} debug('Error getting stack trace: ' + e.message); {$endif}
+  end;
 
   try
     case CF.asBoolean[CONF_LOGGING] of TRUE: TFile.appendAllText(logFileName, vLogEntry); end;
