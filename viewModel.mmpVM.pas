@@ -899,7 +899,7 @@ begin
   // {$if BazDebugWindow} debugString('vNextFolder', vNextFolder); {$endif}
   mmp.cmd(vNextFolder = EMPTY, evAppClose); // end of the current drive
 
-  case vNextFolder = EMPTY of TRUE: EXIT; end;
+  case vNextFolder = EMPTY of TRUE: EXIT; end; // return FALSE!
 
   mmp.cmd(evSTOpInfo, vNextFolder);
 
