@@ -459,6 +459,7 @@ var T, F: TProc;
 begin
   case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
   case mmpKeepDelete(mmp.cmd(evPLReqCurrentFolder).text) of FALSE: EXIT; end;
+  mmp.cmd(evVMReloadPlaylist);
   T := procedure begin mmp.cmd(mmp.cmd(evVMMPPlayNext, TRUE).tf, evNone, evAppClose); end;
   F := procedure begin mmp.cmd(evAppClose); end;
   mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);

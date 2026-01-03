@@ -80,7 +80,6 @@ begin
   F := procedure  begin
                     mmpDelay(500); // when launching MMP with startInEditor, allow the video to start playing
                     var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
-                    {$if BazDebugWindow} debugBoolean('vWasPlaying', vWasPlaying); {$endif}
                     mmp.cmd(vWasPlaying, evMPPause);
 
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
@@ -431,7 +430,8 @@ begin
                                                   mmpShowOKCancelMsgDlg(vMsg);
                                                   EXIT; end;end;
 
-  mmp.cmd(evMPPause);
+  var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
+  mmp.cmd(vWasPlaying, evMPPause);
 
   case mmpCheckRecycleBin(aFolderPath) of FALSE: EXIT; end;
   case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYES of FALSE: EXIT; end;
