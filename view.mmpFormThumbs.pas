@@ -593,6 +593,8 @@ function TThumbsForm.playNextFolder: boolean;
 var
   vNextFolder: string;
 begin
+  mmpSetPanelOwnerDraw(FStatusBar, pnAVAV, FALSE);
+
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mpvStop(mpv); // if the folder is empty we want a blank screen
   case vNextFolder = EMPTY of TRUE: EXIT; end;
@@ -620,6 +622,8 @@ function TThumbsForm.playPrevFolder: boolean;
 var
   vPrevFolder: string;
 begin
+  mmpSetPanelOwnerDraw(FStatusBar, pnAVAV, FALSE);
+
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
   mpvStop(mpv); // if the folder is empty we want a blank screen
   case vPrevFolder = EMPTY of TRUE: EXIT; end;
