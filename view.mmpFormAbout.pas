@@ -135,6 +135,7 @@ end;
 
 procedure TAboutForm.btnWhatsNewClick(Sender: TObject);
 begin
+  case btnWhatsNew.caption = 'Release Notes' of TRUE: EXIT; end; // No release notes selected from the dropdown yet
   case TComponent(sender).tag of
       0: AB.notify(newNotice(evAboutReleaseNotesFormShow));
     999: AB.notify(newNotice(evAboutPreviousReleaseNotes, TButton(sender).caption)); end;
