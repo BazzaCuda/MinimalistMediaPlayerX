@@ -308,6 +308,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsvcl_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsvcl_XE12.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreports_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreports_XE12.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsfm_XE12.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\23.0\Bpl\htmlreportsfm_XE12.bpl not found</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

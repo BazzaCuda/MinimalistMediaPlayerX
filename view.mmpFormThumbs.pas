@@ -787,8 +787,9 @@ begin
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
-                    checkAudioVideo;
                     playCurrentItem; end;end;
+
+  checkAudioVideo;
 
   case GS.showingConfig of FALSE: focusThumbs; end;
 end;
