@@ -54,7 +54,7 @@ uses
   winApi.windows,
   system.ioUtils, system.win.registry,
   vcl.controls, vcl.dialogs,
-  mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpCmd, mmpShellUtils, mmpShredUtils, mmpUtils,
+  mmpCmd, mmpDialogs, mmpFolderUtils, mmpFormInputBox, mmpGlobalState, mmpShellUtils, mmpShredUtils, mmpUtils,
   view.mmpFormConfirmDelete,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpUndoMove,
   _debugWindow;
@@ -78,13 +78,19 @@ function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 var F: TProc;
 begin
   F := procedure  begin
-                    // mmp.cmd(evMPPause); // EXPERIMENTAL
+                    mmpDelay(500); // when launching MMP with startInEditor, allow the video to start playing
+                    var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
+                    {$if BazDebugWindow} debugBoolean('vWasPlaying', vWasPlaying); {$endif}
+                    mmp.cmd(vWasPlaying, evMPPause);
+
                     mmpShowOKCancelMsgDlg(aFilePath    + #13#10#13#10
                                                        + 'The <path>\<filename> contains at least one single quote '' '#13#10
                                                        + 'A single quote will cause the Export and Join command line operations to fail.'#13#10#13#10
                                                        + 'Rename the path or filename first to remove the dirty characters.'#13#10#13#10
                                                        + 'Ctrl-Shift-[R] will cleanup the file name (but not the path) for you '
-                                                       + 'by replacing each dirty char with a space.', 'Audio & Video Timeline Editor'); end;
+                                                       + 'by replacing each dirty char with a space.', 'Audio & Video Timeline Editor');
+
+                   mmp.cmd(vWasPlaying, evMPResume); end;
 
   result := mmpIsEditFriendly(aFilePath);
   mmp.cmd(result, NIL, F);

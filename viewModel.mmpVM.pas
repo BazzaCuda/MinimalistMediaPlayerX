@@ -556,7 +556,7 @@ end;
 procedure TVM.onMouseUp(button: TMouseButton; shift: TShiftState; X, Y: Integer);
 var msg: TMessage;
 begin
-  case ptInRect(FVideoPanel.clientRect, FVideoPanel.ScreenToClient(point(X, Y))) of FALSE: EXIT; end;
+  case ptInRect(FVideoPanel.clientRect, FVideoPanel.screenToClient(point(X, Y))) of FALSE: EXIT; end;
   case button = mbLeft  of TRUE: mouseDown := FALSE; end;
   case button = mbRight of TRUE: onWINPausePlay(msg); end;
   case FDragged         of TRUE: mmp.cmd(evVMMoveTimeline); end;
