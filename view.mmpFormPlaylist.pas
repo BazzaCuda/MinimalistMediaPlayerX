@@ -66,7 +66,7 @@ uses
   winApi.shellApi,
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpCmd, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  mmpCmd, mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   viewModel.mmpKeyboardOps,
   _debugWindow;
 

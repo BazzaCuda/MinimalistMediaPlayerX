@@ -27,7 +27,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpConsts, mmpCmd;
+  mmpCmd, mmpConsts;
 
 function mmpITBS(aFolderPath: string): string;
 begin

@@ -32,7 +32,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpConsts, mmpCmd;
+  mmpCmd, mmpConsts;
 
 function mmpFormatFileNumber(const aFileNumber: integer; const aFileCount: integer): string;
 begin

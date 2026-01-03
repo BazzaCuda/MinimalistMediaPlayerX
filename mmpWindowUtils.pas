@@ -44,7 +44,7 @@ implementation
 uses
   winApi.messages,
   system.types,
-  mmpDesktopUtils, mmpCmd, mmpPostToAllUtils, mmpUtils,
+  mmpCmd, mmpDesktopUtils, mmpPostToAllUtils, mmpUtils,
   _debugWindow;
 
 function mmpAdjustAspectRatio(const aWND: HWND; const aHeight: integer): TPoint;

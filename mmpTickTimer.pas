@@ -35,7 +35,7 @@ implementation
 
 uses
   winApi.windows,
-  mmpConsts, mmpCmd;
+  mmpCmd, mmpConsts;
 
 type
   TTickTimer = class(TInterfacedObject, ITickTimer)

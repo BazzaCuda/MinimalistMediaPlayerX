@@ -91,7 +91,7 @@ implementation
 uses
   winApi.shellAPI,
   system.types,
-  mmpConsts, mmpFileUtils, mmpCmd, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpCmd, mmpConsts, mmpFileUtils, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 

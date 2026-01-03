@@ -34,7 +34,7 @@ implementation
 
 uses
   system.classes, system.strUtils, system.sysUtils,
-  mmpFileUtils, mmpCmd, mmpUtils,
+  mmpCmd, mmpFileUtils, mmpUtils,
   _debugWindow;
 
 type

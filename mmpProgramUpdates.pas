@@ -42,7 +42,7 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.sysUtils, system.strUtils,
   vcl.forms,
-  mmpConsts, mmpFileUtils, mmpCmd, mmpUtils,
+  mmpCmd, mmpConsts, mmpFileUtils, mmpUtils,
   view.mmpFormDownload, view.mmpProgressBar,
   model.mmpConfigFile,
   _debugWindow;
