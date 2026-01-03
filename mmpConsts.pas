@@ -31,6 +31,7 @@ const
   MMP_STYLE_DARKMODE  = 'DarkMode';
   MMP_WIKI_URL        = 'https://minimalistmediaplayer.com';
 
+  AUDIO_VIDEO         = 'Audio/Video';
   EMPTY               = '';
   BACKSLASH           = '\';
   MPV_ERROR_SUCCESS   = 0;

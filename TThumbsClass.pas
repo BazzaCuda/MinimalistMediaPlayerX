@@ -350,7 +350,7 @@ begin
   case whichHost of htMPVHost:    showDisplayDimensions(htMPVHost);
                     htThumbsHost: showDisplayDimensions(htThumbsHost); end;
 
-  case aTickCount <> -1 of TRUE: case hasAudioVideo of FALSE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;end;
+  case aTickCount <> -1 of TRUE: mmpSetPanelText(FStatusBar, pnTick, mmpFormatTickCount(aTickCount)); end;
 
   case FFoldPanelReserved of  TRUE: FFoldPanelReserved := FALSE;
                              FALSE: mmpSetPanelText(FStatusBar, pnFold, FPlaylist.currentFolder); end;

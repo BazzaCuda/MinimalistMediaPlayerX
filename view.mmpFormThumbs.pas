@@ -195,7 +195,7 @@ procedure TThumbsForm.applicationEventsHint(Sender: TObject);
 begin
   case length(application.hint) > 1 of
     TRUE: case application.hint[1] = '$' of TRUE: FThumbs.setPanelText(copy(application.hint, 2, MAXINT), -1, TRUE);
-                                           FALSE: case FThumbs.hasAudioVideo of FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;end;
+                                           FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
 end;
 
 function TThumbsForm.autoCenter: boolean;
@@ -211,11 +211,11 @@ end;
 
 function TThumbsForm.checkAudioVideo: boolean;
 begin
-  // EXPERIMENTAL
   case FThumbs.playlist.hasItems of TRUE: begin
                                             FThumbs.hasAudioVideo := mmpPlaylistFolderContains(FThumbs.playlist.currentItem, [mtAudioVideo]);
-                                            case FThumbs.hasAudioVideo of TRUE: mmpSetPanelText(FStatusBar, pnTick, 'A / V'); end;end;end;
-  // EXPERIMENTAL
+                                            mmpSetPanelOwnerDraw(FStatusBar, pnAVAV, FThumbs.hasAudioVideo);
+                                            case FThumbs.hasAudioVideo of  TRUE: mmpSetPanelText(FStatusBar, pnAVAV, AUDIO_VIDEO);
+                                                                          FALSE: mmpSetPanelText(FStatusBar, pnAVAV, ''); end;end;end;
 end;
 
 function TThumbsForm.checkThumbsPerPage: boolean;
@@ -598,7 +598,7 @@ begin
   case vNextFolder = EMPTY of TRUE: EXIT; end;
   mmp.cmd(vNextFolder <> EMPTY, procedure begin FThumbs.playThumbs(vNextFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
 
-  checkAudioVideo; // EXPERIMENTAL
+  checkAudioVideo;
 
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playNextFolder; end; // find a folder with images
@@ -625,7 +625,7 @@ begin
   case vPrevFolder = EMPTY of TRUE: EXIT; end;
   mmp.cmd(vPrevFolder <> EMPTY, procedure begin FThumbs.playThumbs(vPrevFolder + '$$$.$$$', ptPlaylistOnly); end); // because extractFilePath needs a file name ;)
 
-  checkAudioVideo; // EXPERIMENTAL
+  checkAudioVideo;
 
   case FThumbs.playlist.hasItems of  TRUE: playCurrentItem;
                                     FALSE: playPrevFolder; end; // find a folder with images
@@ -734,13 +734,17 @@ begin
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
-// only called for panelHelp when it has to highlight its contents, e.g. "NOT Moved".
+// called for pnHelp when it has to highlight its contents, e.g. "NOT Moved".
+// called for pnAVAV when there are audio and/or video files in the folder
 begin
   statusBar.canvas.font.style   := [fsBold];
   statusBar.canvas.brush.color  := clMaroon;
-  statusBar.canvas.fillRect(rect);
-  var vCenterX: integer := (rect.right - rect.left - statusBar.canvas.textWidth(panel.text)) div 2;
-  var vCenterY: integer := (rect.bottom - rect.top - statusBar.canvas.textHeight(panel.text)) div 2;
+  var vRect := rect;
+  vRect.left   := vRect.left + 2;   // leave room for the panel separators
+  vRect.right  := vRect.right - 4;  // leave room for the panel separators
+  statusBar.canvas.fillRect(vRect); // fill with color leaving room for the panel separators either side
+  var vCenterX: integer := (rect.right  - rect.left - statusBar.canvas.textWidth(panel.text)) div 2;
+  var vCenterY: integer := (rect.bottom - rect.top  - statusBar.canvas.textHeight(panel.text)) div 2;
   textOut(statusBar.canvas.handle, rect.left + vCenterX, rect.top + vCenterY, PChar(panel.text), length(panel.text));
 end;
 
@@ -783,7 +787,7 @@ begin
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
-                    checkAudioVideo; // EXPERIMENTAL
+                    checkAudioVideo;
                     playCurrentItem; end;end;
 
   case GS.showingConfig of FALSE: focusThumbs; end;

@@ -3072,9 +3072,15 @@ object ThumbsForm: TThumbsForm
         Width = 70
       end
       item
+        Alignment = taCenter
+        Bevel = pbRaised
+        Text = 'Audio/Video'
+        Width = 100
+      end
+      item
         Bevel = pbRaised
         Text = 'c:\'
-        Width = 190
+        Width = 50
       end
       item
         Alignment = taCenter

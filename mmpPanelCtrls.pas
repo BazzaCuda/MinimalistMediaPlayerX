@@ -27,7 +27,7 @@ uses
   _debugWindow;
 
 type
-  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnFold, pnHelp);
+  TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnAVAV, pnFold, pnHelp);
 
 function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
 
@@ -51,8 +51,9 @@ const
   PANEL_XXYY = 3;
   PANEL_DDXY = 4;
   PANEL_TICK = 5;
-  PANEL_FOLD = 6;
-  PANEL_HELP = 7;
+  PANEL_AVAV = 6;
+  PANEL_FOLD = 7;
+  PANEL_HELP = 8;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
@@ -64,8 +65,10 @@ begin
   mmpSetPanelText(aStatusBar, pnXXYY, EMPTY);
   mmpSetPanelText(aStatusBar, pnDDXY, EMPTY);
   mmpSetPanelText(aStatusBar, pnTick, EMPTY);
+  mmpSetPanelText(aStatusBar, pnAVAV, EMPTY);
   mmpSetPanelText(aStatusBar, pnFold, EMPTY);
   mmpSetPanelText(aStatusBar, pnHelp, EMPTY);
+  mmpResetPanelHelp(aStatusBar);
 end;
 
 function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
@@ -86,6 +89,7 @@ begin
 end;
 
 function mmpPartClearStatusBar(const aStatusBar: TStatusBar): boolean;
+// don't include pnAVAV: it must stay set until the folder changes
 begin
   mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
   mmpSetPanelText(aStatusBar, pnNumb, EMPTY);
@@ -93,6 +97,7 @@ begin
   mmpSetPanelText(aStatusBar, pnXXYY, EMPTY);
   mmpSetPanelText(aStatusBar, pnDDXY, EMPTY);
   mmpSetPanelText(aStatusBar, pnTick, EMPTY);
+  mmpResetPanelHelp(aStatusBar);
 end;
 
 function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
@@ -107,6 +112,7 @@ begin
                + aStatusBar.panels[PANEL_XXYY].width
                + aStatusBar.panels[PANEL_DDXY].width
                + aStatusBar.panels[PANEL_TICK].width
+               + aStatusBar.panels[PANEL_AVAV].width
                + aStatusBar.panels[PANEL_HELP].width;
 
   availWidth := aStatusBar.width - fixedWidths;
@@ -139,6 +145,7 @@ begin
     pnXXYY: aStatusBar.panels[PANEL_XXYY].text := aText;
     pnDDXY: aStatusBar.panels[PANEL_DDXY].text := aText;
     pnTick: aStatusBar.panels[PANEL_TICK].text := aText;
+    pnAVAV: aStatusBar.panels[PANEL_AVAV].text := aText;
     pnFold: aStatusBar.panels[PANEL_FOLD].text := aText;
     pnHelp: aStatusBar.panels[PANEL_HELP].text := aText;
   end;
