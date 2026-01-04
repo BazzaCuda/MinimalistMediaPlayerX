@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -94,6 +94,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_UnitSearchPath>.\_libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <Debugger_RunParams>&quot;B:\Movies\Django Unchained (2012).mp4&quot;</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -156,6 +157,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
+        <Debugger_RunParams>&quot;B:\Movies\Django Unchained (2012).mp4&quot;</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -212,7 +214,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TThumbsClass.pas"/>
         <DCCReference Include="model.mmpBookmark.pas"/>
         <DCCReference Include="model.mmpConfigFile.pas"/>
-        <DCCReference Include="model.mmpKeyFrames.pas"/>
+        <DCCReference Include="model.mmpKeyFramesOld.pas"/>
         <DCCReference Include="model.mmpMediaInfo.pas"/>
         <DCCReference Include="model.mmpMediaPlayer.pas"/>
         <DCCReference Include="model.mmpMediaTypes.pas"/>
@@ -244,6 +246,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
+        <DCCReference Include="model.mmpKeyFrames.pas"/>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>

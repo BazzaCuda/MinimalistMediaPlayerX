@@ -21,153 +21,193 @@ unit model.mmpKeyFrames;
 interface
 
 uses
-  system.generics.collections;
+  system.sysUtils,
+  system.classes,
+  system.generics.collections,
+  mmpAction;
 
-function mmpClearKeyFrames: boolean;
-function mmpDoKeyFrames(const aURL: string): boolean;
-function mmpGetKeyFrames(const aURL: string): boolean;
-function mmpKeyFile(const aURL: string): string;
-function mmpKeyFrameProximity(const aKeyFrame: double): double;
-function mmpKeyFrames: TList<double>;
-function mmpMockKeyFrame(const aWidth: integer; const aDurationSS: double; const aPixelX: integer): double;
-function mmpOnKeyframe(const aKeyFrame: double; const aStartSS: double; const aEndSS: double): boolean;
-function mmpSetKeyFrames(const aURL: string): boolean;
+type
+  TKeyMinute = record
+    kmKeyFrames: TList<double>; // KeyFrame timestamps as doubles
+  end;
+
+  IKeyFrameManager = interface
+    function  clearKeyFrames: TVoid;
+    function  init(const aFilePath: string): TVoid;
+    function  proximity(const aPositionSS: integer): double;
+  end;
+
+  TKeyFrameManager = class(TInterfacedObject, IKeyFrameManager)
+  strict private
+    FMinutes: TDictionary<integer, TKeyMinute>; // minute Ix -> KeyFrame record
+    FFilePath: string;
+    FFetching: boolean;
+  private
+    function  getKeyFrameList(const aPositionSS: integer): TList<double>;
+    function  probeKeyFrames(const aPositionSS: integer): boolean;
+    function  runProbe(const aFilePath: string; const aPositionSS: integer; const aStringList: TStringList): boolean;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+
+    // IKeyFrameManager
+    function  clearKeyFrames: TVoid;
+    function  init(const aFilePath: string): TVoid;
+    function  proximity(const aPositionSS: integer): double;
+  end;
+
+function keyFrameManager: IKeyFrameManager;
 
 implementation
 
 uses
-  system.classes, system.sysUtils,
+  system.ioUtils,
   vcl.graphics,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpCmd, mmpConsts, mmpFileUtils, mmpShellUtils, mmpUtils,
+  view.mmpFormTimeline,
+  mmpCmd, mmpFileUtils, mmpUtils,
   _debugWindow;
 
-{$J+} const gKeyFrames: TList<double> = NIL; {$J-}
-
-function mmpClearKeyFrames: boolean;
+function keyFrameManager: IKeyFrameManager;
+{$J+} const gKFM: IKeyFrameManager = NIL; {$J-}
 begin
-  case gKeyFrames = NIL of FALSE: mmpKeyFrames.clear; end; // don't create it by calling mmpKeyFrames if we don't need it
+  case gKFM = NIL of TRUE: gKFM := TKeyFrameManager.create; end;
+  result := gKFM;
 end;
 
-function mmpDoKeyFrames(const aURL: string): boolean;
+function mmpKeyFile(const aFilePath: string; const aMinuteIx: integer): string;
 begin
-  result := FALSE;
-  mmpClearKeyFrames; // don't reuse a previous file's keyframes
-  mmpGetKeyFrames(aURL);
-  result := mmpSetKeyFrames(aURL);
+  var vPath := extractFilePath(aFilePath);
+  var vFile := TPath.getFileNameWithoutExtension(aFilePath);
+
+  vFile := format('%s%s%0.3d%s', [vFile, '-', aMinuteIx, '.key']);
+
+  result := format('%s%s', [vPath, vFile]);
 end;
 
-function mmpKeyFile(const aURL: string): string;
+{ TKeyFrameManager }
+
+function TKeyFrameManager.clearKeyFrames: TVoid;
 begin
-  result := changeFileExt(aURL, '.key');
+  for var vKeyMinute in FMinutes.values do
+    vKeyMinute.kmKeyFrames.free;
+  FMinutes.clear;
 end;
 
-function mmpGetKeyFrames(const aURL: string): boolean;
+constructor TKeyFrameManager.Create;
 begin
-  result := FALSE;
-  mmp.cmd(evSTOpInfo, 'keyframes...');
-
-  case mmpCompareFileTimestamps(aURL, mmpKeyFile(aURL)) of TRUE: EXIT; end; // already got the most up to date .key file
-  try
-    var vFFprobe  := mmpExePath + 'ffprobe.exe';
-    var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 ';
-    var vKeyFile  := ' -o ' + '"' + mmpKeyFile(aURL) + '"';
-    var vInFile   := ' "' + aURL + '"';
-
-    mmpExecAndWait(vFFProbe + vParams + vKeyFile + vInFile, rtDontWait);
-
-    result := TRUE;
-  finally
-  end;
+  inherited Create;
+  FMinutes  := TDictionary<integer, TKeyMinute>.Create;
 end;
 
-function mmpKeyFrameProximity(const aKeyFrame: double): double;
-// lowest valid return value is 0.0 when a direct match with a keyFrame is found
+destructor TKeyFrameManager.Destroy;
+begin
+  clearKeyFrames;
+
+  FMinutes.free;
+  inherited Destroy;
+end;
+
+function TKeyFrameManager.getKeyFrameList(const aPositionSS: integer): TList<double>;
 var
-  vInsertIx:  integer;
+  vMinuteIx: integer;
 begin
-  result := -1;
+  result := NIL;
+  case FFetching of TRUE: EXIT; end;
 
-  case gKeyFrames       = NIL of TRUE: EXIT; end; // mmpGetKeyFrames and mmpSetKeyFrames haven't been called
-  case gKeyFrames.count = 0   of TRUE: EXIT; end;
-  case aKeyFrame        = 0   of TRUE: EXIT; end;
+  vMinuteIx := aPositionSS div 60;
 
-  result := 0;
-  case gKeyFrames.binarySearch(aKeyFrame, vInsertIx) of TRUE: EXIT; end; // highly unlikely to ever be true
+  case FMinutes.containsKey(vMinuteIx) of FALSE: begin
+                                                      FFetching := TRUE;
+                                                      try
+                                                        case probeKeyFrames(aPositionSS) of FALSE: EXIT; end;
+                                                      finally
+                                                        FFetching := FALSE;
+                                                      end;end;end;
 
-  result := -1;
-  case vInsertIx > 0 of TRUE: result := aKeyFrame - gKeyFrames[vInsertIx - 1]; end;
+  result := FMinutes[vMinuteIx].kmKeyFrames;
 end;
 
-function mmpKeyFrames: TList<double>;
-begin
-  case gKeyFrames = NIL of TRUE: gKeyFrames := TList<double>.create; end;
-  result := gKeyFrames;
-end;
-
-function mmpMockKeyFrame(const aWidth: integer; const aDurationSS: double; const aPixelX: integer): double;
-// not used
-begin
-  result := 0;
-  case aPixelX     <= 0 of TRUE: EXIT; end;
-  case aDurationSS <= 0 of TRUE: EXIT; end;
-  case aWidth      <= 0 of TRUE: EXIT; end;
-  result := (aPixelX * aDurationSS) / aWidth;
-end;
-
-function mmpSetKeyFrames(const aURL: string): boolean;
+function TKeyFrameManager.runProbe(const aFilePath: string; const aPositionSS: integer; const aStringList: TStringList): boolean;
 begin
   result := FALSE;
-  var vSysMessage: string;
-  var vKeyFramesFile := mmpKeyFile(aURL);
-  case fileExists(vKeyFramesFile) of FALSE: EXIT; end;
-  case mmpIsFileInUseExclusive(vKeyFramesFile, vSysMessage) of TRUE:  begin
-                                                                        mmp.cmd(evSTOpInfo, 'keyframes...');
-                                                                        EXIT; end;end; // only use the .key file when ffprobe has finished writing to it
+  mmp.cmd(evSTOpInfo, 'KeyFrames...');
 
-  var vSL := TStringList.create;
-  try
-    vSL.loadFromFile(vKeyFramesFile);
-    for var i := 0 to vSL.count - 1 do case strToFloatDef(vSL[i], 0) <> 0 of TRUE: mmpKeyFrames.add(strToFloatDef(vSL[i], -1)); end;
-    mmpKeyFrames.sort; // ffprobe sometimes reports them out of sequence, especially the first two
-                                                                          //    vSL.clear;
-                                                                          //    for var aValue in mmpKeyFrames do vSL.add(floatToStr(aValue));
-                                                                          //    vSL.saveToFile('B:\Downloads\MMP testing\sorted.key');
-  finally
-    vSL.free;
-  end;
+  var vMinuteIx := aPositionSS div 60;
+  var vStartSS  := vMinuteIx * 60;
+  var vEndSS    := vStartSS + 60;
 
-  mmp.cmd(evSTOpInfo, 'keyframes on');     // at last!
-  mmp.cmd(evPBBackgroundColor, clFuchsia); // mmpFormTimeline will reset the color (evPBBackgroundColor) on the next tick
-  mmpDelay(100);
-  mmp.cmd(evPBBackgroundColor, clFuchsia); // make sure it gets seen during a tick cycle
+  var vKeyFile := mmpKeyFile(aFilePath, vMinuteIx);
+  case fileExists(vKeyFile) of TRUE: deleteFile(vKeyFile); end;
+
+  var vFFprobe  := ''; // mmpExePath + 'ffprobe.exe';
+  var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 ';
+  var vInterval := format(' -read_intervals %d%s%d', [vStartSS, '%', vEndSS]);
+  var vKeyFileO := ' -o ' + '"' + vKeyFile + '"';
+  var vInFile   := ' "' + aFilePath + '"';
+
+  TLExecAndWait(vFFProbe + vParams + vInterval + vKeyFileO + vInFile, rtFFProbe);
+
+  case fileExists(vKeyFile) of   TRUE: aStringList.LoadFromFile(vKeyFile);
+                                FALSE: EXIT; end;
+
   result := TRUE;
 end;
 
-function mmpOnKeyFrame(const aKeyFrame: double; const aStartSS: double; const aEndSS: double): boolean;
+function TKeyFrameManager.init(const aFilePath: string): TVoid;
+begin
+  FFilePath := aFilePath;
+end;
+
+function TKeyFrameManager.probeKeyFrames(const aPositionSS: integer): boolean;
 var
-  vInsertIx:  integer;
-  vDiff:      double;
+  vKeyMinute:     TKeyMinute;
+  vProcessOutput: TStringList;
+  vLine:          string;
+  vValue:         double;
 begin
   result := FALSE;
 
-  case gKeyFrames       = NIL of TRUE: EXIT; end; // mmpGetKeyFrames and mmpSetKeyFrames haven't been called
-  case gKeyFrames.count = 0   of TRUE: EXIT; end;
-  case aKeyFrame        = 0   of TRUE: EXIT; end;
+  var vMinuteIx := aPositionSS div 60;
 
-  result := gKeyFrames.binarySearch(aKeyFrame, vInsertIx);
-  case result of TRUE: EXIT; end; // highly unlikely to ever be true
+  vKeyMinute.kmKeyFrames := TList<double>.create;
+  vProcessOutput := TStringList.create;
+  try
+    case runProbe(FFilePath, aPositionSS, vProcessOutput) of FALSE: EXIT; end;
 
-  result := vInsertIx > 0;
-  case result of FALSE: EXIT; end;
+    for vLine in vProcessOutput do
+      case tryStrToFloat(vLine, vValue) of TRUE: vKeyMinute.kmKeyFrames.add(vValue); end;
 
-  // Check keyframe to the left for tolerance match
-  vDiff  := aKeyFrame - gKeyFrames[vInsertIx - 1];
-  result := (vDiff >= aStartSS) and (vDiff <= aEndSS);
+    vKeyMinute.kmKeyFrames.sort;
+    FMinutes.add(vMinuteIx, vKeyMinute);
+  finally
+    vProcessOutput.free;
+  end;
+
+  mmp.cmd(evPBBackgroundColor, clFuchsia); // mmpFormTimeline will reset the color (evPBBackgroundColor) on the next tick
+  mmpDelay(100);
+  mmp.cmd(evPBBackgroundColor, clFuchsia); // make sure it gets seen during a tick cycle
+
+  result := TRUE;
 end;
 
-initialization
-finalization
-  case gKeyFrames = NIL of FALSE: gKeyFrames.free; end;
+function TKeyFrameManager.proximity(const aPositionSS: integer): double;
+var
+  vKeyFrames: TList<double>;
+  vInsertIx:  integer;
+begin
+  result := -1;
+
+  var vMinuteIx  := aPositionSS div 60;
+
+  vKeyFrames := getKeyFrameList(aPositionSS);
+  case vKeyFrames = NIL of TRUE: EXIT; end;
+
+  result := 0;
+  case vKeyFrames.binarySearch(aPositionSS, vInsertIx) of TRUE: EXIT; end; // highly unlikely to ever be true
+
+  result := -1;
+  case vInsertIx > 0 of TRUE: result := aPositionSS - vKeyFrames[vInsertIx - 1]; end;
+end;
 
 end.

@@ -36,7 +36,7 @@ uses
   TSegmentClass;
 
 type
-  TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow);
+  TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow, rtFFprobe, rtFFProbeShow);
 
   TTimelineForm = class(TForm)
     pnlCursor:          TPanel;
@@ -69,7 +69,6 @@ type
   strict private
     FCancelled:               boolean;
     FDragging:                boolean;
-    FGotKeyFrames:            boolean;
     FUseKeyFrames:            boolean;
     FMax:                     integer;
     FMediaFilePath:           string;
@@ -82,7 +81,6 @@ type
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
 
-//    FCriticalSection:         TCriticalSection;
   private
     constructor Create;
     destructor  Destroy; override;
@@ -150,6 +148,7 @@ function focusTimeline: boolean;
 function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
 function shutTimeline: boolean;
 function TL: TTimeline;
+function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 
 implementation
 
@@ -162,7 +161,7 @@ uses
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
 
-function execAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
+function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
 // rtCMD: a segment export failed, so we rerun showing the cmd prompt box so the user can view the FFMPeg error messages
 var
@@ -179,22 +178,25 @@ begin
 
     case aRunType of
       rtFFmPeg,
-      rtFFmpegShow: lpFile := 'ffmpeg';
-      rtCMD:        lpFile := 'cmd';
+      rtFFmpegShow:   lpFile := 'ffmpeg';
+      rtFFprobe,
+      rtFFProbeShow:  lpFile := 'ffprobe';
+      rtCMD:          lpFile := 'cmd';
     end;
 
     case aRunType of
-      rtFFmpeg,
-      rtFFmpegShow: lpParameters := pChar(aCmdLine);
-      rtCMD:        lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
+      rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow: lpParameters := pChar(aCmdLine);
+      rtCMD:                                            lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
     end;
 
     lpDirectory := pWideChar(mmpExePath);
 
     case aRunType of
-      rtFFmpeg:     nShow := SW_HIDE;
-      rtCMD:        nShow := SW_SHOW;
-      rtFFmpegShow: nShow := SW_SHOW;
+      rtFFmpeg:       nShow := SW_HIDE;
+      rtCMD:          nShow := SW_SHOW;
+      rtFFmpegShow:   nShow := SW_SHOW;
+      rtFFprobe:      nShow := SW_HIDE;
+      rtFFProbeShow:  nShow := SW_SHOW;
     end;
 
   end;
@@ -204,7 +206,7 @@ begin
 
   case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
                                                       case aRunType of
-                                                        rtFFmpeg, rtFFmpegShow:
+                                                        rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow:
                                                                   begin
                                                                     repeat
                                                                       case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
@@ -489,7 +491,7 @@ begin
     cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
     log(cmdLine); log(EMPTY);
 
-    result := execAndWait(cmdLine, rtFFmpegShow);
+    result := TLExecAndWait(cmdLine, rtFFmpegShow);
 
     case result of TRUE:  begin
                             case fileExists(vFilePathOUT) of FALSE: EXIT; end;
@@ -529,7 +531,6 @@ begin
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
   FSubscriber           := appEvents.subscribe(newSubscriber(onNotify));
-//  FCriticalSection      := TCriticalSection.create;
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -565,15 +566,12 @@ end;
 
 destructor TTimeline.Destroy;
 begin
-//  FCriticalSection.acquire;
   try
     segments.clear;
   finally
-//    FCriticalSection.release;
   end;
   FUndoList.free;
   FRedoList.free;
-//  case FCriticalSection = NIL of FALSE: FCriticalSection.free; end;
   inherited;
 end;
 
@@ -583,9 +581,7 @@ begin
   case FMax = 0 of TRUE: EXIT; end;
 
   var n := 1;
-//  FCriticalSection.acquire;
   try
-//    for var vSegment in segments do begin // EXPERIMENTAL
     for var i := 0 to segments.count - 1 do begin
       var vSegment := segments[i];
       vSegment.top     := 0;
@@ -612,7 +608,6 @@ begin
     end;
     case segCount > 1 of TRUE: segments[0].width := segments[1].left - 1; end;
   finally
-//    FCriticalSection.release;
   end;
 
   gTimelineForm.pnlCursor.bringToFront;
@@ -741,12 +736,12 @@ begin
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
           vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
-          case execAndWait(cmdLine) of  TRUE: vSL.add(segFileEntry(segFile));
-                                       FALSE: begin
-                                                result := FALSE;
-                                                case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: begin
-                                                                                                                  vSL.add(segFileEntry(segFile)); // the user will correct the export
-                                                                                                                  execAndWait(cmdLine, rtCMD); end;end;
+          case TLExecAndWait(cmdLine) of   TRUE:  vSL.add(segFileEntry(segFile));
+                                          FALSE:  begin
+                                                    result := FALSE;
+                                                    case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: begin
+                                                                                                                      vSL.add(segFileEntry(segFile)); // the user will correct the export
+                                                                                                                      TLExecAndWait(cmdLine, rtCMD); end;end;
                                               end;
           end;
         end;
@@ -779,8 +774,8 @@ begin
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
   log(cmdLine); log(EMPTY);
 
-  result := execAndWait(cmdLine);
-  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := execAndWait(cmdLine, rtCMD); end;end;
+  result := TLExecAndWait(cmdLine);
+  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
 
   finally
     vProgressForm.free;
@@ -796,12 +791,7 @@ begin
 
   // {$if BazDebugWindow} debugFormat('initTimeLine: %d', [aMax]); {$endif}
 
-//  FCriticalSection.acquire;
-  try
-    segments.clear;
-  finally
-//    FCriticalSection.release;
-  end;
+  segments.clear;
 
   FUndoList.clear; FRedoList.clear;
   mmpRefreshStreamInfo(aMediaFilePath);
@@ -817,9 +807,8 @@ begin
 
   drawSegments(TRUE);
 
-  mmpClearKeyFrames;
-  FGotKeyFrames := FALSE;
-  case FUseKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpDoKeyFrames(aMediaFilePath); end; // combined mmpGetKeyFrames and mmpSetKeyFrames
+  keyFrameManager.clearKeyFrames;
+  case FUseKeyFrames and (GS.mediaType = mtVideo) of TRUE: keyFrameManager.init(aMediaFilePath); end;
 
   result := TRUE;
 end;
@@ -935,14 +924,13 @@ begin
   case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
 
   case aNotice.event of
-    evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // on the next tick after mmpSetKeyFrames below
+    evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // gets set in model.mmpKeyFrames.probeKeyFrames
   end;
 
   case aNotice.event of
     evTLMax:              setMax(aNotice.integer);
     evTLPosition:         case FDragging of FALSE: setPosition(aNotice.integer); end;
     evTLRename:           FMediaFilePath := aNotice.text; // mmpVM renames the mmp file
-    evTickTimer:          case FUseKeyFrames and NOT FGotKeyFrames and (GS.mediaType = mtVideo) of TRUE: FGotKeyFrames := mmpSetKeyFrames(FMediaFilePath); end; // still waiting for the process to finish
   end;
 end;
 
@@ -998,13 +986,8 @@ end;
 function TTimeline.segmentAtSS(const aSS: integer): TSegment;
 begin
   result := NIL;
-//  FCriticalSection.acquire;
-  try
-    for var vSegment in segments do
-      case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
-  finally
-//    FCriticalSection.release;
-  end;
+  for var vSegment in segments do
+    case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
 end;
 
 procedure TTimeline.setMax(const Value: integer);
@@ -1029,10 +1012,9 @@ begin
 
   var vColor    := clWhite;
 
-  case FUseKeyFrames and FGotKeyFrames // FGotKeyFrames can only be true when (GS.mediaType = mtVideo)
+  case FUseKeyFrames
     of TRUE:  begin
-                // does nothing if mmpGetKeyFrames and mmpSetKeyFrames haven't been called in initTimeline or toggleKeyFrames
-                var vProximity := mmpKeyFrameProximity(FPositionSS);
+                var vProximity := keyFrameManager.proximity(FPositionSS);
                 // debugFormat('pos: %d = %g', [FPositionSS, vProximity]);
                 case (vProximity >= 0.5) and (vProximity <= 1.0)  of TRUE: vColor := clYellow;  end;
                 case  vProximity <  0.5                           of TRUE: vColor := clFuchsia; end;
@@ -1074,9 +1056,9 @@ end;
 
 function TTimeline.toggleKeyFrames: string;
 begin
-  FGotKeyFrames := FALSE;
   result := 'not applicable to audio';
-  case (FUseKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
+//  case (FUseKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
+  case GS.mediaType <> mtVideo of TRUE: EXIT; end;
 
   FUseKeyFrames := NOT FUseKeyFrames;
 
@@ -1084,9 +1066,8 @@ begin
                                   result := 'keyframes off';
                                   EXIT; end;end;
 
-  result := EMPTY;
-  FGotKeyFrames := mmpDoKeyFrames(FMediaFilePath); // combined mmpGetKeyFrames and mmpSetKeyFrames
-  case FGotKeyFrames of TRUE: result := 'keyframes on'; end
+  result := 'keyframes on';
+  keyFrameManager.init(FMediaFilePath);
 end;
 
 function TTimeline.undo: boolean;

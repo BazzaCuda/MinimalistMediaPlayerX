@@ -92,7 +92,7 @@ uses
   TThumbsClass in 'TThumbsClass.pas',
   model.mmpBookmark in 'model.mmpBookmark.pas',
   model.mmpConfigFile in 'model.mmpConfigFile.pas',
-  model.mmpKeyFrames in 'model.mmpKeyFrames.pas',
+  model.mmpKeyFramesOld in 'model.mmpKeyFramesOld.pas',
   model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
   model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
   model.mmpMediaTypes in 'model.mmpMediaTypes.pas',
@@ -123,7 +123,8 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas',
+  model.mmpKeyFrames in 'model.mmpKeyFrames.pas';
 
 procedure setupRunMode;
 begin
