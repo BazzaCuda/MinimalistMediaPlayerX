@@ -214,7 +214,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TThumbsClass.pas"/>
         <DCCReference Include="model.mmpBookmark.pas"/>
         <DCCReference Include="model.mmpConfigFile.pas"/>
-        <DCCReference Include="model.mmpKeyFramesOld.pas"/>
         <DCCReference Include="model.mmpMediaInfo.pas"/>
         <DCCReference Include="model.mmpMediaPlayer.pas"/>
         <DCCReference Include="model.mmpMediaTypes.pas"/>
