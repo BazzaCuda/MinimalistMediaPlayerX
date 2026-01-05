@@ -23,9 +23,28 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
-  vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls, Vcl.AppEvnts;
+  vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls, Vcl.AppEvnts,
+  mmpAction;
 
 type
+  TNotifyIntEvent = procedure(aValue: integer) of object;
+
+  TNoScrollListBox = class(TListBox)
+  strict private
+  protected
+    procedure createParams(var aParams: TCreateParams); override;
+  end;
+
+  TScrollDetectListBox = class(TListBox)
+  strict private
+    FOnScroll: TNotifyIntEvent;
+  private
+  protected
+    procedure wndProc(var aMessage: TMessage); override;
+  public
+    property onScroll: TNotifyIntEvent read FOnScroll write FOnScroll;
+  end;
+
   IPlaylistForm = interface
   end;
 
@@ -36,12 +55,13 @@ type
     buttonPanel:        TPanel;
     shiftLabel:         TLabel;
     moveLabel:          TLabel;
-    LB:                 TListBox;
+    LB: TListBox;
     applicationEvents:  TApplicationEvents;
     lblFolder:          TLabel;
     procedure   applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
     procedure   FormCreate(sender: TObject);
     procedure   LBDblClick(sender: TObject);
+    procedure   LBDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
     procedure   LBKeyDn(sender: TObject; var key: Word; Shift: TShiftState);
     procedure   LBKeyPress(sender: TObject; var key: Char);
     procedure   LBKeyUp(sender: TObject; var key: Word; shift: TShiftState);
@@ -49,14 +69,21 @@ type
     procedure   LBMouseLeave(Sender: TObject);
   private
     FMouseOver: boolean;
+//    LB:         TScrollDetectListBox;
+    lbNumbers:  TNoScrollListBox;
+    lbDuration: TNoScrollListBox;
+    FTopIndex:  integer;
+    function    fillNumbers: TVoid;
     function    isItemVisible: boolean;
     function    playItemIndex(const aItemIndex: integer): boolean;
     function    visibleItemCount: integer;
   protected
     procedure   createParams(var params: TCreateParams);
   public
+    destructor  Destroy; override;
     function    highlightCurrentItem: boolean;
     function    loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
+    procedure   syncIndexes(aDelta: integer);
   end;
   {$ENDREGION}
 
@@ -117,16 +144,34 @@ begin
   params.WndParent  := SELF.Handle; // normally application.handle
 end;
 
+destructor TPlaylistForm.Destroy;
+begin
+//  LB.onScroll := NIL;
+  inherited;
+end;
+
+function TPlaylistForm.fillNumbers: TVoid;
+begin
+  case lbNumbers = NIL of TRUE: EXIT; end;
+  lbNumbers.items.clear;
+  for var i := 1 to LB.count do
+    lbNumbers.items.add(format('%0.3d', [i]));
+end;
+
 procedure TPlaylistForm.FormCreate(Sender: TObject);
 begin
+  LB                  := TScrollDetectListBox.create(SELF);
+  LB.parent           := backPanel;
+  LB.onDrawItem       := LBDrawItem;
+
   LB.align            := alClient;
   LB.bevelInner       := bvNone;
   LB.bevelOuter       := bvNone;
   LB.borderStyle      := bsNone;
+  LB.margins.top      := 10;
   LB.margins.bottom   := 10;
   LB.margins.left     := 10;
   LB.margins.right    := 10;
-  LB.margins.top      := 10;
 
   LB.alignWithMargins := TRUE;
 
@@ -146,6 +191,60 @@ begin
   lblFolder.font.color        := DARK_MODE_SILVER;
   lblFolder.font.style        := [fsBold];
   lblFolder.autoSize          := FALSE;
+
+  // newstyle playlist
+  LB.style                    := lbOwnerDrawFixed;
+  EXIT;
+
+  LB.margins.left             := 00;
+  LB.margins.right            := 00;
+
+  lbNumbers                    := TNoScrollListBox.create(SELF);
+  lbNumbers.parent             := backPanel;
+  lbNumbers.width              := 25;
+  lbNumbers.align              := alLeft;
+  lbNumbers.items.add('001');
+  lbNumbers.items.add('002');
+  lbNumbers.items.add('003');
+
+  lbDuration                  := TNoScrollListBox.create(SELF);
+  lbDuration.parent           := backPanel;
+  lbDuration.width            := 60;
+  lbDuration.align            := alRight;
+  lbDuration.items.add('99:99:99');
+  lbDuration.items.add('7:22');
+  lbDuration.items.add('11:22');
+
+  lbNumbers.style             := lbOwnerDrawFixed;
+  lbNumbers.onDrawItem        := LBDrawItem;
+  lbDuration.style            := lbOwnerDrawFixed;
+  lbDuration.onDrawItem       := LBDrawItem;
+  LB.itemHeight               := 13;
+  lbNumbers.itemHeight        := 13;
+  lbDuration.itemHeight       := 13;
+  lbNumbers.bevelInner        := bvNone;
+  lbNumbers.bevelOuter        := bvNone;
+  lbNumbers.borderStyle       := bsNone;
+  lbDuration.style            := lbOwnerDrawFixed;
+  lbDuration.bevelInner       := bvNone;
+  lbDuration.bevelOuter       := bvNone;
+  lbDuration.borderStyle      := bsNone;
+  lbNumbers.margins.top       := 10;
+  lbNumbers.margins.bottom    := 10;
+  lbNumbers.margins.left      := 00;
+  lbNumbers.margins.right     := 00;
+  lbDuration.margins.top      := 10;
+  lbDuration.margins.bottom   := 10;
+  lbDuration.margins.left     := 00;
+  lbDuration.margins.right    := 10;
+  lbNumbers.alignWithMargins  := TRUE;
+  lbDuration.alignWithMargins := TRUE;
+
+  lbNumbers.tag   := 1;
+  LB.tag          := 2;
+  lbDuration.tag  := 3;
+
+//  LB.onScroll     := syncIndexes;
 end;
 
 function TPlaylistForm.highlightCurrentItem: boolean;
@@ -160,7 +259,8 @@ begin
                                   case isItemVisible of TRUE: EXIT; end;
                                   var vTopIndex := LB.itemIndex - (visibleItemCount div 2); // try to position it in the middle of the listbox
                                   case vTopIndex >= 0 of  TRUE: LB.topIndex := vTopIndex;
-                                                         FALSE: LB.topIndex := 0; end;end;end;
+                                                         FALSE: LB.topIndex := 0; end;
+                                  syncIndexes(-1); end;end;
   finally
   end;
 end;
@@ -182,6 +282,23 @@ end;
 procedure TPlaylistForm.LBDblClick(sender: TObject);
 begin
   playItemIndex(LB.itemIndex);
+end;
+
+procedure TPlaylistForm.LBDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+  var LB:       TListBox := control as TListBox;
+
+  case (index mod 2 = 0) of  TRUE: LB.canvas.brush.color := DARK_MODE_DARK;
+                            FALSE: LB.canvas.brush.color := TColor(longint(DARK_MODE_DARK) - $050505);
+  end;
+
+
+  LB.canvas.fillRect(rect);
+
+  case LB.tag = 3 of   TRUE: begin
+                                var  vTextWidth := LB.canvas.textWidth(LB.items[index]);
+                                LB.canvas.textOut(rect.right - vTextWidth - 4, rect.Top + 2, LB.items[index]); end; // right-justify duration
+                      FALSE: LB.canvas.textOut(rect.left + 4, rect.top + 2, LB.items[index]); end;
 end;
 
 procedure TPlaylistForm.LBKeyPress(sender: TObject; var key: Char);
@@ -227,6 +344,18 @@ begin
   var vThisItem := mmp.cmd(evPLReqThisItem, aItemIndex).text;
   mmp.cmd(evPLFind, vThisItem); // set as current
   mmp.cmd(evVMMPPlayCurrent);
+end;
+
+procedure TPlaylistForm.syncIndexes(aDelta: integer);
+begin
+  case (lbNumbers = NIL) or (lbDuration = NIL) or (LB = NIL) of TRUE: EXIT; end;
+
+  case aDelta = -1 of  TRUE:  begin
+                                lbNumbers.topIndex  := LB.topIndex;
+                                lbDuration.topIndex := LB.topIndex; end;
+                      FALSE:  begin
+                                lbNumbers.topIndex  := LB.topIndex + aDelta;
+                                lbDuration.topIndex := LB.topIndex + aDelta; end;end;
 end;
 
 function TPlaylistForm.visibleItemCount: integer;
@@ -290,12 +419,13 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
 
   case aNotice.event of
+    evPLFormFillNumbers: FPlaylistForm.fillNumbers;
     evPLFormMove:       moveForm(aNotice.wndRec);
     evPLFormShutForm:   shutForm;
-    evPLFormLoadBox:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox(aNotice.tf); end;
+    evPLFormLoadBox:    case FPlaylistForm = NIL of FALSE: begin FPlaylistForm.loadPlaylistBox(aNotice.tf); FPlaylistForm.fillNumbers; end;end;
     evPLFormHighlight:  case FPlaylistForm = NIL of FALSE: FPlaylistForm.highlightCurrentItem; end;
     evPLFormShow:       showForm;
-    evPLNewPlaylist:    case FPlaylistForm = NIL of FALSE: FPlaylistForm.loadPlaylistBox; end;
+    evPLNewPlaylist:    case FPlaylistForm = NIL of FALSE: begin FPlaylistForm.loadPlaylistBox; FPlaylistForm.fillNumbers; end;end;
   end;
 end;
 
@@ -313,6 +443,43 @@ begin
   mmp.cmd(evGSWidthHelp, 0);
   GS.notify(newNotice(evGSShowingPlaylist, FALSE));
   FListBoxLoaded := FALSE;
+end;
+
+{ TNoScrollListBox }
+
+procedure TNoScrollListBox.createParams(var aParams: TCreateParams);
+begin
+  inherited createParams(aParams);
+  aParams.style := aParams.style and not WS_VSCROLL and not WS_HSCROLL;
+end;
+
+{ TScrollDetectListBox }
+
+procedure TScrollDetectListBox.wndProc(var aMessage: TMessage);
+begin
+  case assigned(FOnScroll) of FALSE: begin
+                                      inherited WndProc(aMessage);
+                                      EXIT; end;end;
+
+  case (aMessage.msg = WM_VSCROLL) or (aMessage.msg = WM_KEYDOWN) of TRUE:  begin
+                                                                              inherited WndProc(aMessage);
+                                                                              FOnScroll(-1);
+                                                                              EXIT; end;end;
+
+  case (aMessage.msg = WM_MOUSEWHEEL) of TRUE:  begin
+                                                  var vDelta          := smallint(aMessage.WParam shr 16);
+                                                  var vLinesToScroll  := -vDelta div WHEEL_DELTA;
+
+                                                  var vScrollLines: integer;
+                                                  systemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @vScrollLines, 0);
+
+                                                  vLinesToScroll := vLinesToScroll * vScrollLines;
+
+                                                  FOnScroll(vLinesToScroll);
+                                                  inherited wndProc(aMessage);
+                                                  EXIT; end;end;
+
+  inherited WndProc(aMessage);
 end;
 
 initialization

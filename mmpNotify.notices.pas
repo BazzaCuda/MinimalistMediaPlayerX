@@ -74,7 +74,7 @@ type
     evPLReqCurrentFolder, evPLReqCurrentItem, evPLReqCurrentIx, evPLReqFormattedItem, evPLReqHasItems, evPLReqIsLast, evPLReqIsSpecialImage, evPLReqThisItem,
     evPLAddItem, evPLSetNoItem, evPLReqLastIx,
 
-    evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm,
+    evPLFormHighlight, evPLFormLoadBox, evPLFormMove, evPLFormShow, evPLFormShutForm, evPLFormFillNumbers,
 
     evSTBlankInTimeCaption, evSTBlankOutTimeCaption, evSTBrighter, evSTDarker, evSTDisplayTime, evSTDisplayXY, evSTOpInfo, evSTReset, evSTToggleCaptions, evSTUpdateMetaData,
     evSTForceCaptions, evSTOpInfo2,

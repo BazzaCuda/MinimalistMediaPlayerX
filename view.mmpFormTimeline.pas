@@ -807,8 +807,10 @@ begin
 
   drawSegments(TRUE);
 
-  case FUseKeyFrames                              of FALSE: FUseKeyFrames := CF.asBoolean[CONF_KEYFRAMES]; end;
-  case FUseKeyFrames and (GS.mediaType = mtVideo) of  TRUE: keyFrameManager.init(aMediaFilePath); end;
+  case FUseKeyFrames of FALSE: FUseKeyFrames := CF.asBoolean[CONF_KEYFRAMES]; end;
+  case (GS.mediaType = mtVideo) of TRUE:  begin
+                                            case FUseKeyFrames of FALSE: FUseKeyFrames := CF.asBoolean[CONF_KEYFRAMES]; end;
+                                            case FUseKeyFrames of  TRUE: keyFrameManager.init(aMediaFilePath); end;end;end;
 
   result := TRUE;
 end;

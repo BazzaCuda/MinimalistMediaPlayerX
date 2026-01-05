@@ -201,7 +201,9 @@ begin
   var vCleanData              := TStringList.create;
 
   try
-    case runProbe(FFilePath, aPositionSS, vProcessOutput) of FALSE: EXIT; end;
+    case runProbe(FFilePath, aPositionSS, vProcessOutput) of FALSE: begin
+                                                                      vKeyMinute.kmKeyFrames.free;
+                                                                      EXIT; end;end;
 
     for var vLine in vProcessOutput do
       case pos('K', vLine) = 0 of FALSE: vCleanData.add(copy(vLine, 1, pos(',', vLine) - 1)); end;
@@ -260,7 +262,7 @@ begin
 
   TLExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe);
 
-  case fileExists(vKeyFile) of   TRUE: aStringList.LoadFromFile(vKeyFile);
+  case fileExists(vKeyFile) of   TRUE: aStringList.loadFromFile(vKeyFile);
                                 FALSE: EXIT; end;
 
   deleteFile(vKeyFile);
