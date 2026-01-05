@@ -807,8 +807,8 @@ begin
 
   drawSegments(TRUE);
 
-//  keyFrameManager.clearKeyFrames;
-  case FUseKeyFrames and (GS.mediaType = mtVideo) of TRUE: keyFrameManager.init(aMediaFilePath); end;
+  case FUseKeyFrames                              of FALSE: FUseKeyFrames := CF.asBoolean[CONF_KEYFRAMES]; end;
+  case FUseKeyFrames and (GS.mediaType = mtVideo) of  TRUE: keyFrameManager.init(aMediaFilePath); end;
 
   result := TRUE;
 end;
@@ -1057,7 +1057,6 @@ end;
 function TTimeline.toggleKeyFrames: string;
 begin
   result := 'not applicable to audio';
-//  case (FUseKeyFrames = FALSE) and (GS.mediaType <> mtVideo) of TRUE: EXIT; end;
   case GS.mediaType <> mtVideo of TRUE: EXIT; end;
 
   FUseKeyFrames := NOT FUseKeyFrames;

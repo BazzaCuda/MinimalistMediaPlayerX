@@ -112,6 +112,7 @@ const
   CONF_EXIT_BROWSER           = 'exitBrowser';
   CONF_FOLDER_DELETE          = 'folderDelete';
   CONF_KEEP_DELETE            = 'keepDelete';
+  CONF_KEYFRAMES              = 'keyframes';
   CONF_IMAGE_DELETE           = 'imageDelete';
   CONF_LOGGING                = 'logging';
   CONF_MAIN                   = 'main';

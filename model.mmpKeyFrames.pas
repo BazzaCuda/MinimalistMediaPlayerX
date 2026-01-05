@@ -32,7 +32,6 @@ type
   end;
 
   IKeyFrameManager = interface
-    function  clearKeyFrames: TVoid;
     function  init(const aFilePath: string): TVoid;
     function  proximity(const aPositionSS: integer): double;
   end;
@@ -45,6 +44,7 @@ type
     FMasterKey: TStringList;
   private
     function  appendMasterKey(const aPositionSS: integer; const aStringList: TStringList): TVoid;
+    function  clearKeyFrames: TVoid;
     function  flashProgressBar: TVoid;
     function  getKeyFrameList(const aPositionSS: integer): TList<double>;
     function  keyFile(const aPositionSS: integer): string;
@@ -58,7 +58,6 @@ type
     destructor  Destroy; override;
 
     // IKeyFrameManager
-    function  clearKeyFrames: TVoid;
     function  init(const aFilePath: string): TVoid;
     function  proximity(const aPositionSS: integer): double;
   end;
@@ -84,12 +83,6 @@ end;
 
 { TKeyFrameManager }
 
-function TKeyFrameManager.clearKeyFrames: TVoid;
-begin
-  for var vKeyMinute in FMinutes.values do vKeyMinute.kmKeyFrames.free;
-  FMinutes.clear;
-end;
-
 constructor TKeyFrameManager.Create;
 begin
   inherited Create;
@@ -106,6 +99,19 @@ begin
   inherited Destroy;
 end;
 
+function TKeyFrameManager.appendMasterKey(const aPositionSS: integer; const aStringList: TStringList): TVoid;
+begin
+  FMasterKey.add(format('[%0.3d]', [minuteIx(aPositionSS)]));
+  FMasterKey.addStrings(aStringList);
+  saveMasterKey;
+end;
+
+function TKeyFrameManager.clearKeyFrames: TVoid;
+begin
+  for var vKeyMinute in FMinutes.values do vKeyMinute.kmKeyFrames.free;
+  FMinutes.clear;
+end;
+
 function TKeyFrameManager.flashProgressBar: TVoid;
 begin
   mmp.cmd(evPBBackgroundColor, clFuchsia); // mmpFormTimeline will reset the color (evPBBackgroundColor) on the next tick
@@ -118,7 +124,7 @@ begin
   result := NIL;
   case FFetching of TRUE: EXIT; end;
 
-  var vMinuteIx := aPositionSS div 60;
+  var vMinuteIx := minuteIx(aPositionSS);
 
   case FMinutes.containsKey(vMinuteIx) of FALSE: begin
                                                       FFetching := TRUE;
@@ -129,46 +135,6 @@ begin
                                                       end;end;end;
 
   result := FMinutes[vMinuteIx].kmKeyFrames;
-end;
-
-function TKeyFrameManager.runProbe(const aFilePath: string; const aPositionSS: integer; const aStringList: TStringList): boolean;
-begin
-  result := FALSE;
-  mmp.cmd(evSTOpInfo, 'keyframes...');
-
-  var vStartSS  := minuteIx(aPositionSS) * 60;
-  var vEndSS    := vStartSS + 60;
-
-  var vKeyFile := keyFile(aPositionSS);
-  case fileExists(vKeyFile) of TRUE: deleteFile(vKeyFile); end;
-
-//  var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time  -of default=noprint_wrappers=1:nokey=1 ';
-  var vParams   := ' -v quiet -skip_frame nokey -show_packets -select_streams v:0 -show_entries packet=pts_time,flags -of csv=print_section=0 ';
-
-  var vInterval := format(' -read_intervals %d%s%d', [vStartSS, '%', vEndSS]);
-  var vKeyFileO := ' -o ' + '"' + vKeyFile + '"';
-  var vInFile   := ' "' + aFilePath + '"';
-
-  TLExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe);
-
-  case fileExists(vKeyFile) of   TRUE: aStringList.LoadFromFile(vKeyFile);
-                                FALSE: EXIT; end;
-
-  deleteFile(vKeyFile);
-
-  result := TRUE;
-end;
-
-function TKeyFrameManager.saveMasterKey: TVoid;
-begin
-  FMasterKey.saveToFile(changeFileExt(FFilePath, '.key'));
-end;
-
-function TKeyFrameManager.appendMasterKey(const aPositionSS: integer; const aStringList: TStringList): TVoid;
-begin
-  FMasterKey.add(format('[%0.3d]', [minuteIx(aPositionSS)]));
-  FMasterKey.addStrings(aStringList);
-  saveMasterKey;
 end;
 
 function TKeyFrameManager.init(const aFilePath: string): TVoid;
@@ -192,12 +158,13 @@ begin
   var vKeyFile := changeFileExt(FFilePath, '.key');
   case fileExists(vKeyFile) of FALSE: EXIT; end;
 
+  clearKeyFrames;
+
   case mmpCompareFileTimestamps(FFilePath, vKeyFile) of FALSE:  begin                 // the key file is out of date compared to the video file
                                                                   FMasterKey.clear;   // force getting brand new keyframe info from ffprobe
                                                                   saveMasterKey;
                                                                   EXIT; end;end;
 
-  clearKeyFrames;
   FMasterKey.loadFromFile(vKeyFile);
 
   var vMinuteIx: integer;
@@ -271,6 +238,39 @@ begin
 
   result := -1;
   case vInsertIx > 0 of TRUE: result := aPositionSS - vKeyFrames[vInsertIx - 1]; end;
+end;
+
+function TKeyFrameManager.runProbe(const aFilePath: string; const aPositionSS: integer; const aStringList: TStringList): boolean;
+begin
+  result := FALSE;
+  mmp.cmd(evSTOpInfo, 'keyframes...');
+
+  var vStartSS  := minuteIx(aPositionSS) * 60;
+  var vEndSS    := vStartSS + 60;
+
+  var vKeyFile := keyFile(aPositionSS);
+  case fileExists(vKeyFile) of TRUE: deleteFile(vKeyFile); end;
+
+//  var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time  -of default=noprint_wrappers=1:nokey=1 ';
+  var vParams   := ' -v quiet -skip_frame nokey -show_packets -select_streams v:0 -show_entries packet=pts_time,flags -of csv=print_section=0 ';
+
+  var vInterval := format(' -read_intervals %d%s%d', [vStartSS, '%', vEndSS]);
+  var vKeyFileO := ' -o ' + '"' + vKeyFile + '"';
+  var vInFile   := ' "' + aFilePath + '"';
+
+  TLExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe);
+
+  case fileExists(vKeyFile) of   TRUE: aStringList.LoadFromFile(vKeyFile);
+                                FALSE: EXIT; end;
+
+  deleteFile(vKeyFile);
+
+  result := TRUE;
+end;
+
+function TKeyFrameManager.saveMasterKey: TVoid;
+begin
+  FMasterKey.saveToFile(changeFileExt(FFilePath, '.key'));
 end;
 
 end.
