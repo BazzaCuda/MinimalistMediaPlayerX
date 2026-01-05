@@ -50,6 +50,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
+`MMP` (`v5.4.0`) Keyframe processing in the `Audio & Video Timeline Editor` completely re-written and given a massive turbo boost, to make cuts more accurate while still not requiring any re-encoding of the edited video
+
 `MMP` (`v5.3.0`) Improvements to the `Audio & Video Timeline Editor` including a new facility to quickly make an `FFmpeg` copy of the audio/video file being edited
 
 `MMP` (`v5.1.0`) Shuffle Mode added, and a combined `Audio & Video` playlist filter for when your music folder contains a mixture of audio files and music videos
