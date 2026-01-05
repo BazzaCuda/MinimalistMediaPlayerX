@@ -142,7 +142,9 @@ begin
   var vKeyFile := keyFile(aPositionSS);
   case fileExists(vKeyFile) of TRUE: deleteFile(vKeyFile); end;
 
-  var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time -of default=noprint_wrappers=1:nokey=1 ';
+//  var vParams   := ' -v quiet -skip_frame nokey -select_streams v:0 -show_entries frame=pts_time  -of default=noprint_wrappers=1:nokey=1 ';
+  var vParams   := ' -v quiet -skip_frame nokey -show_packets -select_streams v:0 -show_entries packet=pts_time,flags -of csv=print_section=0 ';
+
   var vInterval := format(' -read_intervals %d%s%d', [vStartSS, '%', vEndSS]);
   var vKeyFileO := ' -o ' + '"' + vKeyFile + '"';
   var vInFile   := ' "' + aFilePath + '"';
@@ -223,25 +225,29 @@ end;
 function TKeyFrameManager.probeKeyFrames(const aPositionSS: integer): boolean;
 var
   vKeyMinute:     TKeyMinute;
-  vProcessOutput: TStringList;
-  vLine:          string;
   vValue:         double;
 begin
   result := FALSE;
 
-  vKeyMinute.kmKeyFrames := TList<double>.create;
-  vProcessOutput := TStringList.create;
+      vKeyMinute.kmKeyFrames  := TList<double>.create;
+  var vProcessOutput          := TStringList.create;
+  var vCleanData              := TStringList.create;
+
   try
     case runProbe(FFilePath, aPositionSS, vProcessOutput) of FALSE: EXIT; end;
 
-    appendMasterKey(aPositionSS, vProcessOutput);
+    for var vLine in vProcessOutput do
+      case pos('K', vLine) = 0 of FALSE: vCleanData.add(copy(vLine, 1, pos(',', vLine) - 1)); end;
 
-    for vLine in vProcessOutput do
+    appendMasterKey(aPositionSS, vCleanData);
+
+    for var vLine in vCleanData do
       case tryStrToFloat(vLine, vValue) of TRUE: vKeyMinute.kmKeyFrames.add(vValue); end;
 
     vKeyMinute.kmKeyFrames.sort;
     FMinutes.add(minuteIx(aPositionSS), vKeyMinute);
   finally
+    vCleanData.free;
     vProcessOutput.free;
   end;
 
