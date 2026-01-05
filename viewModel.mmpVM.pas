@@ -290,7 +290,7 @@ begin
 
   case mmpCheckRecycleBin(vCurrentItem) of FALSE: EXIT; end;
 
-  case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end;
+  case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end; // defaults to mpvStop as it's the current file
 
   mmp.cmd(evPLDeleteIx, -1);
 

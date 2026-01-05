@@ -248,7 +248,7 @@ begin
   case vCheckWithUser and NOT mmpUserOK('This folder also contains audio/video files'#13#10#13#10'Do you want to continue?') of TRUE: EXIT; end;
   case mmpCheckRecycleBin(FThumbs.playlist.currentItem) of FALSE: EXIT; end;
 
-  case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState)
+  case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState) // mpvStop isn't an issue for images
                                           of TRUE:  begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...

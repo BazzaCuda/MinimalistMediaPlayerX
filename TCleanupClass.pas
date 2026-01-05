@@ -70,7 +70,7 @@ var SR: TSearchRec;
       var vFound := mmp.cmd(evPLFind, vFN).tf;
 
       case fileExists(vFN) and vFound of TRUE: mmp.cmd(evPLDeleteIx, -1); end;
-      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE, sameText(vFN, aCurrentItem)); end;
+      case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE, sameText(vFN, aCurrentItem)); end; // only mpvStop if it's the current file
     end;
     vSL.free;
     result := TRUE;
@@ -89,7 +89,7 @@ begin
   var vResult: boolean := FALSE;
   case findFirst(aFolderPath + '*.*', filesOnly, SR) = 0 of TRUE:
     repeat
-      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE, FALSE); end;
+      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE, FALSE); end; // no need to mpvStop for these files
     until (findNext(SR) <> 0);
   end;
   findClose(SR);

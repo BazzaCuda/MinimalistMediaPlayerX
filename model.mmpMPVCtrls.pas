@@ -123,7 +123,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('brightness', 0);
-  result := 'Brightness reset';
+  result := 'brightness reset';
 end;
 
 function mpvBrightnessUp(const mpv: IMPVBasePlayer): string;
@@ -167,7 +167,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('contrast', 0);
-  result := 'Contrast reset';
+  result := 'contrast reset';
 end;
 
 function mpvContrastUp(const mpv: IMPVBasePlayer): string;
@@ -225,7 +225,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('gamma', 0);
-  result := 'Gamma reset';
+  result := 'gamma reset';
 end;
 
 function mpvGammaUp(const mpv: IMPVBasePlayer): string;
@@ -390,7 +390,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot - 45);
-  result := 'Rotate left';
+  result := 'rotate left';
 end;
 
 function mpvRotateReset(const mpv: IMPVBasePlayer): string;
@@ -398,7 +398,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('video-rotate', 0);
-  result := 'Rotate reset';
+  result := 'rotate reset';
 end;
 
 function mpvRotateRight(const mpv: IMPVBasePlayer): string;
@@ -409,7 +409,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyInt64('video-rotate', rot);
   mpv.setPropertyInt64('video-rotate', rot + 45);
-  result := 'Rotate right';
+  result := 'rotate right';
 end;
 
 function mpvSaturationDn(const mpv: IMPVBasePlayer): string;
@@ -428,7 +428,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyInt64('saturation', 0);
-  result := 'Saturation reset';
+  result := 'saturation reset';
 end;
 
 function mpvSeek(const mpv: IMPVBasePlayer; const aValue: integer): boolean;
@@ -465,7 +465,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('speed', 1.00);
-  result := 'Speed reset';
+  result := 'speed reset';
 end;
 
 function mpvSpeedUp(const mpv: IMPVBasePlayer): string;
@@ -484,7 +484,7 @@ begin
   result := EMPTY;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.seek(0, FALSE);
-  result := 'Start over';
+  result := 'start over';
 end;
 
 function mpvStop(const mpv: IMPVBasePlayer): boolean;
@@ -562,7 +562,7 @@ begin
   mpv.setPropertyDouble('video-scale-x', zoomX + dx);
   mpv.getPropertyDouble('video-scale-y', zoomY);
   mpv.setPropertyDouble('video-scale-y', zoomY + dx);
-  result := 'Zoom in';
+  result := 'zoom in';
 end;
 
 function mpvZoomOut(const mpv: IMPVBasePlayer): string;
@@ -580,7 +580,7 @@ begin
   mpv.setPropertyDouble('video-scale-x', zoomX - dx);
   mpv.getPropertyDouble('video-scale-y', zoomY);
   mpv.setPropertyDouble('video-scale-y', zoomY - dx);
-  result := 'Zoom out';
+  result := 'zoom out';
 end;
 
 function mpvZoomReset(const mpv: IMPVBasePlayer): string;
@@ -591,7 +591,7 @@ begin
   mpv.setPropertyDouble('video-pan-y', 0.0);
   mpv.setPropertyDouble('video-scale-x', 1.00);
   mpv.setPropertyDouble('video-scale-y', 1.00);
-  result := 'Zoom reset';
+  result := 'zoom reset';
 end;
 
 

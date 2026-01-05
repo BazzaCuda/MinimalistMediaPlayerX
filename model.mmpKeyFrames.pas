@@ -134,7 +134,7 @@ end;
 function TKeyFrameManager.runProbe(const aFilePath: string; const aPositionSS: integer; const aStringList: TStringList): boolean;
 begin
   result := FALSE;
-  mmp.cmd(evSTOpInfo, 'KeyFrames...');
+  mmp.cmd(evSTOpInfo, 'keyframes...');
 
   var vStartSS  := minuteIx(aPositionSS) * 60;
   var vEndSS    := vStartSS + 60;

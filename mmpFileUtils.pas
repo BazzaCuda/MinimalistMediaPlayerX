@@ -177,7 +177,7 @@ begin
       result := copyFileEx(PChar(aFilePath), PChar(vDestFile), NIL, NIL, vCancel, 0);
 
       case result and bDeleteIt of TRUE: begin
-                                          mmpDeleteThisFile(aFilePath, [], bDeleteIt);
+                                          mmpDeleteThisFile(aFilePath, [], bDeleteIt); // defaults to mpvStop as it's the current file
                                           case bRecordUndo of TRUE: UM.recordUndo(aFilePath, vDestFile); end;
                                         end;end;
     end;end;
@@ -282,7 +282,7 @@ begin
                                   FALSE: mmpShredThis(aFilePath, vDeleteMethod); end;             // one individual file
 
     case bRunTasks of  TRUE: result := mmpRunTasks;
-                      FALSE: result := TRUE; end;
+                      FALSE: result := TRUE; end; // mmpRunTasks can be delayed and then called manually after a series of calls to mmpDeleteThisFile (see TCleanupClass)
 
   finally
     mmp.cmd(evGSSuspended, FALSE); // this won't have any effect until evVMMPPlayNext etc
