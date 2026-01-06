@@ -40,7 +40,7 @@ implementation
 
 uses
   idHTTP, idSSLOpenSSL, idComponent,
-  system.json, system.classes, system.sysUtils, system.strUtils,
+  system.json, system.classes, system.ioUtils, system.sysUtils, system.strUtils,
   vcl.forms,
   mmpCmd, mmpConsts, mmpFileUtils, mmpUtils,
   view.mmpFormDownload, view.mmpProgressBar,
@@ -245,6 +245,7 @@ begin
   result := FALSE;
   case  aReleaseTag =  EMPTY                                                            of TRUE: EXIT; end; // couldn't obtain latest release tag
   case (aReleaseTag <> EMPTY) AND (mmpFileVersionFmt(EMPTY, 'v%d.%d.%d') = aReleaseTag) of TRUE: EXIT; end; // we're running the latest release
+  case TFile.getSize(updateFile(aReleaseTag)) = 0                                       of TRUE: EXIT; end; // don't rename the exe if there's nothing to replace it with
 
   case fileExists(mmpExePath + backupName + '.exe')    of FALSE: mmpRenameFile(paramStr(0), backupName); end;
   case fileExists(paramStr(0))                         of FALSE: with TZipFile.create do begin
