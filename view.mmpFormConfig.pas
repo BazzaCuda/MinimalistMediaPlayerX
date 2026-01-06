@@ -181,6 +181,22 @@ type
     btnDirtyCharsDefault: TButton;
     Label56: TLabel;
     rbFilterAudioVideo: TRadioButton;
+    tsKeyframes: TTabSheet;
+    Label57: TLabel;
+    Label58: TLabel;
+    chbKeyframes: TCheckBox;
+    Label59: TLabel;
+    lblWhite: TLabel;
+    lblYellow: TLabel;
+    lblPurple: TLabel;
+    Label60: TLabel;
+    Label61: TLabel;
+    Label62: TLabel;
+    Label63: TLabel;
+    Label64: TLabel;
+    Label65: TLabel;
+    Label66: TLabel;
+    Label67: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -217,6 +233,8 @@ type
     procedure edtDirtyCharsChange(Sender: TObject);
     procedure btnDirtyCharsDefaultClick(Sender: TObject);
     procedure rbFilterAudioVideoClick(Sender: TObject);
+    procedure chbKeyframesClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -382,6 +400,11 @@ begin
   CF.asBoolean[CONF_KEEP_DELETE] := chbKeepDelete.checked;
 end;
 
+procedure TConfigForm.chbKeyframesClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_KEYFRAMES] := chbKeyframes.checked;
+end;
+
 procedure TConfigForm.chbNextFolderOnEmptyClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] := chbNextFolderOnEmpty.checked;
@@ -464,6 +487,16 @@ begin
   case sender = edtSuffixF4 of TRUE: CF[CONF_CAT_F4] := vText; end;
 end;
 
+procedure TConfigForm.FormCreate(Sender: TObject);
+begin
+  lblWhite.styleElements  := [];
+  lblYellow.styleElements := [];
+  lblPurple.styleElements := [];
+  lblWhite.font.color  := clWhite;
+  lblYellow.font.color := clYellow;
+  lblPurple.font.color := clFuchsia;
+end;
+
 procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case key = VK_ESCAPE of TRUE: modalResult := mrOK; end;
@@ -520,6 +553,7 @@ begin
                                                        FALSE: spinSlideshowIntervalMs.value := CF.asInteger[CONF_SLIDESHOW_INTERVAL_MS]; end;
 
   chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
+  chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
 
   edtDirtyChars.text            := trim(CF[CONF_DIRTY_CHARS]);
 end;

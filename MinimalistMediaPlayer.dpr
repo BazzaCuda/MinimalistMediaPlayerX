@@ -186,7 +186,7 @@ begin
   application.Initialize;
   TStyleManager.trySetStyle('Charcoal Dark Slate');
   var mainUI: TMMPUI;
-  application.createForm(TMMPUI, mainUI);
+  Application.CreateForm(TmainUI, mainUI);
   application.run;
   {$else}
 

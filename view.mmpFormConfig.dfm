@@ -13,6 +13,7 @@ object ConfigForm: TConfigForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   TextHeight = 15
   object Label19: TLabel
@@ -29,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsPlaylistFilter
+    ActivePage = tsKeyframes
     Align = alClient
     TabOrder = 0
     object tsGeneral: TTabSheet
@@ -49,7 +50,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -63,6 +64,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label3: TLabel
         Left = 128
@@ -198,7 +200,7 @@ object ConfigForm: TConfigForm
       object Label5: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -212,6 +214,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label13: TLabel
         Left = 16
@@ -467,7 +470,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -481,6 +484,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label21: TLabel
         Left = 49
@@ -639,7 +643,7 @@ object ConfigForm: TConfigForm
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -653,6 +657,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label28: TLabel
         Left = 170
@@ -785,7 +790,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -799,6 +804,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label30: TLabel
         Left = 55
@@ -2181,7 +2187,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2195,6 +2201,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label29: TLabel
         Left = 28
@@ -2467,7 +2474,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2481,6 +2488,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label35: TLabel
         Left = 87
@@ -2663,7 +2671,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2677,6 +2685,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label43: TLabel
         Left = 20
@@ -2738,7 +2747,7 @@ object ConfigForm: TConfigForm
       object Label45: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2752,6 +2761,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label46: TLabel
         Left = 0
@@ -2803,7 +2813,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2817,6 +2827,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label39: TLabel
         Left = 11
@@ -2884,7 +2895,7 @@ object ConfigForm: TConfigForm
       object Label50: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2898,6 +2909,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label51: TLabel
         Left = 131
@@ -2912,8 +2924,8 @@ object ConfigForm: TConfigForm
         WordWrap = True
       end
       object Label52: TLabel
-        Left = 217
-        Top = 9
+        Left = 205
+        Top = 4
         Width = 167
         Height = 15
         Caption = 'Audio && Video Timeline Editor'
@@ -2980,13 +2992,13 @@ object ConfigForm: TConfigForm
         OnClick = chbPlayEditedClick
       end
     end
-    object tsCleanFile: TTabSheet
-      Caption = 'Clean File Name'
-      ImageIndex = 11
-      object Label55: TLabel
+    object tsKeyframes: TTabSheet
+      Caption = 'Keyframes'
+      ImageIndex = 12
+      object Label57: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3000,6 +3012,212 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
+      end
+      object Label58: TLabel
+        Left = 205
+        Top = 4
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label59: TLabel
+        Left = 3
+        Top = 24
+        Width = 558
+        Height = 90
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'Determines whether, for video files, the editor will always open' +
+          ' with keyframes turned on. '#13#10'Keyframes help you to more accurate' +
+          'ly determine where the start of each segment should be cut.'#13#10#13#10'K' +
+          'eyframe processing is now so fast that keeping keyframes turned ' +
+          'on permanently is a viable option.'#13#10#13#10'The vertical cursor will c' +
+          'hange color to indicate how close it is the previous keyframe:'
+        WordWrap = True
+      end
+      object lblWhite: TLabel
+        Left = 58
+        Top = 120
+        Width = 32
+        Height = 15
+        Alignment = taCenter
+        Caption = 'white'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object lblYellow: TLabel
+        Left = 58
+        Top = 141
+        Width = 36
+        Height = 15
+        Alignment = taCenter
+        Caption = 'yellow'
+        Color = clYellow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object lblPurple: TLabel
+        Left = 58
+        Top = 162
+        Width = 36
+        Height = 15
+        Alignment = taCenter
+        Caption = 'purple'
+        Color = clFuchsia
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label60: TLabel
+        Left = 175
+        Top = 120
+        Width = 377
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is more than 1.0 seconds prior to this vid' +
+          'eo point'
+      end
+      object Label61: TLabel
+        Left = 175
+        Top = 141
+        Width = 351
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is 0.5 to 1.0 seconds prior to this video ' +
+          'point'
+      end
+      object Label62: TLabel
+        Left = 175
+        Top = 162
+        Width = 368
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is less than 0.5 seconds prior to this vid' +
+          'eo point'
+      end
+      object Label63: TLabel
+        Left = 0
+        Top = 183
+        Width = 573
+        Height = 76
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'FFmpeg will cut on the closet seek-point keyframe it can find'#13#10'p' +
+          'rior to where you set your cut segment to start*'#13#10#13#10'Rough cuts w' +
+          'ork really welll. If you prefer more accurate cuts for a particu' +
+          'lar video'#13#10'work with FFmpeg by using keyframes in the MMP editor'
+        WordWrap = True
+      end
+      object Label64: TLabel
+        Left = 46
+        Top = 263
+        Width = 484
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* FFmpeg will always make a cut segment at least as long as you ' +
+          'set it to be.'#13#10'A segment will always contain at least what you w' +
+          'ant it to contain, give or take a few frames'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label65: TLabel
+        Left = 107
+        Top = 120
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'rough cut:'
+        WordWrap = True
+      end
+      object Label66: TLabel
+        Left = 107
+        Top = 141
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'good cut:'
+        WordWrap = True
+      end
+      object Label67: TLabel
+        Left = 107
+        Top = 162
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'best cut:'
+        WordWrap = True
+      end
+      object chbKeyframes: TCheckBox
+        Left = 230
+        Top = 299
+        Width = 116
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Keyframes On'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbKeyframesClick
+      end
+    end
+    object tsCleanFile: TTabSheet
+      Caption = 'Clean File Name'
+      ImageIndex = 11
+      object Label55: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object lblDirtyChars: TLabel
         Left = 36
