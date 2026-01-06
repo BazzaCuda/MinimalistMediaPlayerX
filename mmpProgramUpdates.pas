@@ -50,8 +50,9 @@ uses
 type
   TProgramUpdates = class(TInterfacedObject, IProgramUpdates)
   strict private
-    FReleaseNotes: string;
-    FReleaseTag: string;
+    FReleaseNotes:  string;
+    FReleaseTag:    string;
+    FZipURL:        string;
   protected
     function  analyseReleaseNotes(const aReleaseTag: string): boolean;
     function  downloadAsset(const aURL, aFilePath: string; const aSuccess: string = EMPTY): string;
@@ -261,8 +262,10 @@ end;
 
 function TProgramUpdates.getJSONReleaseTag: string;
 var
-  json: string;
-  obj:  TJSONObject;
+  json:     string;
+  obj:      TJSONObject;
+  vAssets:  TJSONArray;
+  vAsset:   TJSONObject;
 
   function getDevJson(const aTag: string): string;
   begin
@@ -288,6 +291,16 @@ begin
     try
       case obj = NIL of FALSE: result        := obj.values['tag_name'].value; end;
       case obj = NIL of FALSE: FReleaseNotes := obj.values['body'].value; end;
+      case obj = NIL of FALSE: vAssets       := obj.values['assets'] as TJSONArray; end;
+      case (obj = NIL) or (vAssets = NIL) of FALSE: begin
+                                                      for var i := 0 to vAssets.count - 1 do
+                                                      begin
+                                                        vAsset := vAssets.items[i] as TJSONObject;
+                                                        var vURL := vAsset.values['browser_download_url'].value;
+                                                        case vURL.toLower.endsWith('.zip') of TRUE: begin
+                                                                                                      FZipURL := vURL;
+                                                                                                      {$if BazDebugWindow} debugString('FZipURL', FZipURL); {$endif}
+                                                                                                      BREAK; end;end;end;end;end;
     except
     end;
   finally
