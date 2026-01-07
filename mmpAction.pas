@@ -22,11 +22,11 @@ interface
 
 type
 
-  TFuncNoParam<TResult>        = function: TResult of object;
-  TFuncString<TResult>         = function(const aValue: string): TResult of object;
-  TFuncInteger<TResult>        = function(const aValue: Integer): TResult of object;
-  TFuncStringInteger<TResult>  = function(const aString: string; const aInteger: Integer): TResult of object;
-  TVoid                        = record end;
+  TFuncNoParam<TResult>       = function: TResult of object;
+  TFuncString<TResult>        = function(const aValue: string): TResult of object;
+  TFuncInteger<TResult>       = function(const aValue: Integer): TResult of object;
+  TFuncStringInteger<TResult> = function(const aString: string; const aInteger: Integer): TResult of object;
+  TVoid                       = record end;
 
 type
   IAction<TResult> = interface

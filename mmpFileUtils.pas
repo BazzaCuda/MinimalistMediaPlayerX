@@ -34,12 +34,12 @@ function mmpConfigFilePath: string;
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
 function mmpCopyMMPFile(const aOldFilePath: string; const aNewFilePath: string): string;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE; const bStopMPV: boolean = TRUE): boolean;
-function mmpDriveFixed(const aFilePath: string): boolean;
-function mmpDriveFixedRecycle(const aFilePath: string): boolean;
 function mmpExePath: string;
 function mmpFileNameWithoutExtension(const aFilePath: string): string;
 function mmpFileSize(const aFilePath: string): int64;
 function mmpFileVersionFmt(const aFilePath: string = EMPTY; const fmt: string = 'v%d.%d.%d.%d'): string;
+function mmpFixedDrive(const aFilePath: string): boolean;
+function mmpFixedDriveRecycles(const aFilePath: string): boolean;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 function mmpIsFileInUseExclusive(const aFilePath: string; out aSysErrorMessage: string): boolean;
@@ -102,8 +102,8 @@ begin
 
   var vMsg:string := EMPTY;
 
-  case mmpDriveFixed(aFilePath)         of FALSE: vMsg := 'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10; end;
-  case mmpDriveFixedRecycle(aFilePath)  of FALSE: vMsg := 'This FIXED drive is set to not use the Recycle Bin'#13#10#13#10; end;
+  case mmpFixedDrive(aFilePath)         of FALSE: vMsg := 'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10; end;
+  case mmpFixedDriveRecycles(aFilePath) of FALSE: vMsg := 'This FIXED drive is set to not use the Recycle Bin'#13#10#13#10; end;
 
   case vMsg = EMPTY of FALSE: result := mmpUserOK(aFilePath + #13#10#13#10 +
                                                   vMsg +
@@ -198,45 +198,6 @@ begin
   case fileExists(vOldKey) of TRUE: TFile.copy(vOldKey, vNewKey, TRUE); end;
 end;
 
-function mmpDriveFixed(const aFilePath: string): boolean;
-begin
-  result := FALSE;
-
-  var vDriveRoot := extractFileDrive(aFilePath);
-
-  result := getDriveType(PChar(vDriveRoot)) = DRIVE_FIXED; // large external USB SSDs present as fixed; micro SDs etc don't
-end;
-
-function mmpDriveFixedRecycle(const aFilePath: string): boolean;
-// only fixed drives will have a registry volume key
-// assume TRUE unless NukeOnDelete = 1
-const NUKE_ON_DELETE = 'NukeOnDelete';
-var vVolumeFull: array[0..MAX_PATH] of char;
-begin
-  result := TRUE;
-
-  var vDriveRoot := mmpITBS(extractFileDrive(aFilePath));
-
-  case getVolumeNameForVolumeMountPoint(pchar(vDriveRoot), vVolumeFull, MAX_PATH) of FALSE: EXIT; end;
-
-  var vVolumeGUID:string  := vVolumeFull;
-  var vPos1               := pos('{', vVolumeGUID);
-  var vPos2               := pos('}', vVolumeGUID);
-  vVolumeGUID             := copy(vVolumeGUID, vPos1, vPos2 - vPos1 + 1);
-
-  var vVolumeKey := 'Software\Microsoft\Windows\CurrentVersion\Explorer\BitBucket\Volume\' + vVolumeGUID;
-
-  var vReg := TRegistry.create(KEY_READ);
-  try
-    vReg.RootKey := HKEY_CURRENT_USER;
-    case vReg.openKeyReadOnly(vVolumeKey) of FALSE: EXIT; end;
-
-    case vReg.valueExists(NUKE_ON_DELETE) of TRUE: result := vReg.readInteger(NUKE_ON_DELETE) <> 1; end;
-  finally
-    vReg.free;
-  end;
-end;
-
 function mmpExePath: string;
 begin
   result := mmpITBS(extractFilePath(paramStr(0)));
@@ -254,7 +215,7 @@ begin
   result := FALSE;
 
   var vDeleteMethod := CF.asDeleteMethod[CONF_DELETE_METHOD];
-  case (NOT mmpDriveFixed(aFilePath)) or (NOT mmpDriveFixedRecycle(aFilePath)) of TRUE: vDeleteMethod := dmStandard; end;
+  case (NOT mmpFixedDrive(aFilePath)) or (NOT mmpFixedDriveRecycles(aFilePath)) of TRUE: vDeleteMethod := dmStandard; end;
   // TDebug.debugEnum<TDeleteMethod>('vDeleteMethod', vDeleteMethod);
 
   case bSilentDelete of FALSE: begin
@@ -342,6 +303,45 @@ begin
                                     // format result string
                                     result := format(fmt, [iVer[1], iVer[2], iVer[3], iVer[4]]);
                                   end;end;
+end;
+
+function mmpFixedDrive(const aFilePath: string): boolean;
+begin
+  result := FALSE;
+
+  var vDriveRoot := extractFileDrive(aFilePath);
+
+  result := getDriveType(PChar(vDriveRoot)) = DRIVE_FIXED; // large external USB SSDs present as fixed; micro SDs etc don't
+end;
+
+function mmpFixedDriveRecycles(const aFilePath: string): boolean;
+// only fixed drives will have a registry volume key
+// assume TRUE unless NukeOnDelete = 1, meaning the user has turned off recycling for this fixed drive
+const NUKE_ON_DELETE = 'NukeOnDelete';
+var vVolumeFull: array[0..MAX_PATH] of char;
+begin
+  result := TRUE; // this drive uses the Recycle Bin...
+
+  var vDriveRoot := mmpITBS(extractFileDrive(aFilePath));
+
+  case getVolumeNameForVolumeMountPoint(pchar(vDriveRoot), vVolumeFull, MAX_PATH) of FALSE: EXIT; end;
+
+  var vVolumeGUID:string  := vVolumeFull;
+  var vPos1               := pos('{', vVolumeGUID);
+  var vPos2               := pos('}', vVolumeGUID);
+  vVolumeGUID             := copy(vVolumeGUID, vPos1, vPos2 - vPos1 + 1);
+
+  var vVolumeKey := 'Software\Microsoft\Windows\CurrentVersion\Explorer\BitBucket\Volume\' + vVolumeGUID;
+
+  var vReg := TRegistry.create(KEY_READ);
+  try
+    vReg.RootKey := HKEY_CURRENT_USER;
+    case vReg.openKeyReadOnly(vVolumeKey) of FALSE: EXIT; end;
+
+    case vReg.valueExists(NUKE_ON_DELETE) of TRUE: result := vReg.readInteger(NUKE_ON_DELETE) <> 1; end; // <> 1 = drive recycles
+  finally
+    vReg.free;
+  end;
 end;
 
 function mmpIsEditFriendly(const aFilePath: string): boolean;
