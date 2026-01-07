@@ -22,11 +22,11 @@ interface
 
 type
 
-  TFuncNoParam<TResult>       = function: TResult of object;
-  TFuncString<TResult>        = function(const aValue: string): TResult of object;
-  TFuncInteger<TResult>       = function(const aValue: Integer): TResult of object;
-  TFuncStringInteger<TResult> = function(const aString: string; const aInteger: Integer): TResult of object;
-  TVoid                       = record end;
+  TFuncNoParam<TResult>        = function: TResult of object;
+  TFuncString<TResult>         = function(const aValue: string): TResult of object;
+  TFuncInteger<TResult>        = function(const aValue: Integer): TResult of object;
+  TFuncStringInteger<TResult>  = function(const aString: string; const aInteger: Integer): TResult of object;
+  TVoid                        = record end;
 
 type
   IAction<TResult> = interface
@@ -34,10 +34,14 @@ type
     function perform(const aValue: string): TResult; overload;
     function perform(const aValue: integer): TResult; overload;
     function perform(const aString: string; const aInteger: integer): TResult; overload;
+
+    function getAssigned: boolean;
+    property assigned:    boolean read getAssigned;
   end;
 
   TAction<TResult> = class(TInterfacedObject, IAction<TResult>)
   strict private
+    FFuncAssigned:      boolean;
     FFuncNoParam:       TFuncNoParam<TResult>;
     FFuncString:        TFuncString<TResult>;
     FFuncInteger:       TFuncInteger<TResult>;
@@ -52,32 +56,38 @@ type
     function perform(const aValue: string): TResult; overload;
     function perform(const aValue: integer): TResult; overload;
     function perform(const aString: string; const aInteger: integer): TResult; overload;
+
+    function getAssigned: boolean;
   end;
 
 implementation
 
 function TAction<TResult>.setFunc(const aFunc: TFuncNoParam<TResult>): TAction<TResult>;
 begin
-  result := SELF;
-  FFuncNoParam := aFunc;
+  result        := SELF;
+  FFuncNoParam  := aFunc;
+  FFuncAssigned := TRUE;
 end;
 
 function TAction<TResult>.setFunc(const aFunc: TFuncString<TResult>): TAction<TResult>;
 begin
-  result := SELF;
-  FFuncString := aFunc;
+  result        := SELF;
+  FFuncString   := aFunc;
+  FFuncAssigned := TRUE;
 end;
 
 function TAction<TResult>.setFunc(const aFunc: TFuncInteger<TResult>): TAction<TResult>;
 begin
-  result := SELF;
-  FFuncInteger := aFunc;
+  result        := SELF;
+  FFuncInteger  := aFunc;
+  FFuncAssigned := TRUE;
 end;
 
 function TAction<TResult>.setFunc(const aFunc: TFuncStringInteger<TResult>): TAction<TResult>;
 begin
-  result := SELF;
-  FFuncStringInteger := aFunc;
+  result              := SELF;
+  FFuncStringInteger  := aFunc;
+  FFuncAssigned       := TRUE;
 end;
 
 function TAction<TResult>.perform: TResult;
@@ -104,6 +114,11 @@ begin
   end;
 end;
 
+function TAction<TResult>.getAssigned: boolean;
+begin
+  result := FFuncAssigned;
+end;
+
 function TAction<TResult>.perform(const aString: string; const aInteger: Integer): TResult;
 begin
   case assigned(FFuncStringInteger) of
@@ -111,6 +126,5 @@ begin
     FALSE: result := default(TResult);
   end;
 end;
-
 
 end.
