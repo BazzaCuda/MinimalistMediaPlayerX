@@ -250,7 +250,7 @@ end;
 function mmpDeleteThisFile(const aFilePath: string; const aShiftState: TShiftState; const bSilentDelete: boolean = FALSE; const bRunTasks: boolean = TRUE; const bStopMPV: boolean = TRUE): boolean;
 var vSysMessage: string;
 begin
-  {$if BazDebugWindow} debugString('mmpDeleteThisFile', aFilePath); {$endif}
+  // {$if BazDebugWindow} debugString('mmpDeleteThisFile', aFilePath); {$endif}
   result := FALSE;
 
   var vDeleteMethod := CF.asDeleteMethod[CONF_DELETE_METHOD];
@@ -287,7 +287,7 @@ begin
   finally
     mmp.cmd(evGSSuspended, FALSE); // this won't have any effect until evVMMPPlayNext etc
   end;
-  {$if BazDebugWindow} debug('exit mmpDeleteThisFile'); {$endif}
+  // {$if BazDebugWindow} debug('exit mmpDeleteThisFile'); {$endif}
 end;
 
 function mmpFileSize(const aFilePath: string): int64;

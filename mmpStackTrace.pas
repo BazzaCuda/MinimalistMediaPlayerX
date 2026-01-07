@@ -65,7 +65,7 @@ begin
 end;
 
 initialization
-  // {$if BazDebugWindow} debugClear; {$endif}
+  {$if BazDebugWindow} debugClear; {$endif}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable;
   {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 

@@ -35,6 +35,7 @@ type
     FDeleted:     boolean;
     FEndSS:       integer;
     FOldColor:    TColor;
+    FRedraw:      TNotifyEvent;
     FSegDetails:  TLabel;
     FSegID:       TLabel;
     FSelected:    boolean;
@@ -62,11 +63,13 @@ type
 
   protected
     procedure doClick(Sender: TObject);
+    procedure doMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure Paint; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
-    constructor Create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
+    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent; const bDeleted: boolean = FALSE);
     function    delete: boolean;
+    function    restore: boolean;
     procedure   setDisplayDetails;
     function    setAsSelSeg: boolean;
     property    deleted:   boolean read FDeleted      write FDeleted;
@@ -76,6 +79,7 @@ type
     property    isLast:    boolean read getIsLast;
     property    ix:        integer read getIx;
     property    oldColor:  TColor  read FOldColor     write FOldColor;
+    property    redraw:    TNotifyEvent read FRedraw write FRedraw;
     property    segID:     string  read getSegID      write setSegID;
     property    selected:  boolean read FSelected     write setSelected;
     property    startSS:   integer read FStartSS      write FStartSS;
@@ -144,7 +148,7 @@ begin
   freeAndNil(FSegments);
 end;
 
-constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const bDeleted: boolean = FALSE);
+constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent; const bDeleted: boolean = FALSE);
 begin
   inherited Create(NIL);
   parent            := FParent;
@@ -154,6 +158,8 @@ begin
   font.style        := [fsBold];
   alignment         := taLeftJustify;
   onClick           := doClick;
+  onMouseUp         := doMouseUp;
+  FRedraw           := onRedraw;
 
   doubleBuffered    := TRUE;
 
@@ -170,6 +176,7 @@ begin
   FSegID.left       := 4;
   FSegID.styleElements := [];
   FSegID.onClick    := doClick;
+  FSegID.OnMouseUp  := doMouseUp;
 
   FTitle := TLabel.create(SELF);
   FTitle.parent         := SELF;
@@ -177,22 +184,25 @@ begin
   FTitle.left           := 4;
   FTitle.styleElements  := [];
   FTitle.onClick        := doClick;
+  FTitle.OnMouseUp      := doMouseUp;
 
   FSegDetails := TLabel.create(SELF);
-  FSegDetails.parent     := SELF;
-  FSegDetails.top        := 38;
-  FSegDetails.left       := 4;
+  FSegDetails.parent        := SELF;
+  FSegDetails.top           := 38;
+  FSegDetails.left          := 4;
   FSegDetails.styleElements := [];
-  FSegDetails.onClick    := doClick;
+  FSegDetails.onClick       := doClick;
+  FSegDetails.OnMouseUp     := doMouseUp;
 
   FTrashCan := TImage.create(SELF);
-  FTrashCan.parent := SELF;
-  FTrashCan.stretch := TRUE;
-  FTrashCan.center  := TRUE;
-  FTrashCan.height  := 31;
-  FTrashCan.width   := 41;
-  FTrashCan.visible := FALSE;
-  FTrashCan.onClick := doClick;
+  FTrashCan.parent    := SELF;
+  FTrashCan.stretch   := TRUE;
+  FTrashCan.center    := TRUE;
+  FTrashCan.height    := 31;
+  FTrashCan.width     := 41;
+  FTrashCan.visible   := FALSE;
+  FTrashCan.onClick   := doClick;
+  FTrashCan.OnMouseUp := doMouseUp;
 
   case bDeleted of TRUE: SELF.delete; end;
 end;
@@ -209,6 +219,14 @@ end;
 procedure TSegment.doClick(Sender: TObject);
 begin
   setAsSelSeg;
+end;
+
+procedure TSegment.doMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  case button = mbRight of FALSE: EXIT; end;
+  case FDeleted of   TRUE: restore;
+                    FALSE: delete; end;
+  case assigned(FRedraw) of TRUE: FRedraw(SELF); end;
 end;
 
 function TSegment.getDuration: integer;
@@ -258,6 +276,14 @@ begin
 
   case selected of  TRUE: Frame3D(canvas, rect, clTeal, clTeal, 1);
                    FALSE: Frame3D(canvas, rect, color, color, 1); end;
+end;
+
+function TSegment.restore: boolean;
+begin
+  result  := FALSE;
+  deleted := FALSE;
+  case oldColor = NEARLY_BLACK of FALSE: color := oldColor; end;
+  result  := TRUE;
 end;
 
 procedure TSegment.setSegID(const Value: string);

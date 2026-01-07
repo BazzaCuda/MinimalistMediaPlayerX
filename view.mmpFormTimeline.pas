@@ -122,6 +122,7 @@ type
     procedure   onCancelButton(sender: TObject);
     procedure   onCancelCopy(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
+    procedure   onRedraw(sender: TObject);
   public
     function    clear:          boolean;
     function    delSegment(const aSegment: TSegment): boolean;
@@ -150,6 +151,8 @@ function shutTimeline: boolean;
 function TL: TTimeline;
 function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 
+function redrawSegments: boolean;
+
 implementation
 
 uses
@@ -160,6 +163,11 @@ uses
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
+
+function redrawSegments: boolean;
+begin
+  TL.drawSegments;
+end;
 
 function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
@@ -541,7 +549,7 @@ begin
   var newStartSS := aPositionSS;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS); // this will be the righthand segment of the two. The old segment will finish 1 second to the left of it.
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS, onRedraw); // this will be the righthand segment of the two. The old segment will finish 1 second to the left of it.
   aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
@@ -657,7 +665,7 @@ end;
 
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-  segments.add(TSegment.create(0, aMax));
+  segments.add(TSegment.create(0, aMax, NIL));
   result := format('0-%d,0', [aMax]);
 end;
 
@@ -837,7 +845,7 @@ begin
       posComma  := pos(',', vSL[i]);
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
-      var ix := segments.add(TSegment.create(vStartSS, vEndss, vDeleted));
+      var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, vDeleted));
       case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;
       result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
@@ -935,6 +943,11 @@ begin
   end;
 end;
 
+procedure TTimeline.onRedraw(sender: TObject);
+begin
+  redrawSegments;
+end;
+
 function TTimeline.redo: boolean;
 // discard the most recent action [by moving it straight to the undo list] and apply the subsequent actions from the stack
 begin
@@ -956,8 +969,10 @@ function TTimeline.restoreSegment(const aSegment: TSegment): boolean;
 begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
-  aSegment.deleted := FALSE;
-  case aSegment.oldColor = NEARLY_BLACK of FALSE: aSegment.color := aSegment.oldColor; end;
+  aSegment.restore;
+
+//  aSegment.deleted := FALSE;
+//  case aSegment.oldColor = NEARLY_BLACK of FALSE: aSegment.color := aSegment.oldColor; end;
   result := TRUE;
 end;
 
