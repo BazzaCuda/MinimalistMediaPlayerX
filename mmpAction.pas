@@ -21,96 +21,123 @@ unit mmpAction;
 interface
 
 type
+  TVoid = record end;
 
-  TFuncNoParam<TResult>        = function: TResult of object;
-  TFuncString<TResult>         = function(const aValue: string): TResult of object;
-  TFuncInteger<TResult>        = function(const aValue: Integer): TResult of object;
-  TFuncStringInteger<TResult>  = function(const aString: string; const aInteger: Integer): TResult of object;
-  TVoid                        = record end;
+  TFuncNoParam          <TResult> = function:                                                      TResult of object;
+  TFuncString           <TResult> = function(const aString: string):                               TResult of object;
+  TFuncInteger          <TResult> = function(const aInteer: integer):                              TResult of object;
+  TFuncStringInteger    <TResult> = function(const aString: string; const aInteger: Integer):      TResult of object;
 
-type
   IAction<TResult> = interface
-    function perform: TResult; overload;
-    function perform(const aValue: string): TResult; overload;
-    function perform(const aValue: integer): TResult; overload;
-    function perform(const aString: string; const aInteger: integer): TResult; overload;
+    function perform:                                                   TResult; overload;
+    function perform(const aValue: string):                             TResult; overload;
+    function perform(const aValue: Integer):                            TResult; overload;
+    function perform(const aString: string; const aInteger: Integer):   TResult; overload;
 
     function getAssigned: boolean;
-    property assigned:    boolean read getAssigned;
+    property assigned:    boolean   read getAssigned;
   end;
 
   TAction<TResult> = class(TInterfacedObject, IAction<TResult>)
   strict private
     FFuncAssigned:      boolean;
-    FFuncNoParam:       TFuncNoParam<TResult>;
-    FFuncString:        TFuncString<TResult>;
-    FFuncInteger:       TFuncInteger<TResult>;
-    FFuncStringInteger: TFuncStringInteger<TResult>;
-  public
-    function setFunc(const aFunc: TFuncNoParam<TResult>):       TAction<TResult>; overload;
-    function setFunc(const aFunc: TFuncString<TResult>):        TAction<TResult>; overload;
-    function setFunc(const aFunc: TFuncInteger<TResult>):       TAction<TResult>; overload;
-    function setFunc(const aFunc: TFuncStringInteger<TResult>): TAction<TResult>; overload;
+    FFuncNoParam:       TFuncNoParam          <TResult>;
+    FFuncString:        TFuncString           <TResult>;
+    FFuncInteger:       TFuncInteger          <TResult>;
+    FFuncStringInteger: TFuncStringInteger    <TResult>;
 
+    constructor Create;                           overload;
+    constructor Create(const aFuncNIL: pointer);  overload;
+
+    constructor Create(const aFuncNoParam:        TFuncNoParam          <TResult>);     overload;
+    constructor Create(const aFuncString:         TFuncString           <TResult>);     overload;
+    constructor Create(const aFuncInteger:        TFuncInteger          <TResult>);     overload;
+    constructor Create(const aFuncStringInteger:  TFuncStringInteger    <TResult>);     overload;
+  public
     function perform: TResult; overload;
-    function perform(const aValue: string): TResult; overload;
-    function perform(const aValue: integer): TResult; overload;
+    function perform(const aString: string):      TResult; overload;
+    function perform(const aInteger: Integer):    TResult; overload;
     function perform(const aString: string; const aInteger: integer): TResult; overload;
 
     function getAssigned: boolean;
+
+    class function pick(const aBoolean: boolean; const aTrueFuncNoParam:        TFuncNoParam<TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFuncString:         TFuncString<TResult>):            IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFuncInteger:        TFuncInteger<TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFuncStringInteger:  TFuncStringInteger<TResult>):     IAction<TResult>; overload;
   end;
 
 implementation
 
-function TAction<TResult>.setFunc(const aFunc: TFuncNoParam<TResult>): TAction<TResult>;
+uses
+  mmpRTL;
+
+{ TAction<TResult> }
+
+constructor TAction<TResult>.Create(const aFuncNoParam: TFuncNoParam<TResult>);
 begin
-  result        := SELF;
-  FFuncNoParam  := aFunc;
-  FFuncAssigned := TRUE;
+  FFuncNoParam  := aFuncNoParam;
+  FFuncAssigned := assigned(aFuncNoParam);
 end;
 
-function TAction<TResult>.setFunc(const aFunc: TFuncString<TResult>): TAction<TResult>;
+constructor TAction<TResult>.Create(const aFuncString: TFuncString<TResult>);
 begin
-  result        := SELF;
-  FFuncString   := aFunc;
-  FFuncAssigned := TRUE;
+  FFuncString   := aFuncString;
+  FFuncAssigned := assigned(aFuncString);
 end;
 
-function TAction<TResult>.setFunc(const aFunc: TFuncInteger<TResult>): TAction<TResult>;
+constructor TAction<TResult>.Create(const aFuncInteger: TFuncInteger<TResult>);
 begin
-  result        := SELF;
-  FFuncInteger  := aFunc;
-  FFuncAssigned := TRUE;
+  FFuncInteger  := aFuncInteger;
+  FFuncAssigned := assigned(aFuncInteger);
 end;
 
-function TAction<TResult>.setFunc(const aFunc: TFuncStringInteger<TResult>): TAction<TResult>;
+constructor TAction<TResult>.Create(const aFuncStringInteger: TFuncStringInteger<TResult>);
 begin
-  result              := SELF;
-  FFuncStringInteger  := aFunc;
-  FFuncAssigned       := TRUE;
+  FFuncStringInteger  := aFuncStringInteger;
+  FFuncAssigned       := assigned(aFuncStringInteger);
+end;
+
+constructor TAction<TResult>.Create;
+begin
+ raise exception.create('Don''t call TAction.create');
+end;
+
+constructor TAction<TResult>.Create(const aFuncNIL: pointer);
+begin
+  case aFuncNIL = NIL of   TRUE: EXIT;
+                          FALSE: raise exception.Create('Functionless constructor must be called with NIL'); end;
 end;
 
 function TAction<TResult>.perform: TResult;
 begin
   case assigned(FFuncNoParam) of
-    TRUE:  result := FFuncNoParam();
-    FALSE: result := default(TResult);
+    TRUE:   result := FFuncNoParam();
+    FALSE:  result := default(TResult);
   end;
 end;
 
-function TAction<TResult>.perform(const aValue: string): TResult;
+function TAction<TResult>.perform(const aString: string): TResult;
 begin
   case assigned(FFuncString) of
-    TRUE:  result := FFuncString(aValue);
-    FALSE: result := default(TResult);
+    TRUE:   result := FFuncString(aString);
+    FALSE:  result := default(TResult);
   end;
 end;
 
-function TAction<TResult>.perform(const aValue: Integer): TResult;
+function TAction<TResult>.perform(const aInteger: Integer): TResult;
 begin
   case assigned(FFuncInteger) of
-    TRUE:  result := FFuncInteger(aValue);
-    FALSE: result := default(TResult);
+    TRUE:   result := FFuncInteger(aInteger);
+    FALSE:  result := default(TResult);
+  end;
+end;
+
+function TAction<TResult>.perform(const aString: string; const aInteger: Integer): TResult;
+begin
+  case assigned(FFuncStringInteger) of
+    TRUE:   result := FFuncStringInteger(aString, aInteger);
+    FALSE:  result := default(TResult);
   end;
 end;
 
@@ -119,11 +146,35 @@ begin
   result := FFuncAssigned;
 end;
 
-function TAction<TResult>.perform(const aString: string; const aInteger: Integer): TResult;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncNoParam: TFuncNoParam<TResult>): IAction<TResult>;
 begin
-  case assigned(FFuncStringInteger) of
-    TRUE:  result := FFuncStringInteger(aString, aInteger);
-    FALSE: result := default(TResult);
+  case aBoolean of
+    TRUE:   result := TAction<TResult>.Create(aTrueFuncNoParam);
+    FALSE:  result := TAction<TResult>.Create(NIL);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncString: TFuncString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+    TRUE:   result := TAction<TResult>.Create(aTrueFuncString);
+    FALSE:  result := TAction<TResult>.Create(NIL);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncInteger: TFuncInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+    TRUE:   result := TAction<TResult>.Create(aTrueFuncInteger);
+    FALSE:  result := TAction<TResult>.Create(NIL);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringInteger: TFuncStringInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+    TRUE:   result := TAction<TResult>.Create(aTrueFuncStringInteger);
+    FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
