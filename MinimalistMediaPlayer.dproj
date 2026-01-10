@@ -116,10 +116,9 @@
         <Debugger_RunParams>&quot;B:\Movies\Bourne 4 - The Bourne Legacy (2012).mp4&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
-        <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\")
-if exist "X:\" copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\"
-$(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Release>1</VerInfo_Release>
+        <PostBuildEvent><![CDATA[call "$(PROJECTDIR)\_buildEventsRelease.bat" "$(OUTPUTPATH)" "$(OUTPUTDIR)$(PROJECTNAME).map" "$(PROJECTDIR)\$(PROJECTNAME).dpr"
+$(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -148,15 +147,12 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <PostBuildEvent><![CDATA[if exist "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" (copy "$(OutputDir)\$(OutputName).exe" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\")
-if exist "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" (copy "$(OutputDir)\$(OutputName).map" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\")
-if exist "X:\" (copy "$(OutputDir)\$(OutputName).exe" "X:\MMP\")
-if exist "X:\" (copy  "$(OutputDir)\$(OutputName).map" "X:\MMP\")
-$(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <Debugger_RunParams>B:\Music\Agnus Dei _ Music of Inner Harmony _ Vol 1.m4a</Debugger_RunParams>
+        <PostBuildEvent><![CDATA[call "$(PROJECTDIR)\_buildEventsDebug.bat" "$(OUTPUTPATH)" "$(OUTPUTDIR)$(PROJECTNAME).map" "$(PROJECTDIR)\$(PROJECTNAME).dpr"
+$(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -245,16 +241,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
-        <DCCReference Include="view.mmpFormHelpFull.pas">
-            <Form>HelpFullForm</Form>
-        </DCCReference>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>VCLSTYLE</ResourceType>
             <ResourceId>DarkMode</ResourceId>
         </RcItem>
-        <RcItem Include="_resources\resource_mdEditing.md">
+        <RcItem Include="_resources\resource_mdFull01.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdEditing</ResourceId>
@@ -373,13 +366,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Release" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdFull01.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -1427,7 +1420,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>if exist &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\&quot; (copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\&quot;)&amp;&amp;if exist &quot;X:\&quot; copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;</PostBuildEvent>
+        <PostBuildEvent>call &quot;$(PROJECTDIR)\_buildEventsRelease.bat&quot; &quot;$(OUTPUTPATH)&quot; &quot;$(OUTPUTDIR)$(PROJECTNAME).map&quot; &quot;$(PROJECTDIR)\$(PROJECTNAME).dpr&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
@@ -1435,7 +1428,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>if exist &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot; (copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;)&amp;&amp;if exist &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot; (copy &quot;$(OutputDir)\$(OutputName).map&quot; &quot;B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\&quot;)&amp;&amp;if exist &quot;X:\&quot; (copy &quot;$(OutputDir)\$(OutputName).exe&quot; &quot;X:\MMP\&quot;)&amp;&amp;if exist &quot;X:\&quot; (copy  &quot;$(OutputDir)\$(OutputName).map&quot; &quot;X:\MMP\&quot;)</PostBuildEvent>
+        <PostBuildEvent>call &quot;$(PROJECTDIR)\_buildEventsDebug.bat&quot; &quot;$(OUTPUTPATH)&quot; &quot;$(OUTPUTDIR)$(PROJECTNAME).map&quot; &quot;$(PROJECTDIR)\$(PROJECTNAME).dpr&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

@@ -1,0 +1,49 @@
+
+*** Release Build Event Called: 10/01/2026 21:04:55.49 *** 
+ 
+EXE: "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe" 
+MAP: ".\Win64\Release\MinimalistMediaPlayer.map" 
+DPR: "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" 
+ 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\" 
+        1 file(s) copied.
+--- 
+ 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" "B:\Win64_Dev\Programs\MediaPlayerX\_dprBackups\" 
+        1 file(s) copied.
+***
+ 
+*** Release Build Event Called: 10/01/2026 21:06:06.94 *** 
+ 
+EXE: "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe" 
+MAP: ".\Win64\Release\MinimalistMediaPlayer.map" 
+DPR: "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" 
+ 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\MinimalistMediaPlayer.exe" "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer_v5_4_\" 
+        1 file(s) copied.
+--- 
+ 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" "B:\Win64_Dev\Programs\MediaPlayerX\_dprBackups\" 
+        1 file(s) copied.
+*** 
+ 
+*** Debug Build Event Called: 10/01/2026 21:06:55.08 *** 
+ 
+EXE: "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe" 
+MAP: ".\Win64\Debug\MinimalistMediaPlayer.map" 
+DPR: "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" 
+ 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" 
+        1 file(s) copied.
+--- 
+copy ".\Win64\Debug\MinimalistMediaPlayer.map" "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Release\" 
+        1 file(s) copied.
+--- 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\Win64\Debug\MinimalistMediaPlayer.exe" "X:\MMP\" 
+--- 
+copy ".\Win64\Debug\MinimalistMediaPlayer.map" "X:\MMP\" 
+--- 
+copy "B:\Win64_Dev\Programs\MediaPlayerX\MinimalistMediaPlayer.dpr" "B:\Win64_Dev\Programs\MediaPlayerX\_dprBackups\" 
+        1 file(s) copied.
+*** 
+ 
