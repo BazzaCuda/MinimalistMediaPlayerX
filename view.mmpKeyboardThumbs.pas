@@ -189,8 +189,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
 
 begin
   result := getKeyOp;
-  {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
-  {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
+//  {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
+//  {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
 end;
 
 end.

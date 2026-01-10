@@ -1,5 +1,3 @@
-
-
 Control | Action
 ------- | ------
 **Bookmarks** ||
