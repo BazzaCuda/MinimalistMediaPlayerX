@@ -145,8 +145,8 @@ end;
 
 procedure THelpFullForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  gHelpFullForm := NIL;
   mmp.cmd(evGSHelpFull, FALSE);
+  gHelpFullForm := NIL;
 end;
 
 procedure THelpFullForm.FormCreate(Sender: TObject);
@@ -157,9 +157,7 @@ end;
 
 procedure THelpFullForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  {$if BazDebugWindow} debugInteger('formKeyUp, key', key); {$endif}
-  {$if BazDebugWindow} debugBoolean('formKeyUp, evGSHelpFull', GS.helpFull); {$endif}
-  case key = VK_ESCAPE of TRUE: begin close; gHelpFullForm := NIL; end;end;
+  case key = VK_ESCAPE of TRUE: close; end;
 end;
 
 function THelpFullForm.getHandle: HWND;
