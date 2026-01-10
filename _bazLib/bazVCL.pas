@@ -1,6 +1,6 @@
-{   MMP: Minimalist Media Player
+{   bazLib
     Copyright (C) 2021-2099 Baz Cuda <bazzacuda@gmx.com>
-    https://github.com/BazzaCuda/MinimalistMediaPlayerX
+    https://github.com/BazzaCuda/
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpVCL;
+unit bazVCL;
 
 interface
 

@@ -1,5 +1,5 @@
 unit bazAction;
-{
+{   bazLib / bazAction
     Copyright (C) 2021-2099 Baz Cuda
     https://github.com/BazzaCuda/
 

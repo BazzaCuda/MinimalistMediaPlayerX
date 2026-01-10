@@ -167,6 +167,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="_bazLib\bazAction.pas"/>
         <DCCReference Include="_bazLib\bazRTL.pas"/>
+        <DCCReference Include="_bazLib\bazVCL.pas"/>
         <DCCReference Include="_MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
         <DCCReference Include="_libMPVDelphi\MPVConst.pas"/>
@@ -202,7 +203,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpTickTimer.pas"/>
         <DCCReference Include="mmpUserFolders.pas"/>
         <DCCReference Include="mmpUtils.pas"/>
-        <DCCReference Include="mmpVCL.pas"/>
         <DCCReference Include="mmpWindowUtils.pas"/>
         <DCCReference Include="TCleanupClass.pas"/>
         <DCCReference Include="TlistHelperClass.pas"/>
