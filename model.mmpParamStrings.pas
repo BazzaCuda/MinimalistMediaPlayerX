@@ -79,7 +79,7 @@ end;
 
 function TParamStrings.getNoFile: boolean;
 begin
-  result := trim(fileFolderAndName) = EMPTY;
+  result := (trim(fileFolderAndName) = EMPTY) or NOT (fileExists(trim(fileFolderAndName)));
 end;
 
 function TParamStrings.getNoPlaylist: boolean;
