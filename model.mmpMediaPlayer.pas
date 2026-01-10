@@ -37,7 +37,8 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  bazCmd, mmpConsts, mmpFileUtils, mmpGlobalState, mmpTickTimer, mmpUtils,
+  bazCmd,
+  mmpConsts, mmpFileUtils, mmpGlobalState, mmpTickTimer, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
 

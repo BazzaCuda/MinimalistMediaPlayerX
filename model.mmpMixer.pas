@@ -27,7 +27,8 @@ uses
   system.math, system.sysUtils, system.win.comObj,
   mmpMMDevApi_tlb,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazCmd, mmpConsts;
+  bazCmd,
+  mmpConsts;
 
 type
   IMixer = interface

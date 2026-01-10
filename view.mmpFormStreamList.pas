@@ -110,7 +110,8 @@ implementation
 
 uses
   system.math,
-  bazCmd, mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
+  bazCmd,
+  mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;

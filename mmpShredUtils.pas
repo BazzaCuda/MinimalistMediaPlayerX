@@ -37,7 +37,8 @@ implementation
 uses
   winApi.shellApi,
   system.generics.collections, system.threading,
-  bazCmd, mmpDialogs, mmpGlobalState,
+  bazCmd,
+  mmpDialogs, mmpGlobalState,
   _debugWindow;
 
 const

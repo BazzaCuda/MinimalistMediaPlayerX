@@ -36,7 +36,8 @@ implementation
 uses
   system.classes, system.ioUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazCmd, mmpConsts,
+  bazCmd,
+  mmpConsts,
   model.mmpConfigFile,
   _debugWindow;
 

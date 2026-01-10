@@ -93,7 +93,8 @@ uses
   winApi.shellApi,
   system.strUtils,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazCmd, mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  bazCmd,
+  mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   viewModel.mmpKeyboardOps,
   _debugWindow;
 

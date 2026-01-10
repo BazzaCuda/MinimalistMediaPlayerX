@@ -72,7 +72,8 @@ implementation
 
 uses
   system.math, system.sysUtils,
-  bazCmd, mmpConsts,
+  bazCmd,
+  mmpConsts,
   _debugWindow;
 
 const

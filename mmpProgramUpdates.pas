@@ -42,7 +42,8 @@ uses
   idHTTP, idSSLOpenSSL, idComponent,
   system.json, system.classes, system.ioUtils, system.sysUtils, system.strUtils,
   vcl.forms,
-  bazCmd, mmpConsts, mmpFileUtils, mmpUtils,
+  bazCmd,
+  mmpConsts, mmpFileUtils, mmpUtils,
   view.mmpFormDownload, view.mmpProgressBar,
   model.mmpConfigFile,
   _debugWindow;

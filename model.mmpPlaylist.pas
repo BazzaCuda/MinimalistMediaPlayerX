@@ -64,7 +64,8 @@ uses
   winApi.windows,
   system.regularExpressions, system.sysUtils,
   vcl.clipbrd,
-  bazCmd, mmpFileUtils, mmpGlobalState, mmpUtils,
+  bazCmd,
+  mmpFileUtils, mmpGlobalState, mmpUtils,
   model.mmpMediaTypes,
   TListHelperClass,
   _debugWindow;
