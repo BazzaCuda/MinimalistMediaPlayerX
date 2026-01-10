@@ -33,7 +33,7 @@ uses
   MPVBasePlayer,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
-  view.mmpFormProgress, view.mmpKeyboardThumbs,
+  view.mmpFormProgress, view.mmpFormHelpFull, view.mmpKeyboardThumbs,
   TMPVHostClass, TThumbsClass;
 
 type
@@ -911,6 +911,7 @@ begin
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
+    koHelpThumbs:         mmpHelpFull(htImages);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;
     koMaximize:           maximizeWindow;

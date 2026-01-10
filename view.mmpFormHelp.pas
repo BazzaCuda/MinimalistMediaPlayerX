@@ -98,9 +98,9 @@ constructor THelpForm.Create(const aHeight: integer; const aHelpType: THelpType)
 begin
   inherited Create(NIL);
 
-  initMarkDownViewer(md1);
-  initMarkDownViewer(md2);
-  initMarkDownViewer(md3);
+  mmpInitMarkDownViewer(md1);
+  mmpInitMarkDownViewer(md2);
+  mmpInitMarkDownViewer(md3);
 
   md1.defFontSize := 10;
   md2.defFontSize := 10;
@@ -133,13 +133,13 @@ begin
   buttonPanel.margins.bottom := 4;
 
   case aHelpType of   htMain: begin
-                                loadMarkDownFromResource(md1, 'resource_mdHelp1');
-                                loadMarkDownFromResource(md2, 'resource_mdHelp2');
-                                loadMarkDownFromResource(md3, 'resource_mdHelp3'); end;
+                                mmpLoadMarkDownFromResource(md1, 'resource_mdHelp1');
+                                mmpLoadMarkDownFromResource(md2, 'resource_mdHelp2');
+                                mmpLoadMarkDownFromResource(md3, 'resource_mdHelp3'); end;
                     htImages: begin
-                                loadMarkDownFromResource(md1, 'resource_mdImages1');
-                                loadMarkDownFromResource(md2, 'resource_mdImages2');
-                                loadMarkDownFromResource(md3, 'resource_mdImages3'); end;
+                                mmpLoadMarkDownFromResource(md1, 'resource_mdImages1');
+                                mmpLoadMarkDownFromResource(md2, 'resource_mdImages2');
+                                mmpLoadMarkDownFromResource(md3, 'resource_mdImages3'); end;
   end;
 
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));

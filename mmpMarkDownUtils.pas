@@ -27,12 +27,12 @@ uses
   htmlView, markDownUtils, MarkDownViewerComponents,
   mmpConsts;
 
-function initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
-function loadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
+function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): boolean;
+function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 
 implementation
 
-function loadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
+function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 begin
   var vRS := TResourceStream.create(hInstance, aResourceName, RT_RCDATA);
   var vSS := TStringStream.create;
@@ -45,7 +45,7 @@ begin
   end;
 end;
 
-function initMarkDownViewer(const aMD: TMarkDownViewer): boolean;
+function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): boolean;
 begin
   aMD.DefBackground    := DARK_MODE_DARK;
   aMD.defFontColor     := DARK_MODE_SILVER;

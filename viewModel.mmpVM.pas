@@ -95,7 +95,7 @@ uses
   bazCmd,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
+  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpFormHelpFull, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
@@ -637,6 +637,7 @@ begin
     evVMConfig:             mmpConfig;
     evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
     evVMDoEscapeKey:        doEscapeKey;
+    evVMHelpMain:           mmpHelpFull(htMain);
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));
     evVMKeepCatF2:          sendOpInfo(renameCurrentItem(rtKeepCatF2));
     evVMKeepCatF3:          sendOpInfo(renameCurrentItem(rtKeepCatF3));

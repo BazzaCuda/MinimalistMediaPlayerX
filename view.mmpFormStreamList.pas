@@ -331,9 +331,9 @@ begin
   font.color        := DARK_MODE_SILVER;
 
   md.align := alClient;
-  initMarkDownViewer(md);
+  mmpInitMarkDownViewer(md);
 
-  loadMarkDownFromResource(md, 'Resource_mdEditing');
+  mmpLoadMarkDownFromResource(md, 'Resource_mdEditing');
 
   clSegments.itemCount  := 0;
   clStreams.itemCount   := 0;

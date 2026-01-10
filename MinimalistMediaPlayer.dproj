@@ -245,6 +245,9 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
+        <DCCReference Include="view.mmpFormHelpFull.pas">
+            <Form>HelpFullForm</Form>
+        </DCCReference>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>

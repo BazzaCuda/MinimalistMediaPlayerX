@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile
+            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile, koHelpThumbs
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -110,8 +110,9 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(F)           and     ctrl                              of TRUE: result := koExploreFolder; end;
     case keyUp and keyIs(F)           and NOT ctrl                              of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                     of TRUE: result := koGreaterWindow; end;
-    case keyUp and keyIs(H)           and     ctrl                              of TRUE: result := koToggleHelp; end;
-    case keyUp and keyIs(H)           and NOT ctrl                              of TRUE: result := koCentreWindow; end;
+    case keyUp and keyIs(H)           and     ctrl  and NOT shift               of TRUE: result := koToggleHelp; end;
+    case keyUp and keyIs(H)           and     ctrl  and     shift               of TRUE: result := koHelpThumbs; end;
+    case keyUp and keyIs(H)           and NOT ctrl  and NOT shift               of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I)                                                     of TRUE: result := koZoomIn; end;
     case keyUp and keyIs(J)                                                     of TRUE: result := koAdjustAspectRatio; end;
     case keyUp and keyIs(K)           and     ctrl                              of TRUE: result := koKeepDelete; end;

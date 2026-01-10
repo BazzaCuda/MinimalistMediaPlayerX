@@ -87,7 +87,7 @@ end;
 
 function TReleaseNotesForm.initReleaseNotes: boolean;
 begin
-  initMarkDownViewer(md);
+  mmpInitMarkDownViewer(md);
 
   SELF.color        := md.defBackground;
   btnClose.default  := TRUE;
