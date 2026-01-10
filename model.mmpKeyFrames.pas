@@ -71,7 +71,7 @@ uses
   vcl.graphics,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   view.mmpFormTimeline,
-  mmpCmd, mmpConsts, mmpFileUtils, mmpUtils,
+  bazCmd, mmpConsts, mmpFileUtils, mmpUtils,
   _debugWindow;
 
 function keyFrameManager: IKeyFrameManager;

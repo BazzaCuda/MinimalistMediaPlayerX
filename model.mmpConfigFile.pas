@@ -55,7 +55,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpCmd,
+  bazCmd,
   _debugWindow;
 
 type

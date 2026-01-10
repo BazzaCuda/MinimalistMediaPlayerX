@@ -36,7 +36,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpCmd,
+  bazCmd,
   model.mmpConfigFile,
   _debugWindow;
 

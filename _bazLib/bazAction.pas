@@ -1,4 +1,3 @@
-unit bazAction;
 {   bazLib / bazAction
     Copyright (C) 2021-2099 Baz Cuda
     https://github.com/BazzaCuda/
@@ -17,6 +16,7 @@ unit bazAction;
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
+unit bazAction;
 
 interface
 

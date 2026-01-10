@@ -1,4 +1,4 @@
-{   bazLilb
+{   bazLib
     Copyright (C) 2021-2099 Baz Cuda <bazzacuda@gmx.com>
     https://github.com/BazzaCuda/
 

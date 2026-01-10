@@ -40,7 +40,7 @@ implementation
 
 uses
   system.sysUtils, system.types,
-  mmpCmd, mmpConsts, mmpFormatting, mmpGlobalState,
+  bazCmd, mmpConsts, mmpFormatting, mmpGlobalState,
   _debugWindow;
 
 type

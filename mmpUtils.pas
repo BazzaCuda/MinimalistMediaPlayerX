@@ -40,7 +40,7 @@ implementation
 
 uses
   system.math, system.sysUtils,
-  mmpCmd,
+  bazCmd,
   model.mmpPlaylist,
   _debugWindow;
 

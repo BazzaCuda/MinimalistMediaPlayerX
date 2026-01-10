@@ -60,7 +60,7 @@ implementation
 
 uses
   winApi.shellAPI, system.strUtils,
-  mmpCmd, mmpGlobalState, mmpMarkDownUtils,
+  bazCmd, mmpGlobalState, mmpMarkDownUtils,
   _debugWindow;
 
 type

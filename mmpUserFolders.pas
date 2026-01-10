@@ -30,7 +30,7 @@ implementation
 uses
   system.sysUtils,
   bazAction,
-  mmpCmd, mmpConsts, mmpFolderUtils, mmpFileUtils,
+  bazCmd, mmpConsts, mmpFolderUtils, mmpFileUtils,
   model.mmpConfigFile;
 
 function mmpFolderFromFKey(const aKey: WORD): string;

@@ -166,6 +166,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="_bazLib\bazAction.pas"/>
+        <DCCReference Include="_bazLib\bazCmd.pas"/>
         <DCCReference Include="_bazLib\bazRTL.pas"/>
         <DCCReference Include="_bazLib\bazVCL.pas"/>
         <DCCReference Include="_MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
@@ -182,7 +183,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpFolderUtils.pas"/>
         <DCCReference Include="mmpFormatting.pas"/>
         <DCCReference Include="mmpFormInputBox.pas"/>
-        <DCCReference Include="mmpCmd.pas"/>
         <DCCReference Include="mmpGlobalState.pas"/>
         <DCCReference Include="mmpImageUtils.pas"/>
         <DCCReference Include="mmpKeyboardUtils.pas"/>

@@ -159,7 +159,7 @@ uses
   winApi.shellApi,
   system.math,
   vcl.dialogs,
-  mmpCmd, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  bazCmd, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;

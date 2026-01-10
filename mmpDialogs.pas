@@ -38,7 +38,7 @@ implementation
 uses
   winApi.activeX,
   vcl.forms, vcl.stdCtrls,
-  mmpCmd, mmpGlobalState;
+  bazCmd, mmpGlobalState;
 
 function mmpShowOKCancelMsgDlg(const aMsg: string;
                                const aCaption:      string         = MMP_TITLE;

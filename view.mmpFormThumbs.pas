@@ -134,7 +134,7 @@ uses
   winApi.shellApi,
   system.types,
   mmpMPVProperties,
-  mmpCmd, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
+  bazCmd, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
   model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}

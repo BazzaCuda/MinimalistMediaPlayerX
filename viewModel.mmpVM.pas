@@ -92,7 +92,7 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  mmpCmd, mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
+  bazCmd, mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
