@@ -734,7 +734,8 @@ end;
 
 procedure TThumbsForm.FStatusBarClick(Sender: TObject);
 begin
-  case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder); end;
+  case mmpIsFolderPanelAt     (FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder); end;
+  case mmpIsAudioVideoPanelAt (FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: processKeyOp(koCloseToMain, [], 0);  end;
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);

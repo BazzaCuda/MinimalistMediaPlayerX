@@ -29,15 +29,16 @@ uses
 type
   TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnAVAV, pnFold, pnHelp);
 
-function mmpInitStatusBar     (const aStatusBar: TStatusBar): boolean;
+function mmpInitStatusBar         (const aStatusBar: TStatusBar): boolean;
 
-function mmpIsFolderPanelAt   (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
-function mmpMousePoint        (const aStatusBar: TStatusBar): TPoint;
-function mmpPartClearStatusBar(const aStatusBar: TStatusBar): boolean;
-function mmpResetPanelHelp    (const aStatusBar: TStatusBar): boolean;
-function mmpResizeStatusBar   (const aStatusBar: TStatusBar): boolean;
-function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
-function mmpSetPanelText      (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
+function mmpIsAudioVideoPanelAt   (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+function mmpIsFolderPanelAt       (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+function mmpMousePoint            (const aStatusBar: TStatusBar): TPoint;
+function mmpPartClearStatusBar    (const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelHelp        (const aStatusBar: TStatusBar): boolean;
+function mmpResizeStatusBar       (const aStatusBar: TStatusBar): boolean;
+function mmpSetPanelOwnerDraw     (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
+function mmpSetPanelText          (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
 
 implementation
 
@@ -69,6 +70,11 @@ begin
   mmpSetPanelText(aStatusBar, pnFold, EMPTY);
   mmpSetPanelText(aStatusBar, pnHelp, EMPTY);
   mmpResetPanelHelp(aStatusBar);
+end;
+
+function mmpIsAudioVideoPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+begin
+  result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[PANEL_AVAV];
 end;
 
 function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;

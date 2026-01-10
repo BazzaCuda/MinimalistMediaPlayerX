@@ -233,7 +233,7 @@ begin
                                                           EXIT; end;end;
 
   case bStopMPV of TRUE:  begin
-                            {$if BazDebugWindow} debug('mmpDeleteThisFile evMPStop'); {$endif}
+                            // {$if BazDebugWindow} debug('mmpDeleteThisFile evMPStop'); {$endif}
                             mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
                             mmp.cmd(evMPStop); end;end;
 

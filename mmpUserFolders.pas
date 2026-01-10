@@ -29,7 +29,7 @@ implementation
 
 uses
   system.sysUtils,
-  mmpConsts, mmpFolderUtils, mmpFileUtils,
+  mmpAction, mmpCmd, mmpConsts, mmpFolderUtils, mmpFileUtils,
   model.mmpConfigFile;
 
 function mmpFolderFromFKey(const aKey: WORD): string;
@@ -44,6 +44,8 @@ begin
   case pos(':', mmpUserOverride(aFolder)) > 0 of TRUE: EXIT; end; // don't use the base folder if an override is an absolute path, e.g. "C:\....."
 
   result := CF[CONF_BASE_FOLDER];
+//  result := mmp.use(result = EMPTY, result, mmpITBS(result));  // EXPERIMENTAL
+//  result := TAction<string>.pick(result <> EMPTY, mmpITBS).perform(result);
   case result <> EMPTY of TRUE: result := mmpITBS(result); end;
 end;
 
