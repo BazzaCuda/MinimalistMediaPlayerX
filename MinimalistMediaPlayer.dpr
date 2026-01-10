@@ -44,12 +44,13 @@ uses
   {$endif }
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
+  bazAction in '_bazLib\bazAction.pas',
+  bazRTL in '_bazLib\bazRTL.pas',
   MarkDownViewerComponents in '_MarkdownViewerComponents\MarkDownViewerComponents.pas',
   MediaInfoDLL in 'MediaInfoDLL.pas',
   MPVConst in '_libMPVDelphi\MPVConst.pas',
   MPVBasePlayer in '_libMPVDelphi\MPVBasePlayer.pas',
   TMPVHostClass in 'TMPVHostClass.pas',
-  mmpAction in 'mmpAction.pas',
   mmpConsts in 'mmpConsts.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   mmpDialogs in 'mmpDialogs.pas',
@@ -72,7 +73,6 @@ uses
   mmpPanelCtrls in 'mmpPanelCtrls.pas',
   mmpPostToAllUtils in 'mmpPostToAllUtils.pas',
   mmpProgramUpdates in 'mmpProgramUpdates.pas',
-  mmpRTL in 'mmpRTL.pas',
   mmpShellUtils in 'mmpShellUtils.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
   mmpStackTrace in 'mmpStackTrace.pas',
@@ -92,6 +92,7 @@ uses
   TThumbsClass in 'TThumbsClass.pas',
   model.mmpBookmark in 'model.mmpBookmark.pas',
   model.mmpConfigFile in 'model.mmpConfigFile.pas',
+  model.mmpKeyFrames in 'model.mmpKeyFrames.pas',
   model.mmpMediaInfo in 'model.mmpMediaInfo.pas',
   model.mmpMediaPlayer in 'model.mmpMediaPlayer.pas',
   model.mmpMediaTypes in 'model.mmpMediaTypes.pas',
@@ -122,8 +123,7 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas',
-  model.mmpKeyFrames in 'model.mmpKeyFrames.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas';
 
 procedure setupRunMode;
 begin

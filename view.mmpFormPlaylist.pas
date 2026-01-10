@@ -24,7 +24,7 @@ uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls, Vcl.AppEvnts,
-  mmpAction;
+  bazAction;
 
 type
   TNotifyIntEvent = procedure(aValue: integer) of object;

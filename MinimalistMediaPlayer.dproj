@@ -165,12 +165,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="_FastMM5\FastMM5.pas"/>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
+        <DCCReference Include="_bazLib\bazAction.pas"/>
+        <DCCReference Include="_bazLib\bazRTL.pas"/>
         <DCCReference Include="_MarkdownViewerComponents\MarkDownViewerComponents.pas"/>
         <DCCReference Include="MediaInfoDLL.pas"/>
         <DCCReference Include="_libMPVDelphi\MPVConst.pas"/>
         <DCCReference Include="_libMPVDelphi\MPVBasePlayer.pas"/>
         <DCCReference Include="TMPVHostClass.pas"/>
-        <DCCReference Include="mmpAction.pas"/>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
@@ -193,7 +194,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpPanelCtrls.pas"/>
         <DCCReference Include="mmpPostToAllUtils.pas"/>
         <DCCReference Include="mmpProgramUpdates.pas"/>
-        <DCCReference Include="mmpRTL.pas"/>
         <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="mmpShredUtils.pas"/>
         <DCCReference Include="mmpStackTrace.pas"/>
@@ -213,6 +213,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="TThumbsClass.pas"/>
         <DCCReference Include="model.mmpBookmark.pas"/>
         <DCCReference Include="model.mmpConfigFile.pas"/>
+        <DCCReference Include="model.mmpKeyFrames.pas"/>
         <DCCReference Include="model.mmpMediaInfo.pas"/>
         <DCCReference Include="model.mmpMediaPlayer.pas"/>
         <DCCReference Include="model.mmpMediaTypes.pas"/>
@@ -244,7 +245,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpThemeUtils.pas"/>
         <DCCReference Include="viewModel.mmpKeyboardOps.pas"/>
         <DCCReference Include="viewModel.mmpVM.pas"/>
-        <DCCReference Include="model.mmpKeyFrames.pas"/>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>
