@@ -179,7 +179,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
                                                         and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE)                     and NOT GS.userInput          of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_ESCAPE) and NOT GS.userInput and NOT (GS.helpFull)        of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koKeepCatF1; end;
     case keyUp and keyIs(VK_F2)                                                       of TRUE: result := koKeepCatF2; end;
     case keyUp and keyIs(VK_F3)                                                       of TRUE: result := koKeepCatF3; end;
@@ -220,7 +220,9 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
   end;
 
 begin
-  result      := getKeyOp;
+  result := getKeyOp;
+  // {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
+  // {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
 end;
 
 end.

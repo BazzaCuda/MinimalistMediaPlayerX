@@ -156,7 +156,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl  and     shift               of TRUE: result := koThumbsDn; end;
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl  and NOT shift               of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(VK_END)                                                of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE)                                             of TRUE: result := koCloseImageBrowser; end;
+    case keyUp and keyIs(VK_ESCAPE)                 and NOT GS.helpFull         of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(VK_HOME)                                               of TRUE: result := koPlayFirst; end;
     case keyUp and keyIs(VK_INSERT)                                             of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)     and     ctrl                              of TRUE: result := koPanLeft; end;
@@ -188,8 +188,9 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
   end;
 
 begin
-
   result := getKeyOp;
+  {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
+  {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
 end;
 
 end.

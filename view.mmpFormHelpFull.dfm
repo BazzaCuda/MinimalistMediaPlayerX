@@ -14,7 +14,7 @@ object HelpFullForm: THelpFullForm
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   TextHeight = 15
   object pageControl: TPageControl
     Left = 0

@@ -44,9 +44,9 @@ type
 
   THelpFullForm = class(TForm, IHelpFullForm)
     pageControl: TPageControl;
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   strict private
     FHelpType: THelpType;
   protected
@@ -63,7 +63,7 @@ implementation
 
 uses
   bazCmd, bazVCL,
-  mmpGlobalState, mmpMarkDownUtils,
+  mmpGlobalState, mmpMarkDownUtils, mmpUtils,
   _debugWindow;
 
 {$R *.dfm}
@@ -91,6 +91,7 @@ var gHelpFullForm: IHelpFullForm = NIL;
 
 function mmpHelpFull(const aHelpType: THelpType): TVoid;
 begin
+  mmp.cmd(evGSHelpFull, TRUE);
   case gHelpFullForm = NIL of TRUE: gHelpFullForm := THelpFullForm.create(app); end;
   gHelpFullForm.init(aHelpType);
   setForegroundWindow(gHelpFullForm.getHandle); // the order of these two is important
@@ -145,18 +146,20 @@ end;
 procedure THelpFullForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   gHelpFullForm := NIL;
+  mmp.cmd(evGSHelpFull, FALSE);
 end;
 
 procedure THelpFullForm.FormCreate(Sender: TObject);
 begin
+  keyPreview := TRUE;
   borderIcons := [biSystemMenu];
 end;
 
-procedure THelpFullForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure THelpFullForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  case key = VK_ESCAPE of TRUE: modalResult := mrOK;  end;
-  case key = VK_ESCAPE of TRUE: close;                end;
-  case key = VK_ESCAPE of TRUE: key := 0;             end;
+  {$if BazDebugWindow} debugInteger('formKeyUp, key', key); {$endif}
+  {$if BazDebugWindow} debugBoolean('formKeyUp, evGSHelpFull', GS.helpFull); {$endif}
+  case key = VK_ESCAPE of TRUE: begin close; gHelpFullForm := NIL; end;end;
 end;
 
 function THelpFullForm.getHandle: HWND;
