@@ -333,7 +333,7 @@ begin
   md.align := alClient;
   mmpInitMarkDownViewer(md);
 
-  mmpLoadMarkDownFromResource(md, 'Resource_mdEditing');
+  mmpLoadMarkDownFromResource(md, 'resource_mdEditing');
 
   clSegments.itemCount  := 0;
   clStreams.itemCount   := 0;

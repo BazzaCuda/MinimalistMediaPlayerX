@@ -110,6 +110,7 @@ uses
   view.mmpFormConfirmDelete in 'view.mmpFormConfirmDelete.pas',
   view.mmpFormDownload in 'view.mmpFormDownload.pas',
   view.mmpFormHelp in 'view.mmpFormHelp.pas',
+  view.mmpFormHelpFull in 'view.mmpFormHelpFull.pas',
   view.mmpFormMain in 'view.mmpFormMain.pas',
   view.mmpFormMainCaption in 'view.mmpFormMainCaption.pas',
   view.mmpFormPlaylist in 'view.mmpFormPlaylist.pas',

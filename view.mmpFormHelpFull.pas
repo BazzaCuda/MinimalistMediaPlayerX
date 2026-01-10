@@ -78,13 +78,13 @@ type
 const
     MARKDOWN_RESOURCES: array[0..6] of TMarkDownRec =
     (
-      (helpType: htMain;    caption: 'what';       resource: 'resource_mdHelp1'),
+      (helpType: htMain;    caption: 'main01';     resource: 'resource_mdMain01'),
       (helpType: htMain;    caption: 'not';        resource: 'resource_mdHelp2'),
       (helpType: htMain;    caption: 'biggles';    resource: 'resource_mdHelp3'),
       (helpType: htImages;  caption: 'flies';      resource: 'resource_mdImages1'),
       (helpType: htImages;  caption: 'undone';     resource: 'resource_mdImages2'),
       (helpType: htImages;  caption: 'on';         resource: 'resource_mdImages3'),
-      (helpType: htBoth;    caption: 'Editing';    resource: 'Resource_mdEditing')
+      (helpType: htBoth;    caption: 'Editing';    resource: 'resource_mdEditing')
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
@@ -149,13 +149,14 @@ end;
 
 procedure THelpFullForm.FormCreate(Sender: TObject);
 begin
-  pageControl.activePageIndex := 0;
+  borderIcons := [biSystemMenu];
 end;
 
 procedure THelpFullForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case key = VK_ESCAPE of TRUE: modalResult := mrOK;  end;
   case key = VK_ESCAPE of TRUE: close;                end;
+  case key = VK_ESCAPE of TRUE: key := 0;             end;
 end;
 
 function THelpFullForm.getHandle: HWND;

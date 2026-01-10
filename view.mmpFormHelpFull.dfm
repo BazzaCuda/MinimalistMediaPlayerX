@@ -1,7 +1,6 @@
 object HelpFullForm: THelpFullForm
   Left = 0
   Top = 0
-  BorderStyle = bsDialog
   Caption = 'MMP Help'
   ClientHeight = 361
   ClientWidth = 584

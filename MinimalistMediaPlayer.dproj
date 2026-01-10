@@ -150,7 +150,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>B:\Music\Agnus Dei _ Music of Inner Harmony _ Vol 1.m4a</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Movies\Monsieur Hulot`s Holiday (1953) [remastered].mp4&quot;</Debugger_RunParams>
         <PostBuildEvent><![CDATA[call "$(PROJECTDIR)\_buildEventsDebug.bat" "$(OUTPUTPATH)" "$(OUTPUTDIR)$(PROJECTNAME).map" "$(PROJECTDIR)\$(PROJECTNAME).dpr"
 $(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
@@ -227,6 +227,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="view.mmpFormConfirmDelete.pas"/>
         <DCCReference Include="view.mmpFormDownload.pas"/>
         <DCCReference Include="view.mmpFormHelp.pas"/>
+        <DCCReference Include="view.mmpFormHelpFull.pas"/>
         <DCCReference Include="view.mmpFormMain.pas"/>
         <DCCReference Include="view.mmpFormMainCaption.pas"/>
         <DCCReference Include="view.mmpFormPlaylist.pas"/>
@@ -247,10 +248,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ResourceType>VCLSTYLE</ResourceType>
             <ResourceId>DarkMode</ResourceId>
         </RcItem>
-        <RcItem Include="_resources\resource_mdFull01.md">
+        <RcItem Include="_resources\resource_mdMain01.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>resource_mdEditing</ResourceId>
+            <ResourceId>resource_mdMain01</ResourceId>
         </RcItem>
         <RcItem Include="_resources\resource_mdHelp1.md">
             <ContainerId>ResourceItem</ContainerId>
@@ -281,6 +282,11 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdImages3</ResourceId>
+        </RcItem>
+        <RcItem Include="_resources\resource_mdEditing.md">
+            <ContainerId>ResourceItem</ContainerId>
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>resource_mdEditing</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -366,13 +372,13 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Release" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdFull01.md" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdEditing.md" Configuration="Release" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -445,6 +451,12 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="_resources\resource_mdImages3.md" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_resources\resource_mdMain01.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
