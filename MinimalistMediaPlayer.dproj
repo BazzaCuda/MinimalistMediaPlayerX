@@ -94,6 +94,8 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_UnitSearchPath>.\_libMPVDelphi;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <PostBuildEvent><![CDATA[if exist "$(PROJECTDIR)\_buildEvents.exe" (call $(PROJECTDIR)\_buildEvents.exe $(Config))
+$(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -117,8 +119,6 @@
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <VerInfo_Release>1</VerInfo_Release>
-        <PostBuildEvent><![CDATA[call "$(PROJECTDIR)\_buildEventsRelease.bat" "$(OUTPUTPATH)" "$(OUTPUTDIR)$(PROJECTNAME).map" "$(PROJECTDIR)\$(PROJECTNAME).dpr"
-$(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -151,8 +151,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <Debugger_RunParams>&quot;B:\Movies\Monsieur Hulot`s Holiday (1953) [remastered].mp4&quot;</Debugger_RunParams>
-        <PostBuildEvent><![CDATA[call "$(PROJECTDIR)\_buildEventsDebug.bat" "$(OUTPUTPATH)" "$(OUTPUTDIR)$(PROJECTNAME).map" "$(PROJECTDIR)\$(PROJECTNAME).dpr"
-$(PostBuildEvent)]]></PostBuildEvent>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -1432,7 +1430,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>call &quot;$(PROJECTDIR)\_buildEventsRelease.bat&quot; &quot;$(OUTPUTPATH)&quot; &quot;$(OUTPUTDIR)$(PROJECTNAME).map&quot; &quot;$(PROJECTDIR)\$(PROJECTNAME).dpr&quot;</PostBuildEvent>
+        <PostBuildEvent>if exist &quot;$(PROJECTDIR)\_buildEvents.exe&quot; (call $(PROJECTDIR)\_buildEvents.exe $(Config))</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
@@ -1440,7 +1438,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>call &quot;$(PROJECTDIR)\_buildEventsDebug.bat&quot; &quot;$(OUTPUTPATH)&quot; &quot;$(OUTPUTDIR)$(PROJECTNAME).map&quot; &quot;$(PROJECTDIR)\$(PROJECTNAME).dpr&quot;</PostBuildEvent>
+        <PostBuildEvent>if exist &quot;$(PROJECTDIR)\_buildEvents.exe&quot; (call $(PROJECTDIR)\_buildEvents.exe $(Config))</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

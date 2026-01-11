@@ -1,0 +1,1 @@
+https://github.com/BazzaCuda/mpv-winbuild-cmake/actions/workflows/mpv_gcc.yml

@@ -1,4 +1,4 @@
-{   MMP: Minimalist Media Player
+﻿{   MMP: Minimalist Media Player
     Copyright (C) 2021-2099 Baz Cuda
     https://github.com/BazzaCuda/MinimalistMediaPlayerX
 
@@ -50,7 +50,11 @@ type
   strict private
     FHelpType: THelpType;
   protected
-    function createTabs(const aHelpType: THelpType): TVoid;
+//    procedure createParams(var Params: TCreateParams); override;
+    function  createTabs(const aHelpType: THelpType): TVoid;
+    procedure WMNCMouseMove(var msg: TWMNCMouseMove); message WM_MOUSEMOVE;
+    procedure NCHitTest(var msg: TMessage);           message WM_NCHITTEST;
+    procedure WMSizing(var msg: TMessage);            message WM_SIZING;
   public
     function getHandle: HWND;
     function init(const aHelpType: THelpType): TVoid;
@@ -98,6 +102,14 @@ begin
   setWindowPos(gHelpFullForm.getHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
   gHelpFullForm.showForm;
 end;
+
+//procedure THelpFullForm.createParams(var Params: TCreateParams);
+//begin
+//  inherited;
+////  Params.Style := Params.Style or WS_CAPTION or WS_SYSMENU or WS_THICKFRAME;
+//  // Remove left/right border styles so horizontal resize is blocked
+//  // We keep WS_THICKFRAME because Windows requires it for vertical resizing
+//end;
 
 function THelpFullForm.createTabs(const aHelpType: THelpType): TVoid;
   function initLabel(const aLabel: TLabel): TVoid;
@@ -151,8 +163,10 @@ end;
 
 procedure THelpFullForm.FormCreate(Sender: TObject);
 begin
-  keyPreview := TRUE;
-  borderIcons := [biSystemMenu];
+//  styleElements := [];
+  borderStyle   := bsSizeable;;
+  keyPreview    := TRUE;
+  borderIcons   := [biSystemMenu];
 end;
 
 procedure THelpFullForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -169,11 +183,50 @@ function THelpFullForm.init(const aHelpType: THelpType): TVoid;
 begin
   case aHelpType = FHelpType of FALSE: createTabs(aHelpType); end;
   FHelpType := aHelpType;
+  case FHelpType of
+    htMain:   caption := 'MMP Help - Main Media Window';
+    htImages: caption := 'MMP Help - Image & Thumbnail Browser';
+  end;
+end;
+
+procedure THelpFullForm.NCHitTest(var msg: TMessage);
+begin
+  {$if BazDebugWindow} debug('NCHitTest'); {$endif}
 end;
 
 function THelpFullForm.showForm: TVoid;
 begin
   show;
+end;
+
+procedure THelpFullForm.WMNCMouseMove(var Msg: TWMNCMouseMove);
+begin
+//  {$if BazDebugWindow} debug('WMMouseMove'); {$endif}
+  inherited;
+
+  case Msg.HitTest of
+    HTLEFT, HTRIGHT,
+    HTTOPLEFT, HTTOPRIGHT,
+    HTBOTTOMLEFT, HTBOTTOMRIGHT:
+      SetCursor(Screen.Cursors[crVSplit]); // vertical resize cursor
+    // HTTOP, HTBOTTOM → leave normal
+  end;
+end;
+
+procedure THelpFullForm.WMSizing(var msg: TMessage);
+begin
+//  {$if BazDebugWindow} debug('WMSizing'); {$endif}
+  // Msg.LPARAM points to the proposed window RECT
+  var vRect := PRect(msg.LPARAM);
+
+  case msg.WPARAM of
+    WMSZ_LEFT, WMSZ_RIGHT, WMSZ_TOPLEFT, WMSZ_TOPRIGHT, WMSZ_BOTTOMLEFT, WMSZ_BOTTOMRIGHT: vRect.right := vRect.left + width; // lock width
+    // WMSZ_TOP, WMSZ_BOTTOM → vertical resizing allowed
+  end;
+
+   SetCursor(Screen.Cursors[crVSplit]); // vertical resize cursor
+
+  msg.result := 0; // Windows expects 0 unless you want to override default processing
 end;
 
 end.
