@@ -1,13 +1,13 @@
 You can make adjustments to the displayed image or video picture/frame to alter<br />
 **brightness**, **contrast**, **gamma**, **rotation** and **saturation**,  and to **zoom** in or out
 
-An HD screenshot of the image/frame will include your adjustments (see **screenshots** tab)
-
-If you navigate to a different media file, your current adjustments will remain in effect until you cancel any or all of them
+- an HD screenshot of the image/frame will include your adjustments (see **Screenshots**)
+<br />
+- if you navigate to a different media file, your current adjustments will remain in effect until you cancel any or all of them
 
 Control | Action
 ------- | ------
-**BACKSPACE**             | reset all adjustments to their defaults: brightness, contrast, gamma, pan, rotation, saturation, speed, zoom
+**BACKSPACE**             | reset all adjustments to their defaults: <br /> brightness, contrast, gamma, pan, rotation, saturation, speed, zoom
 &nbsp; ||
 **Brightness** ||
 **-**                     | decrease brightness. Can be held down for rapid decrease
@@ -40,5 +40,6 @@ Control | Action
 **U**                     | **[U]**nzoom, i.e. re-fit the video to the window
 &nbsp; ||
 **Image & Thumbnail Browser** ||
-Ctrl and **Mouse Wheel** up/down       | zoom image in/out. add **[Shift]** to increase zoom amount
+Ctrl and **Mouse Wheel** up/down       | zoom image in/out.
+add **[Shift]** | to increase zoom amount
 
