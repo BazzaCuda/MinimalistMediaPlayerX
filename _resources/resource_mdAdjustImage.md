@@ -1,40 +1,44 @@
-You can make adjustments to the displayed image or video to alter the brightness, contrast, gamma, rotation and saturation,  and zoom in or out.
+You can make adjustments to the displayed image or video picture/frame to alter<br />
+**brightness**, **contrast**, **gamma**, **rotation** and **saturation**,  and to **zoom** in or out
+
+An HD screenshot of the image/frame will include your adjustments (see **screenshots** tab)
+
+If you navigate to a different media file, your current adjustments will remain in effect until you cancel any or all of them
 
 Control | Action
 ------- | ------
-&nbsp; ||
 **BACKSPACE**             | reset all adjustments to their defaults: brightness, contrast, gamma, pan, rotation, saturation, speed, zoom
-- ||
+&nbsp; ||
 **Brightness** ||
 **-**                     | decrease brightness. Can be held down for rapid decrease
 **=**                     | increase brightness. Can be held down for rapid increase
 **0**                     | reset brightness to normal
-- ||
+&nbsp; ||
 **Contrast** ||
 **8** (Hyphen)            | decrease contrast. Can be held down for rapid decrease
 **9**                     | increase contrast. Can be held down for rapid increase
 **2**                     | reset contrast to normal
-- ||
+&nbsp; ||
 **Gamma** ||
 **[**                     | decrease gamma. Can be held down for rapid decrease
 **]**                     | increase gamma. Can be held down for rapid increase
 **'** (single quote)      | reset gamma
-- ||
+&nbsp; ||
 **Rotate** ||
 **Pg Up**                 | rotate video left/anti-clockwise (you must have first rotated right at least once)
 **Pg Dn**                 | rotate video right/clockwise (you must do this at least once before you can rotate left)
 **4**                     | reset rotation to normal/not rotated
-- ||
+&nbsp; ||
 **Saturation** ||
 **{**                     | decrease saturation. Can be held down for rapid decrease
 **}**                     | increase saturation. Can be held down for rapid increase
 **;**                     | reset saturation to normal
-- ||
+&nbsp; ||
 **Zoom** ||
 **I**                     | zoom **[I]**n. Can be held down for rapid zooming in
 **O**                     | zoom **[O]**ut. Can be held down for rapid zooming out
 **U**                     | **[U]**nzoom, i.e. re-fit the video to the window
-- ||
+&nbsp; ||
 **Image & Thumbnail Browser** ||
-**Ctrl** and **Wheel up/down**       | zoom image in/out. add **[Shift]** to increase zoom amount
+Ctrl and **Mouse Wheel** up/down       | zoom image in/out. add **[Shift]** to increase zoom amount
 

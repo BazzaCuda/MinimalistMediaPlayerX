@@ -1,3 +1,6 @@
+
+**Ctrl-Shift-[H]] for the Full Help**
+
 **Playlist**<br />
 First: **A** or **HOME**<br />
 Last: **Z** or **END**<br />

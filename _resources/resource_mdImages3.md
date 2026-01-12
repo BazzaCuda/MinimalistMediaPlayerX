@@ -1,3 +1,6 @@
+
+**Ctrl-Shift-[H]] for the Full Help**
+
 **Window Control**<br />
 Ctrl-**0** close all instances of MMP<br />
 **ESC**ape, exit dialog or Image Browser<br />

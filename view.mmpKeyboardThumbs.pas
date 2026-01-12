@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile, koHelpThumbs
+            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile, koHelpFull
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -43,6 +43,8 @@ implementation
 
 uses
   winApi.windows,
+  bazCmd,
+  mmpNotify.notices,
   mmpGlobalState,
   _debugWindow;
 
@@ -111,7 +113,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(F)           and NOT ctrl                              of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                     of TRUE: result := koGreaterWindow; end;
     case keyUp and keyIs(H)           and     ctrl  and NOT shift               of TRUE: result := koToggleHelp; end;
-    case keyUp and keyIs(H)           and     ctrl  and     shift               of TRUE: result := koHelpThumbs; end;
+    case keyUp and keyIs(H)           and     ctrl  and     shift               of TRUE: result := koHelpFull; end;
     case keyUp and keyIs(H)           and NOT ctrl  and NOT shift               of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I)                                                     of TRUE: result := koZoomIn; end;
     case keyUp and keyIs(J)                                                     of TRUE: result := koAdjustAspectRatio; end;
@@ -156,7 +158,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl  and     shift               of TRUE: result := koThumbsDn; end;
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl  and NOT shift               of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(VK_END)                                                of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE)                 and NOT GS.helpFull         of TRUE: result := koCloseImageBrowser; end;
+//    case keyUp and keyIs(VK_ESCAPE)                 and     GS.helpFull         of TRUE: result := koHelpFull; end; // close Help Full  - this is handled in mmpVM.onKeyUp
+    case keyUp and keyIs(VK_ESCAPE)   and NOT GS.ignoreEscape and NOT GS.userInput  of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(VK_HOME)                                               of TRUE: result := koPlayFirst; end;
     case keyUp and keyIs(VK_INSERT)                                             of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)     and     ctrl                              of TRUE: result := koPanLeft; end;
@@ -189,8 +192,14 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
 
 begin
   result := getKeyOp;
-//  {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
-//  {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
+
+  {$if BazDebugWindow}
+//  case keyIs(VK_ESCAPE) of TRUE:  begin
+//                                    TDebug.debugEnum<TKeyOp>('getKeyOp', result);
+//                                    debugBoolean('keyboardThumbs: evGSIgnoreEscape', GS.ignoreEscape); end;end;
+  {$endif}
+
+  mmp.cmd(evGSIgnoreEscape, FALSE);
 end;
 
 end.

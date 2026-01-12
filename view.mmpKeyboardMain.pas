@@ -121,7 +121,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(F) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;
     case keyUp and keyIs(H) and     ctrl and NOT shift                                of TRUE: result := koToggleHelp; end;
-    case keyUp and keyIs(H) and     ctrl and     shift                                of TRUE: result := koHelpMain; end;
+    case keyUp and keyIs(H) and     ctrl and     shift                                of TRUE: result := koHelpFull; end;
     case keyUp and keyIs(H) and NOT ctrl and NOT shift                                of TRUE: result := koCentreWindow; end;
     case keyDn and keyIs(I) and     ctrl                and (GS.mediaType = mtImage)  of TRUE: result := koImageInBrowser; end;
     case keyDn and keyIs(I) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koZoomIn; end;
@@ -179,7 +179,8 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
                                                         and NOT (GS.mediaType in [mtAudio, mtVideo])
                                                                                       of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                      of TRUE: result := koPlayLast; end;
-    case keyUp and keyIs(VK_ESCAPE) and NOT GS.userInput and NOT (GS.helpFull)        of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_ESCAPE)                      and     GS.helpFull          of TRUE: result := koHelpFull; end; // experimental close Help Full
+    case keyUp and keyIs(VK_ESCAPE) and NOT GS.userInput and NOT GS.helpFull          of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F1)                                                       of TRUE: result := koKeepCatF1; end;
     case keyUp and keyIs(VK_F2)                                                       of TRUE: result := koKeepCatF2; end;
     case keyUp and keyIs(VK_F3)                                                       of TRUE: result := koKeepCatF3; end;
@@ -222,7 +223,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
 begin
   result := getKeyOp;
   // {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
-  // {$if BazDebugWindow} debugBoolean('evGSHelpFull', GS.helpFull); {$endif}
+  // {$if BazDebugWindow} debugBoolean('keyboardMain: evGSIgnoreEscape', GS.ignoreEscape); {$endif}
 end;
 
 end.

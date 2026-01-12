@@ -1,4 +1,6 @@
 
+**Ctrl-Shift-[H]] for the Full Help**
+
 **Brightness**<br />
 **\-** decrease<br />
 **=** increase<br />

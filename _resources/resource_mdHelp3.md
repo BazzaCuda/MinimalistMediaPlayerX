@@ -1,3 +1,6 @@
+
+**Ctrl-Shift-[H]] for the Full Help**
+
 **Window Control**<br />
 **ESC**ape, exit fullscreen or dialog or app<br />
 **F** show/cancel [F]ullscreen<br />

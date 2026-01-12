@@ -89,7 +89,7 @@ begin
     koGammaReset:         MP.notify(newNotice(evMPGammaReset));
     koGammaUp:            MP.notify(newNotice(evMPGammaUp));
     koGreaterWindow:      mmp.cmd(evPAPostToAll, WIN_GREATER);
-    koHelpMain:           mmp.cmd(evVMHelpMain);
+    koHelpFull:           mmp.cmd(evVMHelpFull);
     koKeep:               mmp.cmd(evVMKeepCurrentItem);
     koKeepCatF1:          mmp.cmd(evVMKeepCatF1);
     koKeepCatF2:          mmp.cmd(evVMKeepCatF2);

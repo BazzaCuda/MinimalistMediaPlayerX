@@ -54,6 +54,7 @@ type
     function getDuration:                 integer;
     function getHelpFull:                 boolean;
     function getIDDms:                    integer;
+    function getIgnoreEscape:             boolean;
     function getImagesPaused:             boolean;
     function getMainForm:                 TForm;
     function getMaxSize:                  boolean;
@@ -91,6 +92,7 @@ type
     property duration:                  integer             read getDuration;
     property helpFull:                  boolean             read getHelpFull;
     property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
+    property ignoreEscape:              boolean             read getIgnoreEscape;
     property imagesPaused:              boolean             read getImagesPaused;
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
@@ -136,6 +138,7 @@ type
     FDuration:                integer;
     FHelpFull:                boolean;
     FIDDms:                   integer;
+    FIgnoreEscape:            boolean;
     FImagesPaused:            boolean;
     FMainForm:                TForm;
     FMaxSize:                 boolean;
@@ -174,6 +177,7 @@ type
     function    getDuration:                 integer;
     function    getHelpFull:                 boolean;
     function    getIDDms:                    integer;
+    function    getIgnoreEscape:             boolean;
     function    getImagesPaused:             boolean;
     function    getMainForm:                 TForm;
     function    getMaxSize:                  boolean;
@@ -265,6 +269,11 @@ end;
 function TGlobalState.getIDDms: integer;
 begin
   result := FIDDms;
+end;
+
+function TGlobalState.getIgnoreEscape: boolean;
+begin
+  result := FIgnoreEscape;
 end;
 
 function TGlobalState.getImagesPaused: boolean;
@@ -405,6 +414,7 @@ begin
     evGSDuration:                 FDuration               := aNotice.integer;
     evGSHelpFull:                 FHelpFull               := aNotice.tf;
     evGSIDDms:                    FIDDms                  := aNotice.integer;
+    evGSIgnoreEscape:             FIgnoreEscape           := aNotice.tf;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;
     evGSMaxSize:                  FMaxSize                := aNotice.tf;

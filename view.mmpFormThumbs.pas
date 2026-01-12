@@ -323,9 +323,9 @@ begin
   try
     FProgressForm.modal               := FALSE;
     FProgressForm.buttons             := FALSE;
-    FProgressForm.heading.caption     := 'MMP Image Browser';
-    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.subHeading.caption  := 'Creating Thumbnails';
-                                        FALSE: FProgressForm.subHeading.caption  := 'Opening'; end;
+    FProgressForm.heading.caption     := 'MMP Image & Thumbnail Browser';
+    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.subHeading.caption := 'Creating Thumbnails';
+                                        FALSE: FProgressForm.subHeading.caption := 'Opening'; end;
     case FInitialHost = htThumbsHost of  TRUE: FProgressForm.show; end;
     mmpProcessMessages;
     mmpSetWindowTopmost(FProgressForm.handle);
@@ -845,20 +845,23 @@ end;
 
 procedure TThumbsForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  case (key = VK_ESCAPE) and GS.helpFull of TRUE: EXIT; end;
   case whichHost of htMPVHost: mmpResetPanelHelp(FStatusBar); end; // don't obliterate thumbnail page numbers
 
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
-  case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
-    of  TRUE: begin
-                FKeyHandled := TRUE; // don't let the user accidentally change folders or image with the arrow keys after adjusting the image somehow
-                EXIT; end;end;
+// EXPERIMENTAL - COMMENTED OUT - adjustments are applied to every subsequent image, so not sure why this is necessary anymore
+//  case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
+//    of  TRUE: begin
+//                FKeyHandled := TRUE; // don't let the user accidentally change folders or image with the arrow keys after adjusting the image somehow
+//                EXIT; end;end;
 
   FKeyHandled := processKeyOp(vKeyOp, shift, key);
 end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  case (key = VK_ESCAPE) and GS.helpFull of TRUE: EXIT; end;
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);
   case key in [VK_F10..VK_F12] of TRUE: key := 0; end; // Disable the [notorious] Windows "sticky" nature of F10
@@ -911,7 +914,7 @@ begin
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
-    koHelpThumbs:         mmpHelpFull(htImages);
+    koHelpFull:           mmpHelpFull(htImages, TRUE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;
     koMaximize:           maximizeWindow;

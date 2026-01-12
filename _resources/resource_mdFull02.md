@@ -1,4 +1,4 @@
-                                                                                                                                          Control | Action
+Control | Action
 ------- | ------
 **Exit** ||
 `[ESC]ape`                    | exit dialog or MMP
@@ -19,8 +19,9 @@
 **`[R]`**                     | [R]estore the selected e[X]cluded segment
 **Additional** ||
 **`[F]`**                     | toggle key[F]rames on and off
-**\`** (back tick)          | restart/startover from beginning of media file
+**\`** (back tick)            | restart/startover from beginning of media file
 **`Ctrl-[R]`**                | [R]ename file
 **`Ctrl-[S]`**                | toggle [S]kip excluded segments during playback
+**`Ctrl-Join`**               | change Export button to Join after manual adjustments to the .seg file and .segnn exported segment files
 **`Ctrl-Shift`**              | change Export button to Copy after export errors
 **_All other controls operate on the `Main Media Window` as normal_**

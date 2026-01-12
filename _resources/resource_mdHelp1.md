@@ -1,3 +1,6 @@
+
+**Ctrl-Shift-[H]] for the Full Help**
+
 **Bookmarks**<br />
 **5** bookmark current position<br />
 **6** play from saved bookmark<br />
