@@ -98,6 +98,26 @@ const
       (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
       (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
       (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume')
+      // Intro page - shift-\ config dialog vs .conf file, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki
+      // Resets summary
+      // Bookmarks
+      // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
+      // Captions / on-screen display
+      // Freeze Frame
+      // Keyframes
+      // Subtitles
+      // Playback stop/start/restart/loop next/previous chapter /  etc
+      // revisit Editing
+      // Rotation
+      // Speed
+      // Window Control x 2 - Main Window and Browser (resizing)
+      // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
+      // External Apps
+      // Auto Updates / About Box
+      // Launching the Image & Thumbnail Browser (including from the Main Media Window)
+      // Thumbnails - increase/decrease size
+      // multi-window control, Ctrl-N numlock
+      // slideshows
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;

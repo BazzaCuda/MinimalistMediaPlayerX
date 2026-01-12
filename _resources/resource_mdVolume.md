@@ -7,6 +7,8 @@ Control | Action
 **[&uarr;]** up arrow     | increase the volume. Can be held down for rapid increase
 **[&darr;]** down arrow   | decrease the volume. Can be held down for rapid decrease
 &nbsp; ||
+**Mouse Wheel** up/down   | increase/decrease the volume
+&nbsp; ||
 media keys ||
 **Vol+**         | increase the volume. Can be held down for rapid increase
 **Vol-**         | decrease the volume. Can be held down for rapid decrease
