@@ -93,7 +93,7 @@ const
     (
       (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
       (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
-      (helpType: htMain;    caption: 'biggles';           resource: 'resource_mdHelp3'),
+      (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
       (helpType: htImages;  caption: 'flies';             resource: 'resource_mdImages1'),
       (helpType: htImages;  caption: 'undone';            resource: 'resource_mdImages2'),
       (helpType: htImages;  caption: 'on';                resource: 'resource_mdImages3'),
