@@ -19,10 +19,10 @@ Consequently, it is at a far higher resolution and quality than a standard Windo
 Control | Action
 ------- | ------
 Main Media Window ||
-**F5**  | save a high definition screenshot of the current video frame or image
+**[F5]**  | save a high definition screenshot of the current video frame or image
 &nbsp; ||
 Image & Thumbnail Browser ||
-Ctrl-**S**  | save a high definition screenshot of the current image
+Ctrl-**[S]**  | save a high definition screenshot of the current image
 
 N.B. In the **Image & Thumbnail Browser** all F-Keys are reserved for User-Defined folders
 

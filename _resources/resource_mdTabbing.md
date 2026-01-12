@@ -8,6 +8,7 @@ In **MMP** this is called _tabbing_
 <br />
 - Both keys can be held down for rapid repeat
 - the number of seconds skipped is reported in the Notification Area in the bottom right corner
+- you can also rapidly "scrub"/"jog" through the audio or video file - see the second table below
 <br />
 <br />
 &nbsp; | &nbsp; | Control | Action
@@ -25,7 +26,14 @@ In **MMP** this is called _tabbing_
 &nbsp; ||
 Caps Lock On | &nbsp; | [T] | Tab forwards 1/200th of the total duration
 Caps Lock On | Ctrl   | [T] | Tab _backwards_ 1/200th of the total duration
-
+<br />
+<br />
+Control | Action
+------- | ------
+[Ctrl] and mouse | hold down a Ctrl key and move your mouse along the progress bar<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
+&nbsp; ||
+Audio & Video Timeline Editor | (see **Editing**)
+vertical cursor | grab the vertical cursor and drag it along the Timeline<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
 
 <div align="center">
 N.B. tabbing by a 50th/100th/200th of the total duration <br /> rather than by a set number of seconds <br />allows you to tab through all audio and video files at the same rate<br /> relative to their various durations
