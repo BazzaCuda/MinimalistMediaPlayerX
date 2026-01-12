@@ -1,4 +1,4 @@
-You can **Fast Forward** or **Fast Rewind** using either **[Tab]** or **[T]**
+You can **Fast Forward** and **Fast Rewind** using either **[Tab]** or **[T]**
 
 In **MMP** this is called _tabbing_
 

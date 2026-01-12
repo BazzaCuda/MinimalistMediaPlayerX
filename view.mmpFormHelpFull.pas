@@ -92,12 +92,12 @@ const
     MARKDOWN_RESOURCES: array[0..6] of TMarkDownRec =
     (
       (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
+      (helpType: htMain;    caption: 'Editing';           resource: 'resource_mdEditing'),
+      (helpType: htBoth;    caption: 'File Control';      resource: 'resource_mdFileControl'),
+      (helpType: htBoth;    caption: 'Panning';           resource: 'resource_mdPanning'),
       (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
       (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
-      (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume'),
-      (helpType: htBoth;    caption: 'Panning';           resource: 'resource_mdPanning'),
-      (helpType: htImages;  caption: 'on';                resource: 'resource_mdImages3'),
-      (helpType: htMain;    caption: 'Editing';           resource: 'resource_mdEditing')
+      (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume')
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
