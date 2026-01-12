@@ -246,10 +246,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ResourceType>VCLSTYLE</ResourceType>
             <ResourceId>DarkMode</ResourceId>
         </RcItem>
-        <RcItem Include="_resources\resource_mdMain01.md">
+        <RcItem Include="_resources\resource_mdAdjustImage.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>resource_mdMain01</ResourceId>
+            <ResourceId>resource_mdAdjustImage</ResourceId>
         </RcItem>
         <RcItem Include="_resources\resource_mdHelp1.md">
             <ContainerId>ResourceItem</ContainerId>

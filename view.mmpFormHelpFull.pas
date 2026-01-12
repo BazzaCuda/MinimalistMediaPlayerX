@@ -82,13 +82,13 @@ type
 const
     MARKDOWN_RESOURCES: array[0..6] of TMarkDownRec =
     (
-      (helpType: htMain;    caption: 'main01';     resource: 'resource_mdMain01'),
-      (helpType: htMain;    caption: 'not';        resource: 'resource_mdHelp2'),
-      (helpType: htMain;    caption: 'biggles';    resource: 'resource_mdHelp3'),
-      (helpType: htImages;  caption: 'flies';      resource: 'resource_mdImages1'),
-      (helpType: htImages;  caption: 'undone';     resource: 'resource_mdImages2'),
-      (helpType: htImages;  caption: 'on';         resource: 'resource_mdImages3'),
-      (helpType: htBoth;    caption: 'Editing';    resource: 'resource_mdEditing')
+      (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
+      (helpType: htMain;    caption: 'not';               resource: 'resource_mdHelp2'),
+      (helpType: htMain;    caption: 'biggles';           resource: 'resource_mdHelp3'),
+      (helpType: htImages;  caption: 'flies';             resource: 'resource_mdImages1'),
+      (helpType: htImages;  caption: 'undone';            resource: 'resource_mdImages2'),
+      (helpType: htImages;  caption: 'on';                resource: 'resource_mdImages3'),
+      (helpType: htBoth;    caption: 'Editing';           resource: 'resource_mdEditing')
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
