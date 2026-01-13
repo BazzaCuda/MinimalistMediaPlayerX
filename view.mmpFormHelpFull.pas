@@ -34,7 +34,7 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazAction,
   mmpConsts, HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin,
-  CommCtrl;
+  CommCtrl, Vcl.ExtCtrls;
 
 type
   IHelpFullForm = interface
@@ -50,11 +50,14 @@ type
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     lbTabCaptions: TListBox;
+    Panel1: TPanel;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure lbTabCaptionsClick(Sender: TObject);
   strict private
     FHelpType: THelpType;
   private
@@ -177,7 +180,8 @@ begin
     case MARKDOWN_RESOURCES[vIx].HelpType in [aHelpType, htBoth] of FALSE: CONTINUE; end;
     var vTabSheet := TTabSheet.Create(pageControl);
     vTabSheet.pageControl       := pageControl;
-    vTabSheet.caption           := ''; // MARKDOWN_RESOURCES[vIx].caption;
+    vTabSheet.caption           := '';
+    lbTabCaptions.items.add(MARKDOWN_RESOURCES[vIx].caption);
 
 //    vTabSheet.tabVisible        := FALSE;
 
@@ -247,6 +251,14 @@ begin
 
   speedButton1.caption := 'A' + #$2191; // Unicode hex escape
   speedButton2.caption := 'A' + #$2193; // Unicode hex escape
+
+  panel1.bevelInner  := bvLowered;
+  panel1.bevelOuter  := bvLowered;
+//  panel1.borderStyle := bsNone;
+
+  lbTabCaptions.bevelInner  := bvNone;
+  lbTabCaptions.bevelOuter  := bvNone;
+  lbTabCaptions.borderStyle := bsNone;
 end;
 
 procedure THelpFullForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -267,6 +279,11 @@ begin
     htMain:   caption := 'MMP Help - Main Media Window';
     htImages: caption := 'MMP Help - Image & Thumbnail Browser';
   end;
+end;
+
+procedure THelpFullForm.lbTabCaptionsClick(Sender: TObject);
+begin
+  pageControl.activePageIndex := lbTabCaptions.itemIndex;
 end;
 
 function THelpFullForm.showForm: TVoid;

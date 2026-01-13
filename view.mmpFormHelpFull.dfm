@@ -40,9 +40,9 @@ object HelpFullForm: THelpFullForm
   OnKeyUp = FormKeyUp
   TextHeight = 15
   object pageControl: TPageControl
-    Left = 137
+    Left = 140
     Top = 30
-    Width = 447
+    Width = 444
     Height = 582
     Margins.Left = 0
     Margins.Top = 0
@@ -95,13 +95,46 @@ object HelpFullForm: THelpFullForm
       ExplicitHeight = 22
     end
   end
-  object lbTabCaptions: TListBox
+  object Panel1: TPanel
     Left = 0
     Top = 30
-    Width = 137
+    Width = 140
     Height = 582
     Align = alLeft
-    ItemHeight = 15
     TabOrder = 2
+    ExplicitLeft = 160
+    ExplicitTop = 64
+    ExplicitHeight = 41
+    object Label1: TLabel
+      Left = 1
+      Top = 1
+      Width = 138
+      Height = 15
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Topics'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 32
+      ExplicitTop = 144
+      ExplicitWidth = 34
+    end
+    object lbTabCaptions: TListBox
+      Left = 1
+      Top = 16
+      Width = 137
+      Height = 565
+      Align = alLeft
+      ItemHeight = 15
+      TabOrder = 0
+      OnClick = lbTabCaptionsClick
+      ExplicitLeft = 0
+      ExplicitTop = 30
+      ExplicitHeight = 582
+    end
   end
 end
