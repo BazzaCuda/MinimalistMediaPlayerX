@@ -33,7 +33,8 @@ uses
   MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazAction,
-  mmpConsts, HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin;
+  mmpConsts, HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin,
+  CommCtrl;
 
 type
   IHelpFullForm = interface
@@ -48,6 +49,7 @@ type
     titleBar: TTitleBarPanel;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    lbTabCaptions: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -98,11 +100,11 @@ const
       (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
       (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
       (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume')
-      // Intro page - shift-\ config dialog vs .conf file, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki
+      // Intro page - shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available
       // Resets summary
       // Bookmarks
       // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
-      // Captions / on-screen display
+      // Captions / on-screen display / # redisplay
       // Freeze Frame
       // Keyframes
       // Subtitles
@@ -111,13 +113,16 @@ const
       // Rotation
       // Speed
       // Window Control x 2 - Main Window and Browser (resizing)
+      // auto-center and H vs M, G, Ctrl-G
       // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
       // External Apps
       // Auto Updates / About Box
       // Launching the Image & Thumbnail Browser (including from the Main Media Window)
-      // Thumbnails - increase/decrease size
+      // Thumbnails - increase/decrease size, Browser status bar
       // multi-window control, Ctrl-N numlock
       // slideshows
+      // Notification area
+      // Browser user-folders
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
@@ -172,7 +177,9 @@ begin
     case MARKDOWN_RESOURCES[vIx].HelpType in [aHelpType, htBoth] of FALSE: CONTINUE; end;
     var vTabSheet := TTabSheet.Create(pageControl);
     vTabSheet.pageControl       := pageControl;
-    vTabSheet.caption           := MARKDOWN_RESOURCES[vIx].caption;
+    vTabSheet.caption           := ''; // MARKDOWN_RESOURCES[vIx].caption;
+
+//    vTabSheet.tabVisible        := FALSE;
 
     var vLabel                  := TLabel.Create(vTabSheet);
     vLabel.parent               := vTabSheet;
@@ -209,7 +216,15 @@ end;
 
 procedure THelpFullForm.FormCreate(Sender: TObject);
 begin
+  SELF.width := SELF.width + lbTabCaptions.width;
   SELF.margins.setBounds(0, 0, 0, 0);         // let the markdownviewers fill the client area
+
+  { no tab captions}
+  sendMessage(pageControl.HANDLE, TCM_SETITEMSIZE, 0, makeLParam(0, 0));
+  pageControl.tabHeight := 1;
+  pageControl.tabWidth  := 1;
+  pageControl.tabStop   := FALSE;
+
   pageControl.margins.setBounds(0, 0, 0, 0);  // ditto
   borderStyle   := bsSizeable;
   keyPreview    := FALSE; // EXPERIMENTAL TRUE;

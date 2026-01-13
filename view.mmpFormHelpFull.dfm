@@ -40,9 +40,9 @@ object HelpFullForm: THelpFullForm
   OnKeyUp = FormKeyUp
   TextHeight = 15
   object pageControl: TPageControl
-    Left = 0
+    Left = 137
     Top = 30
-    Width = 584
+    Width = 447
     Height = 582
     Margins.Left = 0
     Margins.Top = 0
@@ -50,8 +50,10 @@ object HelpFullForm: THelpFullForm
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 0
-    ExplicitHeight = 361
+    ExplicitLeft = 160
+    ExplicitTop = 120
+    ExplicitWidth = 584
+    ExplicitHeight = 364
   end
   object titleBar: TTitleBarPanel
     Left = 0
@@ -92,5 +94,14 @@ object HelpFullForm: THelpFullForm
       ExplicitTop = 8
       ExplicitHeight = 22
     end
+  end
+  object lbTabCaptions: TListBox
+    Left = 0
+    Top = 30
+    Width = 137
+    Height = 582
+    Align = alLeft
+    ItemHeight = 15
+    TabOrder = 2
   end
 end
