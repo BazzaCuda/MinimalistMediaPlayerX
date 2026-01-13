@@ -34,15 +34,17 @@ implementation
 
 function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 begin
-  var vRS := TResourceStream.create(hInstance, aResourceName, RT_RCDATA);
-  var vSS := TStringStream.create;
-  try
-    vSS.copyFrom(vRS);
-    aMD.loadFromStream(vSS);
-  finally
-    vSS.free;
-    vRS.free;
-  end;
+  try // quietly suppress "resource not found" exceptions
+    var vRS := TResourceStream.create(hInstance, aResourceName, RT_RCDATA);
+    var vSS := TStringStream.create;
+    try
+      vSS.copyFrom(vRS);
+      aMD.loadFromStream(vSS);
+    finally
+      vSS.free;
+      vRS.free;
+    end;
+  except end;
 end;
 
 function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): boolean;

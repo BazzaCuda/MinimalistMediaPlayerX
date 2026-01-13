@@ -186,7 +186,7 @@ type
     fileExts: string;
   end;
 
-  THelpType = (htBoth, htMain, htImages);
+  THelpType = (htBoth, htMain, htIATB); // IATB = "Image And Thumbnail Browser"
   TWndRec = record
     HWND:       HWND;
     pt:         TPoint;

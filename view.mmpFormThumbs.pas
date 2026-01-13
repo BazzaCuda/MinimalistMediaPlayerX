@@ -427,7 +427,7 @@ begin
   wr.HWND       := GS.mainForm.handle;
   wr.pt         := vPt;
   wr.height     := SELF.height;
-  wr.helpType   := htImages;
+  wr.helpType   := htIATB;
   wr.createNew  := bCreateNew;
 
   mmp.cmd(evHelpMoveHelp, wr);
@@ -914,7 +914,7 @@ begin
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
     koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
-    koHelpFull:           mmpHelpFull(htImages, TRUE);
+    koHelpFull:           mmpHelpFull(htIATB, TRUE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;
     koMaximize:           maximizeWindow;

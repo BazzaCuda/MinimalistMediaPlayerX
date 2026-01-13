@@ -4,10 +4,10 @@
 
 Control | Action
 ------ | ------
-**Ctrl [&uarr;]** up arrow         | pan up - add [Shift] for double speed
-**Ctrl [&darr;]** down arrow       | pan down - add [Shift] for double speed
-**Ctrl [&larr;]** left arrow       | pan left - add [Shift] for double speed
-**Ctrl [&rarr;]** right arrow      | pan right - add [Shift] for double speed
+Ctrl **[&uarr;]** up arrow         | pan up - add [Shift] for double speed
+Ctrl **[&darr;]** down arrow       | pan down - add [Shift] for double speed
+Ctrl **[&larr;]** left arrow       | pan left - add [Shift] for double speed
+Ctrl **[&rarr;]** right arrow      | pan right - add [Shift] for double speed
 &nbsp; ||
 **[3]**                     | reset panning to normal
 **[BACKSPACE]**             | reset all adjustments to their defaults: <br /> brightness, contrast, gamma, pan, rotation, saturation, speed, zoom

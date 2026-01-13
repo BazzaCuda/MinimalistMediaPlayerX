@@ -132,14 +132,14 @@ begin
 
   buttonPanel.margins.bottom := 4;
 
-  case aHelpType of   htMain: begin
-                                mmpLoadMarkDownFromResource(md1, 'resource_mdHelp1');
-                                mmpLoadMarkDownFromResource(md2, 'resource_mdHelp2');
-                                mmpLoadMarkDownFromResource(md3, 'resource_mdHelp3'); end;
-                    htImages: begin
-                                mmpLoadMarkDownFromResource(md1, 'resource_mdImages1');
-                                mmpLoadMarkDownFromResource(md2, 'resource_mdImages2');
-                                mmpLoadMarkDownFromResource(md3, 'resource_mdImages3'); end;
+  case aHelpType of htMain: begin
+                              mmpLoadMarkDownFromResource(md1, 'resource_mdHelp1');
+                              mmpLoadMarkDownFromResource(md2, 'resource_mdHelp2');
+                              mmpLoadMarkDownFromResource(md3, 'resource_mdHelp3'); end;
+                    htIATB: begin
+                              mmpLoadMarkDownFromResource(md1, 'resource_mdImages1');
+                              mmpLoadMarkDownFromResource(md2, 'resource_mdImages2');
+                              mmpLoadMarkDownFromResource(md3, 'resource_mdImages3'); end;
   end;
 
   setWindowLong(handle, GWL_STYLE, getWindowLong(handle, GWL_STYLE) OR WS_CAPTION AND (NOT (WS_BORDER)));

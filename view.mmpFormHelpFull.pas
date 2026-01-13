@@ -94,38 +94,39 @@ type
   end;
 
 const
-    MARKDOWN_RESOURCES: array[0..6] of TMarkDownRec =
+    MARKDOWN_RESOURCES: array[0..30] of TMarkDownRec =
     (
+      (helpType: htBoth;    caption: 'Intro';             resource: 'resource_mdIntro'),         // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available
       (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
+      (helpType: htBoth;    caption: 'Auto-Center';       resource: ''),  // auto-center and H vs M, G, Ctrl-G
+      (helpType: htBoth;    caption: 'Auto Update';       resource: ''),  // Auto Updates / About Box
+      (helpType: htMain;    caption: 'Bookmarks';         resource: 'resource_mdBookmarks'),
+      (helpType: htBoth;    caption: 'Captions';          resource: ''),  // Captions / on-screen display / # redisplay
       (helpType: htMain;    caption: 'Editing';           resource: 'resource_mdEditing'),
+      (helpType: htMain;    caption: 'Editing 2';         resource: ''),  // revisit Editing
+      (helpType: htBoth;    caption: 'External Apps';     resource: ''),  // External Apps
       (helpType: htBoth;    caption: 'File Control';      resource: 'resource_mdFileControl'),
+      (helpType: htBoth;    caption: 'Freeze Frame';      resource: ''),  // Freeze Frame
+      (helpType: htBoth;    caption: 'Image Browser';     resource: ''),  // Launching the Image & Thumbnail Browser (including from the Main Media Window)
+      (helpType: htBoth;    caption: 'Keyframes';         resource: ''),  // Keyframes
+      (helpType: htBoth;    caption: 'Multi-Window';      resource: ''),  // multi-window control, Ctrl-N numlock
+      (helpType: htBoth;    caption: 'Notification Area'; resource: ''),  // Notification area
       (helpType: htBoth;    caption: 'Panning';           resource: 'resource_mdPanning'),
+      (helpType: htBoth;    caption: 'Playback';          resource: ''),  // Playback stop/start/restart/loop next/previous chapter /  etc
+      (helpType: htBoth;    caption: 'Playlist';          resource: ''),  // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
+      (helpType: htBoth;    caption: 'Resets';            resource: ''),  // Resets summary
+      (helpType: htBoth;    caption: 'Rotation';          resource: ''),  // Rotation
       (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
+      (helpType: htBoth;    caption: 'Slideshows';        resource: ''),  // slideshows
+      (helpType: htBoth;    caption: 'Speed';             resource: ''),  // Speed
+      (helpType: htBoth;    caption: 'Subtitles';         resource: ''),  // Subtitles
       (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
-      (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume')
-      // Intro page - shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available
-      // Resets summary
-      // Bookmarks
-      // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
-      // Captions / on-screen display / # redisplay
-      // Freeze Frame
-      // Keyframes
-      // Subtitles
-      // Playback stop/start/restart/loop next/previous chapter /  etc
-      // revisit Editing
-      // Rotation
-      // Speed
-      // Window Control x 2 - Main Window and Browser (resizing)
-      // auto-center and H vs M, G, Ctrl-G
-      // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
-      // External Apps
-      // Auto Updates / About Box
-      // Launching the Image & Thumbnail Browser (including from the Main Media Window)
-      // Thumbnails - increase/decrease size, Browser status bar
-      // multi-window control, Ctrl-N numlock
-      // slideshows
-      // Notification area
-      // Browser user-folders
+      (helpType: htBoth;    caption: 'Thumbnails';        resource: ''),  // Thumbnails - increase/decrease size, Browser status bar
+      (helpType: htBoth;    caption: 'User Folders';      resource: ''),  // Browser user-folders
+      (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume'),
+      (helpType: htMain;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)
+      (helpType: htIATB;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)
+      (helpType: htBoth;    caption: 'Zoom';              resource: '')   // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
@@ -276,8 +277,8 @@ begin
   case aHelpType = FHelpType of FALSE: createTabs(aHelpType); end;
   FHelpType := aHelpType;
   case FHelpType of
-    htMain:   caption := 'MMP Help - Main Media Window';
-    htImages: caption := 'MMP Help - Image & Thumbnail Browser';
+    htMain: caption := 'MMP Help - Main Media Window';
+    htIATB: caption := 'MMP Help - Image & Thumbnail Browser';
   end;
 end;
 
@@ -301,32 +302,28 @@ begin
   fontAdjust(-1);
 end;
 
-procedure THelpFullForm.WMNCMouseMove(var Msg: TWMNCMouseMove);
+procedure THelpFullForm.WMNCMouseMove(var msg: TWMNCMouseMove);
 begin
-//  {$if BazDebugWindow} debug('WMMouseMove'); {$endif}
   inherited;
 
-  case Msg.HitTest of
-    HTLEFT, HTRIGHT,
-    HTTOPLEFT, HTTOPRIGHT,
-    HTBOTTOMLEFT, HTBOTTOMRIGHT:
-      SetCursor(Screen.Cursors[crVSplit]); // vertical resize cursor
-    // HTTOP, HTBOTTOM → leave normal
-  end;
+// this seems to have zero effect on non-client cursors
+
+//  case msg.hitTest of HTLEFT, HTRIGHT, HTTOPLEFT, HTTOPRIGHT, HTBOTTOMLEFT, HTBOTTOMRIGHT: setCursor(screen.Cursors[crNone]);   // vertical resize cursor
+//                                                                          HTTOP, HTBOTTOM: setCursor(screen.cursors[crVSplit]); // leave normal
+//  end;
 end;
 
 procedure THelpFullForm.WMSizing(var msg: TMessage);
 begin
-//  {$if BazDebugWindow} debug('WMSizing'); {$endif}
-  // Msg.LPARAM points to the proposed window RECT
+  // msg.LPARAM points to the proposed window RECT
   var vRect := PRect(msg.LPARAM);
 
   case msg.WPARAM of
     WMSZ_LEFT, WMSZ_RIGHT, WMSZ_TOPLEFT, WMSZ_TOPRIGHT, WMSZ_BOTTOMLEFT, WMSZ_BOTTOMRIGHT: vRect.right := vRect.left + width; // lock width
-    // WMSZ_TOP, WMSZ_BOTTOM → vertical resizing allowed
+                                                                    WMSZ_TOP, WMSZ_BOTTOM: ;                                  // vertical resizing allowed
   end;
 
-   SetCursor(Screen.Cursors[crVSplit]); // vertical resize cursor
+//  setCursor(screen.cursors[crVSplit]); // vertical resize cursor
 
   msg.result := 0; // Windows expects 0 unless you want to override default processing
 end;

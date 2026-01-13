@@ -306,12 +306,12 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdPanning</ResourceId>
         </RcItem>
-        <None Include="_resources\resource_mdBookmarks.md"/>
         <RcItem Include="_resources\resource_mdFileControl.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdFileControl</ResourceId>
         </RcItem>
+        <None Include="_resources\resource_mdBookmarks.md"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -402,7 +402,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdBookmarks.md" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdBookmarks.txt" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -493,12 +493,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="_resources\resource_mdImages3.md" Configuration="Release" Class="ProjectFile">
-                    <Platform Name="Win64">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdNew.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

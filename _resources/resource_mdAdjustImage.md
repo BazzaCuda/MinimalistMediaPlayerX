@@ -32,8 +32,8 @@ Control | Action
 **[4]**                     | reset rotation to normal/not rotated
 &nbsp; ||
 **Saturation** ||
-**[{]**                     | decrease saturation. Can be held down for rapid decrease
-**[}]**                     | increase saturation. Can be held down for rapid increase
+**{**                     | decrease saturation. Can be held down for rapid decrease
+**}**                     | increase saturation. Can be held down for rapid increase
 **[;]**                     | reset saturation to normal
 &nbsp; ||
 **Zoom** ||
@@ -41,7 +41,7 @@ Control | Action
 **[O]**                     | zoom **[O]**ut. Can be held down for rapid zooming out
 **[U]**                     | **[U]**nzoom, i.e. re-fit the video to the window
 &nbsp; ||
-**Image & Thumbnail Browser** ||
+Image & Thumbnail Browser ||
 Ctrl and **Mouse Wheel** up/down       | zoom image in/out.
 add **[Shift]** | to increase zoom amount
 
