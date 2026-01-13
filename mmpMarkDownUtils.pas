@@ -34,6 +34,8 @@ implementation
 
 function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
 begin
+  case findResourceEx(HINSTANCE, RT_RCDATA, PChar(aResourceName), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)) = 0 of TRUE: EXIT; end; // prevent memory leak on bad resource
+
   try // quietly suppress "resource not found" exceptions
     var vRS := TResourceStream.create(hInstance, aResourceName, RT_RCDATA);
     var vSS := TStringStream.create;
