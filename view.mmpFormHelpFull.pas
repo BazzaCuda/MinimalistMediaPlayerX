@@ -54,7 +54,6 @@ type
     Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure lbTabCaptionsClick(Sender: TObject);
@@ -98,7 +97,7 @@ const
     (
       (helpType: htBoth;    caption: 'Intro';             resource: 'resource_mdIntro'), // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available
       (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
-      (helpType: htBoth;    caption: 'Auto-Center';       resource: ''),  // auto-center and H vs M, G, Ctrl-G
+      (helpType: htBoth;    caption: 'Auto-Center';       resource: 'resource_mdAutoCenter'),  // auto-center and H vs M, G, Ctrl-G
       (helpType: htBoth;    caption: 'Auto Update';       resource: ''),  // Auto Updates / About Box
       (helpType: htMain;    caption: 'Bookmarks';         resource: 'resource_mdBookmarks'),
       (helpType: htMain;    caption: 'Captions';          resource: ''),  // Captions / on-screen display / # redisplay
@@ -159,10 +158,10 @@ function THelpFullForm.createTabs(const aHelpType: THelpType): TVoid;
   begin
     aLabel.align          := alBottom;
     aLabel.alignment      := taCenter;
-    aLabel.caption        := 'hit [Escape] to close this window';
+    aLabel.caption        := 'Use all controls as normal - hit [Escape] to close this window';
     aLabel.font.color     := clTeal;
     aLabel.font.name      := 'Segoe UI';
-    aLabel.font.style     := [fsItalic];
+    aLabel.font.style     := [fsItalic, fsBold];
     aLabel.parentFont     := FALSE;
     alabel.styleElements  := [seClient, seBorder];
   end;
@@ -170,7 +169,7 @@ function THelpFullForm.createTabs(const aHelpType: THelpType): TVoid;
   function initMarkDownViewer(const aMarkDownViewer: TMarkdownViewer): TVoid;
   begin
     aMarkdownViewer.align   := alClient;
-    aMarkdownViewer.margins.setBounds(0, 0, 0, 0); // let the markdownviewers fill the client area
+    aMarkdownViewer.margins.setBounds(0, 0, 0, 0); // "Let the markdownViewers fill the client area" - Paddy McGuinness
   end;
 
 begin
@@ -183,8 +182,6 @@ begin
     vTabSheet.pageControl       := pageControl;
     vTabSheet.caption           := '';
     lbTabCaptions.items.add(MARKDOWN_RESOURCES[vIx].caption);
-
-//    vTabSheet.tabVisible        := FALSE;
 
     var vLabel                  := TLabel.Create(vTabSheet);
     vLabel.parent               := vTabSheet;
@@ -228,11 +225,11 @@ begin
   sendMessage(pageControl.HANDLE, TCM_SETITEMSIZE, 0, makeLParam(0, 0));
   pageControl.tabHeight := 1;
   pageControl.tabWidth  := 1;
-  pageControl.tabStop   := FALSE;
+  pageControl.tabStop   := FALSE; // no ctrl-tab navigation through the tabs
 
-  pageControl.margins.setBounds(0, 0, 0, 0);  // ditto
+  pageControl.margins.setBounds(0, 0, 0, 0);
   borderStyle   := bsSizeable;
-  keyPreview    := FALSE; // EXPERIMENTAL TRUE;
+  keyPreview    := FALSE; // EXPERIMENTAL
   borderIcons   := [biSystemMenu];
 
   with customTitleBar do begin
@@ -260,11 +257,6 @@ begin
   lbTabCaptions.bevelInner  := bvNone;
   lbTabCaptions.bevelOuter  := bvNone;
   lbTabCaptions.borderStyle := bsNone;
-end;
-
-procedure THelpFullForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-//  case key = VK_ESCAPE of TRUE: close; end;
 end;
 
 function THelpFullForm.getHandle: HWND;

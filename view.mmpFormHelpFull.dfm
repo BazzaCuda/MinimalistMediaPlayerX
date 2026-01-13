@@ -37,7 +37,6 @@ object HelpFullForm: THelpFullForm
   StyleElements = [seFont, seClient]
   OnClose = FormClose
   OnCreate = FormCreate
-  OnKeyUp = FormKeyUp
   TextHeight = 15
   object pageControl: TPageControl
     Left = 140
@@ -50,10 +49,6 @@ object HelpFullForm: THelpFullForm
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 160
-    ExplicitTop = 120
-    ExplicitWidth = 584
-    ExplicitHeight = 364
   end
   object titleBar: TTitleBarPanel
     Left = 0
@@ -61,7 +56,6 @@ object HelpFullForm: THelpFullForm
     Width = 584
     Height = 30
     CustomButtons = <>
-    ExplicitWidth = 624
     object SpeedButton1: TSpeedButton
       AlignWithMargins = True
       Left = 500
@@ -103,13 +97,10 @@ object HelpFullForm: THelpFullForm
     Height = 582
     Align = alLeft
     TabOrder = 2
-    ExplicitLeft = 160
-    ExplicitTop = 64
-    ExplicitHeight = 41
     object Label1: TLabel
       Left = 1
       Top = 1
-      Width = 34
+      Width = 138
       Height = 15
       Align = alTop
       Alignment = taCenter
@@ -120,6 +111,7 @@ object HelpFullForm: THelpFullForm
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitWidth = 34
     end
     object lbTabCaptions: TListBox
       Left = 1
