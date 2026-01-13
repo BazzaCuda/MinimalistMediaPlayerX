@@ -162,7 +162,7 @@ type
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
             koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave, koConfig, koPlayEdited, koRenameCleanFile, koToggleSkipExcluded,
-            koToggleShuffle, koHelpFull, koHelpThumbs);
+            koToggleShuffle, koHelpFull, koHelpThumbs, koSyncAudioUp, koSyncAudioDn);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);

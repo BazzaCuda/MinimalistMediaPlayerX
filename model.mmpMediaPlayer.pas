@@ -206,6 +206,8 @@ begin
     evMPSpeedUp:          sendOpInfo(mpvSpeedUp(mpv));
     evMPStartOver:        sendOpInfo(mpvStartOver(mpv));
     evMPStop:             mpvStop(mpv);
+    evMPSyncAudioDn:      sendOpInfo(mpvSyncAudioDn(mpv));
+    evMPSyncAudioUp:      sendOpInfo(mpvSyncAudioUp(mpv));
     evMPToggleRepeat:     sendOpInfo(mpvToggleRepeat(mpv));
     evMPToggleSubtitles:  sendOpInfo(mpvToggleSubtitles(mpv));
     evMPVolDn:            sendOpInfo(mpvVolDown(mpv));

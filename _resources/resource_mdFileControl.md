@@ -1,8 +1,10 @@
+With the **MMP** media library management facilities, you get a lot of control over what media files are called and where they reside
+
 
 
 Control | Action
 ------- | ------
-**[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />useful for saving a project file after opening the media file in an external app using [F10], [F11] or [F12]
+**[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />useful for maybe saving a project file after opening the media file in an external app using [F10], [F11] or [F12]
 **[DEL]**                   | [D]elete current media file (after confirmation)
 Ctrl-**[DEL]**              | [D]elete all files in the current media file's folder (after user confirmation)<br />subfolders are not affected<br />deletion functions can be disabled in _MinimalistMediaPlayer.conf_
 Ctrl-Shift-**[C]**          | [C]leanup leftover audio and video editing files in the current playlist folder (.key, .log, .mmp, .seg, etc.)

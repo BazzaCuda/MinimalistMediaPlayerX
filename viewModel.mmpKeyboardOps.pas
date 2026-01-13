@@ -133,6 +133,8 @@ begin
     koSpeedReset:         MP.notify(newNotice(evMPSpeedReset));
     koSpeedUp:            MP.notify(newNotice(evMPSpeedUp));
     koStartOver:          mmp.cmd(evPAPostToAll, WIN_START_OVER);
+    koSyncAudioUp:        MP.notify(newNotice(evMPSyncAudioUp));
+    koSyncAudioDn:        MP.notify(newNotice(evMPSyncAudioDn));
     koSysVolMax:          mmp.cmd(evMXSysVolMax); // someone or something needs to know this but we don't know (or care) who or what
     koTab:                mmp.cmd(evPAPostToAll, WIN_TAB);
     koTabTab:             mmp.cmd(evPAPostToAll, WIN_TABTAB);

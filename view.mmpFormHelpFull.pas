@@ -95,15 +95,15 @@ type
 const
     MARKDOWN_RESOURCES: array[0..30] of TMarkDownRec =
     (
-      (helpType: htBoth;    caption: 'Intro';             resource: 'resource_mdIntro'), // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available
+      (helpType: htBoth;    caption: 'Intro';             resource: 'resource_mdIntro'), // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
       (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
       (helpType: htBoth;    caption: 'Auto-Center';       resource: 'resource_mdAutoCenter'),  // auto-center and H vs M, G, Ctrl-G
-      (helpType: htBoth;    caption: 'Auto Update';       resource: ''),  // Auto Updates / About Box
+      (helpType: htBoth;    caption: 'Auto Update';       resource: 'resource_mdAutoUpdate'),  // Auto Updates / About Box
       (helpType: htMain;    caption: 'Bookmarks';         resource: 'resource_mdBookmarks'),
       (helpType: htMain;    caption: 'Captions';          resource: ''),  // Captions / on-screen display / # redisplay
       (helpType: htMain;    caption: 'Editing';           resource: 'resource_mdEditing'),
       (helpType: htMain;    caption: 'Editing 2';         resource: ''),  // revisit Editing
-      (helpType: htBoth;    caption: 'External Apps';     resource: ''),  // External Apps
+      (helpType: htBoth;    caption: 'External Apps';     resource: 'resource_mdExternalApps'),  // External Apps
       (helpType: htBoth;    caption: 'File Control';      resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';      resource: ''),  // Freeze Frame
       (helpType: htBoth;    caption: 'Image Browser';     resource: ''),  // Launching the Image & Thumbnail Browser (including from the Main Media Window)
@@ -121,7 +121,7 @@ const
       (helpType: htMain;    caption: 'Subtitles';         resource: ''),  // Subtitles
       (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
       (helpType: htIATB;    caption: 'Thumbnails';        resource: ''),  // Thumbnails - increase/decrease size, Browser status bar
-      (helpType: htIATB;    caption: 'User Folders';      resource: ''),  // Browser user-folders
+      (helpType: htIATB;    caption: 'User-Defined Folders';      resource: ''),  // Browser user-folders
       (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume'),
       (helpType: htMain;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)
       (helpType: htIATB;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)

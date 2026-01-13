@@ -69,6 +69,8 @@ function mpvSpeedReset      (const mpv: IMPVBasePlayer): string;
 function mpvSpeedUp         (const mpv: IMPVBasePlayer): string;
 function mpvStartOver       (const mpv: IMPVBasePlayer): string;
 function mpvStop            (const mpv: IMPVBasePlayer): boolean;
+function mpvSyncAudioDn     (const mpv: IMPVBasePlayer): string;
+function mpvSyncAudioUp     (const mpv: IMPVBasePlayer): string;
 function mpvTakeScreenshot  (const mpv: IMPVBasePlayer; const aFolder: string): boolean;
 function mpvToggleRepeat    (const mpv: IMPVBasePlayer): string;
 function mpvToggleSubtitles (const mpv: IMPVBasePlayer): string;
@@ -492,6 +494,28 @@ begin
   result := FALSE;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.stop = MPV_ERROR_SUCCESS;
+end;
+
+function mpvSyncAudioDn(const mpv: IMPVBasePlayer): string;
+var
+  delay: double;
+begin
+  result := EMPTY;
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyDouble('audio-delay', delay);
+  mpv.setPropertyDouble('audio-delay', delay + 0.01);
+  result := mpvFormattedSyncAudio(mpv);
+end;
+
+function mpvSyncAudioUp(const mpv: IMPVBasePlayer): string;
+var
+  delay: double;
+begin
+  result := EMPTY;
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyDouble('audio-delay', delay);
+  mpv.setPropertyDouble('audio-delay', delay - 0.01);
+  result := mpvFormattedSyncAudio(mpv);
 end;
 
 function mpvTakeScreenshot(const mpv: IMPVBasePlayer; const aFolder: string): boolean;

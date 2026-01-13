@@ -57,7 +57,7 @@ type
     evMPRotateLeft, evMPRotateReset, evMPRotateRight,
     evMPSaturationDn, evMPSaturationUp, evMPSaturationReset, evMPScreenshot, evMPSpeedDn, evMPSpeedUp, evMPSpeedReset, evMPStartOver, evMPStop,
     evMPToggleRepeat, evMPToggleSubtitles,
-    evMPVolDn, evMPVolUp, evMPZoomIn, evMPZoomOut, evMPZoomReset, evMPSeek,
+    evMPVolDn, evMPVolUp, evMPZoomIn, evMPZoomOut, evMPZoomReset, evMPSeek, evMPSyncAudioUp, evMPSyncAudioDn,
 
     evMPStateEnd, evMPStateLoading, evMPStatePlay,
 

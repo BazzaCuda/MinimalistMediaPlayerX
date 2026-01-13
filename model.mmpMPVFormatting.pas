@@ -31,6 +31,7 @@ function mpvFormattedDuration   (const mpv: IMPVBasePlayer): string;
 function mpvFormattedGamma      (const mpv: IMPVBasePlayer): string;
 function mpvFormattedSaturation (const mpv: IMPVBasePlayer): string;
 function mpvFormattedSpeed      (const mpv: IMPVBasePlayer): string;
+function mpvFormattedSyncAudio  (const mpv: IMPVBasePlayer): string;
 function mpvFormattedTime       (const mpv: IMPVBasePlayer): string;
 function mpvFormattedVol        (const mpv: IMPVBasePlayer): string;
 
@@ -85,6 +86,15 @@ function mpvFormattedSpeed(const mpv: IMPVBasePlayer): string;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   result := format('Speed: %.2f', [mpv.PlaybackSpeed]);
+end;
+
+function mpvFormattedSyncAudio(const mpv: IMPVBasePlayer): string;
+var
+  vDelay: double;
+begin
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.getPropertyDouble('audio-delay', vDelay);
+  result := format('Sync: %.2f', [vDelay]);
 end;
 
 function mpvFormattedTime(const mpv: IMPVBasePlayer): string;
