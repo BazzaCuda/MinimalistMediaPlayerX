@@ -93,10 +93,11 @@ type
   end;
 
 const
-    MARKDOWN_RESOURCES: array[0..30] of TMarkDownRec =
+    MARKDOWN_RESOURCES: array[0..31] of TMarkDownRec =
     (
       (helpType: htBoth;    caption: 'Intro';                 resource: 'resource_mdIntro'),              // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
       (helpType: htBoth;    caption: 'Adjust Image';          resource: 'resource_mdAdjustImage'),
+      (helpType: htMain;    caption: 'Audio Streams';         resource: 'resource_mdAudioStreams'),       // auto-center and H vs M, G, Ctrl-G
       (helpType: htBoth;    caption: 'Auto-Center';           resource: 'resource_mdAutoCenter'),         // auto-center and H vs M, G, Ctrl-G
       (helpType: htBoth;    caption: 'Auto Update';           resource: 'resource_mdAutoUpdate'),         // Auto Updates / About Box
       (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
@@ -105,7 +106,7 @@ const
       (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing
       (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),       // External Apps
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
-      (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezFrame'),         // Freeze Frame
+      (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),        // Freeze Frame
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),       // Launching the Image & Thumbnail Browser (including from the Main Media Window)
       (helpType: htBoth;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),          // Keyframes
       (helpType: htMain;    caption: 'Multi-Window';          resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
