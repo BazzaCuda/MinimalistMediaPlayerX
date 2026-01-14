@@ -197,6 +197,9 @@ type
     Label65: TLabel;
     Label66: TLabel;
     Label67: TLabel;
+    Panel1: TPanel;
+    Label68: TLabel;
+    lbTabCaptions: TListBox;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -235,6 +238,8 @@ type
     procedure rbFilterAudioVideoClick(Sender: TObject);
     procedure chbKeyframesClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure lbTabCaptionsClick(Sender: TObject);
+    procedure pageControlChange(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -496,11 +501,23 @@ begin
   lblWhite.font.color  := clWhite;
   lblYellow.font.color := clYellow;
   lblPurple.font.color := clFuchsia;
+
+  panel1.bevelInner  := bvLowered;
+  panel1.bevelOuter  := bvLowered;
+
+  lbTabCaptions.bevelInner  := bvNone;
+  lbTabCaptions.bevelOuter  := bvNone;
+  lbTabCaptions.borderStyle := bsNone;
 end;
 
 procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   case key = VK_ESCAPE of TRUE: modalResult := mrOK; end;
+end;
+
+procedure TConfigForm.lbTabCaptionsClick(Sender: TObject);
+begin
+  pageControl.activePageIndex := lbTabCaptions.itemIndex;
 end;
 
 function TConfigForm.loadConfig: boolean;
@@ -557,6 +574,12 @@ begin
   chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
 
   edtDirtyChars.text            := trim(CF[CONF_DIRTY_CHARS]);
+end;
+
+procedure TConfigForm.pageControlChange(Sender: TObject);
+begin
+  // in case the user clicks a tab or uses Ctrl-Tab to cycle through tabs
+  case pageControl.activePageIndex = lbTabCaptions.itemIndex of FALSE: lbTabCaptions.itemIndex := pageControl.activePageIndex; end;
 end;
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
