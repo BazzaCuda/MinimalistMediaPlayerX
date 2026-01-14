@@ -1,7 +1,6 @@
 
 | Control | Action |
 | ------- | ------ |
-| &nbsp; ||
-| **[F5]** | save a screenshot of the current frame or the currently displayed image. |
+| **[F6]** | cycle through all audio tracks in the media file, one at a time |
 
 

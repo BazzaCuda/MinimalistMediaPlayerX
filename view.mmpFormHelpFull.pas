@@ -57,6 +57,7 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure lbTabCaptionsClick(Sender: TObject);
+    procedure pageControlChange(Sender: TObject);
   strict private
     FHelpType: THelpType;
   private
@@ -93,7 +94,7 @@ type
   end;
 
 const
-    MARKDOWN_RESOURCES: array[0..31] of TMarkDownRec =
+    MARKDOWN_RESOURCES: array[0..32] of TMarkDownRec =
     (
       (helpType: htBoth;    caption: 'Intro';                 resource: 'resource_mdIntro'),              // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
       (helpType: htBoth;    caption: 'Adjust Image';          resource: 'resource_mdAdjustImage'),
@@ -109,6 +110,7 @@ const
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),        // Freeze Frame
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),       // Launching the Image & Thumbnail Browser (including from the Main Media Window)
       (helpType: htBoth;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),          // Keyframes
+      (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),              // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Multi-Window';          resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
       (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
@@ -181,7 +183,7 @@ begin
     case MARKDOWN_RESOURCES[vIx].HelpType in [aHelpType, htBoth] of FALSE: CONTINUE; end;
     var vTabSheet := TTabSheet.Create(pageControl);
     vTabSheet.pageControl       := pageControl;
-    vTabSheet.caption           := '';
+    vTabSheet.caption           := MARKDOWN_RESOURCES[vIx].caption;
     lbTabCaptions.items.add(MARKDOWN_RESOURCES[vIx].caption);
 
     var vLabel                  := TLabel.Create(vTabSheet);
@@ -223,10 +225,10 @@ begin
   SELF.margins.setBounds(0, 0, 0, 0);         // let the markdownviewers fill the client area
 
   { no tab captions}
-  sendMessage(pageControl.HANDLE, TCM_SETITEMSIZE, 0, makeLParam(0, 0));
-  pageControl.tabHeight := 1;
-  pageControl.tabWidth  := 1;
-  pageControl.tabStop   := FALSE; // no ctrl-tab navigation through the tabs
+//  sendMessage(pageControl.HANDLE, TCM_SETITEMSIZE, 0, makeLParam(0, 0));
+//  pageControl.tabHeight := 1;
+//  pageControl.tabWidth  := 1;
+//  pageControl.tabStop   := FALSE; // no ctrl-tab navigation through the tabs
 
   pageControl.margins.setBounds(0, 0, 0, 0);
   borderStyle   := bsSizeable;
@@ -278,6 +280,12 @@ end;
 procedure THelpFullForm.lbTabCaptionsClick(Sender: TObject);
 begin
   pageControl.activePageIndex := lbTabCaptions.itemIndex;
+end;
+
+procedure THelpFullForm.pageControlChange(Sender: TObject);
+begin
+  // in case the user clicks a tab or uses Ctrl-Tab to cycle through tabs
+  case pageControl.activePageIndex = lbTabCaptions.itemIndex of FALSE: lbTabCaptions.itemIndex := pageControl.activePageIndex; end;
 end;
 
 function THelpFullForm.showForm: TVoid;

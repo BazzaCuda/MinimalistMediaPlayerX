@@ -1,5 +1,11 @@
 Also see _Editing_ in the Ctrl-**[\\]** Config Dialog
 
+| Control | Action |
+| ------- | ------ |
+| Ctrl-**[E]**     | show/hide the **Audio & Video Timeline Editor** for fast, lossless editing
+<br />
+<br />
+
 Control | Action
 ------- | ------
 **Exit** ||

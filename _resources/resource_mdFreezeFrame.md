@@ -1,7 +1,6 @@
 
 | Control | Action |
-| ------- | ------ |
-| &nbsp; ||
-| **[F5]** | save a screenshot of the current frame or the currently displayed image. |
-
+| ------ | ------ |
+|**Right Arrow**           | pauses the video and steps forwards one frame. Can be held down for rapid continuous stepping.
+|**Left Arrow**            | pauses the video and steps backwards one frame. Can be held down for rapid continuous stepping.
 

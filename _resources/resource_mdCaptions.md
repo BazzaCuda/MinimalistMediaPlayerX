@@ -6,11 +6,13 @@ This includes all the captions (top and bottom of the window) and the audio/vide
 
 | Control | Action |
 | ------ | ------ |
+| On-Screen Display ||
+|**[#]**    | briefly reshow the media caption (the filename and its position/number in the playlist) |
 |**[B]**            | toggle [B]lankout of the progress [B]ar |
 |Ctrl-**[B]**       | make the progress [B]ar and the captions brighter - can be held down for rapid change |
 |Shift-**[B]**      | make the progress [B]ar and the captions darker - can be held down for rapid change |
 |Ctrl-Shift-**[B]** | reset the progress [B]ar and the captions to their default color/brightness |
-|**[C]**            | toggle <wrap fn>1)</wrap> showing the video timestamp |
-|Ctrl-**[C]**       | toggle <wrap fn>1)</wrap> showing the video timestamp and the media file's metadata (frame rate, etc.) |
+|**[C]**            | hide/show the video timestamp |
+|Ctrl-**[C]**       | hide/show showing the video timestamp and the media file's metadata (frame rate, etc.) |
 
 

@@ -49,6 +49,7 @@ object HelpFullForm: THelpFullForm
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 0
+    OnChange = pageControlChange
   end
   object titleBar: TTitleBarPanel
     Left = 0

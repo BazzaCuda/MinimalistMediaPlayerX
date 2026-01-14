@@ -1,6 +1,6 @@
 Unless you explicitly move the **MMP** window off-center, somehow, it will always be auto-centered to sit in the middle of your desktop
 
-- if you resize the window using **[G]** or Ctrl-**[G]** _(to make the window [g]reater or un[g]reater)_, **MMP** will re-center the window automatically
+- if you resize the window using **[G]** or Ctrl-**[G]** _(to make the window [G]reater or un[G]reater)_, **MMP** will re-center the window automatically
 - if you resize the window by grabbing the bottom edge or corner with your mouse and dragging the window to a greater/smaller size, this will **_cancel_** auto-centering
 - if you drag the window around the desktop by holding down the _left mouse button_, this too will **_cancel_** auto-centering
 <br />

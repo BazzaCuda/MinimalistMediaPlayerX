@@ -45,4 +45,6 @@ Ctrl-**[K]**                | [K]eep/delete: delete all but the [K]ept files in 
 
 Control | Action
 ------- | ------
-**[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />useful for maybe saving a project file after opening the media file in an external app using [F10], [F11] or [F12]
+| **[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />useful for maybe saving a project file after opening the media file in an external app using [F10], [F11] or [F12]
+| Ctrl-**[F]**                | open your [F]ile Explorer at the current [F]older |
+
