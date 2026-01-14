@@ -158,7 +158,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(Z)                                                           of TRUE: result := koPlayLast; end;
 
     case keyUp and keyIs(BACKSLASH) and NOT ctrl     and     shift                    of TRUE: result := koConfig; end;
-    case keyDn and keyIs(BACKSLASH) and     ctrl     and NOT shift                    of TRUE: result := koSyncAudioDn; end;
+    case keyDn and keyIs(BACKSLASH) and     ctrl     and NOT shift                    of TRUE: result := koSyncAudioUp; end;
     case keyDn and keyIs(BACKSLASH) and NOT ctrl     and NOT shift                    of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                                   of TRUE: result := koResetAll; end;
     case keyDn and keyIs(CLOSE_BRACKET)  and     shift                                of TRUE: result := koSaturationUp; end; // close curly brace
@@ -169,7 +169,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(OPEN_BRACKET)   and NOT shift                                of TRUE: result := koGammaDn; end;      // open square bracket
     case keyUp and keyIs(SEMICOLON)                                                   of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                                of TRUE: result := koGammaReset; end;
-    case keyDn and keyIs(SLASH)     and     ctrl                                      of TRUE: result := koSyncAudioUp; end;
+    case keyDn and keyIs(SLASH)     and     ctrl                                      of TRUE: result := koSyncAudioDn; end;
     case keyDn and keyIs(SLASH)     and not ctrl                                      of TRUE: result := koSpeedUp; end;
     case keyUp and keyIs(TICK)                                                        of TRUE: result := koStartOver; end;
 

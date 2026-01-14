@@ -125,6 +125,11 @@ type
     function    setOpInfo(const aOpInfo: string): boolean;
   end;
 
+  TShadowLabel = class(TLabel)
+  protected
+    procedure Paint; override;
+  end;
+
 function ST(const aOwner: TForm = NIL): ICaptions;
 {$J+} const gST: ICaptions = NIL; {$J-}
 begin
@@ -179,6 +184,7 @@ begin
   FInfoPanel.font.color   := ST_DEFAULT_COLOR;
 
   FTimeLabel              := TLabel.create(FInfoPanel);
+//  FTimeLabel              := TShadowLabel.create(FInfoPanel);
   FTimeLabel.parent       := FInfoPanel;
   mmpInitTransparentLabel(FTimeLabel);
   defaultFontEtc(FTimeLabel);
@@ -456,6 +462,43 @@ end;
 function TCaptionsProxy.setOpInfo(const aOpInfo: string): boolean;
 begin
   FCaptionsForm.setOpInfo(aOpInfo);
+end;
+
+{ TShadowLabel }
+
+procedure TShadowLabel.Paint;
+const
+  NEARLY_BLACK = clBlack + $101010;
+begin
+  inherited;
+  EXIT;
+
+  canvas.font       := font;
+  canvas.font.color := font.color + $050505;
+
+  var vR:TRect      := clientRect;
+  var vShadowRect   := clientRect;
+  var vFlags:cardinal  := DT_SINGLELINE OR DT_NOPREFIX OR DT_VCENTER;
+
+  case alignment of
+    taLeftJustify:  vFlags := vFlags OR DT_LEFT;
+    taRightJustify: vFlags := vFlags OR DT_RIGHT;
+    taCenter:       vFlags := vFlags OR DT_CENTER; end;
+
+  drawText(canvas.HANDLE,PChar(caption), length(caption), vR, vFlags OR DT_CALCRECT);
+
+  offsetRect(vShadowRect, 1, 1);
+
+  drawText(canvas.HANDLE, PChar(caption), length(caption), vShadowRect, vFlags);
+
+  canvas.font.color := clBlue;
+  drawText(canvas.HANDLE, PChar(caption), length(caption), vR, vFlags);
+//  for var dx := -1 to 1 do
+//    for var dy := -1 to 1 do
+//     case (dx <> 0) or (dy <> 0) of  TRUE: canvas.textRect(vR, vR.left + dx, vR.top + dy, caption);
+//                                    FALSE: ; end; // skip 0,0
+//  canvas.font.color := font.color;
+//  canvas.textRect(vR, vR.left, vR.top, caption);
 end;
 
 end.

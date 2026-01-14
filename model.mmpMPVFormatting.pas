@@ -94,7 +94,7 @@ var
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyDouble('audio-delay', vDelay);
-  result := format('Sync: %.2f', [vDelay]);
+  result := format('Sync: %+.2f', [vDelay]);
 end;
 
 function mpvFormattedTime(const mpv: IMPVBasePlayer): string;

@@ -15,7 +15,7 @@ Setting | Effect
 <br />
 
 - there are other files in the .zip file which are essential for running **MMP**
-- however, _Auto Update_ will not overwrite your existing copies of these files so as not to potentially break your **MMP** installation by overwriting files which you have previously determined are more suitable for your particular Windows setup
+- however, _Auto Update_ will not overwrite your existing copies of these files so as not to potentially break your **MMP** installation by overwriting files which you may have previously determined are more suitable for your particular Windows setup
 - you should unpack these other files yourself if you decide to upgrade them
 - when you do, you are advised to make backup copies of your existing files in case you decide to revert to them
 <br />
@@ -28,7 +28,7 @@ Setting | Effect
 The "...full.zip" release file below contains everything you need to run **MMP: Minimalist Media Player**<br />
 
 Binary | Version | Release Date
-------- | ------: | ------
+------- | ------ | ------
 | MinimalistMediaPlayer.exe | v5.4.0 | 2026/01/05 |
 | libmpv-2.dll (`MPV v0.40.0`)  | v2.0.0 | 2025/12/15 |
 | MediaInfo.dll | v25.10 | 2025/11/05 |

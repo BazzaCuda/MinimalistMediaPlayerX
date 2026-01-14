@@ -1,6 +1,10 @@
 
 **Ctrl-Shift-[H]] for the Full Help**
 
+**Audio/Video Sync**<br />
+Ctrl-**[\\]** bring audio forward
+Ctrl-**[/]** increase audio delay
+
 **Bookmarks**<br />
 **5** bookmark current position<br />
 **6** play from saved bookmark<br />

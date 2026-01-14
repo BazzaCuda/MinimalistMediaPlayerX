@@ -143,7 +143,7 @@ begin
   gHelpFullForm.init(aHelpType);
 
   setForegroundWindow(gHelpFullForm.getHandle); // the order of these two is important
-  case bOnTop of TRUE: setWindowPos(gHelpFullForm.getHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); end;
+  case bOnTop of TRUE: setWindowPos(gHelpFullForm.getHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); end; // vital because of focusThumbs in mmpVM
 
   gHelpFullForm.showForm;
 end;

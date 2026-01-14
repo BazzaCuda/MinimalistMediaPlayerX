@@ -497,6 +497,7 @@ begin
 end;
 
 function mpvSyncAudioDn(const mpv: IMPVBasePlayer): string;
+// delay the audio by increasing the value
 var
   delay: double;
 begin
@@ -508,6 +509,7 @@ begin
 end;
 
 function mpvSyncAudioUp(const mpv: IMPVBasePlayer): string;
+// bring the audio forward by reducing the value
 var
   delay: double;
 begin
