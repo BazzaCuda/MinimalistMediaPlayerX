@@ -21,10 +21,10 @@ Shift-**[M]**               | [M]ove the current media file to the folder specif
 Shift-**[S]**               | [S]ave the current media file to the folder specified in the _saved=_ user folder in .conf file
 &nbsp; ||
 Image & Thumbnail Browser ||
-**[C]** | Save/Copy to "Copied" folder
-**[S]** |Save/Move to "Saved" folder
-Ctrl-**[S]** | Save altered image to new file
-**[F1]-[F12]** | Save/Move to user-defined folder - see _User-Defined Folders_
+**[C]** | Save/Copy the image file to the _Copied=_ folder
+**[S]** | Save/Move the image file to the _Saved=_ folder
+Ctrl-**[S]** | Save the altered version of the image to a new image file
+**[F1]-[F12]** | Save/Move to a user-defined folder - see _User-Defined Folders_ in the Config Dialog
 Ctrl-**[U]** | undo Save/Move
 
 

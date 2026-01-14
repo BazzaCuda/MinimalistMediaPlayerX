@@ -95,37 +95,37 @@ type
 const
     MARKDOWN_RESOURCES: array[0..30] of TMarkDownRec =
     (
-      (helpType: htBoth;    caption: 'Intro';             resource: 'resource_mdIntro'), // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
-      (helpType: htBoth;    caption: 'Adjust Image';      resource: 'resource_mdAdjustImage'),
-      (helpType: htBoth;    caption: 'Auto-Center';       resource: 'resource_mdAutoCenter'),  // auto-center and H vs M, G, Ctrl-G
-      (helpType: htBoth;    caption: 'Auto Update';       resource: 'resource_mdAutoUpdate'),  // Auto Updates / About Box
-      (helpType: htMain;    caption: 'Bookmarks';         resource: 'resource_mdBookmarks'),
-      (helpType: htMain;    caption: 'Captions';          resource: ''),  // Captions / on-screen display / # redisplay
-      (helpType: htMain;    caption: 'Editing';           resource: 'resource_mdEditing'),
-      (helpType: htMain;    caption: 'Editing 2';         resource: ''),  // revisit Editing
-      (helpType: htBoth;    caption: 'External Apps';     resource: 'resource_mdExternalApps'),  // External Apps
-      (helpType: htBoth;    caption: 'File Control';      resource: 'resource_mdFileControl'),
-      (helpType: htMain;    caption: 'Freeze Frame';      resource: ''),  // Freeze Frame
-      (helpType: htBoth;    caption: 'Image Browser';     resource: ''),  // Launching the Image & Thumbnail Browser (including from the Main Media Window)
-      (helpType: htBoth;    caption: 'Keyframes';         resource: ''),  // Keyframes
-      (helpType: htMain;    caption: 'Multi-Window';      resource: ''),  // multi-window control, Ctrl-N numlock
-      (helpType: htMain;    caption: 'Notification Area'; resource: ''),  // Notification area
-      (helpType: htBoth;    caption: 'Panning';           resource: 'resource_mdPanning'),
-      (helpType: htMain;    caption: 'Playback';          resource: ''),  // Playback stop/start/restart/loop next/previous chapter /  etc
-      (helpType: htMain;    caption: 'Playlist';          resource: ''),  // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
-      (helpType: htBoth;    caption: 'Resets';            resource: ''),  // Resets summary
-      (helpType: htBoth;    caption: 'Rotation';          resource: ''),  // Rotation
-      (helpType: htBoth;    caption: 'Screenshots';       resource: 'resource_mdScreenshots'),
-      (helpType: htBoth;    caption: 'Slideshows';        resource: ''),  // slideshows
-      (helpType: htMain;    caption: 'Speed';             resource: ''),  // Speed
-      (helpType: htMain;    caption: 'Subtitles';         resource: ''),  // Subtitles
-      (helpType: htMain;    caption: 'Tabbing';           resource: 'resource_mdTabbing'),
-      (helpType: htIATB;    caption: 'Thumbnails';        resource: ''),  // Thumbnails - increase/decrease size, Browser status bar
-      (helpType: htIATB;    caption: 'User-Defined Folders';      resource: ''),  // Browser user-folders
-      (helpType: htMain;    caption: 'Volume';            resource: 'resource_mdVolume'),
-      (helpType: htMain;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)
-      (helpType: htIATB;    caption: 'Window Control';    resource: ''),  // Window Control x 2 - Main Window and Browser (resizing)
-      (helpType: htBoth;    caption: 'Zoom';              resource: '')   // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
+      (helpType: htBoth;    caption: 'Intro';                 resource: 'resource_mdIntro'),              // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
+      (helpType: htBoth;    caption: 'Adjust Image';          resource: 'resource_mdAdjustImage'),
+      (helpType: htBoth;    caption: 'Auto-Center';           resource: 'resource_mdAutoCenter'),         // auto-center and H vs M, G, Ctrl-G
+      (helpType: htBoth;    caption: 'Auto Update';           resource: 'resource_mdAutoUpdate'),         // Auto Updates / About Box
+      (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
+      (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),           // Captions / on-screen display / # redisplay
+      (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
+      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing
+      (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),       // External Apps
+      (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
+      (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezFrame'),         // Freeze Frame
+      (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),       // Launching the Image & Thumbnail Browser (including from the Main Media Window)
+      (helpType: htBoth;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),          // Keyframes
+      (helpType: htMain;    caption: 'Multi-Window';          resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
+      (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
+      (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
+      (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),           // Playback stop/start/restart/loop next/previous chapter /  etc
+      (helpType: htMain;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),           // Playlist - navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
+      (helpType: htBoth;    caption: 'Resets';                resource: 'resource_mdResets'),             // Resets summary
+      (helpType: htBoth;    caption: 'Rotation';              resource: 'resource_mdRotation'),           // Rotation
+      (helpType: htBoth;    caption: 'Screenshots';           resource: 'resource_mdScreenshots'),
+      (helpType: htBoth;    caption: 'Slideshows';            resource: 'resource_mdSlideshows'),         // slideshows
+      (helpType: htMain;    caption: 'Speed';                 resource: 'resource_mdSpeed'),              // Speed
+      (helpType: htMain;    caption: 'Subtitles';             resource: 'resource_mdSubtitles'),          // Subtitles
+      (helpType: htMain;    caption: 'Tabbing';               resource: 'resource_mdTabbing'),
+      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // Thumbnails - increase/decrease size, Browser status bar
+      (helpType: htIATB;    caption: 'User-Defined Folders';  resource: 'resource_mdUserFolders'),        // Browser user-folders
+      (helpType: htMain;    caption: 'Volume';                resource: 'resource_mdVolume'),
+      (helpType: htMain;    caption: 'Window Control';        resource: 'resource_mdWindowControlMain'),  // Window Control x 2 - Main Window and Browser (resizing)
+      (helpType: htIATB;    caption: 'Window Control';        resource: 'resource_mdWindowControlIATB'),  // Window Control x 2 - Main Window and Browser (resizing)
+      (helpType: htBoth;    caption: 'Zoom';                  resource: 'resource_mdZoom')                // Zoooom - main (keyboard only) vs Browser (keyboard and mouse wheel)
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;
