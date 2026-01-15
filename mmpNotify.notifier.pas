@@ -25,7 +25,7 @@ uses
   system.classes, system.generics.collections,
   mmpNotify.notices;
 
-function appEvents: INotifier; // EXPERIMENTAL - was ISubscribable
+function appEvents: INotifier;
 function newNotifier: INotifier;
 
 function notifyApp(const aNotice: INotice): INotice;
@@ -54,8 +54,8 @@ begin
   result := TNotifier.create;
 end;
 
-function appEvents: INotifier; // EXPERIMENTAL - was ISubscribable
-{$J+} const gAppEvents: INotifier = NIL; {$J-} // EXPERIMENTAL - was ISubscribable
+function appEvents: INotifier;
+{$J+} const gAppEvents: INotifier = NIL; {$J-}
 begin
   case gAppEvents = NIL of TRUE: gAppEvents := newNotifier; end;
   result := gAppEvents;
@@ -65,8 +65,7 @@ function notifyApp(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice  = NIL of TRUE: EXIT; end;
-//  (appEvents as INotifier).notifySubscribers(aNotice);
-  appEvents.notifySubscribers(aNotice); // EXPERIMENTAL
+  appEvents.notifySubscribers(aNotice);
 end;
 
 { TNotifier }

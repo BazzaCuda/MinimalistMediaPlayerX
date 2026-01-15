@@ -337,7 +337,7 @@ begin
   case bCaptionOnly of TRUE: EXIT; end;
   mmp.cmd(evPLFillListBox, LB);
   highlightCurrentItem;
-  mmpProcessMessages; // EXPERIMENTAL
+  mmpProcessMessages;
 end;
 
 function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;

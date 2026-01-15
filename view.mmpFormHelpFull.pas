@@ -253,7 +253,7 @@ begin
 
   pageControl.margins.setBounds(0, 0, 0, 0);
   borderStyle   := bsSizeable;
-  keyPreview    := FALSE; // EXPERIMENTAL
+  keyPreview    := FALSE;
   borderIcons   := [biSystemMenu];
 
   with customTitleBar do begin

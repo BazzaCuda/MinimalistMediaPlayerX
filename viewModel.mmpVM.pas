@@ -123,7 +123,7 @@ type
     function    adjustAspectRatio:    boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
-    function    doCleanup:            boolean;
+    function    doCleanup(const bConfirm: boolean = TRUE): boolean;
     function    playEdited:           boolean;
     function    playNext(const bRecurseFolders: boolean): boolean;
     function    playPrev:             boolean;
@@ -319,14 +319,14 @@ end;
 
 function TVM.doAppClose: boolean;
 begin
-  mmp.cmd(evMPDetachStates);    // EXPERIMENTAL
-  mmp.cmd(evGSSuspended, TRUE); // EXPERIMENTAL
-  mmp.cmd(evMPStop);            // EXPERIMENTAL
+  mmp.cmd(evMPDetachStates);
+  mmp.cmd(evGSSuspended, TRUE);
+  mmp.cmd(evMPStop);
 
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
-//  FMP.notify(newNotice(evMPStop)); // EXPERIMENTAL - REDUNDANT?
+//  FMP.notify(newNotice(evMPStop)); // REDUNDANT?
 
 //  TT.unsubscribeAll;
 //  FMP.unsubscribeAll;
@@ -347,14 +347,14 @@ begin
 //  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 end;
 
-function TVM.doCleanup: boolean;
+function TVM.doCleanup(const bConfirm: boolean = TRUE): boolean;
 begin
   result := FALSE;
 
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
   mmp.cmd(vWasPlaying, evMPPause);
 
-  case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
+  case bConfirm and (GS.activeTasks > 0) of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
 
   var vFolder       := mmp.cmd(evPLReqCurrentFolder).text;
   var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;
@@ -362,11 +362,19 @@ begin
 
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
+  case bConfirm of TRUE:
   mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mryes, procedure  begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup in progress');
                                                                                                                       newCleanup.cleanup(vFolder, vCurrentItem);
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                                                                                     end);
+
+  FALSE:  begin
+            while GS.activeTasks > 0 do mmpProcessMessages;
+            mmp.cmd(evSTOpInfo, 'Cleanup in progress');
+            newCleanup.cleanup(vFolder, vCurrentItem);
+            mmp.cmd(evSTOpInfo, 'Cleanup complete'); end;end;
+
 
   case mmp.cmd(evPLFind, vCurrentItem).tf of FALSE: case vIx > mmp.cmd(evPLReqLastIx).integer of TRUE: mmp.cmd(evPLLast); end;end; // did we remove the playing item
   mmp.cmd(evPLFormLoadBox);
@@ -637,7 +645,7 @@ begin
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
     evVMCleanup:            doCleanup;
     evVMConfig:             mmpConfig;
-    evVMDeleteCurrentItem:  deleteCurrentItem(aNotice.shiftState);
+    evVMDeleteCurrentItem:  begin deleteCurrentItem(aNotice.shiftState); doCleanup(FALSE); end;
     evVMDoEscapeKey:        doEscapeKey;
     evVMHelpFull:           mmpHelpFull(htMain, FALSE);
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));

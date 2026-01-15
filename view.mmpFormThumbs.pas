@@ -850,7 +850,7 @@ begin
 
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
-// EXPERIMENTAL - COMMENTED OUT - adjustments are applied to every subsequent image, so not sure why this is necessary anymore
+// COMMENTED OUT - adjustments are applied to every subsequent image, so not sure why this is necessary anymore
 //  case (key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT]) and (NOT (ssCtrl in shift)) and mpvAdjusted(mpv)
 //    of  TRUE: begin
 //                FKeyHandled := TRUE; // don't let the user accidentally change folders or image with the arrow keys after adjusting the image somehow

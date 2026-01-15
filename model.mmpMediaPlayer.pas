@@ -220,7 +220,7 @@ begin
 
     evPBClick:            setPosition(aNotice.integer);
 
-//    evMPReqDuration:      aNotice.integer := mpvDuration(mpv); EXPERIMENTAL - always use MI's info
+//    evMPReqDuration:      aNotice.integer := mpvDuration(mpv); No - always use MI's info
     evMPReqFileName:      aNotice.text    := mpvFileName(mpv);
     evMPReqIDDms:         aNotice.integer := imageDisplayDurationMs(aNotice.integer);
     evMPReqPlaying:       aNotice.tf      := mpvState(mpv) = mpsPlay;

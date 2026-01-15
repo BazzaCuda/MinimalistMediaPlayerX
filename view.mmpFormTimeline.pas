@@ -151,8 +151,6 @@ function shutTimeline: boolean;
 function TL: TTimeline;
 function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 
-function redrawSegments: boolean;
-
 implementation
 
 uses
@@ -164,11 +162,6 @@ uses
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
-
-function redrawSegments: boolean;
-begin
-  TL.drawSegments;
-end;
 
 function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
@@ -352,7 +345,6 @@ begin
   lblPosition.caption := EMPTY;
 
   doubleBuffered            := TRUE;
-//  keyPreview                := TRUE; // EXPERIMENTAL
 
   pnlCursor.height      := SELF.height;
   pnlCursor.top         := 0;
@@ -497,6 +489,9 @@ begin
     cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
     cmdLine := cmdLine + COPY_PARAMS;
     var vFilePathOUT := filePathOUT(' [c]');
+
+    case lowerCase(extractFileExt(vFilePathOUT)) = '.m4v' of TRUE: vFilePathOUT := changeFileExt(vFilePathOUT, '.mp4'); end;
+
     cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
     log(cmdLine); log(EMPTY);
 
@@ -666,7 +661,7 @@ end;
 
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-  segments.add(TSegment.create(0, aMax, NIL));
+  segments.add(TSegment.create(0, aMax, onRedraw));
   result := format('0-%d,0', [aMax]);
 end;
 
@@ -931,7 +926,7 @@ begin
   result := aNotice;
   case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
-  case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
+  case GS.showingTimeline of FALSE: EXIT; end;
 
   case aNotice.event of
     evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // gets set in model.mmpKeyFrames.probeKeyFrames
@@ -946,7 +941,7 @@ end;
 
 procedure TTimeline.onRedraw(sender: TObject);
 begin
-  redrawSegments;
+  TL.drawSegments;
 end;
 
 function TTimeline.redo: boolean;
@@ -1014,7 +1009,7 @@ end;
 
 procedure TTimeline.setPosition(const Value: integer);
 begin
-  case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
+  case GS.showingTimeline of FALSE: EXIT; end;
 
   FPositionSS := skipExcludedSegments(value); // will do a seek if needed
   // {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
