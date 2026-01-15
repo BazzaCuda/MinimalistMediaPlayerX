@@ -1,3 +1,4 @@
+Wiki Page: [Captions](https://minimalistmediaplayer.com/video/editing)<br />
 Also see _Editing_ in the Ctrl-**[\\]** Config Dialog
 
 | Control | Action |

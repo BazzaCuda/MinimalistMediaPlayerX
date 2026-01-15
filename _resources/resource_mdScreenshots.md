@@ -1,6 +1,6 @@
 In **MMP**, a "screenshot" is a **_direct-from-memory_** High Definition .png capture of the image or video frame being redendered to your **MMP** window
 
-Consequently, it is at a far higher resolution and quality than a standard Windows desktop screenshot
+Consequently, a so-called **MMP* "screenshot" is at a far higher resolution and quality than a standard Windows desktop screenshot
 
 - any adjustments you make will be included in the screenshot file (see **Adjust Image**)<br />
 - these include **brightness**, **contrast**, **gamma**, **rotation**, **saturation**, **zoom** in/out, **pan** up/down/left/right, and **rotate**

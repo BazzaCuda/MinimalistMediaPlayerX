@@ -47,20 +47,31 @@ type
   THelpFullForm = class(TForm, IHelpFullForm)
     pageControl: TPageControl;
     titleBar: TTitleBarPanel;
-    SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    sbUp: TSpeedButton;
+    sbDown: TSpeedButton;
     lbTabCaptions: TListBox;
     Panel1: TPanel;
     Label1: TLabel;
+    MarkdownViewer1: TMarkdownViewer;
+    sbLeft: TSpeedButton;
+    sbRight: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure SpeedButton1Click(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
+    procedure sbUpClick(Sender: TObject);
+    procedure sbDownClick(Sender: TObject);
     procedure lbTabCaptionsClick(Sender: TObject);
     procedure pageControlChange(Sender: TObject);
+    procedure sbLeftClick(Sender: TObject);
+    procedure sbRightClick(Sender: TObject);
   strict private
-    FHelpType: THelpType;
+    FHelpType:  THelpType;
+    FHistory:   array of integer;
+    FHIstIx:    integer;
   private
+    function  changePage(const aIx: integer; const bAddHistory: boolean): TVoid;
+    function  historyAdd(const aIx: integer): integer;
+    function  historyMove(bForwards: boolean): integer;
+    procedure onHotSpotClick(sender: TObject; const SRC: string; var handled: boolean);
   protected
     function  createTabs(const aHelpType: THelpType): TVoid;
     function  fontAdjust(const aAdjustment: integer): TVoid;
@@ -79,6 +90,7 @@ function mmpHelpFull(const aHelpType: THelpType = htMain; const bOnTop: boolean 
 implementation
 
 uses
+  system.math,
   bazCmd, bazVCL,
   mmpGlobalState, mmpMarkDownUtils, mmpUtils,
   view.mmpThemeUtils,
@@ -151,6 +163,13 @@ begin
   gHelpFullForm.showForm;
 end;
 
+function THelpFullForm.changePage(const aIx: integer; const bAddHistory: boolean): TVoid;
+begin
+  pageControl.activePageIndex := aIx;
+  case lbTabCaptions.itemIndex = pageControl.activePageIndex of FALSE: lbTabCaptions.itemIndex := aIx; end;
+  case bAddHistory of TRUE: historyAdd(aIx); end;
+end;
+
 function THelpFullForm.closeForm: TVoid;
 begin
   close;
@@ -196,7 +215,10 @@ begin
 
 
     mmpInitMarkdownViewer(vMarkDownViewer);
-    vMarkDownViewer.defFontSize := 10;
+    vMarkDownViewer.defFontSize     := 10;
+    vMarkDownViewer.OnHotSpotClick  := onHotSpotClick;
+    vMarkDownViewer.DefHotSpotColor := clAqua;
+    vMarkDownViewer.htOptions := vMarkDownViewer.htOptions + [htOverLinksActive];
 
     mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vIx].resource);
   end;
@@ -222,7 +244,7 @@ end;
 procedure THelpFullForm.FormCreate(Sender: TObject);
 begin
   SELF.width := SELF.width + lbTabCaptions.width;
-  SELF.margins.setBounds(0, 0, 0, 0);         // let the markdownviewers fill the client area
+  SELF.margins.setBounds(0, 0, 0, 0);         // "Let the markdownviewers fill the client area" - Paddy McGuinness
 
   { no tab captions}
 //  sendMessage(pageControl.HANDLE, TCM_SETITEMSIZE, 0, makeLParam(0, 0));
@@ -250,8 +272,13 @@ begin
     inactiveForegroundColor       := DARK_MODE_SILVER;
   end;
 
-  speedButton1.caption := 'A' + #$2191; // Unicode hex escape
-  speedButton2.caption := 'A' + #$2193; // Unicode hex escape
+  sbUp.caption    := 'A' + #$2191; // Unicode hex escape
+  sbDown.caption  := 'A' + #$2193; // Unicode hex escape
+  sbLeft.caption  := #$25C0; // #$2190;
+  sbRight.caption := #$25B6; // #$2192;
+
+  sbLeft.enabled  := FALSE;
+  sbRight.enabled := FALSE;
 
   panel1.bevelInner  := bvLowered;
   panel1.bevelOuter  := bvLowered;
@@ -267,25 +294,56 @@ begin
   result := SELF.HANDLE;
 end;
 
+function THelpFullForm.historyAdd(const aIx: integer): integer;
+begin
+  setLength(FHistory, length(FHistory) + 1);
+  FHistory[high(FHistory)]  := aIx;
+  FHistIx                   := high(FHistory);
+
+  result                    := FHistory[FHistIx];
+
+  sbLeft.enabled            := FHistIx > 0;
+  sbRight.enabled           := FALSE;
+end;
+
+function THelpFullForm.historyMove(bForwards: boolean): integer;
+begin
+  case bForwards of  TRUE: FHistIx := min(FHistIx + 1, high(FHistory));
+                    FALSE: FHistIx := max(FHistIx - 1, 0); end;
+
+  result          := FHistory[FHistIx];
+
+  sbLeft.enabled  := FHistIx > 0;
+  sbRight.enabled := FHistIx < high(FHistory);
+end;
+
+procedure THelpFullForm.onHotSpotClick(sender: TObject; const SRC: string; var handled: boolean);
+begin
+  case src.contains('.com') of TRUE: EXIT; end;
+  changePage(lbTabCaptions.items.indexOf(src), TRUE);
+end;
+
 function THelpFullForm.init(const aHelpType: THelpType): TVoid;
 begin
-  case aHelpType = FHelpType of FALSE: createTabs(aHelpType); end;
+  case aHelpType = FHelpType of FALSE: createTabs(aHelpType); end; // redundant - we no longer allow re-entry via mmpHelpFull
   FHelpType := aHelpType;
   case FHelpType of
     htMain: caption := 'MMP Help - Main Media Window';
-    htIATB: caption := 'MMP Help - Image & Thumbnail Browser';
-  end;
+    htIATB: caption := 'MMP Help - Image & Thumbnail Browser'; end;
+
+  FHistIx := -1;
+  historyAdd(0);
 end;
 
 procedure THelpFullForm.lbTabCaptionsClick(Sender: TObject);
 begin
-  pageControl.activePageIndex := lbTabCaptions.itemIndex;
+  changePage(lbTabCaptions.itemIndex, TRUE);
 end;
 
 procedure THelpFullForm.pageControlChange(Sender: TObject);
 begin
-  // in case the user clicks a tab or uses Ctrl-Tab to cycle through tabs
-  case pageControl.activePageIndex = lbTabCaptions.itemIndex of FALSE: lbTabCaptions.itemIndex := pageControl.activePageIndex; end;
+  // when the user clicks a tab or uses Ctrl-Tab to cycle through tabs
+  changePage(pageControl.activePageIndex, TRUE);
 end;
 
 function THelpFullForm.showForm: TVoid;
@@ -293,14 +351,24 @@ begin
   show;
 end;
 
-procedure THelpFullForm.SpeedButton1Click(Sender: TObject);
+procedure THelpFullForm.sbUpClick(Sender: TObject);
 begin
   fontAdjust(1);
 end;
 
-procedure THelpFullForm.SpeedButton2Click(Sender: TObject);
+procedure THelpFullForm.sbDownClick(Sender: TObject);
 begin
   fontAdjust(-1);
+end;
+
+procedure THelpFullForm.sbLeftClick(Sender: TObject);
+begin
+  changePage(historyMove(FALSE), FALSE);
+end;
+
+procedure THelpFullForm.sbRightClick(Sender: TObject);
+begin
+  changePage(historyMove(TRUE), FALSE);
 end;
 
 procedure THelpFullForm.WMNCMouseMove(var msg: TWMNCMouseMove);

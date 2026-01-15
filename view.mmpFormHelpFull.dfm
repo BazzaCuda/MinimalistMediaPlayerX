@@ -57,8 +57,7 @@ object HelpFullForm: THelpFullForm
     Width = 584
     Height = 30
     CustomButtons = <>
-    ExplicitWidth = 624
-    object SpeedButton1: TSpeedButton
+    object sbUp: TSpeedButton
       AlignWithMargins = True
       Left = 500
       Top = 3
@@ -69,12 +68,12 @@ object HelpFullForm: THelpFullForm
       Caption = 'up'
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton1Click
+      OnClick = sbUpClick
       ExplicitLeft = 380
       ExplicitTop = 8
       ExplicitHeight = 22
     end
-    object SpeedButton2: TSpeedButton
+    object sbDown: TSpeedButton
       AlignWithMargins = True
       Left = 529
       Top = 3
@@ -86,8 +85,40 @@ object HelpFullForm: THelpFullForm
       Caption = 'dn'
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton2Click
+      OnClick = sbDownClick
       ExplicitLeft = 420
+      ExplicitTop = 8
+      ExplicitHeight = 22
+    end
+    object sbLeft: TSpeedButton
+      AlignWithMargins = True
+      Left = 442
+      Top = 3
+      Width = 23
+      Height = 24
+      Hint = 'Previous'
+      Align = alRight
+      Caption = 'L'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sbLeftClick
+      ExplicitLeft = 380
+      ExplicitTop = 8
+      ExplicitHeight = 22
+    end
+    object sbRight: TSpeedButton
+      AlignWithMargins = True
+      Left = 471
+      Top = 3
+      Width = 23
+      Height = 24
+      Hint = 'Next'
+      Align = alRight
+      Caption = 'R'
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = sbRightClick
+      ExplicitLeft = 380
       ExplicitTop = 8
       ExplicitHeight = 22
     end
@@ -102,7 +133,7 @@ object HelpFullForm: THelpFullForm
     object Label1: TLabel
       Left = 1
       Top = 1
-      Width = 34
+      Width = 138
       Height = 15
       Align = alTop
       Alignment = taCenter
@@ -113,6 +144,7 @@ object HelpFullForm: THelpFullForm
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitWidth = 34
     end
     object lbTabCaptions: TListBox
       Left = 1
@@ -124,5 +156,16 @@ object HelpFullForm: THelpFullForm
       TabOrder = 0
       OnClick = lbTabCaptionsClick
     end
+  end
+  object MarkdownViewer1: TMarkdownViewer
+    Left = 146
+    Top = 544
+    Width = 95
+    Height = 60
+    PrintMarginBottom = 2.000000000000000000
+    PrintMarginLeft = 2.000000000000000000
+    PrintMarginRight = 2.000000000000000000
+    PrintMarginTop = 2.000000000000000000
+    TabOrder = 3
   end
 end
