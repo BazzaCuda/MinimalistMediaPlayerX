@@ -32,6 +32,7 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils, system.types,
   vcl.Dialogs,
+  bazAction,
   _debugWindow;
 
 const
@@ -40,6 +41,14 @@ const
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
   OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186; TICK = 223;
+
+var
+  keyMap: array[0..high(WORD)] of WORD;
+
+function initKeyMap: TVoid;
+begin
+  for var vKey:WORD := low(keyMap) to high(keyMap) do keyMap[vKey] := vKey;
+end;
 
 function KBCapsLock: boolean;
 begin
@@ -52,6 +61,11 @@ begin
 end;
 
 function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
+
+  function transform(const aKeyCode: WORD): WORD;
+  begin
+    result := keyMap[aKeyCode];
+  end;
 
   function ctrl: boolean;
   begin
@@ -68,14 +82,14 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     result := SS.keyDirection = kdUp;
   end;
 
-  function keyIs(const aKeyCode: word): boolean; overload;
+  function keyIs(const aKeyCode: WORD): boolean; overload;
   begin
-    result := SS.key = aKeyCode;
+    result := SS.key = transform(aKeyCode)
   end;
 
   function keyIs(const aChar: char): boolean; overload;
   begin
-    result := SS.key = ord(aChar);
+    result := keyIs(ord(aChar));
   end;
 
   function shift: boolean;
@@ -227,5 +241,9 @@ begin
   // {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
   // {$if BazDebugWindow} debugBoolean('keyboardMain: evGSIgnoreEscape', GS.ignoreEscape); {$endif}
 end;
+
+initialization
+  initKeyMap;
+
 
 end.

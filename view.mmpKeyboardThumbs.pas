@@ -43,7 +43,7 @@ implementation
 
 uses
   winApi.windows,
-  bazCmd,
+  bazAction, bazCmd,
   mmpNotify.notices,
   mmpGlobalState,
   _debugWindow;
@@ -55,7 +55,21 @@ const
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
   OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
 
+
+var
+  keyMap: array[0..high(WORD)] of WORD;
+
+function initKeyMap: TVoid;
+begin
+  for var vKey:WORD := low(keyMap) to high(keyMap) do keyMap[vKey] := vKey;
+end;
+
 function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aShiftState: TShiftState; const upDn: TKeyDirection): TKeyOp;
+
+  function transform(const aKeyCode: WORD): WORD;
+  begin
+    result := keyMap[aKeyCode];
+  end;
 
   function Ctrl: boolean;
   begin
@@ -72,14 +86,14 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     result := upDn = kdUp;
   end;
 
-  function keyIs(const aKeyCode: word): boolean; overload;
+  function keyIs(const aKeyCode: WORD): boolean; overload;
   begin
-    result := aKey = aKeyCode;
+    result := aKey = transform(aKeyCode);
   end;
 
   function keyIs(const aChar: char): boolean; overload;
   begin
-    result := aKey = ord(aChar);
+    result := keyIs(ord(aChar));
   end;
 
   function shift: boolean;
@@ -201,5 +215,8 @@ begin
 
   mmp.cmd(evGSIgnoreEscape, FALSE);
 end;
+
+initialization
+  initKeyMap;
 
 end.

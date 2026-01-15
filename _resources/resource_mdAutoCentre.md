@@ -1,3 +1,5 @@
+Wiki Page: [Window](https://minimalistmediaplayer.com/video/window)
+
 Unless you explicitly move the **MMP** window off-center, somehow, it will always be auto-centered to sit in the middle of your desktop
 
 - if you resize the window using **[G]** or Ctrl-**[G]** _(to make the window [G]reater or un[G]reater)_, **MMP** will re-center the window automatically

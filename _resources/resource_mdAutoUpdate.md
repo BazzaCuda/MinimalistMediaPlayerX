@@ -1,3 +1,4 @@
+Wiki Page: [Window](https://minimalistmediaplayer.com/mmp/autoupdate)
 
 You can turn on _Auto Update_ either from the Shift-**[\\]** Config Dialog, or manually in the _MinimalistMediaPlayer.conf_ file
 
