@@ -52,7 +52,6 @@ type
     lbTabCaptions: TListBox;
     Panel1: TPanel;
     Label1: TLabel;
-    MarkdownViewer1: TMarkdownViewer;
     sbLeft: TSpeedButton;
     sbRight: TSpeedButton;
     procedure FormCreate(Sender: TObject);

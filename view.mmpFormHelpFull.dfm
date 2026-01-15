@@ -157,15 +157,4 @@ object HelpFullForm: THelpFullForm
       OnClick = lbTabCaptionsClick
     end
   end
-  object MarkdownViewer1: TMarkdownViewer
-    Left = 146
-    Top = 544
-    Width = 95
-    Height = 60
-    PrintMarginBottom = 2.000000000000000000
-    PrintMarginLeft = 2.000000000000000000
-    PrintMarginRight = 2.000000000000000000
-    PrintMarginTop = 2.000000000000000000
-    TabOrder = 3
-  end
 end
