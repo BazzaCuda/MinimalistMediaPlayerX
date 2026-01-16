@@ -644,7 +644,7 @@ begin
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
     evVMCleanup:            doCleanup;
-    evVMConfig:             mmpConfig;
+    evVMConfig:             mmpConfig(aNotice.text);
     evVMDeleteCurrentItem:  begin deleteCurrentItem(aNotice.shiftState); doCleanup(FALSE); end;
     evVMDoEscapeKey:        doEscapeKey;
     evVMHelpFull:           mmpHelpFull(htMain, FALSE);

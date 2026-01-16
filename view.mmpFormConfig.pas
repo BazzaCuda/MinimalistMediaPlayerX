@@ -246,7 +246,7 @@ type
   public
   end;
 
-function mmpConfig: boolean;
+function mmpConfig(const aTabCaption: string = ''): boolean;
 
 implementation
 
@@ -255,13 +255,18 @@ uses
   mmpConsts, mmpFolderUtils, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
   model.mmpConfigFile;
 
-function mmpConfig: boolean;
+function mmpConfig(const aTabCaption: string = ''): boolean;
 begin
   with TConfigForm.create(NIL) do begin
     mmp.cmd(evGSShowingConfig, TRUE);
     mmp.cmd(evGSUserInput, TRUE);
     loadConfig;
-    pageControl.activePageIndex := 0;
+
+    case aTabCaption = '' of   TRUE:  pageControl.activePageIndex := 0;
+                              FALSE:  begin
+                                        lbTabCaptions.itemIndex     := lbTabCaptions.items.indexOf(aTabCaption);
+                                        pageControl.activePageIndex := lbTabCaptions.itemIndex; end;end;
+
     setForegroundWindow(HANDLE); // the order of these two is important
     setWindowPos(HANDLE, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
     showModal;

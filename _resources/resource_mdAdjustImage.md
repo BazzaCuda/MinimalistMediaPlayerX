@@ -1,9 +1,10 @@
-[Wiki: Screenshots](https://minimalistmediaplayer.com/image/screenshots)
+[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)
+[Help Page: Screenshots](Screenshots)
 
 You can make adjustments to the displayed image or video picture/frame to alter<br />
 **brightness**, **contrast**, **gamma**, **rotation** and **saturation**,  and to **zoom** in or out
 
-- an HD screenshot of the image/frame will include your adjustments<br />(see [Help: Screenshots](Screenshots))
+- an HD screenshot of the image/frame will include your adjustments<br />
 <br />
 - if you navigate to a different media file, your current adjustments will remain in effect and will be applied to the next media file as well, until you cancel any or all of the adjustments
 - increasing the Gamma can often give better results than increasing the Brightness

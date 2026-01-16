@@ -1,4 +1,9 @@
-| Control | Action |
+[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)
+[Help Page: Screenshots](Screenshots)
+
+|
+
+Control | Action |
 | ------- | ------ |
 | Shift-**[Home]**            | toggle shuffle mode on and off
 | **[A]**                     | play the first media file in the playlist ([Z]/[END] plays last)

@@ -105,17 +105,18 @@ type
   end;
 
 const
-    MARKDOWN_RESOURCES: array[0..32] of TMarkDownRec =
+    MARKDOWN_RESOURCES: array[0..33] of TMarkDownRec =
     (
       (helpType: htBoth;    caption: 'Intro';                 resource: 'resource_mdIntro'),              // shift-\ config dialog vs .conf file mentions, ctrl-H vs ctrl-shift-H, Ctrl-W Wiki / ESC vs Ctrl-Shift-H, all controls still available, stay on top for IATB
       (helpType: htBoth;    caption: 'Adjust Image';          resource: 'resource_mdAdjustImage'),
+      (helpType: htBoth;    caption: 'Aspect Ratio';          resource: 'resource_mdAspectRatio'),        //
       (helpType: htMain;    caption: 'Audio Streams';         resource: 'resource_mdAudioStreams'),       // auto-center and H vs M, G, Ctrl-G
       (helpType: htBoth;    caption: 'Auto-Center';           resource: 'resource_mdAutoCenter'),         // auto-center and H vs M, G, Ctrl-G
       (helpType: htBoth;    caption: 'Auto Update';           resource: 'resource_mdAutoUpdate'),         // Auto Updates / About Box
       (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
       (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),           // Captions / on-screen display / # redisplay
       (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
-      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing
+      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy,
       (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),       // External Apps
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),        // Freeze Frame
@@ -319,7 +320,12 @@ end;
 procedure THelpFullForm.onHotSpotClick(sender: TObject; const SRC: string; var handled: boolean);
 begin
   case src.contains('.com') of TRUE: EXIT; end;
-  changePage(lbTabCaptions.items.indexOf(src), TRUE);
+  handled := TRUE;
+
+  var vSrc := src.replace('_', ' ');
+  case vSrc.contains('ConfigDialog:') of   TRUE: mmp.cmd(evVMConfig, vSrc.split([':'])[1]);
+                                          FALSE: changePage(lbTabCaptions.items.indexOf(vSrc), TRUE); end;
+
 end;
 
 function THelpFullForm.init(const aHelpType: THelpType): TVoid;
@@ -328,7 +334,7 @@ begin
   FHelpType := aHelpType;
   case FHelpType of
     htMain: caption := 'MMP Help - Main Media Window';
-    htIATB: caption := 'MMP Help - Image & Thumbnail Browser'; end;
+    htIATB: caption := 'MMP Help - Image && Thumbnail Browser'; end;
 
   FHistIx := -1;
   historyAdd(0);

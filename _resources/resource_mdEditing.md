@@ -1,10 +1,35 @@
-Wiki Page: [Captions](https://minimalistmediaplayer.com/video/editing)<br />
-Also see _Editing_ in the Ctrl-**[\\]** Config Dialog
+[Wiki Page: Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
+[Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
+[Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
+[Help Page: Editing2](Editing2)<br />
+[Help Page: Keyframes](Keyframes)<br />
+<br />
+Shift-[**\\**] Config Dialog: Keyframes<br />
+<br />
+
+**MMP** provides excellent audio and video editing facilities<br />
+- for the user, editing is really fast and non-fiddly
+- you can edit and export the finished product without even stopping playback
+- editing is "lossless" and doesn't require that the exported audio/video be re-encoded
+- in effect, you are doing a copy/paste from your original file to the edited file
+- consequently, the quality of the exported file is identical to the original
+<br />
+
+- press Ctrl-**[E]** to open the **Audio & Video Timeline Editor**
+- for general editing purposes, the "rough cut" approach is often enough
+- for videos, if you want to be more specific about where an included segment starts, you should use Keyframes
+- the vertical cursor coincides with the currently viewed position of the video file (or the audio file being listened to)
+- a segment will always contain at least the audio/video content you require, give or take a few frames - keyframes are not a factor in where segments end
+<br />
+<br />
 
 | Control | Action |
 | ------- | ------ |
 | Ctrl-**[E]**     | show/hide the **Audio & Video Timeline Editor** for fast, lossless editing
 <br />
+<br />
+
+N.B. **_All other controls operate on the **Main Media Window** as normal_**
 <br />
 
 Control | Action
@@ -37,4 +62,4 @@ Ctrl-**[R]**                | [R]ename file
 Ctrl-**[S]**                | toggle [S]kip excluded segments during playback
 **Ctrl**                    | change the Export button to Join after a manual adjustment to the .seg file and/or the .segnn exported segment files, to bypass the Export stage
 **Ctrl-Shift**              | change the Export button to Copy after export errors, to work on an FFmpeg-copied duplicate of the original file
-**_All other controls operate on the **Main Media Window** as normal_**
+

@@ -1,3 +1,6 @@
+
+What a lovely Aspect Ratio!
+
 [Help Page: Aspect Ratio](Aspect_Ratio)<br />
 
 | Control | Action |
