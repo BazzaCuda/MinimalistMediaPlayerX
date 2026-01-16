@@ -57,7 +57,6 @@ object HelpFullForm: THelpFullForm
     Width = 584
     Height = 30
     CustomButtons = <>
-    ExplicitWidth = 624
     object sbUp: TSpeedButton
       AlignWithMargins = True
       Left = 500

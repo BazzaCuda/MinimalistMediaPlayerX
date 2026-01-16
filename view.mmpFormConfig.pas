@@ -240,6 +240,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lbTabCaptionsClick(Sender: TObject);
     procedure pageControlChange(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   strict private
   protected
     function loadConfig: boolean;
@@ -253,7 +254,8 @@ implementation
 uses
   bazCmd,
   mmpConsts, mmpFolderUtils, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
-  model.mmpConfigFile;
+  model.mmpConfigFile,
+  _debugWindow;
 
 function mmpConfig(const aTabCaption: string = ''): boolean;
 begin
@@ -262,7 +264,9 @@ begin
     mmp.cmd(evGSUserInput, TRUE);
     loadConfig;
 
-    case aTabCaption = '' of   TRUE:  pageControl.activePageIndex := 0;
+    case aTabCaption = '' of   TRUE:  begin
+                                        lbTabCaptions.itemIndex := 0;
+                                        pageControl.activePageIndex := 0; end;
                               FALSE:  begin
                                         lbTabCaptions.itemIndex     := lbTabCaptions.items.indexOf(aTabCaption);
                                         pageControl.activePageIndex := lbTabCaptions.itemIndex; end;end;
@@ -517,7 +521,16 @@ end;
 
 procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  case key = VK_ESCAPE of TRUE: modalResult := mrOK; end;
+//  case key = VK_ESCAPE of TRUE: begin
+//                                  mmp.cmd(evGSIgnoreEscape, TRUE);
+//                                  modalResult := mrOK; end;end;
+end;
+
+procedure TConfigForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState); // EXPERIMENTAL - DOESNT FIRE!
+begin
+  case key = VK_ESCAPE of TRUE: begin
+                                  mmp.cmd(evGSIgnoreEscape, TRUE);
+                                  modalResult := mrOK; end;end;
 end;
 
 procedure TConfigForm.lbTabCaptionsClick(Sender: TObject);

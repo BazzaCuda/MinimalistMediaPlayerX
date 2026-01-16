@@ -536,6 +536,8 @@ end;
 
 procedure TVM.onKeyUp(key: Word; shift: TShiftState);
 begin
+  case (key = VK_ESCAPE) and GS.userInput             of TRUE: begin  EXIT; end;end; // close userInput without closing HelpFull on Config
+  case (key = VK_ESCAPE) and GS.showingConfig         of TRUE: begin  EXIT; end;end; // close Config without closing Help Full!
   case (key = VK_ESCAPE) and GS.helpFull              of TRUE: begin mmp.cmd(evGSIgnoreEscape, TRUE);  mmpHelpFull; EXIT; end;end; // on key-up close mmpHelpFull
   case SS.handled                                     of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   case GS.userInput                                   of TRUE: EXIT; end;

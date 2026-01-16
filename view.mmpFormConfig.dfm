@@ -15,6 +15,7 @@ object ConfigForm: TConfigForm
   Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   TextHeight = 15
   object Label19: TLabel
     Left = 168
