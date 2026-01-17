@@ -1,6 +1,6 @@
 | Control | Action |
 | ------- | ------ |
-| **[SPACEBAR]**              | pause/resume playback of audio/video. pause/resume slideshow of images |
+| **[SPACEBAR]**              | pause/resume playback of audio/video. play/pause/resume slideshow of images |
 | Right single-click the window  | pause/resume playback of audio/video. pause/resume slideshow of images |
 | Ctrl-**[R]**                | toggle infinite [R]epeat of the current media file |
 | **[S]**                     | re[S]tart the current media file from the beginning, aka [S]tartover |

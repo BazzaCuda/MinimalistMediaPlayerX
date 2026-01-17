@@ -1,4 +1,4 @@
-[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)
+[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
 [Help Page: Screenshots](Screenshots)
 
 You can make adjustments to the displayed image or video picture/frame to alter<br />

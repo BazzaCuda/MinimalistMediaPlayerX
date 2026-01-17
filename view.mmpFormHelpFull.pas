@@ -135,7 +135,7 @@ const
       (helpType: htMain;    caption: 'Speed';                 resource: 'resource_mdSpeed'),              // Speed
       (helpType: htMain;    caption: 'Subtitles';             resource: 'resource_mdSubtitles'),          // Subtitles
       (helpType: htMain;    caption: 'Tabbing';               resource: 'resource_mdTabbing'),
-      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // Thumbnails - increase/decrease size, Browser status bar
+      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // Thumbnails - increase/decrease size, Browser status bar, window size
       (helpType: htIATB;    caption: 'User-Defined Folders';  resource: 'resource_mdUserFolders'),        // Browser user-folders
       (helpType: htMain;    caption: 'Volume';                resource: 'resource_mdVolume'),
       (helpType: htMain;    caption: 'Window Control';        resource: 'resource_mdWindowControlMain'),  // Window Control x 2 - Main Window and Browser (resizing)
@@ -165,6 +165,7 @@ end;
 
 function THelpFullForm.changePage(const aIx: integer; const bAddHistory: boolean): TVoid;
 begin
+  case aIx = -1 of TRUE: EXIT; end;
   pageControl.activePageIndex := aIx;
   case lbTabCaptions.itemIndex = pageControl.activePageIndex of FALSE: lbTabCaptions.itemIndex := aIx; end;
   case bAddHistory of TRUE: historyAdd(aIx); end;

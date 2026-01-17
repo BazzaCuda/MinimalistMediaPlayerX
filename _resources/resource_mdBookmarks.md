@@ -1,7 +1,8 @@
 You can bookmark the current position/timestamp of an audio or video file and restart playback from that point at any time in the future
 
-The timestamp is saved in the _MinimalistMediaPlayer.conf_ file until such time as you delete it
-
+- the timestamp is saved in the _MinimalistMediaPlayer.conf_ file until such time as you delete it
+- you can of course manually edit the _MinimalistMediaPlayer.conf_ file and delete all your bookmarks in one go
+- manually editing the .conf file will not disrupt any currently-running copies of **MMP**
 
 Control | Action
 ------- | ------

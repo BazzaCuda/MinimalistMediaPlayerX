@@ -704,10 +704,11 @@ object ConfigForm: TConfigForm
         Alignment = taCenter
         AutoSize = False
         Caption = 
-          'With the filter format set to Image,'#13#10'Ctrl-[P]laylist Filter on/' +
-          'off is now the same as [Spacebar] slideshow on/off'#13#10#13#10'For audio ' +
-          'and video formats,'#13#10'Ctrl-[P] is now redundant because the Main M' +
-          'edia Window playlist will always match your filter'
+          'With the filter format set to include images (All / Image)'#13#10'Ctrl' +
+          '-[P]laylist Filter on/off is now the same as [Spacebar] slidesho' +
+          'w on/off'#13#10#13#10'For a filter set to only audio and/or video formats,' +
+          #13#10'Ctrl-[P] is now redundant because the Main Media Window playli' +
+          'st will always match your filter'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -3373,7 +3374,7 @@ object ConfigForm: TConfigForm
         'General'
         'File Deletion'
         'Playlist'
-        'Playist Filter'
+        'Playlist Filter'
         'User-Defined Folders'
         'External Apps'
         'Quick Rename'
