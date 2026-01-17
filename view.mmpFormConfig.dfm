@@ -31,7 +31,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsPlaylistFilter
+    ActivePage = tsCleanFile
     Align = alClient
     TabOrder = 0
     OnChange = pageControlChange
@@ -63,10 +63,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label3: TLabel
         Left = 128
@@ -213,10 +213,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label13: TLabel
         Left = 16
@@ -483,10 +483,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label21: TLabel
         Left = 49
@@ -656,10 +656,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label28: TLabel
         Left = 170
@@ -855,10 +855,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label30: TLabel
         Left = 55
@@ -2252,10 +2252,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label29: TLabel
         Left = 28
@@ -2539,10 +2539,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label35: TLabel
         Left = 87
@@ -2736,10 +2736,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label43: TLabel
         Left = 20
@@ -2812,10 +2812,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label46: TLabel
         Left = 0
@@ -2878,10 +2878,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label39: TLabel
         Left = 11
@@ -2960,10 +2960,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label51: TLabel
         Left = 131
@@ -3063,10 +3063,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object Label58: TLabel
         Left = 205
@@ -3268,10 +3268,10 @@ object ConfigForm: TConfigForm
         Font.Color = clTeal
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsItalic]
+        Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 380
+        ExplicitWidth = 406
       end
       object lblDirtyChars: TLabel
         Left = 36
@@ -3289,14 +3289,14 @@ object ConfigForm: TConfigForm
           'regards the following characters as "dirty":'
       end
       object Label56: TLabel
-        Left = 180
-        Top = 292
-        Width = 216
+        Left = 149
+        Top = 282
+        Width = 279
         Height = 30
         Alignment = taCenter
         Caption = 
-          '* in particular, an apostrophe ( '#39' )'#13#10'Note: any .mmp file will a' +
-          'lso be renamed'
+          '* in particular, an apostrophe ( '#39' )'#13#10'Note: any .mmp and/or .key' +
+          ' file will also be renamed'
         Color = clBtnFace
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clAqua

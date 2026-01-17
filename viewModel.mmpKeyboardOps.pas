@@ -125,9 +125,9 @@ begin
     koRotateL:            MP.notify(newNotice(evMPRotateLeft));
     koRotateR:            MP.notify(newNotice(evMPRotateRight));
     koRotateReset:        MP.notify(newNotice(evMPRotateReset));
-    koRunCut:             mmpOpenExternalApp(F11_APP, mmp.cmd(evPLReqCurrentItem).text);
-    koRunPot:             mmpOpenExternalApp(F10_APP, mmp.cmd(evPLReqCurrentItem).text);
-    koRunShot:            mmpOpenExternalApp(F12_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF10:             mmpOpenExternalApp(F10_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF11:             mmpOpenExternalApp(F11_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF12:             mmpOpenExternalApp(F12_APP, mmp.cmd(evPLReqCurrentItem).text);
     koShowCaption:        mmp.cmd(evPAPostToAll, WIN_CAPTION);
     koSpeedDn:            MP.notify(newNotice(evMPSpeedDn));
     koSpeedReset:         MP.notify(newNotice(evMPSpeedReset));

@@ -20,14 +20,15 @@ In the Main Media Window's slideshow, the following slideshow control is availab
 | ------ | ------ |
 | **[Spacebar]** | play/pause/resume slideshow |
 
-- if the Main Media Window slideshow gets to the end of the playlist, **MMP* will exit at the end of the final item if it isn't an image, unless you have _Next Folder On End_ set
+- if the Main Media Window slideshow gets to the end of the playlist, **MMP** will exit at the end of the final item if it isn't an image, unless you have _Next Folder On End_ set
 - if you have set infinite repeat with **Ctrl [R]**, this will still affect audio and video files, but not images
 - playlist controls are still available, such as FIRST, NEXT, PREVIOUS, and LAST. The slideshow will continue
 - if you turn Shuffle Mode on, the slideshow will play continuously
-- if you are running a slideshow in the Main Media Window and you switch to the **Image & Thumbnail Browser** (Ctrl-**[I]*, **[T]** or **[Y]**) the slideshow will be paused automatically
+- if you are running a slideshow in the Main Media Window and you switch to the **Image & Thumbnail Browser** (Ctrl-**[I]**, **[T]** or **[Y]**) the slideshow will be paused automatically
 
 **Image & Thumbnail Browser**
-The following slideshow controls are available in the **Image & Thumbnail Browser**:
+
+The following slideshow controls are available in the **Image & Thumbnail Browser**
 
 | Control | Action |
 | ------ | ------ |

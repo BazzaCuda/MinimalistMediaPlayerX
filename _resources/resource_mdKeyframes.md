@@ -13,16 +13,20 @@
 - in effect, you are doing a copy/paste from your original file to the edited file
 - consequently, the quality of the exported file is identical to the original
 <br />
+<br />
 
 - press Ctrl-**[E]** to open the **Audio & Video Timeline Editor**
 - for general editing purposes, the "rough cut" approach is often enough
-- for videos, if you want to be more specific about where an included segment starts, you should use Keyframes
+- for **videos**, if you want to be more specific about where an included segment starts, you should use **Keyframes**
+
+**Keyframes**
+
 - to toggle keyframe processing on/off, use **[F]**
-- keyframe processing is now so fast that it is viable to leave keyframe processing turned on by default in the Config Dialog
+- keyframe processing is now so fast that it is viable to leave keyframe processing turned on by default in the [Config Dialog](ConfigDialog:Keyframes)
 - with keyframes turned on, the vertical cursor will change color to indicate how accurate a cut will be if you start a segment at the cursor position
-- the vertical cursor coincides with the currently viewed position of the video file (or the audio file being listened to)
-- a segment will always contain at least the audio/video content you require, give or take a few frames - keyframes are not a factor in where segments end
-- whether or not it might also include some content just prior to where you want the segment to start will be indicated by the vertical cursor:
+- the vertical cursor coincides with the currently viewed position of the video file
+- a segment will always contain at least the video content you require, give or take a few frames - keyframes are not a factor in where segments end
+- whether or not a segment might also include some content just prior to where you want the segment to start will be indicated by the vertical cursor:
 <br />
 <br />
 

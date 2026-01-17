@@ -6,7 +6,7 @@ In **MMP** this is called _tabbing_
 - **[T]** plays forwards or backwards rapidly by skipping a fraction of the total duration
 <br />
 <br />
-- Both keys can be held down for rapid repeat
+- both keys can be held down for rapid repeat
 - the number of seconds skipped is reported in the Notification Area in the bottom right corner
 - you can also rapidly "scrub"/"jog" through the audio or video file - see the second table below
 <br />
