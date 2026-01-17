@@ -7,11 +7,13 @@ Good or bad, what do you like or dislike about `MMP`? Love it, or not what you w
 
 _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended settings. After running `mmp-install.bat` to register all the file extensions that `MMP` supports, this will allow you to take full advantage of the image library management controls in the `Image & Thumbnail Browser` by operating `MMP` as [in effect] two applications in one: the main media window for playing (and editing) audio and video files, and the `Image & Thumbnail Browser` for managing your image library._
 
-- `Ctrl-[H]` to open the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the many controls for audio, video, and images.
+- `Ctrl-[H]` to open the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the many controls for audio, video, and images
 
-- `Shift-[\]` to open the `MMP` config window - contains explanations of all the options.
+- `Shift-[\]` to open the `MMP` config window - contains explanations of all the options
 
-- `Ctrl-[E]` from the `Main Media Window` to open the `Audio & Video Timeline Editor` for fast, lossless editing of audio and video files.
+- `Ctrl-[E]` from the `Main Media Window` to open the `Audio & Video Timeline Editor` for fast, lossless editing of audio and video files
+
+- the [GitHub Wiki](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki) is being greatly expanded to match the many help topics in the new (`v6.0.0`) `Ctrl-Shift-[H]` Full Help dialog
 
 **MMP: Minimalist Media Player**
 
@@ -49,6 +51,8 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 
 Significant Releases
 --------------------
+
+`MMP` (`v6.0.0`) [see the latest developments](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/63)
 
 `MMP` (`v5.4.0`) Keyframe processing in the `Audio & Video Timeline Editor` completely re-written and given a massive turbo boost, to make cuts more accurate while still not requiring any re-encoding of the edited video
 
