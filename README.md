@@ -52,7 +52,7 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
-`MMP` (`v6.0.0`) details to follow
+`MMP` (`v6.0.0`) [see the latest developments](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/63)
 
 `MMP` (`v5.4.0`) Keyframe processing in the `Audio & Video Timeline Editor` completely re-written and given a massive turbo boost, to make cuts more accurate while still not requiring any re-encoding of the edited video
 
