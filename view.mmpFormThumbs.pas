@@ -735,8 +735,8 @@ end;
 
 procedure TThumbsForm.FStatusBarClick(Sender: TObject);
 begin
-  case mmpIsFolderPanelAt     (FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder); end;
-  case mmpIsAudioVideoPanelAt (FStatusBar, mmpMousePoint(FStatusBar)) of TRUE: processKeyOp(koCloseToMain, [], 0);  end;
+  case mmpIsPanelAt(FStatusBar, PANEL_FOLD, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder); end;
+  case mmpIsPanelAt(FStatusBar, PANEL_AVAV, mmpMousePoint(FStatusBar)) of TRUE: processKeyOp(koCloseToMain, [], 0);  end;
 end;
 
 procedure TThumbsForm.FStatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
@@ -761,8 +761,10 @@ end;
 
 procedure TThumbsForm.FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  case mmpIsFolderPanelAt(FStatusBar, mmpMousePoint(FStatusBar)) of  TRUE: screen.cursor := crHandPoint;
-                                                                    FALSE: screen.cursor := crDefault; end;
+  case mmpIsPanelAt(FStatusBar, PANEL_FOLD, mmpMousePoint(FStatusBar))
+    or mmpIsPanelAt(FStatusBar, PANEL_AVAV, mmpMousePoint(FStatusBar)) of  TRUE: screen.cursor := crHandPoint;
+                                                                          FALSE: screen.cursor := crDefault; end;
+
 end;
 
 procedure TThumbsForm.FStatusBarResize(Sender: TObject);

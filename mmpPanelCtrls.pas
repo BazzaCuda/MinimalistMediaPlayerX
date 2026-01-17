@@ -26,13 +26,23 @@ uses
   mmpConsts, mmpUtils,
   _debugWindow;
 
+const
+  PANEL_NAME = 0;
+  PANEL_NUMB = 1;
+  PANEL_SIZE = 2;
+  PANEL_XXYY = 3;
+  PANEL_DDXY = 4;
+  PANEL_TICK = 5;
+  PANEL_AVAV = 6;
+  PANEL_FOLD = 7;
+  PANEL_HELP = 8;
+
 type
   TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnAVAV, pnFold, pnHelp);
 
 function mmpInitStatusBar         (const aStatusBar: TStatusBar): boolean;
 
-function mmpIsAudioVideoPanelAt   (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
-function mmpIsFolderPanelAt       (const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+function mmpIsPanelAt             (const aStatusBar: TStatusBar; const aPanel: integer; const aPt: TPoint): boolean;
 function mmpMousePoint            (const aStatusBar: TStatusBar): TPoint;
 function mmpPartClearStatusBar    (const aStatusBar: TStatusBar): boolean;
 function mmpResetPanelHelp        (const aStatusBar: TStatusBar): boolean;
@@ -44,17 +54,6 @@ implementation
 
 uses
   TStatusBarHelperClass;
-
-const
-  PANEL_NAME = 0;
-  PANEL_NUMB = 1;
-  PANEL_SIZE = 2;
-  PANEL_XXYY = 3;
-  PANEL_DDXY = 4;
-  PANEL_TICK = 5;
-  PANEL_AVAV = 6;
-  PANEL_FOLD = 7;
-  PANEL_HELP = 8;
 
 function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
 begin
@@ -72,14 +71,9 @@ begin
   mmpResetPanelHelp(aStatusBar);
 end;
 
-function mmpIsAudioVideoPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
+function mmpIsPanelAt(const aStatusBar: TStatusBar; const aPanel: integer; const aPt: TPoint): boolean;
 begin
-  result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[PANEL_AVAV];
-end;
-
-function mmpIsFolderPanelAt(const aStatusBar: TStatusBar; const aPt: TPoint): boolean;
-begin
-  result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[PANEL_FOLD];
+  result := aStatusBar.getPanelAt(aPt) = aStatusBar.panels[aPanel];
 end;
 
 function mmpMousePoint(const aStatusBar: TStatusBar): TPoint;
