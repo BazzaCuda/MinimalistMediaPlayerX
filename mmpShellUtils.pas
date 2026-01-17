@@ -137,7 +137,7 @@ end;
 
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 begin
-  mmpShellExec(mmpGetExternalApp(aFnnKeyApp), aParams);
+  mmpShellExec(mmpGetExternalApp(aFnnKeyApp), mmpQuoted(aParams));
 end;
 
 function mmpShellExec(const anExePath: string; const aParams: string = EMPTY): boolean;

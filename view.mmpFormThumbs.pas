@@ -942,6 +942,9 @@ begin
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
     koRotateReset:        mpvRotateReset(mpv);
+    koRunF10:             mmpOpenExternalApp(F10_APP, FThumbs.playlist.currentItem);
+    koRunF11:             mmpOpenExternalApp(F11_APP, FThumbs.playlist.currentItem);
+    koRunF12:             mmpOpenExternalApp(F12_APP, FThumbs.playlist.currentItem);
     koSaturationUp:       mpvSaturationUp(mpv);
     koSaturationDn:       mpvSaturationDn(mpv);
     koSaturationReset:    mpvSaturationReset(mpv);

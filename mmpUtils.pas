@@ -34,6 +34,7 @@ function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string):
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
 function mmpProcessMessages: boolean;
+function mmpQuoted(const aString: string): string;
 function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;
 
 implementation
@@ -167,6 +168,11 @@ begin
   result := FALSE;
   application.processMessages;
   result := TRUE;
+end;
+
+function mmpQuoted(const aString: string): string;
+begin
+  result := format('"%s"', [aString]);
 end;
 
 function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;

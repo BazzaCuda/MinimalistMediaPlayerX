@@ -33,7 +33,7 @@ type
             koGammaUp, koGammaDn, koSaturationUp, koSaturationDn, koGammaReset, koSaturationReset, koAllReset, koToggleHelp, koBrighterPB, koDarkerPB,
             koCloseAll, koScreenshot, koAboutBox, koMaximize, koPlayThumbs, koNextFolder, koPrevFolder, koSaveCopy, koMoveToKeyFolder, koThumbsUp,
             koThumbsDn, koAdjustAspectRatio, koWindowShorter, koWindowTaller, koWindowNarrower, koWindowWider, koUndoMove, koReverseSlideshow, koWiki, koToggleNumlock,
-            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile, koHelpFull
+            koKeepDelete, koExploreFolder, koCloseToMain, koConfig, koRenameCleanFile, koHelpFull, koRunF10, koRunF11, koRunF12
             );
   TKeyDirection = (kdDn, kdUp);
 
@@ -192,7 +192,12 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_UP)       and NOT ctrl and     shift                of TRUE: result := koThumbsUp; end;
     case keyDn and keyIs(VK_UP)       and NOT ctrl and NOT shift                of TRUE: result := koPrevFolder; end;
 
-    case keyUp and (aKey in [VK_F1..VK_F12])                                    of TRUE: result := koMoveToKeyFolder; end;
+
+    case keyUp and keyIs(VK_F10)      and     ctrl                              of TRUE: result := koRunF10; end;
+    case keyUp and keyIs(VK_F11)      and     ctrl                              of TRUE: result := koRunF11; end;
+    case keyUp and keyIs(VK_F12)      and     ctrl                              of TRUE: result := koRunF12; end;
+
+    case keyUp and (aKey in [VK_F1..VK_F12]) and NOT ctrl                       of TRUE: result := koMoveToKeyFolder; end;
 
 // spare keys
 //    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koNone; end;

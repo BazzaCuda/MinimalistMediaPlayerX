@@ -150,7 +150,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>&quot;B:\Downloads\woolpack salford {copy}.jpg&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\woolpack salford - Copy.jpg&quot;</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

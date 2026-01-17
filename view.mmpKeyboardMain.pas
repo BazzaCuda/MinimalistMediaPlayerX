@@ -245,5 +245,4 @@ end;
 initialization
   initKeyMap;
 
-
 end.
