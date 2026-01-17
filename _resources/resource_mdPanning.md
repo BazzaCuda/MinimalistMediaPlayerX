@@ -17,3 +17,4 @@ Image & Thumbnail Browser ||
 Alt and **Mouse Wheel** up/down          | pan/scroll image left/right - add **[Shift]** to increase scroll amount
 
 N.B. Strictly speaking, according to proper video camera work, panning _up_ and _down_ are the wrong way around in **MMP**, as are panning _left_ and _right_. However, as computer users, when we tell software to "pan left" we expect the image to move left. Moving the image left is actually "panning the camera right", but during development being correct was clearly not intuitive, so **MMP** reverses the terms
+

@@ -3,10 +3,7 @@
 [Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
 [Help Page: Editing](Editing)<br />
 <br />
-[Config Dialog:Keyframes](ConfigDialog:Keyframes)<br />
-
-
-Shift-[**\\**] Config Dialog: Keyframes<br />
+[Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
 **MMP** provides excellent audio and video editing facilities<br />

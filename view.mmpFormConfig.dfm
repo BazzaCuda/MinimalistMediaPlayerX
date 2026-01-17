@@ -31,7 +31,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsSlideshowIntervalMs
+    ActivePage = tsPlaylistFilter
     Align = alClient
     TabOrder = 0
     OnChange = pageControlChange
@@ -52,7 +52,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -66,6 +66,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label3: TLabel
         Left = 128
@@ -201,7 +202,7 @@ object ConfigForm: TConfigForm
       object Label5: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -215,6 +216,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label13: TLabel
         Left = 16
@@ -470,7 +472,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -484,6 +486,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label21: TLabel
         Left = 49
@@ -630,19 +633,19 @@ object ConfigForm: TConfigForm
       Caption = 'Playlist Filter'
       ImageIndex = 7
       object Label25: TLabel
-        Left = 76
-        Top = 2
-        Width = 424
-        Height = 30
+        Left = 75
+        Top = 15
+        Width = 426
+        Height = 15
         Alignment = taCenter
         Caption = 
-          'You can set MMP'#39's main media window to only play media files of ' +
-          'a certain type'#13#10'Ctrl-[P] turns Playlist Filtering on and off'
+          'You can set MMP'#39's Main Media Window to only play media files of ' +
+          'a certain type'
       end
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -656,41 +659,93 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label28: TLabel
         Left = 170
-        Top = 72
+        Top = 100
         Width = 393
-        Height = 201
+        Height = 83
         Alignment = taCenter
         AutoSize = False
         Caption = 
-          'When you first launch MMP'#13#10'it will build a playlist containing a' +
-          'll the supported media files in that folder'#13#10#13#10'MMP will always p' +
-          'lay the media file you clicked to launch it'#13#10#13#10'If you then turn ' +
-          'on Playlist Filtering'#13#10'MMP will ignore any files in the playlist' +
-          ' that don'#39't match your filter'#13#10#13#10'If you [or MMP] move to another' +
-          ' folder'#13#10'the new playlist will only contain files that match you' +
-          'r filter'#13#10#13#10'With the filter format set to Image'#13#10'Ctrl-[P]laylist' +
-          ' Filter on/off is the same as [Spacebar] slideshow on/off'
+          'MMP will always play the media file you used to launch MMP'#13#10'rega' +
+          'rdless of your playlist filter*'#13#10#13#10'If you [or MMP] move to anoth' +
+          'er folder'#13#10'the new playlist will only contain files that match y' +
+          'our filter'
         WordWrap = True
       end
       object Label26: TLabel
-        Left = 353
-        Top = 51
-        Width = 26
-        Height = 15
-        Caption = 'Note'
+        Left = 170
+        Top = 187
+        Width = 375
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* Best practice is to set the filter to Audio, Video or Audio &&' +
+          ' Video'#13#10'and to also set "Open Image in Browser" and "Exit Browse' +
+          'r = Exit MMP"'
+        Color = clBtnFace
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        WordWrap = True
+        StyleElements = [seClient, seBorder]
+      end
+      object Label69: TLabel
+        Left = 15
+        Top = 230
+        Width = 558
+        Height = 78
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'With the filter format set to Image,'#13#10'Ctrl-[P]laylist Filter on/' +
+          'off is now the same as [Spacebar] slideshow on/off'#13#10#13#10'For audio ' +
+          'and video formats,'#13#10'Ctrl-[P] is now redundant because the Main M' +
+          'edia Window playlist will always match your filter'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
         Font.Name = 'Segoe UI'
-        Font.Style = [fsUnderline]
+        Font.Style = [fsItalic]
         ParentFont = False
+        WordWrap = True
+      end
+      object Label70: TLabel
+        Left = 231
+        Top = 1
+        Width = 113
+        Height = 15
+        Caption = 'Main Media Window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label71: TLabel
+        Left = 92
+        Top = 41
+        Width = 393
+        Height = 58
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'When you launch MMP by opening a media file from your File Explo' +
+          'rer'#13#10'a playlist will be created containing that file and all the' +
+          ' media files in the'#13#10'same folder that match your Playlist Filter' +
+          ' Format'
+        WordWrap = True
       end
       object RadioGroup2: TRadioGroup
         Left = 15
-        Top = 105
+        Top = 89
         Width = 137
         Height = 138
         Caption = ' Playlist  Filter  Format '
@@ -698,7 +753,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterAll: TRadioButton
         Left = 31
-        Top = 129
+        Top = 113
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -715,7 +770,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterAudio: TRadioButton
         Left = 31
-        Top = 152
+        Top = 136
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -732,7 +787,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterVideo: TRadioButton
         Left = 31
-        Top = 175
+        Top = 159
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -749,7 +804,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterImage: TRadioButton
         Left = 31
-        Top = 221
+        Top = 205
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -766,7 +821,7 @@ object ConfigForm: TConfigForm
       end
       object rbFilterAudioVideo: TRadioButton
         Left = 31
-        Top = 198
+        Top = 182
         Width = 113
         Height = 17
         Alignment = taLeftJustify
@@ -788,7 +843,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -802,6 +857,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label30: TLabel
         Left = 55
@@ -2184,7 +2240,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2198,6 +2254,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label29: TLabel
         Left = 28
@@ -2470,7 +2527,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2484,6 +2541,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label35: TLabel
         Left = 87
@@ -2666,7 +2724,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2680,6 +2738,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label43: TLabel
         Left = 20
@@ -2807,7 +2866,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2821,6 +2880,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label39: TLabel
         Left = 11
@@ -2888,7 +2948,7 @@ object ConfigForm: TConfigForm
       object Label50: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2902,6 +2962,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label51: TLabel
         Left = 131
@@ -2990,7 +3051,7 @@ object ConfigForm: TConfigForm
       object Label57: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3004,6 +3065,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object Label58: TLabel
         Left = 205
@@ -3194,7 +3256,7 @@ object ConfigForm: TConfigForm
       object Label55: TLabel
         Left = 0
         Top = 316
-        Width = 380
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3208,6 +3270,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 380
       end
       object lblDirtyChars: TLabel
         Left = 36

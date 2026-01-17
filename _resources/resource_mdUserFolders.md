@@ -1,7 +1,7 @@
 
 <br />
 
-Shift-[**\\**] Config Dialog: User-Defined Folders<br />
+[Config Dialog: User-Defined Folders](User-Defined Folders)<br />
 <br />
 
 

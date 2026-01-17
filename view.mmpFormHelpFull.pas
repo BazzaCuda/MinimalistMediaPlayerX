@@ -121,7 +121,7 @@ const
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),        // Freeze Frame
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),       // Launching the Image & Thumbnail Browser (including from the Main Media Window)
-      (helpType: htBoth;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),          // Keyframes
+      (helpType: htMain;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),          // Keyframes
       (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),              // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Multi-Window';          resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
@@ -325,7 +325,6 @@ begin
   var vSrc := src.replace('_', ' ');
   case vSrc.contains('ConfigDialog:') of   TRUE: mmp.cmd(evVMConfig, vSrc.split([':'])[1]);
                                           FALSE: changePage(lbTabCaptions.items.indexOf(vSrc), TRUE); end;
-
 end;
 
 function THelpFullForm.init(const aHelpType: THelpType): TVoid;

@@ -92,7 +92,6 @@ type
     Label25: TLabel;
     Label27: TLabel;
     Label28: TLabel;
-    Label26: TLabel;
     Label29: TLabel;
     Label30: TLabel;
     Label31: TLabel;
@@ -200,6 +199,10 @@ type
     Panel1: TPanel;
     Label68: TLabel;
     lbTabCaptions: TListBox;
+    Label26: TLabel;
+    Label69: TLabel;
+    Label70: TLabel;
+    Label71: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);

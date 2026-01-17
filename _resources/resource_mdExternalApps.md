@@ -1,3 +1,5 @@
+[Config Dialog: External Apps](ConfigDialog:External_Apps)<br />
+
 From the _External Apps_  tab of the Ctrl-**[\\]**  Config Dialog you can define up to three external applications
 
 - the current media file, whether it's an audio file, a video file, or an image file, can be "sent" to any of your defined applications

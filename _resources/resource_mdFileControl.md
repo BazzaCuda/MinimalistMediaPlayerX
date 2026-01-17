@@ -1,8 +1,4 @@
-<br />
-
-Shift-[**\\**] Config Dialog: File Deletion<br />
-<br />
-
+[Config Dialog: File Deletion](ConfigDialog:File_Deletion)<br />
 
 With the **MMP** media library management facilities, you get a lot of control over what media files are called and where they reside
 

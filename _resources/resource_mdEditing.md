@@ -4,7 +4,7 @@
 [Help Page: Editing2](Editing2)<br />
 [Help Page: Keyframes](Keyframes)<br />
 <br />
-Shift-[**\\**] Config Dialog: Keyframes<br />
+[Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
 **MMP** provides excellent audio and video editing facilities<br />

@@ -2,10 +2,6 @@ _ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <br />
 <br />
 <br />
-_To close this help panel, either hit **[Escape]** or use Ctrl-Shift-**[H]** again_
-<br />
-<br />
-<br />
 The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and the **Image & Thumbnail Browser**) give a compact summary of all the user-controls available in those windows
 
 _This_ Ctrl-_Shift_-**[H]** Full Help panel, on the other hand, gives a concise but much more detailed explanation for each topic. It is therefore more suitable for quickly understanding a particular aspect of **MMP**
