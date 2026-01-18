@@ -116,18 +116,18 @@ const
       (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
       (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),           // Captions / on-screen display / # redisplay
       (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
-      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy,
+      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v
       (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),
       (helpType: htMain;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),
-      (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),              // multi-window control, Ctrl-N numlock
+      (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),
       (helpType: htMain;    caption: 'Multi-Window';          resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
       (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
       (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),
-      (helpType: htMain;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),           // Playlist - re-order controls navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
+      (helpType: htMain;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),           // Playlist - re-order the controls, navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
       (helpType: htBoth;    caption: 'Resets';                resource: 'resource_mdResets'),
       (helpType: htBoth;    caption: 'Rotation';              resource: 'resource_mdRotation'),
       (helpType: htBoth;    caption: 'Screenshots';           resource: 'resource_mdScreenshots'),
@@ -135,7 +135,7 @@ const
       (helpType: htMain;    caption: 'Speed';                 resource: 'resource_mdSpeed'),
       (helpType: htMain;    caption: 'Subtitles';             resource: 'resource_mdSubtitles'),          // Subtitles - mpv.conf language selection
       (helpType: htMain;    caption: 'Tabbing';               resource: 'resource_mdTabbing'),
-      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // Thumbnails - increase/decrease size, Browser status bar, window size - redundant?
+      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // redundant? Thumbnails - increase/decrease size, Browser status bar, window size - redundant?
       (helpType: htIATB;    caption: 'User-Defined Folders';  resource: 'resource_mdUserFolders'),
       (helpType: htMain;    caption: 'Volume';                resource: 'resource_mdVolume'),
       (helpType: htMain;    caption: 'Window Control';        resource: 'resource_mdWindowControlMain'),

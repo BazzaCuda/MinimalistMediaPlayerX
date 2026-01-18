@@ -647,7 +647,7 @@ begin
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
     evVMCleanup:            doCleanup;
     evVMConfig:             mmpConfig(aNotice.text);
-    evVMDeleteCurrentItem:  begin deleteCurrentItem(aNotice.shiftState); doCleanup(FALSE); end;
+    evVMDeleteCurrentItem:  begin deleteCurrentItem(aNotice.shiftState); case aNotice.shiftState = [ssShift] of TRUE: doCleanup(FALSE); end;end;
     evVMDoEscapeKey:        doEscapeKey;
     evVMHelpFull:           mmpHelpFull(htMain, FALSE);
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));

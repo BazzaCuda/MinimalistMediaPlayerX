@@ -45,6 +45,7 @@ Control | Action
 **[DEL]**                   | [D]elete current media file (after confirmation)
 Ctrl-**[DEL]**              | [D]elete all files in the current media file's folder (after user confirmation)<br />subfolders are not affected<br />deletion functions can be disabled in _MinimalistMediaPlayer.conf_
 Ctrl-Shift-**[C]**          | [C]leanup leftover audio and video editing files in the current playlist folder (.key, .log, .mmp, .seg, etc.)
+Shift-**[DEL]**             | combined [DEL] and Ctrl-Shift-[C] - delete current file and cleanup editing files
 Ctrl-**[K]**                | [K]eep/delete: delete all but the [K]ept files in a folder
 
 **Miscellaneous**
