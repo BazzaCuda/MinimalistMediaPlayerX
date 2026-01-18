@@ -151,7 +151,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(X)                                                     of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(X)           and     ctrl                              of TRUE: result := koCloseToMain; end;
     case keyUp and keyIs(Y)                                                     of TRUE: result := koPlayThumbs; end;
-    case keyUp and keyIs(Z)                                                     of TRUE: result := koPlayLast; end;
+    case keyUp and keyIs(Z)           and NOT ctrl                              of TRUE: result := koPlayLast; end;
+    case keyUp and keyIs(Z)           and     ctrl                              of TRUE: result := koUndoMove; end;
 
     case keyDn and keyIs(BACKSLASH)                 and     shift               of TRUE: result := koConfig; end;
     case keyDn and keyIs(BACKSLASH)                 and NOT shift               of TRUE: result := koSpeedDn; end;
