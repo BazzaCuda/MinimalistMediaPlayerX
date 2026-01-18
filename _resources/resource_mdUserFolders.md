@@ -46,17 +46,19 @@ folder12=<br />
 - if you _do_ set the Base Folder then, strictly speaking, you're not required to set any of the others
 - in that case, when you Move, Save or Copy a file, **MMP** will automatically create subfolders called 'moved', 'saved', 'copied', 'folder1', 'folder2', etc., within the Base Folder
 
-
 **Main Media Window**
 
 | Control | Action |
 | ------- | ------ |
 | **[K]** | Mark the current file as "[K]ept" - the file will be renamed with a leading "! "<br />This will bring the file to the top of the folder in your File Explorer software |
 | Ctrl-**[K]** | Delete all except the "[K]ept" files in the current folder - requires user-confirmation
-| Ctrl-**[M]** | [M]ove the file to the "moved=" user folder
+| Ctrl-**[M]** | [M]ove the file to the _moved=_ user folder
 | Shift-**[M]** | _same_ - alias for Ctrl-[M]
-| Shift-**[S]** | [S]ave/move the file to the "saved=" user folder
+| Shift-**[S]** | [S]ave/move the file to the _saved=_ user folder
 | &nbsp; | There is no undo function in the **Main Media Window** |
+
+In the Main Media Window, Move and Save do exactly the same thing (move a file) but their destinations are different<br />
+This gives you a cut-down way _(in comparison to the full-blown functionality in the Image & Thumbnail Browser)_ to put audio and video files into two different categories
 
 **Image & Thumbnail Browser**
 
@@ -69,3 +71,6 @@ folder12=<br />
 | **[F1]** to **[F12]** | move the current image to the corresponding _folder1=_, _folder2=_ folder |
 | Ctrl-**[U]** | [U]ndo any "Move" operation and move the image back to the folder you're working on<br />**MMP** maintains an unlimited undo list |
 | Ctrl-**[Z]** | _same_ - alias for Ctrl-{U] |
+
+In the Image & Thumbnail Browser, Copy and Save operate differently, as you would expect, _and_ their destinations are different<br />
+
