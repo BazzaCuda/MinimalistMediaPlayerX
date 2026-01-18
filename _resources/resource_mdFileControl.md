@@ -11,6 +11,7 @@ Control | Action
 ------- | ------
 **[R]**                     | [R]ename the current media file
 Ctrl-Shift-**[R]**          | [R]ename to a clean file name by replacing dirty characters with spaces - see _Clean File Name_ in the Config Dialog
+Main Media Window only ||
 **[F1]**                    | rename media file with category prefix 1 defined in _MinimalistMediaPlayer.conf_
 **[F2]**                    | rename media file with category prefix 2 defined in _MinimalistMediaPlayer.conf_
 **[F3]**                    | rename media file with category prefix 3 defined in _MinimalistMediaPlayer.conf_

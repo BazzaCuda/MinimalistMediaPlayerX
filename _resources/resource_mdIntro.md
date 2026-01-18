@@ -1,16 +1,18 @@
 _ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To close this help panel, either hit **[Escape]** or use Ctrl-Shift-**[H]** again_
 <br />
 <br />
+[Help Page: Best Practice](Image_Browser)<br />
+<br />
 <br />
 The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and the **Image & Thumbnail Browser**) give a compact summary of all the user-controls available in those windows
 
-_This_ Ctrl-_Shift_-**[H]** Full Help panel, on the other hand, gives a concise but much more detailed explanation for each topic. It is therefore more suitable for quickly understanding a particular aspect of **MMP**
+**_This_** Ctrl-_Shift_-**[H]** Full Help panel, on the other hand, gives a concise but much more detailed explanation for each topic. It is therefore more suitable for quickly understanding a particular aspect of **MMP**
 
-- **MMP** user options can be set via the Ctrl-**[\\]** Config Dialog and are recorded in the _MinimalistMediaPlayer.conf_ file
+- **MMP** user options can be set via the Ctrl-**[\\]** [Config Dialog](ConfigDialog:General) and are recorded in the _MinimalistMediaPlayer.conf_ file
 - for user options, any reference to the _MinimalistMediaPlayer.conf_ file in these topics is also an implied reference to the Shift-**[\\]** Config Dialog
 - when either Help Panel is open, all **MMP** controls are available to use
 - consequently, you can read up on a particular topic while also trying it out
-- you can also open the Shift-**[\\]** Config Dialog without closing this Full Help panel first
+- you can also open the Shift-**[\\]** [Config Dialog](ConfigDialog:General) without closing this Full Help panel first
 
 <br />
 

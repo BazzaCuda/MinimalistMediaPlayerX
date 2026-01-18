@@ -11,6 +11,7 @@ In **MMP** this is called _tabbing_
 - you can also rapidly "scrub"/"jog" through the audio or video file - see the second table below
 <br />
 <br />
+
 &nbsp; | &nbsp; | Control | Action
 ------ |------  | ------- | ------
 &nbsp; | &nbsp; | [Tab] | Tab forwards 1 second
@@ -28,11 +29,12 @@ Caps Lock On | &nbsp; | [T] | Tab forwards 1/200th of the total duration
 Caps Lock On | Ctrl   | [T] | Tab _backwards_ 1/200th of the total duration
 <br />
 <br />
+
 Control | Action
 ------- | ------
 [Ctrl] and mouse | hold down a Ctrl key and move your mouse along the progress bar<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
 &nbsp; ||
-Audio & Video Timeline Editor | (see **Editing**)
+Audio & Video Timeline Editor | [Editing](Editing)
 vertical cursor | grab the vertical cursor and drag it along the Timeline<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
 
 <div align="center">
