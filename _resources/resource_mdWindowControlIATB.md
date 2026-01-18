@@ -21,7 +21,7 @@ You can resize the window so that the image is displayed at the exact dimensions
 Control | Action |
 | ------- | ------ |
 | **[ESC]ape**          | exit the app. Also closes all popup dialog boxes and messages |
-| **[F]**               | show/cancel [F]ullScreen* mode |
+| **[F]**               | show/cancel [F]ullScreen mode |
 | **[G]**               | [G]reater window size. Can be held down for rapid increase |
 | Ctrl-**[G]**          | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease |
 | **[H]**               | position the window [H]orizontally (and Vertically) in the center of the screen |

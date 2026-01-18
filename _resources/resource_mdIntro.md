@@ -7,6 +7,9 @@ _ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and the **Image & Thumbnail Browser**) give a compact summary of all the user-controls available in those windows
 
 **_This_** Ctrl-_Shift_-**[H]** Full Help panel, on the other hand, gives a concise but much more detailed explanation for each topic. It is therefore more suitable for quickly understanding a particular aspect of **MMP**
+- it will adjust its contents depending on whether you invoke it<br />from the **Main Media Window** or the **Image & Thumbnail Browser**
+<br />
+<br />
 
 - **MMP** user options can be set via the Ctrl-**[\\]** [Config Dialog](ConfigDialog:General) and are recorded in the _MinimalistMediaPlayer.conf_ file
 - for user options, any reference to the _MinimalistMediaPlayer.conf_ file in these topics is also an implied reference to the Shift-**[\\]** Config Dialog
@@ -17,7 +20,7 @@ The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and
 <br />
 
 - when opened from the **Image & Thumbnail Browser** this panel will be set to "Stay On Top"
-- this is an unavoidable consequence of how the **Main Media Window** interacts with the **Image & Thumbnail Browser**
+- this is an unavoidable consequence of how the **Main Media Window** operates in the background with the **Image & Thumbnail Browser** open
 <br />
 
 All of the alphabetical controls (and many of the others, too) were chosen so that there was

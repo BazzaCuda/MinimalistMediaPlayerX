@@ -65,8 +65,8 @@ You can return to the **Image & Thumbnail Browser** or launch it at any time<br 
 | ------ | ------ |
 | **[G]** | [G]reater window size |
 | Ctrl-**[G]** | un[G]reater window size |
-| **[H]** | Center window [H]orizontally and Vertically and re-activate _Auto_Center_
-| &nbsp; ||
+| **[H]** | Center window [H]orizontally and Vertically and re-activate _Auto_Center_ |
+| left click and hold | drag window around the desktop |
 
 **Browsing Folders of Images**
 
@@ -121,16 +121,22 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 - resizing the window and redrawing the thumbnails is quicker this way
 - once you have reached the maximum number of rows (with **[M]** or **[G]**), subsequently pressing **[G]** will expand the number of columns width-ways until the maximum window size is reached
 
-**Adjust Image** (Brightness, Contrast, Gamma, Rotation, Saturation, Zoom)<br />
+**Adjust Image** (Brightness, Contrast, Gamma, Saturation)<br />
 [Help Page: Adjust Image](Adjust_Image)<br />
+| Control | Action |
+| ------ | ------ |
+| **[BACKSPACE]** | reset all image adjustments |
+
+**Auto-Center**<br />
+[Help Page: Auto-Center](Auto-Center)<br />
 
 **File Control** (renaming and deleting files)<br />
 [Help Page: File Control](File_Control)<br />
 
-**Opening an Image in an External App**
+**Opening an Image in an External App**<br />
 [Help Page: External Apps](External_Apps)<br />
 
-**Panning**<br />
+**Panning / Scrolling the Image**<br />
 [Help Page: Panning](Panning)<br />
 
 **Rotation**<br />
@@ -142,7 +148,13 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 **User-Defined Folders**<br />
 [Help Page: User-Defined Folders](User_Folders)<br />
 
-**Slideshow**
+**Zoom**<br />
+[Help Page: Zoom](Zoom)<br />
+
+**Slideshows**<br />
+[Help Page: Slideshows](Slideshows)<br />
+
+**Slideshow Controls**
 
 | Control | Action |
 | ------ | ------ |
@@ -150,4 +162,6 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 |Ctrl-**[Spacebar]** | start (or pause) a slideshow in reverse order - will loop to last image |
 |**[/]** | increase slideshow speed by 100ms |
 |**[\\]** | decrease slideshow speed by 100ms |
+| right click | pause/resume slideshow |
+
 

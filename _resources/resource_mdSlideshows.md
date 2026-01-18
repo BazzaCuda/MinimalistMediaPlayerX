@@ -32,11 +32,11 @@ The following slideshow controls are available in the **Image & Thumbnail Browse
 
 | Control | Action |
 | ------ | ------ |
-| **[Spacebar]**      | pause/resume slideshow |
+| **[Spacebar]**      | pause/resume slideshow  |
 | Ctrl-**[Spacebar]** | switch the slideshow direction and resume the slideshow |
-| **[/]**             | speed Up by 100ms      |
-| **[\]**             | speed Dn by 100ms      |
-| **[1]**             | reset speed            |
+| **[/]**             | speed Up by 100ms       |
+| **[\\]**            | speed Dn by 100ms       |
+| **[1]**             | reset speed to default set in [Config Dialog](ConfigDialog:Slideshows) |
 
 - the slideshow direction is shown when you press **[Spacebar]** or Ctrl-**[Spacebar]**
 - likewise, when you alter the speed, the new speed will be displayed in the bottom right corner of the window
