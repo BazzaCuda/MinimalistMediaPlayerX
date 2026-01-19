@@ -4863,6 +4863,24 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object lblCleanUp: TLabel
+    Left = 0
+    Top = 426
+    Width = 624
+    Height = 15
+    Align = alBottom
+    Alignment = taCenter
+    Caption = 
+      'This deletion will be followed by a Ctrl-Shift-[C] Cleanup of Ti' +
+      'meline Editor files'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clFuchsia
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ExplicitWidth = 436
+  end
   object btnYes: TButton
     Left = 127
     Top = 378

@@ -123,7 +123,7 @@ const
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),
       (helpType: htMain;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),
       (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),
-      (helpType: htMain;    caption: 'Multi-View';            resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
+      (helpType: htMain;    caption: 'Multi-View Control';    resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
       (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
       (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
       (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),

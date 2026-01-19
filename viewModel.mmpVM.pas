@@ -291,7 +291,8 @@ begin
 
   case mmpCheckRecycleBin(vCurrentItem) of FALSE: EXIT; end;
 
-  case mmpDeleteThisFile(vCurrentItem, aShiftState) of FALSE: EXIT; end; // defaults to mpvStop as it's the current file
+  result := mmpDeleteThisFile(vCurrentItem, aShiftState); // defaults to mpvStop as it's the current file
+  case result of FALSE: EXIT; end;
 
   mmp.cmd(evPLDeleteIx, -1);
 
@@ -363,7 +364,7 @@ begin
   var vDeletionObject: TDeletionObject := TDeletionObject.doCleanup;
 
   case bConfirm of TRUE:
-  mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mryes, procedure  begin
+  mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR], FALSE) = mryes, procedure  begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup in progress');
                                                                                                                       newCleanup.cleanup(vFolder, vCurrentItem);
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
@@ -641,13 +642,13 @@ begin
 
   case aNotice.event of
     evAppClose:             doAppClose;
-    evGSActiveTasks:        sendOpInfo(format('Shredding: %d', [GS.activeTasks]));
+    evGSActiveTasks:        case GS.activeTasks > 0 of TRUE: sendOpInfo(format('Shredding: %d', [GS.activeTasks])); end;
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
     evVMCleanup:            doCleanup;
     evVMConfig:             mmpConfig(aNotice.text);
-    evVMDeleteCurrentItem:  begin deleteCurrentItem(aNotice.shiftState); case aNotice.shiftState = [ssShift] of TRUE: doCleanup(FALSE); end;end;
+    evVMDeleteCurrentItem:  case deleteCurrentItem(aNotice.shiftState) and (aNotice.shiftState = [ssShift]) of TRUE: doCleanup(FALSE); end;
     evVMDoEscapeKey:        doEscapeKey;
     evVMHelpFull:           mmpHelpFull(htMain, FALSE);
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));

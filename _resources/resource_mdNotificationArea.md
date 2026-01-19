@@ -1,7 +1,5 @@
+The **Notification Area** is in the bottom right corner of each **MMP** window
 
-| Control | Action |
-| ------- | ------ |
-| &nbsp; ||
-| **[F5]** | save a screenshot of the current frame or the currently displayed image. |
+In the **Main Media Window** it appears as an OSD (On-Screen Display) over the top of the video, image or audio artwork
 
 

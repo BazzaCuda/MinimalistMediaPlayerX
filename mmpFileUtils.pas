@@ -146,7 +146,7 @@ begin
   case ssCtrl in aShiftState of  TRUE: vDeletionObject := doFolder;
                                 FALSE: vDeletionObject := doFile; end;
 
-  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, aDeleteMethod, CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYes;
+  result := mmpShowConfirmDelete(aFilePath, vDeletionObject, aDeleteMethod, CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR], ssShift in aShiftState) = mrYes;
 end;
 
 function mmpCopyFile(const aFilePath: string; const aDstFolder: string; const bDeleteIt: boolean = FALSE; const bRecordUndo: boolean = TRUE): boolean;
@@ -437,7 +437,7 @@ begin
   mmp.cmd(vWasPlaying, evMPPause);
 
   case mmpCheckRecycleBin(aFolderPath) of FALSE: EXIT; end;
-  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR]) = mrYES of FALSE: EXIT; end;
+  case mmpShowConfirmDelete(aFolderPath, doKeepDelete, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR], FALSE) = mrYES of FALSE: EXIT; end;
 
   mmp.cmd(evGSSuspended, TRUE); // prevent evMPStop from triggering next media file in TVM.onMPNotify
   mmp.cmd(evMPStop);

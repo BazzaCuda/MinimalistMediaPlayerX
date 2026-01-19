@@ -59,16 +59,17 @@ type
     Label1: TLabel;
     lblKeepFiles: TLabel;
     chbDeleteFolder: TCheckBox;
+    lblCleanUp: TLabel;
     procedure FormActivate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbDeleteFolderClick(Sender: TObject);
   private
   public
-    constructor Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
+    constructor Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean);
   end;
   {$ENDREGION}
 
-function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer): TModalResult;
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean): TModalResult;
 
 implementation
 
@@ -79,11 +80,11 @@ uses
   mmpGlobalState, mmpUtils,
   _debugWindow;
 
-function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer): TModalResult;
+function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean): TModalResult;
 begin
   result := mrNo;
   mmp.cmd(evGSUserInput, TRUE);
-  with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod, aConfigString, aScaleFactor) do begin
+  with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod, aConfigString, aScaleFactor, bCleanup) do begin
     result := showModal;
     free;
   end;
@@ -97,7 +98,7 @@ begin
   btnYes.enabled := chbDeleteFolder.checked;
 end;
 
-constructor TConfirmDeleteForm.Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer);
+constructor TConfirmDeleteForm.Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean);
 const
   TITLE_CAPTIONS:   array[TDeletionObject]  of string = ('Delete File', 'Delete Folder Contents', 'Delete all but the "[K]eep" files', 'Cleanup Timeline Editing Files');
   CONFIRM_CAPTIONS: array[TDeleteMethod]    of string = ('Confirm Recycle', 'Confirm Delete', 'Confirm Shred');
@@ -147,6 +148,9 @@ begin
   SELF.scaleBy(vScaleFactor, MAX_SCALE_FACTOR);
   imgDeleteMethod.top       := lblShred.top;
   imgDeleteMethod.left      := lblShred.left - imgDeleteMethod.width;
+
+  lblCleanUp.styleElements  := [seClient, seBorder];
+  lblCleanUp.visible        := bCleanup;
 
   setWindowPos(SELF.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE OR SWP_NOSIZE); // otherwise it can end up behind the Image & Thumbnail Browser window
 end;

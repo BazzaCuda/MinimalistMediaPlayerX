@@ -104,6 +104,6 @@ If your keyboard doesn't have a **[NUMLOCK]** key:
 Additional
 | Control | Action |
 | ------ | ------ |
-| Mouse **right-click** | pause / resume playback of _just_ the clicked window |
+| Mouse **right-click** | pause / resume playback of **_just_** the clicked window |
 
 
