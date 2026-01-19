@@ -120,7 +120,7 @@ begin
   imgDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
   imgDeleteFile.visible     := aDeletionObject = doFile;
 
-  chbDeleteFolder.visible   := aDeletionObject in [doFolder, doKeepDelete, doCleanup];
+  chbDeleteFolder.visible   := (aDeletionObject in [doFolder, doKeepDelete, doCleanup]) or bCleanup;
   btnYes.enabled            := chbDeleteFolder.checked or NOT (aDeletionObject in [doFolder, doKeepDelete, doCleanup]);
 
   lblTitle.caption          := TITLE_CAPTIONS[aDeletionObject];

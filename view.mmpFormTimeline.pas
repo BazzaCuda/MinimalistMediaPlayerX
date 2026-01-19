@@ -30,6 +30,7 @@ uses
   system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   {$endif}
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   view.mmpFormProgress,
@@ -100,6 +101,7 @@ type
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
+    function    fileChapters: string;
     function    filePathLOG: string;
     function    filePathMMP: string;
     function    filePathOUT(aSuffix: string = ' [edited]'): string;
@@ -117,6 +119,7 @@ type
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
     function    toggleKeyFrames: string;
+    function    writeChapters: TVoid;
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
@@ -619,9 +622,15 @@ begin
   mmpScrollTo(FNewestIx);
 end;
 
+function TTimeline.fileChapters: string;
+begin
+  result := changeFileExt(FMediaFilePath, '.chp');
+end;
+
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
 begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
+  case fileExists(fileChapters) of TRUE: result := ChangeFileExt(result, '.mkv'); end;
 end;
 
 function TTimeline.filePathLOG: string;
@@ -772,9 +781,17 @@ begin
   // concatenate exported segments
   vProgressForm.subHeading.caption := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
+
+  // EXPERIMENTAL
+  writeChapters;
+  case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
+
   for var i := 0 to MI.selectedCount - 1 do
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
+
   cmdLine := cmdLine + STD_SEG_PARAMS;
+  // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine.replace('-map_metadata 0', ''); end;
+
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
   log(cmdLine); log(EMPTY);
 
@@ -1106,6 +1123,38 @@ begin
   var vShiftKeyDown := ssShift  in aShift;
 
   result := (validKeys1.contains(char(key)) and NOT (vCtrlKeyDown or vShiftKeyDown)) or (validKeys2.contains(char(key)) and vCtrlKeyDown);
+end;
+
+function TTimeline.writeChapters: TVoid;
+begin
+  var vSL := TStringList.create;
+  try
+    vSL.add(';FFMETADATA1');
+
+    var vTimeStamp := 0;
+
+    for var vSegment in segments do begin
+      case vSegment.deleted of TRUE: CONTINUE; end;
+
+      vSL.add('[CHAPTER]');
+      vSL.add('TIMEBASE=1/1');
+      vSL.add(format('START=%d', [vTimeStamp]));
+
+      case vTimeStamp = 0 of   TRUE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration]));
+                              FALSE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration - 1])); end;
+
+      vSL.add(format('title=%s%s', ['Segment ', vSegment.segID]));
+
+
+      case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;
+                              FALSE: vTimeStamp := vTimeStamp + vSegment.duration ; end;
+    end;
+
+    vSL.saveToFile(fileChapters);
+  finally
+    vSL.free;
+  end;
+
 end;
 
 initialization

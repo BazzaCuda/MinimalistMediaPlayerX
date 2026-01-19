@@ -273,7 +273,7 @@ begin
   case MI.mediaStreams[aIndex].streamType = 'Image' of   TRUE:  lblStream.caption := 'format: '      + MI.mediaStreams[aIndex].format
                                                                                    + ' '             + MI.mediaStreams[aIndex].duration
                                                                                    + ' '             + MI.mediaStreams[aIndex].bitRate + #13#10
-                                                                                   + ' '             + MI.mediaStreams[aIndex].title
+                                                                                   + 'title: '       + MI.mediaStreams[aIndex].title
                                                                                    + ''              + MI.mediaStreams[aIndex].language + #13#10
                                                                                    + 'info: '        + MI.mediaStreams[aIndex].info;
                                                         FALSE:  lblStream.caption := 'format: '      + MI.mediaStreams[aIndex].format
@@ -339,7 +339,7 @@ begin
   md.align := alClient;
   mmpInitMarkDownViewer(md);
 
-  mmpLoadMarkDownFromResource(md, 'resource_mdEditing');
+  mmpLoadMarkDownFromResource(md, 'resource_mdEditor');
 
   clSegments.itemCount  := 0;
   clStreams.itemCount   := 0;

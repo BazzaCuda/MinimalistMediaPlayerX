@@ -213,7 +213,7 @@ end;
 
 function TMediaInfo.getDuration: integer;
 begin
-  result := FMD.mdDuration div MILLISECONDS;
+  result := FMD.mdDuration; //  div MILLISECONDS; EXPERIMENTAL: it's already been divided in getMediaInfo!!!
 end;
 
 function TMediaInfo.getFileSize: string;

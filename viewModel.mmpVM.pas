@@ -867,6 +867,7 @@ begin
   var vFile := mmpFileNameWithoutExtension(vCurrentItem);
   var vExt  := extractFileExt(vCurrentItem);
   var vFN   := vPath + vFile + ' [edited]' + vExt;
+  case fileExists(changeFileExt(vCurrentItem, '.chp')) of TRUE: vFN := changeFileExt(vFN, '.mkv'); end; // EXPERIMENTAL
   case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
 end;
 
