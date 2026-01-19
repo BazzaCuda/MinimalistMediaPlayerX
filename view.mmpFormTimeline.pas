@@ -119,7 +119,8 @@ type
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
     function    toggleKeyFrames: string;
-    function    writeChapters: TVoid;
+    function    writeChaptersFromInput: TVoid;
+    function    writeChaptersFromOutput: TVoid;
   protected
     function    exportSegments: boolean;
     procedure   onCancelButton(sender: TObject);
@@ -158,7 +159,7 @@ implementation
 
 uses
   winApi.shellApi,
-  system.math,
+  system.ioUtils, system.math,
   vcl.dialogs,
   bazCmd,
   mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
@@ -630,7 +631,7 @@ end;
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
 begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
-  case fileExists(fileChapters) of TRUE: result := ChangeFileExt(result, '.mkv'); end;
+//  case fileExists(fileChapters) of TRUE: result := ChangeFileExt(result, '.mkv'); end; EXPERIMENTAL
 end;
 
 function TTimeline.filePathLOG: string;
@@ -783,14 +784,13 @@ begin
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
   // EXPERIMENTAL
-  writeChapters;
-  case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
+  // writeChaptersFromInput;
+  // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
 
   for var i := 0 to MI.selectedCount - 1 do
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
-  // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine.replace('-map_metadata 0', ''); end;
 
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
   log(cmdLine); log(EMPTY);
@@ -798,9 +798,20 @@ begin
   result := TLExecAndWait(cmdLine);
   case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
 
+  vProgressForm.subHeading.caption := 'Creating Chapters';
+  writeChaptersFromOutput;
+  case fileExists(fileChapters) of TRUE:  begin
+                                            cmdLine := ' -i "' + filePathOUT + '" ';
+                                            cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
+                                            cmdLine := cmdLine + STD_SEG_PARAMS;
+                                            cmdLine := cmdLine + ' -y "' + changeFileExt(filePathOUT, '.mkv') + '"';
+                                            log(cmdLine); log(EMPTY);
+                                            result  := TLExecAndWait(cmdLine); end;end;
+
   finally
     vProgressForm.free;
   end;
+
 
   case result and FPlayEdited of TRUE: mmp.cmd(evVMMPPlayEdited); end;
 end;
@@ -1125,7 +1136,7 @@ begin
   result := (validKeys1.contains(char(key)) and NOT (vCtrlKeyDown or vShiftKeyDown)) or (validKeys2.contains(char(key)) and vCtrlKeyDown);
 end;
 
-function TTimeline.writeChapters: TVoid;
+function TTimeline.writeChaptersFromInput: TVoid;
 begin
   var vSL := TStringList.create;
   try
@@ -1147,14 +1158,70 @@ begin
 
 
       case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;
-                              FALSE: vTimeStamp := vTimeStamp + vSegment.duration ; end;
+                              FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;
     end;
 
     vSL.saveToFile(fileChapters);
   finally
     vSL.free;
   end;
+end;
 
+function TTimeline.writeChaptersFromOutput: TVoid;
+type
+  TSegment = record
+    duration: integer;
+  end;
+var
+  segments: TList<TSegment>;
+  vSegment: TSegment;
+begin
+  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
+
+  segments := TList<TSegment>.create;
+  var vMI := TMediaInfo.create;
+  try
+
+    for var vSegLine in TFile.ReadAllLines(filePathSEG) do begin
+      var vParts  := vSegLine.split(['''']);
+      var vFile   := vParts[1];
+
+      case vMI.getMediaInfo(vFile, mtVideo) of TRUE: begin
+                                                      vSegment.duration := vMI.duration;
+                                                      debugInteger('duration', vSegment.duration);
+                                                      segments.add(vSegment); end;end;
+    end;
+  finally
+    vMI.free;
+  end;
+
+  var vSL := TStringList.create;
+  try
+    vSL.add(';FFMETADATA1');
+
+    var vTimeStamp := 0;
+
+    for vSegment in segments do begin
+
+      vSL.add('[CHAPTER]');
+      vSL.add('TIMEBASE=1/1');
+      vSL.add(format('START=%d', [vTimeStamp]));
+
+      case vTimeStamp = 0 of   TRUE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration]));
+                              FALSE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration - 1])); end;
+
+      vSL.add(format('title=%s%s', ['Segment ', 'vSegment.segID']));
+
+
+      case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;
+                              FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;
+    end;
+
+    vSL.saveToFile(fileChapters);
+  finally
+    vSL.free;
+    segments.free;
+  end;
 end;
 
 initialization

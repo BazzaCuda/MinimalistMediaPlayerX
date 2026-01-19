@@ -81,7 +81,7 @@ var SR: TSearchRec;
   begin
     var vExt := lowerCase(extractFileExt(SR.name)) + '.';
     case vExt = '.seg.' of TRUE: processSegFile; end;
-    result := '.log.mmp.seg.key.'.contains(vExt);
+    result := '.log.mmp.seg.key.chp.'.contains(vExt);
   end;
 
 begin
