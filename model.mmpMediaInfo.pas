@@ -56,6 +56,7 @@ type
     mdOverallBitRate:     integer;
     mdStereoMono:         string;
     mdTextCount:          integer;
+    mdTitle:              string;
     mdVideoBitRate:       integer;
     mdVideoCount:         integer;
     mdWidth:              integer;
@@ -72,6 +73,7 @@ type
     function getMetaData(const aMemo: TMemo):       boolean;
     function getSelectedCount:      integer;
     function getStreamCount:        integer;
+    function getTitle:              string;
 
     function sortStreams: boolean;
 
@@ -83,6 +85,7 @@ type
     property mediaStreams:      TObjectList<TMediaStream>   read getMediaStreams;
     property selectedCount:     integer                     read getSelectedCount;
     property streamCount:       integer                     read getStreamCount;
+    property title:             string                      read getTitle;
   end;
 
   TMediaInfo = class(TInterfacedObject, IMediaInfo)
@@ -120,6 +123,7 @@ type
     function getMetaData(const aMemo: TMemo):       boolean;
     function getSelectedCount:      integer;
     function getStreamCount:        integer;
+    function getTitle:              string;
 
     function sortStreams: boolean;
     function notify(const aNotice: INotice): INotice;
@@ -133,6 +137,7 @@ type
     property overallFrameRate:    string  read getOverallFrameRate;
     property stereoMono:          string  read getStereoMono;
     property streamCount:         integer read getStreamCount;
+    property title:               string  read getTitle;
     property videoBitRate:        string  read getVideoBitRate;
     property X:                   integer read FMD.mdWidth;
     property Y:                   integer read FMD.mdHeight;
@@ -260,6 +265,11 @@ end;
 function TMediaInfo.getStreamCount: integer;
 begin
   result := FMD.mdGeneralCount + FMD.mdVideoCount + FMD.mdAudioCount + FMD.mdTextCount + FMD.mdOtherCount + FMD.mdImageCount;
+end;
+
+function TMediaInfo.getTitle: string;
+begin
+  result := FMD.mdTitle;
 end;
 
 function TMediaInfo.getVideoBitRate: string;
@@ -439,6 +449,7 @@ begin
 
   try try
 
+    FMD.mdTitle     :=  mediaInfo_Get(FHandle, Stream_General,      0, 'Title',           Info_Text, Info_Name);
     FMD.mdFrameRate :=  mediaInfo_Get(FHandle, Stream_General,      0, 'FrameRate',       Info_Text, Info_Name);
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_General,      0, 'OverallBitRate',  Info_Text, Info_Name), FMD.mdOverallBitRate)    of FALSE: FMD.mdOverallBitRate   := 0; end;
 

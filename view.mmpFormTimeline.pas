@@ -104,6 +104,7 @@ type
     function    fileChapters: string;
     function    filePathChapters(aSuffix: string = ' [chapters]'): string;
     function    filePathLOG: string;
+    function    filePathMKV: string;
     function    filePathMMP: string;
     function    filePathOUT(aSuffix: string = ' [edited]'): string;
     function    filePathSEG: string;
@@ -117,6 +118,7 @@ type
     function    saveSegments: string;
     function    segFileEntry(const aSegFile: string): string;
     function    segmentAtSS(const aSS: integer): TSegment;
+    function    segmentTitle(const aNumber: integer): string;
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
     function    toggleKeyFrames: string;
@@ -563,6 +565,8 @@ begin
 
   case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // issue with losing the correct duration when cutting the final segment
 
+  case CF.asBoolean[CONF_CHAPTERS] of TRUE: newSegment.title := segmentTitle(FNewestIx + 1); end;
+
   result := TRUE;
 end;
 
@@ -634,6 +638,11 @@ begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + '.mkv';
 end;
 
+function TTimeline.filePathMKV: string;
+begin
+  result := changeFileExt(filePathOUT, '.mkv')
+end;
+
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
 begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
@@ -676,7 +685,8 @@ end;
 
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-  segments.add(TSegment.create(0, aMax, onRedraw));
+  var vIx := segments.add(TSegment.create(0, aMax)); // NIL = don't redraw, saveSegments and wipe the .mmp file
+  case CF.asBoolean[CONF_CHAPTERS] of TRUE: segments[vIx].title := 'Default Segment'; end;
   result := format('0-%d,0', [aMax]);
 end;
 
@@ -744,7 +754,8 @@ begin
           vMaps := EMPTY;
           for var vMediaStream in MI.mediaStreams do
             case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;
-          vMaps   := vMaps + ' -c copy';
+
+          vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
           cmdLine := cmdLine + vMaps;
           cmdLine := cmdLine + STD_SEG_PARAMS;
 
@@ -810,15 +821,15 @@ begin
       vProgressForm.subHeading.caption := 'Creating Chapters';
       writeChaptersFromOutput;
       case fileExists(fileChapters) of TRUE:  begin
-                                                cmdLine := ' -i "' + filePathOUT + '" ';
-                                                cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
-                                                cmdLine := cmdLine + STD_SEG_PARAMS;
-                                                cmdLine := cmdLine + ' -c copy -y "' + filePathChapters + '"'; // to temporary file
-                                                log(cmdLine); log(EMPTY);
-                                                result  := TLExecAndWait(cmdLine);
-                                                case result of TRUE:  begin
-                                                                        mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE);
-                                                                        result := renameFile(filePathChapters, changeFileExt(filePathOUT, '.mkv')); end;end;end;end;end;end;
+                                cmdLine := ' -i "' + filePathOUT + '" ';
+                                cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
+                                cmdLine := cmdLine + STD_SEG_PARAMS;
+                                cmdLine := cmdLine + ' -c copy -y "' + filePathChapters + '"'; // to temporary [chapters] file
+                                log(cmdLine); log(EMPTY);
+                                result  := TLExecAndWait(cmdLine);
+                                case result of TRUE:  begin
+                                                        case fileExists(filePathMKV) of TRUE: mmpDeleteThisFile(filePathMKV, [], TRUE, TRUE, FALSE); end;
+                                                        result := renameFile(filePathChapters, filePathMKV); end;end;end;end;end;end;
   finally
     vProgressForm.free;
   end;
@@ -857,6 +868,14 @@ begin
   result := TRUE;
 end;
 
+function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
+begin
+  case aSegment = NIL  of TRUE: EXIT; end;
+  case aSegment.isLast of TRUE: EXIT; end;
+  aSegment.endSS := aSegment.endSS + 1;
+  segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
+end;
+
 function TTimeline.loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
 var
   vSL:        TStringList;
@@ -884,25 +903,20 @@ begin
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
 
       posEquals := pos('=', vSL[i]);
-      case posEquals > 0 of  TRUE: vTitle := trim(copy(vSL[i], posEquals + 1, length(vSL[i])));
+      case posEquals > 0 of  TRUE: vTitle := copy(vSL[i], posEquals + 1, length(vSL[i]));
                             FALSE: vTitle := EMPTY; end;
 
       var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, vDeleted));
       segments[ix].title := vTitle; // EXPERIMENTAL - regardless of includeTitles
       case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;
+
+      case CF.asBoolean[CONF_CHAPTERS] and (segments[ix].title = EMPTY) of TRUE: segments[ix].title := segmentTitle(ix + 1); end;
+
       result := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
   finally
     vSL.free;
   end;
-end;
-
-function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
-begin
-  case aSegment = NIL  of TRUE: EXIT; end;
-  case aSegment.isLast of TRUE: EXIT; end;
-  aSegment.endSS := aSegment.endSS + 1;
-  segments[aSegment.ix + 1].startSS := segments[aSegment.ix + 1].startSS + 1;
 end;
 
 function TTimeLine.loadChapters: TStringList;
@@ -1025,15 +1039,19 @@ function TTimeline.saveSegments: string;
 begin
   case segCount = 0 of TRUE: EXIT; end;
 
-  var vSL := TStringList.create;
-  try
-    for var vSegment in segments do
-      vSL.add(format('%d-%d,%d=%s', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted), vSegment.title]));
+  var vSLInternal := TStringList.create;
+  var vSLExternal := TStringList.create;
 
-    vSL.saveToFile(filePathMMP);
-    result := vSL.text;
+  try
+    for var vSegment in segments do begin
+      vSLInternal.add(format('%d-%d,%d',    [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted)                ]));
+      vSLExternal.add(format('%d-%d,%d=%s', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted), vSegment.title])); end;
+
+    vSLExternal.saveToFile(filePathMMP);
+    result := vSLInternal.text;
   finally
-    vSL.free;
+    vSLExternal.free;
+    vSLInternal.free;
   end;
 
   case (segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = FMax) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
@@ -1049,6 +1067,11 @@ begin
   result := NIL;
   for var vSegment in segments do
     case (aSS >= vSegment.startSS) and (aSS <= vSegment.endSS) of TRUE: begin result := vSegment; BREAK; end;end;
+end;
+
+function TTimeline.segmentTitle(const aNumber: integer): string;
+begin
+  result := format('Segment %.2d', [aNumber]);
 end;
 
 procedure TTimeline.setMax(const Value: integer);
@@ -1193,6 +1216,7 @@ function TTimeline.writeChaptersFromOutput: TVoid;
 type
   TSegment = record
     duration: integer;
+    title:    string;
   end;
 var
   segments: TList<TSegment>;
@@ -1209,6 +1233,7 @@ begin
       // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
       case vMI.getMediaInfo(vFile, mtVideo, TRUE) of TRUE: begin
                                                       vSegment.duration := vMI.duration;
+                                                      vSegment.title    := vMI.title;
                                                       segments.add(vSegment); end;end;
     end;
   finally
@@ -1232,7 +1257,7 @@ begin
                               FALSE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration - 1])); end;
 
       inc(vSegCount);
-      vSL.add(format('title=%s%.2d', ['Segment ', vSegCount]));
+      vSL.add(format('title=%s', [vSegment.title]));
 
       case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;
                               FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;

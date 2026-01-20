@@ -67,7 +67,7 @@ type
     procedure Paint; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
-    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent; const bDeleted: boolean = FALSE);
+    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
     function    delete: boolean;
     function    restore: boolean;
     procedure   setDisplayDetails;
@@ -165,7 +165,7 @@ begin
   freeAndNil(FSegments);
 end;
 
-constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent; const bDeleted: boolean = FALSE);
+constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
 begin
   inherited Create(NIL);
   parent            := FParent;
