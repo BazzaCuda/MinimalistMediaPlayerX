@@ -805,7 +805,7 @@ begin
     end;end;
 
     // if concat was ok, we can create chapters from the multiple .segnn files
-    case vDoConcat and CF.asBoolean[CONF_CHAPTERS] of TRUE: begin
+    case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS] of TRUE: begin
       result := FALSE;
       vProgressForm.subHeading.caption := 'Creating Chapters';
       writeChaptersFromOutput;
