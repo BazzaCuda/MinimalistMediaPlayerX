@@ -789,7 +789,6 @@ begin
       vProgressForm.subHeading.caption := 'Joining segments';
       cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
-      // EXPERIMENTAL
       // writeChaptersFromInput;
       // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
 

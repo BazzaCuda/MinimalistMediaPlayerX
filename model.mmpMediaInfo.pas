@@ -492,19 +492,6 @@ begin
       case              mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: inc(vFFmpegIx); end;
     end;
 
-    // {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
-
-//    case aMediaType of mtAudio, mtVideo: createChapters; end; // EXPERIMENTALLY COMMENTED OUT
-
-    // REDUNDANT!!
-//    for var ix := 0 to FMediaStreams.count - 1 do
-//      case length(FMediaStreams[ix].ID) = 1 of TRUE: FMediaStreams[ix].ID := '0' + FMediaStreams[ix].ID; end; // display purposes only - these are NOT the stream indexes/indices!
-
-//    for var ix := 0 to FMediaStreams.count - 1 do
-//      FMediaStreams[ix].Ix := ix; // assign stream indices in the same order that FFmpeg will
-
-//    sortStreams; // sort by ID
-
   finally mediaInfo_close(FHandle); end;
     result := TRUE;
   except end;
