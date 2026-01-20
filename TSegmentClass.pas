@@ -104,19 +104,36 @@ function generateRandomEvenDarkerSoftColor: TColor; // from a suggestion by chat
 {$J+} const nextColor: integer = 0; {$J-}
 var
   darkerSoftColors: array of TColor;
+
+  function fillSilvers: boolean;
+  begin
+//    darkerSoftColors[0] := RGB(80, 80, 80);   // Very Dark Gray
+//    darkerSoftColors[1] := RGB(70, 70, 70);   // Very Dark Silver
+//    darkerSoftColors[2] := RGB(60, 60, 60);   // Very Dark Platinum
+//    darkerSoftColors[3] := RGB(50, 50, 50);   // Very Dark Snow
+//    darkerSoftColors[4] := RGB(40, 40, 40);   // Very Dark Ivory
+//  //  darkerSoftColors[5] := RGB(30, 30, 30);   // Extremely Dark Gray
+//  // EXIT;
+
+    darkerSoftColors[0] := RGB(28, 28, 28);   // Dark Neutral Gray 1     // best so far. like the original 5 but not as stark
+    darkerSoftColors[1] := RGB(36, 36, 36);   // Dark Neutral Gray 2
+    darkerSoftColors[2] := RGB(44, 44, 44);   // Dark Neutral Gray 3
+    darkerSoftColors[3] := RGB(52, 52, 52);   // Dark Neutral Gray 4
+    darkerSoftColors[4] := RGB(60, 60, 60);   // Dark Neutral Gray 5
+    darkerSoftColors[5] := RGB(32, 32, 32);   // Dark Neutral Gray 6
+    darkerSoftColors[6] := RGB(40, 40, 40);   // Dark Neutral Gray 7
+    darkerSoftColors[7] := RGB(48, 48, 48);   // Dark Neutral Gray 8
+    darkerSoftColors[8] := RGB(56, 56, 56);   // Dark Neutral Gray 9
+    darkerSoftColors[9] := RGB(64, 64, 64);   // Dark Neutral Gray 10
+  end;
 begin
   // Define an array of even darker soft colors
-  SetLength(darkerSoftColors, 5);
-  darkerSoftColors[0] := RGB(80, 80, 80);   // Very Dark Gray
-  darkerSoftColors[1] := RGB(70, 70, 70);   // Very Dark Silver
-  darkerSoftColors[2] := RGB(60, 60, 60);   // Very Dark Platinum
-  darkerSoftColors[3] := RGB(50, 50, 50);   // Very Dark Snow
-  darkerSoftColors[4] := RGB(40, 40, 40);   // Very Dark Ivory
-//  darkerSoftColors[5] := RGB(30, 30, 30);   // Extremely Dark Gray
+  SetLength(darkerSoftColors, 10);
+  fillSilvers; // whoever _he_ is!
 
   result := darkerSoftColors[nextColor];
   inc(nextColor);
-  case nextColor > 4 of TRUE: nextColor := 0; end;
+  case nextColor > 9 of TRUE: nextColor := 0; end;
 end;
 
 { TSegment }
@@ -176,6 +193,7 @@ begin
   FSegID.styleElements := [];
   FSegID.onClick    := doClick;
   FSegID.OnMouseUp  := doMouseUp;
+  FSegID.font.color := COLOR_SEGMENT_ID;
 
   FTitle := TLabel.create(SELF);
   FTitle.parent         := SELF;
@@ -184,6 +202,7 @@ begin
   FTitle.styleElements  := [];
   FTitle.onClick        := doClick;
   FTitle.OnMouseUp      := doMouseUp;
+  FTitle.font.color     := COLOR_SEGMENT_TITLE; // EXPERIMENTAL
 
   FSegDetails := TLabel.create(SELF);
   FSegDetails.parent        := SELF;

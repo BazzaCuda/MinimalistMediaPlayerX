@@ -710,6 +710,8 @@ begin
                                                       EXIT;
                                                     end;end;
 
+  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
+
   vSegOneFN   := EMPTY;
 
   var vProgressForm       := TProgressForm.create(NIL);
@@ -772,46 +774,46 @@ begin
 
     while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 
-    case vSegOneFN = EMPTY of FALSE:  begin
-//                                      case maxSegment of   TRUE: renameFile(vSegOneFN, filePathOut(' [copy]')); // we did a straight copy instead
-//                                                          FALSE: renameFile(vSegOneFN, filePathOUT); end;
+    var vSkipConcatenate := vSegOneFN = EMPTY;
+    case vSkipConcatenate of TRUE:  begin
                                         renameFile(vSegOneFN, filePathOUT);
-                                        mmp.cmd(evVMMPPlayEdited);
-                                        EXIT; end;end;
+                                        mmp.cmd(evVMMPPlayEdited); end;end;
 
-  // concatenate exported segments
-  vProgressForm.subHeading.caption := 'Joining segments';
-  cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
+  case vSkipConcatenate of FALSE: begin
+    // concatenate exported segments
+    vProgressForm.subHeading.caption := 'Joining segments';
+    cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
-  // EXPERIMENTAL
-  // writeChaptersFromInput;
-  // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
+    // EXPERIMENTAL
+    // writeChaptersFromInput;
+    // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
 
-  for var i := 0 to MI.selectedCount - 1 do
-    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
+    for var i := 0 to MI.selectedCount - 1 do
+      cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
 
-  cmdLine := cmdLine + STD_SEG_PARAMS;
+    cmdLine := cmdLine + STD_SEG_PARAMS;
 
-  cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
-  log(cmdLine); log(EMPTY);
+    cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
+    log(cmdLine); log(EMPTY);
 
-  result := TLExecAndWait(cmdLine);
-  case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
+    result := TLExecAndWait(cmdLine);
+    case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
+  end;end;
 
-  vProgressForm.subHeading.caption := 'Creating Chapters';
-  writeChaptersFromOutput;
-  case fileExists(fileChapters) of TRUE:  begin
-                                            cmdLine := ' -i "' + filePathOUT + '" ';
-                                            cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
-                                            cmdLine := cmdLine + STD_SEG_PARAMS;
-                                            cmdLine := cmdLine + ' -y "' + changeFileExt(filePathOUT, '.mkv') + '"';
-                                            log(cmdLine); log(EMPTY);
-                                            result  := TLExecAndWait(cmdLine); end;end;
-
+  // if concat was ok, we can create chapters from the multiple .segnn files
+  case result and CF.asBoolean[CONF_CHAPTERS] of TRUE: begin
+    vProgressForm.subHeading.caption := 'Creating Chapters';
+    writeChaptersFromOutput;
+    case fileExists(fileChapters) of TRUE:  begin
+                                              cmdLine := ' -i "' + filePathOUT + '" ';
+                                              cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
+                                              cmdLine := cmdLine + STD_SEG_PARAMS;
+                                              cmdLine := cmdLine + ' -y "' + changeFileExt(filePathOUT, '.mkv') + '"';
+                                              log(cmdLine); log(EMPTY);
+                                              result  := TLExecAndWait(cmdLine); end;end;end;end;
   finally
     vProgressForm.free;
   end;
-
 
   case result and FPlayEdited of TRUE: mmp.cmd(evVMMPPlayEdited); end;
 end;
@@ -969,7 +971,9 @@ end;
 
 procedure TTimeline.onRedraw(sender: TObject);
 begin
+  TL.addUndo(TL.saveSegments);
   TL.drawSegments;
+  gTimelineForm.updatePositionDisplay(TL.positionSS);
 end;
 
 function TTimeline.redo: boolean;
@@ -1176,8 +1180,6 @@ var
   segments: TList<TSegment>;
   vSegment: TSegment;
 begin
-  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
-
   segments := TList<TSegment>.create;
   var vMI := TMediaInfo.create;
   try
@@ -1188,7 +1190,6 @@ begin
 
       case vMI.getMediaInfo(vFile, mtVideo) of TRUE: begin
                                                       vSegment.duration := vMI.duration;
-                                                      debugInteger('duration', vSegment.duration);
                                                       segments.add(vSegment); end;end;
     end;
   finally

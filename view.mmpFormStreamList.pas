@@ -240,9 +240,15 @@ begin
   var vSegments := TL.segments;
   case (vSegments.count = 0) or (aIndex > vSegments.count - 1) of TRUE: EXIT; end;
   lblSegID.caption        := vSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
+  lblSegID.font.color     := COLOR_SEGMENT_ID; // Soft gold
+  lblSegID.parentColor    := FALSE;   // EXPERIMENTAL
+  lblSegID.styleElements  := [seBorder]; // EXPERIMENTAL
   lblSegDetails.caption   := format('%ds - %ds', [vSegments[aIndex].startSS, vSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [vSegments[aIndex].duration, mmpFormatSeconds(vSegments[aIndex].duration)]);
   lblTitle.caption        := vSegments[aIndex].title;
+  debug(vSegments[aIndex].title);
+  lblTitle.font.color     := COLOR_SEGMENT_TITLE; // EXPERIMENTAL
+  lblTitle.styleElements  := [seBorder, seClient];
   shape1.brush.color      := vSegments[aIndex].color;
   shape1.brush.style      := bsSolid;
   shape1.pen.color        := $7E7E7E;

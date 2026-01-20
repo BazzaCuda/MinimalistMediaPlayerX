@@ -82,6 +82,9 @@ const
   DARK_MODE_SILVER = $C0C0C0; // clSilver
   DARK_MODE_DKGRAY = $808080; // clDkGray
 
+  COLOR_SEGMENT_TITLE = $E6CC4C;
+  COLOR_SEGMENT_ID    = $004B96AF; // RGB(175, 150, 75);
+
   FONT_TAHOMA      = 'Tahoma';
   FONT_SEGOE_UI    = 'Segoe UI';
 
@@ -106,6 +109,7 @@ const
   CONF_AUTO_UPDATE            = 'autoUpdate';
   CONF_BASE_FOLDER            = 'baseFolder';
   CONF_BROWSER                = 'browser';
+  CONF_CHAPTERS               = 'chapters';
   CONF_DELETE_METHOD          = 'deleteMethod';
   CONF_DIRTY_CHARS            = 'dirtyChars';
   CONF_EXIT_APP               = 'exitApp';
