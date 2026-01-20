@@ -863,8 +863,10 @@ var
   vStartSS:   integer;
   vEndSS:     integer;
   vDeleted:   boolean;
+  vTitle:     string;
   posHyphen:  integer;
   posComma:   integer;
+  posEquals:  integer;
 begin
   result := EMPTY;
   segments.clear;
@@ -880,9 +882,15 @@ begin
       posComma  := pos(',', vSL[i]);
       vEndSS    := strToInt(copy(vSL[i], posHyphen + 1, posComma - posHyphen - 1));
       vDeleted  := copy(vSL[i], posComma + 1, 1) = '1';
+
+      posEquals := pos('=', vSL[i]);
+      case posEquals > 0 of  TRUE: vTitle := trim(copy(vSL[i], posEquals + 1, length(vSL[i])));
+                            FALSE: vTitle := EMPTY; end;
+
       var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, vDeleted));
+      segments[ix].title := vTitle; // EXPERIMENTAL - regardless of includeTitles
       case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;
-      result    := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
+      result := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
     end;
   finally
     vSL.free;
@@ -1020,7 +1028,7 @@ begin
   var vSL := TStringList.create;
   try
     for var vSegment in segments do
-      vSL.add(format('%d-%d,%d', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted)]));
+      vSL.add(format('%d-%d,%d=%s', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted), vSegment.title]));
 
     vSL.saveToFile(filePathMMP);
     result := vSL.text;

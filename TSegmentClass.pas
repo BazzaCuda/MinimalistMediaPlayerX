@@ -79,7 +79,7 @@ type
     property    isLast:    boolean read getIsLast;
     property    ix:        integer read getIx;
     property    oldColor:  TColor  read FOldColor     write FOldColor;
-    property    redraw:    TNotifyEvent read FRedraw write FRedraw;
+    property    redraw:    TNotifyEvent read FRedraw  write FRedraw;
     property    segID:     string  read getSegID      write setSegID;
     property    selected:  boolean read FSelected     write setSelected;
     property    startSS:   integer read FStartSS      write FStartSS;
@@ -331,6 +331,7 @@ end;
 procedure TSegment.setTitle(const Value: string);
 begin
   FTitle.caption := Value;
+  case assigned(FRedraw) of TRUE: FRedraw(SELF); end;
 end;
 
 procedure TSegment.WMEraseBkgnd(var Message: TWMEraseBkgnd);

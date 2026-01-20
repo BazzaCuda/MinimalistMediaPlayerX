@@ -82,6 +82,7 @@ type
     procedure btnExportKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure clSegmentsItemDblClick(Sender: TObject);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
@@ -111,7 +112,7 @@ implementation
 uses
   system.math,
   bazCmd,
-  mmpFormatting, mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
+  mmpFormatting, mmpFormInputBox,  mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
   model.mmpMediaInfo,
   _debugWindow;
@@ -259,8 +260,14 @@ end;
 
 procedure TStreamListForm.clSegmentsItemClick(Sender: TObject);
 begin
-  TL.segments[clSegments.ItemIndex].setAsSelSeg;
+  TL.segments[clSegments.itemIndex].setAsSelSeg;
   focusTimeline;
+end;
+
+procedure TStreamListForm.clSegmentsItemDblClick(Sender: TObject);
+begin
+  var vS := mmpInputBoxForm(TL.segments[clSegments.itemIndex].title);
+  case vS = TL.segments[clSegments.itemIndex].title of FALSE: TL.segments[clSegments.itemIndex].title := vS; end;
 end;
 
 procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
