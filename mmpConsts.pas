@@ -109,7 +109,8 @@ const
   CONF_AUTO_UPDATE            = 'autoUpdate';
   CONF_BASE_FOLDER            = 'baseFolder';
   CONF_BROWSER                = 'browser';
-  CONF_CHAPTERS               = 'chapters';
+  CONF_CHAPTERS_SHOW          = 'chaptersShow';
+  CONF_CHAPTERS_WRITE         = 'chaptersWrite';
   CONF_DELETE_METHOD          = 'deleteMethod';
   CONF_DIRTY_CHARS            = 'dirtyChars';
   CONF_EXIT_APP               = 'exitApp';

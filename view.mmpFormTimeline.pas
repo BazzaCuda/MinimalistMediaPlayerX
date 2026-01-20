@@ -565,7 +565,7 @@ begin
 
   case newSegment.isLast of TRUE: newSegment.endSS := FMax; end; // issue with losing the correct duration when cutting the final segment
 
-  case CF.asBoolean[CONF_CHAPTERS] of TRUE: newSegment.title := segmentTitle(FNewestIx + 1); end;
+  case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: newSegment.title := segmentTitle(FNewestIx + 1); end;
 
   result := TRUE;
 end;
@@ -686,7 +686,7 @@ end;
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
   var vIx := segments.add(TSegment.create(0, aMax)); // NIL = don't redraw, saveSegments and wipe the .mmp file
-  case CF.asBoolean[CONF_CHAPTERS] of TRUE: segments[vIx].title := 'Default Segment'; end;
+  case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[vIx].title := 'Default Segment'; end;
   result := format('0-%d,0', [aMax]);
 end;
 
@@ -816,7 +816,7 @@ begin
     end;end;
 
     // if concat was ok, we can create chapters from the multiple .segnn files
-    case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS] of TRUE: begin
+    case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
       result := FALSE;
       vProgressForm.subHeading.caption := 'Creating Chapters';
       writeChaptersFromOutput;
@@ -834,8 +834,8 @@ begin
     vProgressForm.free;
   end;
 
-  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS] of  TRUE: mmp.cmd(evVMMPPlayEdited, changeFileExt(filePathOUT, '.mkv'));
-                                                                            FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;end;
+  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of  TRUE: mmp.cmd(evVMMPPlayEdited, changeFileExt(filePathOUT, '.mkv'));
+                                                                                  FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;end;
 end;
 
 function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
@@ -907,12 +907,13 @@ begin
                             FALSE: vTitle := EMPTY; end;
 
       var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, vDeleted));
-      segments[ix].title := vTitle; // EXPERIMENTAL - regardless of includeTitles
-      case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;
+      case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[ix].title := vTitle; end;          // regardless of includeTitles, assume we're reading a .mmp file
+      case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;  // includeTitles says we're reading chapters from the media file
 
-      case CF.asBoolean[CONF_CHAPTERS] and (segments[ix].title = EMPTY) of TRUE: segments[ix].title := segmentTitle(ix + 1); end;
+      case CF.asBoolean[CONF_CHAPTERS_SHOW] and (segments[ix].title = EMPTY) of TRUE: segments[ix].title := segmentTitle(ix + 1); end;
 
-      result := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
+//      result := result + format('%d-%d,%d', [vStartSS, vEndSS, integer(vDeleted)]) + #13#10;
+      result := result + format('%d-%d,%d=%s', [vStartSS, vEndSS, integer(vDeleted), segments[ix].title]) + #13#10;
     end;
   finally
     vSL.free;
@@ -927,7 +928,7 @@ begin
   result := TStringList.create;
 
   for var i := 0 to MI.chapterCount - 1 do
-    result.add(format('%d-%d,0', [MI.mediaChapters[i].chapterStartSS, MI.mediaChapters[i].chapterEndSS]));
+    result.add(format('%d-%d,0=%s', [MI.mediaChapters[i].chapterStartSS, MI.mediaChapters[i].chapterEndSS, MI.mediaChapters[i].chapterTitle]));
 end;
 
 function TTimeline.log(const aLogEntry: string): boolean;
@@ -1003,6 +1004,7 @@ end;
 procedure TTimeline.onRedraw(sender: TObject);
 begin
   TL.addUndo(TL.saveSegments);
+//  TL.saveSegments;
   TL.drawSegments;
   gTimelineForm.updatePositionDisplay(TL.positionSS);
 end;
@@ -1048,7 +1050,7 @@ begin
       vSLExternal.add(format('%d-%d,%d=%s', [vSegment.startSS, vSegment.endSS, integer(vSegment.deleted), vSegment.title])); end;
 
     vSLExternal.saveToFile(filePathMMP);
-    result := vSLInternal.text;
+    result := vSLExternal.text;
   finally
     vSLExternal.free;
     vSLInternal.free;

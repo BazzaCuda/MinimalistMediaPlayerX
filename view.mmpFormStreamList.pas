@@ -267,7 +267,7 @@ end;
 procedure TStreamListForm.clSegmentsItemDblClick(Sender: TObject);
 begin
   var vS := mmpInputBoxForm(TL.segments[clSegments.itemIndex].title);
-  case vS = TL.segments[clSegments.itemIndex].title of FALSE: TL.segments[clSegments.itemIndex].title := vS; end;
+  case vS = TL.segments[clSegments.itemIndex].title of FALSE: TL.segments[clSegments.itemIndex].newTitle := vS; end;
 end;
 
 procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);

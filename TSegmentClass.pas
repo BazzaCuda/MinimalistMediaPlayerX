@@ -51,6 +51,7 @@ type
     function      getTitle:     string;
     procedure     setSegID(const Value: string);
     procedure     setSelected(const Value: boolean);
+    procedure     setNewTitle(const aValue: string);
     procedure     setTitle(const Value: string);
 
     class var     FParent:      TWinControl;
@@ -78,6 +79,7 @@ type
     property    isFirst:   boolean read getIsFirst;
     property    isLast:    boolean read getIsLast;
     property    ix:        integer read getIx;
+    property    newTitle:  string                     write setNewTitle;
     property    oldColor:  TColor  read FOldColor     write FOldColor;
     property    redraw:    TNotifyEvent read FRedraw  write FRedraw;
     property    segID:     string  read getSegID      write setSegID;
@@ -322,6 +324,12 @@ begin
   FSegDetails.caption := format('%ds - %ds', [startSS, endSS]);
 end;
 
+procedure TSegment.setNewTitle(const aValue: string);
+begin
+  FTitle.caption := aValue;
+  case assigned(FRedraw) of TRUE: FRedraw(SELF); end;
+end;
+
 procedure TSegment.setSelected(const Value: boolean);
 begin
   FSelected := Value;
@@ -331,7 +339,6 @@ end;
 procedure TSegment.setTitle(const Value: string);
 begin
   FTitle.caption := Value;
-  case assigned(FRedraw) of TRUE: FRedraw(SELF); end;
 end;
 
 procedure TSegment.WMEraseBkgnd(var Message: TWMEraseBkgnd);
