@@ -241,13 +241,11 @@ begin
   case (vSegments.count = 0) or (aIndex > vSegments.count - 1) of TRUE: EXIT; end;
   lblSegID.caption        := vSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
   lblSegID.font.color     := COLOR_SEGMENT_ID; // Soft gold
-  lblSegID.parentColor    := FALSE;   // EXPERIMENTAL
-  lblSegID.styleElements  := [seBorder]; // EXPERIMENTAL
+  lblSegID.styleElements  := [seBorder];
   lblSegDetails.caption   := format('%ds - %ds', [vSegments[aIndex].startSS, vSegments[aIndex].EndSS]);
   lblDuration.caption     := format('Duration: %d secs (%s)', [vSegments[aIndex].duration, mmpFormatSeconds(vSegments[aIndex].duration)]);
   lblTitle.caption        := vSegments[aIndex].title;
-  debug(vSegments[aIndex].title);
-  lblTitle.font.color     := COLOR_SEGMENT_TITLE; // EXPERIMENTAL
+  lblTitle.font.color     := COLOR_SEGMENT_TITLE;
   lblTitle.styleElements  := [seBorder, seClient];
   shape1.brush.color      := vSegments[aIndex].color;
   shape1.brush.style      := bsSolid;
@@ -273,6 +271,9 @@ begin
 
   case MI.mediaStreams[aIndex].selected of  TRUE: begin lblStream.font.color := DARK_MODE_SILVER; lblStream.font.style := [fsBold]; end;
                                            FALSE: begin lblStream.font.color := DARK_MODE_DKGRAY; lblStream.font.style := [fsItalic]; end;end;
+
+  lblStreamID.font.color    := COLOR_SEGMENT_ID;
+  lblStreamID.StyleElements := [seBorder, seClient];
 
   lblStreamID.caption := MI.mediaStreams[aIndex].ID;
 

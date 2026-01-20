@@ -101,9 +101,8 @@ uses
   _debugWindow;
 
 function generateRandomEvenDarkerSoftColor: TColor; // from a suggestion by chatGPT
-{$J+} const nextColor: integer = 0; {$J-}
-var
-  darkerSoftColors: array of TColor;
+{$J+} const nextColor:        integer = 0;      {$J-}
+{$J+} var   darkerSoftColors: array of TColor;  {$J-}
 
   function fillSilvers: boolean;
   begin
@@ -128,8 +127,10 @@ var
   end;
 begin
   // Define an array of even darker soft colors
-  SetLength(darkerSoftColors, 10);
-  fillSilvers; // whoever _he_ is!
+  case length(darkerSoftColors) = 0 of TRUE:  begin
+                                                setLength(darkerSoftColors, 10);
+                                                fillSilvers; // whoever _he_ is!
+                                              end;end;
 
   result := darkerSoftColors[nextColor];
   inc(nextColor);
@@ -202,7 +203,7 @@ begin
   FTitle.styleElements  := [];
   FTitle.onClick        := doClick;
   FTitle.OnMouseUp      := doMouseUp;
-  FTitle.font.color     := COLOR_SEGMENT_TITLE; // EXPERIMENTAL
+  FTitle.font.color     := COLOR_SEGMENT_TITLE;
 
   FSegDetails := TLabel.create(SELF);
   FSegDetails.parent        := SELF;

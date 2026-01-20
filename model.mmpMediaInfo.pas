@@ -67,7 +67,7 @@ type
     function getImageHeight:        integer;
     function getImageWidth:         integer;
     function getMediaChapters:      TObjectList<TMediaChapter>;
-    function getMediaInfo(const aURL: string; const aMediaType: TMediaType): boolean;
+    function getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
     function getMediaStreams: TObjectList<TMediaStream>;
     function getMetaData(const aMemo: TMemo):       boolean;
     function getSelectedCount:      integer;
@@ -114,7 +114,7 @@ type
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
-    function getMediaInfo(const aURL: string; const aMediaType: TMediaType): boolean;
+    function getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaStreams:       TObjectList<TMediaStream>;
     function getMetaData(const aMemo: TMemo):       boolean;
@@ -278,7 +278,7 @@ begin
   result := FMediaChapters;
 end;
 
-function TMediaInfo.getMediaInfo(const aURL: string; const aMediaType: TMediaType): boolean;
+function TMediaInfo.getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
 var
   vBitRate:     string;
   vDuration:    string;
@@ -313,7 +313,7 @@ var
     case pos(' (', vDuration) > 1 of TRUE: vDuration := copy(vDuration, 1, pos(' (', vDuration) - 1); end;
 
     inc(vFFmpegIx);
-    vID := format('%.2d', [vFFmpegIx]);
+    vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
   end;
 
@@ -330,7 +330,7 @@ var
     vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',     Info_Text, Info_Name);
 
     inc(vFFmpegIx);
-    vID := format('%.2d', [vFFmpegIx]);
+    vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
@@ -347,7 +347,7 @@ var
     vInfo       := EMPTY;
 
     inc(vFFmpegIx);
-    vID := format('%.2d', [vFFmpegIx]);
+    vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
@@ -365,7 +365,7 @@ var
                  + mediaInfo_Get(FHandle, Stream_Image, aStreamIx, 'Height',                  Info_Text, Info_Name);
 
     inc(vFFmpegIx);
-    vID := format('%.2d', [vFFmpegIx]);
+    vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 6));
   end;
 
@@ -450,7 +450,8 @@ begin
                                           FALSE:
                                                     case tryStrToInt(vDurationStr, FMD.mdDuration) of FALSE: FMD.mdDuration := 0; end;end;
     case FMD.mdDuration = 0 of FALSE: FMD.mdDuration := FMD.mdDuration div MILLISECONDS; end;
-    mmp.cmd(evGSDuration, FMD.mdDuration);
+
+    case bQuiet of FALSE: mmp.cmd(evGSDuration, FMD.mdDuration); end; // unbelievable!
 
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdAudioBitRate)      of FALSE: FMD.mdAudioBitRate     := 0; end;
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FMD.mdWidth)             of FALSE: FMD.mdWidth            := 0; end;
@@ -487,11 +488,13 @@ begin
       case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createAudioStream(vStreamIx); end;
       case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createTextStream (vStreamIx); end;
       case              mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createImageStream(vStreamIx); end;
+      case              mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
+      case              mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: inc(vFFmpegIx); end;
     end;
 
     // {$if BazDebugWindow} case aMediaType = mtVideo of TRUE: debugFormat('%s = %d', [vDurationStr, FMD.mdDuration]); end; {$endif}
 
-    case aMediaType of mtAudio, mtVideo: createChapters; end;
+//    case aMediaType of mtAudio, mtVideo: createChapters; end; // EXPERIMENTALLY COMMENTED OUT
 
     // REDUNDANT!!
 //    for var ix := 0 to FMediaStreams.count - 1 do
@@ -506,7 +509,7 @@ begin
     result := TRUE;
   except end;
 
-  mmp.cmd(evGSHasCoverArt, getHasCoverArt);
+  case bQuiet of FALSE: mmp.cmd(evGSHasCoverArt, getHasCoverArt); end; // unbelievable!
 end;
 
 function TMediaInfo.getMediaStreams: TObjectList<TMediaStream>;

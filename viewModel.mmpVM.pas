@@ -124,8 +124,8 @@ type
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           boolean;
     function    doCleanup(const bConfirm: boolean = TRUE): boolean;
-    function    playEdited:           boolean;
-    function    playNext(const bRecurseFolders: boolean): boolean;
+    function    playEdited(const aFilePath: string):       boolean;
+    function    playNext(const bRecurseFolders: boolean):  boolean;
     function    playPrev:             boolean;
     function    doEscapeKey:          boolean;
     function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
@@ -665,7 +665,7 @@ begin
     evVMMovePlaylist:       movePlaylist(aNotice.tf);
     evVMMoveTimeline:       moveTimeline(aNotice.tf);
     evVMMPPlayCurrent:      mmpPlayCurrent;
-    evVMMPPlayEdited:       playEdited;
+    evVMMPPlayEdited:       playEdited(aNotice.text);
     evVMMPPlayFirst:        mmpPlayFirst;
     evVMMPPlayLast:         mmpPlayLast;
     evVMMPPlayNext:         playNext(aNotice.tf);
@@ -860,15 +860,18 @@ begin
   newRect^.right := newRect^.left + GS.mainForm.width;
 end;
 
-function TVM.playEdited: boolean;
+function TVM.playEdited(const aFilePath: string): boolean;
 begin
-  var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
-  var vPath := extractFilePath(vCurrentItem);
-  var vFile := mmpFileNameWithoutExtension(vCurrentItem);
-  var vExt  := extractFileExt(vCurrentItem);
-  var vFN   := vPath + vFile + ' [edited]' + vExt;
-  case fileExists(changeFileExt(vCurrentItem, '.chp')) of TRUE: vFN := changeFileExt(vFN, '.mkv'); end; // EXPERIMENTAL
-  case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;
+  case fileExists(aFilePath) of  TRUE:  mmpShellExec(paramStr(0), '"' + aFilePath + '" noplaylist'); // forced by view.mmpFormTimeline
+                                FALSE:  begin
+                                          var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;     // requested by user
+                                          var vPath         := extractFilePath(vCurrentItem);
+                                          var vFile         := mmpFileNameWithoutExtension(vCurrentItem);
+                                          var vExt          := extractFileExt(vCurrentItem);
+                                          var vFN           := vPath + vFile + ' [edited]' + vExt;
+
+                                          case fileExists(changeFileExt(vFN, '.chp')) of TRUE: vFN := changeFileExt(vFN, '.mkv'); end;
+                                          case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
 end;
 
 function TVM.playNext(const bRecurseFolders: boolean): boolean;
