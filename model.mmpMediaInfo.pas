@@ -68,7 +68,6 @@ type
     function getImageHeight:        integer;
     function getImageWidth:         integer;
     function getMediaChapters:      TObjectList<TMediaChapter>;
-//    function getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
     function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaStreams: TObjectList<TMediaStream>;
     function getMetaData(const aMemo: TMemo):       boolean;
@@ -118,7 +117,6 @@ type
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
-//    function getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
     function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaStreams:       TObjectList<TMediaStream>;
@@ -290,7 +288,6 @@ begin
   result := FMediaChapters;
 end;
 
-//function TMediaInfo.getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
 function TMediaInfo.getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
 var
   vBitRate:     string;
@@ -545,7 +542,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
-    evMIGetMediaInfo:   aNotice.mediaType := getMediaInfo(aNotice).mediaType; // EXPERIMENTAL
+    evMIGetMediaInfo:   getMediaInfo(aNotice); // aNotice.mediaType might come back modified
     evMIFillMetaData:   getMetaData(aNotice.component as TMemo);
     evMIReqHasCoverArt: aNotice.tf := getHasCoverArt;
     evMIReqDuration:    aNotice.integer := duration;
