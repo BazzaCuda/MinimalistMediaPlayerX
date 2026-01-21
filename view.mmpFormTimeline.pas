@@ -101,7 +101,7 @@ type
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function    fileChapters:             string;
+    function    fileChapterData:          string;
     function    filePathTempChapters(aSuffix: string = ' [chapters]'): string;
     function    filePathLOG:              string;
     function    filePathMMP:              string;
@@ -628,7 +628,7 @@ begin
   mmpScrollTo(FNewestIx);
 end;
 
-function TTimeline.fileChapters: string;
+function TTimeline.fileChapterData: string;
 begin
   result := changeFileExt(filePathOUT, '.chp');
 end;
@@ -712,7 +712,7 @@ var
     result := (TSegment.includedCount = 1) and (segments[0].startSS = 0) and (segments[0].endSS = FMax);
   end;
 begin
-  result      := TRUE;
+  result      := TRUE;   // default to TRUE unless an FFmpeg process fails
   FCancelled  := FALSE;
 
 
@@ -739,7 +739,7 @@ begin
 
   //====== EXPORT SEGMENTS ======
 
-  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
+  case fileExists(fileChapterData) of TRUE: deleteFile(fileChapterData); end;
 
   vSegOneFN   := EMPTY;
 
@@ -779,7 +779,7 @@ begin
                                                     result := FALSE;
                                                     case exportFailRerun(vProgressForm, vSegment.segID) = mrYes of TRUE:  begin
                                                                                                                             vSL.add(segFileEntry(segFile)); // the user will correct the export
-                                                                                                                            TLExecAndWait(cmdLine, rtCMD); end;end;
+                                                                                                                            TLExecAndWait(cmdLine, rtCMD); end;end; // result will still be FALSE
                                               end;
           end;
         end;
@@ -842,15 +842,12 @@ begin
       result := FALSE;
       vProgressForm.subHeading.caption := 'Creating Chapters';
       writeChaptersFromOutput;
-      case fileExists(fileChapters) of TRUE:  begin
+      case fileExists(fileChapterData) of TRUE:  begin
                                 cmdLine := ' -i "' + filePathOUT + '" ';
-                                cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
+                                cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1';
                                 cmdLine := cmdLine + STD_SEG_PARAMS;
 
-//                                case GS.mediaType of mtAudio: cmdLine := cmdLine + ' -c:a aac -q:a 2';
-//                                                     mtVideo: cmdLine := cmdLine + ' -c copy'; end;
-
-                                cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // to temporary [chapters] file
+                                cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // filePathOUT + fileChapterData = temporary [chapters] file
 
                                 log(cmdLine); log(EMPTY);
 
@@ -858,7 +855,8 @@ begin
                                 case result of TRUE:  begin
                                                         var vChapterContainer := mmpChapterContainer(filePathOUT, GS.mediaType);
                                                         case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
-                                                        result := renameFile(filePathTempChapters, vChapterContainer); end;end;end;end;end;end;
+                                                        result := renameFile(filePathTempChapters, vChapterContainer);
+                                                        case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;end;end;end;end;end;end;
   finally
     vProgressForm.free;
   end;
@@ -1248,7 +1246,7 @@ begin
                               FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;
     end;
 
-    vSL.saveToFile(fileChapters);
+    vSL.saveToFile(fileChapterData);
   finally
     vSL.free;
   end;
@@ -1306,7 +1304,7 @@ begin
                               FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;
     end;
 
-    vSL.saveToFile(fileChapters);
+    vSL.saveToFile(fileChapterData);
   finally
     vSL.free;
     segments.free;
