@@ -91,14 +91,6 @@ type
     procedure   setModal(const bModal: boolean);
     procedure   setOnCancel(const aValue: TNotifyEvent);
     procedure   setSubHeading(const aValue: string);
-
-//    property    buttons:      boolean                         write setButtons;
-//    property    handle:       HWND          read getHandle;
-//    property    heading:      TLabel        read FHeading;
-//    property    subHeading:   TLabel        read FSubHeading;
-//    property    modal:        boolean                         write setModal;
-//    property    onCancel:     TNotifyEvent  {read FOnCancel}    write FOnCancel;
-//    property    timer:        TTimer        read FTimer; // TEMPORARY
   end;
 
 function mmpNewProgressForm: IProgressForm;

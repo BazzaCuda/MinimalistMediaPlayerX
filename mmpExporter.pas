@@ -58,7 +58,6 @@ type
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
     function  fileChapterData: string;
     function  filePathLOG: string;
-    function  filePathMMP: string;
     function  filePathOUT(aSuffix: string = ' [edited]'): string;
     function  filePathSEG: string;
     function  filePathTempChapters(aSuffix: string = ' [chapters]'): string;
@@ -331,11 +330,6 @@ end;
 function TExporter.filePathLOG: string;
 begin
   result := changeFileExt(FMediaFilePath, '.log');
-end;
-
-function TExporter.filePathMMP: string;
-begin
-  result := changeFileExt(FMediaFilePath, '.mmp');
 end;
 
 function TExporter.filePathSEG: string;
