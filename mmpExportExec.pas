@@ -60,7 +60,7 @@ begin
 
   case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
                                                       case aRunType of
-                                                        rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow:
+                                                        rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow, rtCmd:
                                                                   begin
                                                                     repeat
                                                                       case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
@@ -69,7 +69,7 @@ begin
                                                                     getExitCodeProcess(vExecInfo.hProcess, vExitCode);
                                                                     result := vExitCode = 0;
                                                                   end;
-                                                        rtCMD: result := TRUE;
+                                                        // rtCMD: result := TRUE;
                                                       end;
                                                       closeHandle(vExecInfo.hProcess);
                                                     end;

@@ -24,11 +24,7 @@ uses
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
-type
-  TRunType = (rtWait, rtDontWait);
-
 function mmpEnvironmentVariable: boolean;
-function mmpExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtWait): boolean;
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
@@ -48,59 +44,6 @@ var
 begin
   getEnvironmentVariable(MMP_CHECK, vBuf, sizeOf(vBuf) - 1);
   result := getLastError <> ERROR_ENVVAR_NOT_FOUND;
-end;
-
-function mmpExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtWait): boolean;
-// rtWait: normal running
-// rtDontWait: we kick off the process and leave the OS to get on with it
-var
-  vExecInfo: TShellExecuteInfo;
-  vExitCode: cardinal;
-begin
-  zeroMemory(@vExecInfo, SizeOf(vExecInfo));
-  with vExecInfo do
-  begin
-    cbSize  := sizeOf(vExecInfo);
-    fMask   := SEE_MASK_NOCLOSEPROCESS;
-    Wnd     := 0;
-    lpVerb  := 'open';
-
-    case aRunType of
-      rtWait:     lpFile := 'cmd';
-      rtDontWait: lpFile := 'cmd';
-    end;
-
-    case aRunType of
-      rtWait:     lpParameters := pChar(aCmdLine);
-      rtDontWait: lpParameters := pChar(' /c ' + aCmdLine);
-    end;
-
-    lpDirectory := pWideChar(mmpExePath);
-
-    case aRunType of
-      rtWait:     nShow := SW_HIDE;
-      rtDontWait: nShow := SW_HIDE;
-    end;
-
-  end;
-
-  result := ShellExecuteEx(@vExecInfo);
-
-  case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
-                                                      case aRunType of
-                                                        rtWait: begin
-                                                                    repeat
-                                                                      case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
-                                                                                                                                                                                    FALSE: BREAK; end;
-                                                                    until TRUE = FALSE;
-                                                                    getExitCodeProcess(vExecInfo.hProcess, vExitCode);
-                                                                    result := vExitCode = 0;
-                                                                  end;
-                                                        rtDontWait: result := TRUE;
-                                                      end;
-                                                      closeHandle(vExecInfo.hProcess);
-                                                    end;
-  end;
 end;
 
 function mmpExecCommandLine(const aCommandLine: string): boolean;

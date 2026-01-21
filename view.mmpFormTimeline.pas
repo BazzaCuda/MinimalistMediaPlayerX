@@ -496,35 +496,10 @@ begin
   mmpScrollTo(FNewestIx);
 end;
 
-//function TTimeline.fileChapterData: string;
-//begin
-//  result := changeFileExt(filePathOUT, '.chp');
-//end;
-//
-//function TTimeline.filePathTempChapters(aSuffix: string = ' [chapters]'): string;
-//begin
-//  result := mmpChapterContainer(filePathOUT(aSuffix), GS.mediaType);
-//end;
-//
-//function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
-//begin
-//  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
-//end;
-//
-//function TTimeline.filePathLOG: string;
-//begin
-//  result := changeFileExt(FMediaFilePath, '.log');
-//end;
-//
 function TTimeline.filePathMMP: string;
 begin
   result := changeFileExt(FMediaFilePath, '.mmp');
 end;
-//
-//function TTimeline.filePathSEG: string;
-//begin
-//  result := changeFileExt(FMediaFilePath, '.seg');
-//end;
 
 function TTimeline.getMax: integer;
 begin
