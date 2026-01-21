@@ -101,13 +101,12 @@ type
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function    fileChapters:         string;
-    function    filePathChapters(aSuffix: string = ' [chapters]'): string;
-    function    filePathLOG:          string;
-    function    filePathOutMKV:       string;
-    function    filePathMMP:          string;
-    function    filePathOUT(aSuffix:  string = ' [edited]'): string;
-    function    filePathSEG:          string;
+    function    fileChapters:             string;
+    function    filePathTempChapters(aSuffix: string = ' [chapters]'): string;
+    function    filePathLOG:              string;
+    function    filePathMMP:              string;
+    function    filePathOUT(aSuffix: string = ' [edited]'): string;
+    function    filePathSEG:              string;
     function    lengthenSegment(const aSegment: TSegment): boolean;
     function    loadChapters: TStringList;
     function    loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
@@ -390,7 +389,7 @@ begin
   var vSaveUndo := FALSE;
 
   case key of
-    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS);
+    ord('C'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS, TL.segmentAtSS(TL.positionSS).deleted, TL.segmentAtSS(TL.positionSS).deleted);
 
     ord('I'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS, TRUE);
     ord('O'): vSaveUndo := TL.cutSegment(TL.segmentAtSS(TL.positionSS), TL.positionSS, FALSE, TRUE);
@@ -634,14 +633,9 @@ begin
   result := changeFileExt(filePathOUT, '.chp');
 end;
 
-function TTimeline.filePathChapters(aSuffix: string = ' [chapters]'): string;
+function TTimeline.filePathTempChapters(aSuffix: string = ' [chapters]'): string;
 begin
-  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + '.mkv';
-end;
-
-function TTimeline.filePathOutMKV: string;
-begin
-  result := changeFileExt(filePathOUT, '.mkv')
+  result := filePathOUT(aSuffix);
 end;
 
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
@@ -830,6 +824,7 @@ begin
       cmdLine := cmdLine + STD_SEG_PARAMS;
 
       cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
+
       log(cmdLine); log(EMPTY);
 
       result := TLExecAndWait(cmdLine);
@@ -841,7 +836,8 @@ begin
     //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
 
     // if concat was ok, we can create chapters from the multiple .segnn files
-    // An MKV container format and a .mkv file extension will be enforced
+    // for Audio: An M4A container format and a .m4a file extension will be enforced
+    // for Video: An MKV container format and a .mkv file extension will be enforced
     case result and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
       result := FALSE;
       vProgressForm.subHeading.caption := 'Creating Chapters';
@@ -850,12 +846,15 @@ begin
                                 cmdLine := ' -i "' + filePathOUT + '" ';
                                 cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
                                 cmdLine := cmdLine + STD_SEG_PARAMS;
-                                cmdLine := cmdLine + ' -c copy -y "' + filePathChapters + '"'; // to temporary [chapters] file
+                                cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // to temporary [chapters] file
+
                                 log(cmdLine); log(EMPTY);
+
                                 result  := TLExecAndWait(cmdLine);
                                 case result of TRUE:  begin
-                                                        case fileExists(filePathOutMKV) of TRUE: mmpDeleteThisFile(filePathOutMKV, [], TRUE, TRUE, FALSE); end;
-                                                        result := renameFile(filePathChapters, filePathOutMKV); end;end;end;end;end;end;
+                                                        var vFileWithChapters := mmpChapterContainer(filePathOUT, GS.mediaType);
+                                                        case fileExists(vFileWithChapters) of TRUE: mmpDeleteThisFile(vFileWithChapters, [], TRUE, TRUE, FALSE); end;
+                                                        result := renameFile(filePathTempChapters, vfileWithChapters); end;end;end;end;end;end;
   finally
     vProgressForm.free;
   end;
@@ -864,7 +863,7 @@ begin
 
   //====== PLAY THE EXPORT MEDIA FILE ======
 
-  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of  TRUE: mmp.cmd(evVMMPPlayEdited, filePathOutMKV);
+  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of  TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, GS.mediaType));
                                                                                   FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;end;
 end;
 

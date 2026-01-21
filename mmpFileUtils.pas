@@ -26,6 +26,8 @@ uses
   mmpConsts;
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
+function mmpChapterContainer(const aFolderPath: string; const aMediaType: TMediaType): string;
+function mmpChapterFile(const aFolderPath: string): string;
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;
 function mmpCheckRecycleBin(const aFilePath: string): boolean;
 function mmpCleanFile(const aFileName: string): string;
@@ -73,6 +75,20 @@ begin
                                           mtImage: case CF.asBoolean[CONF_IMAGE_DELETE] of FALSE: EXIT; end;
                                           mtVideo: case CF.asBoolean[CONF_VIDEO_DELETE] of FALSE: EXIT; end;end;end;
   result    := TRUE;
+end;
+
+
+function mmpChapterContainer(const aFolderPath: string; const aMediaType: TMediaType): string;
+begin
+  result := aFolderPath;
+  case GS.mediaType of
+    mtAudio: result := changeFileExt(aFolderPath, '.m4a');
+    mtVideo: result := changeFileExt(aFolderPath, '.mkv'); end;
+end;
+
+function mmpChapterFile(const aFolderPath: string): string;
+begin
+  result := changeFileExt(aFolderPath, '.chp');
 end;
 
 function mmpCheckIfEditFriendly(const aFilePath: string): boolean;

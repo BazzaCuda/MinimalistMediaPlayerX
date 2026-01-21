@@ -870,7 +870,7 @@ begin
                                           var vExt          := extractFileExt(vCurrentItem);
                                           var vFN           := vPath + vFile + ' [edited]' + vExt;
 
-                                          case CF.asBoolean[CONF_CHAPTERS_WRITE] and fileExists(changeFileExt(vFN, '.chp')) of TRUE: vFN := changeFileExt(vFN, '.mkv'); end;
+                                          case CF.asBoolean[CONF_CHAPTERS_WRITE] and fileExists(mmpChapterFile(vFN)) of TRUE: vFN := mmpChapterContainer(vFN, GS.mediaType); end;
                                           case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
 end;
 

@@ -130,7 +130,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyDn and keyIs(D) and NOT ctrl                                              of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(E) and     ctrl and NOT shift                                of TRUE: result := koToggleEditMode; end;
     case keyUp and keyIs(E) and NOT ctrl and NOT shift                                of TRUE: result := koMuteUnmute; end;
-    case keyUp and keyIs(E) and NOT ctrl and     shift  and     GS.showingTimeline    of TRUE: result := koPlayEdited; end;
+    case keyUp and keyIs(E) and NOT ctrl and     shift  {and     GS.showingTimeline}  of TRUE: result := koPlayEdited; end;
     case keyUp and keyIs(F) and     ctrl                                              of TRUE: result := koExploreFolder; end;
     case keyUp and keyIs(F) and NOT ctrl                and NOT GS.showingTimeline    of TRUE: result := koFullscreen; end;
     case keyDn and keyIs(G)                                                           of TRUE: result := koGreaterWindow; end;
