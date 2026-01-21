@@ -148,7 +148,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>&quot;B:\Movies\A Summer Story (1988) [music, Georges Delerue].mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Images\AryaStark on the IronThrone.jpg&quot;</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -170,7 +170,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
         <DCCReference Include="mmpExceptionHandler.pas"/>
-        <DCCReference Include="mmpExporterInterface.pas"/>
+        <DCCReference Include="mmpExporter.pas"/>
         <DCCReference Include="mmpExportExec.pas"/>
         <DCCReference Include="mmpFileUtils.pas"/>
         <DCCReference Include="mmpFolderNavigation.pas"/>

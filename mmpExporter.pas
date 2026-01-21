@@ -1,0 +1,427 @@
+{   MMP: Minimalist Media Player
+    Copyright (C) 2021-2099 Baz Cuda
+    https://github.com/BazzaCuda/MinimalistMediaPlayerX
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+}
+unit mmpExporter;
+
+interface
+
+uses
+  bazAction,
+  mmpConsts;
+
+type
+  IExporter = interface
+    function copySourceFile:  boolean;
+    function exportEdits:     boolean;
+  end;
+
+function mmpNewExporter(const aMediaFilePath: string; const aMediaType: TMediaType): IExporter;
+
+implementation
+
+uses
+  winApi.windows,
+  system.ioUtils, system.classes, system.generics.collections, system.sysUtils,
+  vcl.controls,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  bazCmd,
+  mmpExportExec, mmpFileUtils, mmpKeyboardUtils, mmpUtils,
+  TSegmentClass,
+  model.mmpConfigFile, model.mmpMediaInfo,
+  view.mmpFormProgress;
+
+type
+
+  TExporter = class(TInterfacedObject, IExporter)
+  strict private
+    FMediaFilePath: string;
+    FMediaType:     TMediaType;
+
+    FCancelled:     boolean;
+    FProcessHandle: THandle;
+  private
+    function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
+    function  fileChapterData: string;
+    function  filePathLOG: string;
+    function  filePathMMP: string;
+    function  filePathOUT(aSuffix: string = ' [edited]'): string;
+    function  filePathSEG: string;
+    function  filePathTempChapters(aSuffix: string = ' [chapters]'): string;
+    function  log(const aLogEntry: string): boolean;
+    function  segFileEntry(const aSegFile: string): string;
+    function  writeChaptersFromOutput: TVoid;
+
+    procedure onCancel(sender: TObject);
+  public
+    constructor Create(const aMediaFilePath: string; const aMediaType: TMediaType);
+
+    function  copySourceFile:  boolean;
+    function  exportEdits:     boolean;
+  end;
+
+function mmpNewExporter(const aMediaFilePath: string; const aMediaType: TMediaType): IExporter;
+begin
+  result := TExporter.create(aMediaFilePath, aMediaType);
+end;
+
+function segments: TObjectList<TSegment>; // alias
+begin
+  result := TSegment.segments;
+end;
+
+{ TExporter }
+
+function TExporter.copySourceFile: boolean;
+//====== DO FFMPEG COPY ONLY ======
+const
+  COPY_PARAMS = ' -map 0 -c copy -ignore_unknown';
+var
+  cmdLine: string;
+begin
+  result      := FALSE;
+  FCancelled  := FALSE;
+
+  var vProgressForm         := mmpNewProgressForm;
+  vProgressForm.heading     := 'Copying source file';
+  vProgressForm.subHeading  := 'Please wait';
+  vProgressForm.onCancel    := onCancel;
+  vProgressForm.formShow;
+
+    cmdLine := '-hide_banner';
+    cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
+    cmdLine := cmdLine + COPY_PARAMS;
+    var vFilePathOUT := filePathOUT(' [c]');
+
+    case lowerCase(extractFileExt(vFilePathOUT)) = '.m4v' of TRUE: vFilePathOUT := changeFileExt(vFilePathOUT, '.mp4'); end; // FFmpeg fix ?
+
+    cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
+    log(cmdLine); log(EMPTY);
+
+    result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled);
+
+    case result of TRUE:  begin
+                            case fileExists(vFilePathOUT) of FALSE: EXIT; end;
+
+                            var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
+                            var vPosition   := mmp.cmd(evMPReqPosition).integer;
+                            var vWasMuted   := CF.asBoolean[CONF_MUTED];
+
+                            vProgressForm.heading := 'Loading Copy';
+
+                            mmp.cmd(evVMReloadPlaylist);
+                            mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
+                            mmp.cmd(evPLFind, vFilePathOUT);
+                            mmp.cmd(evPLFormLoadBox);
+
+                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // mute while we load and reposition the copy
+                            FMediaFilePath := vFilePathOUT;
+                            mmp.cmd(evVMMPPlayCurrent);
+                            while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
+                            mmp.cmd(evMPSeek, vPosition);
+                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // unmute now we're at the correct timestamp
+
+                            case vWasPlaying of FALSE: mmp.cmd(evMPPause); end;
+                          end;end;
+end;
+
+constructor TExporter.Create(const aMediaFilePath: string; const aMediaType: TMediaType);
+begin
+  inherited Create;
+
+  FMediaFilePath  := aMediaFilePath;
+  FMediaType      := aMediaType;
+end;
+
+function TExporter.exportEdits: boolean;
+const
+  STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+var
+  cmdLine:    string;
+  vMaps:      string;
+  vSegOneFN:  string;
+
+begin
+  result      := TRUE;   // default to TRUE unless an FFmpeg process fails
+
+
+
+  //====== SETUP PROGRESS FORM ======
+
+  var vProgressForm       := mmpNewProgressForm;
+  vProgressForm.onCancel  := onCancel;
+  var vS1 := EMPTY; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
+  var vS2 := EMPTY; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
+  vProgressForm.heading := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
+  vProgressForm.formShow;
+
+
+
+  //====== EXPORT SEGMENTS ======
+
+  case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
+
+  vSegOneFN   := EMPTY;
+
+    case mmpCtrlKeyDown of FALSE: begin
+      var vSL                 := TStringList.create;
+      try
+        vSL.saveToFile(filePathSEG); // clear previous contents
+        for var vSegment in segments do begin
+          case vSegment.deleted of TRUE: CONTINUE; end;
+
+          cmdLine := '-hide_banner'; // -v debug';
+
+          cmdLine := cmdLine + ' -ss "' + intToStr(vSegment.startSS) + '"';
+          cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
+          cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
+
+          vMaps := EMPTY;
+          for var vMediaStream in MI.mediaStreams do
+            case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;
+
+          vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
+          cmdLine := cmdLine + vMaps;
+          cmdLine := cmdLine + STD_SEG_PARAMS;
+
+          var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
+          case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
+
+          cmdLine := cmdLine + ' -y "' + segFile + '"';
+          log(cmdLine); log(EMPTY);
+
+          vProgressForm.dummyLabel.caption := extractFileName(segFile);
+          vProgressForm.subHeading := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeadingWidth - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
+
+          case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled) of
+                  TRUE:   vSL.add(segFileEntry(segFile));
+                  FALSE:  begin
+                            result := FALSE;
+                            case exportFailRerun(vProgressForm, vSegment.segID) = mrYes of TRUE:  begin
+                                                                                                    vSL.add(segFileEntry(segFile)); // the user will correct the export
+                                                                                                    mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;end;end; // result will still be FALSE
+        end;
+        vSL.saveToFile(filePathSEG);
+      finally
+        vSL.free;
+      end;end;end;
+
+    case result of FALSE: EXIT; end;
+
+
+
+    //====== DELETE PREVIOUS EXPORT ======
+
+    // Previously, FFmpeg would have overwritten the output file, except now we don't run FFmpeg if we only have one segment
+    // and the rename below would fail if we don't delete the output file or at least rename it. So we may as well delete it.
+    case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end; // use the user's specified deleteMethod; don't mpvStop the video being edited
+
+    while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
+
+    //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
+
+    // single segment so rename and bail out
+    var vDoConcat := vSegOneFN = EMPTY;
+    case vDoConcat of FALSE: renameFile(vSegOneFN, filePathOUT); end;
+
+
+
+    //====== CONCAT MULTIPLE SEGMENTS ======
+
+    case vDoConcat of TRUE: begin
+      // concatenate exported segments
+      vProgressForm.subHeading := 'Joining segments';
+      cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
+
+      // writeChaptersFromInput;
+      // case fileExists(fileChapters) of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapters +  '" -map_metadata 1'; end;
+
+      for var i := 0 to MI.selectedCount - 1 do
+        cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
+
+      cmdLine := cmdLine + STD_SEG_PARAMS;
+
+      cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
+
+      log(cmdLine); log(EMPTY);
+
+      result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+      case result of FALSE: case exportFailRerun(vProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
+    end;end;
+
+
+
+    //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
+
+    // if concat was ok, we can create chapters from the multiple .segnn files
+    // for Audio: An M4A container format and a .m4a file extension will be enforced
+    // for Video: An MKV container format and a .mkv file extension will be enforced
+    case result and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
+      result := FALSE;
+      vProgressForm.subHeading := 'Creating Chapters';
+      writeChaptersFromOutput;
+      case fileExists(fileChapterData) of TRUE:  begin
+                                cmdLine := ' -i "' + filePathOUT + '" ';
+                                cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1';
+                                cmdLine := cmdLine + STD_SEG_PARAMS;
+
+                                cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // filePathOUT + fileChapterData = temporary [chapters] file
+
+                                log(cmdLine); log(EMPTY);
+
+                                result  := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+                                case result of TRUE:  begin
+                                                        var vChapterContainer := mmpChapterContainer(filePathOUT, FMediaType);
+                                                        case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
+                                                        result := renameFile(filePathTempChapters, vChapterContainer);
+                                                        case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;end;end;end;end;end;end;
+
+  vProgressForm := NIL;
+
+  //====== PLAY THE EXPORT MEDIA FILE ======
+
+  case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of   TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
+                                                                                                      FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;end;
+end;
+
+
+function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
+begin
+  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading := 'Concatenation failed';
+                          FALSE: aProgressForm.subHeading := format('Export of seg%s failed', [aSegID]); end;
+
+  aProgressForm.modal := TRUE;
+
+  aProgressForm.formHide;
+  result := aProgressForm.formShowModal;
+
+  aProgressForm.modal := FALSE;
+  aProgressForm.formShow; // reshow non-modally after the showModal
+end;
+
+function TExporter.fileChapterData: string;
+begin
+  result := changeFileExt(filePathOUT, '.chp');
+end;
+
+function TExporter.filePathTempChapters(aSuffix: string = ' [chapters]'): string;
+begin
+  result := mmpChapterContainer(filePathOUT(aSuffix), FMediaType);
+end;
+
+function TExporter.filePathOUT(aSuffix: string = ' [edited]'): string;
+begin
+  result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
+end;
+
+function TExporter.filePathLOG: string;
+begin
+  result := changeFileExt(FMediaFilePath, '.log');
+end;
+
+function TExporter.filePathMMP: string;
+begin
+  result := changeFileExt(FMediaFilePath, '.mmp');
+end;
+
+function TExporter.filePathSEG: string;
+begin
+  result := changeFileExt(FMediaFilePath, '.seg');
+end;
+
+function TExporter.log(const aLogEntry: string): boolean;
+begin
+  var vLogFile          := filePathLOG;
+  var vLog              := TStringList.create;
+  vLog.defaultEncoding  := TEncoding.UTF8;
+  try
+    case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
+    vLog.add(aLogEntry);
+    vLog.saveToFile(vLogFile);
+  finally
+    vLog.free;
+  end;
+end;
+
+procedure TExporter.onCancel(sender: TObject);
+begin
+  FCancelled := TRUE;
+  terminateProcess(FProcessHandle, 1);
+end;
+
+function TExporter.segFileEntry(const aSegFile: string): string;
+begin
+  result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
+end;
+
+function TExporter.writeChaptersFromOutput: TVoid;
+// get the actual segment lengths that FFmpeg created
+type
+  TSegment = record
+    duration: integer;
+    title:    string;
+  end;
+var
+  segments: TList<TSegment>;
+  vSegment: TSegment;
+begin
+  segments := TList<TSegment>.create;
+  var vMI := mmpNewMediaInfo;  // Dependency Injection takes a back seat to Pragmatism, yet again :D
+
+  for var vSegLine in TFile.ReadAllLines(filePathSEG) do begin
+    var vParts  := vSegLine.split(['''']);
+    var vFile   := vParts[1];
+
+    // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
+    case vMI.getMediaInfo(newNotice(vFile, mtVideo), TRUE).tf of   TRUE:  begin
+                                                                            vSegment.duration := vMI.duration;
+                                                                            vSegment.title    := vMI.title;
+                                                                            segments.add(vSegment); end;end;
+  end;
+
+  var vSL := TStringList.create;
+  try
+    vSL.add(';FFMETADATA1');
+
+    var vTimeStamp := 0;
+    var vSegCount  := 0;
+
+    for vSegment in segments do begin
+
+      vSL.add('[CHAPTER]');
+      vSL.add('TIMEBASE=1/1');
+      vSL.add(format('START=%d', [vTimeStamp]));
+
+      case vTimeStamp = 0 of   TRUE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration]));
+                              FALSE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration - 1])); end;
+
+      inc(vSegCount);
+      vSL.add(format('title=%s', [vSegment.title]));
+
+      case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;
+                              FALSE: vTimeStamp := vTimeStamp + vSegment.duration; end;
+    end;
+
+    vSL.saveToFile(fileChapterData);
+  finally
+    vSL.free;
+    segments.free;
+  end;
+end;
+
+
+end.

@@ -100,7 +100,7 @@ type
   TAboutFormProxy = class(TInterfacedObject, IAboutForm)
   strict private
     FProgramUpdates:  IProgramUpdates;
-    FProgressForm:    TProgressForm;
+    FProgressForm:    IProgressForm;
     FSubscriber:      ISubscriber;
   private
     procedure   timerTimer(Sender: TObject);
@@ -384,13 +384,13 @@ end;
 
 function TAboutFormProxy.showProgressForm: boolean;
 begin
-  FProgressForm := TProgressForm.create(NIL);
+  FProgressForm := mmpNewProgressForm;
   try
     FProgressForm.modal               := FALSE;
     FProgressForm.buttons             := FALSE;
-    FProgressForm.heading.caption     := MMP_TITLE;
-    FProgressForm.subHeading.caption  := 'Loading About Box...';
-    FProgressForm.show;
+    FProgressForm.heading             := MMP_TITLE;
+    FProgressForm.subHeading          := 'Loading About Box...';
+    FProgressForm.formShow;
     mmpProcessMessages;
     setWindowPos(FProgressForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
     FProgressForm.timer.interval  := 1 * MILLISECONDS;
@@ -403,7 +403,7 @@ end;
 procedure TAboutFormProxy.timerTimer(Sender: TObject);
 begin
   FProgressForm.timer.enabled := FALSE;
-  freeAndNIL(FProgressForm);
+  FProgressForm := NIL;
 end;
 
 initialization

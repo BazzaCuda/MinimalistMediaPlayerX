@@ -65,6 +65,7 @@ type
   IMediaInfo = interface
     function getAVSStreamCount:     integer;
     function getChapterCount:       integer;
+    function getDuration:           integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
     function getMediaChapters:      TObjectList<TMediaChapter>;
@@ -79,6 +80,7 @@ type
 
     property avsStreamCount:    integer                     read getAVSStreamCount;
     property chapterCount:      integer                     read getChapterCount;
+    property duration:          integer read getDuration;
     property imageHeight:       integer                     read getImageHeight;
     property imageWidth:        integer                     read getImageWidth;
     property mediaChapters:     TObjectList<TMediaChapter>  read getMediaChapters;
@@ -88,6 +90,20 @@ type
     property title:             string                      read getTitle;
   end;
 
+
+function MI: IMediaInfo;
+function mmpNewMediaInfo: IMediaInfo;
+
+implementation
+
+uses
+  system.generics.defaults, system.sysUtils, system.timeSpan,
+  mediaInfoDLL,
+  bazCmd,
+  mmpFileUtils, mmpFormatting, mmpUtils,
+  _debugWindow;
+
+type
   TMediaInfo = class(TInterfacedObject, IMediaInfo)
   private
     FMD:                TMetaData;
@@ -144,22 +160,17 @@ type
     property XY:                  string  read getXY;
   end;
 
-function MI: IMediaInfo;
-
-implementation
-
-uses
-  system.generics.defaults, system.sysUtils, system.timeSpan,
-  mediaInfoDLL,
-  bazCmd,
-  mmpFileUtils, mmpFormatting, mmpUtils,
-  _debugWindow;
 
 function MI: IMediaInfo;
 {$J+} const gMI: IMediaInfo = NIL; {$J-}
 begin
   case gMI = NIL of TRUE: gMI := TMediaInfo.create; end;
   result := gMI;
+end;
+
+function mmpNewMediaInfo: IMediaInfo;
+begin
+  result := TMediaInfo.create;
 end;
 
 { TMediaInfo }

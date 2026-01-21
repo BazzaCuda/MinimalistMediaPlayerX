@@ -33,7 +33,14 @@ uses
 
 type
   IProgressForm = interface
-    function    getTimer: TTimer;
+    function    getDummyLabel:          TLabel;
+    function    getHandle:              HWND;
+    function    getSubHeadingWidth:     integer;
+    function    getTimer:               TTimer;
+
+    procedure   formHide;
+    procedure   formShow;
+    function    formShowModal: integer;
 
     procedure   setButtons(const bVisible: boolean);
     procedure   setHeading(const aValue: string);
@@ -41,15 +48,18 @@ type
     procedure   setOnCancel(const aValue: TNotifyEvent);
     procedure   setSubHeading(const aValue: string);
 
-    property    buttons: boolean write setButtons;
-    property    heading: string write setHeading;
-    property    modal: boolean write setModal;
-    property    onCancel: TNotifyEvent write setOnCancel;
-    property    subHeading: string write setSubHeading;
-    property    timer: TTimer read getTimer;
+    property    buttons:          boolean                               write setButtons;
+    property    dummyLabel:       TLabel      read getDummyLabel;
+    property    handle:           HWND        read getHandle;
+    property    heading:          string                                write setHeading;
+    property    modal:            boolean                               write setModal;
+    property    onCancel:         TNotifyEvent                          write setOnCancel;
+    property    subHeading:       string                                write setSubHeading;
+    property    subHeadingWidth:  integer     read getSubHeadingWidth;
+    property    timer:            TTimer      read getTimer;
   end;
 
-  TProgressForm = class(TForm, IProgressForm)
+  TProgressForm = class(TForm)
     Panel1:     TPanel;
     FSubHeading: TLabel;
     FHeading:   TLabel;
@@ -64,13 +74,17 @@ type
     FRefCount: IInterface;
 
     FOnCancel:  TNotifyEvent;
-   protected
-    function _AddRef: integer; stdcall;
-    function _Release: integer; stdcall;
+  private
+  protected
   public
-    constructor Create(AOwner: TComponent); override;
+    function    getDummyLabel:        TLabel;
+    function    getHandle:            HWND;
+    function    getSubHeadingWidth:   integer;
+    function    getTimer:             TTimer;
 
-    function    getTimer: TTimer;
+    procedure   formHide;
+    procedure   formShow;
+    function    formShowModal: integer;
 
     procedure   setButtons(const bVisible: boolean);
     procedure   setHeading(const aValue: string);
@@ -78,12 +92,13 @@ type
     procedure   setOnCancel(const aValue: TNotifyEvent);
     procedure   setSubHeading(const aValue: string);
 
-    property    buttons:      boolean                         write setButtons;
-    property    heading:      TLabel        read FHeading;
-    property    subHeading:   TLabel        read FSubHeading;
-    property    modal:        boolean                         write setModal;
-    property    onCancel:     TNotifyEvent  {read FOnCancel}    write FOnCancel;
-    property    timer:        TTimer        read FTimer; // TEMPORARY
+//    property    buttons:      boolean                         write setButtons;
+//    property    handle:       HWND          read getHandle;
+//    property    heading:      TLabel        read FHeading;
+//    property    subHeading:   TLabel        read FSubHeading;
+//    property    modal:        boolean                         write setModal;
+//    property    onCancel:     TNotifyEvent  {read FOnCancel}    write FOnCancel;
+//    property    timer:        TTimer        read FTimer; // TEMPORARY
   end;
 
 function mmpNewProgressForm: IProgressForm;
@@ -93,22 +108,48 @@ implementation
 uses
   mmpConsts;
 
+type
+  TProxyForm = class(TInterfacedObject, IProgressForm)
+  strict private
+    FForm: TProgressForm;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+
+    function    getDummyLabel:        TLabel;
+    function    getHandle:            HWND;
+    function    getSubHeadingWidth:   integer;
+    function    getTimer:             TTimer;
+
+    procedure   formHide;
+    procedure   formShow;
+    function    formShowModal: integer;
+
+    procedure   setButtons(const bVisible: boolean);
+    procedure   setHeading(const aValue: string);
+    procedure   setModal(const bModal: boolean);
+    procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setSubHeading(const aValue: string);
+
+    property    buttons:      boolean                         write setButtons;
+    property    handle:       HWND          read getHandle;
+    property    heading:      string                          write setHeading;
+    property    modal:        boolean                         write setModal;
+    property    onCancel:     TNotifyEvent  {read FOnCancel}  write setOnCancel;
+    property    subHeading:   string                          write setSubHeading;
+    property    timer:        TTimer        read getTimer; // TEMPORARY
+  end;
+
 {$R *.dfm}
 
 function mmpNewProgressForm: IProgressForm;
 begin
-  result := TProgressForm.create(NIL);
+  result := TProxyForm.create;
 end;
 
 procedure TProgressForm.btnCancelClick(Sender: TObject);
 begin
   case assigned(FOnCancel) of TRUE: FOnCancel(SELF); end;
-end;
-
-constructor TProgressForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FRefCount := TInterfacedObject.Create;
 end;
 
 procedure TProgressForm.FormCreate(Sender: TObject);
@@ -136,6 +177,36 @@ begin
     panel1.color     := DARK_MODE_LIGHT;
   end;
   setModal(FALSE);
+end;
+
+procedure TProgressForm.formHide;
+begin
+  SELF.hide;
+end;
+
+procedure TProgressForm.formShow;
+begin
+  SELF.show;
+end;
+
+function TProgressForm.formShowModal: integer;
+begin
+  result := SELF.showModal;
+end;
+
+function TProgressForm.getDummyLabel: TLabel;
+begin
+  result := dummyLabel;
+end;
+
+function TProgressForm.getHandle: HWND;
+begin
+  result := SELF.HANDLE;
+end;
+
+function TProgressForm.getSubHeadingWidth: integer;
+begin
+  result := FSubHeading.width;
 end;
 
 function TProgressForm.getTimer: TTimer;
@@ -173,15 +244,78 @@ begin
   FSubHeading.caption := aValue;
 end;
 
-function TProgressForm._AddRef: integer;
+{ TProxyForm }
+
+constructor TProxyForm.Create;
 begin
-  result := FRefCount._AddRef;
+  inherited;
+  FForm := TProgressForm.create(NIL);
 end;
 
-function TProgressForm._Release: integer;
+destructor TProxyForm.Destroy;
 begin
-  result := FRefCount._Release;
-  case result = 0 of TRUE: Destroy; end;
+  FForm.free;
+  inherited;
+end;
+
+procedure TProxyForm.formHide;
+begin
+  FForm.formHide;
+end;
+
+procedure TProxyForm.formShow;
+begin
+  FForm.formShow;
+end;
+
+function TProxyForm.formShowModal: integer;
+begin
+  result := FForm.formShowModal;
+end;
+
+function TProxyForm.getDummyLabel: TLabel;
+begin
+  result := FForm.dummyLabel;
+end;
+
+function TProxyForm.getHandle: HWND;
+begin
+  result := FForm.getHandle;
+end;
+
+function TProxyForm.getSubHeadingWidth: integer;
+begin
+  result := FForm.getSubHeadingWidth;
+end;
+
+function TProxyForm.getTimer: TTimer;
+begin
+  result := FForm.getTimer;
+end;
+
+procedure TProxyForm.setButtons(const bVisible: boolean);
+begin
+  FForm.setButtons(bVisible);
+end;
+
+procedure TProxyForm.setHeading(const aValue: string);
+begin
+  FForm.setHeading(aValue);
+end;
+
+procedure TProxyForm.setModal(const bModal: boolean);
+begin
+  FForm.setModal(bModal);
+end;
+
+procedure TProxyForm.setOnCancel(const aValue: TNotifyEvent);
+begin
+  FForm.setOnCancel(aValue);
+end;
+
+procedure TProxyForm.setSubHeading(const aValue: string);
+begin
+  FForm.setSubHeading(aValue);
 end;
 
 end.

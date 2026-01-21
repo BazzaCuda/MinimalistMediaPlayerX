@@ -66,7 +66,7 @@ type
     FLocked:                  boolean;
     FMPVHost:                 TMPVHost;
     FPlayingSlideshow:        boolean;
-    FProgressForm:            TProgressForm;
+    FProgressForm:            IProgressForm;
     FShowing:                 boolean;
     FSlideshowDirection:      TSlideshowDirection;
     FSubscriber:              ISubscriber;
@@ -266,7 +266,7 @@ begin
   mpv := NIL; // do this first or the user will briefly see the blank form background
   case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
   case FThumbs        = NIL of FALSE: FThumbs := NIL; end;
-  case FProgressForm  = NIL of FALSE: freeAndNIL(FProgressForm); end;
+  case FProgressForm  = NIL of FALSE: FProgressForm := NIL; end;
   mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
@@ -319,14 +319,14 @@ begin
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);
   FThumbs.onThumbClick := onThumbClick;
 
-  FProgressForm := TProgressForm.create(NIL);
+  FProgressForm := mmpNewProgressForm;
   try
     FProgressForm.modal               := FALSE;
     FProgressForm.buttons             := FALSE;
-    FProgressForm.heading.caption     := 'MMP Image & Thumbnail Browser';
-    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.subHeading.caption := 'Creating Thumbnails';
-                                        FALSE: FProgressForm.subHeading.caption := 'Opening'; end;
-    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.show; end;
+    FProgressForm.heading             := 'MMP Image & Thumbnail Browser';
+    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.subHeading := 'Creating Thumbnails';
+                                        FALSE: FProgressForm.subHeading := 'Opening'; end;
+    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.formShow; end;
     mmpProcessMessages;
     mmpSetWindowTopmost(FProgressForm.handle);
     FProgressForm.timer.interval  := FTimerInterval;
@@ -789,7 +789,7 @@ begin
   case GS.mainForm <> NIL of TRUE: showWindow(GS.mainForm.handle, SW_HIDE); end;
 
   FShowing := TRUE;
-  freeAndNIL(FProgressForm);
+  FProgressForm := NIL;
 
   case FInitialHost of
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);

@@ -101,7 +101,7 @@ type
     function    createDefaultSegment(const aMax: integer): string;
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
-    function    exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
+    function    exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
     function    fileChapterData:          string;
     function    filePathTempChapters(aSuffix: string = ' [chapters]'): string;
     function    filePathLOG:              string;
@@ -126,6 +126,7 @@ type
     function    writeChaptersFromOutput: TVoid;
   protected
     function    exportSegments: boolean;
+    function    exportSegmentsOLD: boolean;
     procedure   onCancelButton(sender: TObject);
     procedure   onCancelCopy(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
@@ -163,7 +164,7 @@ uses
   system.ioUtils, system.math,
   vcl.dialogs,
   bazCmd,
-  mmpExporterInterface, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
+  mmpExporter, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
@@ -564,26 +565,27 @@ begin
   result := TSegment.segments;
 end;
 
-function TTimeLine.exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
+function TTimeLine.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
-  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
-                          FALSE: aProgressForm.subHeading.caption := format('Export of seg%s failed', [aSegID]); end;
+  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading := 'Concatenation failed';
+                          FALSE: aProgressForm.subHeading := format('Export of seg%s failed', [aSegID]); end;
 
   aProgressForm.modal := TRUE;
 
-  aProgressForm.hide;
-  result := aProgressForm.showModal;
+  aProgressForm.formHide;
+  result := aProgressForm.formShowModal;
 
   aProgressForm.modal := FALSE;
-  aProgressForm.show; // reshow non-modally after the showModal
+  aProgressForm.formShow; // reshow non-modally after the showModal
 end;
 
-//function TTimeline.exportSegments: boolean;
-//begin
-//  result := mmpExport(FMediaFilePath);
-//end;
-
 function TTimeline.exportSegments: boolean;
+begin
+  case mmpCtrlKeyDown and mmpShiftKeyDown of   TRUE: result := mmpNewExporter(FMediaFilePath, GS.mediaType).copySourceFile;
+                                              FALSE: result := mmpNewExporter(FMediaFilePath, GS.mediaType).exportEdits; end;
+end;
+
+function TTimeline.exportSegmentsOLD: boolean;
 const
   STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
 var
@@ -591,10 +593,10 @@ var
   vMaps:      string;
   vSegOneFN:  string;
 
-  function maxSegment: boolean;
-  begin
-    result := (TSegment.includedCount = 1) and (segments[0].startSS = 0) and (segments[0].endSS = FMax);
-  end;
+//  function maxSegment: boolean;
+//  begin
+//    result := (TSegment.includedCount = 1) and (segments[0].startSS = 0) and (segments[0].endSS = FMax);
+//  end;
 begin
   result      := TRUE;   // default to TRUE unless an FFmpeg process fails
 
@@ -603,30 +605,27 @@ begin
   //====== DO FFMPEG COPY ONLY ======
 
   case mmpCtrlKeyDown and mmpShiftKeyDown of TRUE:  begin
-                                                      mmpExporter(FMediaFilePath, GS.mediaType).copySourceFile;
+                                                      mmpNewExporter(FMediaFilePath, GS.mediaType).copySourceFile;
                                                       EXIT;
                                                     end;end;
 
-
-
   //====== SETUP PROGRESS FORM ======
 
-  var vProgressForm       := TProgressForm.create(NIL);
+  var vProgressForm       := mmpNewProgressForm;
   vProgressForm.onCancel  := onCancelButton;
   var vS1 := EMPTY; case segments.count   > 1 of  TRUE: vS1 := 's'; end; // it bugs me that so many programmers don't bother to do this! :D
   var vS2 := EMPTY; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
-  vProgressForm.heading.caption := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
-  vProgressForm.show;
+  vProgressForm.heading := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
+  vProgressForm.formShow;
 
 
 
   //====== EXPORT SEGMENTS ======
 
-  case fileExists(fileChapterData) of TRUE: deleteFile(fileChapterData); end;
+  case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
 
   vSegOneFN   := EMPTY;
 
-  try
     case mmpCtrlKeyDown of FALSE: begin
       var vSL                 := TStringList.create;
       try
@@ -655,7 +654,7 @@ begin
           log(cmdLine); log(EMPTY);
 
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
-          vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
+          vProgressForm.subHeading         := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeadingWidth - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
           case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled) of
                   TRUE:   vSL.add(segFileEntry(segFile));
@@ -694,7 +693,7 @@ begin
 
     case vDoConcat of TRUE: begin
       // concatenate exported segments
-      vProgressForm.subHeading.caption := 'Joining segments';
+      vProgressForm.subHeading := 'Joining segments';
       cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
       // writeChaptersFromInput;
@@ -722,7 +721,7 @@ begin
     // for Video: An MKV container format and a .mkv file extension will be enforced
     case result and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
       result := FALSE;
-      vProgressForm.subHeading.caption := 'Creating Chapters';
+      vProgressForm.subHeading := 'Creating Chapters';
       writeChaptersFromOutput;
       case fileExists(fileChapterData) of TRUE:  begin
                                 cmdLine := ' -i "' + filePathOUT + '" ';
@@ -739,9 +738,6 @@ begin
                                                         case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
                                                         result := renameFile(filePathTempChapters, vChapterContainer);
                                                         case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;end;end;end;end;end;end;
-  finally
-    vProgressForm.free;
-  end;
 
 
 
@@ -1146,21 +1142,17 @@ var
   vSegment: TSegment;
 begin
   segments := TList<TSegment>.create;
-  var vMI := TMediaInfo.create;  // Dependency Injection takes a back seat to Pragmatism, yet again :D
-  try
+  var vMI := mmpNewMediaInfo;  // Dependency Injection takes a back seat to Pragmatism, yet again :D
 
-    for var vSegLine in TFile.ReadAllLines(filePathSEG) do begin
-      var vParts  := vSegLine.split(['''']);
-      var vFile   := vParts[1];
+  for var vSegLine in TFile.ReadAllLines(filePathSEG) do begin
+    var vParts  := vSegLine.split(['''']);
+    var vFile   := vParts[1];
 
-      // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
-      case vMI.getMediaInfo(newNotice(vFile, mtVideo), TRUE).tf of   TRUE:  begin
-                                                                              vSegment.duration := vMI.duration;
-                                                                              vSegment.title    := vMI.title;
-                                                                              segments.add(vSegment); end;end;
-    end;
-  finally
-    vMI.free;
+    // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
+    case vMI.getMediaInfo(newNotice(vFile, mtVideo), TRUE).tf of   TRUE:  begin
+                                                                            vSegment.duration := vMI.duration;
+                                                                            vSegment.title    := vMI.title;
+                                                                            segments.add(vSegment); end;end;
   end;
 
   var vSL := TStringList.create;
