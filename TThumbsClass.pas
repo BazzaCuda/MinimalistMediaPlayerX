@@ -23,6 +23,7 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   model.mmpPlaylist,
   TMPVHostClass, TThumbClass;
@@ -341,7 +342,7 @@ begin
 
 
   case aGetMediaInfo      of  TRUE: case FPlaylist.hasItems of  TRUE: begin
-                                                                        MI.getMediaInfo(aURL, mtImage);
+                                                                        MI.getMediaInfo(newNotice(aURL, mtImage));
                                                                         mmpSetPanelText(FStatusBar, pnXXYY, format('%d x %d', [MI.imageWidth, MI.imageHeight]));
                                                                       end;
                                                                FALSE: mmpSetPanelText(FStatusBar, pnXXYY, EMPTY); end;

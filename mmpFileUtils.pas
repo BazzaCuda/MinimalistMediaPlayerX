@@ -82,7 +82,7 @@ function mmpChapterContainer(const aFolderPath: string; const aMediaType: TMedia
 begin
   result := aFolderPath;
   case GS.mediaType of
-    mtAudio: result := changeFileExt(aFolderPath, '.m4a');
+    mtAudio: result := changeFileExt(aFolderPath, '.mkv');
     mtVideo: result := changeFileExt(aFolderPath, '.mkv'); end;
 end;
 

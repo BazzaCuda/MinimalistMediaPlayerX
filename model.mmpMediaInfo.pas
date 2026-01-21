@@ -68,7 +68,8 @@ type
     function getImageHeight:        integer;
     function getImageWidth:         integer;
     function getMediaChapters:      TObjectList<TMediaChapter>;
-    function getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+//    function getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+    function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaStreams: TObjectList<TMediaStream>;
     function getMetaData(const aMemo: TMemo):       boolean;
     function getSelectedCount:      integer;
@@ -117,7 +118,8 @@ type
     function getChapterCount:       integer;
     function getImageHeight:        integer;
     function getImageWidth:         integer;
-    function getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+//    function getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+    function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaStreams:       TObjectList<TMediaStream>;
     function getMetaData(const aMemo: TMemo):       boolean;
@@ -288,7 +290,8 @@ begin
   result := FMediaChapters;
 end;
 
-function TMediaInfo.getMediaInfo(const aURL: string; const aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+//function TMediaInfo.getMediaInfo(const aURL: string; var aMediaType: TMediaType; const bQuiet: boolean = FALSE): boolean;
+function TMediaInfo.getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
 var
   vBitRate:     string;
   vDuration:    string;
@@ -433,7 +436,10 @@ var
   end;
 
 begin
-  result := FALSE;
+  result := aNotice;
+  case aNotice = NIL of TRUE: EXIT; end;
+
+  result.tf := FALSE;
 
   case loadDLL of FALSE: EXIT; end;
 
@@ -441,7 +447,7 @@ begin
   FMediaStreams.clear;
   FMediaChapters.clear;
 
-  FURL := aURL;
+  FURL := aNotice.text;
 
   try
     mediaInfo_Open(FHandle, PWideChar(FURL));
@@ -503,8 +509,10 @@ begin
       case              mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: inc(vFFmpegIx); end;
     end;
 
+  case (FMD.mdVideoCount = 0) and (extractFileExt(FURL).toLower = '.mkv') of TRUE: aNotice.mediaType := mtAudio; end; // EXPERIMENTAL
+
   finally mediaInfo_close(FHandle); end;
-    result := TRUE;
+    result.tf := TRUE;
   except end;
 
   case bQuiet of FALSE: mmp.cmd(evGSHasCoverArt, getHasCoverArt); end; // unbelievable!
@@ -537,7 +545,7 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case aNotice.event of
-    evMIGetMediaInfo:   getMediaInfo(aNotice.text, aNotice.mediaType);
+    evMIGetMediaInfo:   aNotice.mediaType := getMediaInfo(aNotice).mediaType; // EXPERIMENTAL
     evMIFillMetaData:   getMetaData(aNotice.component as TMemo);
     evMIReqHasCoverArt: aNotice.tf := getHasCoverArt;
     evMIReqDuration:    aNotice.integer := duration;

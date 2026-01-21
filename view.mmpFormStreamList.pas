@@ -390,7 +390,7 @@ begin
 
   clStreams.itemCount  := 0;
 
-  MI.getMediaInfo(aMediaFilePath, mtVideo);
+  MI.getMediaInfo(newNotice(aMediaFilePath, mtVideo));
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
 end;

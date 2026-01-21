@@ -296,7 +296,7 @@ begin
   FIgnoreTicks    := TRUE;
 
   FMediaType      := MT.mediaType(aURL);
-  mmp.cmd(evMIGetMediaInfo, aURL, FMediaType);
+  FMediaType      := mmp.cmd(evMIGetMediaInfo, aURL, FMediaType).mediaType;
 
   mpvSetKeepOpen(mpv, TRUE);  // VITAL! Prevents the slideshow from going haywire - so the next line won't immediately issue an mpsEnd for an image
   mpvOpenFile(mpv, aURL);     // let MPV issue an mpsEnd event for the current file before we change to the media type for the new file

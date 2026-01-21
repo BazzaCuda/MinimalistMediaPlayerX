@@ -157,18 +157,19 @@ type
     procedure notifySubscribers(const aNotice: INotice);
   end;
 
-function newNotice:                                                                                         INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aBoolean:    boolean):                                 INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aComponent:  TComponent):                              INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aInteger:    integer):                                 INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aMediaType:  TMediaType):                              INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aMsg:        TMessage):                                INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aPt:         TPoint):                                  INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aReasonType: TReasonType):                             INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aShiftState: TShiftState):                             INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aText:       string = EMPTY):                          INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aText:       string; const aMediaType: TMediaType):    INotice; overload;
-function newNotice(const aEvent: TNoticeEvent; const aWndRec:     TWndRec):                                 INotice; overload;
+function newNotice:                                                                                           INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aBoolean:    boolean):                                  INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aComponent:  TComponent):                               INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aInteger:    integer):                                  INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aMediaType:  TMediaType):                               INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aMsg:        TMessage):                                 INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aPt:         TPoint):                                   INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aReasonType: TReasonType):                              INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aShiftState: TShiftState):                              INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aText:       string = EMPTY):                           INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aText:       string; const aMediaType: TMediaType):     INotice; overload;
+function newNotice(const aEvent:  TNoticeEvent; const aWndRec:     TWndRec):                                  INotice; overload;
+function newNotice(const aString: string;       const aMediaType:  TMediaType):                               INotice; overload;
 
 implementation
 
@@ -299,6 +300,14 @@ begin
   result.event      := aEvent;
   result.wndRec     := aWndRec;
 end;
+
+function newNotice(const aString: string; const aMediaType:  TMediaType): INotice; overload;
+begin
+  result            := newNotice;
+  result.text       := aString;
+  result.mediaType  := aMediaType;
+end;
+
 
 { TNotice }
 

@@ -635,7 +635,7 @@ end;
 
 function TTimeline.filePathTempChapters(aSuffix: string = ' [chapters]'): string;
 begin
-  result := filePathOUT(aSuffix);
+  result := mmpChapterContainer(filePathOUT(aSuffix), GS.mediaType);
 end;
 
 function TTimeline.filePathOUT(aSuffix: string = ' [edited]'): string;
@@ -846,6 +846,10 @@ begin
                                 cmdLine := ' -i "' + filePathOUT + '" ';
                                 cmdLine := cmdLine + ' -i "' +  fileChapters + '" -map_metadata 1';
                                 cmdLine := cmdLine + STD_SEG_PARAMS;
+
+//                                case GS.mediaType of mtAudio: cmdLine := cmdLine + ' -c:a aac -q:a 2';
+//                                                     mtVideo: cmdLine := cmdLine + ' -c copy'; end;
+
                                 cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // to temporary [chapters] file
 
                                 log(cmdLine); log(EMPTY);
@@ -1004,6 +1008,7 @@ end;
 procedure TTimeline.onCancelButton(sender: TObject);
 begin
   FCancelled := TRUE;
+  terminateProcess(FProcessHandle, 1); // EXPERIMENTAL
 end;
 
 procedure TTimeline.onCancelCopy(sender: TObject);
@@ -1269,10 +1274,10 @@ begin
       var vFile   := vParts[1];
 
       // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
-      case vMI.getMediaInfo(vFile, mtVideo, TRUE) of TRUE: begin
-                                                      vSegment.duration := vMI.duration;
-                                                      vSegment.title    := vMI.title;
-                                                      segments.add(vSegment); end;end;
+      case vMI.getMediaInfo(newNotice(vFile, mtVideo), TRUE).tf of   TRUE:  begin
+                                                                              vSegment.duration := vMI.duration;
+                                                                              vSegment.title    := vMI.title;
+                                                                              segments.add(vSegment); end;end;
     end;
   finally
     vMI.free;
