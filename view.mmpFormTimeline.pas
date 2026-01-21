@@ -852,9 +852,9 @@ begin
 
                                 result  := TLExecAndWait(cmdLine);
                                 case result of TRUE:  begin
-                                                        var vFileWithChapters := mmpChapterContainer(filePathOUT, GS.mediaType);
-                                                        case fileExists(vFileWithChapters) of TRUE: mmpDeleteThisFile(vFileWithChapters, [], TRUE, TRUE, FALSE); end;
-                                                        result := renameFile(filePathTempChapters, vfileWithChapters); end;end;end;end;end;end;
+                                                        var vChapterContainer := mmpChapterContainer(filePathOUT, GS.mediaType);
+                                                        case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
+                                                        result := renameFile(filePathTempChapters, vChapterContainer); end;end;end;end;end;end;
   finally
     vProgressForm.free;
   end;
