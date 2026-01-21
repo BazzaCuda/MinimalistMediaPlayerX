@@ -27,14 +27,12 @@ uses
   {$define designTime} // temporary until we sort out the uses clause
   {$ifdef designTime}
   winApi.messages, winApi.Windows,
-  system.classes, system.generics.collections, system.syncObjs, system.sysUtils, system.variants,
-  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  system.classes, system.generics.collections,
+  system.sysUtils, vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
   {$endif}
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
-  view.mmpFormProgress,
-  TSegmentClass;
+  TSegmentClass, Vcl.Imaging.pngimage;
 
 type
 
@@ -146,11 +144,9 @@ function TL: TTimeline;
 implementation
 
 uses
-  winApi.shellApi,
-  system.ioUtils, system.math,
-  vcl.dialogs,
+  system.math,
   bazCmd,
-  mmpExporter, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
+  mmpExporter, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
