@@ -57,6 +57,8 @@ uses
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   mmpDialogs in 'mmpDialogs.pas',
   mmpExceptionHandler in 'mmpExceptionHandler.pas',
+  mmpExporter in 'mmpExporter.pas',
+  mmpExportExec in 'mmpExportExec.pas',
   mmpFileUtils in 'mmpFileUtils.pas',
   mmpFolderNavigation in 'mmpFolderNavigation.pas',
   mmpFolderUtils in 'mmpFolderUtils.pas',

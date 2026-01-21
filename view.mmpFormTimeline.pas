@@ -34,10 +34,12 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   view.mmpFormProgress,
-  TSegmentClass;
+  TSegmentClass,
+
+  mmpExportExec; // TEMPORARY
 
 type
-  TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow, rtFFprobe, rtFFProbeShow);
+//  TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow, rtFFprobe, rtFFProbeShow);
 
   TTimelineForm = class(TForm)
     pnlCursor:          TPanel;
@@ -97,8 +99,8 @@ type
 
     function    addUndo(const aAction: string): string;
     function    copySourceFile: boolean;
+    function    createDefaultSegment(const aMax: integer): string;
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
-    function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
     function    exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
     function    fileChapterData:          string;
@@ -139,7 +141,6 @@ type
     function    undo:           boolean;
     function    validKey(key: WORD; aShift: TShiftState): boolean;
 
-    property    cancelled:      boolean               read FCancelled;
     property    dragging:       boolean               read FDragging      write FDragging;
     property    max:            integer               read getMax         write setMax;
     property    mediaFilePath:  string                read FMediaFilePath;
@@ -147,7 +148,6 @@ type
     property    positionSS:     integer               read getPosition    write setPosition;
     property    posOnly:        integer                                   write setPosOnly;
     property    prevAction:     string                read FPrevAction    write FPrevAction;
-    property    processHandle:  THandle                                   write FProcessHandle;
     property    segCount:       integer               read getSegCount;
     property    segments:       TObjectList<TSegment> read getSegments;
   end;
@@ -156,7 +156,6 @@ function focusTimeline: boolean;
 function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
 function shutTimeline: boolean;
 function TL: TTimeline;
-function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
 
 implementation
 
@@ -165,71 +164,10 @@ uses
   system.ioUtils, system.math,
   vcl.dialogs,
   bazCmd,
-  mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
+  mmpExporter, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
-
-function TLExecAndWait(const aCmdLine: string; const aRunType: TRunType = rtFFmpeg): boolean;
-// rtFFMPeg: normal running - the user just gets to see progress dialogs
-// rtCMD: a segment export failed, so we rerun showing the cmd prompt box so the user can view the FFMPeg error messages
-var
-  vExecInfo: TShellExecuteInfo;
-  vExitCode: cardinal;
-begin
-  zeroMemory(@vExecInfo, SizeOf(vExecInfo));
-  with vExecInfo do
-  begin
-    cbSize  := sizeOf(vExecInfo);
-    fMask   := SEE_MASK_NOCLOSEPROCESS;
-    Wnd     := 0;
-    lpVerb  := 'open';
-
-    case aRunType of
-      rtFFmPeg,
-      rtFFmpegShow:   lpFile := 'ffmpeg';
-      rtFFprobe,
-      rtFFProbeShow:  lpFile := 'ffprobe';
-      rtCMD:          lpFile := 'cmd';
-    end;
-
-    case aRunType of
-      rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow: lpParameters := pChar(aCmdLine);
-      rtCMD:                                            lpParameters := pChar(' /K ffmpeg ' + aCmdLine); // + ' > "B:\Downloads\New Folder\out.txt" 2>&1');
-    end;
-
-    lpDirectory := pWideChar(mmpExePath);
-
-    case aRunType of
-      rtFFmpeg:       nShow := SW_HIDE;
-      rtCMD:          nShow := SW_SHOW;
-      rtFFmpegShow:   nShow := SW_SHOW;
-      rtFFprobe:      nShow := SW_HIDE;
-      rtFFProbeShow:  nShow := SW_SHOW;
-    end;
-
-  end;
-
-  result := ShellExecuteEx(@vExecInfo);
-  case aRunType in [rtFFprobe, rtFFProbeShow] of FALSE: TL.ProcessHandle := vExecInfo.hProcess; end;
-
-  case result AND (vExecInfo.hProcess <> 0) of TRUE: begin // no handle if the process was activated by DDE
-                                                      case aRunType of
-                                                        rtFFmpeg, rtFFmpegShow, rtFFprobe, rtFFProbeShow:
-                                                                  begin
-                                                                    repeat
-                                                                      case msgWaitForMultipleObjects(1, vExecInfo.hProcess, FALSE, INFINITE, QS_ALLINPUT) = (WAIT_OBJECT_0 + 1) of   TRUE: mmpProcessMessages;
-                                                                                                                                                                                    FALSE: BREAK; end;
-                                                                    until TL.cancelled;
-                                                                    getExitCodeProcess(vExecInfo.hProcess, vExitCode);
-                                                                    result := vExitCode = 0;
-                                                                  end;
-                                                        rtCMD: result := TRUE;
-                                                      end;
-                                                      closeHandle(vExecInfo.hProcess);
-                                                    end;
-  end;
-end;
 
 var gTimelineForm: TTimelineForm = NIL;
 function focusTimeline: boolean;
@@ -502,7 +440,7 @@ begin
     cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
     log(cmdLine); log(EMPTY);
 
-    result := TLExecAndWait(cmdLine, rtFFmpegShow);
+    result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled);
 
     case result of TRUE:  begin
                             case fileExists(vFilePathOUT) of FALSE: EXIT; end;
@@ -542,6 +480,13 @@ begin
   FUndoList.ownsObjects := TRUE;
   FRedoList.ownsObjects := TRUE;
   FSubscriber           := appEvents.subscribe(newSubscriber(onNotify));
+end;
+
+function TTimeline.createDefaultSegment(const aMax: integer): string;
+begin
+  var vIx := segments.add(TSegment.create(0, aMax, onRedraw, onSegmentDblClick));
+  case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[vIx].title := 'Default Segment'; end;
+  result := format('0-%d,0=Default Segment', [aMax]);
 end;
 
 function TTimeline.cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
@@ -678,13 +623,6 @@ begin
   result := TSegment.segments;
 end;
 
-function TTimeline.defaultSegment(const aMax: integer): string;
-begin
-  var vIx := segments.add(TSegment.create(0, aMax, onRedraw, onSegmentDblClick));
-  case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[vIx].title := 'Default Segment'; end;
-  result := format('0-%d,0=Default Segment', [aMax]);
-end;
-
 function TTimeLine.exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
   case aSegID = EMPTY of   TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
@@ -698,6 +636,11 @@ begin
   aProgressForm.modal := FALSE;
   aProgressForm.show; // reshow non-modally after the showModal
 end;
+
+//function TTimeline.exportSegments: boolean;
+//begin
+//  result := mmpExport(FMediaFilePath);
+//end;
 
 function TTimeline.exportSegments: boolean;
 const
@@ -774,14 +717,13 @@ begin
           vProgressForm.dummyLabel.caption := extractFileName(segFile);
           vProgressForm.subHeading.caption := mmpWrapText(extractFileName(segFile), vProgressForm.dummyLabel.width, vProgressForm.subHeading.width - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
-          case TLExecAndWait(cmdLine) of   TRUE:  vSL.add(segFileEntry(segFile));
-                                          FALSE:  begin
-                                                    result := FALSE;
-                                                    case exportFailRerun(vProgressForm, vSegment.segID) = mrYes of TRUE:  begin
-                                                                                                                            vSL.add(segFileEntry(segFile)); // the user will correct the export
-                                                                                                                            TLExecAndWait(cmdLine, rtCMD); end;end; // result will still be FALSE
-                                              end;
-          end;
+          case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled) of
+                  TRUE:   vSL.add(segFileEntry(segFile));
+                  FALSE:  begin
+                            result := FALSE;
+                            case exportFailRerun(vProgressForm, vSegment.segID) = mrYes of TRUE:  begin
+                                                                                                    vSL.add(segFileEntry(segFile)); // the user will correct the export
+                                                                                                    mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;end;end; // result will still be FALSE
         end;
         vSL.saveToFile(filePathSEG);
       finally
@@ -827,8 +769,8 @@ begin
 
       log(cmdLine); log(EMPTY);
 
-      result := TLExecAndWait(cmdLine);
-      case result of FALSE: case exportFailRerun(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
+      result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+      case result of FALSE: case exportFailRerun(vProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
     end;end;
 
 
@@ -851,7 +793,7 @@ begin
 
                                 log(cmdLine); log(EMPTY);
 
-                                result  := TLExecAndWait(cmdLine);
+                                result  := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
                                 case result of TRUE:  begin
                                                         var vChapterContainer := mmpChapterContainer(filePathOUT, GS.mediaType);
                                                         case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
@@ -882,7 +824,7 @@ begin
   mmpRefreshStreamInfo(aMediaFilePath);
   FMediaFilePath := aMediaFilePath;
   FMax           := aMax;
-  addUndo(defaultSegment(aMax)); // always give the user a vanilla Ctrl-Z starting point
+  addUndo(createDefaultSegment(aMax)); // always give the user a vanilla Ctrl-Z starting point
   case fileExists(filePathMMP) of  TRUE: addUndo(loadSegments);
                                   FALSE: begin
                                            var  vSL := loadChapters;

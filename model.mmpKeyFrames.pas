@@ -72,7 +72,7 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   view.mmpFormTimeline,
   bazCmd,
-  mmpConsts, mmpFileUtils, mmpUtils,
+  mmpConsts, mmpExportExec, mmpFileUtils, mmpUtils,
   _debugWindow;
 
 function keyFrameManager: IKeyFrameManager;
@@ -261,7 +261,9 @@ begin
   var vKeyFileO := ' -o ' + '"' + vKeyFile + '"';
   var vInFile   := ' "' + aFilePath + '"';
 
-  TLExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe);
+  var vProcessHandle: THandle;
+  var vCancelled:     boolean := FALSE;
+  mmpExportExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe, vProcessHandle, vCancelled);
 
   case fileExists(vKeyFile) of   TRUE: aStringList.loadFromFile(vKeyFile);
                                 FALSE: EXIT; end;
