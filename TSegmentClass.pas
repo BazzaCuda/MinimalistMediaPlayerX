@@ -35,6 +35,7 @@ type
     FDeleted:     boolean;
     FEndSS:       integer;
     FOldColor:    TColor;
+    FOnDblClick:  TNotifyEvent;
     FRedraw:      TNotifyEvent;
     FSegDetails:  TLabel;
     FSegID:       TLabel;
@@ -64,11 +65,12 @@ type
 
   protected
     procedure doClick(Sender: TObject);
+    procedure doDblClick(Sender: TObject);
     procedure doMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure Paint; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
-    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
+    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
     function    delete: boolean;
     function    restore: boolean;
     procedure   setDisplayDetails;
@@ -81,6 +83,7 @@ type
     property    ix:        integer read getIx;
     property    newTitle:  string                     write setNewTitle;
     property    oldColor:  TColor  read FOldColor     write FOldColor;
+    property    onDoubleClick: TNotifyEvent read FOnDblclick write FOnDblClick;
     property    redraw:    TNotifyEvent read FRedraw  write FRedraw;
     property    segID:     string  read getSegID      write setSegID;
     property    selected:  boolean read FSelected     write setSelected;
@@ -167,7 +170,7 @@ begin
   freeAndNil(FSegments);
 end;
 
-constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
+constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
 begin
   inherited Create(NIL);
   parent            := FParent;
@@ -177,8 +180,10 @@ begin
   font.style        := [fsBold];
   alignment         := taLeftJustify;
   onClick           := doClick;
+  onDblClick        := doDblClick;
   onMouseUp         := doMouseUp;
   FRedraw           := onRedraw;
+  FOnDblClick       := onDoubleClick;
 
   doubleBuffered    := TRUE;
 
@@ -195,6 +200,7 @@ begin
   FSegID.left       := 4;
   FSegID.styleElements := [];
   FSegID.onClick    := doClick;
+  FSegID.OnDblClick := doDblClick;
   FSegID.OnMouseUp  := doMouseUp;
   FSegID.font.color := COLOR_SEGMENT_ID;
 
@@ -204,6 +210,7 @@ begin
   FTitle.left           := 4;
   FTitle.styleElements  := [];
   FTitle.onClick        := doClick;
+  FTitle.onDblClick     := doDblClick;
   FTitle.OnMouseUp      := doMouseUp;
   FTitle.font.color     := COLOR_SEGMENT_TITLE;
 
@@ -213,6 +220,7 @@ begin
   FSegDetails.left          := 4;
   FSegDetails.styleElements := [];
   FSegDetails.onClick       := doClick;
+  FSegDetails.onDblClick    := doDblClick;
   FSegDetails.OnMouseUp     := doMouseUp;
 
   FTrashCan := TImage.create(SELF);
@@ -223,6 +231,7 @@ begin
   FTrashCan.width     := 41;
   FTrashCan.visible   := FALSE;
   FTrashCan.onClick   := doClick;
+  FTrashCan.onDblClick  := doDblClick;
   FTrashCan.OnMouseUp := doMouseUp;
 
   case bDeleted of TRUE: SELF.delete; end;
@@ -239,7 +248,14 @@ end;
 
 procedure TSegment.doClick(Sender: TObject);
 begin
+  debug('panel click');
   setAsSelSeg;
+end;
+
+procedure TSegment.doDblClick(Sender: TObject);
+begin
+  debug('panel dblClick');
+  case assigned(FOnDblClick) of TRUE: FOnDblClick(Sender); end;
 end;
 
 procedure TSegment.doMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

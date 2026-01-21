@@ -100,14 +100,14 @@ type
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    defaultSegment(const aMax: integer): string;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
-    function    exportFail(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function    fileChapters: string;
+    function    exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
+    function    fileChapters:         string;
     function    filePathChapters(aSuffix: string = ' [chapters]'): string;
-    function    filePathLOG: string;
-    function    filePathMKV: string;
-    function    filePathMMP: string;
-    function    filePathOUT(aSuffix: string = ' [edited]'): string;
-    function    filePathSEG: string;
+    function    filePathLOG:          string;
+    function    filePathOutMKV:       string;
+    function    filePathMMP:          string;
+    function    filePathOUT(aSuffix:  string = ' [edited]'): string;
+    function    filePathSEG:          string;
     function    lengthenSegment(const aSegment: TSegment): boolean;
     function    loadChapters: TStringList;
     function    loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
@@ -129,6 +129,7 @@ type
     procedure   onCancelButton(sender: TObject);
     procedure   onCancelCopy(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
+    procedure   onSegmentDblClick(Sender: TObject);
     procedure   onRedraw(sender: TObject);
   public
     function    clear:          boolean;
@@ -165,7 +166,7 @@ uses
   system.ioUtils, system.math,
   vcl.dialogs,
   bazCmd,
-  mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpKeyboardUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
@@ -552,7 +553,7 @@ begin
   var newStartSS := aPositionSS;
   case aSegment.endSS < newStartSS of TRUE: EXIT; end; // guard against "rounding" errors
 
-  var newSegment := TSegment.create(newStartSS, aSegment.EndSS, onRedraw); // this will be the righthand segment of the two. The old segment will finish 1 second to the left of it.
+  var newSegment := TSegment.create(newStartSS, aSegment.EndSS, onRedraw, onSegmentDblClick); // this will be the righthand segment of the two. The old segment will finish 1 second to the left of it.
   aSegment.EndSS := system.math.max(newStartSS - 1, 1); // don't allow endSS = 0 when startSS = 1
 
   case bDeleteLeft    of TRUE: delSegment(aSegment); end;
@@ -638,7 +639,7 @@ begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + '.mkv';
 end;
 
-function TTimeline.filePathMKV: string;
+function TTimeline.filePathOutMKV: string;
 begin
   result := changeFileExt(filePathOUT, '.mkv')
 end;
@@ -685,12 +686,12 @@ end;
 
 function TTimeline.defaultSegment(const aMax: integer): string;
 begin
-  var vIx := segments.add(TSegment.create(0, aMax)); // NIL = don't redraw, saveSegments and wipe the .mmp file
+  var vIx := segments.add(TSegment.create(0, aMax, onRedraw, onSegmentDblClick));
   case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[vIx].title := 'Default Segment'; end;
-  result := format('0-%d,0', [aMax]);
+  result := format('0-%d,0=Default Segment', [aMax]);
 end;
 
-function TTimeLine.exportFail(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
+function TTimeLine.exportFailRerun(const aProgressForm: TProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
   case aSegID = EMPTY of   TRUE: aProgressForm.subHeading.caption := 'Concatenation failed';
                           FALSE: aProgressForm.subHeading.caption := format('Export of seg%s failed', [aSegID]); end;
@@ -720,14 +721,18 @@ begin
   result      := TRUE;
   FCancelled  := FALSE;
 
+
+
+  //====== DO FFMPEG COPY ONLY ======
+
   case mmpCtrlKeyDown and mmpShiftKeyDown of TRUE:  begin
                                                       copySourceFile;
                                                       EXIT;
                                                     end;end;
 
-  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
 
-  vSegOneFN   := EMPTY;
+
+  //====== SETUP PROGRESS FORM ======
 
   var vProgressForm       := TProgressForm.create(NIL);
   vProgressForm.onCancel  := onCancelButton;
@@ -736,7 +741,14 @@ begin
   vProgressForm.heading.caption := format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]);
   vProgressForm.show;
 
-  // export segments
+
+
+  //====== EXPORT SEGMENTS ======
+
+  case fileExists(fileChapters) of TRUE: deleteFile(fileChapters); end;
+
+  vSegOneFN   := EMPTY;
+
   try
     case mmpCtrlKeyDown of FALSE: begin
       var vSL                 := TStringList.create;
@@ -771,9 +783,9 @@ begin
           case TLExecAndWait(cmdLine) of   TRUE:  vSL.add(segFileEntry(segFile));
                                           FALSE:  begin
                                                     result := FALSE;
-                                                    case exportFail(vProgressForm, vSegment.segID) = mrYes of TRUE: begin
-                                                                                                                      vSL.add(segFileEntry(segFile)); // the user will correct the export
-                                                                                                                      TLExecAndWait(cmdLine, rtCMD); end;end;
+                                                    case exportFailRerun(vProgressForm, vSegment.segID) = mrYes of TRUE:  begin
+                                                                                                                            vSL.add(segFileEntry(segFile)); // the user will correct the export
+                                                                                                                            TLExecAndWait(cmdLine, rtCMD); end;end;
                                               end;
           end;
         end;
@@ -784,16 +796,25 @@ begin
 
     case result of FALSE: EXIT; end;
 
+
+
+    //====== DELETE PREVIOUS EXPORT ======
+
     // Previously, FFmpeg would have overwritten the output file, except now we don't run FFmpeg if we only have one segment
     // and the rename below would fail if we don't delete the output file or at least rename it. So we may as well delete it.
     case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end; // use the user's specified deleteMethod; don't mpvStop the video being edited
 
     while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 
+    //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
+
+    // single segment so rename and bail out
     var vDoConcat := vSegOneFN = EMPTY;
-    case vDoConcat of FALSE:  begin
-                                renameFile(vSegOneFN, filePathOUT);
-                                mmp.cmd(evVMMPPlayEdited); end;end;
+    case vDoConcat of FALSE: renameFile(vSegOneFN, filePathOUT); end;
+
+
+
+    //====== CONCAT MULTIPLE SEGMENTS ======
 
     case vDoConcat of TRUE: begin
       // concatenate exported segments
@@ -812,11 +833,16 @@ begin
       log(cmdLine); log(EMPTY);
 
       result := TLExecAndWait(cmdLine);
-      case result of FALSE: case exportFail(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
+      case result of FALSE: case exportFailRerun(vProgressForm) = mrYes of TRUE: result := TLExecAndWait(cmdLine, rtCMD); end;end;
     end;end;
 
+
+
+    //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
+
     // if concat was ok, we can create chapters from the multiple .segnn files
-    case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
+    // An MKV container format and a .mkv file extension will be enforced
+    case result and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: begin
       result := FALSE;
       vProgressForm.subHeading.caption := 'Creating Chapters';
       writeChaptersFromOutput;
@@ -828,13 +854,17 @@ begin
                                 log(cmdLine); log(EMPTY);
                                 result  := TLExecAndWait(cmdLine);
                                 case result of TRUE:  begin
-                                                        case fileExists(filePathMKV) of TRUE: mmpDeleteThisFile(filePathMKV, [], TRUE, TRUE, FALSE); end;
-                                                        result := renameFile(filePathChapters, filePathMKV); end;end;end;end;end;end;
+                                                        case fileExists(filePathOutMKV) of TRUE: mmpDeleteThisFile(filePathOutMKV, [], TRUE, TRUE, FALSE); end;
+                                                        result := renameFile(filePathChapters, filePathOutMKV); end;end;end;end;end;end;
   finally
     vProgressForm.free;
   end;
 
-  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of  TRUE: mmp.cmd(evVMMPPlayEdited, changeFileExt(filePathOUT, '.mkv'));
+
+
+  //====== PLAY THE EXPORT MEDIA FILE ======
+
+  case result and FPlayEdited of TRUE:  case CF.asBoolean[CONF_CHAPTERS_WRITE] of  TRUE: mmp.cmd(evVMMPPlayEdited, filePathOutMKV);
                                                                                   FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;end;
 end;
 
@@ -906,7 +936,7 @@ begin
       case posEquals > 0 of  TRUE: vTitle := copy(vSL[i], posEquals + 1, length(vSL[i]));
                             FALSE: vTitle := EMPTY; end;
 
-      var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, vDeleted));
+      var ix := segments.add(TSegment.create(vStartSS, vEndss, onRedraw, onSegmentDblClick, vDeleted));
       case CF.asBoolean[CONF_CHAPTERS_SHOW] of TRUE: segments[ix].title := vTitle; end;          // regardless of includeTitles, assume we're reading a .mmp file
       case includeTitles of TRUE: segments[ix].title := MI.mediaChapters[ix].chapterTitle; end;  // includeTitles says we're reading chapters from the media file
 
@@ -1007,6 +1037,13 @@ begin
 //  TL.saveSegments;
   TL.drawSegments;
   gTimelineForm.updatePositionDisplay(TL.positionSS);
+end;
+
+procedure TTimeline.onSegmentDblClick(Sender: TObject);
+begin
+  var vSegment := Sender as TSegment;
+  var vS := mmpInputBoxForm(vSegment.title);
+  case vS = vSegment.title of FALSE: vSegment.newTitle := vS; end;
 end;
 
 function TTimeline.redo: boolean;
