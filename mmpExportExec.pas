@@ -21,6 +21,7 @@ var
   vExecInfo: TShellExecuteInfo;
   vExitCode: cardinal;
 begin
+  vCancelled := FALSE;
   zeroMemory(@vExecInfo, SizeOf(vExecInfo));
   with vExecInfo do
   begin

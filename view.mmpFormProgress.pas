@@ -32,7 +32,24 @@ uses
   {$endif}
 
 type
-  TProgressForm = class(TForm)
+  IProgressForm = interface
+    function    getTimer: TTimer;
+
+    procedure   setButtons(const bVisible: boolean);
+    procedure   setHeading(const aValue: string);
+    procedure   setModal(const bModal: boolean);
+    procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setSubHeading(const aValue: string);
+
+    property    buttons: boolean write setButtons;
+    property    heading: string write setHeading;
+    property    modal: boolean write setModal;
+    property    onCancel: TNotifyEvent write setOnCancel;
+    property    subHeading: string write setSubHeading;
+    property    timer: TTimer read getTimer;
+  end;
+
+  TProgressForm = class(TForm, IProgressForm)
     Panel1:     TPanel;
     FSubHeading: TLabel;
     FHeading:   TLabel;
@@ -43,18 +60,33 @@ type
     dummyLabel: TLabel;
     procedure   btnCancelClick(Sender: TObject);
     procedure   FormCreate(Sender: TObject);
-  private
+  strict private
+    FRefCount: IInterface;
+
     FOnCancel:  TNotifyEvent;
-    procedure   setButtons(const value: boolean);
-    procedure   setModal(const isModal: boolean);
+   protected
+    function _AddRef: integer; stdcall;
+    function _Release: integer; stdcall;
   public
+    constructor Create(AOwner: TComponent); override;
+
+    function    getTimer: TTimer;
+
+    procedure   setButtons(const bVisible: boolean);
+    procedure   setHeading(const aValue: string);
+    procedure   setModal(const bModal: boolean);
+    procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setSubHeading(const aValue: string);
+
     property    buttons:      boolean                         write setButtons;
     property    heading:      TLabel        read FHeading;
     property    subHeading:   TLabel        read FSubHeading;
     property    modal:        boolean                         write setModal;
-    property    onCancel:     TNotifyEvent  read FOnCancel    write FOnCancel;
-    property    timer:        TTimer        read FTimer;
+    property    onCancel:     TNotifyEvent  {read FOnCancel}    write FOnCancel;
+    property    timer:        TTimer        read FTimer; // TEMPORARY
   end;
+
+function mmpNewProgressForm: IProgressForm;
 
 implementation
 
@@ -63,9 +95,20 @@ uses
 
 {$R *.dfm}
 
+function mmpNewProgressForm: IProgressForm;
+begin
+  result := TProgressForm.create(NIL);
+end;
+
 procedure TProgressForm.btnCancelClick(Sender: TObject);
 begin
   case assigned(FOnCancel) of TRUE: FOnCancel(SELF); end;
+end;
+
+constructor TProgressForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRefCount := TInterfacedObject.Create;
 end;
 
 procedure TProgressForm.FormCreate(Sender: TObject);
@@ -95,19 +138,50 @@ begin
   setModal(FALSE);
 end;
 
-procedure TProgressForm.setButtons(const value: boolean);
+function TProgressForm.getTimer: TTimer;
 begin
-  btnRerun.visible  := value;
-  btnIgnore.visible := value;
-  btnCancel.visible := value;
-  case value of FALSE: SELF.height := SELF.height - btnRerun.height; end;
+  result := FTimer;
 end;
 
-procedure TProgressForm.setModal(const isModal: boolean);
+procedure TProgressForm.setButtons(const bVisible: boolean);
 begin
-  btnRerun.visible  := isModal;
-  btnIgnore.visible := isModal;
-  btnCancel.visible := NOT isModal;
+  btnRerun.visible  := bVisible;
+  btnIgnore.visible := bVisible;
+  btnCancel.visible := bVisible;
+  case bVisible of FALSE: SELF.height := SELF.height - btnRerun.height; end;
+end;
+
+procedure TProgressForm.setHeading(const aValue: string);
+begin
+  FHeading.caption := aValue;
+end;
+
+procedure TProgressForm.setModal(const bModal: boolean);
+begin
+  btnRerun.visible  := bModal;
+  btnIgnore.visible := bModal;
+  btnCancel.visible := NOT bModal;
+end;
+
+procedure TProgressForm.setOnCancel(const aValue: TNotifyEvent);
+begin
+  FOnCancel := aValue;
+end;
+
+procedure TProgressForm.setSubHeading(const aValue: string);
+begin
+  FSubHeading.caption := aValue;
+end;
+
+function TProgressForm._AddRef: integer;
+begin
+  result := FRefCount._AddRef;
+end;
+
+function TProgressForm._Release: integer;
+begin
+  result := FRefCount._Release;
+  case result = 0 of TRUE: Destroy; end;
 end;
 
 end.

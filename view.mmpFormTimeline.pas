@@ -98,7 +98,6 @@ type
     procedure   setPosOnly(const Value: integer);
 
     function    addUndo(const aAction: string): string;
-    function    copySourceFile: boolean;
     function    createDefaultSegment(const aMax: integer): string;
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
     function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
@@ -164,7 +163,7 @@ uses
   system.ioUtils, system.math,
   vcl.dialogs,
   bazCmd,
-  mmpExporter, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
+  mmpExporterInterface, mmpFileUtils, mmpFormatting, mmpGlobalState, mmpImageUtils, mmpFormInputBox, mmpKeyboardUtils, mmpUtils,
   view.mmpFormStreamList,
   model.mmpConfigFile, model.mmpKeyFrames, model.mmpMediaInfo,
   _debugWindow;
@@ -414,64 +413,6 @@ begin
   segments.clear;
 end;
 
-function TTimeline.copySourceFile: boolean;
-const
-  COPY_PARAMS = ' -map 0 -c copy -ignore_unknown';
-var
-  cmdLine: string;
-begin
-  result      := FALSE;
-  FCancelled  := FALSE;
-
-  var vProgressForm := TProgressForm.create(NIL);
-  vProgressForm.heading.caption     := 'Copying source file';
-  vProgressForm.subHeading.caption  := 'Please wait';
-  vProgressForm.onCancel            := onCancelCopy;
-  vProgressForm.show;
-
-  try
-    cmdLine := '-hide_banner';
-    cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
-    cmdLine := cmdLine + COPY_PARAMS;
-    var vFilePathOUT := filePathOUT(' [c]');
-
-    case lowerCase(extractFileExt(vFilePathOUT)) = '.m4v' of TRUE: vFilePathOUT := changeFileExt(vFilePathOUT, '.mp4'); end;
-
-    cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
-    log(cmdLine); log(EMPTY);
-
-    result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled);
-
-    case result of TRUE:  begin
-                            case fileExists(vFilePathOUT) of FALSE: EXIT; end;
-
-                            var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
-                            var vPosition   := mmp.cmd(evMPReqPosition).integer;
-                            var vWasMuted   := CF.asBoolean[CONF_MUTED];
-
-                            vProgressForm.heading.caption := 'Loading Copy';
-
-                            mmp.cmd(evVMReloadPlaylist);
-                            mmpCopyMMPFile(FMediaFilePath, vFilePathOUT);
-                            mmp.cmd(evPLFind, vFilePathOUT);
-                            mmp.cmd(evPLFormLoadBox);
-
-                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // mute while we load and reposition the copy
-                            FMediaFilePath := vFilePathOUT;
-                            mmp.cmd(evVMMPPlayCurrent);
-                            while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
-                            mmp.cmd(evMPSeek, vPosition);
-                            case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // unmute now we're at the correct timestamp
-
-                            case vWasPlaying of FALSE: mmp.cmd(evMPPause); end;
-                          end;end;
-
-  finally
-    vProgressForm.free;
-  end;
-
-end;
-
 constructor TTimeline.Create;
 begin
   inherited;
@@ -656,14 +597,13 @@ var
   end;
 begin
   result      := TRUE;   // default to TRUE unless an FFmpeg process fails
-  FCancelled  := FALSE;
 
 
 
   //====== DO FFMPEG COPY ONLY ======
 
   case mmpCtrlKeyDown and mmpShiftKeyDown of TRUE:  begin
-                                                      copySourceFile;
+                                                      mmpExporter(FMediaFilePath, GS.mediaType).copySourceFile;
                                                       EXIT;
                                                     end;end;
 

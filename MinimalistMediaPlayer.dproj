@@ -170,7 +170,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
         <DCCReference Include="mmpExceptionHandler.pas"/>
-        <DCCReference Include="mmpExporter.pas"/>
+        <DCCReference Include="mmpExporterInterface.pas"/>
         <DCCReference Include="mmpExportExec.pas"/>
         <DCCReference Include="mmpFileUtils.pas"/>
         <DCCReference Include="mmpFolderNavigation.pas"/>
