@@ -60,7 +60,7 @@ type
     function  deletePreviousExport: TVoid;
     function  exportCoverArt(const aProgressForm: IProgressForm): boolean;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function  exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; var vImageCount: integer): boolean;
+    function  exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bNoCoverArt: boolean): boolean;
     function  fileChapterData: string;
     function  filePathCover: string;
     function  filePathLOG: string;
@@ -239,7 +239,7 @@ begin
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
 
-function TExporter.exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; var vImageCount: integer): boolean;
+function TExporter.exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bNoCoverArt: boolean): boolean;
 //====== EXPORT SEGMENTS ======
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
@@ -261,9 +261,7 @@ begin
       var vMaps       := EMPTY;
 
       for var vMediaStream in MI.mediaStreams do begin
-//        case vMediaStream.selected and (vMediaStream.streamType = 'Image') of TRUE: inc(vImageCount); end;
-//        case vImageCount > 1 of TRUE: CONTINUE; end;    // only one segment will get the cover art
-//        case vMediaStream.streamType = 'Image' of TRUE: CONTINUE; end;
+        case bNoCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end;
         case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;end;
 
       vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
@@ -304,14 +302,13 @@ begin
   case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
 
   var vSegOneFN   := EMPTY;
-  var vImageCount := 0;
 
   //====== CHECK COVER ART ======
   case mmp.cmd(evMIReqHasCoverArt).tf and (NOT mmpCtrlKeyDown) and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := exportCoverArt(vProgressForm); end;
   case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
-  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vImageCount) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
+  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, CF.asBoolean[CONF_CHAPTERS_WRITE]) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
 
   deletePreviousExport; // now we have newly-exported segment(s)
 
