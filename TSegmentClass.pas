@@ -224,15 +224,15 @@ begin
   FSegDetails.OnMouseUp     := doMouseUp;
 
   FTrashCan := TImage.create(SELF);
-  FTrashCan.parent    := SELF;
-  FTrashCan.stretch   := TRUE;
-  FTrashCan.center    := TRUE;
-  FTrashCan.height    := 31;
-  FTrashCan.width     := 41;
-  FTrashCan.visible   := FALSE;
-  FTrashCan.onClick   := doClick;
+  FTrashCan.parent      := SELF;
+  FTrashCan.stretch     := TRUE;
+  FTrashCan.center      := TRUE;
+  FTrashCan.height      := 31;
+  FTrashCan.width       := 41;
+  FTrashCan.visible     := FALSE;
+  FTrashCan.onClick     := doClick;
   FTrashCan.onDblClick  := doDblClick;
-  FTrashCan.OnMouseUp := doMouseUp;
+  FTrashCan.OnMouseUp   := doMouseUp;
 
   case bDeleted of TRUE: SELF.delete; end;
 end;
@@ -248,14 +248,12 @@ end;
 
 procedure TSegment.doClick(Sender: TObject);
 begin
-  debug('panel click');
   setAsSelSeg;
 end;
 
 procedure TSegment.doDblClick(Sender: TObject);
 begin
-  debug('panel dblClick');
-  case assigned(FOnDblClick) of TRUE: FOnDblClick(Sender); end;
+  case assigned(FOnDblClick) of TRUE: FOnDblClick(SELF); end;
 end;
 
 procedure TSegment.doMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
