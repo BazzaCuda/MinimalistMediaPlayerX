@@ -112,8 +112,6 @@ type
     function    toggleKeyFrames: string;
   protected
     procedure   exportSegments(sender: TObject);
-    procedure   onCancelButton(sender: TObject);
-    procedure   onCancelCopy(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
     procedure   onSegmentDblClick(Sender: TObject);
     procedure   onRedraw(sender: TObject);
@@ -644,18 +642,6 @@ end;
 function TTimeline.notify(const aNotice: INotice): INotice;
 begin
   result := onNotify(aNotice);
-end;
-
-procedure TTimeline.onCancelButton(sender: TObject);
-begin
-  FCancelled := TRUE;
-  terminateProcess(FProcessHandle, 1); // EXPERIMENTAL
-end;
-
-procedure TTimeline.onCancelCopy(sender: TObject);
-begin
-  FCancelled := TRUE;
-  terminateProcess(FProcessHandle, 1);
 end;
 
 function TTimeline.onNotify(const aNotice: INotice): INotice;

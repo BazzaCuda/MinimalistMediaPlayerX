@@ -196,7 +196,10 @@ end;
 procedure TStreamListForm.btnExportClick(Sender: TObject);
 begin
   case assigned(FOnExport) of TRUE: FOnExport(NIL); end;
-  focusTimeline;
+// EXPERIMENTAL - if the export succeeds and the user wants the edited file run, it will be sent behind Timeline
+// commenting this out doesn't seem to have any detremental effect because all the other keystrokes are already
+// calling focusTimeline
+//   focusTimeline;
 end;
 
 procedure TStreamListForm.btnExportKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -240,7 +243,7 @@ procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCa
 begin
   var vSegments := TL.segments;
   case (vSegments.count = 0) or (aIndex > vSegments.count - 1) of TRUE: EXIT; end;
-  lblSegID.caption        := vSegments[aIndex].segID; //   format('%.2d', [aIndex + 1]);
+  lblSegID.caption        := vSegments[aIndex].segID;
   lblSegID.font.color     := COLOR_SEGMENT_ID; // Soft gold
   lblSegID.styleElements  := [seBorder];
   lblSegDetails.caption   := format('%ds - %ds', [vSegments[aIndex].startSS, vSegments[aIndex].EndSS]);

@@ -33,7 +33,7 @@ implementation
 
 uses
   bazCmd,
-  mmpPostToAllUtils, mmpWindowUtils,
+  mmpGlobalState, mmpPostToAllUtils, mmpWindowUtils,
   model.mmpBookmark, model.mmpMixer, model.mmpPlaylistUtils,
   _debugWindow;
 
@@ -81,7 +81,7 @@ begin
     koDarkerPB:           begin mmp.cmd(evMCDarker); mmp.cmd(evPBDarker); mmp.cmd(evSTDarker); end;
     koDeleteCurrentItem:  mmp.cmd(evVMDeleteCurrentItem, SS.shiftState);
     koEscape:             mmp.cmd(evVMDoEscapeKey);
-    koExploreFolder:      mmpShellExec(mmp.cmd(evPLReqCurrentFolder).text);
+    koExploreFolder:      mmpShellExec(GS.mainForm.Handle, mmp.cmd(evPLReqCurrentFolder).text);
     koFrameBackwards:     MP.notify(newNotice(evMPFrameBackwards));
     koFrameForwards:      MP.notify(newNotice(evMPFrameForwards));
     koFullscreen:         notifyApp(mmp.cmd(evVMToggleFullscreen));
@@ -125,9 +125,9 @@ begin
     koRotateL:            MP.notify(newNotice(evMPRotateLeft));
     koRotateR:            MP.notify(newNotice(evMPRotateRight));
     koRotateReset:        MP.notify(newNotice(evMPRotateReset));
-    koRunF10:             mmpOpenExternalApp(F10_APP, mmp.cmd(evPLReqCurrentItem).text);
-    koRunF11:             mmpOpenExternalApp(F11_APP, mmp.cmd(evPLReqCurrentItem).text);
-    koRunF12:             mmpOpenExternalApp(F12_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF10:             mmpOpenExternalApp(GS.mainForm.Handle, F10_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF11:             mmpOpenExternalApp(GS.mainForm.Handle, F11_APP, mmp.cmd(evPLReqCurrentItem).text);
+    koRunF12:             mmpOpenExternalApp(GS.mainForm.Handle, F12_APP, mmp.cmd(evPLReqCurrentItem).text);
     koShowCaption:        mmp.cmd(evPAPostToAll, WIN_CAPTION);
     koSkipBackwards:      mmp.cmd(evPAPostToAll, WIN_SKIP_BACKWARDS);
     koSkipForwards:       mmp.cmd(evPAPostToAll, WIN_SKIP_FORWARDS);
@@ -159,7 +159,7 @@ begin
     koToggleSubtitles:    MP.notify(newNotice(evMPToggleSubtitles));
     koVolDn:              MP.notify(newNotice(evMPVolDn));
     koVolUp:              MP.notify(newNotice(evMPVolUp));
-    koWiki:               mmpShellExec(MMP_WIKI_URL);
+    koWiki:               mmpShellExec(0, MMP_WIKI_URL);
     koZoomIn:             MP.notify(newNotice(evMPZoomIn));
     koZoomOut:            MP.notify(newNotice(evMPZoomOut));
     koZoomReset:          MP.notify(newNotice(evMPZoomReset));

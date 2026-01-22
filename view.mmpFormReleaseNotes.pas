@@ -103,7 +103,7 @@ end;
 
 procedure TReleaseNotesForm.mdHotSpotClick(Sender: TObject; const SRC: string; var Handled: Boolean);
 begin
-  mmpShellExec(PWideChar(SRC));
+  mmpShellExec(0, PWideChar(SRC));
   handled := TRUE;
 end;
 

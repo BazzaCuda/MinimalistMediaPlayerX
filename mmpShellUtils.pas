@@ -21,19 +21,20 @@ unit mmpShellUtils;
 interface
 
 uses
+  winApi.windows,
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
 function mmpEnvironmentVariable: boolean;
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
-function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
-function mmpShellExec(const anExePath: string; const aParams: string = EMPTY): boolean;
+function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
+function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): boolean;
 
 implementation
 
 uses
-  winApi.shellApi, winApi.windows,
+  winApi.shellApi,
   system.sysUtils,
   mmpFileUtils,
   _debugWindow;
@@ -78,14 +79,18 @@ begin
                                   F12_APP: result := SHOTCUT; end;end;
 end;
 
-function mmpOpenExternalApp(const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
+function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
 begin
-  mmpShellExec(mmpGetExternalApp(aFnnKeyApp), mmpQuoted(aParams));
+  mmpShellExec(aHWND, mmpGetExternalApp(aFnnKeyApp), mmpQuoted(aParams));
 end;
 
-function mmpShellExec(const anExePath: string; const aParams: string = EMPTY): boolean;
+function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): boolean;
 begin
-  shellExecute(0, 'open', pChar(anExePath), pChar(aParams), EMPTY, SW_SHOW);
+  // the aHWND param isn't currently used
+  // it was introduced to see if it fixed the problem of the Play Edited MMP window being behind the Editor MMP window
+  // as the problem was fixed in view.mmpFormStreamList (btnExportClick), we don't need lots of testing on the effect
+  // of using the currently unnecessary aHWND
+  shellExecute(0, 'open', pChar(anExePath), pChar(aParams), EMPTY, SW_SHOWNORMAL);
 end;
 
 end.

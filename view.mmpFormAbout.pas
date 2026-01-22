@@ -260,7 +260,7 @@ end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
 begin
-  mmpShellExec('https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest');
+  mmpShellExec(0, 'https://github.com/BazzaCuda/MinimalistMediaPlayerX/releases/latest');
 end;
 
 procedure TAboutForm.lblWebsiteURLMouseEnter(Sender: TObject);
@@ -275,7 +275,7 @@ end;
 
 procedure TAboutForm.lblWikiURLClick(Sender: TObject);
 begin
-  mmpShellExec(MMP_WIKI_URL);
+  mmpShellExec(0, MMP_WIKI_URL);
 end;
 
 procedure TAboutForm.lblWikiURLMouseEnter(Sender: TObject);

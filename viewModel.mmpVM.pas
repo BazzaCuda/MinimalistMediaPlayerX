@@ -878,7 +878,7 @@ end;
 
 function TVM.playEdited(const aFilePath: string): boolean;
 begin
-  case fileExists(aFilePath) of  TRUE:  mmpShellExec(paramStr(0), '"' + aFilePath + '" noplaylist'); // forced by view.mmpFormTimeline
+  case fileExists(aFilePath) of  TRUE:  mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + aFilePath + '" noplaylist'); // forced by view.mmpFormTimeline
                                 FALSE:  begin
                                           var vCurrentItem  := mmp.cmd(evPLReqCurrentItem).text;     // requested by user
                                           var vPath         := extractFilePath(vCurrentItem);
@@ -887,7 +887,7 @@ begin
                                           var vFN           := vPath + vFile + ' [edited]' + vExt;
 
                                           case CF.asBoolean[CONF_CHAPTERS_WRITE] and fileExists(mmpChapterFile(vFN)) of TRUE: vFN := mmpChapterContainer(vFN, GS.mediaType); end;
-                                          case fileExists(vFN) of  TRUE: mmpShellExec(paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
+                                          case fileExists(vFN) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
 end;
 
 function TVM.playNext(const bRecurseFolders: boolean): boolean;

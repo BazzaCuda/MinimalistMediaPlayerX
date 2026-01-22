@@ -735,7 +735,7 @@ end;
 
 procedure TThumbsForm.FStatusBarClick(Sender: TObject);
 begin
-  case mmpIsPanelAt(FStatusBar, PANEL_FOLD, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(FThumbs.currentFolder); end;
+  case mmpIsPanelAt(FStatusBar, PANEL_FOLD, mmpMousePoint(FStatusBar)) of TRUE: mmpShellExec(GS.mainForm.Handle, FThumbs.currentFolder); end;
   case mmpIsPanelAt(FStatusBar, PANEL_AVAV, mmpMousePoint(FStatusBar)) of TRUE: processKeyOp(koCloseToMain, [], 0);  end;
 end;
 
@@ -910,7 +910,7 @@ begin
     koContrastDn:         mpvContrastDn(mpv);
     koContrastReset:      mpvContrastReset(mpv);
     koDeleteCurrentItem:  case whichHost of htMPVHost: deleteCurrentItem(aShiftState); end;
-    koExploreFolder:      mmpShellExec(FThumbs.currentFolder);
+    koExploreFolder:      mmpShellExec(GS.mainForm.Handle, FThumbs.currentFolder);
     koFullscreen:         onDoubleClick(NIL);
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
@@ -942,9 +942,9 @@ begin
     koRotateR:            mpvRotateRight(mpv);
     koRotateL:            mpvRotateLeft(mpv);
     koRotateReset:        mpvRotateReset(mpv);
-    koRunF10:             mmpOpenExternalApp(F10_APP, FThumbs.playlist.currentItem);
-    koRunF11:             mmpOpenExternalApp(F11_APP, FThumbs.playlist.currentItem);
-    koRunF12:             mmpOpenExternalApp(F12_APP, FThumbs.playlist.currentItem);
+    koRunF10:             mmpOpenExternalApp(GS.mainForm.Handle, F10_APP, FThumbs.playlist.currentItem);
+    koRunF11:             mmpOpenExternalApp(GS.mainForm.Handle, F11_APP, FThumbs.playlist.currentItem);
+    koRunF12:             mmpOpenExternalApp(GS.mainForm.Handle, F12_APP, FThumbs.playlist.currentItem);
     koSaturationUp:       mpvSaturationUp(mpv);
     koSaturationDn:       mpvSaturationDn(mpv);
     koSaturationReset:    mpvSaturationReset(mpv);
@@ -959,7 +959,7 @@ begin
     koToggleHelp:         begin case GS.showingHelp of TRUE: mmp.cmd(evHelpShutHelp); FALSE: moveHelpWindow(TRUE); end; autoCenter; end;
     koToggleNumlock:      mmpToggleNumlock;
     koUndoMove:           undoMove;
-    koWiki:               mmpShellExec(MMP_WIKI_URL);
+    koWiki:               mmpShellExec(0, MMP_WIKI_URL);
     koZoomIn:             mpvZoomIn(mpv);
     koZoomOut:            mpvZoomOut(mpv);
     koZoomReset:          mpvZoomReset(mpv);

@@ -42,6 +42,7 @@ uses
   {$ifdef designTimeThemes}
   vcl.forms,
   {$endif }
+  winApi.windows,
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
   bazAction in '_bazLib\bazAction.pas',
@@ -230,6 +231,7 @@ begin
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
   MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy
+//  setForegroundWindow(MMPUI.Handle); // EXPERIMENTAL
 
   mmp.cmd(evSTForceCaptions);
 
