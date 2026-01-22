@@ -476,7 +476,7 @@ begin
                                                     case tryStrToInt(vDurationStr, FMD.mdDuration) of FALSE: FMD.mdDuration := 0; end;end;
     case FMD.mdDuration = 0 of FALSE: FMD.mdDuration := FMD.mdDuration div MILLISECONDS; end;
 
-    case bQuiet of FALSE: mmp.cmd(evGSDuration, FMD.mdDuration); end; // unbelievable!
+    case bQuiet of FALSE: mmp.cmd(evGSDuration, FMD.mdDuration); end;
 
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Audio,        0, 'BitRate',         Info_Text, Info_Name), FMD.mdAudioBitRate)      of FALSE: FMD.mdAudioBitRate     := 0; end;
     case    tryStrToInt(mediaInfo_Get(FHandle, Stream_Video,        0, 'Width',           Info_Text, Info_Name), FMD.mdWidth)             of FALSE: FMD.mdWidth            := 0; end;
@@ -523,7 +523,7 @@ begin
     result.tf := TRUE;
   except end;
 
-  case bQuiet of FALSE: mmp.cmd(evGSHasCoverArt, getHasCoverArt); end; // unbelievable!
+//  case bQuiet of FALSE: mmp.cmd(evGSHasCoverArt, getHasCoverArt); end; // unbelievable!
 end;
 
 function TMediaInfo.getMediaStreams: TObjectList<TMediaStream>;

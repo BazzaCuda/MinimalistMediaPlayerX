@@ -40,10 +40,11 @@ uses
   vcl.controls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazCmd,
-  mmpExportExec, mmpFileUtils, mmpKeyboardUtils, mmpUtils,
+  mmpExportExec, mmpFileUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
   TSegmentClass,
   model.mmpConfigFile, model.mmpMediaInfo,
-  view.mmpFormProgress;
+  view.mmpFormProgress,
+  _debugWindow;
 
 type
   TExporter = class(TInterfacedObject, IExporter)
@@ -57,16 +58,18 @@ type
     function  concatSegments(const aProgressForm: IProgressForm): boolean;
     function  createChapters(const aProgressForm: IProgressForm): boolean;
     function  deletePreviousExport: TVoid;
+    function  exportCoverArt(const aProgressForm: IProgressForm): boolean;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function  exportSegments(const aProgressForm: IProgressForm; var aSegOneFN: string): boolean;
+    function  exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; var vImageCount: integer): boolean;
     function  fileChapterData: string;
+    function  filePathCover: string;
     function  filePathLOG: string;
     function  filePathOUT(aSuffix: string = ' [edited]'): string;
     function  filePathSEG: string;
     function  filePathTempChapters(aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
     function  log(const aLogEntry: string): boolean;
-    function  playExportedMediaFile(const aProgressForm: IProgressForm): TVoid;
+    function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
     function  segFileEntry(const aSegFile: string): string;
     function  showProgressForm(const aHeading, aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
     function  writeChaptersFromOutput: TVoid;
@@ -171,8 +174,9 @@ begin
   aProgressForm.subHeading := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
-  for var i := 0 to MI.selectedCount - 1 do
-    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]);
+  for var i := 0 to MI.selectedCount - 1 do begin
+    var vDisposition :=  mmp.use(MI.mediaStreams[i].streamType = 'Image', 'attached_pic', 'default');
+    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d %s', [i, i, i, vDisposition]); end;
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
 
@@ -223,7 +227,19 @@ begin
   while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 end;
 
-function TExporter.exportSegments(const aProgressForm: IProgressForm; var aSegOneFN: string): boolean;
+function TExporter.exportCoverArt(const aProgressForm: IProgressForm): boolean;
+//====== CHECK COVER ART ======
+begin
+  result := TRUE; // default to TRUE unless an FFmpeg process fails
+
+  aProgressForm.subHeading := 'Extracting Cover Art';
+
+  var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
+
+  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+end;
+
+function TExporter.exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; var vImageCount: integer): boolean;
 //====== EXPORT SEGMENTS ======
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
@@ -242,16 +258,20 @@ begin
       cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
       cmdLine := cmdLine + ' -t "'  + intToStr(vSegment.duration) + '"';
 
-      var vMaps := EMPTY;
-      for var vMediaStream in MI.mediaStreams do
-        case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;
+      var vMaps       := EMPTY;
+
+      for var vMediaStream in MI.mediaStreams do begin
+//        case vMediaStream.selected and (vMediaStream.streamType = 'Image') of TRUE: inc(vImageCount); end;
+//        case vImageCount > 1 of TRUE: CONTINUE; end;    // only one segment will get the cover art
+//        case vMediaStream.streamType = 'Image' of TRUE: CONTINUE; end;
+        case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;end;
 
       vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
       cmdLine := cmdLine + vMaps;
       cmdLine := cmdLine + STD_SEG_PARAMS;
 
       var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
-      case TSegment.includedCount = 1 of TRUE: aSegOneFN := segFile; end;
+      case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
 
       cmdLine := cmdLine + ' -y "' + segFile + '"';
       log(cmdLine); log(EMPTY);
@@ -280,13 +300,18 @@ begin
   //====== SETUP PROGRESS FORM ======
   var vProgressForm := initProgressForm;
 
-  // delete any previous .chp file up front
+  // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
   case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
 
-  var vSegOneFN := EMPTY;
+  var vSegOneFN   := EMPTY;
+  var vImageCount := 0;
+
+  //====== CHECK COVER ART ======
+  case mmp.cmd(evMIReqHasCoverArt).tf and (NOT mmpCtrlKeyDown) and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := exportCoverArt(vProgressForm); end;
+  case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
-  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
+  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vImageCount) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
 
   deletePreviousExport; // now we have newly-exported segment(s)
 
@@ -299,10 +324,10 @@ begin
   case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
-  case result and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := createChapters(vProgressForm); end;
+  case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := createChapters(vProgressForm); end;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
-  case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm); end;
+  case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;
 
   mmpDelay(500); // so we can see the final message
   vProgressForm := NIL;
@@ -335,6 +360,11 @@ end;
 function TExporter.filePathOUT(aSuffix: string = ' [edited]'): string;
 begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
+end;
+
+function TExporter.filePathCover: string;
+begin
+  result := extractFilePath(FMediaFilePath) + 'cover.jpg'; // mandatory name!
 end;
 
 function TExporter.filePathLOG: string;
@@ -381,11 +411,11 @@ begin
   result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
 
-function TExporter.playExportedMediaFile(const aProgressForm: IProgressForm): TVoid;
+function TExporter.playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
 begin
   aProgressForm.subHeading := 'Playing Exported File';
-  case CF.asBoolean[CONF_CHAPTERS_WRITE] of   TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
-                                             FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;
+  case bMultiSegs and CF.asBoolean[CONF_CHAPTERS_WRITE] of   TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
+                                                            FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;
 end;
 
 function TExporter.writeChaptersFromOutput: TVoid;

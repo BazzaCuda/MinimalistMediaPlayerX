@@ -70,6 +70,7 @@ function mpvSpeedUp         (const mpv: IMPVBasePlayer): string;
 function mpvStartOver       (const mpv: IMPVBasePlayer): string;
 function mpvStop            (const mpv: IMPVBasePlayer): boolean;
 function mpvSyncAudioDn     (const mpv: IMPVBasePlayer): string;
+function mpvSyncAudioReset  (const mpv: IMPVBasePlayer): string;
 function mpvSyncAudioUp     (const mpv: IMPVBasePlayer): string;
 function mpvTakeScreenshot  (const mpv: IMPVBasePlayer; const aFolder: string): boolean;
 function mpvToggleRepeat    (const mpv: IMPVBasePlayer): string;
@@ -281,7 +282,7 @@ begin
 
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY + (0.001 * multiplier));
-  result := 'Pan down';
+  result := 'pan down';
 end;
 
 function mpvPanLeft(const mpv: IMPVBasePlayer): string;
@@ -297,7 +298,7 @@ begin
 
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX - (0.001 * multiplier));
-  result := 'Pan left';
+  result := 'pan left';
 end;
 
 function mpvPanReset(const mpv: IMPVBasePlayer): string;
@@ -306,7 +307,7 @@ begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyDouble('video-pan-x', 0.0);
   mpv.setPropertyDouble('video-pan-y', 0.0);
-  result := 'Pan reset';
+  result := 'pan reset';
 end;
 
 function mpvPanRight(const mpv: IMPVBasePlayer): string;
@@ -322,7 +323,7 @@ begin
 
   mpv.getPropertyDouble('video-pan-x', panX);
   mpv.setPropertyDouble('video-pan-x', panX + (0.001 * multiplier));
-  result := 'Pan right';
+  result := 'pan right';
 end;
 
 function mpvPanUp(const mpv: IMPVBasePlayer): string;
@@ -338,7 +339,7 @@ begin
 
   mpv.getPropertyDouble('video-pan-y', panY);
   mpv.setPropertyDouble('video-pan-y', panY - (0.001 * multiplier));
-  result := 'Pan up';
+  result := 'pan up';
 end;
 
 function mpvPause(const mpv: IMPVBasePlayer): boolean;
@@ -373,6 +374,7 @@ begin
   mpvRotateReset(mpv);
   mpvSaturationReset(mpv);
   mpvSpeedReset(mpv);
+  mpvSyncAudioReset(mpv);
   mpvZoomReset(mpv);
   result := 'Reset All';
 end;
@@ -506,6 +508,14 @@ begin
   mpv.getPropertyDouble('audio-delay', delay);
   mpv.setPropertyDouble('audio-delay', delay + 0.01);
   result := mpvFormattedSyncAudio(mpv);
+end;
+
+function mpvSyncAudioReset(const mpv: IMPVBasePlayer): string;
+begin
+  result := EMPTY;
+  case mpv = NIL of TRUE: EXIT; end;
+  mpv.setPropertyDouble('audio-delay', 0.00);
+  result := 'sync reset';
 end;
 
 function mpvSyncAudioUp(const mpv: IMPVBasePlayer): string;

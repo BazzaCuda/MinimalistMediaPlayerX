@@ -231,7 +231,6 @@ begin
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
   MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy
-//  setForegroundWindow(MMPUI.Handle); // EXPERIMENTAL
 
   mmp.cmd(evSTForceCaptions);
 
