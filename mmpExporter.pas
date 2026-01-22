@@ -291,7 +291,6 @@ begin
   deletePreviousExport; // now we have newly-exported segment(s)
 
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
-
   // single segment so just rename without the concat stage
   var  vDoConcat := vSegOneFN = EMPTY;
   case vDoConcat of FALSE: renameFile(vSegOneFN, filePathOUT); end;
@@ -308,7 +307,6 @@ begin
   mmpDelay(500); // so we can see the final message
   vProgressForm := NIL;
 end;
-
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
@@ -404,11 +402,10 @@ begin
   segments := TList<TSegment>.create;
   var vMI := mmpNewMediaInfo;  // Dependency Injection takes a back seat to Pragmatism, yet again :D
 
-  for var vSegLine in TFile.ReadAllLines(filePathSEG) do begin
+  for var vSegLine in TFile.readAllLines(filePathSEG) do begin
     var vParts  := vSegLine.split(['''']);
     var vFile   := vParts[1];
 
-    // populate an array of TSegment recs so I can copy/paste the code from writeChaptersFromInput below :D
     case vMI.getMediaInfo(newNotice(vFile, mtVideo), TRUE).tf of   TRUE:  begin
                                                                             vSegment.duration := vMI.duration;
                                                                             vSegment.title    := vMI.title;
@@ -444,6 +441,5 @@ begin
     segments.free;
   end;
 end;
-
 
 end.

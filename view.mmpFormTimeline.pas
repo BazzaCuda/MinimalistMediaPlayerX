@@ -108,6 +108,7 @@ type
     function    segmentTitle(const aNumber: integer): string;
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
+    function    skipToNextSegment(const aPosition: integer): integer;
     function    toggleKeyFrames: string;
   protected
     procedure   exportSegments(sender: TObject);
@@ -264,9 +265,9 @@ end;
 
 procedure TTimelineForm.FormCreate(Sender: TObject);
 begin
-  lblPosition.caption := EMPTY;
+  lblPosition.caption   := EMPTY;
 
-  doubleBuffered            := TRUE;
+  doubleBuffered        := TRUE;
 
   pnlCursor.height      := SELF.height;
   pnlCursor.top         := 0;
@@ -285,6 +286,7 @@ end;
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
 // e.g. key:char here may be x or X, but keyUp:word will always be 88
 begin
+  case mmpShiftKeyDown of TRUE: EXIT; end; // EXPERIMENTAL
   key := upCase(key);
   case key in ['L', 'S'] of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
@@ -316,7 +318,8 @@ begin
     ord('X'): vSaveUndo := TL.delSegment(TSegment.selSeg);
 
     ord('L'): vSaveUndo := TRUE; // user has stopped holding down L; save the Timeline
-    ord('S'): vSaveUndo := TRUE; // user has stopped holding down S; save the Timeline
+    ord('S'): case mmpShiftKeyDown of  TRUE: TL.skipToNextSegment(TL.positionSS);
+                                      FALSE: vSaveUndo := TRUE; end; // user has stopped holding down S; save the Timeline
   end;
 
   case vSaveUndo of TRUE: TL.addUndo(TL.saveSegments); end; // a change was made
@@ -819,6 +822,22 @@ begin
   case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
 end;
 
+function TTimeline.skipToNextSegment(const aPosition: integer): integer;
+begin
+  result {newPos} := aPosition;
+
+  var vSeg := segmentAtSS(result);
+  case vSeg = NIL   of   TRUE: EXIT; end;
+
+
+  case mmpCtrlKeyDown of   TRUE: result := vSeg.startSS - 1;
+                          FALSE: result := vSeg.endSS + 1; end;
+
+  case result < 0 of TRUE: result := 0; end;
+
+  case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
+end;
+
 function TTimeline.toggleKeyFrames: string;
 begin
   result := 'not applicable to audio';
@@ -859,6 +878,7 @@ begin
   var vShiftKeyDown := ssShift  in aShift;
 
   result := (validKeys1.contains(char(key)) and NOT (vCtrlKeyDown or vShiftKeyDown)) or (validKeys2.contains(char(key)) and vCtrlKeyDown);
+  result := result or ((char(key) = 'S') and vShiftKeyDown); // EXPERIMENTAL
 end;
 
 initialization
