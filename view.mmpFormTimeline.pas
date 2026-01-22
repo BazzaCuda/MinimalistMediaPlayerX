@@ -826,12 +826,17 @@ function TTimeline.skipToNextSegment(const aPosition: integer): integer;
 begin
   result {newPos} := aPosition;
 
-  var vSeg := segmentAtSS(result);
+  var  vSeg := segmentAtSS(result);
   case vSeg = NIL   of   TRUE: EXIT; end;
 
+  case mmpCtrlKeyDown of   TRUE: case vSeg.isFirst of  TRUE: result := vSeg.startSS;
+                                                      FALSE: case (aPosition - vSeg.startSS) > 3 of  TRUE: result := vSeg.startSS;
+                                                                                                    FALSE: result := segments[vSeg.ix - 1].startSS; end;end;
+                          FALSE: case vSeg.isLast  of  TRUE: result := vSeg.endSS;
+                                                      FALSE: result := segments[vSeg.ix + 1].startSS; end;end;
 
-  case mmpCtrlKeyDown of   TRUE: result := vSeg.startSS - 1;
-                          FALSE: result := vSeg.endSS + 1; end;
+//  case mmpCtrlKeyDown of   TRUE: result := vSeg.startSS - 1;
+//                          FALSE: result := vSeg.endSS + 1; end;
 
   case result < 0 of TRUE: result := 0; end;
 
