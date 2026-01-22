@@ -219,7 +219,7 @@ begin
                           var vChapterContainer := mmpChapterContainer(filePathOUT, FMediaType);
                           case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
                           result := renameFile(filePathTempChapters, vChapterContainer);
-                          // case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
+                          case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
                           end;end;
 end;
 
