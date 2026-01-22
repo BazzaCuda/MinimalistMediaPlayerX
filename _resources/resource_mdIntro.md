@@ -23,10 +23,18 @@ The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and
 - this is an unavoidable consequence of how the **Main Media Window** operates in the background with the **Image & Thumbnail Browser** open
 <br />
 
+There are around **200** keyboard and mouse controls built into **MMP**<br />
 All of the alphabetical controls (and many of the others, too) were chosen so that there was
   - some direct link to a related word in English starting with that letter, or
   - some relation between the key and the **MMP** control it represents, or
   - some relation to other keys on a typical, full-sized QWERTY keyboard,
+<br />
+<br />
+
+  - there was also an instinctive feel about what keyboard or mouse actions a user might like to be able to use at various points
+    - for example, the natural inclination when watching a video to want the mouse wheel to alter the volume up and down
+<br />
+<br />
   - this was [and is] a concerted effort to make all the controls as straight-forward to remember as possible
   - the ability for users to define custom keyboard overrides is in the development pipeline for **MMP**
 <br />
