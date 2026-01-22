@@ -55,14 +55,16 @@ const
   WIN_MAX_SIZE_OFF      = WM_APP + 2005;
   WIN_PAUSE_PLAY        = WM_APP + 2006;
   WIN_RESIZE            = WM_APP + 2007;
-  WIN_START_OVER        = WM_APP + 2008;
-  WIN_SYNC_MEDIA        = WM_APP + 2009;
-  WIN_TAB               = WM_APP + 2010;
-  WIN_TABTAB            = WM_APP + 2011;
-  WIN_TOGGLE_CONTROLS   = WM_APP + 2012;
-  WIN_TOGGLE_EDIT_MODE  = WM_APP + 2013;
-  WIN_TOGGLE_REPEAT     = WM_APP + 2014;
-  WIN_MUTE_UNMUTE       = WM_APP + 2015;
+  WIN_SKIP_BACKWARDS    = WM_APP + 2008;
+  WIN_SKIP_FORWARDS     = WM_APP + 2009;
+  WIN_START_OVER        = WM_APP + 2010;
+  WIN_SYNC_MEDIA        = WM_APP + 2011;
+  WIN_TAB               = WM_APP + 2012;
+  WIN_TABTAB            = WM_APP + 2013;
+  WIN_TOGGLE_CONTROLS   = WM_APP + 2014;
+  WIN_TOGGLE_EDIT_MODE  = WM_APP + 2015;
+  WIN_TOGGLE_REPEAT     = WM_APP + 2016;
+  WIN_MUTE_UNMUTE       = WM_APP + 2017;
 
   WIN_TERMINATE         = WM_APP + 3000;
 
@@ -133,6 +135,7 @@ const
   CONF_SCALE_FACTOR           = 'scaleFactor';
   CONF_SHOW_METADATA          = 'showMetaData';
   CONF_SHUFFLE_MODE           = 'shuffleMode';
+  CONF_SKIP_SECONDS           = 'skipSeconds';
   CONF_SLIDESHOW_INTERVAL_MS  = 'slideshowIntervalMs';
   CONF_START_IN_EDITOR        = 'startInEditor';
   CONF_TIME_CAPTION           = 'timeCaption';
@@ -167,7 +170,7 @@ type
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
             koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave, koConfig, koPlayEdited, koRenameCleanFile, koToggleSkipExcluded,
-            koToggleShuffle, koHelpFull, koHelpThumbs, koSyncAudioUp, koSyncAudioDn);
+            koToggleShuffle, koHelpFull, koHelpThumbs, koSyncAudioUp, koSyncAudioDn, koSkipBackwards, koSkipForwards);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);

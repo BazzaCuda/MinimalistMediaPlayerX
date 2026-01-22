@@ -213,15 +213,17 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(VK_HOME)   and NOT ctrl and     shift                        of TRUE: result := koToggleShuffle; end;
     case keyUp and keyIs(VK_HOME)   and     ctrl and NOT shift                        of TRUE: result := koStartOver; end;
     case keyUp and keyIs(VK_INSERT)                                                   of TRUE: result := koClipboard; end;
-    case keyDn and keyIs(VK_LEFT)   and     ctrl                                      of TRUE: result := koPanLeft; end;
+    case keyDn and keyIs(VK_LEFT)   and     ctrl                                      of TRUE: result := koPanLeft; end;  {user can add Shift for more pan}
     case keyDn and keyIs(VK_LEFT)   and NOT ctrl and NOT shift and (GS.mediaType = mtVideo)  of TRUE: result := koFrameBackwards; end;
-    case keyDn and keyIs(VK_LEFT)   and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_LEFT)   and NOT ctrl and NOT shift and (GS.mediaType <> mtVideo) of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_LEFT)   and NOT ctrl and     shift and (GS.mediaType in [mtAudio, mtVideo]) of TRUE: result := koSkipBackwards; end;
     case keyDn and keyIs(VK_NEXT)                       and NOT GS.showingPlaylist    of TRUE: result := koRotateR; end;
     case keyUp and keyIs(VK_RETURN) and     ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayPrev; end;
     case keyUp and keyIs(VK_RETURN) and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koPlayNext; end;
-    case keyDn and keyIs(VK_RIGHT)  and     ctrl                                      of TRUE: result := koPanRight; end;
+    case keyDn and keyIs(VK_RIGHT)  and     ctrl                                      of TRUE: result := koPanRight; end; {user can add Shift for more pan}
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl and NOT shift and (GS.mediaType = mtVideo)  of TRUE: result := koFrameForwards; end;
     case keyDn and keyIs(VK_RIGHT)  and NOT ctrl        and (GS.mediaType <> mtVideo) of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_RIGHT)  and NOT ctrl and     shift and (GS.mediaType in [mtAudio, mtVideo]) of TRUE: result := koSkipForwards; end;
     case keyDn and keyIs(VK_UP)     and     ctrl                                      of TRUE: result := koPanUp; end;
     case keyDn and keyIs(VK_UP)     and NOT ctrl        and NOT GS.showingPlaylist    of TRUE: result := koVolUp; end;
     case keyDn and keyIs(VK_UP)     and NOT ctrl        and NOT GS.showingPlaylist

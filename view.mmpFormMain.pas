@@ -64,6 +64,8 @@ type
     procedure   WINMuteUnmute     (var msg: TMessage);      message WIN_MUTE_UNMUTE;
     procedure   WINPausePlay      (var msg: TMessage);      message WIN_PAUSE_PLAY;
     procedure   WINResize         (var msg: TMessage);      message WIN_RESIZE;
+    procedure   WINSkipBackwards  (var msg: TMessage);      message WIN_SKIP_BACKWARDS;
+    procedure   WINSkipForwards   (var msg: TMessage);      message WIN_SKIP_FORWARDS;
     procedure   WINStartOver      (var msg: TMessage);      message WIN_START_OVER;
     procedure   WINSyncMedia      (var msg: TMessage);      message WIN_SYNC_MEDIA;
     procedure   WINTab            (var msg: TMessage);      message WIN_TAB;
@@ -211,6 +213,18 @@ procedure TMMPUI.WINResize(var msg: TMessage);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWINResize(msg);
+end;
+
+procedure TMMPUI.WINSkipBackwards(var msg: TMessage);
+begin
+  case FViewModel = NIL of TRUE: EXIT; end;
+  FViewModel.onWINSkipBackwards(msg);
+end;
+
+procedure TMMPUI.WINSkipForwards(var msg: TMessage);
+begin
+  case FViewModel = NIL of TRUE: EXIT; end;
+  FViewModel.onWINSkipForwards(msg);
 end;
 
 procedure TMMPUI.WINStartOver(var msg: TMessage);

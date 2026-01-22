@@ -129,6 +129,8 @@ begin
     koRunF11:             mmpOpenExternalApp(F11_APP, mmp.cmd(evPLReqCurrentItem).text);
     koRunF12:             mmpOpenExternalApp(F12_APP, mmp.cmd(evPLReqCurrentItem).text);
     koShowCaption:        mmp.cmd(evPAPostToAll, WIN_CAPTION);
+    koSkipBackwards:      mmp.cmd(evPAPostToAll, WIN_SKIP_BACKWARDS);
+    koSkipForwards:       mmp.cmd(evPAPostToAll, WIN_SKIP_FORWARDS);
     koSpeedDn:            MP.notify(newNotice(evMPSpeedDn));
     koSpeedReset:         MP.notify(newNotice(evMPSpeedReset));
     koSpeedUp:            MP.notify(newNotice(evMPSpeedUp));

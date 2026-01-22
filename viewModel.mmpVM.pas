@@ -66,13 +66,15 @@ type
     procedure   onWINMaxSizeOff(var msg: TMessage);
     procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
-    procedure   onWinResize(var msg: TMessage);
+    procedure   onWINResize(var msg: TMessage);
+    procedure   onWINSkipBackwards(msg: TMessage);
+    procedure   onWINSkipForwards(msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
-    procedure   onWinToggleEditMode(var msg: TMessage);
-    procedure   onWinToggleRepeat(var msg: TMessage);
+    procedure   onWINToggleEditMode(var msg: TMessage);
+    procedure   onWINToggleRepeat(var msg: TMessage);
 
     procedure   setMediaPlayer(const aValue: IMediaPlayer);
     procedure   setPlaylist(const aValue: IPlaylist);
@@ -152,6 +154,7 @@ type
     function    togglePlaylist:       boolean;
     function    toggleShuffle:        string;
     function    toggleSkipExcluded:   string;
+    function skipSeconds(const aSeconds: integer): string;
   protected
     procedure   onFormResize;
     procedure   onKeyDown(key: Word; Shift: TShiftState);
@@ -177,12 +180,14 @@ type
     procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
     procedure   onWinResize(var msg: TMessage);
+    procedure   onWINSkipBackwards(msg: TMessage);
+    procedure   onWINSkipForwards(msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
     procedure   onWINSyncMedia(var msg: TMessage);
     procedure   onWINTab(var msg: TMessage);        // tabbing with the [T] key
     procedure   onWINTabTab(var msg: TMessage);     // tabbing with the actual [Tab] key
-    procedure   onWinToggleEditMode(var msg: TMessage);
-    procedure   onWinToggleRepeat(var msg: TMessage);
+    procedure   onWINToggleEditMode(var msg: TMessage);
+    procedure   onWINToggleRepeat(var msg: TMessage);
 
     function    onMPNotify(const aNotice: INotice):   INotice;
     function    onMPOpen(const aNotice: INotice):     boolean;
@@ -678,6 +683,7 @@ begin
     evVMRenameCurrentItem:  sendOpInfo(renameCurrentItem(rtUser));
     evVMReloadPlaylist:     reloadPlaylist;
     evVMResizeWindow:       resizeWindow;
+    evVMSkipSeconds:        sendOpInfo(skipSeconds(aNotice.integer));
     evVMShowThumbs:         showThumbnails(htThumbsHost);
     evVMShutTimeline:       shutTimeline;
     evVMToggleEditMode:     begin toggleEditMode; resizeWindow; end;
@@ -781,6 +787,16 @@ begin
   forcedResize(GS.mainForm.handle, point(msg.WParam, msg.LParam), mmp.cmd(evMPReqVideoWidth).integer, mmp.cmd(evMPReqVideoHeight).integer);
 end;
 
+procedure TVM.onWINSkipBackwards(msg: TMessage);
+begin
+  mmp.cmd(evVMSkipSeconds, CF.asInteger[CONF_SKIP_SECONDS] * -1);
+end;
+
+procedure TVM.onWINSkipForwards(msg: TMessage);
+begin
+  mmp.cmd(evVMSkipSeconds, CF.asInteger[CONF_SKIP_SECONDS]);
+end;
+
 procedure TVM.onWINStartOver(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPStartOver));
@@ -802,12 +818,12 @@ begin
   sendOpInfo(tab(mmpCapsLockOn, -1));
 end;
 
-procedure TVM.onWinToggleEditMode(var msg: TMessage);
+procedure TVM.onWINToggleEditMode(var msg: TMessage);
 begin
   mmp.cmd(evVMToggleEditMode);
 end;
 
-procedure TVM.onWinToggleRepeat(var msg: TMessage);
+procedure TVM.onWINToggleRepeat(var msg: TMessage);
 begin
   FMP.notify(newNotice(evMPToggleRepeat));
 end;
@@ -1170,6 +1186,29 @@ begin
   result := FALSE;
   GS.mainForm.show;
   result := TRUE;
+end;
+
+function TVM.skipSeconds(const aSeconds: integer): string;
+var
+  vTab:       integer;
+  vPosition:  integer;
+begin
+  vTab      := mmp.use(aSeconds = 0, 5, aSeconds);
+
+  VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
+
+  vPosition := mmp.use((vPosition + vTab) < 0, 0, vPosition + vTab);
+  vPosition := mmp.use((vPosition + vTab) > GS.duration, GS.duration, vPosition);
+
+  vTab      := mmp.use(vPosition = 0, 0, vTab);
+  vTab      := mmp.use(vPosition = GS.duration, 0, vTab);
+
+  FMP.notify(newNotice(evPBClick, vPosition));     // change MP position
+  onMPNotify(newNotice(evMPPosition, vPosition));  // immediately update time display
+
+  result    := format('Skip %ds', [vTab]);
+
+  result    := mmp.use(aSeconds < 0, '<< ' + result, '>> ' + result);
 end;
 
 function TVM.tab(const aCapsLock: boolean; const aFactor: integer = 0): string;
