@@ -175,7 +175,9 @@ begin
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
   for var i := 0 to MI.selectedCount - 1 do begin
-    var vDisposition :=  mmp.use(MI.mediaStreams[i].streamType = 'Image', 'attached_pic', 'default');
+    case (FMediaType = mtAudio) and CF.asBoolean[CONF_CHAPTERS_WRITE] and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end;
+    // var vDisposition :=  mmp.use(MI.mediaStreams[i].streamType = 'Image', 'attached_pic', 'default');
+    var vDisposition := 'default';
     cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d %s', [i, i, i, vDisposition]); end;
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
@@ -203,6 +205,9 @@ begin
 
   cmdLine := ' -i "' + filePathOUT + '" ';
   cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1';
+
+  case (FMediaType = mtAudio) and fileExists(filePathCover) of TRUE: cmdLine := cmdLine + ' -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
+
   cmdLine := cmdLine + STD_SEG_PARAMS;
 
   cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // filePathOUT + fileChapterData = temporary [chapters] file
@@ -214,7 +219,8 @@ begin
                           var vChapterContainer := mmpChapterContainer(filePathOUT, FMediaType);
                           case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
                           result := renameFile(filePathTempChapters, vChapterContainer);
-                          case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;end;end;
+                          // case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
+                          end;end;
 end;
 
 function TExporter.deletePreviousExport: TVoid;
@@ -229,12 +235,16 @@ end;
 
 function TExporter.exportCoverArt(const aProgressForm: IProgressForm): boolean;
 //====== CHECK COVER ART ======
+// when chapters are required, export any cover art to a separate file
+// then re-attach it when adding the chapter metadata
+// otherwise ffmpeg will create a video stream from it at the concat stage
+// and an exported audio file will become a video file
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
   aProgressForm.subHeading := 'Extracting Cover Art';
 
-  var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
+  var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy -y "' + filePathCover + '"';
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
@@ -304,7 +314,7 @@ begin
   var vSegOneFN   := EMPTY;
 
   //====== CHECK COVER ART ======
-  case mmp.cmd(evMIReqHasCoverArt).tf and (NOT mmpCtrlKeyDown) and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := exportCoverArt(vProgressForm); end;
+  case (NOT mmpCtrlKeyDown) and (FMediaType = mtAudio) and CF.asBoolean[CONF_CHAPTERS_WRITE] and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
   case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
