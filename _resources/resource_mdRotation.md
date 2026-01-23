@@ -8,7 +8,7 @@ You can rotate any image or video by 45 degrees at a time
 
 | Control | Action |
 | ------- | ------ |
-| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
+| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />audio sync, brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
 | &nbsp; ||
 | **[Pg Dn]**      | rotate image or video right/clockwise (you must do this at least once before you can rotate left)
 | **[Pg Up]**      | rotate image or video left/anti-clockwise (you must have first rotated right at least once)

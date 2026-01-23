@@ -6,7 +6,7 @@
 
 |Control | Action
 |------ | ------
-| **[BACKSPACE]**  | reset all adjustments to their defaults: <br /> brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
+| **[BACKSPACE]**  | reset all adjustments to their defaults: <br />audio sync, brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
 | &nbsp; ||
 |Ctrl-**[&uarr;]** up arrow         | pan up |
 |Ctrl-**[&darr;]** down arrow       | pan down |

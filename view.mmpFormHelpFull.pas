@@ -30,10 +30,11 @@ uses
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
+  HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin,
   MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazAction,
-  mmpConsts, HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin,
+  mmpConsts,
   CommCtrl, Vcl.ExtCtrls;
 
 type
@@ -114,17 +115,17 @@ const
       (helpType: htBoth;    caption: 'Auto-Center';           resource: 'resource_mdAutoCenter'),
       (helpType: htBoth;    caption: 'Auto Update';           resource: 'resource_mdAutoUpdate'),
       (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
-      (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),           // Captions / on-screen display / # redisplay
+      (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),
       (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
-      (helpType: htMain;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v
+      (helpType: htNone;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
       (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),
       (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),
       (helpType: htMain;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),
-      (helpType: htBoth;    caption: 'Mouse';                 resource: 'resource_mdMouse'),
-      (helpType: htMain;    caption: 'Multi-View Control';    resource: 'resource_mdMultiWindow'),        // multi-window control, Ctrl-N numlock
-      (helpType: htMain;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),   // Notification area
+      (helpType: htNone;    caption: 'Mouse';                 resource: 'resource_mdMouse'),
+      (helpType: htMain;    caption: 'Multi-View Control';    resource: 'resource_mdMultiWindow'),
+      (helpType: htBoth;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),
       (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
       (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),
       (helpType: htMain;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),           // Playlist - re-order the controls, navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form

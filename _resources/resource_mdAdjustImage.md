@@ -12,7 +12,7 @@ You can make adjustments to the displayed image or video picture/frame to alter<
 
 Control | Action
 ------- | ------
-**[BACKSPACE]**             | reset all adjustments to their defaults: <br /> brightness, contrast, gamma, pan, rotation, saturation, speed, zoom
+**[BACKSPACE]**             | reset all adjustments to their defaults: <br />audio sync, brightness, contrast, gamma, pan, rotation, saturation, speed, zoom
 &nbsp; ||
 **Brightness** ||
 **[-]** (hyphen)            | decrease brightness. Can be held down for rapid decrease

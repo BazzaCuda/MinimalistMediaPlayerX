@@ -1,4 +1,4 @@
-_ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To close this help panel, either hit **[Escape]** or use Ctrl-Shift-**[H]** again_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_To close this help panel, either hit **[Escape]** or use Ctrl-Shift-**[H]** again_
 <br />
 <br />
 [Help Page: Best Practice](Image_Browser)<br />
@@ -32,9 +32,10 @@ All of the alphabetical controls (and many of the others, too) were chosen so th
 <br />
 
   - there was also an instinctive feel about what keyboard or mouse actions a user might like to be able to use at various points
-    - for example, the natural inclination when watching a video to want the mouse wheel to alter the volume up and down
+    - for example, the natural inclination when watching a video while holding the mouse to want the mouse wheel to alter the volume up and down
 <br />
 <br />
+
   - this was [and is] a concerted effort to make all the controls as straight-forward to remember as possible
   - the ability for users to define custom keyboard overrides is in the development pipeline for **MMP**
 <br />

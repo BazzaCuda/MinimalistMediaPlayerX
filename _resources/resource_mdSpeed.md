@@ -2,7 +2,7 @@ You can adjust the playback speed of audio and video files
 
 | Control | Action |
 | ------- | ------ |
-| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
+| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />audio sync, brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
 | &nbsp; ||
 | **[\\]**                     | decrease playback speed. Can be held down for rapid decrease
 | **[/]**                     | increase playback speed. Can be held down for rapid increase

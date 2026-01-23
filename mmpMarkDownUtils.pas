@@ -55,7 +55,7 @@ begin
   aMD.defFontColor     := DARK_MODE_SILVER;
   aMD.defHotSpotColor  := DARK_MODE_SILVER;
   aMD.defOverLinkColor := DARK_MODE_SILVER;
-  aMD.borderStyle      := htNone;
+  aMD.borderStyle      := THTMLBorderStyle.htNone;
   aMD.defFontName      := FONT_TAHOMA;
   aMD.defFontSize      := 11;
   aMD.scrollBars       := ssVertical;

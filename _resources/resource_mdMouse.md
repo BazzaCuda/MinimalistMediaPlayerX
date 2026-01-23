@@ -1,5 +1,8 @@
 [Help Page: Aspect Ratio](Aspect_Ratio)<br />
 
+What can be said about the mouse that hasn't already been said?
+
+
 | Control | Action |
 | ------- | ------ |
 | **Left click** the window and hold | the window can be dragged/repositioned |

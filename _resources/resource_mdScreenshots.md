@@ -1,8 +1,8 @@
-In **MMP**, a "screenshot" is a **_direct-from-memory_** High Definition .png capture of the image or video frame being redendered to your **MMP** window
+In **MMP**, a "screenshot" is a **_direct-from-memory_** High Definition .png capture of the image or video frame being rendered to your **MMP** window
 
-Consequently, a so-called **MMP* "screenshot" is at a far higher resolution and quality than a standard Windows desktop screenshot
+Consequently, a so-called **MMP**  "screenshot" is at a far higher resolution and quality than a standard Windows desktop screenshot
 
-- any adjustments you make will be included in the screenshot file (see **Adjust Image**)<br />
+- any adjustments you make will be included in the screenshot file (see [Adjust Image](Adjust_Image))<br />
 - these include **brightness**, **contrast**, **gamma**, **rotation**, **saturation**, **zoom** in/out, **pan** up/down/left/right, and **rotate**
 
 - the dimensions of the .png image file will match the size of the image/frame in the **MMP** window<br />
@@ -16,13 +16,13 @@ Consequently, a so-called **MMP* "screenshot" is at a far higher resolution and 
 - the screenshot will never include the video progress bar or the video timestamp<br />
 - to include those you will need to take a standard desktop screenshot
 
-Control | Action
-------- | ------
-Main Media Window ||
-**[F5]**  | save a high definition screenshot of the current video frame or image
-&nbsp; ||
-Image & Thumbnail Browser ||
-Ctrl-**[S]**  | save a high definition screenshot of the current image
+| Control | Action |
+| ------- | ------ |
+| Main Media Window ||
+| **[F5]** | save a high definition screenshot of the current video frame or image |
+| &nbsp; ||
+| Image & Thumbnail Browser ||
+| Ctrl-**[S]** | save a high definition screenshot of the current image |
 
 N.B. In the **Image & Thumbnail Browser** all F-Keys are reserved for User-Defined folders
 

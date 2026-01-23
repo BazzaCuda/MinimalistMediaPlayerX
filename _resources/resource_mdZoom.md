@@ -9,7 +9,7 @@ You can zoom in and out on an image or video
 
 | Control | Action |
 | ------- | ------ |
-| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
+| **[BACKSPACE]**  | reset all adjustments to their defaults:<br />audio sync, brightness, contrast, gamma, pan, rotation, saturation, speed, zoom |
 | &nbsp; ||
 | **[I]**          | zoom [I]n. Can be held down for rapid zooming in
 | **[O]**          | zoom [O]ut. Can be held down for rapid zooming out

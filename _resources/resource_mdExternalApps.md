@@ -1,6 +1,4 @@
-[Config Dialog: External Apps](ConfigDialog:External_Apps)<br />
-
-From the _External Apps_  tab of the Ctrl-**[\\]**  Config Dialog you can define up to three external applications
+From the _External Apps_ tab of the Ctrl-**[\\]** Config Dialog you can define up to three external applications
 
 - the current media file, whether it's an audio file, a video file, or an image file, can be "sent" to any of your defined applications
 - the application will launch and try to open the media file
@@ -10,10 +8,16 @@ From the _External Apps_  tab of the Ctrl-**[\\]**  Config Dialog you can define
 - **MMP** has no inherent knowledge of any of the apps or their purpose or suitability to the current media file
 - consequently, as far as **MMP** is concerned, you can quite legitimately send a video to Photoshop. Photoshop will complain; **MMP** won't
 
-Control | Action
-------- | ------
-**[F10]**  | launch external app passing the current media file as a parameter
-**[F11]**  | _same_
-**[F12]**  | _same_
+| Control | Action |
+| ------- | ------ |
+| Main Media Window ||
+| **[F10]**  | launch external app passing the current media file as a parameter |
+| **[F11]**  | _same_ |
+| **[F12]**  | _same_ |
+| &nbsp; ||
+| Image & Thumbnail Browser ||
+| Ctrl-**[F10]**  | launch external app passing the current media file as a parameter |
+| Ctrl-**[F11]**  | _same_ |
+| Ctrl-**[F12]**  | _same_ |
 
 
