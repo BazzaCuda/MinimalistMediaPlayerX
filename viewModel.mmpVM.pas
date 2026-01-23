@@ -886,7 +886,9 @@ begin
                                           var vExt          := extractFileExt(vCurrentItem);
                                           var vFN           := vPath + vFile + ' [edited]' + vExt;
 
-                                          case CF.asBoolean[CONF_CHAPTERS_WRITE] and fileExists(mmpChapterFile(vFN)) of TRUE: vFN := mmpChapterContainer(vFN, GS.mediaType); end;
+                                          var vWriteChapters  := mmp.use<boolean>(GS.MediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+
+                                          case vWriteChapters and fileExists(mmpChapterFile(vFN)) of TRUE: vFN := mmpChapterContainer(vFN, GS.mediaType); end;
                                           case fileExists(vFN) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
 end;
 

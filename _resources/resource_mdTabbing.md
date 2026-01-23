@@ -12,30 +12,32 @@ In **MMP** this is called _tabbing_
 <br />
 <br />
 
-&nbsp; | &nbsp; | Control | Action
------- |------  | ------- | ------
-&nbsp; | &nbsp; | [Tab] | Tab forwards 1 second
-&nbsp; | Ctrl   | [Tab] | Tab _backwards_ 1 second
-&nbsp; | Shift  | [Tab] | Tab forwards 2 seconds
-&nbsp; | Ctrl-Shift  | [Tab] | Tab _backwards_ 2 seconds
-&nbsp; ||
-&nbsp; | &nbsp; | [T] | Tab forwards 1/100th of the total duration
-&nbsp; | Ctrl   | [T] | Tab _backwards_ 1/100th of the total duration
-&nbsp; ||
-&nbsp; | Shift       | [T] | Tab forwards 1/50th of the total duration
-&nbsp; | Ctrl-Shift  | [T] | Tab _backwards_ 1/50th of the total duration
-&nbsp; ||
-Caps Lock On | &nbsp; | [T] | Tab forwards 1/200th of the total duration
-Caps Lock On | Ctrl   | [T] | Tab _backwards_ 1/200th of the total duration
+| &nbsp; | &nbsp; | Control | Action |
+| ------ |------  | ------- | ------ |
+| &nbsp; | &nbsp; | [Tab] | Tab forwards 1 second |
+| &nbsp; | Ctrl   | [Tab] | Tab _backwards_ 1 second |
+| &nbsp; | Shift  | [Tab] | Tab forwards 2 seconds |
+| &nbsp; | Ctrl-Shift  | [Tab] | Tab _backwards_ 2 seconds |
+| &nbsp; ||
+| &nbsp; | &nbsp; | [T] | Tab forwards 1/100th of the total duration |
+| &nbsp; | Ctrl   | [T] | Tab _backwards_ 1/100th of the total duration |
+| &nbsp; ||
+| &nbsp; | Shift       | [T] | Tab forwards 1/50th of the total duration |
+| &nbsp; | Ctrl-Shift  | [T] | Tab _backwards_ 1/50th of the total duration |
+| &nbsp; ||
+| Caps Lock On | &nbsp; | [T] | Tab forwards 1/200th of the total duration |
+| Caps Lock On | Ctrl   | [T] | Tab _backwards_ 1/200th of the total duration |
+| &nbsp; | Shift | &rarr; right arrow | skip forwards 5 seconds<br />_or the value you have set in skipSeconds= in the MinimalistMedia.conf file_ |
+| &nbsp; | Shift | &larr; left arrow  | skip _backwards 5_ seconds<br />_or the value you have set in skipSeconds= in the MinimalistMedia.conf file_ |
 <br />
 <br />
 
-Control | Action
-------- | ------
-[Ctrl] and mouse | hold down a Ctrl key and move your mouse along the progress bar<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
-&nbsp; ||
-Audio & Video Timeline Editor | [Editing](Editing)
-vertical cursor | grab the vertical cursor and drag it along the Timeline<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file
+| Control | Action |
+| ------- | ------ |
+| [Ctrl] and mouse | hold down a Ctrl key and move your mouse along the progress bar<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file |
+| &nbsp; ||
+| Audio & Video Timeline Editor | [Editing](Editing) |
+| vertical cursor | grab the vertical cursor and drag it along the Timeline<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file |
 
 <div align="center">
 N.B. tabbing by a 50th/100th/200th of the total duration <br /> rather than by a set number of seconds <br />allows you to tab through all audio and video files at the same rate<br /> relative to their various durations

@@ -203,6 +203,13 @@ type
     Label69: TLabel;
     Label70: TLabel;
     Label71: TLabel;
+    tsChapters: TTabSheet;
+    Label72: TLabel;
+    chbChaptersShow: TCheckBox;
+    Label73: TLabel;
+    chbChaptersAudioWrite: TCheckBox;
+    chbChaptersVideoWrite: TCheckBox;
+    Label74: TLabel;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -244,6 +251,9 @@ type
     procedure lbTabCaptionsClick(Sender: TObject);
     procedure pageControlChange(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure chbChaptersShowClick(Sender: TObject);
+    procedure chbChaptersAudioWriteClick(Sender: TObject);
+    procedure chbChaptersVideoWriteClick(Sender: TObject);
   strict private
   protected
     function loadConfig: boolean;
@@ -395,6 +405,21 @@ end;
 procedure TConfigForm.chbAutoUpdateClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_AUTO_UPDATE] := chbAutoUpdate.checked;
+end;
+
+procedure TConfigForm.chbChaptersAudioWriteClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE] := chbChaptersAudioWrite.checked;
+end;
+
+procedure TConfigForm.chbChaptersShowClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_SHOW] := chbChaptersShow.checked;
+end;
+
+procedure TConfigForm.chbChaptersVideoWriteClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE] := chbChaptersVideoWrite.checked;
 end;
 
 procedure TConfigForm.chbExitBrowserClick(Sender: TObject);
@@ -595,6 +620,10 @@ begin
   chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
 
   edtDirtyChars.text            := trim(CF[CONF_DIRTY_CHARS]);
+
+  chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
+  chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
+  chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
 end;
 
 procedure TConfigForm.pageControlChange(Sender: TObject);

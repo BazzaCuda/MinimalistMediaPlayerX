@@ -117,7 +117,7 @@ const
       (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
       (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),
       (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
-      (helpType: htNone;    caption: 'Editing 2';             resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
+      (helpType: htMain;    caption: 'Editing Chapters';      resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
       (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),
       (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),

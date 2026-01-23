@@ -168,6 +168,8 @@ function TExporter.concatSegments(const aProgressForm: IProgressForm): boolean;
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
+  var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+
   var cmdLine := EMPTY;
 
   // concatenate exported segments
@@ -175,10 +177,8 @@ begin
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
   for var i := 0 to MI.selectedCount - 1 do begin
-    case (FMediaType = mtAudio) and CF.asBoolean[CONF_CHAPTERS_WRITE] and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end;
-    // var vDisposition :=  mmp.use(MI.mediaStreams[i].streamType = 'Image', 'attached_pic', 'default');
-    var vDisposition := 'default';
-    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d %s', [i, i, i, vDisposition]); end;
+    case (FMediaType = mtAudio) and vWriteChapters and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end; // any cover art streams were excluded in exportSegments
+    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]); end;
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
 
@@ -271,6 +271,8 @@ begin
       var vMaps       := EMPTY;
 
       for var vMediaStream in MI.mediaStreams do begin
+        // exclude any cover art streams from the exported segments if we're going to be adding chapter metadata
+        // otherwise FFmpeg will convert them to a video stream during the concat stage
         case bNoCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end;
         case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;end;
 
@@ -311,14 +313,15 @@ begin
   // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
   case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
 
-  var vSegOneFN   := EMPTY;
+  var vSegOneFN       := EMPTY;
+  var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
 
   //====== CHECK COVER ART ======
-  case (NOT mmpCtrlKeyDown) and (FMediaType = mtAudio) and CF.asBoolean[CONF_CHAPTERS_WRITE] and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
+  case (NOT mmpCtrlKeyDown) and (FMediaType = mtAudio) and vWriteChapters and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
   case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
-  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, CF.asBoolean[CONF_CHAPTERS_WRITE]) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
+  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vWriteChapters) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
 
   deletePreviousExport; // now we have newly-exported segment(s)
 
@@ -331,7 +334,7 @@ begin
   case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
-  case result and vDoConcat and CF.asBoolean[CONF_CHAPTERS_WRITE] of TRUE: result := createChapters(vProgressForm); end;
+  case result and vDoConcat and vWriteChapters of TRUE: result := createChapters(vProgressForm); end;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
   case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;
@@ -421,8 +424,9 @@ end;
 function TExporter.playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
 begin
   aProgressForm.subHeading := 'Playing Exported File';
-  case bMultiSegs and CF.asBoolean[CONF_CHAPTERS_WRITE] of   TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
-                                                            FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;
+  var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+  case bMultiSegs and vWriteChapters of  TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
+                                        FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;
 end;
 
 function TExporter.writeChaptersFromOutput: TVoid;

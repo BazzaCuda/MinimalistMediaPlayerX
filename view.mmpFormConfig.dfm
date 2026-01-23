@@ -31,7 +31,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsCleanFile
+    ActivePage = tsChapters
     Align = alClient
     TabOrder = 0
     OnChange = pageControlChange
@@ -52,7 +52,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -66,6 +66,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label3: TLabel
         Left = 128
@@ -201,7 +202,7 @@ object ConfigForm: TConfigForm
       object Label5: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -215,6 +216,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label13: TLabel
         Left = 16
@@ -470,7 +472,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -484,6 +486,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label21: TLabel
         Left = 49
@@ -642,7 +645,7 @@ object ConfigForm: TConfigForm
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -656,6 +659,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label28: TLabel
         Left = 170
@@ -840,7 +844,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -854,6 +858,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label30: TLabel
         Left = 55
@@ -2236,7 +2241,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2250,6 +2255,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label29: TLabel
         Left = 28
@@ -2522,7 +2528,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2536,6 +2542,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label35: TLabel
         Left = 87
@@ -2718,7 +2725,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2732,6 +2739,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label43: TLabel
         Left = 20
@@ -2793,7 +2801,7 @@ object ConfigForm: TConfigForm
       object Label45: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2807,6 +2815,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label46: TLabel
         Left = 0
@@ -2858,7 +2867,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2872,6 +2881,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label39: TLabel
         Left = 11
@@ -2939,7 +2949,7 @@ object ConfigForm: TConfigForm
       object Label50: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2953,6 +2963,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label51: TLabel
         Left = 131
@@ -3035,13 +3046,13 @@ object ConfigForm: TConfigForm
         OnClick = chbPlayEditedClick
       end
     end
-    object tsKeyframes: TTabSheet
-      Caption = 'Keyframes'
-      ImageIndex = 12
-      object Label57: TLabel
+    object tsChapters: TTabSheet
+      Caption = 'Editing Chapters'
+      ImageIndex = 13
+      object Label72: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3055,6 +3066,106 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
+      end
+      object Label73: TLabel
+        Left = 205
+        Top = 12
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label74: TLabel
+        Left = 91
+        Top = 33
+        Width = 395
+        Height = 135
+        Alignment = taCenter
+        Caption = 
+          'You can add chapters to your audio and/or video files'#13#10'and each ' +
+          'chapter can be given a title'#13#10#13#10'During playback, you can jump be' +
+          'tween chapters using F8 and F9'#13#10'to jump to the previous chapter ' +
+          'or the next chapter'#13#10'and the title will be displayed in the Noti' +
+          'fication Area (bottom right corner)'#13#10#13#10'Even if you don'#39't intend ' +
+          'to write chapters to your exported file'#13#10'it can be useful to hav' +
+          'e the segment titles displayed during editing'
+      end
+      object chbChaptersShow: TCheckBox
+        Left = 86
+        Top = 201
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Show Chapters During Editing'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbChaptersShowClick
+      end
+      object chbChaptersAudioWrite: TCheckBox
+        Left = 86
+        Top = 233
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Write Chapters for Audio files'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        OnClick = chbChaptersAudioWriteClick
+      end
+      object chbChaptersVideoWrite: TCheckBox
+        Left = 86
+        Top = 265
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Write Chapters for Video files'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnClick = chbChaptersVideoWriteClick
+      end
+    end
+    object tsKeyframes: TTabSheet
+      Caption = 'Keyframes'
+      ImageIndex = 12
+      object Label57: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label58: TLabel
         Left = 205
@@ -3245,7 +3356,7 @@ object ConfigForm: TConfigForm
       object Label55: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3259,6 +3370,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object lblDirtyChars: TLabel
         Left = 36
@@ -3369,6 +3481,7 @@ object ConfigForm: TConfigForm
         'Slideshows'
         'Repeat Delay'
         'Editing'
+        'Editing Chapters'
         'Keyframes'
         'Clean File Name')
       TabOrder = 0
