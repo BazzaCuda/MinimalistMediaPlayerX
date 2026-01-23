@@ -128,7 +128,7 @@ const
       (helpType: htBoth;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),
       (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
       (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),
-      (helpType: htMain;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),           // Playlist - re-order the controls, navigation (main vs browser) / shuffle mode / playlist filter / next folder on end/empty / playlist form
+      (helpType: htBoth;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),
       (helpType: htBoth;    caption: 'Resets';                resource: 'resource_mdResets'),
       (helpType: htBoth;    caption: 'Rotation';              resource: 'resource_mdRotation'),
       (helpType: htBoth;    caption: 'Screenshots';           resource: 'resource_mdScreenshots'),

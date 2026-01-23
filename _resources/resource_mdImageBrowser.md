@@ -29,6 +29,8 @@
 </div>
 
 With the **Image & Thumbnail Browser** you can browse through your entire image library as thumbnails and/or full size
+- the four arrow keys are very powerful, whether in Image Mode or Thumbnail Mode
+- you can browse through an entire drive with just the arrow keys, automatically skipping folders which don't contain images
 <br />
 <br />
 
@@ -163,5 +165,4 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 |**[/]** | increase slideshow speed by 100ms |
 |**[\\]** | decrease slideshow speed by 100ms |
 | right click | pause/resume slideshow |
-
 
