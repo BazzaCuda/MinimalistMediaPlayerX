@@ -29,8 +29,10 @@ uses
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
   vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics,
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Samples.Spin,
   {$endif}
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Samples.Spin;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  bazAction;
 
 type
   TConfigForm = class(TForm)
@@ -210,7 +212,6 @@ type
     chbChaptersAudioWrite: TCheckBox;
     chbChaptersVideoWrite: TCheckBox;
     Label74: TLabel;
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -249,14 +250,18 @@ type
     procedure chbKeyframesClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbTabCaptionsClick(Sender: TObject);
-    procedure pageControlChange(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure chbChaptersShowClick(Sender: TObject);
     procedure chbChaptersAudioWriteClick(Sender: TObject);
     procedure chbChaptersVideoWriteClick(Sender: TObject);
+    procedure pageControlChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure pageControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   strict private
+  private
+    procedure SetActiveTabByIx(const aTabIx: Integer);
   protected
-    function loadConfig: boolean;
+    function loadConfig: TVoid;
+    function populateListBox: TVoid;
   public
   end;
 
@@ -266,7 +271,7 @@ implementation
 
 uses
   bazCmd,
-  mmpConsts, mmpFolderUtils, mmpGlobalState, mmpShellUtils, mmpUserFolders, mmpUtils,
+  mmpConsts, mmpFolderUtils, mmpGlobalState, mmpKeyboardUtils, mmpShellUtils, mmpUserFolders, mmpUtils,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -275,6 +280,7 @@ begin
   with TConfigForm.create(NIL) do begin
     mmp.cmd(evGSShowingConfig, TRUE);
     mmp.cmd(evGSUserInput, TRUE);
+    populateListBox;
     loadConfig;
 
     case aTabCaption = '' of   TRUE:  begin
@@ -547,26 +553,7 @@ begin
   lbTabCaptions.borderStyle := bsNone;
 end;
 
-procedure TConfigForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-//  case key = VK_ESCAPE of TRUE: begin
-//                                  mmp.cmd(evGSIgnoreEscape, TRUE);
-//                                  modalResult := mrOK; end;end;
-end;
-
-procedure TConfigForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState); // EXPERIMENTAL - DOESNT FIRE!
-begin
-  case key = VK_ESCAPE of TRUE: begin
-                                  mmp.cmd(evGSIgnoreEscape, TRUE);
-                                  modalResult := mrOK; end;end;
-end;
-
-procedure TConfigForm.lbTabCaptionsClick(Sender: TObject);
-begin
-  pageControl.activePageIndex := lbTabCaptions.itemIndex;
-end;
-
-function TConfigForm.loadConfig: boolean;
+function TConfigForm.loadConfig: TVoid;
 begin
   chbAutoUpdate.checked         := CF.asBoolean[CONF_AUTO_UPDATE];
   chbStartInEditor.checked      := CF.asBoolean[CONF_START_IN_EDITOR];
@@ -626,11 +613,65 @@ begin
   chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
 end;
 
-procedure TConfigForm.pageControlChange(Sender: TObject);
+function TConfigForm.populateListBox: TVoid;
 begin
-  // in case the user clicks a tab or uses Ctrl-Tab to cycle through tabs
-  case pageControl.activePageIndex = lbTabCaptions.itemIndex of FALSE: lbTabCaptions.itemIndex := pageControl.activePageIndex; end;
+  lbTabCaptions.items.beginUpdate;
+  try
+    lbTabCaptions.items.clear;
+
+    for var i := 0 to pageControl.pageCount - 1 do  begin
+                                                      var tab := pageControl.pages[i];
+                                                      lbTabCaptions.items.addObject(tab.caption, tab); end;
+    lbTabCaptions.sorted := TRUE;
+  finally
+    lbTabCaptions.items.endUpdate;
+  end;
 end;
+
+//==================== TAB CONTROL ====================
+procedure TConfigForm.pageControlChanging(Sender: TObject; var AllowChange: Boolean);
+begin
+  allowChange   := FALSE; // only allow programmatic changes
+end;
+
+procedure TConfigForm.pageControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  // find which tab was clicked
+  for var i := 0 to pageControl.pageCount - 1 do
+    case pageControl.tabRect(i).contains(point(x, y)) of TRUE: setActiveTabByIx(i); end;
+end;
+
+procedure TConfigForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  // we action Ctrl-Tab, not pageControl
+  case (Key = VK_TAB) and (ssCtrl in Shift) of TRUE:  begin
+                                                        var vIx := pageControl.activePageIndex;
+
+                                                        case ssShift in Shift of   TRUE: case vIx > 0                         of TRUE: vIx := vIx - 1; end;
+                                                                                  FALSE: case vIx < pageControl.pageCount - 1 of TRUE: vIx := vIx + 1; end;end;
+
+                                                        SetActiveTabByIx(vIx); end;end;
+
+  // absolutely vital!
+  case key = VK_ESCAPE of TRUE: begin
+                                  //mmp.cmd(evGSIgnoreEscape, TRUE); // test without this at some point soon
+                                  modalResult := mrOK; end;end;
+end;
+
+procedure TConfigForm.setActiveTabByIx(const aTabIx: integer);
+begin
+  case (aTabIx >= 0) and (aTabIx < pageControl.pageCount) of TRUE:  begin
+                                                                      pageControl.activePageIndex := aTabIx;
+                                                                      lbTabCaptions.itemIndex     := lbTabCaptions.items.indexOf(pageControl.activePage.caption);
+                                                                      lbTabCaptionsClick(NIL); end;end;
+end;
+
+procedure TConfigForm.lbTabCaptionsClick(Sender: TObject);
+begin
+  case lbTabCaptions.itemIndex >= 0 of TRUE: pageControl.activePage := TTabSheet(lbTabCaptions.items.objects[lbTabCaptions.itemIndex]); end;
+end;
+//==================== TAB CONTROL ====================
+
 
 procedure TConfigForm.rbShredClick(Sender: TObject);
 begin

@@ -14,7 +14,6 @@ object ConfigForm: TConfigForm
   KeyPreview = True
   Position = poScreenCenter
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   TextHeight = 15
   object Label19: TLabel
@@ -31,10 +30,11 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsChapters
+    ActivePage = tsPlaylistFilter
     Align = alClient
     TabOrder = 0
-    OnChange = pageControlChange
+    OnChanging = pageControlChanging
+    OnMouseDown = pageControlMouseDown
     object tsGeneral: TTabSheet
       Caption = 'General'
       object Label2: TLabel
@@ -3467,23 +3467,25 @@ object ConfigForm: TConfigForm
       Top = 16
       Width = 137
       Height = 344
+      TabStop = False
       Align = alLeft
       ItemHeight = 15
       Items.Strings = (
-        'General'
-        'File Deletion'
-        'Playlist'
-        'Playlist Filter'
-        'User-Defined Folders'
-        'External Apps'
-        'Quick Rename'
-        'Scale Factor'
-        'Slideshows'
-        'Repeat Delay'
+        'Clean File Name'
         'Editing'
         'Editing Chapters'
+        'External Apps'
+        'File Deletion'
+        'General'
         'Keyframes'
-        'Clean File Name')
+        'Playlist'
+        'Playlist Filter'
+        'Quick Rename'
+        'Repeat Delay'
+        'Scale Factor'
+        'Slideshows'
+        'User-Defined Folders')
+      Sorted = True
       TabOrder = 0
       OnClick = lbTabCaptionsClick
     end
