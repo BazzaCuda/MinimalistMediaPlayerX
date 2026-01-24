@@ -43,7 +43,7 @@ function mmpEnvironmentVariable: boolean;
 var
   vBuf: array[0..1024] of char;
 begin
-  getEnvironmentVariable(MMP_CHECK, vBuf, sizeOf(vBuf) - 1);
+  getEnvironmentVariable(MMP_CHECK, vBuf, length(vBuf) - 1);
   result := getLastError <> ERROR_ENVVAR_NOT_FOUND;
 end;
 

@@ -314,7 +314,7 @@ var
 
   vFFmpegIx:    integer;
 
-  function createVideoStream(aStreamIx: integer): boolean;
+  function createVideoStream(aStreamIx: integer; aPosIx: integer): boolean;
   begin
 //    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
 
@@ -333,12 +333,13 @@ var
     vBitRate := stringReplace(vBitRate, ' ', ',', []);
     case pos(' (', vDuration) > 1 of TRUE: vDuration := copy(vDuration, 1, pos(' (', vDuration) - 1); end;
 
-    inc(vFFmpegIx);
+//    inc(vFFmpegIx);
+    vFFmpegIx := aPosIx;
     vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
   end;
 
-  function createAudioStream(aStreamIx: integer): boolean;
+  function createAudioStream(aStreamIx: integer; aPosIx: integer): boolean;
   begin
     vBitRate    := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'BitRate/String',          Info_Text, Info_Name);
     vDuration   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Duration/String5',        Info_Text, Info_Name);
@@ -350,12 +351,13 @@ var
     vStreamType := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'StreamKind',              Info_Text, Info_Name);
     vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',     Info_Text, Info_Name);
 
-    inc(vFFmpegIx);
+//    inc(vFFmpegIx);
+    vFFmpegIx := aPosIx;
     vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
-  function createTextStream(aStreamIx: integer): boolean;
+  function createTextStream(aStreamIx: integer; aPosIx: integer): boolean;
   begin
     vBitRate    := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'BitRate/String',           Info_Text, Info_Name);
     vDuration   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Duration/String5',         Info_Text, Info_Name);
@@ -367,12 +369,13 @@ var
     vStreamType := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'StreamKind',               Info_Text, Info_Name);
     vInfo       := EMPTY;
 
-    inc(vFFmpegIx);
+//    inc(vFFmpegIx);
+    vFFmpegIx := aPosIx;
     vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
-  function createImageStream(aStreamIx: integer): boolean;
+  function createImageStream(aStreamIx: integer; aPosIx: integer): boolean;
   begin
     vBitRate    := EMPTY;
     vDuration   := EMPTY;
@@ -385,7 +388,8 @@ var
     vInfo       := mediaInfo_Get(FHandle, Stream_Image, aStreamIx, 'Width',                   Info_Text, Info_Name) + 'x'
                  + mediaInfo_Get(FHandle, Stream_Image, aStreamIx, 'Height',                  Info_Text, Info_Name);
 
-    inc(vFFmpegIx);
+//    inc(vFFmpegIx);
+    vFFmpegIx := aPosIx;
     vID := format('%.2d', [vFFmpegIx + 1]);
     FMediaStreams.add(TMediaStream.create(vFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 6));
   end;
@@ -508,16 +512,50 @@ begin
     // MediaInfo indexes each different _type_ of stream from zero!! - so there can be an audio, video and subtitle stream all with ix = 0 !!!
     // Fortunately, MediaInfo still seems to traverse the streams in physical order, the same as FFmpeg does, so we can determine the FFmpeg index from the physical order
     vFFmpegIx := -1;
-    for var vStreamIx := 0 to streamCount - 1 do begin // this is MediaInfo's stream ix, not FFmpeg's!
-      case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createVideoStream(vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createAudioStream(vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createTextStream (vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createImageStream(vStreamIx); end;
-      case              mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
-      case              mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: inc(vFFmpegIx); end;
+
+//    for var vStreamIx := 0 to streamCount - 1 do begin // this is MediaInfo's stream ix, not FFmpeg's!
+//      case              mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createVideoStream(vStreamIx); end;
+//      case              mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createAudioStream(vStreamIx); end;
+//      case              mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createTextStream (vStreamIx); end;
+//      case              mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createImageStream(vStreamIx); end;
+//      case              mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
+//      case              mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind',     Info_Text, Info_Name) <> EMPTY of TRUE: inc(vFFmpegIx); end;
+//    end;
+
+
+    for var vStreamIx := 0 to streamCount - 1 do begin // this is MediaInfo's stream ix within each streamKind, not FFmpeg's physical index
+
+      var vPosIx: integer;
+
+      case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
+        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
+        debugFormat('%d %d', [vStreamIx, vPosIx]);
+        createVideoStream(vStreamIx, vPosIx); end;end;
+
+      case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
+        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
+        debugFormat('%d %d', [vStreamIx, vPosIx]);
+        createAudioStream(vStreamIx, vPosIx); end;end;
+
+      case mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
+        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
+        debugFormat('%d %d', [vStreamIx, vPosIx]);
+        createTextStream(vStreamIx, vPosIx); end;end;
+
+      case mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
+        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
+        debugFormat('%d %d', [vStreamIx, vPosIx]);
+        createImageStream(vStreamIx, vPosIx); end;end;
+
+      case mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
+        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
+        debugFormat('%d %d', [vStreamIx, vPosIx]); end;end;
+
     end;
 
   case (FMD.mdVideoCount = 0) and (extractFileExt(FURL).toLower = '.mkv') of TRUE: aNotice.mediaType := mtAudio; end; // EXPERIMENTAL
+
+  sortStreams;
 
   finally mediaInfo_close(FHandle); end;
     result.tf := TRUE;
