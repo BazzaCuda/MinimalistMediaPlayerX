@@ -508,23 +508,21 @@ begin
 
       case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        // debugFormat('%d %d', [vStreamIx, vPosIx]);
         case vPosIx <> -1 of TRUE: createVideoStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        // debugFormat('%d %d', [vStreamIx, vPosIx]);
         case vPosIx <> -1 of TRUE: createAudioStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        // debugFormat('%d %d', [vStreamIx, vPosIx]);
         case vPosIx <> -1 of TRUE: createTextStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        // debugFormat('%d %d', [vStreamIx, vPosIx]);
         case vPosIx <> -1 of TRUE: createImageStream(vStreamIx, vPosIx); end;end;end;
+
+      case mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
 
 //      case mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
 //        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
