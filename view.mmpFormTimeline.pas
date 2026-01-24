@@ -173,7 +173,7 @@ begin
   TL.playEdited := bPlayEdited;
   TL.positionSS := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
-  case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, TL.exportSegments, bCreateNew); end;
+  case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, TL.onRedraw, TL.exportSegments, bCreateNew); end;
 
   mmp.cmd(evMPKeepOpen, TRUE);
   mmp.cmd(evGSShowingTimeline, TRUE);
@@ -439,7 +439,8 @@ function TTimeline.delSegment(const aSegment: TSegment): boolean;
 begin
   result := FALSE;
   case aSegment = NIL of TRUE: EXIT; end;
-  result := aSegment.delete;
+  aSegment.delete;
+  result := TRUE;
 end;
 
 destructor TTimeline.Destroy;
@@ -665,7 +666,6 @@ end;
 procedure TTimeline.onRedraw(sender: TObject);
 begin
   TL.addUndo(TL.saveSegments);
-//  TL.saveSegments;
   TL.drawSegments;
   gTimelineForm.updatePositionDisplay(TL.positionSS);
 end;

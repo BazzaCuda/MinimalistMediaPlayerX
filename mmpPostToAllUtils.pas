@@ -66,15 +66,27 @@ begin
   result := gPA;
 end;
 
+//function enumAllWindows(handle: HWND; LParam: LPARAM): BOOL; stdcall;
+//var
+//  windowName : array[0..255] of char;
+//  className  : array[0..255] of char;
+//begin
+//  case GS.arrangeAll of TRUE: case isWindowVisible(handle) of FALSE: EXIT; end;end; // Ctrl-9: ignore MMP's which are displaying The Image & Thumbnail Browser
+//
+//  case getClassName(handle, className, sizeOf(className)) > 0
+//    of TRUE: case strComp(className, 'TMMPUI') = 0 of TRUE: PA.addWnd(handle); end;end;
+//  result := TRUE;
+//end;
+
 function enumAllWindows(handle: HWND; LParam: LPARAM): BOOL; stdcall;
 var
-  windowName : array[0..255] of char;
-  className  : array[0..255] of char;
+  className: array[0..255] of WideChar;
 begin
   case GS.arrangeAll of TRUE: case isWindowVisible(handle) of FALSE: EXIT; end;end; // Ctrl-9: ignore MMP's which are displaying The Image & Thumbnail Browser
 
-  case getClassName(handle, className, sizeOf(className)) > 0
-    of TRUE: case strComp(className, 'TMMPUI') = 0 of TRUE: PA.addWnd(handle); end;end;
+  case GetClassName(handle, PWideChar(@className[0]), length(className)) > 0
+    of TRUE: case compareStr(className, 'TMMPUI') = 0 of TRUE: PA.addWnd(handle); end;end;
+
   result := TRUE;
 end;
 
@@ -133,6 +145,7 @@ begin
   clear;
   enumWindows(@enumAllWindows, 0);
   result := length(FWNDs);
+  debugInteger('postToAllCount', result);
 end;
 
 function TPostToAll.postToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;

@@ -196,6 +196,8 @@ begin
   mmp.cmd(evGSArrangeAll, TRUE); // ignore MMPs showing the Image & Thumbnail Browser
   vCount := mmp.cmd(evPAReqCount).integer;
 
+  case vCount = 0 of TRUE: EXIT; end; // HOW!?
+
   mmp.cmd(evGSAutoCenter, vCount = 1);
   case GS.autoCenter of FALSE:  begin
                                   mmp.cmd(evPAPostToEvery, WIN_AUTOCENTER_OFF);

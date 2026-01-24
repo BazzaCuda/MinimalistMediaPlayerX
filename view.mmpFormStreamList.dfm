@@ -82,6 +82,7 @@ object StreamListForm: TStreamListForm
           ParentFont = False
           TabOrder = 0
           OnBeforeDrawItem = clSegmentsBeforeDrawItem
+          OnMouseUp = clSegmentsMouseUp
           OnItemClick = clSegmentsItemClick
           OnItemDblClick = clSegmentsItemDblClick
           object Shape1: TShape

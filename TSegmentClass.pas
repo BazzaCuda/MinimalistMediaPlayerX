@@ -23,7 +23,8 @@ interface
 uses
   winApi.windows, winApi.messages,
   system.classes, system.generics.collections,
-  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls;
+  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
+  bazAction;
 
 const
   NEARLY_BLACK = clBlack + $101010;
@@ -71,8 +72,8 @@ type
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
-    function    delete: boolean;
-    function    restore: boolean;
+    function    delete: TVoid;
+    function    restore: TVoid;
     procedure   setDisplayDetails;
     function    setAsSelSeg: boolean;
     property    deleted:   boolean read FDeleted      write FDeleted;
@@ -237,13 +238,11 @@ begin
   case bDeleted of TRUE: SELF.delete; end;
 end;
 
-function TSegment.delete: boolean;
+function TSegment.delete: TVoid;
 begin
-  result     := FALSE;
   deleted    := TRUE;
   case color  = NEARLY_BLACK of FALSE: oldColor := color; end; // in case user tries to delete an already-deleted segment
   color      := NEARLY_BLACK;
-  result     := TRUE;
 end;
 
 procedure TSegment.doClick(Sender: TObject);
@@ -313,12 +312,10 @@ begin
                    FALSE: Frame3D(canvas, rect, color, color, 1); end;
 end;
 
-function TSegment.restore: boolean;
+function TSegment.restore: TVoid;
 begin
-  result  := FALSE;
   deleted := FALSE;
   case oldColor = NEARLY_BLACK of FALSE: color := oldColor; end;
-  result  := TRUE;
 end;
 
 procedure TSegment.setSegID(const Value: string);

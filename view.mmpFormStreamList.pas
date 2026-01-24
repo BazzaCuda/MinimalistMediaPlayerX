@@ -83,9 +83,11 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure clSegmentsItemDblClick(Sender: TObject);
+    procedure clSegmentsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
+    FOnRedraw:  TNotifyEvent;
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
@@ -99,11 +101,12 @@ type
     procedure   WMSize            (var msg: TWMSize);       message WM_SIZE;
   public
     property onExport: TNotifyEvent read FOnExport write FOnExport;
+    property onRedraw: TNotifyEvent read FOnRedraw write FOnRedraw;
   end;
 
 function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aRedrawEvent: TNotifyEvent; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 function mmpShutStreamList: boolean;
 function mmpScrollTo(const aIx: integer): boolean;
 
@@ -134,7 +137,7 @@ begin
   gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aRedrawEvent: TNotifyEvent; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 begin
   case (gStreamListForm = NIL) and bCreateNew of TRUE: begin gStreamListForm := TStreamListForm.create(NIL); end;end;
   case gStreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
@@ -144,6 +147,7 @@ begin
   case GS.showingStreamList of FALSE: gStreamListForm.pageControl.pages[0].show; end; // first time only
   gStreamListForm.show;
   gStreamListForm.onExport := aExportEvent;
+  gStreamListForm.onRedraw := aRedrawEvent;
 
   // When the main window is resized or moved, force a WM_SIZE message to be generated without actually changing the size of the form
   winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height + 1, SWP_SHOWWINDOW);
@@ -271,6 +275,16 @@ procedure TStreamListForm.clSegmentsItemDblClick(Sender: TObject);
 begin
   var vS := mmpInputBoxForm(TL.segments[clSegments.itemIndex].title);
   case vS = TL.segments[clSegments.itemIndex].title of FALSE: TL.segments[clSegments.itemIndex].newTitle := vS; end;
+end;
+
+procedure TStreamListForm.clSegmentsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  case button = mbRight of TRUE:  begin
+                                    var vIx := clSegments.hotItemIndex;
+                                    case TL.segments[vIx].deleted of   TRUE: TL.segments[vIx].restore;
+                                                                      FALSE: TL.segments[vIx].delete; end;
+                                    case assigned(FOnRedraw) of TRUE: FOnRedraw(SELF); end;
+                                    focusTimeline; end;end;
 end;
 
 procedure TStreamListForm.clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
