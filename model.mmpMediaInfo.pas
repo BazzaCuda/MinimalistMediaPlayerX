@@ -502,30 +502,27 @@ begin
     // MediaInfo indexes each different _kind_ of stream from zero!! - so there can be an audio, video and subtitle stream all with ix = 0 !!!
     // We have to traverse the streams in index order within every streamKind and then obtain the physical index, "StreamOrder"
 
-    var vMaxPosIx: integer := -1;
-
     for var vStreamIx := 0 to streamCount - 1 do begin // this is MediaInfo's stream ix within each streamKind, not FFmpeg's physical index
 
       var vPosIx: integer;
 
       case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx <> -1 of TRUE: begin createVideoStream(vStreamIx, vPosIx); vMaxPosIx := max(vMaxPosIx, vPosIx); end;end;end;end;
+        case vPosIx <> -1 of TRUE: createVideoStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx =  -1 of   TRUE: case sameText(extractFileExt(FURL), '.mp3') of TRUE: vPosIx := 0; end;end;
-        case vPosIx <> -1 of  TRUE: begin createAudioStream(vStreamIx, vPosIx); vMaxPosIx := max(vMaxPosIx, vPosIx); end;end;end;end;
+        case vPosIx =  -1 of TRUE: case sameText(extractFileExt(FURL), '.mp3') of TRUE: vPosIx := 0; end;end;
+        case vPosIx <> -1 of TRUE: createAudioStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx <> -1 of TRUE: begin createTextStream(vStreamIx, vPosIx);  vMaxPosIx := max(vMaxPosIx, vPosIx); end;end;end;end;
+        case vPosIx <> -1 of TRUE: createTextStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx = -1 of  TRUE: vPosIx := vMaxPosIx + 1; end;
-        createImageStream(vStreamIx, vPosIx);
-        vMaxPosIx := Max(vMaxPosIx, vPosIx); end;end;
+        case vPosIx = -1 of  TRUE: vPosIx := streamCount - 1; end;
+        createImageStream(vStreamIx, vPosIx); end;end;
 
       case mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
 

@@ -210,7 +210,7 @@ function TExporter.createChaptersAndCoverArt(const aProgressForm: IProgressForm;
 // bWriteChapters = FALSE and writing to an M4A, we have to use -disposition:v:0 attached_pic otherwise FFmpeg will turn the image into a video stream
 begin
 // if concat was ok, we can create chapters from the multiple .segnn files
-// for Audio and Video, an MKV container format and a .mkv file extension will be enforced
+// for Audio and Video, an MKV container format and a .mkv file extension will be enforced if bWriteChapters = TRUE
   result := FALSE;
 
   var cmdLine := EMPTY;
