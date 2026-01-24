@@ -514,7 +514,8 @@ begin
 
       case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx <> -1 of TRUE: begin createAudioStream(vStreamIx, vPosIx); vMaxPosIx := max(vMaxPosIx, vPosIx); end;end;end;end;
+        case vPosIx =  -1 of   TRUE: case sameText(extractFileExt(FURL), '.mp3') of TRUE: vPosIx := 0; end;end;
+        case vPosIx <> -1 of  TRUE: begin createAudioStream(vStreamIx, vPosIx); vMaxPosIx := max(vMaxPosIx, vPosIx); end;end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
@@ -533,7 +534,7 @@ begin
 //        debugFormat('%d %d', [vStreamIx, vPosIx]); end;end;
     end;
 
-  case (FMD.mdVideoCount = 0) and (extractFileExt(FURL).toLower = '.mkv') of TRUE: aNotice.mediaType := mtAudio; end; // EXPERIMENTAL
+  case (FMD.mdVideoCount = 0) and (extractFileExt(FURL).toLower = '.mkv') of TRUE: aNotice.mediaType := mtAudio; end;
 
   sortStreams;
 

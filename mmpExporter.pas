@@ -56,7 +56,7 @@ type
     FProcessHandle: THandle;
   private
     function  concatSegments(const aProgressForm: IProgressForm): boolean;
-    function  createChapters(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+    function  createChaptersAndCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
     function  deletePreviousExport: TVoid;
     function  exportCoverArt(const aProgressForm: IProgressForm): boolean;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
@@ -185,11 +185,9 @@ begin
 
   cmdLine := cmdLine + ' -i "' + FMediaFilePath + '" -map_metadata 1'; // artist/title/album metadata donor
 
-  case FMediaType = mtAudio of   TRUE: cmdLine := cmdLine + ' -map 0:0 -c copy';   // EXPERIMENTAL
+  // This is concat, not the segment export, so we want everything from "stream" 0, aka the list of concat files
+  case FMediaType = mtAudio of   TRUE: cmdLine := cmdLine + ' -map 0:0 -c copy';
                                 FALSE: cmdLine := cmdLine + ' -map 0   -c copy'; end;
-
-
-
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
 
@@ -201,8 +199,9 @@ begin
   case result of FALSE: case exportFailRerun(aProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
 end;
 
-function TExporter.createChapters(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+function TExporter.createChaptersAndCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
 //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
+//======      ATTACH COVER.JPG IF IT EXISTS      ======
 
 // audio file cover art is also re-attached at this stage
 // if the caller doesn't want chapter metadata included, we still try to include the cover art
@@ -225,19 +224,23 @@ begin
 
   cmdLine := ' -i "' + filePathOUT + '" ';  // filePathOUT from the previous step
 
+//  case bWriteChapters of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1'; end;
   case bWriteChapters of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1'; end;
 
-  // M4A audio without chapters
+  // M4A audio WITHOUT chapters
   case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and (extractFileExt(filePathOUT).toLower = '.m4a') of TRUE:
-    cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -disposition:v:0 attached_pic'; end;
+        cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -disposition:v:0 attached_pic'; end;
 
-  // MKV audio with chapters
-  case (FMediaType = mtAudio) and bWriteChapters and fileExists(filePathCover) of TRUE: cmdLine := cmdLine + ' -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
+  // MP3 audio WITHOUT chapters
+  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and (extractFileExt(filePathOUT).toLower = '.mp3')  of TRUE:
+        cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -id3v2_version 3 -metadata:s:t mimetype=image/jpeg'; end;
+
+  // MKV audio WITH chapters
+  case (FMediaType = mtAudio) and bWriteChapters and fileExists(filePathCover) of TRUE:
+        cmdLine := cmdLine + ' -c copy -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
 
   cmdLine := cmdLine + STD_SEG_PARAMS + STD_MAP_METADATA_0;
   case FMediaType = mtVideo of TRUE: cmdLine := cmdLine + ' -c copy'; end;
-
-
 
   cmdLine := cmdLine + ' -y "' + filePathTempChapters(bWriteChapters) + '"';  // filePathOUT + fileChapterData (and/or cover art) = temporary [chapters] file
 
@@ -274,7 +277,9 @@ begin
 
   aProgressForm.subHeading := 'Extracting Cover Art';
 
-  var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy -y "' + filePathCover + '"';
+  case fileExists(filePathCover) of TRUE: EXIT; end; // we don't overwrite user's beloved album art, they have to delete it themselves!
+
+  var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
@@ -348,7 +353,7 @@ begin
   var vExportCoverArt := (FMediaType = mtAudio) and (TSegment.includedCount > 1);
 
   //====== CHECK COVER ART ======
-  case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end; // EXPERIMENTAL
+  case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
   case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
@@ -365,7 +370,7 @@ begin
   case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
-  case result and vDoConcat {and vWriteChapters} of TRUE: result := createChapters(vProgressForm, vWriteChapters); end;
+  case result of TRUE: result := createChaptersAndCoverArt(vProgressForm, vWriteChapters); end;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
   case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;
