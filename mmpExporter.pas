@@ -56,17 +56,17 @@ type
     FProcessHandle: THandle;
   private
     function  concatSegments(const aProgressForm: IProgressForm): boolean;
-    function  createChapters(const aProgressForm: IProgressForm): boolean;
+    function  createChapters(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
     function  deletePreviousExport: TVoid;
     function  exportCoverArt(const aProgressForm: IProgressForm): boolean;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
-    function  exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bNoCoverArt: boolean): boolean;
+    function  exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bExportedCoverArt: boolean): boolean;
     function  fileChapterData: string;
     function  filePathCover: string;
     function  filePathLOG: string;
-    function  filePathOUT(aSuffix: string = ' [edited]'): string;
+    function  filePathOUT(const bWriteChapters: boolean = FALSE; const aSuffix: string = ' [edited]'): string;
     function  filePathSEG: string;
-    function  filePathTempChapters(aSuffix: string = ' [chapters]'): string;
+    function  filePathTempChapters(const bWriteChapters: boolean; aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
     function  log(const aLogEntry: string): boolean;
     function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
@@ -93,7 +93,8 @@ begin
 end;
 
 const
-  STD_SEG_PARAMS = ' -avoid_negative_ts make_zero -map_metadata 0 -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+  STD_SEG_PARAMS      = ' -avoid_negative_ts make_zero -movflags +faststart -default_mode infer_no_subs -ignore_unknown';
+  STD_MAP_METADATA_0  = ' -map_metadata 0';
 
 
 { TExporter }
@@ -121,7 +122,7 @@ begin
   cmdLine := '-hide_banner';
   cmdLine := cmdLine + ' -i "'  + FMediaFilePath + '"';
   cmdLine := cmdLine + COPY_PARAMS;
-  var vFilePathOUT := filePathOUT(' [c]');
+  var vFilePathOUT := filePathOUT(FALSE, ' [c]');
 
   case lowerCase(extractFileExt(vFilePathOUT)) = '.m4v' of TRUE: vFilePathOUT := changeFileExt(vFilePathOUT, '.mp4'); end; // FFmpeg fix ?
 
@@ -176,9 +177,19 @@ begin
   aProgressForm.subHeading := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
-  for var i := 0 to MI.selectedCount - 1 do begin
-    case (FMediaType = mtAudio) and vWriteChapters and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end; // any cover art streams were excluded in exportSegments
-    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]); end;
+//  for var i := 0 to MI.selectedCount - 1 do begin
+//    case (FMediaType = mtAudio) and vWriteChapters and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end; // any cover art streams were excluded in exportSegments
+//    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]); end;
+//    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy', [i, i, i]); end;
+//  end;
+
+  cmdLine := cmdLine + ' -i "' + FMediaFilePath + '" -map_metadata 1'; // artist/title/album metadata donor
+
+  case FMediaType = mtAudio of   TRUE: cmdLine := cmdLine + ' -map 0:0 -c copy';   // EXPERIMENTAL
+                                FALSE: cmdLine := cmdLine + ' -map 0   -c copy'; end;
+
+
+
 
   cmdLine := cmdLine + STD_SEG_PARAMS;
 
@@ -190,8 +201,14 @@ begin
   case result of FALSE: case exportFailRerun(aProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
 end;
 
-function TExporter.createChapters(const aProgressForm: IProgressForm): boolean;
+function TExporter.createChapters(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
 //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
+
+// audio file cover art is also re-attached at this stage
+// if the caller doesn't want chapter metadata included, we still try to include the cover art
+
+// bWriteChapters = TRUE forces us to write an MKV and to -attach the cover art
+// bWriteChapters = FALSE and writing to an M4A, we have to use -disposition:v:0 attached_pic otherwise FFmpeg will turn the image into a video stream
 begin
 // if concat was ok, we can create chapters from the multiple .segnn files
 // for Audio and Video, an MKV container format and a .mkv file extension will be enforced
@@ -199,27 +216,40 @@ begin
 
   var cmdLine := EMPTY;
 
-  aProgressForm.subHeading := 'Creating Chapters';
-  writeChaptersFromOutput;
-  case fileExists(fileChapterData) of FALSE: EXIT; end;
+  case bWriteChapters of   TRUE: aProgressForm.subHeading := 'Creating Chapters';
+                          FALSE: aProgressForm.subHeading := 'Attaching Cover Art'; end;
 
-  cmdLine := ' -i "' + filePathOUT + '" ';
-  cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1';
+  case bWriteChapters of TRUE:  begin
+                                  writeChaptersFromOutput;
+                                  case fileExists(fileChapterData) of FALSE: EXIT; end;end;end;
 
-  case (FMediaType = mtAudio) and fileExists(filePathCover) of TRUE: cmdLine := cmdLine + ' -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
+  cmdLine := ' -i "' + filePathOUT + '" ';  // filePathOUT from the previous step
 
-  cmdLine := cmdLine + STD_SEG_PARAMS;
+  case bWriteChapters of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1'; end;
 
-  cmdLine := cmdLine + ' -c copy -y "' + filePathTempChapters + '"'; // filePathOUT + fileChapterData = temporary [chapters] file
+  // M4A audio without chapters
+  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and (extractFileExt(filePathOUT).toLower = '.m4a') of TRUE:
+    cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -disposition:v:0 attached_pic'; end;
+
+  // MKV audio with chapters
+  case (FMediaType = mtAudio) and bWriteChapters and fileExists(filePathCover) of TRUE: cmdLine := cmdLine + ' -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
+
+  cmdLine := cmdLine + STD_SEG_PARAMS + STD_MAP_METADATA_0;
+  case FMediaType = mtVideo of TRUE: cmdLine := cmdLine + ' -c copy'; end;
+
+
+
+  cmdLine := cmdLine + ' -y "' + filePathTempChapters(bWriteChapters) + '"';  // filePathOUT + fileChapterData (and/or cover art) = temporary [chapters] file
 
   log(cmdLine); log(EMPTY);
 
   result  := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+
   case result of TRUE:  begin
-                          var vChapterContainer := mmpChapterContainer(filePathOUT, FMediaType);
+                          var vChapterContainer := filePathOut(bWriteChapters);
                           case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
-                          result := renameFile(filePathTempChapters, vChapterContainer);
-                          case result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
+                          result := renameFile(filePathTempChapters(bWriteChapters), vChapterContainer);
+                          case bWriteChapters and result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
                           end;end;
 end;
 
@@ -249,7 +279,7 @@ begin
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
 
-function TExporter.exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bNoCoverArt: boolean): boolean;
+function TExporter.exportSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bExportedCoverArt: boolean): boolean;
 //====== EXPORT SEGMENTS ======
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
@@ -271,14 +301,14 @@ begin
       var vMaps       := EMPTY;
 
       for var vMediaStream in MI.mediaStreams do begin
-        // exclude any cover art streams from the exported segments if we're going to be adding chapter metadata
-        // otherwise FFmpeg will convert them to a video stream during the concat stage
-        case bNoCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end;
-        case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d ', [vMediaStream.Ix]); end;end;
+        // exclude any cover art streams from the exported segments if we're going to be adding chapter metadata or concatenating multiple segments
+        // otherwise FFmpeg will convert the cover art to a video stream during the concat stage
+        case bExportedCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end; // ignore the cover art - it will be re-attached later
+        case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d', [vMediaStream.Ix]); end;end;
 
       vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
       cmdLine := cmdLine + vMaps;
-      cmdLine := cmdLine + STD_SEG_PARAMS;
+      cmdLine := cmdLine + STD_SEG_PARAMS + STD_MAP_METADATA_0;
 
       var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
       case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
@@ -315,13 +345,14 @@ begin
 
   var vSegOneFN       := EMPTY;
   var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+  var vExportCoverArt := (FMediaType = mtAudio) and (TSegment.includedCount > 1);
 
   //====== CHECK COVER ART ======
-  case (NOT mmpCtrlKeyDown) and (FMediaType = mtAudio) and vWriteChapters and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
+  case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end; // EXPERIMENTAL
   case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
-  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vWriteChapters) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
+  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vExportCoverArt) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
 
   deletePreviousExport; // now we have newly-exported segment(s)
 
@@ -334,7 +365,7 @@ begin
   case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
-  case result and vDoConcat and vWriteChapters of TRUE: result := createChapters(vProgressForm); end;
+  case result and vDoConcat {and vWriteChapters} of TRUE: result := createChapters(vProgressForm, vWriteChapters); end;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
   case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;
@@ -362,14 +393,15 @@ begin
   result := changeFileExt(filePathOUT, '.chp');
 end;
 
-function TExporter.filePathTempChapters(aSuffix: string = ' [chapters]'): string;
+function TExporter.filePathTempChapters(const bWriteChapters: boolean; aSuffix: string = ' [chapters]'): string;
 begin
-  result := mmpChapterContainer(filePathOUT(aSuffix), FMediaType);
+  result := filePathOUT(bWriteChapters, aSuffix);
 end;
 
-function TExporter.filePathOUT(aSuffix: string = ' [edited]'): string;
+function TExporter.filePathOUT(const bWriteChapters: boolean = FALSE; const aSuffix: string = ' [edited]'): string;
 begin
   result := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + aSuffix + extractFileExt(FMediaFilePath);
+  case bWriteChapters of TRUE: result := mmpChapterContainer(result, FMediaType); end;
 end;
 
 function TExporter.filePathCover: string;
