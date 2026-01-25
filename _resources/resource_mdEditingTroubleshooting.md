@@ -2,41 +2,14 @@
 [Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
 [Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
 [Help Page: Main Editing Topic](Editing)<br />
+[Help Page: Editing Audio](Editing_Audio)<br />
+[Help Page: Editing Chapters](Editing_Chapters)<br />
 [Help Page: Keyframes](Keyframes)<br />
 <br />
 [Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
-**Chapters and Export Troubleshooting**
-
-**Chapters**
-
-When exporting your edited audio or video file from the **Audio & Video Timeline Editor** you can turn your audio/video segments into chapters
-- when playing a media file with chapters you can skip backwards and forwards between chapters with **[F8]** and **[F9]**
-- chapters can be given titles which will be displayed in the [Notification Area](Notification_Area) when you jump to them
-- not all media container formats support chapters, so **MMP** will always create an MKV file
-- if your audio file contains cover art, this will be extracted to a "cover.jpg" file at the start of the export
-- it will then be re-attached at the end of the export when the chapter metadata is added to your edited file
-- this is necessary to prevent FFmpeg from turning your cover art into a video stream when concatenating your segments
-- the filename, "cover.jpg", is mandatory to ensure that it becomes the audio file's cover art
-- the Ctrl-Shift-[**C**]leanup process will not delete any "cover.jpg" files in the current folder
-- as this is the standard filename for audio cover art, it cannot assume that every "cover.jpg" file it finds was created by **MMP**
-
-In the **Audio & Video Timeline Editor** you can turn on chapter display just while you're editing but not have the chapters written to the exported file
-- this is dependent on three new settings in the _**MinimalistMediaPlayer.conf**_ file
-    - chaptersShow=yes | no
-    - chaptersAudioWrite=yes | no
-    - chaptersVideoWrite=yes | no
-<br />
-
-- The default settings are
-    - chaptersShow=yes
-    - chaptersAudioWrite=no
-    - chaptersVideoWrite=no
-<br />
-<br />
-
-**TroubleShooting**
+**Editing - Export TroubleShooting**
 
 FFmpeg is a very robust application and is able to process practically any media file
 - **MMP** takes advantage of this robustness by using FFmpeg in a manner which is more than likely to be successful for a majority of audio and video files
@@ -60,7 +33,7 @@ Letting FFmpeg make its own copy of a media file
 - if the media file was playing, the copy will continue at the exact same point
 - if you had the media file muted while you were editing, the copy will be muted too
 - quite often with this category of FFmpeg problem, you can immediately click the Export button and your export will succeed
-- occasionally, FFmpeg seems to have a problem creating .m4v files. For this reason **MMP** will also copy a .m4v file to a .mp4 file
+- occasionally, FFmpeg seems to have a problem creating .m4v files. For this reason **MMP** will always copy a .m4v file to a .mp4 file
 
 **Joining Existing .Segnn. Files**
 
@@ -69,9 +42,9 @@ Occasionally, simply copying the source file does not resolve the problem and yo
 - a Windows Console will open so you can watch FFmpeg try to export the segment
 - the progress dialog will wait until you close the console window before proceeding with the export
 - if the problem is with an individual segment, you may be able to correct the problem and re-export a segment yourself
-- the .log file can be very handy for seeing the **FFmpeg** command that **MMP** ran to export each segment
+- the .log file can be very handy for seeing the **FFmpeg** commands that **MMP** ran to export each segment and then concatenate them
 - if you are able to correct the .segnn. file for a segment you can instruct **MMP** to only perform the final **Join** stage
-- in this case you can hold a **[Ctrl]** while hovering your mouse over the Export button
+- in this case you can hold down a **[Ctrl]** key while hovering your mouse over the Export button
 - the Export button will change to **Join**
 - when you click the **Join** button, **MMP** will not re-export your segments and will leave your manual corrections as they are
 - the export process will jump straight to the Join/Concatenate stage which joins all the files listed in the .seg file

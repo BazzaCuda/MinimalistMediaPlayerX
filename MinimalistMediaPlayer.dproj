@@ -336,10 +336,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdIntro</ResourceId>
         </RcItem>
-        <RcItem Include="_resources\resource_mdEditing2.md">
+        <RcItem Include="_resources\resource_mdEditingChapters.md">
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>resource_mdEditing2</ResourceId>
+            <ResourceId>resource_mdEditingChapters</ResourceId>
         </RcItem>
         <RcItem Include="_resources\resource_mdAudioStreams.md">
             <ContainerId>ResourceItem</ContainerId>
@@ -450,6 +450,16 @@ $(PostBuildEvent)]]></PostBuildEvent>
             <ContainerId>ResourceItem</ContainerId>
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>resource_mdEditor</ResourceId>
+        </RcItem>
+        <RcItem Include="_resources\resource_mdEditingAudio.md">
+            <ContainerId>ResourceItem</ContainerId>
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>resource_mdEditingAudio</ResourceId>
+        </RcItem>
+        <RcItem Include="_resources\resource_mdEditingTroubleshooting.md">
+            <ContainerId>ResourceItem</ContainerId>
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>resource_mdEditingTroubleshooting</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -589,7 +599,19 @@ $(PostBuildEvent)]]></PostBuildEvent>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="_resources\resource_mdEditing2.md" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="_resources\resource_mdEditingAudio.md" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_resources\resource_mdEditingChapters.md" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="_resources\resource_mdEditingTroubleshooting.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win64">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

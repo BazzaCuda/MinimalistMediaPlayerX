@@ -106,42 +106,44 @@ type
   end;
 
 const
-    MARKDOWN_RESOURCES: array[0..33] of TMarkDownRec =
+    MARKDOWN_RESOURCES: array[0..35] of TMarkDownRec =
     (
-      (helpType: htBoth;    caption: 'Intro';                 resource: 'resource_mdIntro'),
-      (helpType: htBoth;    caption: 'Adjust Image';          resource: 'resource_mdAdjustImage'),
-      (helpType: htBoth;    caption: 'Aspect Ratio';          resource: 'resource_mdAspectRatio'),
-      (helpType: htMain;    caption: 'Audio Streams';         resource: 'resource_mdAudioStreams'),
-      (helpType: htBoth;    caption: 'Auto-Center';           resource: 'resource_mdAutoCenter'),
-      (helpType: htBoth;    caption: 'Auto Update';           resource: 'resource_mdAutoUpdate'),
-      (helpType: htMain;    caption: 'Bookmarks';             resource: 'resource_mdBookmarks'),
-      (helpType: htMain;    caption: 'Captions';              resource: 'resource_mdCaptions'),
-      (helpType: htMain;    caption: 'Editing';               resource: 'resource_mdEditing'),
-      (helpType: htMain;    caption: 'Editing Chapters';      resource: 'resource_mdEditing2'),           // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
-      (helpType: htBoth;    caption: 'External Apps';         resource: 'resource_mdExternalApps'),
-      (helpType: htBoth;    caption: 'File Control';          resource: 'resource_mdFileControl'),
-      (helpType: htMain;    caption: 'Freeze Frame';          resource: 'resource_mdFreezeFrame'),
-      (helpType: htBoth;    caption: 'Image Browser';         resource: 'resource_mdImageBrowser'),
-      (helpType: htMain;    caption: 'Keyframes';             resource: 'resource_mdKeyframes'),
-      (helpType: htNone;    caption: 'Mouse';                 resource: 'resource_mdMouse'),
-      (helpType: htMain;    caption: 'Multi-View Control';    resource: 'resource_mdMultiWindow'),
-      (helpType: htBoth;    caption: 'Notification Area';     resource: 'resource_mdNotificationArea'),
-      (helpType: htBoth;    caption: 'Panning';               resource: 'resource_mdPanning'),
-      (helpType: htMain;    caption: 'Playback';              resource: 'resource_mdPlayback'),
-      (helpType: htBoth;    caption: 'Playlist';              resource: 'resource_mdPlaylist'),
-      (helpType: htBoth;    caption: 'Resets';                resource: 'resource_mdResets'),
-      (helpType: htBoth;    caption: 'Rotation';              resource: 'resource_mdRotation'),
-      (helpType: htBoth;    caption: 'Screenshots';           resource: 'resource_mdScreenshots'),
-      (helpType: htBoth;    caption: 'Slideshows';            resource: 'resource_mdSlideshows'),
-      (helpType: htMain;    caption: 'Speed';                 resource: 'resource_mdSpeed'),
-      (helpType: htMain;    caption: 'Subtitles';             resource: 'resource_mdSubtitles'),          // Subtitles - mpv.conf language selection
-      (helpType: htMain;    caption: 'Tabbing';               resource: 'resource_mdTabbing'),
-      (helpType: htIATB;    caption: 'Thumbnails';            resource: 'resource_mdThumbnails'),         // redundant? Thumbnails - increase/decrease size, Browser status bar, window size - redundant?
-      (helpType: htIATB;    caption: 'User-Defined Folders';  resource: 'resource_mdUserFolders'),
-      (helpType: htMain;    caption: 'Volume';                resource: 'resource_mdVolume'),
-      (helpType: htMain;    caption: 'Window Control';        resource: 'resource_mdWindowControlMain'),
-      (helpType: htIATB;    caption: 'Window Control';        resource: 'resource_mdWindowControlIATB'),
-      (helpType: htBoth;    caption: 'Zoom';                  resource: 'resource_mdZoom')
+      (helpType: htBoth;    caption: 'Intro';                     resource: 'resource_mdIntro'),
+      (helpType: htBoth;    caption: 'Adjust Image';              resource: 'resource_mdAdjustImage'),
+      (helpType: htBoth;    caption: 'Aspect Ratio';              resource: 'resource_mdAspectRatio'),
+      (helpType: htMain;    caption: 'Audio Streams';             resource: 'resource_mdAudioStreams'),
+      (helpType: htBoth;    caption: 'Auto-Center';               resource: 'resource_mdAutoCenter'),
+      (helpType: htBoth;    caption: 'Auto Update';               resource: 'resource_mdAutoUpdate'),
+      (helpType: htMain;    caption: 'Bookmarks';                 resource: 'resource_mdBookmarks'),
+      (helpType: htMain;    caption: 'Captions';                  resource: 'resource_mdCaptions'),
+      (helpType: htMain;    caption: 'Editing Audio & Video';     resource: 'resource_mdEditing'),
+      (helpType: htMain;    caption: 'Editing Audio';             resource: 'resource_mdEditingAudio'),
+      (helpType: htMain;    caption: 'Editing Chapters';          resource: 'resource_mdEditingChapters'),
+      (helpType: htMain;    caption: 'Editing Troubleshooting';   resource: 'resource_mdEditingTroubleshooting'), // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
+      (helpType: htBoth;    caption: 'External Apps';             resource: 'resource_mdExternalApps'),
+      (helpType: htBoth;    caption: 'File Control';              resource: 'resource_mdFileControl'),
+      (helpType: htMain;    caption: 'Freeze Frame';              resource: 'resource_mdFreezeFrame'),
+      (helpType: htBoth;    caption: 'Image Browser';             resource: 'resource_mdImageBrowser'),
+      (helpType: htMain;    caption: 'Keyframes';                 resource: 'resource_mdKeyframes'),
+      (helpType: htNone;    caption: 'Mouse';                     resource: 'resource_mdMouse'),
+      (helpType: htMain;    caption: 'Multi-View Control';        resource: 'resource_mdMultiWindow'),
+      (helpType: htBoth;    caption: 'Notification Area';         resource: 'resource_mdNotificationArea'),
+      (helpType: htBoth;    caption: 'Panning';                   resource: 'resource_mdPanning'),
+      (helpType: htMain;    caption: 'Playback';                  resource: 'resource_mdPlayback'),
+      (helpType: htBoth;    caption: 'Playlist';                  resource: 'resource_mdPlaylist'),
+      (helpType: htBoth;    caption: 'Resets';                    resource: 'resource_mdResets'),
+      (helpType: htBoth;    caption: 'Rotation';                  resource: 'resource_mdRotation'),
+      (helpType: htBoth;    caption: 'Screenshots';               resource: 'resource_mdScreenshots'),
+      (helpType: htBoth;    caption: 'Slideshows';                resource: 'resource_mdSlideshows'),
+      (helpType: htMain;    caption: 'Speed';                     resource: 'resource_mdSpeed'),
+      (helpType: htMain;    caption: 'Subtitles';                 resource: 'resource_mdSubtitles'),          // Subtitles - mpv.conf language selection
+      (helpType: htMain;    caption: 'Tabbing';                   resource: 'resource_mdTabbing'),
+      (helpType: htIATB;    caption: 'Thumbnails';                resource: 'resource_mdThumbnails'),         // redundant? Thumbnails - increase/decrease size, Browser status bar, window size - redundant?
+      (helpType: htIATB;    caption: 'User-Defined Folders';      resource: 'resource_mdUserFolders'),
+      (helpType: htMain;    caption: 'Volume';                    resource: 'resource_mdVolume'),
+      (helpType: htMain;    caption: 'Window Control';            resource: 'resource_mdWindowControlMain'),
+      (helpType: htIATB;    caption: 'Window Control';            resource: 'resource_mdWindowControlIATB'),
+      (helpType: htBoth;    caption: 'Zoom';                      resource: 'resource_mdZoom')
     );
 
 var gHelpFullForm: IHelpFullForm = NIL;

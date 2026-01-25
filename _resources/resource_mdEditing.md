@@ -1,7 +1,9 @@
 [Wiki Page: Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
 [Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
 [Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
-[Help Page: Chapters and Export Troubleshooting](Editing_Chapters)<br />
+[Help Page: Editing Audio](Editing_Audio)<br />
+[Help Page: Editing Chapters](Editing_Chapters)<br />
+[Help Page: Editing Troubleshooting](Editing_Troubleshooting)<br />
 [Help Page: Keyframes](Keyframes)<br />
 <br />
 [Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
@@ -62,6 +64,7 @@ N.B. **_All other controls operate on the **Main Media Window** as normal_**
 | Ctrl-**[S]**                | toggle [S]kip excluded segments during playback |
 | Shift-**[S]**               | [S]kip to the next [S]egment |
 | Ctrl-Shift-**[S]**          | [S]kip to the previous [S]egment |
+|                             | _if your media file contains chapters you can of course also use **[F8]** and **[F9]** to skip backwards and forwards between the existing chapters_ |
 | &nbsp; ||
 | Export Button Operation ||
 | **Ctrl**                    | change the Export button to Join after a manual adjustment to the .seg file and/or the .segnn exported segment files, to bypass the Export stage |
