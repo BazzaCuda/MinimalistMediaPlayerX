@@ -277,9 +277,10 @@ begin
 
   aProgressForm.subHeading := 'Extracting Cover Art';
 
-  case fileExists(filePathCover) of TRUE: EXIT; end; // we don't overwrite user's beloved album art, they have to delete it themselves!
+  case fileExists(filePathCover) of TRUE: EXIT; end; // we don't overwrite a user's beloved album art, they have to delete it themselves!
 
   var cmdLine := ' -i "' + FMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
+  log(cmdLine); log(EMPTY);
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
@@ -350,7 +351,7 @@ begin
 
   var vSegOneFN       := EMPTY;
   var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
-  var vExportCoverArt := (FMediaType = mtAudio) and (TSegment.includedCount > 1);
+  var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
   case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;

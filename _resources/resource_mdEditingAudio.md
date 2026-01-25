@@ -30,7 +30,10 @@ FFmpeg's production of audio files is a little more involved than its handling o
 - where this is not possible, **MMP** and FFmpeg will create an MKV container with a .mkv file extension
 - when adding chapters, the output file will always be an MKV container
 
+**Cover Art**
 
+
+**Adding Cover Art**
 
 
 

@@ -49,7 +49,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 533
-      ActivePage = tsSegments
+      ActivePage = tsOptions
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -2295,6 +2295,148 @@ object StreamListForm: TStreamListForm
         end
       end
       object tsOptions: TTabSheet
+        Caption = 'Options'
+        ImageIndex = 3
+        object Label59: TLabel
+          Left = 0
+          Top = 0
+          Width = 446
+          Height = 17
+          Align = alTop
+          Alignment = taCenter
+          Caption = 'see the Shift-[\] Config Dialog for detailed explanations'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          WordWrap = True
+          ExplicitWidth = 322
+        end
+        object Label3: TLabel
+          Left = 9
+          Top = 248
+          Width = 427
+          Height = 81
+          Alignment = taCenter
+          AutoSize = False
+          Caption = 
+            'The Exporter will not re-export and overwrite your .segnn. segme' +
+            'nt files'#13#10'This lets you manually fix export problems and then Jo' +
+            'in the segments'#13#10'Holding down a [Ctrl] key while clicking the Ex' +
+            'port button does the same'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          WordWrap = True
+        end
+        object Bevel1: TBevel
+          Left = 9
+          Top = 208
+          Width = 416
+          Height = 2
+        end
+        object chbChaptersShow: TCheckBox
+          Left = 9
+          Top = 34
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Show Chapters During Editing'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          OnClick = chbChaptersShowClick
+        end
+        object chbChaptersAudioWrite: TCheckBox
+          Left = 9
+          Top = 66
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Write Chapters for Audio files'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          OnClick = chbChaptersAudioWriteClick
+        end
+        object chbChaptersVideoWrite: TCheckBox
+          Left = 9
+          Top = 98
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Write Chapters for Video files'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 2
+          OnClick = chbChaptersVideoWriteClick
+        end
+        object chbKeyframes: TCheckBox
+          Left = 9
+          Top = 136
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Keyframes On'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 3
+          OnClick = chbKeyframesClick
+        end
+        object chbPlayEdited: TCheckBox
+          Left = 9
+          Top = 169
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Play Edited'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 4
+          OnClick = chbPlayEditedClick
+        end
+        object chbJoinOnly: TCheckBox
+          Left = 9
+          Top = 225
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Export does Join stage only'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 5
+        end
+      end
+      object tsHelp: TTabSheet
         Caption = 'Help'
         ImageIndex = 2
         object md: TMarkdownViewer

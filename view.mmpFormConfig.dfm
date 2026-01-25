@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsPlaylistFilter
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging

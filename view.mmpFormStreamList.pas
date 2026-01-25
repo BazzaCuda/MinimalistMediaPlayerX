@@ -57,7 +57,7 @@ type
     lblStreamID: TLabel;
     pnlButtons: TPanel;
     btnExport: TBitBtn;
-    tsOptions: TTabSheet;
+    tsHelp: TTabSheet;
     lblTitle: TLabel;
     md: TMarkdownViewer;
     lblSegments: TLabel;
@@ -65,6 +65,16 @@ type
     lblTotalSS: TLabel;
     lblExport: TLabel;
     lblTotal: TLabel;
+    tsOptions: TTabSheet;
+    chbChaptersShow: TCheckBox;
+    chbChaptersAudioWrite: TCheckBox;
+    chbChaptersVideoWrite: TCheckBox;
+    chbKeyframes: TCheckBox;
+    chbPlayEdited: TCheckBox;
+    Label59: TLabel;
+    chbJoinOnly: TCheckBox;
+    Label3: TLabel;
+    Bevel1: TBevel;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
@@ -84,6 +94,11 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure clSegmentsItemDblClick(Sender: TObject);
     procedure clSegmentsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure chbChaptersShowClick(Sender: TObject);
+    procedure chbChaptersAudioWriteClick(Sender: TObject);
+    procedure chbChaptersVideoWriteClick(Sender: TObject);
+    procedure chbKeyframesClick(Sender: TObject);
+    procedure chbPlayEditedClick(Sender: TObject);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
@@ -117,7 +132,7 @@ uses
   bazCmd,
   mmpFormatting, mmpFormInputBox,  mmpGlobalState, mmpKeyboardUtils, mmpMarkDownUtils,
   view.mmpFormTimeline, view.mmpThemeUtils,
-  model.mmpMediaInfo,
+  model.mmpConfigFile, model.mmpMediaInfo,
   _debugWindow;
 
 const
@@ -243,6 +258,31 @@ begin
                           FALSE: btnExport.caption := 'Export'; end;
 end;
 
+procedure TStreamListForm.chbChaptersAudioWriteClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE] := chbChaptersAudioWrite.checked;
+end;
+
+procedure TStreamListForm.chbChaptersShowClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_SHOW] := chbChaptersShow.checked;
+end;
+
+procedure TStreamListForm.chbChaptersVideoWriteClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE] := chbChaptersVideoWrite.checked;
+end;
+
+procedure TStreamListForm.chbKeyframesClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_KEYFRAMES] := chbKeyframes.checked;
+end;
+
+procedure TStreamListForm.chbPlayEditedClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_PLAY_EDITED] := chbPlayEdited.checked;
+end;
+
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
   var vSegments := TL.segments;
@@ -352,10 +392,12 @@ begin
   SELF.width  := DEFAULT_WIDTH;
   SELF.height := DEFAULT_HEIGHT;
 
-  pageControl.tabWidth := 0; // tab widths are controlled by the width of the captions
-  tsSegments.caption := '        Segments        ';
-  tsStreams.caption  := '        Streams        ';
-  tsOptions.caption  := '         Help          ';
+  pageControl.tabWidth  := 0; // tab widths are controlled by the width of the captions
+  tsSegments.caption    := '      Segments      ';
+  tsStreams.caption     := '      Streams      ';
+  tsOptions.caption     := 'Options';
+  tsHelp.caption        := '       Help        ';
+
 
   btnExport.left := (pnlButtons.width div 2) - (btnExport.width div 2);
 
@@ -381,6 +423,12 @@ begin
   lblTotalSS.Left       := lblExportSS.left;
   lblExport.left        := lblExportSS.left - lblExport.width - 2;
   lblTotal.left         := lblExport.left;
+
+  chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
+  chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
+  chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
+  chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
+  chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
 end;
 
 procedure TStreamListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
