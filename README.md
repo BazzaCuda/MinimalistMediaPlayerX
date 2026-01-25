@@ -17,6 +17,8 @@ _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended set
 
 - the [GitHub Wiki](https://github.com/BazzaCuda/MinimalistMediaPlayerX/wiki) is being greatly expanded to match the many help topics in the new (`v6.0.0`) `Ctrl-Shift-[H]` Full Help dialog
 
+- the [Official Wiki](https://minimalistmediaplayer.com) continues to grow with advanced topics on audio & video editing and keyframes, etc
+
 **MMP: Minimalist Media Player**
 
 A powerful and `very` effective media player built on MPV's API, libMPV-2.dll, which is, in turn, based on the famous FFMPEG.
