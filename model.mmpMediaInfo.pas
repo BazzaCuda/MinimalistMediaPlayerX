@@ -514,7 +514,7 @@ begin
 
       case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx =  -1 of TRUE: case '.mp3.flac.wav.riff.ogg.opus.wv.caf.'.contains(lowerCase(extractFileExt(FURL)) + '.') of TRUE: vPosIx := 0; end;end;
+        case vPosIx =  -1 of TRUE: case '.aac.mp3.flac.wav.riff.ogg.opus.wv.caf.'.contains(lowerCase(extractFileExt(FURL)) + '.') of TRUE: vPosIx := 0; end;end;
         case vPosIx <> -1 of TRUE: createAudioStream(vStreamIx, vPosIx); end;end;end;
 
       case mediaInfo_Get(FHandle, Stream_Text,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
