@@ -118,6 +118,7 @@ const
   CONF_DIRTY_CHARS            = 'dirtyChars';
   CONF_EXIT_APP               = 'exitApp';
   CONF_EXIT_BROWSER           = 'exitBrowser';
+  CONF_EXPORT_JOIN_ONLY       = 'exportJoinOnly';
   CONF_FOLDER_DELETE          = 'folderDelete';
   CONF_KEEP_DELETE            = 'keepDelete';
   CONF_KEYFRAMES              = 'keyframes';

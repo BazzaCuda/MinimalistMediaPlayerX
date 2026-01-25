@@ -72,7 +72,7 @@ type
     chbKeyframes: TCheckBox;
     chbPlayEdited: TCheckBox;
     Label59: TLabel;
-    chbJoinOnly: TCheckBox;
+    chbExportJoinOnly: TCheckBox;
     Label3: TLabel;
     Bevel1: TBevel;
     procedure formCreate(Sender: TObject);
@@ -99,6 +99,7 @@ type
     procedure chbChaptersVideoWriteClick(Sender: TObject);
     procedure chbKeyframesClick(Sender: TObject);
     procedure chbPlayEditedClick(Sender: TObject);
+    procedure chbExportJoinOnlyClick(Sender: TObject);
   private
     FMediaType: TMediaType;
     FOnExport:  TNotifyEvent;
@@ -273,6 +274,11 @@ begin
   CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE] := chbChaptersVideoWrite.checked;
 end;
 
+procedure TStreamListForm.chbExportJoinOnlyClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_EXPORT_JOIN_ONLY] := chbExportJoinOnly.checked;
+end;
+
 procedure TStreamListForm.chbKeyframesClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_KEYFRAMES] := chbKeyframes.checked;
@@ -429,6 +435,7 @@ begin
   chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
   chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
   chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
+  chbExportJoinOnly.checked     := CF.asBoolean[CONF_EXPORT_JOIN_ONLY];
 end;
 
 procedure TStreamListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

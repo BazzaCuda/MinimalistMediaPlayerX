@@ -2420,7 +2420,7 @@ object StreamListForm: TStreamListForm
           TabOrder = 4
           OnClick = chbPlayEditedClick
         end
-        object chbJoinOnly: TCheckBox
+        object chbExportJoinOnly: TCheckBox
           Left = 9
           Top = 225
           Width = 203
@@ -2434,6 +2434,7 @@ object StreamListForm: TStreamListForm
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 5
+          OnClick = chbExportJoinOnlyClick
         end
       end
       object tsHelp: TTabSheet
