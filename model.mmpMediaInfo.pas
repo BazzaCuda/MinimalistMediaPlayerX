@@ -502,9 +502,11 @@ begin
     // MediaInfo indexes each different _kind_ of stream from zero!! - so there can be an audio, video and subtitle stream all with ix = 0 !!!
     // We have to traverse the streams in index order within every streamKind and then obtain the physical index, "StreamOrder"
 
+    var vImageCount:  integer := FMD.mdImageCount;
+
     for var vStreamIx := 0 to streamCount - 1 do begin // this is MediaInfo's stream ix within each streamKind, not FFmpeg's physical index
 
-      var vPosIx: integer;
+      var vPosIx:       integer;
 
       case mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
@@ -521,8 +523,14 @@ begin
 
       case mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
-        case vPosIx = -1 of  TRUE: vPosIx := streamCount - 1; end;
+        case vPosIx = -1 of  TRUE:  begin
+                                      dec(vImageCount);
+                                      vPosIx := (streamCount - 1) - vImageCount; end;end;
         createImageStream(vStreamIx, vPosIx); end;end;
+
+
+      // vPosIx = streamCount - mdImageCount + (vStreamIx - firstImageIndex)
+
 
       case mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
 
