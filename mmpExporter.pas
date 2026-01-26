@@ -56,7 +56,7 @@ type
     FProcessHandle: THandle;
   private
     function  concatSegments(const aProgressForm: IProgressForm): boolean;
-    function  createChaptersAndCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+    function  createChaptersAndOrCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
     function  deletePreviousExport: TVoid;
     function  exportCoverArt(const aProgressForm: IProgressForm): boolean;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
@@ -71,7 +71,7 @@ type
     function  log(const aLogEntry: string): boolean;
     function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
     function  segFileEntry(const aSegFile: string): string;
-    function  showProgressForm(const aHeading, aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
+    function  showProgressForm(const aHeading: string; const aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
     function  writeChaptersFromOutput: TVoid;
 
     procedure onCancel(sender: TObject);
@@ -199,7 +199,7 @@ begin
   case result of FALSE: case exportFailRerun(aProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
 end;
 
-function TExporter.createChaptersAndCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+function TExporter.createChaptersAndOrCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
 //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
 //======      ATTACH COVER.JPG IF IT EXISTS      ======
 
@@ -371,7 +371,8 @@ begin
   case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
-  case result of TRUE: result := createChaptersAndCoverArt(vProgressForm, vWriteChapters); end;
+  //======         AND/OR ATTACH COVER ART         ======
+  case result and (vWriteChapters or vExportCoverArt) of TRUE: result := createChaptersAndOrCoverArt(vProgressForm, vWriteChapters); end;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
   case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;

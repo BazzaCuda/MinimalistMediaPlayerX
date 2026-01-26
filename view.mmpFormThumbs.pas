@@ -681,7 +681,8 @@ end;
 function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
 begin
   case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
-  FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
+//  FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
+  FThumbs.playlist.deleteIx(-1); // EXPERIMENTAL
   case FThumbs.playlist.hasItems of FALSE:  begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar);
                                               case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end;
                                                                                               FALSE: begin close; mmp.cmd(evAppClose); end;

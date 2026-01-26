@@ -34,7 +34,6 @@ var
   guardClause:  boolean;
 
 type
-  void    = boolean;
   TOProc  = TProc<TObject>;
   TBFunc  = TFunc<boolean>;
   TSFunc  = TFunc<string>;
@@ -43,10 +42,10 @@ type
 type
   mmp = record
     class function use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: cardinal; aFalseValue: cardinal):  cardinal; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: int64;    aFalseValue: int64   ):  int64;    overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: integer;  aFalseValue: integer ):  integer;  overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: string;   aFalseValue: string  ):  string;   overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: cardinal; const aFalseValue: cardinal):  cardinal; overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: int64;    const aFalseValue: int64   ):  int64;    overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: integer;  const aFalseValue: integer ):  integer;  overload; static;
+    class function use(const aBoolean: boolean; const aTrueValue: string;   const aFalseValue: string  ):  string;   overload; static;
 
     //===== TProcs
     class function cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean; overload; static;
@@ -101,22 +100,22 @@ end;
 
 { mmp }
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: int64; aFalseValue: int64):  int64;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: int64; const aFalseValue: int64):  int64;
 begin
   result := mmp.use<int64>(aBoolean, aTrueValue, aFalseValue);
 end;
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: cardinal; aFalseValue: cardinal): cardinal;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: cardinal; const aFalseValue: cardinal): cardinal;
 begin
   result := mmp.use<cardinal>(aBoolean, aTrueValue, aFalseValue);
 end;
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: integer; aFalseValue: integer): integer;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: integer; const aFalseValue: integer): integer;
 begin
   result := mmp.use<integer>(aBoolean, aTrueValue, aFalseValue);
 end;
 
-class function mmp.use(const aBoolean: boolean; const aTrueValue: string; aFalseValue: string): string;
+class function mmp.use(const aBoolean: boolean; const aTrueValue: string; const aFalseValue: string): string;
 begin
   result := mmp.use<string>(aBoolean, aTrueValue, aFalseValue);
 end;
