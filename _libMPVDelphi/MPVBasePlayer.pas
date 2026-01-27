@@ -306,7 +306,8 @@ function MPVLibLoaded(const sLibPath: string): Boolean;
 
 implementation
 
-uses _debugWindow;
+uses
+  _debugWindow;
 
 { TMPVEventThread }
 
@@ -932,11 +933,16 @@ begin
   end;
   if m_hMPV<>nil then
   begin
+
+// leave this alone!
+// =================
     // This call might cause very long time when debugging in Delphi,
     // but pretty fast when running alone.
     mpv_terminate_destroy(m_hMPV); //mpv_destroy(m_hMPV);
     //TMPVDestroyThread.Create(m_hMPV);
     m_hMPV := nil;
+// =================
+
   end;
 end;
 

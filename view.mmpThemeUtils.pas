@@ -43,7 +43,7 @@ begin
   result.align        := alClient;
   result.color        := clBlack;
   result.bevelOuter   := bvNone;
-  result.caption      := 'videoPanel';
+  result.caption      := 'MMP: Minimalist Media Player';
 end;
 
 function mmpInitTransparentForm(const aForm: TForm): TForm;

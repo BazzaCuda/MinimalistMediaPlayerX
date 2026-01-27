@@ -157,7 +157,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         </DelphiCompile>
         <DCCReference Include="_FastMM5\FastMM5.pas"/>
         <DCCReference Include="mmpExceptionHandler.pas"/>
-        <DCCReference Include="mmpStackTrace.pas"/>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="_bazLib\bazAction.pas"/>
