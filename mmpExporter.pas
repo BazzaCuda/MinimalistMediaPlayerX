@@ -178,12 +178,6 @@ begin
   aProgressForm.subHeading := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
-//  for var i := 0 to MI.selectedCount - 1 do begin
-//    case (FMediaType = mtAudio) and vWriteChapters and (MI.mediaStreams[i].streamType = 'Image') of TRUE: CONTINUE; end; // any cover art streams were excluded in exportSegments
-//    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy -disposition:%d default', [i, i, i]); end;
-//    cmdLine := cmdLine + format(' -map 0:%d -c:%d copy', [i, i, i]); end;
-//  end;
-
   cmdLine := cmdLine + ' -i "' + FMediaFilePath + '" -map_metadata 1'; // artist/title/album metadata donor
 
   // This is concat, not the segment export, so we want everything from "stream" 0, aka the list of concat files
