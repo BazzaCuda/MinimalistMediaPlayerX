@@ -91,6 +91,8 @@ type
     function  getPropertyString(const sName: string; var Value: string; bLogError: Boolean = True): TMPVErrorCode;
     function  setPropertyString(const sName, sValue: string; nID: MPVUInt64 = 0): TMPVErrorCode;
 
+    procedure totalShutdown;  // fully terminate MPV and free threads/handles
+
     property  onFileOpen: TMPVFileOpen        read GetOnFileOpen  write SetOnFileOpen;
     property  onInitMPV: TNotifyEvent         read getOnInitMPV   write setOnInitMPV;
     property  onStateChged: TMPVStateChanged  read GetOnStateChg  write SetOnStateChg;
@@ -186,17 +188,13 @@ type
     function DoEventStartFile(pSF: P_mpv_event_start_file): TMPVErrorCode; virtual;
     function DoEventEndFile(pEF: P_mpv_event_end_file): TMPVErrorCode; virtual;
     function DoEventShutdown: TMPVErrorCode; virtual;
-    function DoEventGetPropertyReply(nErr: MPVInt; nID: MPVUInt64;
-      pEP: P_mpv_event_property): TMPVErrorCode; virtual;
-    function DoEventSetPropertyReply(nErr: MPVInt;
-      nID: MPVUInt64): TMPVErrorCode; virtual;
-    function DoEventCommandReply(nErr: MPVInt; nID: MPVUInt64;
-      pEC: P_mpv_event_command): TMPVErrorCode; virtual;
+    function DoEventGetPropertyReply(nErr: MPVInt; nID: MPVUInt64; pEP: P_mpv_event_property): TMPVErrorCode; virtual;
+    function DoEventSetPropertyReply(nErr: MPVInt; nID: MPVUInt64): TMPVErrorCode; virtual;
+    function DoEventCommandReply(nErr: MPVInt; nID: MPVUInt64; pEC: P_mpv_event_command): TMPVErrorCode; virtual;
     procedure DoSetVideoSize; virtual;
     procedure OnStateChanged;
 
-    function ObserveProperty(const sName: string; nID: UInt64;
-      nFmt: MPVEnum = MPV_FORMAT_NODE): TMPVErrorCode;
+    function ObserveProperty(const sName: string; nID: UInt64; nFmt: MPVEnum = MPV_FORMAT_NODE): TMPVErrorCode;
     function SetTrack(eType: TMPVTrackType; const sID, sPropName: string): TMPVErrorCode;
   public
     constructor Create;
@@ -274,6 +272,9 @@ type
     function GetSubTitleDelay: Double;
     procedure SetSubTitleDelay(fSec: Double);
   public
+
+    procedure totalShutdown;  // fully terminate MPV and free threads/handles
+
     // Player current status/information
     property FileName: string read getFileName;
     property CurrentVideoTrack: string read m_sCurVTrk write SetVTrack;
@@ -926,7 +927,7 @@ begin
   if m_cEventThrd<>nil then
   begin
     m_cEventThrd.Terminate;
-    m_cEventThrd.WaitFor; // may block if call after mpv_destroy()
+    m_cEventThrd.WaitFor; // may block if called after mpv_destroy()
     FreeAndNil(m_cEventThrd);
   end;
   if m_hMPV<>nil then
@@ -1214,7 +1215,7 @@ begin
     Exit;
   end;
 
-  FreePlayer();
+  freePlayer;
 
   // Basic procedure copied from MPV.NET
   m_hMPV := mpv_create();
@@ -1682,6 +1683,11 @@ end;
 function TMPVBasePlayer.Stop: TMPVErrorCode;
 begin
   Result := CommandStr(CMD_STOP);
+end;
+
+procedure TMPVBasePlayer.totalShutdown;
+begin
+  freePlayer;
 end;
 
 procedure TMPVBasePlayer.Unlock;

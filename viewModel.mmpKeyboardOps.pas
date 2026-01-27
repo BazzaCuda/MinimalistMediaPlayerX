@@ -61,7 +61,7 @@ begin
     koAdjustAspectRatio:  mmp.cmd(evVMAdjustAspectRatio);
     koArrangeAll:         mmp.cmd(evVMArrangeAll);
     koBookmarkDelete:     newBookmark.delete(MP.notify(newNotice(evMPReqFileName)).text);
-    koBookmarkLoad:       MP.notify(newNotice(evPBClick, newBookmark.position(MP.notify(newNotice(evMPReqFileName)).text)));
+    koBookmarkLoad:       MP.notify(newNotice(evPBClick, newBookmark.fromBookmark(MP.notify(newNotice(evMPReqFileName)).text)));
     koBookmarkSave:       newBookmark.save(MP.notify(newNotice(evMPReqFileName)).text, MP.notify(newNotice(evMPReqPosition)).integer);
     koBrighterPB:         begin mmp.cmd(evMCBrighter); mmp.cmd(evPBBrighter); mmp.cmd(evSTBrighter); end;
     koBrightnessDn:       MP.notify(newNotice(evMPBrightnessDn));

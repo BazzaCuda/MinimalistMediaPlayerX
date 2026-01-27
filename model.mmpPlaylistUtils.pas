@@ -41,7 +41,8 @@ uses
   system.classes,
   vcl.forms,
   bazCmd,
-  mmpFileUtils, mmpUtils,
+  mmpFileUtils, mmpFormatting, mmpUtils,
+  model.mmpBookmark,
   _debugWindow;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
@@ -79,6 +80,9 @@ begin
   case GS.showingTimeline of TRUE: begin  var  vMPDuration := GS.duration;
                                           case vMPDuration > 0 of  TRUE: mmp.cmd(evVMReInitTimeline, vMPDuration); // reInit the timeline with the new media file details
                                                                   FALSE: mmp.cmd(evVMShutTimeline); end;end;end;
+
+  var  vBookmarkedPosition := newBookmark.bookmarkSS(vURL);
+  case vBookmarkedPosition = 0 of FALSE: mmp.cmd(evSTOpInfo, format('bookmarked at: %s', [mmpFormatTime(vBookmarkedPosition)])); end;
 end;
 
 function mmpPlayFirst: boolean;

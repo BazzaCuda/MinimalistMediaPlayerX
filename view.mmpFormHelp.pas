@@ -65,7 +65,7 @@ uses
   _debugWindow;
 
 type
-  // can't implement IHelpForm with the TForm so we use an intermediary
+  // There were problems in D11 if we put the interface on a TForm, so an intermediary was used
   THelpFormProxy = class(TInterfacedObject, IHelpForm)
   strict private
     FHelpForm:    THelpForm;

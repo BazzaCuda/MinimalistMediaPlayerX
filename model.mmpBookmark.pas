@@ -25,9 +25,10 @@ uses
 
 type
   IBookmark = interface
-    function delete   (const aURL: string): string;
-    function position (const aURL: string): integer;
-    function save     (const aURL: string; const aPosition: integer): string;
+    function bookmarkSS   (const aURL: string): integer;
+    function delete       (const aURL: string): string;
+    function fromBookmark (const aURL: string): integer;
+    function save         (const aURL: string; const aPosition: integer): string;
   end;
 
 function newBookmark: IBookmark;
@@ -46,9 +47,10 @@ type
   protected
   private
   public
-    function delete   (const aURL: string): string;
-    function position (const aURL: string): integer;
-    function save     (const aURL: string; const aPosition: integer): string;
+    function bookmarkSS   (const aURL: string): integer;
+    function delete       (const aURL: string): string;
+    function fromBookmark (const aURL: string): integer;
+    function save         (const aURL: string; const aPosition: integer): string;
   end;
 
 function newBookmark: IBookmark;
@@ -58,6 +60,11 @@ end;
 
 { TBookmark }
 
+function TBookmark.bookmarkSS(const aURL: string): integer;
+begin
+  result := CF.asInteger[aURL];
+end;
+
 function TBookmark.delete(const aURL: string): string;
 begin
   CF.deleteConfig(aURL);
@@ -65,7 +72,7 @@ begin
   mmp.cmd(evSTOpInfo, result);
 end;
 
-function TBookmark.position(const aURL: string): integer;
+function TBookmark.fromBookmark(const aURL: string): integer;
 begin
   result := CF.asInteger[aURL];
   mmp.cmd(evSTOpInfo, 'From bookmark');

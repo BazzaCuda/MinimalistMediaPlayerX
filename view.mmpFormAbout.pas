@@ -97,6 +97,7 @@ uses
   _debugWindow;
 
 type
+  // There were problems in D11 if we put the interface on a TForm, so an intermediary was used
   TAboutFormProxy = class(TInterfacedObject, IAboutForm)
   strict private
     FProgramUpdates:  IProgramUpdates;
@@ -164,6 +165,7 @@ function TAboutForm.checkPreviousReleaseNotes: boolean;
       result[high(result)] := FN;
       RC := findNext(SR);
     end;
+    findClose(SR);
   end;
 begin
   result := FALSE;

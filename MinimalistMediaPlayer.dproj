@@ -149,12 +149,15 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\Stephen Fry reads the Shipping Forecast.m4a&quot;</Debugger_RunParams>
+        <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="_FastMM5\FastMM5.pas"/>
+        <DCCReference Include="mmpExceptionHandler.pas"/>
+        <DCCReference Include="mmpStackTrace.pas"/>
         <DCCReference Include="_debugWindow\_debugWindow.pas"/>
         <DCCReference Include="ALProgressBar.pas"/>
         <DCCReference Include="_bazLib\bazAction.pas"/>
@@ -169,7 +172,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpConsts.pas"/>
         <DCCReference Include="mmpDesktopUtils.pas"/>
         <DCCReference Include="mmpDialogs.pas"/>
-        <DCCReference Include="mmpExceptionHandler.pas"/>
         <DCCReference Include="mmpExporter.pas"/>
         <DCCReference Include="mmpExportExec.pas"/>
         <DCCReference Include="mmpFileUtils.pas"/>
@@ -191,7 +193,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="mmpProgramUpdates.pas"/>
         <DCCReference Include="mmpShellUtils.pas"/>
         <DCCReference Include="mmpShredUtils.pas"/>
-        <DCCReference Include="mmpStackTrace.pas"/>
         <DCCReference Include="mmpThumbUtils.pas"/>
         <DCCReference Include="mmpTicker.pas"/>
         <DCCReference Include="mmpTickTimer.pas"/>

@@ -156,7 +156,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(R) and NOT ctrl and NOT shift              and NOT  GS.showingTimeline                     of TRUE: result := koRenameFile; end;
     case keyUp and keyIs(R) and     ctrl and NOT shift              and      GS.showingTimeline                     of TRUE: result := koRenameFile; end;
     case keyUp and keyIs(R) and     ctrl and     shift                                                              of TRUE: result := koRenameCleanFile; end;
-    case keyUp and keyIs(S) and NOT ctrl and     shift              and NOT  GS.showingTimeline                     of TRUE: result := koKeepSave; end; // EXPERIMENTAL
+    case keyUp and keyIs(S) and NOT ctrl and     shift              and NOT  GS.showingTimeline                     of TRUE: result := koKeepSave; end;
     case keyUp and keyIs(S) and     ctrl and NOT shift                                                              of TRUE: result := koToggleSubtitles; end;
     case keyUp and keyIs(S) and NOT ctrl and NOT shift              and NOT  GS.showingTimeline                     of TRUE: result := koStartOver; end;
     case keyUp and keyIs(S) and     ctrl                            and      GS.showingTimeline                     of TRUE: result := koToggleSkipExcluded; end;

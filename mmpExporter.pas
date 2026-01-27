@@ -66,7 +66,7 @@ type
     function  filePathLOG: string;
     function  filePathOUT(const bWriteChapters: boolean = FALSE; const aSuffix: string = ' [edited]'): string;
     function  filePathSEG: string;
-    function  filePathTempChapters(const bWriteChapters: boolean; aSuffix: string = ' [chapters]'): string;
+    function  filePathTempChapters(const bWriteChapters: boolean; const aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
     function  log(const aLogEntry: string): boolean;
     function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
@@ -169,7 +169,7 @@ function TExporter.concatSegments(const aProgressForm: IProgressForm): boolean;
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
-  var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+//  var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
 
   var cmdLine := EMPTY;
 
@@ -400,7 +400,7 @@ begin
   result := changeFileExt(filePathOUT, '.chp');
 end;
 
-function TExporter.filePathTempChapters(const bWriteChapters: boolean; aSuffix: string = ' [chapters]'): string;
+function TExporter.filePathTempChapters(const bWriteChapters: boolean; const aSuffix: string = ' [chapters]'): string;
 begin
   result := filePathOUT(bWriteChapters, aSuffix);
 end;

@@ -107,9 +107,16 @@ end;
 
 function TMediaPlayer.detachStates: boolean;
 begin
+  case mpv = NIL of TRUE: EXIT; end;
+
   mpv.onFileOpen    := NIL;
   mpv.onStateChged  := NIL;
   mpv.onInitMPV     := NIL;
+
+  // EXPERIMENTAL
+  mpv.stop;
+  mpv.totalShutdown;
+  mpv               := NIL;
 end;
 
 function TMediaPlayer.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;

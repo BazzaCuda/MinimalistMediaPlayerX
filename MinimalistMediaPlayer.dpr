@@ -35,6 +35,9 @@ program MinimalistMediaPlayer;
 
 {$R *.dres}
 
+// {$define useMadExcept}
+
+// dontTouchUses
 uses
   {$ifdef FastMM5}
   FastMM5 in '_FastMM5\FastMM5.pas',
@@ -42,7 +45,18 @@ uses
   {$ifdef designTimeThemes}
   vcl.forms,
   {$endif }
+  {$ifdef useMadExcept}
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
+  {$else}
+  mmpExceptionHandler in 'mmpExceptionHandler.pas',
+  mmpStackTrace in 'mmpStackTrace.pas',
+  {$endif}
   winApi.windows,
+  system.sysUtils,
   _debugWindow in '_debugWindow\_debugWindow.pas',
   ALProgressBar in 'ALProgressBar.pas',
   bazAction in '_bazLib\bazAction.pas',
@@ -57,7 +71,6 @@ uses
   mmpConsts in 'mmpConsts.pas',
   mmpDesktopUtils in 'mmpDesktopUtils.pas',
   mmpDialogs in 'mmpDialogs.pas',
-  mmpExceptionHandler in 'mmpExceptionHandler.pas',
   mmpExporter in 'mmpExporter.pas',
   mmpExportExec in 'mmpExportExec.pas',
   mmpFileUtils in 'mmpFileUtils.pas',
@@ -79,7 +92,6 @@ uses
   mmpProgramUpdates in 'mmpProgramUpdates.pas',
   mmpShellUtils in 'mmpShellUtils.pas',
   mmpShredUtils in 'mmpShredUtils.pas',
-  mmpStackTrace in 'mmpStackTrace.pas',
   mmpThumbUtils in 'mmpThumbUtils.pas',
   mmpTicker in 'mmpTicker.pas',
   mmpTickTimer in 'mmpTickTimer.pas',
@@ -131,7 +143,10 @@ uses
 
 procedure setupRunMode;
 begin
+  debugClear;
+  {$ifndef useMadExcept}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
+  {$endif}
   {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 
   {$ifdef FastMM5}
@@ -147,6 +162,12 @@ begin
                                               FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary];
                                               {$endif}
                                             end;end;
+  {$endif}
+
+  {$ifdef useMadExcept}
+  // for future use
+  madExcept.reportLeaks := TRUE;
+//  madExcept.SetLeakReportFile(extractFilePath(paramStr(0)) + 'madExcept.log'); // this suppresses the dialog
   {$endif}
 end;
 
@@ -212,9 +233,11 @@ begin
   app.createForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
 
+  {$ifndef useMadExcept}
   try
     app.onException := mmpException.handler;
   except end;
+  {$endif}
 
   initUI(MMPUI);
 

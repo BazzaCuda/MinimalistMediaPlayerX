@@ -99,7 +99,7 @@ uses
   _debugWindow;
 
 type
-  // can't implement IPlaylistForm with the TForm so we use an intermediary
+  // There were problems in D11 if we put the interface on a TForm, so an intermediary was used
   TPlayListFormProxy = class(TInterfacedObject, IPlaylistForm)
   strict private
     FListBoxLoaded: boolean;

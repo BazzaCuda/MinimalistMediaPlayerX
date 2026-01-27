@@ -100,7 +100,7 @@ const
   DEFAULT_WINDOW_HEIGHT = 160;
 
 type
-  // There are problems if we put the interface on TCaptionsForm, so we use an intermediary
+  // There were problems in D11 if we put the interface on a TForm, so an intermediary was used
   TCaptionsProxy = class(TInterfacedObject, ICaptions)
   strict private
     FCaptionsForm:  TCaptionsForm;

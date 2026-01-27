@@ -101,6 +101,7 @@ uses
   mmpConsts;
 
 type
+  // There were problems in D11 if we put the interface on a TForm, so an intermediary was used
   TProxyForm = class(TInterfacedObject, IProgressForm)
   strict private
     FForm: TProgressForm;
