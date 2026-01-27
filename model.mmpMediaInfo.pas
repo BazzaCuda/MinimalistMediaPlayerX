@@ -512,6 +512,7 @@ begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Video, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
         case vPosIx <> -1 of TRUE: createVideoStream(vStreamIx, vPosIx); end;end;end;
 
+      // some audio containers have a single audio stream and no streamOrder set
       case mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Audio, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
         case vPosIx =  -1 of TRUE: case '.aac.mp3.flac.wav.riff.aiff.ogg.opus.wv.caf.'.contains(lowerCase(extractFileExt(FURL)) + '.') of TRUE: vPosIx := 0; end;end;
@@ -521,6 +522,7 @@ begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Text, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
         case vPosIx <> -1 of TRUE: createTextStream(vStreamIx, vPosIx); end;end;end;
 
+      // assign the last possible indexes in numeric order to any attached images
       case mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
         vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Image, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
         case vPosIx = -1 of  TRUE:  begin
@@ -530,6 +532,7 @@ begin
 
       case mediaInfo_Get(FHandle, Stream_Menu,  vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: createChapters; end;
 
+      // we assume that FFmpeg won't assign an index to any "stream_other" that MediaInfo has
 //      case mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamKind', Info_Text, Info_Name) <> EMPTY of TRUE: begin
 //        vPosIx := strToIntDef(mediaInfo_Get(FHandle, Stream_Other, vStreamIx, 'StreamOrder', Info_Text, Info_Name), -1);
 //        debugFormat('%d %d', [vStreamIx, vPosIx]); end;end;
