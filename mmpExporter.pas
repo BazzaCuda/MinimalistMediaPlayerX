@@ -162,6 +162,7 @@ begin
 
   FMediaFilePath  := aMediaFilePath;
   FMediaType      := aMediaType;
+  TDebug.debugEnum<TMediaType>('aMediaType', aMediaType);
 end;
 
 function TExporter.concatSegments(const aProgressForm: IProgressForm): boolean;
@@ -208,6 +209,14 @@ function TExporter.createChaptersAndOrCoverArt(const aProgressForm: IProgressFor
 
 // bWriteChapters = TRUE forces us to write an MKV and to -attach the cover art
 // bWriteChapters = FALSE and writing to an M4A, we have to use -disposition:v:0 attached_pic otherwise FFmpeg will turn the image into a video stream
+
+{
+Scenario                                      Input File (-i)             Temp File (-y)              Final File (Post-Rename)
+Audio:  without Chapters, + Cover Art        File [edited].m4a           File [chapters].m4a             File [edited].m4a
+Audio:  with Chapters, + Cover Art           File [edited].m4a,          File [chapters].mkv             File [edited].mkv
+Video:  without Chapters,                    File [edited].mp4           File [chapters].mp4             File [edited].mp4
+Video:  with Chapters                        File [edited].mp4           File [chapters].mkv             File [edited].mkv
+}
 begin
 // if concat was ok, we can create chapters from the multiple .segnn files
 // for Audio and Video, an MKV container format and a .mkv file extension will be enforced if bWriteChapters = TRUE
@@ -224,36 +233,43 @@ begin
 
   cmdLine := ' -i "' + filePathOUT + '" ';  // filePathOUT from the previous step
 
-//  case bWriteChapters of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1'; end;
   case bWriteChapters of TRUE: cmdLine := cmdLine + ' -i "' +  fileChapterData + '" -map_metadata 1'; end;
 
-  // M4A audio WITHOUT chapters
-  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and (extractFileExt(filePathOUT).toLower = '.m4a') of TRUE:
+  // M4A audio WITHOUT chapters (and other Video Stream / AtomicParsley Method types)
+  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and ('.m4a.mp4.m4b.mov.flac.'.contains(extractFileExt(filePathOUT).toLower + '.')) of TRUE:
         cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -disposition:v:0 attached_pic'; end;
 
-  // MP3 audio WITHOUT chapters
-  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and (extractFileExt(filePathOUT).toLower = '.mp3')  of TRUE:
+  // MP3 audio WITHOUT chapters (and other ID3v2 / Tagging Method types)
+  case (FMediaType = mtAudio) and NOT bWriteChapters and fileExists(filePathCover) and ('.mp3.wav.aif.aiff.'.contains(extractFileExt(filePathOUT).toLower + '.'))  of TRUE:
         cmdLine := cmdLine + ' -i "' + filePathCover + '" -map 0:a -map 1 -c copy -id3v2_version 3 -metadata:s:t mimetype=image/jpeg'; end;
 
-  // MKV audio WITH chapters
-  case (FMediaType = mtAudio) and bWriteChapters and fileExists(filePathCover) of TRUE:
-        cmdLine := cmdLine + ' -c copy -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg'; end;
+  // audio WITH chapters or MKV audio WITH OR WITHOUT chapters (and other Attachment / Metadata Block Method)
+  case (FMediaType = mtAudio) and (bWriteChapters or (NOT bWriteChapters and ('.mkv.mka.'.contains(extractFileExt(filePathOUT).toLower + '.')))) and fileExists(filePathCover) of TRUE:
+        cmdLine := cmdLine + ' -c copy -attach "' + filePathCover + '" -metadata:s:t mimetype=image/jpg -metadata:s:t filename="cover.jpg"'; end;
 
   cmdLine := cmdLine + STD_SEG_PARAMS + STD_MAP_METADATA_0;
   case FMediaType = mtVideo of TRUE: cmdLine := cmdLine + ' -c copy'; end;
 
-  cmdLine := cmdLine + ' -y "' + filePathTempChapters(bWriteChapters) + '"';  // filePathOUT + fileChapterData (and/or cover art) = temporary [chapters] file
+  // FFmpeg always outputs to a [chapters] file to avoid potentially reading from and writing to the same file
+  // The extension remains original if bWriteChapters is FALSE, otherwise .mkv is forced
+  case fileExists(filePathTempChapters(bWriteChapters)) of TRUE: mmpDeleteThisFile(filePathTempChapters(bWriteChapters), [], TRUE, TRUE, FALSE); end;
+  cmdLine := cmdLine + ' "' + filePathTempChapters(bWriteChapters) + '"'; // remove the -y when this is all running correctly
 
   log(cmdLine); log(EMPTY);
 
   result  := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 
-  case result of TRUE:  begin
-                          var vChapterContainer := filePathOut(bWriteChapters);
-                          case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
-                          result := renameFile(filePathTempChapters(bWriteChapters), vChapterContainer);
-                          case bWriteChapters and result and fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
-                          end;end;
+  case result of FALSE: EXIT; end;
+
+  case bWriteChapters of   TRUE:  begin // replace the incoming [edited] file with the [chapters] file
+                                    var vChapterContainer := filePathOut(bWriteChapters);
+                                    case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
+                                    result := renameFile(filePathTempChapters(bWriteChapters), vChapterContainer);
+                                  end;
+                           FALSE: begin // replace the incoming [edited] file with the [chapters] file
+                                    case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
+                                    result := renameFile(filePathTempChapters(bWriteChapters), filePathOUT);
+                                  end;end;
 end;
 
 function TExporter.deletePreviousExport: TVoid;

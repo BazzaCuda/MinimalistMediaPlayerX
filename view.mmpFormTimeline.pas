@@ -109,7 +109,7 @@ type
     function    shortenSegment(const aSegment: TSegment): boolean;
     function    skipExcludedSegments(const aPosition: integer): integer;
     function    skipToNextSegment(const aPosition: integer): integer;
-    function    toggleKeyFrames: string;
+    procedure   toggleKeyFrames(Sender: TObject);
   protected
     procedure   exportSegments(sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
@@ -173,7 +173,7 @@ begin
   TL.playEdited := bPlayEdited;
   TL.positionSS := mmp.cmd(evMPReqPosition).integer; // don't wait for the next evTLPosition event
 
-  case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, TL.onRedraw, TL.exportSegments, bCreateNew); end;
+  case bMoveStreamList of TRUE: mmpShowStreamList(point(aPt.x + gTimelineForm.width, aPt.y), aWidth, TL.onRedraw, TL.exportSegments, TL.toggleKeyFrames, bCreateNew); end;
 
   mmp.cmd(evMPKeepOpen, TRUE);
   mmp.cmd(evGSShowingTimeline, TRUE);
@@ -330,7 +330,7 @@ begin
   TL.drawSegments;
   updatePositionDisplay(TL.positionSS);
 
-  case key = ord('F') of TRUE: mmp.cmd(evSTOpInfo, TL.toggleKeyFrames); end;
+  case key = ord('F') of TRUE: TL.toggleKeyFrames(NIL); end;
 
   case TL.validKey(key, shift) of TRUE: key := 0; end; // trap the key if we did something with it
 end;
@@ -752,6 +752,7 @@ end;
 procedure TTimeline.setPosition(const Value: integer);
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
+  case gTimelineForm = NIL of TRUE: EXIT; end;
 
   FPositionSS := skipExcludedSegments(value); // will do a seek if needed
   // {$if BazDebugWindow} debugFormat('FPositionSS: %d, FMax: %d', [FPositionSS, FMax]); {$endif}
@@ -826,19 +827,23 @@ begin
   case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
 end;
 
-function TTimeline.toggleKeyFrames: string;
+procedure TTimeline.toggleKeyFrames(Sender: TObject);
 begin
-  result := 'not applicable to audio';
-  case GS.mediaType <> mtVideo of TRUE: EXIT; end;
+  var result := 'not applicable to audio';
+  try
+    case GS.mediaType <> mtVideo of TRUE: EXIT; end;
 
-  FUseKeyFrames := NOT FUseKeyFrames;
+    FUseKeyFrames := NOT FUseKeyFrames;
 
-  case FUseKeyFrames of FALSE:  begin
-                                  result := 'keyframes off';
-                                  EXIT; end;end;
+    case FUseKeyFrames of FALSE:  begin
+                                    result := 'keyframes off';
+                                    EXIT; end;end;
 
-  result := 'keyframes on';
-  keyFrameManager.init(FMediaFilePath);
+    result := 'keyframes on';
+    keyFrameManager.init(FMediaFilePath);
+  finally
+     mmp.cmd(evSTOpInfo, result);
+  end;
 end;
 
 function TTimeline.undo: boolean;

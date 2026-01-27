@@ -101,9 +101,10 @@ type
     procedure chbPlayEditedClick(Sender: TObject);
     procedure chbExportJoinOnlyClick(Sender: TObject);
   private
-    FMediaType: TMediaType;
-    FOnExport:  TNotifyEvent;
-    FOnRedraw:  TNotifyEvent;
+    FMediaType:         TMediaType;
+    FOnExport:          TNotifyEvent;
+    FOnRedraw:          TNotifyEvent;
+    FOnToggleKeyframes: TNotifyEvent;
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
@@ -116,13 +117,14 @@ type
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMSize            (var msg: TWMSize);       message WM_SIZE;
   public
-    property onExport: TNotifyEvent read FOnExport write FOnExport;
-    property onRedraw: TNotifyEvent read FOnRedraw write FOnRedraw;
+    property onExport:          TNotifyEvent read FOnExport write FOnExport;
+    property onRedraw:          TNotifyEvent read FOnRedraw write FOnRedraw;
+    property onToggleKeyframes: TNotifyEvent read FOnToggleKeyframes write FOnToggleKeyframes;
   end;
 
 function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aRedrawEvent: TNotifyEvent; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 function mmpShutStreamList: boolean;
 function mmpScrollTo(const aIx: integer): boolean;
 
@@ -153,7 +155,7 @@ begin
   gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; aRedrawEvent: TNotifyEvent; aExportEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
 begin
   case (gStreamListForm = NIL) and bCreateNew of TRUE: begin gStreamListForm := TStreamListForm.create(NIL); end;end;
   case gStreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
@@ -162,8 +164,9 @@ begin
 
   case GS.showingStreamList of FALSE: gStreamListForm.pageControl.pages[0].show; end; // first time only
   gStreamListForm.show;
-  gStreamListForm.onExport := aExportEvent;
-  gStreamListForm.onRedraw := aRedrawEvent;
+  gStreamListForm.onExport          := aExportEvent;
+  gStreamListForm.onRedraw          := aRedrawEvent;
+  gStreamListForm.onToggleKeyframes := aToggleKeyframesEvent;
 
   // When the main window is resized or moved, force a WM_SIZE message to be generated without actually changing the size of the form
   winApi.windows.setWindowPos(gStreamListForm.handle, HWND_TOP, aPt.X, aPt.Y - gStreamListForm.height, gStreamListForm.width, gStreamListForm.height + 1, SWP_SHOWWINDOW);
@@ -282,6 +285,7 @@ end;
 procedure TStreamListForm.chbKeyframesClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_KEYFRAMES] := chbKeyframes.checked;
+  case assigned(FOnToggleKeyframes) of TRUE: FOnToggleKeyframes(SELF); end;
 end;
 
 procedure TStreamListForm.chbPlayEditedClick(Sender: TObject);
