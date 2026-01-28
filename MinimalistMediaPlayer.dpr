@@ -18,6 +18,16 @@
 }
 program MinimalistMediaPlayer;
 
+// check if madExcept has left debugging options set in the Release configuration
+{$if defined(RELEASE)}
+  {$ifopt D+} {$MESSAGE ERROR 'Release Build: Debug Information (D+) enabled'} {$endif}
+  {$ifopt C+} {$MESSAGE ERROR 'Release Build: Assertions (C+) enabled'} {$endif}
+  {$ifopt L+} {$MESSAGE ERROR 'Release Build: Local Symbols (L+) enabled'} {$endif}
+  {$ifopt W+} {$MESSAGE ERROR 'Release Build: Stack Frames (W+) enabled'} {$endif}
+  {$ifopt Y+} {$MESSAGE ERROR 'Release Build: Symbol Reference Info (Y+) enabled'} {$endif}
+  {$ifopt O-} {$MESSAGE ERROR 'Release Build: Optimization (O-) disabled'} {$endif}
+{$endif}
+
 {$ifdef FastMM5}
   {$ifopt D+}
     {$define UseFastMM5MemoryLeakReporting}
@@ -145,11 +155,10 @@ uses
 
 procedure setupRunMode;
 begin
-  debugClear;
   {$ifndef useMadExcept}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
   {$endif}
-  {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
+  {$if BazDebugWindow} debugClear; debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 
   {$ifdef FastMM5}
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
@@ -169,6 +178,7 @@ begin
   {$ifdef useMadExcept}
 //  madExcept.SetLeakReportFile(extractFilePath(paramStr(0)) + 'madExcept.log'); // this suppresses the dialog
   madExcept.reportLeaks := TRUE;
+  madExcept.showNoLeaksWindow(TRUE);
   madExcept.dontHookThreads;
 
   var vThreadList := madExcept.getThreadList;

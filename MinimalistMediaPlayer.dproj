@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -118,6 +118,10 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <Debugger_RunParams>&quot;B:\Music\Agnus Dei _ Music of Inner Harmony _ Vol 1.m4a&quot;</Debugger_RunParams>
         <UWP_DelphiLogo44>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+        <DCC_DebugInformation>2</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -149,7 +153,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
         <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\Stephen Fry reads the Shipping Forecast.m4a&quot;</Debugger_RunParams>
-        <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
+        <DCC_Define>madExcept;leakChecking;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

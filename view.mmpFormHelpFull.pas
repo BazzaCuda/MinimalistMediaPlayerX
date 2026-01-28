@@ -180,22 +180,21 @@ function THelpFullForm.changePage(const aIx: integer; const bAddHistory: boolean
 
   function getResourceIx(const aHelpType: THelpType; const aTargetIx: Integer): integer;
   begin
-    result := -1;
-    var vCurrentIx := -1;
+    result        := -1;
+    var vTargetIx := -1;
     for var i := 0 to HIGH(MARKDOWN_RESOURCES) do
-      case (MARKDOWN_RESOURCES[i].helpType = aHelpType) or (MARKDOWN_RESOURCES[i].helpType = htBoth)
-        of TRUE:  begin
-                    vCurrentIx := vCurrentIx + 1;
-                    case vCurrentIx = aTargetIx of TRUE: begin
-              result := i;
-              EXIT; end;end;end;end;
+      case MARKDOWN_RESOURCES[i].helpType in [aHelpType, htBoth] of TRUE: begin
+                                                                            inc(vTargetIx);
+                                                                            case vTargetIx = aTargetIx of TRUE: begin
+                                                                                                                  result := i;
+                                                                                                                  BREAK; end;end;end;end;
   end;
 
 begin
   case aIx = -1 of TRUE: EXIT; end;
   pageControl.activePageIndex := aIx;
 
-  var  vMarkdownViewer  := getMarkdownViewer(pageControl.pages[aIx]);
+  var  vMarkdownViewer := getMarkdownViewer(pageControl.pages[aIx]);
   case vMarkdownViewer = NIL of TRUE: EXIT; end;
 
   var  vResourceIx := getResourceIx(FHelpType, aIx);

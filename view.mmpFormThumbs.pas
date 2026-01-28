@@ -934,7 +934,7 @@ begin
     koPlayLast:           playLast;
     koPlayNext:           playNext;
     koPlayPrev:           playPrev;
-    koPlayThumbs:         begin showHost(htThumbsHost); FThumbs.playThumbs; end;
+    koPlayThumbs:         case whichHost of htThumbsHost: showHost(htMPVHost); htMPVHost: begin showHost(htThumbsHost); FThumbs.playThumbs; end;end;
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
