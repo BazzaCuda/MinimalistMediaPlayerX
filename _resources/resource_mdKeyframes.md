@@ -1,7 +1,7 @@
 [Wiki Page: Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
 [Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
 [Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
-[Help Page: Editing](Editing)<br />
+[Help Page: Main Editing Topic](Editing_Audio_&_Video)<br />
 <br />
 [Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />

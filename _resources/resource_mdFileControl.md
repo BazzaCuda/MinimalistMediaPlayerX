@@ -1,6 +1,6 @@
 [Help Page: User-Defined Folders](User-Defined_Folders)<br />
 [Config Dialog: File Deletion](ConfigDialog:File_Deletion)<br />
-
+<br />
 With the **MMP** media library management facilities, you get a lot of control over what media files are called and where they reside
 
 - each of the file-deletion categories must be explicitly enabled in the Config Dialog or **MMP** will reject the deletion command
@@ -11,6 +11,7 @@ Control | Action
 ------- | ------
 **[R]**                     | [R]ename the current media file
 Ctrl-Shift-**[R]**          | [R]ename to a clean file name by replacing dirty characters with spaces - see _Clean File Name_ in the Config Dialog
+&nbsp; ||
 Main Media Window only ||
 **[F1]**                    | rename media file with category prefix 1 defined in _MinimalistMediaPlayer.conf_
 **[F2]**                    | rename media file with category prefix 2 defined in _MinimalistMediaPlayer.conf_
@@ -52,6 +53,4 @@ Ctrl-**[K]**                | [K]eep/delete: delete all but the [K]ept files in 
 
 Control | Action
 ------- | ------
-| **[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />_useful for maybe saving a project file after opening the media file in an external app using [F10], [F11] or [F12]_ |
-| Ctrl-**[F]**                | open your [F]ile Explorer at the current [F]older |
-
+**[INSERT]**                | copy the media file name (without the extension) to the clipboard<br />_useful for maybe saving a project file after opening the media file in an external app using [F10], [F11] or [F12]_ |

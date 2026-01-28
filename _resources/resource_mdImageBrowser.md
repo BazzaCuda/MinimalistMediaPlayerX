@@ -1,6 +1,7 @@
 [Wiki Page: Image & Thumbnail Browser Overview](https://minimalistmediaplayer.com/image/overview)<br />
 [Help Page: Adjust Image](Adjust_Image)<br />
 [Help Page: File Control](File_Control)<br />
+[Help Page: Screenshots](Screenshots)<br />
 <br />
 [Config Dialog: Slideshows](ConfigDialog:Slideshows)<br />
 [Config Dialog: Repeat Delay](ConfigDialog:Repeat_Delay)<br />
@@ -31,6 +32,9 @@
 With the **Image & Thumbnail Browser** you can browse through your entire image library as thumbnails and/or full size
 - the four arrow keys are very powerful, whether in Image Mode or Thumbnail Mode
 - you can browse through an entire drive with just the arrow keys, automatically skipping folders which don't contain images
+- the status bar at the bottom of the window will display the **X:Y** dimensions of the image file
+- it will also display the **"D: X:Y"** dimensions that it's currently being **D**isplayed at
+- this information is important when saving [Screenshots](Screenshots)
 <br />
 <br />
 

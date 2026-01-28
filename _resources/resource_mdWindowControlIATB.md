@@ -3,14 +3,13 @@
 [Help Page: Auto-Center](Auto-Center)<br />
 <br />
 
-You can resize the window so that the image is displayed at the exact dimensions you require
+You can resize the **Image & Thumbnail Browser** window so that the image is displayed at the exact dimensions you require
 
 - as you resize the window, the new dimensions will be displayed in the status bar
 - the status bar displays the dimensions of the image file itself, e.g. **800 x 600**
 - the status bar _also_ shows the dimensions that the image is currently being displayed at, e.g. **D: 1880 x 1200**
 - as you resize the window, the **D: ??? x ???** dimensions will change
 - if you take an **MMP** screenshot (Ctrl-**[S]**), the High Definition .png file will have the _exact_ same dimensions as shown in the **D: ???** status bar panel
-<br />
 <br />
 
 - as you resize the window, you will find that the image display will compensate by adding black borders around the image
@@ -21,16 +20,16 @@ You can resize the window so that the image is displayed at the exact dimensions
 Control | Action |
 | ------- | ------ |
 | **[ESC]ape**          | exit the app. Also closes all popup dialog boxes and messages |
-| **[F]**               | show/cancel [F]ullScreen mode |
+| **[F]**               | show/cancel [F]ullScreen* mode |
 | **[G]**               | [G]reater window size. Can be held down for rapid increase |
 | Ctrl-**[G]**          | reduce, i.e. un[G]reater, the window size. Can be held down for rapid decrease |
 | **[H]**               | position the window [H]orizontally (and Vertically) in the center of the screen |
 | **[J]**               | ad[J]ust the window width so that the window matches the aspect ratio of the image |
-| **[M]**               | [M]aximize the video to the largest allowable by the screen whilst maintaining the correct aspect ratio.<br />_Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that_ |
+| **[M]**               | [M]aximize the window to the largest allowable by the screen whilst maintaining the correct aspect ratio.<br />_Very occasionally, the window might be positioned so that the bottom edge is behind the Windows taskbar. This corrects that_ |
 | **[N]**               | mi[N]imize window to the Windows taskbar |
 | Left button down      | drag the media window around the screen - this cancels [Auto-Center](Auto-Center) |
 | &nbsp; ||
-| _fine window control_ | _you can resize the displayed image to the _exact_ dimensions that you want your Ctrl-**[S]** screenshot .png file to have_  |
+| _fine window control_ | _you can resize the displayed image to the _exact_ dimensions that you want your Ctrl-**[S]** screenshot .png file to have_ |
 | Numpad **[-]**        | reduce height by 1 pixel |
 | Numpad **[+]**        | increase height by 1 pixel |
 | Ctrl-Numpad **[-]**   | reduce width by 1 pixel |

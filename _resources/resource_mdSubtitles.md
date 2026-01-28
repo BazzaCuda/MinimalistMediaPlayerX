@@ -5,7 +5,7 @@ If a media file contains multiple subtitle streams, you can cycle through them a
 - **[F7]** will cycle to and select the next available subtitle stream
 - the end of the cycle includes "Subtitles: no" which turn off subtitles
 - pressing **[F7]** again will cycle to and select the first subtitle stream
-- meta-data details of each track will be shown in the Notification Area (bottom right corner)<br />
+- meta-data details of each track will be shown in the [Notification Area](Notification_Area)<br />
 e.g. **Subtitles: (1) (eng subrip (Advanced Sub Station Alpha)) [default]**
 <br />
 

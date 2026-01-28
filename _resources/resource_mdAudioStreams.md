@@ -6,7 +6,7 @@ If a media file contains multiple audio streams, you can cycle through them all 
 - **[F6]** will cycle to and select the next available audio stream
 - the end of the cycle includes "Audio: no" which will mute the audio
 - pressing **[F6]** again will cycle to and select the first audio stream
-- meta-data details of each track will be shown in the Notification Area (bottom right corner)<br />
+- meta-data details of each track will be shown in the [Notification Area](Notification_Area)<br />
 e.g. **Audio: (1) (eng Vorbis 6ch 48000 Hz) [default]**
 <br />
 If you are listening through an external device (e.g. via a Bluetooth transmitter to your earphones) the audio can lag behind the video images<br />

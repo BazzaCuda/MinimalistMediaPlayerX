@@ -139,7 +139,7 @@ const
       (helpType: htMain;    caption: 'Subtitles';                 resource: 'resource_mdSubtitles'),
       (helpType: htMain;    caption: 'Tabbing';                   resource: 'resource_mdTabbing'),
       (helpType: htIATB;    caption: 'Thumbnails';                resource: 'resource_mdThumbnails'),
-      (helpType: htIATB;    caption: 'User-Defined Folders';      resource: 'resource_mdUserFolders'),
+      (helpType: htBoth;    caption: 'User-Defined Folders';      resource: 'resource_mdUserFolders'),
       (helpType: htMain;    caption: 'Volume';                    resource: 'resource_mdVolume'),
       (helpType: htMain;    caption: 'Window Control';            resource: 'resource_mdWindowControlMain'),
       (helpType: htIATB;    caption: 'Window Control';            resource: 'resource_mdWindowControlIATB'),

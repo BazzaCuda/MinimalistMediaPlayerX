@@ -7,7 +7,7 @@ In **MMP** this is called _tabbing_
 <br />
 <br />
 - both keys can be held down for rapid repeat
-- the number of seconds skipped is reported in the Notification Area in the bottom right corner
+- the number of seconds skipped is reported in the [Notification Area](Notification_Area)
 - you can also rapidly "scrub"/"jog" through the audio or video file - see the second table below
 <br />
 <br />
@@ -36,7 +36,7 @@ In **MMP** this is called _tabbing_
 | ------- | ------ |
 | [Ctrl] and mouse | hold down a Ctrl key and move your mouse along the progress bar<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file |
 | &nbsp; ||
-| Audio & Video Timeline Editor | [Editing](Editing) |
+| Audio & Video Timeline Editor | [Editing Audio & Video](Editing_Audio_&_Video) |
 | vertical cursor | grab the vertical cursor and drag it along the Timeline<br />**MMP** will rapidly "scrub"/"jog" backwards and forwards through your audio or video file |
 
 <div align="center">

@@ -6,6 +6,8 @@ Consequently, a so-called **MMP**  "screenshot" is at a far higher resolution an
 - these include **brightness**, **contrast**, **gamma**, **rotation**, **saturation**, **zoom** in/out, **pan** up/down/left/right, and **rotate**
 
 - the dimensions of the .png image file will match the size of the image/frame in the **MMP** window<br />
+- in the **Main Media Window** these dimensions are displayed in the [Notification Area](Notification_Area) as you resize the window
+- in the **Image & Thumbnail Browser** these dimensions are displayed in the **"D: X:Y"** panel of the status bar
 - you can therefore resize the **MMP** window to match the .png file dimensions you desire<br />
 - there is a direct relationship between the dimensions of your **MMP** window and the size [on disk] of the .png screenshot file
 
