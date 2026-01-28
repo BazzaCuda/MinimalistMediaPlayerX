@@ -101,7 +101,7 @@ end;
 //--------------------------------------------------------------------
 function secureOverwrite(aFileHandle: THandle; aLength: ULONGLONG): boolean; // v2.1
 const
-  CLEANBUFSIZE = 65536; // Using 64 KiB buffers aligned to memory pages via virtualAlloc for optimal I/O performance.
+  CLEANBUFSIZE = 65536; // Using 64 KB buffers aligned to memory pages via virtualAlloc for optimal I/O performance
 var
   i, j, passes: DWORD;
   totalWritten: ULONGLONG;
@@ -127,8 +127,8 @@ begin
       end;
 
       // Fill each buffer with a different signature.
-      // Uses a three-pass sanitisation approach: zeroing, bit-flipping (ones), and pseudo-random noise.
-      // This is intended to disrupt the magnetic signature of the data on traditional Hard Disk Drives (HDDs).
+      // Uses a three-pass sanitisation approach: zeroing, bit-flipping (ones), and pseudo-random noise
+      // This is intended to disrupt the magnetic signature of the data on traditional Hard Disk Drives (HDDs)
       case i of
         1:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(0);           // pass 1: zeroes
         2:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(255);         // pass 2: ones
@@ -143,8 +143,8 @@ begin
     for passes := 1 to NUMPASSES do begin
       if (passes <> 1) then begin
         seekLength := aLength;
-        // Performs a relative backward seek using a signed 64-bit integer.
-        // This resets the file pointer to the start of the target area for the next overwrite pass.
+        // Performs a relative backward seek using a signed 64-bit integer
+        // This resets the file pointer to the start of the target area for the next overwrite pass
         setFilePointerEx(aFileHandle, -seekLength, NIL, FILE_CURRENT);
       end;
 
@@ -157,13 +157,13 @@ begin
         // Loop and overwrite
         totalWritten := 0;
         while (totalWritten < aLength) do begin
-          // Ensure we don't read past the end of the allocated 64 KiB buffer
+          // Ensure we don't read past the end of the allocated 64 KB buffer
           if (aLength - totalWritten > CLEANBUFSIZE) then bytesToWrite := CLEANBUFSIZE
                                                      else bytesToWrite := ULONG(aLength - totalWritten);
 
-          // Note: Ensure the file handle was opened with FILE_FLAG_NO_BUFFERING or FILE_FLAG_WRITE_THROUGH.
-          // This ensures data is committed to the physical disk immediately, bypassing the OS cache.
-          // Consequently, there is no need to manually call FlushFileBuffers.
+          // Note: Ensure the file handle was opened with FILE_FLAG_NO_BUFFERING or FILE_FLAG_WRITE_THROUGH
+          // This ensures data is committed to the physical disk immediately, bypassing the OS cache
+          // Consequently, there is no need to manually call FlushFileBuffers
           status := writeFile(aFileHandle, cleanBuffer[i]^, bytesToWrite, bytesWritten, nil);
           if (not status) then EXIT;
 
@@ -175,7 +175,7 @@ begin
 
   finally
     // The finally block acts as a safety net to ensure system memory is returned to the OS
-    // and the flag is reset even if a hardware error occurs during the writeFile process.
+    // and the flag is reset even if a hardware error occurs during the writeFile process
     for i := 1 to CLEANINGBUFFERS do begin
       if (cleanBuffer[i] <> NIL) then begin
         virtualFree(cleanBuffer[i], 0, MEM_RELEASE);
@@ -199,7 +199,7 @@ var
 begin
   result := FALSE;
 
-	// Allocate our cleaning buffers if necessary (we just let program exit free the buffers).
+	// Allocate our cleaning buffers if necessary (we just let program exit free the buffers)
 	if (NOT buffersAlloced) then begin
 
     randomize; // Seed the random number generator
