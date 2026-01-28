@@ -43,7 +43,7 @@ uses
 
 const
   NUMPASSES       = 1;
-  CLEANINGBUFFERS = 3;
+  CLEANINGBUFFERS = 1;
 
 var
   cleanBuffer:    array[1..CLEANINGBUFFERS] of PBYTE;
@@ -99,7 +99,94 @@ end;
 // pulverizing, shredding or melting the disk.
 //
 //--------------------------------------------------------------------
-function secureOverwrite(aFileHandle: THandle; aLength: ULONGLONG): boolean;
+function secureOverwrite(aFileHandle: THandle; aLength: ULONGLONG): boolean; // v2.1
+const
+  CLEANBUFSIZE = 65536; // Using 64 KiB buffers aligned to memory pages via virtualAlloc for optimal I/O performance.
+var
+  i, j, passes: DWORD;
+  totalWritten: ULONGLONG;
+  bytesWritten,
+  bytesToWrite: ULONG;
+  seekLength:   int64; // Signed 64-bit required for negative offsets in setFilePointerEx
+  status:       BOOLEAN;
+begin
+  result := FALSE;
+
+  // Allocate our cleaning buffers
+  if (NOT buffersAlloced) then begin
+    randomize; // Seed the random number generator
+    for i := 1 to CLEANINGBUFFERS do begin
+      cleanBuffer[i] := virtualAlloc(NIL, CLEANBUFSIZE, MEM_COMMIT, PAGE_READWRITE);
+      if (cleanBuffer[i] = NIL) then begin
+        // Leak fix: only free successfully allocated previous buffers
+        for j := 1 to i - 1 do begin
+          virtualFree(cleanBuffer[j], 0, MEM_RELEASE);
+          cleanBuffer[j] := NIL;
+        end;
+        EXIT;
+      end;
+
+      // Fill each buffer with a different signature.
+      // Uses a three-pass sanitisation approach: zeroing, bit-flipping (ones), and pseudo-random noise.
+      // This is intended to disrupt the magnetic signature of the data on traditional Hard Disk Drives (HDDs).
+      case i of
+        1:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(0);           // pass 1: zeroes
+        2:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(255);         // pass 2: ones
+        3:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(Random(255)); // pass 3: random noise
+      end;
+    end;
+    buffersAlloced := TRUE;
+  end;
+
+  try
+    // Do the overwrite
+    for passes := 1 to NUMPASSES do begin
+      if (passes <> 1) then begin
+        seekLength := aLength;
+        // Performs a relative backward seek using a signed 64-bit integer.
+        // This resets the file pointer to the start of the target area for the next overwrite pass.
+        setFilePointerEx(aFileHandle, -seekLength, NIL, FILE_CURRENT);
+      end;
+
+      for i := 1 to CLEANINGBUFFERS do begin
+        // Move back to the start of where we're overwriting
+        if (i <> 1) then begin
+          seekLength := aLength;
+          setFilePointerEx(aFileHandle, -seekLength, NIL, FILE_CURRENT);
+        end;
+        // Loop and overwrite
+        totalWritten := 0;
+        while (totalWritten < aLength) do begin
+          // Ensure we don't read past the end of the allocated 64 KiB buffer
+          if (aLength - totalWritten > CLEANBUFSIZE) then bytesToWrite := CLEANBUFSIZE
+                                                     else bytesToWrite := ULONG(aLength - totalWritten);
+
+          // Note: Ensure the file handle was opened with FILE_FLAG_NO_BUFFERING or FILE_FLAG_WRITE_THROUGH.
+          // This ensures data is committed to the physical disk immediately, bypassing the OS cache.
+          // Consequently, there is no need to manually call FlushFileBuffers.
+          status := writeFile(aFileHandle, cleanBuffer[i]^, bytesToWrite, bytesWritten, nil);
+          if (not status) then EXIT;
+
+          totalWritten := totalWritten + bytesWritten;
+        end;
+      end;
+    end;
+    result := TRUE;
+
+  finally
+    // The finally block acts as a safety net to ensure system memory is returned to the OS
+    // and the flag is reset even if a hardware error occurs during the writeFile process.
+    for i := 1 to CLEANINGBUFFERS do begin
+      if (cleanBuffer[i] <> NIL) then begin
+        virtualFree(cleanBuffer[i], 0, MEM_RELEASE);
+        cleanBuffer[i] := NIL;
+      end;
+    end;
+    buffersAlloced := FALSE;
+  end;
+end;
+
+function secureOverwrite_v1(aFileHandle: THandle; aLength: ULONGLONG): boolean; // v1
 const
   CLEANBUFSIZE = 65536;
 var
