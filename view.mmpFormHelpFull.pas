@@ -119,7 +119,7 @@ const
       (helpType: htMain;    caption: 'Editing Audio & Video';     resource: 'resource_mdEditing'),
       (helpType: htMain;    caption: 'Editing Audio';             resource: 'resource_mdEditingAudio'),
       (helpType: htMain;    caption: 'Editing Chapters';          resource: 'resource_mdEditingChapters'),
-      (helpType: htMain;    caption: 'Editing Troubleshooting';   resource: 'resource_mdEditingTroubleshooting'), // revisit Editing - join, copy, flac, .m4v, MKV chapters, cover art
+      (helpType: htMain;    caption: 'Editing Troubleshooting';   resource: 'resource_mdEditingTroubleshooting'),
       (helpType: htBoth;    caption: 'External Apps';             resource: 'resource_mdExternalApps'),
       (helpType: htBoth;    caption: 'File Control';              resource: 'resource_mdFileControl'),
       (helpType: htMain;    caption: 'Freeze Frame';              resource: 'resource_mdFreezeFrame'),
@@ -136,9 +136,9 @@ const
       (helpType: htBoth;    caption: 'Screenshots';               resource: 'resource_mdScreenshots'),
       (helpType: htBoth;    caption: 'Slideshows';                resource: 'resource_mdSlideshows'),
       (helpType: htMain;    caption: 'Speed';                     resource: 'resource_mdSpeed'),
-      (helpType: htMain;    caption: 'Subtitles';                 resource: 'resource_mdSubtitles'),          // Subtitles - mpv.conf language selection
+      (helpType: htMain;    caption: 'Subtitles';                 resource: 'resource_mdSubtitles'),
       (helpType: htMain;    caption: 'Tabbing';                   resource: 'resource_mdTabbing'),
-      (helpType: htIATB;    caption: 'Thumbnails';                resource: 'resource_mdThumbnails'),         // redundant? Thumbnails - increase/decrease size, Browser status bar, window size - redundant?
+      (helpType: htIATB;    caption: 'Thumbnails';                resource: 'resource_mdThumbnails'),
       (helpType: htIATB;    caption: 'User-Defined Folders';      resource: 'resource_mdUserFolders'),
       (helpType: htMain;    caption: 'Volume';                    resource: 'resource_mdVolume'),
       (helpType: htMain;    caption: 'Window Control';            resource: 'resource_mdWindowControlMain'),
@@ -167,9 +167,42 @@ begin
 end;
 
 function THelpFullForm.changePage(const aIx: integer; const bAddHistory: boolean): TVoid;
+
+  function getMarkdownViewer(const aTabSheet: TTabSheet): TMarkdownViewer;
+  begin
+    result := NIL;
+    for var i := 0 to aTabSheet.controlCount - 1 do
+      case aTabSheet.controls[i] is TMarkdownViewer of TRUE:  begin
+                                                                result := TMarkdownViewer(aTabSheet.controls[i]);
+                                                                BREAK; end;end;
+
+  end;
+
+  function getResourceIx(const aHelpType: THelpType; const aTargetIx: Integer): integer;
+  begin
+    result := -1;
+    var vCurrentIx := -1;
+    for var i := 0 to HIGH(MARKDOWN_RESOURCES) do
+      case (MARKDOWN_RESOURCES[i].helpType = aHelpType) or (MARKDOWN_RESOURCES[i].helpType = htBoth)
+        of TRUE:  begin
+                    vCurrentIx := vCurrentIx + 1;
+                    case vCurrentIx = aTargetIx of TRUE: begin
+              result := i;
+              EXIT; end;end;end;end;
+  end;
+
 begin
   case aIx = -1 of TRUE: EXIT; end;
   pageControl.activePageIndex := aIx;
+
+  var  vMarkdownViewer  := getMarkdownViewer(pageControl.pages[aIx]);
+  case vMarkdownViewer = NIL of TRUE: EXIT; end;
+
+  debugInteger('aIx', aIx);
+
+  var  vResourceIx := getResourceIx(FHelpType, aIx);
+  case vMarkdownViewer.lines.count = 0 of TRUE: mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vResourceIx].resource); end;
+
   case lbTabCaptions.itemIndex = pageControl.activePageIndex of FALSE: lbTabCaptions.itemIndex := aIx; end;
   case bAddHistory of TRUE: historyAdd(aIx); end;
 end;
@@ -217,15 +250,16 @@ begin
     vMarkDownViewer.parent      := vTabSheet;
     initMarkDownViewer(vMarkDownViewer);
 
-
     mmpInitMarkdownViewer(vMarkDownViewer);
     vMarkDownViewer.defFontSize     := 10;
     vMarkDownViewer.OnHotSpotClick  := onHotSpotClick;
     vMarkDownViewer.DefHotSpotColor := clAqua;
     vMarkDownViewer.htOptions := vMarkDownViewer.htOptions + [htOverLinksActive];
 
-    mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vIx].resource);
+//    mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vIx].resource);
   end;
+
+
 end;
 
 function THelpFullForm.fontAdjust(const aAdjustment: integer): TVoid;
@@ -333,14 +367,16 @@ end;
 
 function THelpFullForm.init(const aHelpType: THelpType): TVoid;
 begin
-  case aHelpType = FHelpType of FALSE: createTabs(aHelpType); end; // redundant - we no longer allow re-entry via mmpHelpFull
   FHelpType := aHelpType;
+
   case FHelpType of
     htMain: caption := 'MMP Help - Main Media Window';
     htIATB: caption := 'MMP Help - Image && Thumbnail Browser'; end;
 
+  createTabs(aHelpType);
+
   FHistIx := -1;
-  historyAdd(0);
+  changePage(0, TRUE);
 end;
 
 procedure THelpFullForm.lbTabCaptionsClick(Sender: TObject);

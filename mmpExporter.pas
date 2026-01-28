@@ -247,7 +247,7 @@ begin
   // FFmpeg always outputs to a [chapters] file to avoid potentially reading from and writing to the same file
   // The extension remains original if bWriteChapters is FALSE, otherwise .mkv is forced
   case fileExists(filePathTempChapters(bWriteChapters)) of TRUE: mmpDeleteThisFile(filePathTempChapters(bWriteChapters), [], TRUE, TRUE, FALSE); end;
-  cmdLine := cmdLine + ' "' + filePathTempChapters(bWriteChapters) + '"'; // remove the -y when this is all running correctly
+  cmdLine := cmdLine + ' "' + filePathTempChapters(bWriteChapters) + '"';
 
   log(cmdLine); log(EMPTY);
 

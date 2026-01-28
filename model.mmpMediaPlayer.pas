@@ -113,7 +113,6 @@ begin
   mpv.onStateChged  := NIL;
   mpv.onInitMPV     := NIL;
 
-  // EXPERIMENTAL
   mpv.stop;
   mpv.totalShutdown;
   mpv               := NIL;

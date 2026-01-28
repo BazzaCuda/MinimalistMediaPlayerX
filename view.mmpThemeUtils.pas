@@ -44,6 +44,7 @@ begin
   result.color        := clBlack;
   result.bevelOuter   := bvNone;
   result.caption      := 'MMP: Minimalist Media Player';
+  result.font.style   := [fsBold];
 end;
 
 function mmpInitTransparentForm(const aForm: TForm): TForm;

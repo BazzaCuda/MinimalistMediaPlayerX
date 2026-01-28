@@ -394,9 +394,9 @@ begin
   aSysErrorMessage := EMPTY;
   setLastError(ERROR_SUCCESS);
 
-  // Attempt to open the file with exclusive access (dwShareMode = 0).
-  // GENERIC_READ is sufficient for just checking if a lock can be acquired.
-  // OPEN_EXISTING means the file must already exist for this check to be meaningful.
+  // Attempt to open the file with exclusive access (dwShareMode = 0)
+  // GENERIC_READ is sufficient for just checking if a lock can be acquired
+  // OPEN_EXISTING means the file must already exist for this check to be meaningful
   hFile := createFile(PWideChar(aFilePath), GENERIC_READ, 0, NIL, OPEN_EXISTING, 0, 0);
 
   // Determine if the file is "in use" based on the handle status

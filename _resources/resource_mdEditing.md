@@ -9,9 +9,11 @@
 [Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
+**Editing Audio & Video**
+
 **MMP** provides excellent audio and video editing facilities<br />
 - for the user, editing is really fast and non-fiddly
-- you can edit and export the finished product without even stopping playback
+- you can edit and export the finished product without even stopping playback!
 - editing is "lossless" and doesn't require that the exported audio/video be re-encoded
 - in effect, you are doing a copy/paste from your original file to the edited file
 - consequently, the quality of the exported file is identical to the original
@@ -21,7 +23,8 @@
 - for general editing purposes, the "rough cut" approach is often enough
 - for videos, if you want to be more specific about where an included segment starts, you should use Keyframes
 - the vertical cursor coincides with the currently viewed position of the video file (or the audio file being listened to)
-- a segment will always contain at least the audio/video content you require, give or take a few frames - keyframes are not a factor in where segments end
+- a segment will always contain at least the audio/video content you require, give or take a few frames
+- keyframes are not a factor in where segments end
 <br />
 <br />
 

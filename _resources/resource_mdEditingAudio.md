@@ -13,7 +13,7 @@
 
 **MMP** provides excellent audio and video editing facilities<br />
 - for the user, editing is really fast and non-fiddly
-- you can edit and export the finished product without even stopping playback
+- you can edit and export the finished product without even stopping playback!
 - editing is "lossless" and doesn't require that the exported audio/video be re-encoded
 - in effect, you are doing a copy/paste from your original file to the edited file
 - consequently, the quality of the exported file is identical to the original
@@ -30,12 +30,24 @@ FFmpeg's production of audio files is a little more involved than its handling o
 - where this is not possible, **MMP** and FFmpeg will create an MKV container with a .mkv file extension
 - when adding chapters, the output file will always be an MKV container
 
-**Cover Art**
+**Album MetaData**
+- all metadata (Title, Album, Artist, etc) present in the audio file being edited will be copied to the exported audio file
 
+**Cover Art**
+- if your audio file contains Cover Art in the form of an image attachment, this will be copied to your exported audio file
+- the image is extracted first to a "cover.jpg" file
+- the individual exported segments will not contain the Cover Art image
+- the Cover Art will be re-attached during the final export stage
+- if the folder already contains a "cover.jpg" file, **MMP** will **_not_** overwrite it
+- if the existing "cover.jpg" is not what you want, you should copy the audio file to a different folder and edit it there
+- any "cover.jpg" file that exists in the folder during the final export stage will be attached to the exported audio file
+- consequently, you can replace the audio file's current Cover Art image with a new one
 
 **Adding Cover Art**
-
-
+- if the audio file does _not_ contain Cover Art in the form of an image attachment, you can add it
+- simply have any "cover.jpg" file in the same folder as your edited audio file
+- the Cover Art image will be attached during the final stage of the export
+- if you don't want add Cover Art, just ensure that you're editing the file in a folder that doesn't already contain a "cover.jpg" file
 
 **.flac Lossless Audio Files**
 
@@ -44,7 +56,7 @@ You can certainly edit and export excerpts of .flac audio files but you will lik
 - **MMP** deliberately doesn't support re-encoding of audio and video files
 - this is what makes editing and exporting of editing files so quick; it is basically a copy/paste operation
 - the option to re-encode files might be considered if there is enough demand for it
-- also, you can if you wish retrieve the FFmpeg command from the .log file and rerun it to include re-encoding
+- also, you can if you wish retrieve the FFmpeg command from the .log file and rerun an amended version of it in a Console Window to include re-encoding
 <br />
 <br />
 

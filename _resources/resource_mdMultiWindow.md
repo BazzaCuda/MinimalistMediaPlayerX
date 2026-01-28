@@ -12,7 +12,7 @@ Firstly, you can have multiple instances of **MMP** running anyway:
 - you could have **MMP** playing music in the background while you manage your image library
 - or you could have **MMP** playing through a playlist in the background while
     - you edit videos or
-    - while you go through your video collection and decide which video clips you want to keep<br />
+    - you go through your video collection and decide which video clips you want to keep<br /><br />
 - in these and similar cases, you will want to keep **Numlock** OFF so that each **MMP** window is controlled independently of all the others
 <br />
 <br />
@@ -104,6 +104,6 @@ If your keyboard doesn't have a **[NUMLOCK]** key:
 Additional
 | Control | Action |
 | ------ | ------ |
-| Mouse **right-click** | pause / resume playback of **_just_** the clicked window |
+| Mouse **right-click** | pause / resume playback of _just_ the clicked window |
 
 

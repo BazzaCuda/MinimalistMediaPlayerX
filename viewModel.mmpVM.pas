@@ -332,7 +332,6 @@ begin
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evVMShutTimeline);
-//  FMP.notify(newNotice(evMPStop)); // REDUNDANT?
 
 //  TT.unsubscribeAll;
 //  FMP.unsubscribeAll;

@@ -35,7 +35,9 @@ program MinimalistMediaPlayer;
 
 {$R *.dres}
 
- {$define useMadExcept}
+{$ifopt D+}
+  {$define useMadExcept}
+{$endif}
 
 // dontTouchUses
 uses
@@ -175,7 +177,6 @@ begin
     madExcept.thisIsNoLeak(vThreadList[i]);
 
   madExcept.HookThreads;
-
   {$endif}
 end;
 
