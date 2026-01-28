@@ -20,12 +20,12 @@ program MinimalistMediaPlayer;
 
 // check if madExcept has left debugging options set in the Release configuration
 {$if defined(RELEASE)}
-  {$ifopt D+} {$MESSAGE ERROR 'Release Build: Debug Information (D+) enabled'} {$endif}
-  {$ifopt C+} {$MESSAGE ERROR 'Release Build: Assertions (C+) enabled'} {$endif}
-  {$ifopt L+} {$MESSAGE ERROR 'Release Build: Local Symbols (L+) enabled'} {$endif}
-  {$ifopt W+} {$MESSAGE ERROR 'Release Build: Stack Frames (W+) enabled'} {$endif}
-  {$ifopt Y+} {$MESSAGE ERROR 'Release Build: Symbol Reference Info (Y+) enabled'} {$endif}
-  {$ifopt O-} {$MESSAGE ERROR 'Release Build: Optimization (O-) disabled'} {$endif}
+  {$ifopt D+} {$MESSAGE ERROR 'Release Build: Debug Information     (D+) enabled' } {$endif}
+  {$ifopt C+} {$MESSAGE ERROR 'Release Build: Assertions            (C+) enabled' } {$endif}
+  {$ifopt L+} {$MESSAGE ERROR 'Release Build: Local Symbols         (L+) enabled' } {$endif}
+  {$ifopt W+} {$MESSAGE ERROR 'Release Build: Stack Frames          (W+) enabled' } {$endif}
+  {$ifopt Y+} {$MESSAGE ERROR 'Release Build: Symbol Reference Info (Y+) enabled' } {$endif}
+  {$ifopt O-} {$MESSAGE ERROR 'Release Build: Optimization          (O-) disabled'} {$endif}
 {$endif}
 
 {$ifdef FastMM5}

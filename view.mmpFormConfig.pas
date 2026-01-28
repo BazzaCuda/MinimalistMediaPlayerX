@@ -284,11 +284,12 @@ begin
     loadConfig;
 
     case aTabCaption = '' of   TRUE:  begin
-                                        lbTabCaptions.itemIndex := 0;
+                                        lbTabCaptions.itemIndex     := 0;
                                         pageControl.activePageIndex := 0; end;
                               FALSE:  begin
-                                        lbTabCaptions.itemIndex     := lbTabCaptions.items.indexOf(aTabCaption);
-                                        pageControl.activePageIndex := lbTabCaptions.itemIndex; end;end;
+                                        var vListIx             := lbTabCaptions.items.indexOf(aTabCaption);
+                                        lbTabCaptions.itemIndex := vListIx;
+                                        pageControl.activePage  := TTabSheet(lbTabCaptions.items.objects[vListIx]); end;end;
 
     setForegroundWindow(HANDLE); // the order of these two is important
     setWindowPos(HANDLE, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);

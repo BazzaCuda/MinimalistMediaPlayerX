@@ -202,7 +202,7 @@ object ConfigForm: TConfigForm
       object Label5: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -216,7 +216,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label13: TLabel
         Left = 16
@@ -472,7 +471,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -486,7 +485,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label21: TLabel
         Left = 49
@@ -645,7 +643,7 @@ object ConfigForm: TConfigForm
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -659,7 +657,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label28: TLabel
         Left = 170
@@ -844,7 +841,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -858,7 +855,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label30: TLabel
         Left = 55
@@ -2241,7 +2237,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2255,7 +2251,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label29: TLabel
         Left = 28
@@ -2528,7 +2523,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2542,7 +2537,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label35: TLabel
         Left = 87
@@ -2725,7 +2719,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2739,7 +2733,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label43: TLabel
         Left = 20
@@ -2801,7 +2794,7 @@ object ConfigForm: TConfigForm
       object Label45: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2815,7 +2808,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label46: TLabel
         Left = 0
@@ -2867,7 +2859,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2881,7 +2873,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label39: TLabel
         Left = 11
@@ -2949,7 +2940,7 @@ object ConfigForm: TConfigForm
       object Label50: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2963,7 +2954,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label51: TLabel
         Left = 131
@@ -3052,7 +3042,7 @@ object ConfigForm: TConfigForm
       object Label72: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3066,7 +3056,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label73: TLabel
         Left = 205
@@ -3151,7 +3140,7 @@ object ConfigForm: TConfigForm
       object Label57: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3165,7 +3154,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object Label58: TLabel
         Left = 205
@@ -3356,7 +3344,7 @@ object ConfigForm: TConfigForm
       object Label55: TLabel
         Left = 0
         Top = 316
-        Width = 576
+        Width = 406
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3370,7 +3358,6 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
-        ExplicitWidth = 406
       end
       object lblDirtyChars: TLabel
         Left = 36
