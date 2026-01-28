@@ -2340,6 +2340,84 @@ object StreamListForm: TStreamListForm
           Width = 416
           Height = 2
         end
+        object shpBracket1: TShape
+          Left = 216
+          Top = 40
+          Width = 2
+          Height = 70
+        end
+        object shpBracket2: TShape
+          Left = 217
+          Top = 73
+          Width = 10
+          Height = 2
+        end
+        object lblConfigLink1: TLabel
+          Left = 330
+          Top = 64
+          Width = 102
+          Height = 17
+          Cursor = crHandPoint
+          Caption = 'Editing Chapters'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold, fsUnderline]
+          ParentFont = False
+          OnClick = lblConfigLink1Click
+        end
+        object lblConfig1: TLabel
+          Left = 234
+          Top = 64
+          Width = 90
+          Height = 17
+          Caption = 'Config Dialog:'
+        end
+        object lblConfig2: TLabel
+          Left = 234
+          Top = 134
+          Width = 90
+          Height = 17
+          Caption = 'Config Dialog:'
+        end
+        object lblConfig3: TLabel
+          Left = 234
+          Top = 167
+          Width = 90
+          Height = 17
+          Caption = 'Config Dialog:'
+        end
+        object lblConfigLink2: TLabel
+          Left = 330
+          Top = 134
+          Width = 64
+          Height = 17
+          Cursor = crHandPoint
+          Caption = 'Keyframes'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold, fsUnderline]
+          ParentFont = False
+          OnClick = lblConfigLink1Click
+        end
+        object lblConfigLink3: TLabel
+          Left = 330
+          Top = 167
+          Width = 44
+          Height = 17
+          Cursor = crHandPoint
+          Caption = 'Editing'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold, fsUnderline]
+          ParentFont = False
+          OnClick = lblConfigLink1Click
+        end
         object chbChaptersShow: TCheckBox
           Left = 9
           Top = 34

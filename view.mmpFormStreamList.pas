@@ -75,6 +75,14 @@ type
     chbExportJoinOnly: TCheckBox;
     Label3: TLabel;
     Bevel1: TBevel;
+    shpBracket1: TShape;
+    shpBracket2: TShape;
+    lblConfigLink1: TLabel;
+    lblConfig1: TLabel;
+    lblConfig2: TLabel;
+    lblConfig3: TLabel;
+    lblConfigLink2: TLabel;
+    lblConfigLink3: TLabel;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
@@ -100,6 +108,7 @@ type
     procedure chbKeyframesClick(Sender: TObject);
     procedure chbPlayEditedClick(Sender: TObject);
     procedure chbExportJoinOnlyClick(Sender: TObject);
+    procedure lblConfigLink1Click(Sender: TObject);
   private
     FMediaType:         TMediaType;
     FOnExport:          TNotifyEvent;
@@ -440,6 +449,23 @@ begin
   chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
   chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
   chbExportJoinOnly.checked     := CF.asBoolean[CONF_EXPORT_JOIN_ONLY];
+
+  shpBracket1.pen.color := $252525;
+  shpBracket2.pen.color := $252525;
+
+  lblConfig1.styleElements      := [seBorder, seClient];
+  lblConfig1.font.color         := DARK_MODE_DARK;
+  lblConfig2.styleElements      := [seBorder, seClient];
+  lblConfig2.font.color         := DARK_MODE_DARK;
+  lblConfig3.styleElements      := [seBorder, seClient];
+  lblConfig3.font.color         := DARK_MODE_DARK;
+
+  lblConfigLink1.styleElements  := [seBorder, seClient];
+  lblConfigLink1.font.Color     := clTeal;
+  lblConfigLink2.styleElements  := [seBorder, seClient];
+  lblConfigLink2.font.Color     := clTeal;
+  lblConfigLink3.styleElements  := [seBorder, seClient];
+  lblConfigLink3.font.Color     := clTeal;
 end;
 
 procedure TStreamListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -469,6 +495,11 @@ begin
   MI.getMediaInfo(newNotice(aMediaFilePath, mtVideo));
   updateStreamsCaption;
   clStreams.itemCount := MI.mediaStreams.count;
+end;
+
+procedure TStreamListForm.lblConfigLink1Click(Sender: TObject);
+begin
+  mmp.cmd(evVMConfig, TLabel(Sender).caption);
 end;
 
 procedure TStreamListForm.pageControlChange(Sender: TObject);
