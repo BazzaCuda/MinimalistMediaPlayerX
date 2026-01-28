@@ -198,8 +198,6 @@ begin
   var  vMarkdownViewer  := getMarkdownViewer(pageControl.pages[aIx]);
   case vMarkdownViewer = NIL of TRUE: EXIT; end;
 
-  debugInteger('aIx', aIx);
-
   var  vResourceIx := getResourceIx(FHelpType, aIx);
   case vMarkdownViewer.lines.count = 0 of TRUE: mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vResourceIx].resource); end;
 
@@ -255,10 +253,7 @@ begin
     vMarkDownViewer.OnHotSpotClick  := onHotSpotClick;
     vMarkDownViewer.DefHotSpotColor := clAqua;
     vMarkDownViewer.htOptions := vMarkDownViewer.htOptions + [htOverLinksActive];
-
-//    mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vIx].resource);
   end;
-
 
 end;
 
