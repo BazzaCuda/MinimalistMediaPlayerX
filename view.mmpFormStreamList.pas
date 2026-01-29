@@ -31,6 +31,7 @@ uses
   vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   TSegmentClass;
@@ -115,6 +116,7 @@ type
     FOnRedraw:          TNotifyEvent;
     FOnToggleKeyframes: TNotifyEvent;
     function    getStreamInfo(const aMediaFilePath: string): integer;
+    function    loadConfig: TVoid;
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
   protected
@@ -443,12 +445,7 @@ begin
   lblExport.left        := lblExportSS.left - lblExport.width - 2;
   lblTotal.left         := lblExport.left;
 
-  chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
-  chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
-  chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
-  chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
-  chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
-  chbExportJoinOnly.checked     := CF.asBoolean[CONF_EXPORT_JOIN_ONLY];
+  loadConfig;
 
   shpBracket1.pen.color := $252525;
   shpBracket2.pen.color := $252525;
@@ -500,6 +497,17 @@ end;
 procedure TStreamListForm.lblConfigLink1Click(Sender: TObject);
 begin
   mmp.cmd(evVMConfig, TLabel(Sender).caption);
+  loadConfig;
+end;
+
+function TStreamListForm.loadConfig: TVoid;
+begin
+  chbPlayEdited.checked         := CF.asBoolean[CONF_PLAY_EDITED];
+  chbKeyframes.checked          := CF.asBoolean[CONF_KEYFRAMES];
+  chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
+  chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
+  chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
+  chbExportJoinOnly.checked     := CF.asBoolean[CONF_EXPORT_JOIN_ONLY];
 end;
 
 procedure TStreamListForm.pageControlChange(Sender: TObject);
