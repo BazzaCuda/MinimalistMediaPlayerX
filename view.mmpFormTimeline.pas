@@ -284,7 +284,7 @@ end;
 procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
 // e.g. key:char here may be x or X, but keyUp:word will always be 88
 begin
-  case mmpShiftKeyDown of TRUE: EXIT; end; // EXPERIMENTAL
+  case mmpShiftKeyDown of TRUE: EXIT; end; // EXPERIMENTAL - ignore [S] here if it's Shift-[S]
   key := upCase(key);
   case key in ['L', 'S'] of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
@@ -356,6 +356,9 @@ end;
 
 function TTimelineForm.updatePositionDisplay(const aPosition: integer): boolean;
 begin
+  case GS.showingTimeline of FALSE: EXIT; end;
+  case gTimelineForm = NIL of TRUE: EXIT; end;
+
   case lblPosition.tag = 0 of  TRUE: gTimelineForm.lblPosition.caption  := intToStr(aPosition) + 's';
                               FALSE: gTimelineForm.lblPosition.caption  := mmpFormatTime(aPosition); end;
 
@@ -651,6 +654,7 @@ begin
   case GS.openingURL of TRUE: EXIT; end;
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.showingTimeline of FALSE: EXIT; end;
+  case gTimelineForm = NIL of TRUE: EXIT; end;
 
   case aNotice.event of
     evTickTimer:          mmp.cmd(evPBBackgroundColor, PB_DEFAULT_BACKGROUND_COLOR); // gets set in model.mmpKeyFrames.probeKeyFrames
@@ -871,7 +875,7 @@ begin
   var vShiftKeyDown := ssShift  in aShift;
 
   result := (validKeys1.contains(char(key)) and NOT (vCtrlKeyDown or vShiftKeyDown)) or (validKeys2.contains(char(key)) and vCtrlKeyDown);
-  result := result or ((char(key) = 'S') and vShiftKeyDown); // EXPERIMENTAL
+  result := result or ((char(key) = 'S') and vShiftKeyDown); // EXPERIMENTAL - too messy to add to the line above
 end;
 
 initialization

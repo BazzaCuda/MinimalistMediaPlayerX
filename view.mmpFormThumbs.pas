@@ -57,6 +57,7 @@ type
     procedure FStatusBarMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure FormActivate(Sender: TObject);
   strict private
     mpv: IMPVBasePlayer;
     FDurationResetSpeed:      integer;
@@ -183,6 +184,8 @@ begin
   mmpWndWidthHeight(SELF.handle, vWidth, vHeight);
 
   vHeight := FMPVHost.height;
+//  debugInteger('adjustAspectRatio: vHeight', vHeight);
+//  debugInteger('adjustAspectRatio: FMPVHost.height', FMPVHost.height);
 
   adjustWidthForAspectRatio;
 
@@ -223,6 +226,7 @@ end;
 
 function TThumbsForm.checkThumbsPerPage: boolean;
 begin
+//  debug('checkThumbsPerPage');
   var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
   var  vThumbsPerRow := (FThumbsHost.width  - THUMB_MARGIN) div vThumbsSize;
   var  vThumbsPerCol := (FThumbsHost.height - THUMB_MARGIN) div vThumbsSize;
@@ -261,6 +265,11 @@ begin
                                                                   mmp.cmd(evPLFormLoadBox);
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
                                                                                                                FALSE: playNext; end;end;end;end;end; // ...hence, playNext
+end;
+
+procedure TThumbsForm.FormActivate(Sender: TObject);
+begin
+//  debugInteger('formActivate SELF.height', SELF.height);
 end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -339,7 +348,8 @@ begin
 
   mmpSetWindowTop(SELF.handle);
 
-  checkThumbsPerPage;
+  case FInitialHost of htThumbsHost: checkThumbsPerPage; end; // EXPERIMENTAL it was calling checkThumbsPerPage regardless
+  autoCenter;                                                 // EXPERIMENTAL and it wasn't calling this at all
 end;
 
 function TThumbsForm.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
@@ -356,6 +366,8 @@ begin
   SELF.left   := aRect.left;
   SELF.width  := aRect.width;
   SELF.height := aRect.height;
+
+//  debugInteger('initThumbails aRect.height', aRect.height);
 
   case GS.autoCenter of TRUE: autoCenter; end;
 
@@ -403,7 +415,7 @@ var
 begin
   case (MI.imageWidth <= 0) OR (MI.imageHeight <= 0) of TRUE: EXIT; end;
 
-  vHeight := mmpScreenHeight - 50;
+  vHeight := mmpScreenHeight - 20; // EXPERIMENTAL WAS 50: this now matches the 20 in mmpWindowUtils.mmpCalcWindowSize
 
   vWidth  := trunc(vHeight / MI.imageHeight * MI.imageWidth);
 
@@ -434,6 +446,7 @@ begin
 
   mmp.cmd(evHelpMoveHelp, wr);
 
+//  debugInteger('moveHelp SELF.height', SELF.height);
   // FormResize calls moveHelp so this will get called repeatedly until both windows fit the desktop
   case mmpWithinScreenLimits(SELF.width + GS.widthHelp, SELF.height) of FALSE:  begin
                                                                                   mmpGreaterWindow(SELF.handle, [ssCtrl], FThumbs.thumbSize, whichHost); // ssCtrl makes the window smaller
@@ -694,7 +707,7 @@ function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: s
 begin
   case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
 //  FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
-  FThumbs.playlist.deleteIx(-1); // EXPERIMENTAL
+  FThumbs.playlist.deleteIx(-1); // EXPERIMENTAL - after rewriting IPlaylist.deleteIx, passing -1 to delete the current index now seems to be the preferred method
   case FThumbs.playlist.hasItems of FALSE:  begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar);
                                               case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end;
                                                                                               FALSE: begin close; mmp.cmd(evAppClose); end;
@@ -928,7 +941,7 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
+    koGreaterWindow:      begin {debug('koGreaterWindow');} mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
     koHelpFull:           mmpHelpFull(htIATB, TRUE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;

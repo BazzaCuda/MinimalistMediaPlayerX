@@ -122,6 +122,11 @@ var
   end;
 
 begin
+//  debugBoolean('bMaxSize', bMaxsize);
+//  debugInteger('aStartingHeight', aStartingHeight);
+//  debugInteger('WorkAreaWidth', Screen.WorkAreaWidth);    // requires vcl.forms
+//  debugInteger('WorkAreaHeight', Screen.WorkAreaHeight);  // ditto
+
   MPvideoWidth := 0; MPvideoHeight := 0;
   getMediaInfo;
 
@@ -160,8 +165,8 @@ begin
                                         case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := -1; end;
 
                                         case vStartingHeight = -1 of  TRUE: begin
-                                                                              vWidth  := trunc((mmpScreenHeight - 100) * 1.5);
-                                                                              vHeight := mmpScreenHeight - 100; end;
+                                                                              vWidth  := trunc((mmpScreenHeight - 20) * 1.5); // EXPERIMENTAL WAS 100
+                                                                              vHeight := mmpScreenHeight - 20; end;           // EXPERIMENTAL WAS 100
                                                                      FALSE: begin
                                                                               vWidth  := trunc(vStartingHeight * 1.5);
                                                                               vHeight := vStartingHeight; end;end;
@@ -350,6 +355,9 @@ begin
   getWindowRect(aWND, vR);
   newW := vR.Width;
   newH := vR.height;
+
+//  debugInteger('greaterWindow vR.height', vR.height);
+//  TDebug.debugEnum<THostType>('aHostType', aHostType);
 
   calcDeltas;
   checkDesktop;

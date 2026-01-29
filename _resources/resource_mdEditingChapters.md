@@ -3,7 +3,7 @@
 [Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
 [Help Page: Main Editing Topic](Editing_Audio_&_Video)<br />
 [Help Page: Keyframes](Keyframes)<br />
-[Help Page: Editing Troubleshooting](Editing_Troubeshooting)<br />
+[Help Page: Editing Troubleshooting](Editing_Troubleshooting)<br />
 <br />
 [Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
 <br />
@@ -34,5 +34,3 @@ In the **Audio & Video Timeline Editor** you can turn on chapter display just wh
     - chaptersVideoWrite=no
 <br />
 <br />
-
-*

@@ -283,13 +283,12 @@ begin
     populateListBox;
     loadConfig;
 
-    case aTabCaption = '' of   TRUE:  begin
-                                        lbTabCaptions.itemIndex     := 0;
-                                        pageControl.activePageIndex := 0; end;
-                              FALSE:  begin
-                                        var vListIx             := lbTabCaptions.items.indexOf(aTabCaption);
-                                        lbTabCaptions.itemIndex := vListIx;
-                                        pageControl.activePage  := TTabSheet(lbTabCaptions.items.objects[vListIx]); end;end;
+    var  vTabCaption := aTabCaption;
+    case vTabCaption = '' of TRUE: vTabCaption := 'General'; end;
+
+    var vListIx             := lbTabCaptions.items.indexOf(vTabCaption);
+    lbTabCaptions.itemIndex := vListIx;
+    pageControl.activePage  := TTabSheet(lbTabCaptions.items.objects[vListIx]);
 
     setForegroundWindow(HANDLE); // the order of these two is important
     setWindowPos(HANDLE, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);

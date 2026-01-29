@@ -1104,6 +1104,7 @@ begin
   case FResizingWindow of TRUE: EXIT; end;
   FResizingWindow := TRUE;
 
+//  debugInteger('GS.mainForm.height', GS.mainForm.height);
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
 
   mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
@@ -1169,6 +1170,8 @@ begin
 
   mmp.cmd(GS.imagesPaused, evNone, evMPPausePlay);
   mmp.cmd(evMPPause);
+
+//  debugInteger('VM.showThumbnails: GS.mainForm.height', GS.mainForm.Height);
 
   var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
   case vModalResult of

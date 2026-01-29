@@ -120,6 +120,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <UWP_DelphiLogo150>_Cap&apos;n Cuda 128x128.png</UWP_DelphiLogo150>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
+        <DCC_DebugInformation>2</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
