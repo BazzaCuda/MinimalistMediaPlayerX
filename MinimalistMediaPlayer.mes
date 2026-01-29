@@ -11,7 +11,7 @@ ReportLeaks=1
 WindowsLogo=0
 CrashOnBuffer=0
 CrashOnUnderrun=0
-AutomaticallySaveBugReport=1
+AutomaticallySaveBugReport=0
 AutoSaveBugReportIfNotSent=1
 AutomaticallyMailBugReport=0
 AutoMailProgressBox=0
@@ -121,7 +121,7 @@ ContinueApplicationText=continue application
 RestartApplicationText=restart application
 CloseApplicationText=close application
 [BugReport]
-ListThreads=0
+ListThreads=1
 ListModules=1
 ListHardware=1
 ShowCpuRegisters=1

@@ -31,6 +31,7 @@ uses
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   {$endif}
   MPVBasePlayer,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   view.mmpFormProgress, view.mmpFormHelpFull, view.mmpKeyboardThumbs,
@@ -99,6 +100,7 @@ type
     function playPrev:            boolean;
     function playPrevFolder:      boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
+    function reloadPlaylist: TVoid;
     function renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): boolean;
     function reverseSlideshow: boolean;
     function saveCopyFile(const aFilePath: string): boolean;
@@ -637,6 +639,16 @@ begin
   result := FThumbs.playlist.hasItems;
 end;
 
+function TThumbsForm.reloadPlaylist: TVoid;
+begin
+  var vCurrentItem := FThumbs.playlist.currentItem;
+  FThumbs.playlist.clear;
+  FThumbs.fillPlaylist(FThumbs.playlist, vCurrentItem, extractFilePath(vCurrentItem));
+  case FThumbs.playlist.find(vCurrentItem) of  TRUE: playCurrentItem;
+                                              FALSE: playFirst; end;
+  mmpSetPanelText(FStatusBar, pnFold, format('Reloaded: %s', [extractFilePath(vCurrentItem)]));
+end;
+
 function TThumbsForm.showHost(const aHostType: THostType): boolean;
 begin
   FMPVHost.visible    := aHostType = htMPVHost;
@@ -936,7 +948,8 @@ begin
     koPlayPrev:           playPrev;
     koPlayThumbs:         case whichHost of htThumbsHost: showHost(htMPVHost); htMPVHost: begin showHost(htThumbsHost); FThumbs.playThumbs; end;end;
     koPrevFolder:         playPrevFolder;
-    koReloadPlaylist:     FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly);
+//    koReloadPlaylist:     begin FThumbs.playlist.clear; FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly); playCurrentItem; end;
+    koReloadPlaylist:     reloadPlaylist;
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
     koRenameCleanFile:    case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem, TRUE); end;
     koReverseSlideshow:   case whichHost of htMPVHost: reverseSlideshow; end;

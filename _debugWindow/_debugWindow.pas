@@ -112,12 +112,14 @@ begin
     EXIT;
   end;
 
+  var vExeDir := extractFilePath(debugFileName);
+
   fillChar(si, sizeOf(si), #0);
   si.cb := sizeOf(si);
   si.dwFlags := STARTF_USESHOWWINDOW;
   si.wShowWindow := SW_SHOW;
   if NOT createProcess(PChar(debugFileName), NIL, NIL, NIL,
-                       FALSE, 0, NIL, NIL, si, pi) then
+                       FALSE, 0, NIL, PChar(vExeDir), si, pi) then
   begin
     pastFailedAttemptTostartDebugWin := TRUE;
     EXIT;

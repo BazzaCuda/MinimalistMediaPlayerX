@@ -33,6 +33,7 @@ type
 
   IThumbs = interface
     function    cancel:             boolean;
+    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function    playCurrentItem:    boolean;
     function    playPrevThumbsPage: boolean;
@@ -95,7 +96,6 @@ type
     FThumbs:            TList<IThumb>;
     FThumbSize:         integer;
   private
-    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function    generateThumbs(const aItemIx: integer): integer;
     function    getCurrentIx: integer;
     function    getHasAudioVideo:      boolean;
@@ -113,6 +113,7 @@ type
     constructor Create;
     destructor  Destroy; override;
     function    cancel:             boolean;
+    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
     function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
     function    playCurrentItem:    boolean;
     function    playPrevThumbsPage: boolean;

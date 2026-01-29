@@ -149,7 +149,8 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\Stephen Fry reads the Shipping Forecast.m4a&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;X:\_DL\1.png&quot;</Debugger_RunParams>
+        <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

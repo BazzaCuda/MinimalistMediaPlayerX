@@ -186,7 +186,7 @@ begin
   for var i := low(vThreadList) to high(vThreadList) do
     madExcept.thisIsNoLeak(vThreadList[i]);
 
-  madExcept.HookThreads;
+//  madExcept.HookThreads;
   {$endif}
 end;
 
