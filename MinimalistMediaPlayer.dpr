@@ -38,7 +38,7 @@ program MinimalistMediaPlayer;
 {$endif}
 
 {$ifopt D+}
-//  {$define designTimeThemes} // comment out when not required
+  // {$define designTimeThemes} // comment out when not required
 {$endif}
 
 {$R *.res}
@@ -65,8 +65,7 @@ uses
   madListModules,
   {$else}
   mmpExceptionHandler in 'mmpExceptionHandler.pas',
-  mmpStackTrace in 'mmpStackTrace.pas',
-  {$endif}
+  {$endif }
   winApi.windows,
   system.sysUtils,
   _debugWindow in '_debugWindow\_debugWindow.pas',
@@ -151,7 +150,9 @@ uses
   view.mmpProgressBar in 'view.mmpProgressBar.pas',
   view.mmpThemeUtils in 'view.mmpThemeUtils.pas',
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
-  viewModel.mmpVM in 'viewModel.mmpVM.pas';
+  viewModel.mmpVM in 'viewModel.mmpVM.pas',
+  Vcl.Themes,
+  Vcl.Styles;
 
 procedure setupRunMode;
 begin

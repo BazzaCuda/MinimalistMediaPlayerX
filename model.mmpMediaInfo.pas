@@ -105,6 +105,8 @@ uses
 
 type
   TMediaInfo = class(TInterfacedObject, IMediaInfo)
+  strict private
+    FSubscriber:        ISubscriber;
   private
     FMD:                TMetaData;
     FHandle:            THandle;
@@ -182,11 +184,12 @@ begin
   FMediaStreams.ownsObjects   := TRUE;
   FMediaChapters              := TObjectList<TMediaChapter>.create;
   FMediaChapters.ownsObjects  := TRUE;
-  appEvents.subscribe(newSubscriber(onNotify));
+  FSubscriber                 := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 destructor TMediaInfo.Destroy;
 begin
+  appEvents.unsubscribe(FSubscriber);
   FMediaStreams.free;
   FMediaChapters.free;
   inherited;

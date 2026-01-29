@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsGeneral
+    ActivePage = tsChapters
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging
@@ -3042,7 +3042,7 @@ object ConfigForm: TConfigForm
       object Label72: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3056,6 +3056,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label73: TLabel
         Left = 205

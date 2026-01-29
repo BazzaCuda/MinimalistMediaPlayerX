@@ -2336,7 +2336,7 @@ object StreamListForm: TStreamListForm
         end
         object Bevel1: TBevel
           Left = 9
-          Top = 208
+          Top = 219
           Width = 416
           Height = 2
         end
@@ -2376,21 +2376,21 @@ object StreamListForm: TStreamListForm
         end
         object lblConfig2: TLabel
           Left = 234
-          Top = 134
+          Top = 131
           Width = 90
           Height = 17
           Caption = 'Config Dialog:'
         end
         object lblConfig3: TLabel
           Left = 234
-          Top = 167
+          Top = 161
           Width = 90
           Height = 17
           Caption = 'Config Dialog:'
         end
         object lblConfigLink2: TLabel
           Left = 330
-          Top = 134
+          Top = 131
           Width = 64
           Height = 17
           Cursor = crHandPoint
@@ -2405,11 +2405,33 @@ object StreamListForm: TStreamListForm
         end
         object lblConfigLink3: TLabel
           Left = 330
-          Top = 167
+          Top = 161
           Width = 44
           Height = 17
           Cursor = crHandPoint
           Caption = 'Editing'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold, fsUnderline]
+          ParentFont = False
+          OnClick = lblConfigLink1Click
+        end
+        object lblConfig4: TLabel
+          Left = 234
+          Top = 192
+          Width = 90
+          Height = 17
+          Caption = 'Config Dialog:'
+        end
+        object lblConfigLink4: TLabel
+          Left = 330
+          Top = 192
+          Width = 47
+          Height = 17
+          Cursor = crHandPoint
+          Caption = 'General'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWhite
           Font.Height = -13
@@ -2468,7 +2490,7 @@ object StreamListForm: TStreamListForm
         end
         object chbKeyframes: TCheckBox
           Left = 9
-          Top = 136
+          Top = 131
           Width = 203
           Height = 17
           Alignment = taLeftJustify
@@ -2484,7 +2506,7 @@ object StreamListForm: TStreamListForm
         end
         object chbPlayEdited: TCheckBox
           Left = 9
-          Top = 169
+          Top = 161
           Width = 203
           Height = 17
           Alignment = taLeftJustify
@@ -2513,6 +2535,22 @@ object StreamListForm: TStreamListForm
           ParentFont = False
           TabOrder = 5
           OnClick = chbExportJoinOnlyClick
+        end
+        object chbStartInEditor: TCheckBox
+          Left = 9
+          Top = 192
+          Width = 203
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Start In Editor'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 6
+          OnClick = chbStartInEditorClick
         end
       end
       object tsHelp: TTabSheet

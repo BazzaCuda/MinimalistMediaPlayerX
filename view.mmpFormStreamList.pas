@@ -84,6 +84,9 @@ type
     lblConfig3: TLabel;
     lblConfigLink2: TLabel;
     lblConfigLink3: TLabel;
+    chbStartInEditor: TCheckBox;
+    lblConfig4: TLabel;
+    lblConfigLink4: TLabel;
     procedure formCreate(Sender: TObject);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
@@ -110,13 +113,16 @@ type
     procedure chbPlayEditedClick(Sender: TObject);
     procedure chbExportJoinOnlyClick(Sender: TObject);
     procedure lblConfigLink1Click(Sender: TObject);
+    procedure chbStartInEditorClick(Sender: TObject);
   private
     FMediaType:         TMediaType;
     FOnExport:          TNotifyEvent;
     FOnRedraw:          TNotifyEvent;
     FOnToggleKeyframes: TNotifyEvent;
+    FSubscriber:        ISubscriber;
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    loadConfig: TVoid;
+    function    onNotify(const aNotice: INotice): INotice;
     function    updateExportButton(aEnabled: boolean): boolean;
     function    updateStreamsCaption: boolean;
   protected
@@ -304,6 +310,11 @@ begin
   CF.asBoolean[CONF_PLAY_EDITED] := chbPlayEdited.checked;
 end;
 
+procedure TStreamListForm.chbStartInEditorClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_START_IN_EDITOR] := chbStartInEditor.checked;
+end;
+
 procedure TStreamListForm.clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
 begin
   var vSegments := TL.segments;
@@ -450,12 +461,15 @@ begin
   shpBracket1.pen.color := $252525;
   shpBracket2.pen.color := $252525;
 
+  const DARK_MODE_DARK = $252525;
   lblConfig1.styleElements      := [seBorder, seClient];
   lblConfig1.font.color         := DARK_MODE_DARK;
   lblConfig2.styleElements      := [seBorder, seClient];
   lblConfig2.font.color         := DARK_MODE_DARK;
   lblConfig3.styleElements      := [seBorder, seClient];
   lblConfig3.font.color         := DARK_MODE_DARK;
+  lblConfig4.styleElements      := [seBorder, seClient];
+  lblConfig4.font.color         := DARK_MODE_DARK;
 
   lblConfigLink1.styleElements  := [seBorder, seClient];
   lblConfigLink1.font.Color     := clTeal;
@@ -463,6 +477,10 @@ begin
   lblConfigLink2.font.Color     := clTeal;
   lblConfigLink3.styleElements  := [seBorder, seClient];
   lblConfigLink3.font.Color     := clTeal;
+  lblConfigLink4.styleElements  := [seBorder, seClient];
+  lblConfigLink4.font.Color     := clTeal;
+
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;
 
 procedure TStreamListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -497,7 +515,6 @@ end;
 procedure TStreamListForm.lblConfigLink1Click(Sender: TObject);
 begin
   mmp.cmd(evVMConfig, TLabel(Sender).caption);
-  loadConfig;
 end;
 
 function TStreamListForm.loadConfig: TVoid;
@@ -508,6 +525,17 @@ begin
   chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
   chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
   chbExportJoinOnly.checked     := CF.asBoolean[CONF_EXPORT_JOIN_ONLY];
+  chbStartInEditor.checked      := CF.asBoolean[CONF_START_IN_EDITOR];
+end;
+
+function TStreamListForm.onNotify(const aNotice: INotice): INotice;
+begin
+  result := aNotice;
+  case aNotice = NIL of TRUE: EXIT; end;
+
+  case aNotice.event of
+    evConfigReload: loadConfig;
+  end;
 end;
 
 procedure TStreamListForm.pageControlChange(Sender: TObject);

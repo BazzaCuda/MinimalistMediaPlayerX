@@ -295,6 +295,7 @@ begin
     showModal;
     mmp.cmd(evGSUserInput, FALSE);
     mmp.cmd(evGSShowingConfig, FALSE);
+    mmp.cmd(evConfigReload);
     free;
   end;
 end;
@@ -416,16 +417,19 @@ end;
 procedure TConfigForm.chbChaptersAudioWriteClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE] := chbChaptersAudioWrite.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbChaptersShowClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_CHAPTERS_SHOW] := chbChaptersShow.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbChaptersVideoWriteClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE] := chbChaptersVideoWrite.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbExitBrowserClick(Sender: TObject);
@@ -452,6 +456,7 @@ end;
 procedure TConfigForm.chbKeyframesClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_KEYFRAMES] := chbKeyframes.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbNextFolderOnEmptyClick(Sender: TObject);
@@ -473,11 +478,13 @@ end;
 procedure TConfigForm.chbPlayEditedClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_PLAY_EDITED] := chbPlayEdited.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbStartInEditorClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_START_IN_EDITOR] := chbStartInEditor.checked;
+  mmp.cmd(evConfigReload);
 end;
 
 procedure TConfigForm.chbVideoClick(Sender: TObject);
