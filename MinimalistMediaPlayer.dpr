@@ -191,24 +191,20 @@ begin
   {$endif}
 end;
 
-function checkParam: boolean;
+function checkParam: TVoid;
 var T: TProc;
 begin
-  result := FALSE;
   T := procedure  begin
                     mmpShowOKCancelMsgDlg('Typically, you would use "Open with..." in your File Explorer / Manager, to open a media file'#13#10
                                         + 'or to permanently associate media file types with this application.'#13#10#13#10
                                         + 'Alternatively, you can drag and drop a media file onto the window.'); end;
   mmp.cmd(PS.noFile, T);
-  result := TRUE;
 end;
 
-function initUI(const aMainForm: TForm): boolean;
+function initUI(const aMainForm: TForm): TVoid;
 var
   vVideoPanel: TPanel;
 begin
-  result := FALSE;
-
   vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
 
   MMPUI.viewModel               := newViewModel;
@@ -219,8 +215,6 @@ begin
   ST(aMainForm).initCaptions(vVideoPanel, CF.asInteger[CONF_TIME_CAPTION]); // Sub-Titles: multiple captions at the bottom of the window
 
   MMPUI.viewModel.progressBar   := newProgressBar.initProgressBar(ST.captionsForm, CF.asInteger[CONF_PROGRESS_BAR], 0);
-
-  result := TRUE;
 end;
 
 begin

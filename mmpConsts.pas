@@ -207,7 +207,7 @@ type
 
   TFnnKeyApp = (F10_APP, F11_APP, F12_APP);
 
-  THostType = (htMPVHost, htThumbsHost);
+  THostType = (htNoHost, htMPVHost, htThumbsHost);
 
   TSlideshowDirection = (sdForwards, sdBackwards);
 

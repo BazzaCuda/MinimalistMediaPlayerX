@@ -24,16 +24,17 @@ uses
   winApi.windows,
   system.classes,
   vcl.forms,
+  bazAction,
   mmpConsts;
 
 function mmpCancelDelay: boolean;
 function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
-function mmpDelay(const dwMilliseconds: DWORD): boolean;
+function mmpDelay(const dwMilliseconds: DWORD): TVoid;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
 function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
-function mmpProcessMessages: boolean;
+function mmpProcessMessages: TVoid;
 function mmpQuoted(const aString: string): string;
 function mmpWrapText(const aText: string; const aTextWidth: integer; const aMaxWidth: integer; bFileName: boolean = FALSE): string;
 
@@ -131,19 +132,17 @@ begin
                                                                         FALSE: result :=  1; end;end;
 end;
 
-function mmpDelay(const dwMilliseconds: DWORD): boolean;
+function mmpDelay(const dwMilliseconds: DWORD): TVoid;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
 var
   iStart, iStop: DWORD;
 begin
-  result  := FALSE;
   gCancel := FALSE;
   iStart  := getTickCount;
   repeat
     iStop := getTickCount;
     mmpProcessMessages;
   until gCancel or ((iStop  -  iStart) >= dwMilliseconds);
-  result := TRUE;
 end;
 
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
@@ -163,11 +162,9 @@ begin
                     FALSE: result := aFalse; end;
 end;
 
-function mmpProcessMessages: boolean;
+function mmpProcessMessages: TVoid;
 begin
-  result := FALSE;
   application.processMessages;
-  result := TRUE;
 end;
 
 function mmpQuoted(const aString: string): string;

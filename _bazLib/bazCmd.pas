@@ -23,6 +23,7 @@ interface
 uses
   winApi.messages,
   system.classes, system.sysUtils,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
@@ -34,10 +35,11 @@ var
   guardClause:  boolean;
 
 type
-  TOProc  = TProc<TObject>;
-  TBFunc  = TFunc<boolean>;
-  TSFunc  = TFunc<string>;
-  TProcVar = procedure;
+  TOProc    = TProc<TObject>;
+  TBFunc    = TFunc<boolean>;
+  TSFunc    = TFunc<string>;
+  TVoidFunc = function: TVoid of object;
+  TProcVar  = procedure;
 
 type
   mmp = record
@@ -46,6 +48,10 @@ type
     class function use(const aBoolean: boolean; const aTrueValue: int64;    const aFalseValue: int64   ):  int64;    overload; static;
     class function use(const aBoolean: boolean; const aTrueValue: integer;  const aFalseValue: integer ):  integer;  overload; static;
     class function use(const aBoolean: boolean; const aTrueValue: string;   const aFalseValue: string  ):  string;   overload; static;
+
+    //===== TVoidFuncs which return a TVoid result
+    class function cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid; overload; static;
+    class function cmd(const aBoolean: boolean; const trueFunc: TVoidFunc): TVoid; overload; static;
 
     //===== TProcs
     class function cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean; overload; static;
@@ -120,13 +126,27 @@ begin
   result := mmp.use<string>(aBoolean, aTrueValue, aFalseValue);
 end;
 
+//===== TVoidFuncs which return a TVoid result
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid;
+var
+  doFunc: array[boolean] of TVoidFunc;
+begin
+  doFunc[TRUE]  := trueFunc;
+  doFunc[FALSE] := falseFunc;
+  case assigned(doFunc[aBoolean]) of TRUE: doFunc[aBoolean](); end;
+end;
+
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc): TVoid;
+begin
+  result := cmd(aBoolean, trueFunc, NIL);
+end;
 //===== TProcs
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean;
 var doProc: array[boolean] of TProc;
 begin
   doProc[TRUE]  := trueProc;
   doProc[FALSE] := falseProc;
-  case doProc[aBoolean] = NIL of FALSE: doProc[aBoolean](); end;
+  case assigned(doProc[aBoolean]) of TRUE: doProc[aBoolean](); end;
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc): boolean;
@@ -145,7 +165,7 @@ var doProc: array[boolean] of TOProc;
 begin
   doProc[TRUE]  := trueProc;
   doProc[FALSE] := falseProc;
-  case doProc[aBoolean] = NIL of FALSE: doProc[aBoolean](aObject); end;
+  case assigned(doProc[aBoolean]) of TRUE: doProc[aBoolean](aObject); end;
 end;
 
 //===== TRFuncs which return a boolean result
@@ -154,7 +174,7 @@ var doFunc: array[boolean] of TBFunc;
 begin
   doFunc[TRUE]  := trueFunc;
   doFunc[FALSE] := falseFunc;
-  case doFunc[aBoolean] = NIL of FALSE: result := doFunc[aBoolean](); end;
+  case assigned(doFunc[aBoolean]) of TRUE: result := doFunc[aBoolean](); end;
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean;
@@ -168,7 +188,7 @@ var doFunc: array[boolean] of TSFunc;
 begin
   doFunc[TRUE]  := trueFunc;
   doFunc[FALSE] := falseFunc;
-  case doFunc[aBoolean] = NIL of FALSE: result := doFunc[aBoolean](); end;
+  case assigned(doFunc[aBoolean]) of TRUE: result := doFunc[aBoolean](); end;
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc): string;

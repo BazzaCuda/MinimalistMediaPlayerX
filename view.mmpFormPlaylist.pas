@@ -32,7 +32,7 @@ type
   TNoScrollListBox = class(TListBox)
   strict private
   protected
-    procedure createParams(var aParams: TCreateParams); override;
+    procedure CreateParams(var aParams: TCreateParams); override;
   end;
 
   TScrollDetectListBox = class(TListBox)
@@ -40,7 +40,7 @@ type
     FOnScroll: TNotifyIntEvent;
   private
   protected
-    procedure wndProc(var aMessage: TMessage); override;
+    procedure WndProc(var aMessage: TMessage); override;
   public
     property onScroll: TNotifyIntEvent read FOnScroll write FOnScroll;
   end;
@@ -72,17 +72,17 @@ type
 //    LB:         TScrollDetectListBox;
     lbNumbers:  TNoScrollListBox;
     lbDuration: TNoScrollListBox;
-    FTopIndex:  integer;
+//    FTopIndex:  integer;
     function    fillNumbers: TVoid;
     function    isItemVisible: boolean;
-    function    playItemIndex(const aItemIndex: integer): boolean;
+    function    playItemIndex(const aItemIndex: integer): TVoid;
     function    visibleItemCount: integer;
   protected
-    procedure   createParams(var params: TCreateParams);
+    procedure   createParams(var params: TCreateParams); reintroduce;
   public
     destructor  Destroy; override;
-    function    highlightCurrentItem: boolean;
-    function    loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
+    function    highlightCurrentItem: TVoid;
+    function    loadPlaylistBox(const bCaptionOnly: boolean = FALSE): TVoid;
     procedure   syncIndexes(aDelta: integer);
   end;
   {$ENDREGION}
@@ -107,10 +107,10 @@ type
     FSubscriber:    ISubscriber;
   private
     function    createForm(const bCreateNew: boolean): TPlaylistForm;
-    function    moveForm(const wr: TWndRec): boolean;
+    function    moveForm(const wr: TWndRec): TVoid;
     function    onNotify(const aNotice: INotice): INotice;
-    function    showForm: boolean;
-    function    shutForm: boolean;
+    function    showForm: TVoid;
+    function    shutForm: TVoid;
   public
     constructor Create;
     destructor  Destroy; override;
@@ -248,7 +248,7 @@ begin
 //  LB.onScroll     := syncIndexes;
 end;
 
-function TPlaylistForm.highlightCurrentItem: boolean;
+function TPlaylistForm.highlightCurrentItem: TVoid;
 begin
   var vCurrentIx := mmp.cmd(evPLReqCurrentIx).integer;
   case vCurrentIx = -1 of TRUE: EXIT; end;
@@ -330,7 +330,7 @@ begin
   FMouseOver := FALSE;
 end;
 
-function TPlaylistForm.loadPlaylistBox(const bCaptionOnly: boolean = FALSE): boolean;
+function TPlaylistForm.loadPlaylistBox(const bCaptionOnly: boolean = FALSE): TVoid;
 begin
   var vShuffle := mmpIfThenElse(GS.shuffle, 'Shuffle ', EMPTY);
   lblFolder.caption := format('%sFolder: %s', [vShuffle, mmp.cmd(evPLReqCurrentFolder).text]);
@@ -340,7 +340,7 @@ begin
   mmpProcessMessages;
 end;
 
-function TPlaylistForm.playItemIndex(const aItemIndex: integer): boolean;
+function TPlaylistForm.playItemIndex(const aItemIndex: integer): TVoid;
 begin
   var vThisItem := mmp.cmd(evPLReqThisItem, aItemIndex).text;
   mmp.cmd(evPLFind, vThisItem); // set as current
@@ -386,7 +386,7 @@ begin
   inherited;
 end;
 
-function TPlayListFormProxy.moveForm(const wr: TWndRec): boolean;
+function TPlayListFormProxy.moveForm(const wr: TWndRec): TVoid;
 begin
   FPlaylistForm := createForm(wr.createNew);
   case FPlaylistForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
@@ -430,12 +430,12 @@ begin
   end;
 end;
 
-function TPlayListFormProxy.showForm: boolean;
+function TPlayListFormProxy.showForm: TVoid;
 begin
   FPlaylistForm.show;
 end;
 
-function TPlayListFormProxy.shutForm: boolean;
+function TPlayListFormProxy.shutForm: TVoid;
 begin
   case FPlaylistForm = NIL of TRUE: EXIT; end;
   FPlaylistForm.close;
@@ -448,7 +448,7 @@ end;
 
 { TNoScrollListBox }
 
-procedure TNoScrollListBox.createParams(var aParams: TCreateParams);
+procedure TNoScrollListBox.CreateParams(var aParams: TCreateParams);
 begin
   inherited createParams(aParams);
   aParams.style := aParams.style and not WS_VSCROLL and not WS_HSCROLL;
@@ -456,7 +456,7 @@ end;
 
 { TScrollDetectListBox }
 
-procedure TScrollDetectListBox.wndProc(var aMessage: TMessage);
+procedure TScrollDetectListBox.WndProc(var aMessage: TMessage);
 begin
   case assigned(FOnScroll) of FALSE: begin
                                       inherited WndProc(aMessage);

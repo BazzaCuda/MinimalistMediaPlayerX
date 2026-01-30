@@ -23,6 +23,7 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.stdCtrls,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 

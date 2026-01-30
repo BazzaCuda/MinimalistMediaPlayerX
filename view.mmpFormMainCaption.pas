@@ -30,12 +30,13 @@ uses
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
   IMainCaption = interface
-    function initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
-    function resetTimer: boolean;
+    function initCaption(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
+    function resetTimer: TVoid;
   end;
 
   {$REGION}
@@ -47,17 +48,17 @@ type
     FInitialized: boolean;
   private
     FCaption:     TLabel;
-    function    reshowCaption: boolean;
-    procedure   setCaption(const aValue: string);
+    function  reshowCaption: TVoid;
+    function  setCaption(const aValue: string): TVoid;
   protected
   public
-    constructor Create(const aOwner: TForm);
-    procedure   formResize(Sender: TObject);
-    function    brighter:       integer;
-    function    darker:         integer;
-    function    toggleCaption:  boolean;
-    function    initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
-    function    resetColor:     integer;
+    constructor Create(const aOwner: TForm); reintroduce;
+    procedure formResize(Sender: TObject);
+    function  brighter:       integer;
+    function  darker:         integer;
+    function  toggleCaption:  TVoid;
+    function  initCaption(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
+    function  resetColor:     integer;
   end;
   {$ENDREGION}
 
@@ -87,9 +88,9 @@ type
   public
     constructor Create(const aOwner: TForm);
     destructor  Destroy; override;
-    function    initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
-    function    notify(const aNotice: INotice): INotice;
-    function    resetTimer: boolean;
+    function  initCaption(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
+    function  notify(const aNotice: INotice): INotice;
+    function  resetTimer: TVoid;
   end;
 
 function MC(const aOwner: TForm): IMainCaption;
@@ -133,8 +134,8 @@ begin
   FCaption.top  := SELF.height - FCaption.height;
 end;
 
-function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
-  function copiedFromDFM: boolean;
+function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
+  function copiedFromDFM: TVoid;
   begin
     SELF.Left         := 0;
     SELF.Top          := 0;
@@ -150,7 +151,7 @@ function TMainCaptionForm.initCaption(const aVideoPanel: TPanel; const aColor: T
     SELF.Font.Style   := [];
   end;
 
-  function defaultFontEtc(aLabel: TLabel): boolean;
+  function defaultFontEtc(aLabel: TLabel): TVoid;
   begin
     aLabel.font.name      := FONT_TAHOMA;
     aLabel.font.color     := ST_DEFAULT_COLOR;
@@ -195,13 +196,13 @@ begin
   CF[CONF_MAIN_CAPTION] := CF.toHex(result);
 end;
 
-function TMainCaptionForm.reshowCaption: boolean;
+function TMainCaptionForm.reshowCaption: TVoid;
 begin
   FCaption.caption      := FCaptionCopy;
   MC.resetTimer;
 end;
 
-procedure TMainCaptionForm.setCaption(const aValue: string);
+function TMainCaptionForm.setCaption(const aValue: string): TVoid;
 begin
   FCaption.caption      := aValue; // show the new caption immediately
   FCaption.invalidate;
@@ -210,7 +211,7 @@ begin
   MC.resetTimer;
 end;
 
-function TMainCaptionForm.toggleCaption: boolean;
+function TMainCaptionForm.toggleCaption: TVoid;
 begin
   FCaption.visible := NOT FCaption.visible;
 end;
@@ -233,7 +234,7 @@ begin
   inherited;
 end;
 
-function TMainCaptionProxy.initCaption(const aVideoPanel: TPanel; const aColor: TColor): boolean;
+function TMainCaptionProxy.initCaption(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
 begin
   FMainCaptionForm.initCaption(aVideoPanel, aColor);
 end;
@@ -267,7 +268,7 @@ begin
   FMainCaptionForm.setCaption(EMPTY);
 end;
 
-function TMainCaptionProxy.resetTimer: boolean;
+function TMainCaptionProxy.resetTimer: TVoid;
 begin
   FTImerCount := 0;
 end;

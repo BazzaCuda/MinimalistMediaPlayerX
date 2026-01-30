@@ -22,6 +22,7 @@ interface
 
 uses
   winApi.messages, winApi.windows,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   mmpKeyboardUtils, mmpShellUtils,
@@ -37,7 +38,7 @@ uses
   model.mmpBookmark, model.mmpMixer, model.mmpPlaylistUtils,
   _debugWindow;
 
-function sendOpInfo(const aOpInfo: string): boolean;
+function sendOpInfo(const aOpInfo: string): TVoid;
 begin
   mmp.cmd(evSTOpInfo, aOpInfo);
 end;

@@ -79,43 +79,43 @@ type
 
     procedure onOpenFile(const aURL: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
-    function adjustAspectRatio:   boolean;
-    function autoCenter:          boolean;
-    function checkAudioVideo:     boolean;
-    function checkThumbsPerPage:  boolean;
-    function deleteCurrentItem(const aShiftState: TShiftState): boolean;
+    function adjustAspectRatio:   TVoid;
+    function autoCenter:          TVoid;
+    function checkAudioVideo:     TVoid;
+    function checkThumbsPerPage:  TVoid;
+    function deleteCurrentItem(const aShiftState: TShiftState): TVoid;
     function imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
-    function keepFile(const aFilePath: string): boolean;
-    function maximizeWindow:      boolean;
-    function minimizeWindow:      boolean;
-    function moveHelp(const bCreateNew: boolean = FALSE): boolean;
-    function moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
-    function movePlaylist(const bCreateNew: boolean): boolean;
+    function keepFile(const aFilePath: string): TVoid;
+    function maximizeWindow:      TVoid;
+    function minimizeWindow:      TVoid;
+    function moveHelp(const bCreateNew: boolean = FALSE): TVoid;
+    function moveHelpWindow(const bCreateNew: boolean = FALSE): TVoid;
+//    function movePlaylist(const bCreateNew: boolean): boolean;
     function onNotify(const aNotice: INotice): INotice;
-    function pausePlay:           boolean;
-    function playCurrentItem:     boolean;
-    function playFirst:           boolean;
-    function playLast:            boolean;
+    function pausePlay:           TVoid;
+    function playCurrentItem:     TVoid;
+    function playFirst:           TVoid;
+    function playLast:            TVoid;
     function playNext:            boolean;
     function playNextFolder:      boolean;
     function playPrev:            boolean;
     function playPrevFolder:      boolean;
     function processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
-    function reloadPlaylist: TVoid;
-    function renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): boolean;
-    function reverseSlideshow: boolean;
-    function saveCopyFile(const aFilePath: string): boolean;
-    function saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
+    function reloadPlaylist:      TVoid;
+    function renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): TVoid;
+    function reverseSlideshow:    TVoid;
+    function saveCopyFile(const aFilePath: string): TVoid;
+    function saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): TVoid;
     function saveMoveFileToFolder(const aFilePath: string; const aFolder: string; const aOpText: string; const aRecordUndo: boolean = TRUE): boolean;
-    function showHost(const aHostType: THostType): boolean;
-    function showSlideshowDirection: boolean;
-    function speedDn:             boolean;
-    function speedReset:          boolean;
-    function speedUp:             boolean;
+    function showHost(const aHostType: THostType): TVoid;
+    function showSlideshowDirection: TVoid;
+    function speedDn:             TVoid;
+    function speedReset:          TVoid;
+    function speedUp:             TVoid;
     function takeScreenshot:      string;
     function undoMove:            string;
     function whichHost:           THostType;
-    function windowSize(const aKeyOp: TKeyOp): boolean;
+    function windowSize(const aKeyOp: TKeyOp): TVoid;
   protected
     procedure beginDrag;
     procedure CreateParams(var params: TCreateParams); override;
@@ -125,10 +125,10 @@ type
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage); message WM_MOVE;
   public
-    function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
+    function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
   end;
 
-function focusThumbs: boolean;
+function focusThumbs: TVoid;
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TModalResult;
 
 implementation
@@ -160,7 +160,7 @@ begin
   mmpProcessMessages;
 end;
 
-function focusThumbs: boolean;
+function focusThumbs: TVoid;
 begin
   case gTF = NIL of TRUE: EXIT; end;
   setForegroundWindow(gTF.handle); // so this window also receives keyboard keystrokes
@@ -168,12 +168,12 @@ end;
 
 {$R *.dfm}
 
-function TThumbsForm.adjustAspectRatio: boolean;
+function TThumbsForm.adjustAspectRatio: TVoid;
 var
   vWidth:  integer;
   vHeight: integer;
 
-  function adjustWidthForAspectRatio: boolean;
+  function adjustWidthForAspectRatio: TVoid;
   begin
     vWidth := round(vHeight / mpvVideoHeight(mpv) * mpvVideoWidth(mpv));
   end;
@@ -204,7 +204,7 @@ begin
                                            FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
 end;
 
-function TThumbsForm.autoCenter: boolean;
+function TThumbsForm.autoCenter: TVoid;
 begin
   case GS.autoCenter of TRUE: mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;
 end;
@@ -215,7 +215,7 @@ begin
   perform(WM_SYSCOMMAND, $F012, 0); // SC_MOVE | HTCAPTION to simulate title bar drag
 end;
 
-function TThumbsForm.checkAudioVideo: boolean;
+function TThumbsForm.checkAudioVideo: TVoid;
 begin
   case FThumbs.playlist.hasItems of TRUE: begin
                                             FThumbs.hasAudioVideo := mmpPlaylistFolderContains(FThumbs.playlist.currentItem, [mtAudioVideo]);
@@ -224,7 +224,7 @@ begin
                                                                           FALSE: mmpSetPanelText(FStatusBar, pnAVAV, ''); end;end;end;
 end;
 
-function TThumbsForm.checkThumbsPerPage: boolean;
+function TThumbsForm.checkThumbsPerPage: TVoid;
 begin
 //  debug('checkThumbsPerPage');
   var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
@@ -247,7 +247,7 @@ begin
   params.exStyle := params.exStyle OR WS_EX_APPWINDOW; // put an icon on the taskbar for the user
 end;
 
-function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): boolean;
+function TThumbsForm.deleteCurrentItem(const aShiftState: TShiftState): TVoid;
 begin
   case FThumbs.playlist.hasItems of FALSE: EXIT; end;
 
@@ -255,7 +255,7 @@ begin
   case vCheckWithUser and NOT mmpUserOK('This folder also contains audio/video files'#13#10#13#10'Do you want to continue?') of TRUE: EXIT; end;
   case mmpCheckRecycleBin(FThumbs.playlist.currentItem) of FALSE: EXIT; end;
 
-  case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState) // mpvStop isn't an issue for images
+  case mmpDeleteThisFile(FThumbs.playlist.currentItem, aShiftState, FALSE, TRUE, TRUE) // mpvStop isn't an issue for images // EXPERIMENTAL - ACTUALLY IT MIGHT BE
                                           of TRUE:  begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
@@ -358,7 +358,7 @@ begin
                                                         FALSE: result := aImageDisplayDurationMs; end;
 end;
 
-function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): boolean;
+function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
 begin
   FInitialFilePath := aFilePath;
 
@@ -392,7 +392,7 @@ begin
 end;
 
 
-function TThumbsForm.keepFile(const aFilePath: string): boolean;
+function TThumbsForm.keepFile(const aFilePath: string): TVoid;
 var
   vNewName: string;
 begin
@@ -406,7 +406,7 @@ begin
                                 FALSE:  mmpSetPanelText(FStatusBar, pnHelp, 'NOT Kept'); end;
 end;
 
-function TThumbsForm.maximizeWindow: boolean;
+function TThumbsForm.maximizeWindow: TVoid;
 // maximize to the largest size given the screen height,
 // while maintaing the correct aspect ratio, width-wise, for the image dimensions
 var
@@ -424,14 +424,15 @@ begin
   mmpSetWindowSize(SELF.Handle, point(vWidth, vHeight)); // resize window
 end;
 
-function TThumbsForm.minimizeWindow: boolean;
+function TThumbsForm.minimizeWindow: TVoid;
 begin
   SELF.windowState := TWindowState.wsMinimized;
 end;
 
-function TThumbsForm.moveHelp(const bCreateNew: boolean = FALSE): boolean;
+function TThumbsForm.moveHelp(const bCreateNew: boolean = FALSE): TVoid;
 var vHostPanel: TPanel;
 begin
+  vHostPanel := NIL; // suppress compiler warning
   case whichHost of htMPVHost:    vHostPanel := FMPVHost;
                     htThumbsHost: vHostPanel := FThumbsHost; end;
 
@@ -453,7 +454,7 @@ begin
                                                                                   mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;end; // ignore GS.autoCenter
 end;
 
-function TThumbsForm.moveHelpWindow(const bCreateNew: boolean = FALSE): boolean;
+function TThumbsForm.moveHelpWindow(const bCreateNew: boolean = FALSE): TVoid;
 begin
   case FThumbs = NIL of  TRUE: EXIT; end;
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
@@ -461,22 +462,22 @@ begin
   moveHelp(bCreateNew);
 end;
 
-function TThumbsForm.movePlaylist(const bCreateNew: boolean): boolean;
-var vHostPanel: TPanel;
-begin
-  case whichHost of htMPVHost:    vHostPanel := FMPVHost;
-                    htThumbsHost: vHostPanel := FThumbsHost; end;
-
-  var vPt := FThumbsHost.ClientToScreen(point(vHostPanel.left + vHostPanel.width + 1, vHostPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
-  var wr: TWndRec;
-
-  wr.HWND       := GS.mainForm.handle;
-  wr.pt         := vPt;
-  wr.height     := SELF.height;
-  wr.createNew  := bCreateNew;
-
-  mmp.cmd(evPLFormMove, wr);
-end;
+//function TThumbsForm.movePlaylist(const bCreateNew: boolean): boolean;
+//var vHostPanel: TPanel;
+//begin
+//  case whichHost of htMPVHost:    vHostPanel := FMPVHost;
+//                    htThumbsHost: vHostPanel := FThumbsHost; end;
+//
+//  var vPt := FThumbsHost.ClientToScreen(point(vHostPanel.left + vHostPanel.width + 1, vHostPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
+//  var wr: TWndRec;
+//
+//  wr.HWND       := GS.mainForm.handle;
+//  wr.pt         := vPt;
+//  wr.height     := SELF.height;
+//  wr.createNew  := bCreateNew;
+//
+//  mmp.cmd(evPLFormMove, wr);
+//end;
 
 procedure TThumbsForm.onDoubleClick(sender: TObject);
 begin
@@ -551,7 +552,7 @@ begin
   playCurrentItem;
 end;
 
-function TThumbsForm.pausePlay: boolean;
+function TThumbsForm.pausePlay: TVoid;
 begin
   FPlayingSlideshow := NOT FPlayingSlideshow;
 
@@ -568,7 +569,7 @@ begin
   case FPlayingSlideshow of  TRUE: FThumbs.playCurrentItem; end;
 end;
 
-function TThumbsForm.playCurrentItem: boolean;
+function TThumbsForm.playCurrentItem: TVoid;
 begin
   case whichHost of
     htMPVHost:    FThumbs.playCurrentItem;
@@ -576,7 +577,7 @@ begin
   end;
 end;
 
-function TThumbsForm.playFirst: boolean;
+function TThumbsForm.playFirst: TVoid;
 begin
   FThumbs.playlist.first;
   case whichHost of
@@ -585,7 +586,7 @@ begin
   end;
 end;
 
-function TThumbsForm.playLast: boolean;
+function TThumbsForm.playLast: TVoid;
 begin
   FThumbs.playlist.last;
   case whichHost of
@@ -596,6 +597,7 @@ end;
 
 function TThumbsForm.playNext: boolean;
 begin
+  result := TRUE;
   case whichHost of
     htMPVHost:    begin case FLocked of TRUE: EXIT; end;
                         FLocked := TRUE;
@@ -609,6 +611,7 @@ function TThumbsForm.playNextFolder: boolean;
 var
   vNextFolder: string;
 begin
+  result := FALSE;
   mmpSetPanelOwnerDraw(FStatusBar, pnAVAV, FALSE);
 
   vNextFolder := mmpNextFolder(FThumbs.currentFolder, nfForwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
@@ -625,6 +628,7 @@ end;
 
 function TThumbsForm.playPrev: boolean;
 begin
+  result := FALSE;
   case whichHost of
     htMPVHost:    begin case FLocked of TRUE: EXIT; end;
                         FLocked := TRUE;
@@ -638,6 +642,7 @@ function TThumbsForm.playPrevFolder: boolean;
 var
   vPrevFolder: string;
 begin
+  result := FALSE;
   mmpSetPanelOwnerDraw(FStatusBar, pnAVAV, FALSE);
 
   vPrevFolder := mmpNextFolder(FThumbs.currentFolder, nfBackwards, CF.asBoolean[CONF_ALLOW_INTO_WINDOWS]);
@@ -662,13 +667,13 @@ begin
   mmpSetPanelText(FStatusBar, pnFold, format('Reloaded: %s', [extractFilePath(vCurrentItem)]));
 end;
 
-function TThumbsForm.showHost(const aHostType: THostType): boolean;
+function TThumbsForm.showHost(const aHostType: THostType): TVoid;
 begin
   FMPVHost.visible    := aHostType = htMPVHost;
   FThumbsHost.visible := aHostType = htThumbsHost;
 end;
 
-function TThumbsForm.renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): boolean;
+function TThumbsForm.renameFile(const aFilePath: string; const bCleanFile: boolean = FALSE): TVoid;
 var
   vNewName: string;
 begin
@@ -683,14 +688,14 @@ begin
   mmpSetPanelText(FStatusBar, pnName, extractFileName(vNewName));
 end;
 
-function TThumbsForm.reverseSlideshow: boolean;
+function TThumbsForm.reverseSlideshow: TVoid;
 begin
   FSlideshowDirection := TSlideshowDirection(1 - ord(FSlideshowDirection)); // x := 1 - x
   showSlideshowDirection;
   mmp.cmd(NOT FPlayingSlideshow, pausePlay);
 end;
 
-function TThumbsForm.saveCopyFile(const aFilePath: string): boolean;
+function TThumbsForm.saveCopyFile(const aFilePath: string): TVoid;
 begin
   case mmpCopyFile(aFilePath, mmpUserDstFolder('Copied'), FALSE, FALSE) of
                                                    TRUE:  begin
@@ -703,7 +708,7 @@ begin
                                                             end;end;
 end;
 
-function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): boolean;
+function TThumbsForm.saveMoveFile(const aFilePath: string; const aDstFilePath: string; const aOpText: string): TVoid;
 begin
   case saveMoveFileToFolder(aFilePath, aDstFilePath, aOpText) of FALSE: EXIT; end;
 //  FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
@@ -733,26 +738,26 @@ begin
                         end;end;
 end;
 
-function TThumbsForm.showSlideshowDirection: boolean;
+function TThumbsForm.showSlideshowDirection: TVoid;
 begin
   case FSlideshowDirection of
     sdForwards:   mmpSetPanelText(FStatusBar, pnHelp, 'Slideshow ->');
     sdBackwards:  mmpSetPanelText(FStatusBar, pnHelp, '<- Slideshow'); end;
 end;
 
-function TThumbsForm.speedDn: boolean;
+function TThumbsForm.speedDn: TVoid;
 begin
   FImageDisplayDurationMs := FImageDisplayDurationMs + SLIDESHOW_DELTA_MS;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDurationMs]));
 end;
 
-function TThumbsForm.speedReset: boolean;
+function TThumbsForm.speedReset: TVoid;
 begin
   FImageDisplayDurationMs := FDurationResetSpeed;
   mmpSetPanelText(FStatusBar, pnHelp, format('%dms', [FImageDisplayDurationMs]));
 end;
 
-function TThumbsForm.speedUp: boolean;
+function TThumbsForm.speedUp: TVoid;
 begin
   case FImageDisplayDurationMs = SLIDESHOW_DELTA_MS of TRUE: EXIT; end;// delta doubles as minimum interval/fastest speed
   FImageDisplayDurationMs := FImageDisplayDurationMs - SLIDESHOW_DELTA_MS;
@@ -843,11 +848,12 @@ end;
 
 function TThumbsForm.whichHost: THostType;
 begin
+//  result := htNoHost; // suppress compiler warning
   case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
   case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
 
-function TThumbsForm.windowSize(const aKeyOp: TKeyOp): boolean;
+function TThumbsForm.windowSize(const aKeyOp: TKeyOp): TVoid;
 var dxy: integer;
 begin
   case ssShift in mmpShiftState of  TRUE: dxy := 10;

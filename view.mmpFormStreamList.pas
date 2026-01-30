@@ -472,13 +472,13 @@ begin
   lblConfig4.font.color         := DARK_MODE_DARK;
 
   lblConfigLink1.styleElements  := [seBorder, seClient];
-  lblConfigLink1.font.Color     := clTeal;
+  lblConfigLink1.font.Color     := clAqua; // clTeal;
   lblConfigLink2.styleElements  := [seBorder, seClient];
-  lblConfigLink2.font.Color     := clTeal;
+  lblConfigLink2.font.Color     := clAqua; // clTeal;
   lblConfigLink3.styleElements  := [seBorder, seClient];
-  lblConfigLink3.font.Color     := clTeal;
+  lblConfigLink3.font.Color     := clAqua; // clTeal;
   lblConfigLink4.styleElements  := [seBorder, seClient];
-  lblConfigLink4.font.Color     := clTeal;
+  lblConfigLink4.font.Color     := clAqua; // clTeal;
 
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;

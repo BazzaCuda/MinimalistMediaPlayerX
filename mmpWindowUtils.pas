@@ -23,6 +23,7 @@ interface
 uses
   winApi.windows,
   system.classes, system.SyncObjs,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState;
 
@@ -31,12 +32,12 @@ function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
 function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint): boolean;
 function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): integer; overload;
-function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean; overload;
-function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): boolean;
-function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint): boolean;
-function mmpSetWindowTop      (const aWND: HWND): boolean;
-function mmpSetWindowTopmost  (const aWND: HWND): boolean;
-function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): boolean;
+function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid; overload;
+function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): TVoid;
+function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint): TVoid;
+function mmpSetWindowTop      (const aWND: HWND): TVoid;
+function mmpSetWindowTopmost  (const aWND: HWND): TVoid;
+function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): TVoid;
 function mmpWinXY             (const aWND: HWND): TPoint;
 
 implementation
@@ -90,7 +91,6 @@ function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boole
 var
   vWidth:           integer;
   vHeight:          integer;
-  dy:               integer;
   vStartingHeight:  integer;
 
   MPmediaType:      TMediaType;
@@ -305,7 +305,7 @@ begin
   result := mmp.use(ssCtrl in aShiftState, vR.height - 30, vR.height + 30);
 end;
 
-function mmpGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): boolean;
+function mmpGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid;
 var
   dx:   integer;
   dy:   integer;
@@ -313,7 +313,7 @@ var
   newH: integer;
   vR:   TRect;
 
-  function calcDeltas: boolean;
+  function calcDeltas: TVoid;
   begin
     case aHostType of
       htMPVHost:    begin
@@ -327,7 +327,7 @@ var
     end;
   end;
 
-  function checkDesktop: boolean;
+  function checkDesktop: TVoid;
   begin
     case ssCtrl in aShiftState of  TRUE:  begin
                                             case newW - dx < dx of TRUE: dx := 0; end;
@@ -337,7 +337,7 @@ var
                                             case newH + dy > mmpScreenHeight of TRUE: dy := 0; end;end;end;
   end;
 
-  function calcDimensions: boolean;
+  function calcDimensions: TVoid;
   begin
     case ssCtrl in aShiftState of
       TRUE: begin
@@ -366,33 +366,27 @@ begin
   mmpSetWindowSize(aWND, point(newW, newH)); // resize the window
 end;
 
-function mmpPosWinXY(const aWND: HWND; const x: integer; const y: integer): boolean;
+function mmpPosWinXY(const aWND: HWND; const x: integer; const y: integer): TVoid;
 begin
-  result := FALSE;
   mmpSetWindowPos(aWND, point(x, y));
-  result := TRUE;
 end;
 
-function mmpSetWindowPos(const aWND: HWND; aPt: TPoint): boolean;
+function mmpSetWindowPos(const aWND: HWND; aPt: TPoint): TVoid;
 begin
-  result := FALSE;
   setWindowPos(aWND, HWND_TOP, aPt.x, aPt.y, 0, 0, SWP_NOSIZE);
-  result := TRUE;
 end;
 
-function mmpSetWindowSize(const aWND: HWND; aPt: TPoint): boolean;
+function mmpSetWindowSize(const aWND: HWND; aPt: TPoint): TVoid;
 begin
-  result := FALSE;
   setWindowPos(aWND, HWND_TOP, 0, 0, aPt.x, aPt.y, SWP_NOMOVE);
-  result := TRUE;
 end;
 
-function mmpSetWindowTop(const aWND: HWND): boolean;
+function mmpSetWindowTop(const aWND: HWND): TVoid;
 begin
   setWindowPos(aWND, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
 end;
 
-function mmpSetWindowTopmost(const aWND: HWND): boolean;
+function mmpSetWindowTopmost(const aWND: HWND): TVoid;
 begin
   setWindowPos(aWND, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE);
 end;

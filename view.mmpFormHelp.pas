@@ -31,6 +31,7 @@ uses
   vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
@@ -50,8 +51,8 @@ type
     md3:          TMarkdownViewer;
     procedure   FormResize(Sender: TObject);
   protected
-    constructor Create(const aHeight: integer; const aHelpType: THelpType);
-    procedure   CreateParams(var Params: TCreateParams);
+    constructor Create(const aHeight: integer; const aHelpType: THelpType); reintroduce;
+    procedure   CreateParams(var Params: TCreateParams); reintroduce;
   public
   end;
   {$ENDREGION}
@@ -74,9 +75,9 @@ type
     function    onNotify(const aNotice: INotice): INotice;
   protected
     function    createForm(const wr: TWndRec): THelpForm;
-    function    moveForm(const wr: TWndRec): boolean;
-    function    showForm: boolean;
-    function    shutForm: boolean;
+    function    moveForm(const wr: TWndRec): TVoid;
+    function    showForm: TVoid;
+    function    shutForm: TVoid;
   public
     constructor Create;
     destructor  Destroy; override;
@@ -183,7 +184,7 @@ begin
   inherited;
 end;
 
-function THelpFormProxy.moveForm(const wr: TWndRec): boolean;
+function THelpFormProxy.moveForm(const wr: TWndRec): TVoid;
 begin
   FHelpForm := createForm(wr);
   case FHelpForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current playlist window. Used for repositioning the window when the main UI moves or resizes.
@@ -214,13 +215,13 @@ begin
   end;
 end;
 
-function THelpFormProxy.showForm: boolean;
+function THelpFormProxy.showForm: TVoid;
 begin
   case FHelpForm = NIL of TRUE: EXIT; end;
   FHelpForm.show;
 end;
 
-function THelpFormProxy.shutForm: boolean;
+function THelpFormProxy.shutForm: TVoid;
 begin
   case FHelpForm = NIL of TRUE: EXIT; end;
   FHelpForm.close;

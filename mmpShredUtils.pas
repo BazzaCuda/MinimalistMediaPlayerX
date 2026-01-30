@@ -41,40 +41,60 @@ uses
   mmpDialogs, mmpGlobalState,
   _debugWindow;
 
+//=====
+
+type
+  TFileLevelTrimRange = record
+    Offset: Int64;
+    Length: Int64;
+  end;
+
+  TFileLevelTrim = record
+    Key: Cardinal;
+    NumRanges: Cardinal;
+    Ranges: array[0..0] of TFileLevelTrimRange;
+  end;
+
 const
-  NUMPASSES       = 1;
-  CLEANINGBUFFERS = 1;
+  FSCTL_FILE_LEVEL_TRIM = $00098208;
 
-var
-  cleanBuffer:    array[1..CLEANINGBUFFERS] of PBYTE;
-  buffersAlloced: boolean;
-
-//--------------------------------------------------------------------
-//
-// OverwriteFileName
-//
-// Securely deletes a file's original name by renaming it several
-// times. This works by changing each non-'.' character in the file's
-// name to successive alphabetic characters, thus overwriting the
-// name 26 times.
-//
-//--------------------------------------------------------------------
-function overwriteFileName(const aFilePath:  string): string;
-var
-  newName:    string;
-  lastSlash:  integer;
-	i, j, ix:   integer;
+function  trimFileRange(const aFilePath: string): boolean;
 begin
-  result    := aFilePath;
-  lastSlash := lastDelimiter('\', result);
-	ix        := lastSlash + 1;
+  var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
+  result     := FALSE;
+  case vHFile = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
+
+  try
+    var vFileLength: int64 := 0;
+    case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
+
+    var vTrim: TFileLevelTrim;
+    var vBytesReturned: Cardinal;
+    vTrim.Key              := 0;
+    vTrim.NumRanges        := 1;
+    vTrim.Ranges[0].Offset := 0;
+    vTrim.Ranges[0].Length := vFileLength;
+
+    // We call the control code but don't force a FALSE result if the drive
+    // simply doesn't support TRIM (e.g., an HDD).
+    deviceIoControl(vHFile, FSCTL_FILE_LEVEL_TRIM, @vTrim, sizeof(vTrim), nil, 0, vBytesReturned, nil);
+    result := TRUE;
+  finally
+    closeHandle(vHFile); end;
+end;
+
+function overwriteFileName(const aFilePath:  string): string;
+begin
+  result        := aFilePath;
+  var lastSlash := lastDelimiter('\', result);
+	var ix        := lastSlash + 1;
 
 	// rename the file 26 times
-	newName := aFilePath;
-	for i := 0 to 25 do begin
+	var newName := aFilePath;
+	for var i := 0 to 25 do begin
 		// Replace each non-'.' character with the same letter
-		for j := ix to length(aFilePath) do
-			case aFilePath[j] = '.' of FALSE: newName[j] := chr(ord('A') + random(25)); end; //  was chr(ord('A') + i);
+		for var j := ix to length(aFilePath) do
+			case aFilePath[j] = '.' of FALSE: newName[j] := chr(ord('A') + random(26)); end;
 		// Got a new name so rename
 		case moveFile(PWideChar(result), PWideChar(newName)) of FALSE: EXIT; end;
 
@@ -82,248 +102,78 @@ begin
 	end;
 end;
 
-//--------------------------------------------------------------------
-//
-// SecureOverwrite
-//
-// This function implements a secure sanitize of rigid (removable
-// and fixed) disk media as per the Department of Defense clearing
-// and sanitizing standard: DOD 5220.22-M
-//
-// The standard states that hard disk media is sanatized by
-// overwriting with a character, then the character's complement,
-// and then a random character. Note that the standard specifically
-// states that this method is not suitable for TOP SECRET information.
-// TOP SECRET data sanitizing is only achievable by a Type 1 or 2
-// degauss of the disk, or by disintegrating, incinerating,
-// pulverizing, shredding or melting the disk.
-//
-//--------------------------------------------------------------------
-function secureOverwrite(aFileHandle: THandle; aLength: ULONGLONG): boolean; // v2.1
+function  secureOverwrite(const aFileHandle: THandle; const aLength: ULONGLONG): boolean;
 const
-  CLEANBUFSIZE = 65536; // Using 64 KB buffers aligned to memory pages via virtualAlloc for optimal I/O performance
-var
-  i, j, passes: DWORD;
-  totalWritten: ULONGLONG;
-  bytesWritten,
-  bytesToWrite: ULONG;
-  seekLength:   int64; // Signed 64-bit required for negative offsets in setFilePointerEx
-  status:       BOOLEAN;
+  CLEAN_BUF_SIZE = 65536;
 begin
   result := FALSE;
-
-  // Allocate our cleaning buffers
-  if (NOT buffersAlloced) then begin
-    randomize; // Seed the random number generator
-    for i := 1 to CLEANINGBUFFERS do begin
-      cleanBuffer[i] := virtualAlloc(NIL, CLEANBUFSIZE, MEM_COMMIT, PAGE_READWRITE);
-      if (cleanBuffer[i] = NIL) then begin
-        // Leak fix: only free successfully allocated previous buffers
-        for j := 1 to i - 1 do begin
-          virtualFree(cleanBuffer[j], 0, MEM_RELEASE);
-          cleanBuffer[j] := NIL;
-        end;
-        EXIT;
-      end;
-
-      // Fill each buffer with a different signature.
-      // Uses a three-pass sanitisation approach: zeroing, bit-flipping (ones), and pseudo-random noise
-      // This is intended to disrupt the magnetic signature of the data on traditional Hard Disk Drives (HDDs)
-      case i of
-        1:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(0);           // pass 1: zeroes
-        2:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(255);         // pass 2: ones
-        3:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(NativeUint(cleanBuffer[i]) + j)^ := BYTE(Random(255)); // pass 3: random noise
-      end;
-    end;
-    buffersAlloced := TRUE;
-  end;
+  var vCleanBuffer: PBYTE := virtualAlloc(NIL, CLEAN_BUF_SIZE, MEM_COMMIT, PAGE_READWRITE);
+  case vCleanBuffer = NIL of TRUE: EXIT; end;
 
   try
-    // Do the overwrite
-    for passes := 1 to NUMPASSES do begin
-      if (passes <> 1) then begin
-        seekLength := aLength;
-        // Performs a relative backward seek using a signed 64-bit integer
-        // This resets the file pointer to the start of the target area for the next overwrite pass
-        setFilePointerEx(aFileHandle, -seekLength, NIL, FILE_CURRENT);
-      end;
+    for var i: WORD := 0 to CLEAN_BUF_SIZE - 1 do vCleanBuffer[i] := 0;
 
-      for i := 1 to CLEANINGBUFFERS do begin
-        // Move back to the start of where we're overwriting
-        if (i <> 1) then begin
-          seekLength := aLength;
-          setFilePointerEx(aFileHandle, -seekLength, NIL, FILE_CURRENT);
-        end;
-        // Loop and overwrite
-        totalWritten := 0;
-        while (totalWritten < aLength) do begin
-          // Ensure we don't read past the end of the allocated 64 KB buffer
-          if (aLength - totalWritten > CLEANBUFSIZE) then bytesToWrite := CLEANBUFSIZE
-                                                     else bytesToWrite := ULONG(aLength - totalWritten);
+    var vTotalWritten: ULONGLONG := 0;
+    while vTotalWritten < aLength do begin
+      var vBytesToWrite:  DWORD := DWORD(min(ULONGLONG(CLEAN_BUF_SIZE), aLength - vTotalWritten));
+      var vWritten:       DWORD := 0;
 
-          // Note: Ensure the file handle was opened with FILE_FLAG_NO_BUFFERING or FILE_FLAG_WRITE_THROUGH
-          // This ensures data is committed to the physical disk immediately, bypassing the OS cache
-          // Consequently, there is no need to manually call FlushFileBuffers
-          status := writeFile(aFileHandle, cleanBuffer[i]^, bytesToWrite, bytesWritten, nil);
-          if (not status) then EXIT;
+      case writeFile(aFileHandle, vCleanBuffer^, vBytesToWrite, vWritten, NIL) of FALSE: EXIT; end;
+      case (vWritten = 0) and (vBytesToWrite > 0) of TRUE: EXIT; end;
 
-          totalWritten := totalWritten + bytesWritten;
-        end;
-      end;
-    end;
+      vTotalWritten := vTotalWritten + ULONGLONG(vWritten); end;
+
+    case flushFileBuffers(aFileHandle) of FALSE: EXIT; end;
+
     result := TRUE;
-
   finally
-    // The finally block acts as a safety net to ensure system memory is returned to the OS
-    // and the flag is reset even if a hardware error occurs during the writeFile process
-    for i := 1 to CLEANINGBUFFERS do begin
-      if (cleanBuffer[i] <> NIL) then begin
-        virtualFree(cleanBuffer[i], 0, MEM_RELEASE);
-        cleanBuffer[i] := NIL;
-      end;
-    end;
-    buffersAlloced := FALSE;
-  end;
+    virtualFree(vCleanBuffer, 0, MEM_RELEASE); end;
 end;
 
-function secureOverwrite_v1(aFileHandle: THandle; aLength: ULONGLONG): boolean; // v1
-const
-  CLEANBUFSIZE = 65536;
-var
-	i, j, passes: DWORD;
-	totalWritten: ULONGLONG;
-	bytesWritten,
-  bytesToWrite: ULONG;
-	seekLength:   LONG;
-	status:       BOOLEAN;
+function  secureDelete(const aFilePath: string): integer;
 begin
-  result := FALSE;
+  result     := -1;
+  var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
+  case vHFile = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
 
-	// Allocate our cleaning buffers if necessary (we just let program exit free the buffers)
-	if (NOT buffersAlloced) then begin
+  try
+    var vFileLength: int64 := 0;
+    result                 := -2;
+    case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
 
-    randomize; // Seed the random number generator
-    for i := 1 to CLEANINGBUFFERS do begin
-      cleanBuffer[i] := virtualAlloc(NIL, CLEANBUFSIZE, MEM_COMMIT, PAGE_READWRITE);
-      if (cleanBuffer[i] = NIL) then begin
-        for j := 1 to i do virtualFree(cleanBuffer[j], 0, MEM_RELEASE);
-        EXIT;
-      end;
+    var vBytesWritten: int64 := 0;
+    while vBytesWritten < vFileLength do begin
+      var vBytesToWrite: ULONGLONG := ULONGLONG(min(int64(65536), vFileLength - vBytesWritten));
+      result                       := -3;
+      case secureOverwrite(vHFile, vBytesToWrite) of FALSE: EXIT; end;
 
-      // Fill each buffer with a different signature
-      case i of
-        1:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(cleanBuffer[i] + j)^ := BYTE(0);           // fill with zeroes
-        2:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(cleanBuffer[i] + j)^ := BYTE(255);         // fill with complement of 0 - 0xFF
-        3:   for j := 0 to CLEANBUFSIZE - 1 do PBYTE(cleanBuffer[i] + j)^ := BYTE(Random(255)); // fill with a random value
-      end;
-    end;
-    buffersAlloced := TRUE;
+      vBytesWritten := vBytesWritten + int64(vBytesToWrite);
+      case vFileLength > 0 of TRUE: mmp.cmd(evGSActiveTaskPercent, trunc((vBytesWritten * 100) / vFileLength)); end;end;
+  finally
+    closeHandle(vHFile);
   end;
 
-	// Do the overwrite
-  for passes := 1 to NUMPASSES do begin
-		if (passes <> 1) then begin
-      seekLength := aLength;
-			setFilePointer(aFileHandle, -seekLength, NIL, FILE_CURRENT);
-    end;
+  var vScrambledPath := overwriteFileName(aFilePath);
+  debugString('scrambledPath', vScrambledPath);
 
-		for i := 1 to CLEANINGBUFFERS do begin
-			// Move back to the start of where we're overwriting
-			if (i <> 1) then begin
-        seekLength := aLength;
-				setFilePointer(aFileHandle, -seekLength, NIL, FILE_CURRENT);
-      end;
-			// Loop and overwrite
-			totalWritten := 0;
-			while (totalWritten < aLength) do begin
-				if (aLength - totalWritten > 1024*1024) then bytesToWrite := 1024*1024
-                                                else bytesToWrite := ULONG(aLength - totalWritten);
-				if (bytesToWrite > CLEANBUFSIZE )       then bytesToWrite := CLEANBUFSIZE;
+  result := -6;
+  case trimFileRange(vScrambledPath) of FALSE: EXIT; end;
 
-				status := writeFile(aFileHandle, cleanBuffer[i]^, bytesToWrite, &bytesWritten, nil);
-				if (not status) then EXIT;
-
-				// Note: no need to flush since the file is opened with write-through or no cache buffering
-				totalWritten := totalWritten + bytesWritten;
-			end;
-		end;
-	end;
-
-	result := TRUE;
-end;
-
-function secureDelete(const aFilePath: pWideChar; fileLengthHi: DWORD; fileLengthLo: DWORD): integer;
-var
-  hFile:        THandle;
-  FileLength:   ULARGE_INTEGER;
-  bytesWritten: uLARGE_INTEGER;
-  bytesToWrite: ULONGLONG;
-  lastFileName: string;
-  vFileLength: ULARGE_INTEGER;
-begin
-	// Open the file in overwrite mode
-	hFile := createFile(aFilePath, GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
-
-  result := -1;
-	case (hFile = INVALID_HANDLE_VALUE) of TRUE: EXIT; end;
-
-	// If the file has a non-zero length, fill it with 0's first in order to
-  // preserve its cluster allocation.
-	if (fileLengthLo + fileLengthHi) <> 0 then begin
-		// Seek to the last byte of the file
-		dec(fileLengthLo);
-		if (fileLengthLo = DWORD(-1) AND fileLengthHi) then dec(fileLengthHi); // I suspect this only works in C with the decrement causing an underflow (?)...
-    vFileLength.lowPart   := fileLengthLo;
-    vFileLength.highPart  := fileLengthHi;
-    setFilePointerEx(hFile, fileLengthLo, @vFileLength.highPart, FILE_BEGIN); // ...but as we're now using setFilePointerEx which handles 64bit integers, it might not be an issue.
-		// MR:  "Write one zero byte, which causes the file system to fill the entire file's on-disk contents with 0"
-    // Baz: "This no longer true. It does exactly what you'd expect it to do - write to the very last byte in the file."
-    result := -2;
-		case secureOverwrite(hFile, DWORD(1)) of FALSE: EXIT; end;
-  end;
-
-	// Now go back to the start of the file and overwrite the rest of the file.
-	setFilePointer(hFile, 0, NIL, FILE_BEGIN);
-	fileLength.lowPart  := fileLengthLo;
-	fileLength.highPart := fileLengthHi;
-  bytesWritten.quadPart := 0;
-  while (bytesWritten.quadPart < fileLength.quadPart) do begin
-    bytesToWrite := min(fileLength.quadPart - bytesWritten.quadPart, 65536);
-    result := -3;
-    if (NOT secureOverwrite(hFile, DWORD(bytesToWrite))) then begin
-      closeHandle(hFile);
-      EXIT;
-    end;
-    bytesWritten.quadPart := bytesWritten.quadPart + bytesToWrite;
-    mmp.cmd(evGSActiveTaskPercent, trunc(bytesWritten.quadPart / fileLength.quadPart * 100));
-  end;
-
-	// Done!
-	closeHandle(hFile);
-
-	// Rename the file a few times
-	lastFileName := overwriteFileName(aFilePath);
-
-	// Now we can delete the file
-	if (NOT deleteFile(lastFileName)) then begin
-    result := -4;
-		// Rename back to original name so as not to confuse the user
-		case moveFile(PWideChar(lastFileName), PWideChar(aFilePath)) of FALSE: result := -5; end;
-    EXIT;
-  end;
+  result := -7;
+  case deleteFile(pWideChar(vScrambledPath)) of FALSE: EXIT; end;
 
   result := 0;
 end;
 
 function secureDeleteFile(const aFilePath: string): integer;
-var
-  vSR: TSearchRec;
 begin
-  result := -1;
-  case findFirst(aFilePath, faAnyFile, vSR) = 0 of FALSE: EXIT; end;
-  result := secureDelete(pWideChar(aFilePath), vSR.findData.nFileSizeHigh, vSR.findData.nFileSizeLow);
-  findClose(vSR);
+  debugString('secureDeleteFile', aFilePath);
+  result := -10;
+  case fileExists(aFilePath) of TRUE: result := secureDelete(aFilePath); end;
+  debugInteger('secureDeleteFile', result);
 end;
+
+//=====
 
 function recycleFile(const aFilePath: string): boolean;
 var

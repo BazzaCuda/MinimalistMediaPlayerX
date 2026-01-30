@@ -24,6 +24,7 @@ uses
   winApi.messages, winApi.windows,
   system.classes,
   vcl.Controls, vcl.extCtrls, vcl.forms,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpMenu,
   view.mmpFormThumbs, view.mmpProgressBar,
@@ -42,8 +43,8 @@ type
     function    getProgressBar:       IProgressBar;
     function    getVideoPanel:        TPanel;
 
-    function    initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
-    function    showUI:               boolean;
+    function    initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
+    function    showUI:               TVoid;
 
     procedure   onFormResize;
     procedure   onKeyDown(Key: Word; Shift: TShiftState);
@@ -108,7 +109,7 @@ type
   strict private
     FVideoPanel:            TPanel;
 
-    FMenu:                  IMMPMenu;
+//    FMenu:                  IMMPMenu;
     FMP:                    IMediaPlayer;
     FPlaylist:              IPlaylist;
     FPB:                    IProgressBar;
@@ -122,39 +123,39 @@ type
     FSubscriberTT:          ISubscriber;
 
   private
-    function    adjustAspectRatio:    boolean;
+    function    adjustAspectRatio:    TVoid;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
-    function    doAppClose:           boolean;
-    function    doCleanup(const bConfirm: boolean = TRUE): boolean;
-    function    playEdited(const aFilePath: string):       boolean;
-    function    playNext(const bRecurseFolders: boolean):  boolean;
-    function    playPrev:             boolean;
-    function    doEscapeKey:          boolean;
-    function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): boolean;
-    function    keepDelete:           boolean;
-    function    minimizeWindow:       boolean;
-    function    moveHelp      (const bCreateNew: boolean = FALSE):  boolean;
-    function    movePlaylist  (const bCreateNew: boolean = FALSE):  boolean;
-    function    moveTimeline  (const bCreateNew: boolean = FALSE):  boolean;
+    function    doAppClose:           TVoid;
+    function    doCleanup(const bConfirm: boolean = TRUE): TVoid;
+    function    playEdited(const aFilePath: string):       TVoid;
+    function    playNext(const bRecurseFolders: boolean):  TVoid;
+    function    playPrev:             TVoid;
+    function    doEscapeKey:          TVoid;
+    function    forcedResize(const aWND: HWND; const aPt: TPoint; const X, Y: int64): TVoid;
+    function    keepDelete:           TVoid;
+    function    minimizeWindow:       TVoid;
+    function    moveHelp      (const bCreateNew: boolean = FALSE):  TVoid;
+    function    movePlaylist  (const bCreateNew: boolean = FALSE):  TVoid;
+    function    moveTimeline  (const bCreateNew: boolean = FALSE):  TVoid;
     function    playNextFolder(const bRecurseFolders: boolean):     boolean;
     function    playPrevFolder:       boolean;
-    function    playSomething (const aIx: integer): boolean;
-    function    reInitTimeline(const aDuration: integer): boolean;
-    function    reloadPlaylist:       boolean;
+    function    playSomething (const aIx: integer): TVoid;
+    function    reInitTimeline(const aDuration: integer): TVoid;
+    function    reloadPlaylist:       TVoid;
     function    renameCurrentItem(const aRenameType: TRenameType):  string;
-    function    resizeWindow:         boolean;
-    function    sendOpInfo    (const aOpInfo: string):              boolean;
-    function    setupSlideshowTimer:  boolean;
-    function    showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
+    function    resizeWindow:         TVoid;
+    function    sendOpInfo    (const aOpInfo: string):              TVoid;
+    function    setupSlideshowTimer:  TVoid;
+    function    showThumbnails(const aHostType: THostType = htThumbsHost): TVoid;
+    function    skipSeconds(const aSeconds: integer): string;
     function    tab(const aCapsLock:  boolean; const aFactor: integer = 0): string;
-    function    toggleEditMode:       boolean;
+    function    toggleEditMode:       TVoid;
     function    toggleFiltering:      string;
-    function    toggleFullscreen:     boolean;
-    function    toggleHelp:           boolean;
-    function    togglePlaylist:       boolean;
+    function    toggleFullscreen:     TVoid;
+    function    toggleHelp:           TVoid;
+    function    togglePlaylist:       TVoid;
     function    toggleShuffle:        string;
     function    toggleSkipExcluded:   string;
-    function skipSeconds(const aSeconds: integer): string;
   protected
     procedure   onFormResize;
     procedure   onKeyDown(key: Word; Shift: TShiftState);
@@ -190,7 +191,7 @@ type
     procedure   onWINToggleRepeat(var msg: TMessage);
 
     function    onMPNotify(const aNotice: INotice):   INotice;
-    function    onMPOpen(const aNotice: INotice):     boolean;
+    function    onMPOpen(const aNotice: INotice):     TVoid;
     function    onNotify(const aNotice: INotice):     INotice;
     function    onPLNotify(const aNotice: INotice):   INotice;
     function    onTickTimer(const aNotice: INotice):  INotice;
@@ -206,8 +207,8 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
-    function    initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
-    function    showUI:                 boolean;
+    function    initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
+    function    showUI:                 TVoid;
   end;
 
 function newViewModel: IViewModel;
@@ -261,7 +262,7 @@ end;
 
 { TVM }
 
-function TVM.adjustAspectRatio: boolean;
+function TVM.adjustAspectRatio: TVoid;
 begin
   FResizingWindow := TRUE;
   var vPt := mmpAdjustAspectRatio(GS.mainForm.handle, FVideoPanel.height);
@@ -286,6 +287,7 @@ var T, F: TProc;
     // {$if BazDebugWindow} debugBoolean('nothingToPlay', result); {$endif}
   end;
 begin
+  result := FALSE;
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
   mmp.cmd(vWasPlaying, evMPPause);
 
@@ -323,7 +325,7 @@ begin
   inherited;
 end;
 
-function TVM.doAppClose: boolean;
+function TVM.doAppClose: TVoid;
 begin
   mmp.cmd(evMPDetachStates);
   mmp.cmd(evGSSuspended, TRUE);
@@ -352,10 +354,8 @@ begin
 //  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 end;
 
-function TVM.doCleanup(const bConfirm: boolean = TRUE): boolean;
+function TVM.doCleanup(const bConfirm: boolean = TRUE): TVoid;
 begin
-  result := FALSE;
-
   var vWasPlaying := (GS.mediaType in [mtAudio, mtVideo]) and mmp.cmd(evMPReqPlaying).tf;
   mmp.cmd(vWasPlaying, evMPPause);
 
@@ -384,29 +384,26 @@ begin
   case mmp.cmd(evPLFind, vCurrentItem).tf of FALSE: case vIx > mmp.cmd(evPLReqLastIx).integer of TRUE: mmp.cmd(evPLLast); end;end; // did we remove the playing item
   mmp.cmd(evPLFormLoadBox);
   mmp.cmd(vWasPlaying, evMPResume);
-
-  result := TRUE;
 end;
 
-function TVM.doEscapeKey: boolean;
+function TVM.doEscapeKey: TVoid;
 begin
   mmp.cmd(GS.mainForm.windowState = wsMaximized, evVMToggleFullscreen, evAppClose);
 end;
 
-function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): boolean;
+function TVM.forcedResize(const aWND: HWND; const aPt: TPoint; const X: int64; const Y: int64): TVoid;
 // X and Y are the video dimensions
 // pt.x is the designated width, or...
 // py.y is the designated height
 var
-  vRatio: double;
   vWidth, vHeight: integer;
 
-  function adjustWidthForAspectRatio: boolean;
+  function adjustWidthForAspectRatio: TVoid;
   begin
     vWidth := trunc(vHeight / Y * X);
   end;
 
-  function adjustHeightForAspectRatio: boolean;
+  function adjustHeightForAspectRatio: TVoid;
   begin
     vHeight := trunc(Y * (vWidth / X));
   end;
@@ -451,7 +448,7 @@ begin
   result := FVideoPanel;
 end;
 
-function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): boolean;
+function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
 begin
   FVideoPanel             := aVideoPanel;
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
@@ -468,7 +465,7 @@ begin
   mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
 end;
 
-function TVM.keepDelete: boolean;
+function TVM.keepDelete: TVoid;
 var T, F: TProc;
 begin
   case GS.activeTasks > 0 of TRUE: EXIT; end; // prevent user from starting multiple deletion batches
@@ -479,12 +476,12 @@ begin
   mmp.cmd(CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY], T, F);
 end;
 
-function TVM.minimizeWindow: boolean;
+function TVM.minimizeWindow: TVoid;
 begin
-   postMessage(GS.mainForm.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+  postMessage(GS.mainForm.handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
 
-function TVM.moveHelp(const bCreateNew: boolean = FALSE): boolean;
+function TVM.moveHelp(const bCreateNew: boolean = FALSE): TVoid;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
   var wr: TWndRec;
@@ -498,7 +495,7 @@ begin
   mmp.cmd(evHelpMoveHelp, wr);
 end;
 
-function TVM.movePlaylist(const bCreateNew: boolean): boolean;
+function TVM.movePlaylist(const bCreateNew: boolean): TVoid;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left + FVideoPanel.width + 1, FVideoPanel.top - 2)); // screen position of the top right corner of the application window, roughly.
   var wr: TWndRec;
@@ -511,7 +508,7 @@ begin
   mmp.cmd(evPLFormMove, wr);
 end;
 
-function TVM.moveTimeline(const bCreateNew: boolean = FALSE): boolean;
+function TVM.moveTimeline(const bCreateNew: boolean = FALSE): TVoid;
 begin
   var vPt := FVideoPanel.ClientToScreen(point(FVideoPanel.left, FVideoPanel.height)); // screen position of the bottom left corner of the application window, roughly.
   showTimeline(vPt, FVideoPanel.width, CF.asBoolean[CONF_PLAY_EDITED], NOT mouseDown, bCreateNew);
@@ -627,7 +624,7 @@ begin
   end;
 end;
 
-function TVM.onMPOpen(const aNotice: INotice): boolean;
+function TVM.onMPOpen(const aNotice: INotice): TVoid;
 begin
 //  FLocked := FALSE;
 end;
@@ -639,7 +636,6 @@ begin
 end;
 
 function TVM.onNotify(const aNotice: INotice): INotice;
-var msg: TMessage;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
@@ -875,7 +871,7 @@ begin
   newRect^.right := newRect^.left + GS.mainForm.width;
 end;
 
-function TVM.playEdited(const aFilePath: string): boolean;
+function TVM.playEdited(const aFilePath: string): TVoid;
 begin
   case fileExists(aFilePath) of  TRUE:  mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + aFilePath + '" noplaylist'); // forced by view.mmpFormTimeline
                                 FALSE:  begin
@@ -891,7 +887,7 @@ begin
                                           case fileExists(vFN) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vFN + '" noplaylist'); end;end;end;
 end;
 
-function TVM.playNext(const bRecurseFolders: boolean): boolean;
+function TVM.playNext(const bRecurseFolders: boolean): TVoid;
 var T, F: TProc;
 begin
   case GS.noPlaylist of TRUE: EXIT; end;
@@ -910,7 +906,7 @@ begin
   mmp.cmd(bRecurseFolders, T, F);
 end;
 
-function TVM.playPrev: boolean;
+function TVM.playPrev: TVoid;
 var T, F: TProc;
 begin
   case GS.noPlaylist of TRUE: EXIT; end;
@@ -975,10 +971,8 @@ begin
   result := vPrevFolder <> EMPTY;
 end;
 
-function TVM.playSomething(const aIx: integer): boolean; // no longer called
+function TVM.playSomething(const aIx: integer): TVoid; // no longer called
 begin
-  result := FALSE;
-
   // PL's FPlayIx was decremented [to -1 if necessary so we can do a playNext to play item 0]
   // play the next item if there is one or force nextFolderOnEmpty/End
   mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] OR CF.asBoolean[CONF_NEXT_FOLDER_ON_END]);
@@ -988,10 +982,9 @@ begin
   mmp.cmd((aIx = 0) or mmp.cmd(evPLReqIsLast).tf,
                                               evVMMPPlayCurrent,  // aIx = 0 is not the same as .isFirst
                                               evVMMPPlayNext);    // ...hence, playNext
-  result := TRUE;
 end;
 
-function TVM.reInitTimeline(const aDuration: integer): boolean;
+function TVM.reInitTimeline(const aDuration: integer): TVoid;
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
   case GS.mediaType in [mtAudio, mtVideo] of FALSE: EXIT; end;
@@ -1004,15 +997,13 @@ begin
   resizeWindow;
 end;
 
-function TVM.reloadPlaylist: boolean;
+function TVM.reloadPlaylist: TVoid;
 begin
-  result := FALSE;
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
   mmp.cmd(evPLFillPlaylist, mmp.cmd(evPLReqCurrentFolder).text, CF.asMediaType[CONF_PLAYLIST_FORMAT]);
   mmp.cmd(NOT mmp.cmd(evPLFind, vCurrentItem).tf, evPLSetNoItem); // any "play next" will now play item[0] in the playlist
   mmp.cmd(evPLFormLoadBox);
   mmp.cmd(evMCReshowCaption);
-  result := TRUE;
 end;
 
 function TVM.renameCurrentItem(const aRenameType: TRenameType): string;
@@ -1096,9 +1087,8 @@ begin
 
 end;
 
-function TVM.resizeWindow: boolean;
+function TVM.resizeWindow: TVoid;
 begin
-  result := FALSE;
   case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
 
   case FResizingWindow of TRUE: EXIT; end;
@@ -1116,15 +1106,12 @@ begin
   mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
 
   FResizingWindow := FALSE;
-  result          := TRUE;
 end;
 
-function TVM.sendOpInfo(const aOpInfo: string): boolean;
+function TVM.sendOpInfo(const aOpInfo: string): TVoid;
 begin
-  result := FALSE;
   mmp.cmd(evSTOpInfo, aOpInfo);
   mmp.cmd(evSTOpInfo2, GS.activeTaskPercent); // mmpShredUtils sets this to -1 to clear OpInfo2
-  result := TRUE;
 end;
 
 procedure TVM.setMediaPlayer(const aValue: IMediaPlayer);
@@ -1142,7 +1129,7 @@ begin
   FPB := aValue;
 end;
 
-function TVM.setupSlideshowTimer: boolean;
+function TVM.setupSlideshowTimer: TVoid;
 begin
   case FSlideshowTimer = NIL of FALSE: freeAndNIL(FSlideshowTimer); end;
 
@@ -1155,7 +1142,7 @@ begin
                                               FSlideshowTimer.enabled   := TRUE; end);
 end;
 
-function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): boolean;
+function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): TVoid;
   function mainFormDimensions: TRect;
   begin
     result.top    := GS.mainForm.top;
@@ -1185,11 +1172,9 @@ begin
   mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
 end;
 
-function TVM.showUI: boolean;
+function TVM.showUI: TVoid;
 begin
-  result := FALSE;
   GS.mainForm.show;
-  result := TRUE;
 end;
 
 function TVM.skipSeconds(const aSeconds: integer): string;
@@ -1250,10 +1235,8 @@ begin
   result := newInfo;
 end;
 
-function TVM.toggleEditMode: boolean;
+function TVM.toggleEditMode: TVoid;
 begin
-  result := FALSE;
-
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evPLFormShutForm);
 
@@ -1265,8 +1248,6 @@ begin
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);
 
   mmp.cmd(GS.showingTimeline, procedure begin TL.initTimeline(vCurrentItem, GS.duration); end);
-
-  result := TRUE;
 end;
 
 function TVM.toggleFiltering: string;
@@ -1277,38 +1258,31 @@ begin
                           FALSE: result := 'Playlist filtering on'; end;
 end;
 
-function TVM.toggleFullscreen: boolean;
+function TVM.toggleFullscreen: TVoid;
 begin
-  result := FALSE;
   case GS.mainForm.windowState = wsMaximized of  TRUE:  GS.mainForm.windowState := wsNormal;
                                                 FALSE:  begin
                                                           FResizingWindow := TRUE;
                                                           GS.mainForm.windowState := wsMaximized;
                                                           FResizingWindow := FALSE; end;end;
-  result := TRUE;
 end;
 
-function TVM.toggleHelp: boolean;
+function TVM.toggleHelp: TVoid;
 begin
-  result := FALSE;
   mmp.cmd(evPLFormShutForm);
   GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
 
   mmp.cmd(GS.showingHelp, procedure begin mmp.cmd(evVMMoveHelp, TRUE); end,
                         procedure begin mmp.cmd(evHelpShutHelp); end);
-  result := TRUE;
 end;
 
-function TVM.togglePlaylist: boolean;
+function TVM.togglePlaylist: TVoid;
 begin
-  result := FALSE;
   mmp.cmd(evHelpShutHelp);
   GS.notify(newNotice(evGSShowingPlaylist, NOT GS.showingPlaylist));
 
   mmp.cmd(GS.showingPlaylist, procedure begin mmp.cmd(evVMMovePlaylist, TRUE); end,
                             procedure begin mmp.cmd(evPLFormShutForm); end);
-
-  result := TRUE;
 end;
 
 function TVM.toggleShuffle: string;

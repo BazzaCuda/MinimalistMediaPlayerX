@@ -30,6 +30,7 @@ uses
   system.sysUtils, system.variants, system.classes,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
   {$endif}
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.Menus;
 
 
@@ -74,14 +75,14 @@ type
   private
     procedure menuClick(sender: TObject);
   protected
-    function setBuildVersion(const aBuild: string): boolean;
-    function setCopyrightYear(const aYear: WORD): boolean;
-    function setLatestReleaseVersion(const aRelease: string): boolean;
-    function setReleaseVersion(const aRelease: string): boolean;
-    function setNoStyle: boolean;
-    function setWhatsNew(const aHasReleaseNotes: boolean): boolean;
-    function checkPreviousReleaseNotes: boolean;
-    function compareVersions(const thisVersion: string; const latestVersion: string): boolean;
+    function setBuildVersion(const aBuild: string): TVoid;
+    function setCopyrightYear(const aYear: WORD): TVoid;
+    function setLatestReleaseVersion(const aRelease: string): TVoid;
+    function setReleaseVersion(const aRelease: string): TVoid;
+    function setNoStyle: TVoid;
+    function setWhatsNew(const aHasReleaseNotes: boolean): TVoid;
+    function checkPreviousReleaseNotes: TVoid;
+    function compareVersions(const thisVersion: string; const latestVersion: string): TVoid;
   public
   end;
   {$ENDREGION}
@@ -106,9 +107,9 @@ type
   private
     procedure   timerTimer(Sender: TObject);
     function    onNotify(const aNotice: INotice): INotice;
-    function    showForm(const thisVersion: string; const buildVersion: string): boolean; overload;
-    function    showForm:         boolean; overload;
-    function    showProgressForm: boolean;
+    function    showForm(const thisVersion: string; const buildVersion: string): TVoid; overload;
+    function    showForm:         TVoid; overload;
+    function    showProgressForm: TVoid;
   protected
   public
     constructor Create;
@@ -149,7 +150,7 @@ begin
   btnWhatsNewClick(btnWhatsNew);
 end;
 
-function TAboutForm.checkPreviousReleaseNotes: boolean;
+function TAboutForm.checkPreviousReleaseNotes: TVoid;
   function releaseTags(const aReleaseNotesPath: string): TArray<string>;
   var
     RC: integer;
@@ -168,7 +169,6 @@ function TAboutForm.checkPreviousReleaseNotes: boolean;
     findClose(SR);
   end;
 begin
-  result := FALSE;
 //  case btnWhatsNew.tag = 0 of TRUE: EXIT; end;
 
   mnuPopup.autoHotKeys      := maManual; // prevent spurious & accelerator-key characters from being added to the menuItem captions
@@ -186,7 +186,6 @@ begin
                                       mnuPopup.items.add(vMenuItem); end;
 
   setLength(vTags, 0);
-  result := TRUE;
 end;
 
 function versionLessThan(const aVersion1: string; const aVersion2: string): boolean;
@@ -247,7 +246,7 @@ begin
   result := FALSE;
 end;
 
-function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): boolean;
+function TAboutForm.compareVersions(const thisVersion: string; const latestVersion: string): TVoid;
 begin
   case latestVersion[1] = 'v' of FALSE: EXIT; end;
   case versionLessThan(thisVersion, latestVersion) of TRUE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
@@ -290,33 +289,33 @@ begin
   lblWikiURL.font.style := [];
 end;
 
-function TAboutForm.setBuildVersion(const aBuild: string): boolean;
+function TAboutForm.setBuildVersion(const aBuild: string): TVoid;
 begin
   lblBuildVersion.Caption := aBuild;
 end;
 
-function TAboutForm.setCopyrightYear(const aYear: WORD): boolean;
+function TAboutForm.setCopyrightYear(const aYear: WORD): TVoid;
 begin
   lblCopyright.caption := lblCopyright.caption + intToStr(aYear);
 end;
 
-function TAboutForm.setLatestReleaseVersion(const aRelease: string): boolean;
+function TAboutForm.setLatestReleaseVersion(const aRelease: string): TVoid;
 begin
   lblLatestReleaseVersion.caption := aRelease;
 end;
 
-function TAboutForm.setNoStyle: boolean;
+function TAboutForm.setNoStyle: TVoid;
 begin
   lblWebsiteURL.styleElements := [seClient, seBorder];
   lblWikiURL.styleElements    := [seClient, seBorder];
 end;
 
-function TAboutForm.setReleaseVersion(const aRelease: string): boolean;
+function TAboutForm.setReleaseVersion(const aRelease: string): TVoid;
 begin
   lblReleaseVersion.caption := aRelease;
 end;
 
-function TAboutForm.setWhatsNew(const aHasReleaseNotes: boolean): boolean;
+function TAboutForm.setWhatsNew(const aHasReleaseNotes: boolean): TVoid;
 begin
   btnWhatsNew.visible := TRUE;
   case aHasReleaseNotes of  TRUE: btnWhatsNew.caption := 'What''s New?';
@@ -358,7 +357,7 @@ begin
   end;
 end;
 
-function TAboutFormProxy.showForm(const thisVersion: string; const buildVersion: string): boolean;
+function TAboutFormProxy.showForm(const thisVersion: string; const buildVersion: string): TVoid;
 begin
   mmp.cmd(evGSShowingAbout, TRUE);
   showProgressForm;
@@ -379,12 +378,12 @@ begin
   end;
 end;
 
-function TAboutFormProxy.showForm: boolean;
+function TAboutFormProxy.showForm: TVoid;
 begin
   showForm(mmpFileVersionFmt(EMPTY, 'v%d.%d.%d'), mmpFileVersionFmt);
 end;
 
-function TAboutFormProxy.showProgressForm: boolean;
+function TAboutFormProxy.showProgressForm: TVoid;
 begin
   FProgressForm := mmpNewProgressForm;
   try
