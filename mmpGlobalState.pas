@@ -59,6 +59,9 @@ type
     function getMainForm:                 TForm;
     function getMaxSize:                  boolean;
     function getMediaType:                TMediaType;
+    function getMonitor:                  TMonitor;
+    function getMonitorCount:             integer;
+    function getMonitorIx:                integer;
     function getMPVScreenshotDirectory:   string;
     function getNoPlaylist:               boolean;
     function getOpeningURL:               boolean;
@@ -97,6 +100,9 @@ type
     property mainForm:                  TForm               read getMainForm;
     property maxSize:                   boolean             read getMaxSize;
     property mediaType:                 TMediaType          read getMediaType;
+    property monitor:                   TMonitor            read getMonitor;
+    property monitorCount:              integer             read getMonitorCount;
+    property monitorIx:                 integer             read getMonitorIx;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
     property noPlaylist:                boolean             read getNoPlaylist;
     property openingURL:                boolean             read getOpeningURL;
@@ -143,6 +149,9 @@ type
     FMainForm:                TForm;
     FMaxSize:                 boolean;
     FMediaType:               TMediaType;
+    FMonitor:                 TMonitor;
+    FMonitorCount:            integer;
+    FMonitorIx:               integer;
     FMPVScreenshotDirectory:  string;
     FNoPlaylist:              boolean;
     FOpeningURL:              boolean;
@@ -169,39 +178,42 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
-    function    getActiveTasks:              integer;
-    function    getActiveTaskPercent:        integer;
-    function    getArrangeAll:               boolean;
-    function    getAutoCenter:               boolean;
-    function    getCleanup:                  boolean;
-    function    getDuration:                 integer;
-    function    getHelpFull:                 boolean;
-    function    getIDDms:                    integer;
-    function    getIgnoreEscape:             boolean;
-    function    getImagesPaused:             boolean;
-    function    getMainForm:                 TForm;
-    function    getMaxSize:                  boolean;
-    function    getMediaType:                TMediaType;
-    function    getMPVScreenshotDirectory:   string;
-    function    getNoPlaylist:               boolean;
-    function    getOpeningURL:               boolean;
-    function    getRenameFile:               boolean;
-    function    getRepeatDelayMs:            integer;
-    function    getShowingAbout:             boolean;
-    function    getShowingConfig:            boolean;
-    function    getShowingHelp:              boolean;
-    function    getShowingPlaylist:          boolean;
-    function    getShowingStreamlist:        boolean;
-    function    getShowingThumbs:            boolean;
-    function    getShowingTimeline:          boolean;
-    function    getShuffle:                  boolean;
-    function    getSkipExcluded:             boolean;
-    function    getSuspended:                boolean;
-    function    getTimelineHeight:           integer;
-    function    getUserInput:                boolean;
-    function    getWidthHelp:                integer;
-    function    getWidthPlaylist:            integer;
-    function    getWidthStreamlist:          integer;
+    function  getActiveTasks:               integer;
+    function  getActiveTaskPercent:         integer;
+    function  getArrangeAll:                boolean;
+    function  getAutoCenter:                boolean;
+    function  getCleanup:                   boolean;
+    function  getDuration:                  integer;
+    function  getHelpFull:                  boolean;
+    function  getIDDms:                     integer;
+    function  getIgnoreEscape:              boolean;
+    function  getImagesPaused:              boolean;
+    function  getMainForm:                  TForm;
+    function  getMaxSize:                   boolean;
+    function  getMediaType:                 TMediaType;
+    function  getMonitor:                   TMonitor;
+    function  getMonitorCount:              integer;
+    function  getMonitorIx:                 integer;
+    function  getMPVScreenshotDirectory:    string;
+    function  getNoPlaylist:                boolean;
+    function  getOpeningURL:                boolean;
+    function  getRenameFile:                boolean;
+    function  getRepeatDelayMs:             integer;
+    function  getShowingAbout:              boolean;
+    function  getShowingConfig:             boolean;
+    function  getShowingHelp:               boolean;
+    function  getShowingPlaylist:           boolean;
+    function  getShowingStreamlist:         boolean;
+    function  getShowingThumbs:             boolean;
+    function  getShowingTimeline:           boolean;
+    function  getShuffle:                   boolean;
+    function  getSkipExcluded:              boolean;
+    function  getSuspended:                 boolean;
+    function  getTimelineHeight:            integer;
+    function  getUserInput:                 boolean;
+    function  getWidthHelp:                 integer;
+    function  getWidthPlaylist:             integer;
+    function  getWidthStreamlist:           integer;
 
     procedure   setMaxSize(const aValue: boolean);
 
@@ -294,6 +306,21 @@ end;
 function TGlobalState.getMediaType: TMediaType;
 begin
   result := FMediaType;
+end;
+
+function TGlobalState.getMonitor: TMonitor;
+begin
+  result := FMonitor;
+end;
+
+function TGlobalState.getMonitorCount: integer;
+begin
+  result := FMonitorCount;
+end;
+
+function TGlobalState.getMonitorIx: integer;
+begin
+  result := FMonitorIx;
 end;
 
 function TGlobalState.getMPVScreenshotDirectory: string;
@@ -419,6 +446,9 @@ begin
     evGSMainForm:                 FMainForm               := aNotice.component as TForm;
     evGSMaxSize:                  FMaxSize                := aNotice.tf;
     evGSMediaType:                FMediaType              := aNotice.mediaType;
+    evGSMonitor:                  FMonitor                := aNotice.monitor;
+    evGSMonitorCount:             FMonitorCount           := aNotice.integer;
+    evGSMonitorIx:                FMonitorIx              := aNotice.integer;
     evGSMPVScreenshotDirectory:   FMPVScreenshotDirectory := aNotice.text;
     evGSNoPlaylist:               FNoPlaylist             := aNotice.tf;
     evGSOpeningURL:               FOpeningURL             := aNotice.tf;

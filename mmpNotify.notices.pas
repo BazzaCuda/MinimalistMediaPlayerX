@@ -23,7 +23,7 @@ interface
 uses
   winApi.messages, winApi.windows,
   system.classes,
-  vcl.graphics,
+  vcl.forms, vcl.graphics,
   mmpConsts;
 
 type
@@ -37,7 +37,7 @@ type
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput, evGSIgnoreEscape,
     evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile, evGSSkipExcluded, evGSDuration,
-    evGSShuffle, evGSArrangeAll, evGSSuspended, evGSHelpFull,
+    evGSShuffle, evGSArrangeAll, evGSSuspended, evGSHelpFull, evGSMonitor, evGSMonitorCount, evGSMonitorIx,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
@@ -108,6 +108,7 @@ type
     function  getInteger:     integer;
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
+    function  getMonitor:     TMonitor;
     function  getPoint:       TPoint;
     function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
@@ -120,6 +121,7 @@ type
     procedure setInteger(const aValue: integer);
     procedure setMediaType(const aValue: TMediaType);
     procedure setMessage(const aValue: TMessage);
+    procedure setMonitor(const aValue: TMonitor);
     procedure setPoint(const aValue: TPoint);
     procedure setReasonType(const aValue: TReasonType);
     procedure setShiftState(const aValue: TShiftState);
@@ -130,6 +132,7 @@ type
     property  component:      TComponent          read getComponent      write setComponent;
     property  integer:        integer             read getInteger        write setInteger;
     property  mediaType:      TMediaType          read getMediaType      write setMediaType;
+    property  monitor:        TMonitor            read getMonitor        write setMonitor;
     property  msg:            TMessage            read getMessage        write setMessage;
     property  point:          TPoint              read getPoint          write setPoint;
     property  reasonType:     TReasonType         read getReasonType     write setReasonType;
@@ -184,6 +187,7 @@ type
     FInteger:       integer;
     FMediaType:     TMediaType;
     FMessage:       TMessage;
+    FMonitor:       TMonitor;
     FPoint:         TPoint;
     FReasonType:    TReasonType;
     FShiftState:    TShiftState;
@@ -197,6 +201,7 @@ type
     function  getInteger:     integer;
     function  getMediaType:   TMediaType;
     function  getMessage:     TMessage;
+    function  getMonitor:     TMonitor;
     function  getPoint:       TPoint;
     function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
@@ -210,6 +215,7 @@ type
     procedure setInteger    (const aValue: integer);
     procedure setMediaType  (const aValue: TMediaType);
     procedure setMessage    (const aValue: TMessage);
+    procedure setMonitor    (const aValue: TMonitor);
     procedure setPoint      (const aValue: TPoint);
     procedure setReasonType (const aValue: TReasonType);
     procedure setShiftState (const aValue: TShiftState);
@@ -346,6 +352,11 @@ begin
   result := FMessage;
 end;
 
+function TNotice.getMonitor: TMonitor;
+begin
+  result := FMonitor;
+end;
+
 function TNotice.getPoint: TPoint;
 begin
   result := FPoint;
@@ -404,6 +415,11 @@ end;
 procedure TNotice.setMessage(const aValue: TMessage);
 begin
   FMessage := aValue;
+end;
+
+procedure TNotice.setMonitor(const aValue: TMonitor);
+begin
+  FMonitor := aValue;
 end;
 
 procedure TNotice.setPoint(const aValue: TPoint);
