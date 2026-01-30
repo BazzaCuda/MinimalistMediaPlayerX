@@ -85,7 +85,7 @@ end;
 
 procedure renameDelay(const aMilliseconds: Cardinal);
 var
-  vStart: Int64;
+  vStart: uint64;
 begin
   vStart := getTickCount64;
   repeat
@@ -117,7 +117,7 @@ begin
 	end;
 end;
 
-function  secureOverwrite(const aFileHandle: THandle; const aLength: ULONGLONG): boolean;
+function secureOverwrite(const aFileHandle: THandle; const aLength: ULONGLONG): boolean;
 const
   CLEAN_BUF_SIZE = 65536;
 begin
@@ -145,7 +145,7 @@ begin
     virtualFree(vCleanBuffer, 0, MEM_RELEASE); end;
 end;
 
-function  secureDelete(const aFilePath: string): integer;
+function secureDelete(const aFilePath: string): integer;
 begin
   result     := -1;
   var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
@@ -278,6 +278,7 @@ var
   threadID:   LONGWORD;
   vThreadRec: PThreadRec;
 begin
+  result := FALSE;
   case aDeleteMethod of
     dmRecycle:  result := recycleDeleteFile(aFilepath);
     dmStandard: result := standardDeleteFile(aFilePath);
@@ -292,6 +293,7 @@ var
   vFolderPath:  string;
   SR:           TSearchRec;
 begin
+  result := FALSE;
   vFolderPath := mmpITBS(aFolderPath);
   case findFirst(vFolderPath + '*.*', faFilesOnly, SR) = 0 of TRUE:
     repeat
@@ -328,6 +330,7 @@ end;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
+  result := FALSE;
   case fileExists(aFullPath) of  TRUE: result := shredIt(aFullPath, aDeleteMethod);
                                 FALSE: case directoryExists(aFullPath) of TRUE: result := shredFolderFiles(aFullPath, aDeleteMethod); end;end;
 end;
