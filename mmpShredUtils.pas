@@ -44,14 +44,14 @@ uses
 //=====
 
 type
-  TFileLevelTrimRange = record
-    Offset: Int64;
-    Length: Int64;
+  TFileLevelTrimRange = packed record
+    Offset: int64;
+    Length: int64;
   end;
 
-  TFileLevelTrim = record
-    Key: Cardinal;
-    NumRanges: Cardinal;
+  TFileLevelTrim = packed record
+    Key:        cardinal;
+    NumRanges:  cardinal;
     Ranges: array[0..0] of TFileLevelTrimRange;
   end;
 
@@ -60,27 +60,39 @@ const
 
 function  trimFileRange(const aFilePath: string): boolean;
 begin
-  var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
   result     := FALSE;
+  var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
   case vHFile = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
 
   try
-    var vFileLength: int64 := 0;
+    var  vFileLength: int64 := 0;
     case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
 
-    var vTrim: TFileLevelTrim;
-    var vBytesReturned: Cardinal;
+    var vTrim:          TFileLevelTrim;
+    var vBytesReturned: cardinal;
+
     vTrim.Key              := 0;
     vTrim.NumRanges        := 1;
     vTrim.Ranges[0].Offset := 0;
     vTrim.Ranges[0].Length := vFileLength;
 
-    // We call the control code but don't force a FALSE result if the drive
-    // simply doesn't support TRIM (e.g., an HDD).
+    // We call the control code but don't force a FALSE result if the drive simply doesn't support TRIM (e.g., an HDD).
     deviceIoControl(vHFile, FSCTL_FILE_LEVEL_TRIM, @vTrim, sizeof(vTrim), nil, 0, vBytesReturned, nil);
     result := TRUE;
   finally
     closeHandle(vHFile); end;
+end;
+
+procedure renameDelay(const aMilliseconds: Cardinal);
+var
+  vStart: Int64;
+begin
+  vStart := getTickCount64;
+  repeat
+    { A 1ms sleep is the most effective way to yield a background thread }
+    { while ensuring the CPU doesn't spike to 100% during the wait }
+    sleep(1);
+  until (getTickCount64 - vStart) >= aMilliseconds;
 end;
 
 function overwriteFileName(const aFilePath:  string): string;
@@ -92,13 +104,16 @@ begin
 	// rename the file 26 times
 	var newName := aFilePath;
 	for var i := 0 to 25 do begin
-		// Replace each non-'.' character with the same letter
+		// Replace each non-'.' character with a random alphabetic
 		for var j := ix to length(aFilePath) do
 			case aFilePath[j] = '.' of FALSE: newName[j] := chr(ord('A') + random(26)); end;
 		// Got a new name so rename
-		case moveFile(PWideChar(result), PWideChar(newName)) of FALSE: EXIT; end;
+    case moveFile(PWideChar(result), PWideChar(newName)) of FALSE:  begin
+                                                                      renameDelay(10); // don't compete with anti-virus scanners now we've closed the file handle
+                                                                      case moveFile(PWideChar(result), PWideChar(newName)) of FALSE: EXIT; end;end;end; // OK, they win!
 
-		result := newName;
+	  result := newName;
+
 	end;
 end;
 
@@ -154,7 +169,7 @@ begin
   end;
 
   var vScrambledPath := overwriteFileName(aFilePath);
-  debugString('scrambledPath', vScrambledPath);
+  // debugString('scrambledPath', vScrambledPath);
 
   result := -6;
   case trimFileRange(vScrambledPath) of FALSE: EXIT; end;
@@ -167,10 +182,10 @@ end;
 
 function secureDeleteFile(const aFilePath: string): integer;
 begin
-  debugString('secureDeleteFile', aFilePath);
+  // debugString('secureDeleteFile', aFilePath);
   result := -10;
   case fileExists(aFilePath) of TRUE: result := secureDelete(aFilePath); end;
-  debugInteger('secureDeleteFile', result);
+  // debugInteger('secureDeleteFile', result);
 end;
 
 //=====

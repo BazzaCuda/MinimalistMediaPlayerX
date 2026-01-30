@@ -229,6 +229,8 @@ begin
   application.run;
   {$else}
 
+  randomize;
+
   setupRunMode;
 
   TStyleManager.trySetStyle(MMP_STYLE_DARKMODE);
