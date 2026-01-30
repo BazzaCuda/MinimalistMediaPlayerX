@@ -47,10 +47,10 @@ type
     function    isLast:                                     boolean;
     function    last:                                       boolean;
     function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
-    function    nextIx:                                     boolean;
+    function    nextIx:                                     integer;
     function    notify(const aNotice: INotice):             INotice;
     function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
-    function    sort:                                       boolean;
+    function    sort:                                       TVoid;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
     function    thisItem(const ix: integer):                string;
@@ -80,9 +80,9 @@ type
     FSubscriber:    ISubscriber;
   private
     function    add(const anItem: string):          boolean;
-    function    displayItem:                        string;
+    // function    displayItem:                        string;
     function    expandSetOfMediaType(const aSetOfMediaType: TSetOfMediaType): TSetOfMediaType;
-    function    extractNumericPart(const aString: string): integer;
+    // function    extractNumericPart(const aString: string): integer;
     function    formattedItem:                      string;
     function    getPlaylist(aListBox: TListBox):    boolean;
     function    isSpecialImage:                     boolean;
@@ -109,12 +109,12 @@ type
     function    isLast:                                     boolean;
     function    last:                                       boolean;
     function    next(const aSetOfMediaType: TSetOfMediaType = [mtUnk]; const bShuffle: boolean = FALSE): boolean;
-    function    nextIx:                                     boolean;
+    function    nextIx:                                     integer;
     function    notify(const aNotice: INotice):             INotice;
     function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
     function    setIx(const ix: integer):                   integer;
-    function    sort:                                       boolean;
+    function    sort:                                       TVoid;
     function    thisItem(const ix: integer):                string;
     function    validIx(const ix: integer):                 boolean;
   end;
@@ -207,10 +207,10 @@ begin
   inherited;
 end;
 
-function TPlaylist.displayItem: string;
-begin
-  result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
-end;
+//function TPlaylist.displayItem: string;
+//begin
+//  result := format('[%d/%d] %s', [FPlayIx, count, extractFileName(currentItem)]);
+//end;
 
 function TPlaylist.expandSetOfMediaType(const aSetOfMediaType: TSetOfMediaType): TSetOfMediaType;
 begin
@@ -218,17 +218,17 @@ begin
   case mtAudioVideo in result of TRUE: result := result - [mtAudioVideo] + [mtAudio, mtVideo]; end;
 end;
 
-function TPlaylist.extractNumericPart(const aString: string): Integer;
-var
-  vMatch: TMatch;
-begin
-  // Use a regular expression to extract the numeric part from the string
-  vMatch := TRegEx.match(aString, '\d+');
-  if vMatch.success then
-    result := strToIntDef(vMatch.value, 0)
-  else
-    result := 0;
-end;
+//function TPlaylist.extractNumericPart(const aString: string): Integer;
+//var
+//  vMatch: TMatch;
+//begin
+//  // Use a regular expression to extract the numeric part from the string
+//  vMatch := TRegEx.match(aString, '\d+');
+//  if vMatch.success then
+//    result := strToIntDef(vMatch.value, 0)
+//  else
+//    result := 0;
+//end;
 
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
 // in the context of the playlist, mtUnk is a synonym for mtAny except when it's being used to identify unsupported file types
@@ -278,7 +278,6 @@ end;
 
 function TPlaylist.first: boolean;
 begin
-  result := FALSE;
   FPlayIx := -ord(NOT hasItems); // TRUE = 0, FALSE = -1, a reversal of their ordinal values
   result := FPlayIx = 0;
 end;
@@ -292,8 +291,6 @@ end;
 function TPlaylist.getPlaylist(aListBox: TListBox): boolean;
 var i: integer;
 begin
-  result := FALSE;
-
   aListBox.items.beginUpdate; // prevent flicker when moving the window
   try
     aListBox.clear;
@@ -320,7 +317,6 @@ end;
 function TPlaylist.insert(const anItem: string): boolean;
 // insert at FPlayIx + 1, after the current item
 begin
-  result := FALSE;
   case isLast of   TRUE: FPlaylist.add(anItem);
                   FALSE: FPlaylist.insert(FPlayIx, anItem); end;
   result := FPlaylist.count > 0;
@@ -338,14 +334,12 @@ end;
 
 function TPlaylist.isSpecialImage: boolean; // I don't remember what this was all about - it's not used
 begin
-  result := FALSE;
   var vExt := lowerCase(extractFileExt(currentItem)) + ' ';
   result := '.avif .webp .png '.contains(vExt);
 end;
 
 function TPlaylist.last: boolean;
 begin
-  result := FALSE;
   case hasItems of   TRUE: FPlayIx := FPlaylist.count - 1;
                     FALSE: FPlayIx := -1; end;
   result := FPlayIx <> -1;
@@ -401,10 +395,12 @@ begin
   result := TRUE;
 end;
 
-function TPlaylist.nextIx: boolean;
+function TPlaylist.nextIx: integer;
 begin
+  result := FPlayIx;
   case FPlayIx + 1 > FPlaylist.count - 1 of TRUE: EXIT; end;
   inc(FPlayIx);
+  result := FPlayIx;
 end;
 
 function TPlaylist.notify(const aNotice: INotice): INotice;
@@ -485,19 +481,14 @@ end;
 
 function TPlaylist.setIx(const ix: integer): integer;
 begin
-  result := -1;
   case validIx(ix) of  TRUE: FPlayIx := ix;
                       FALSE: first; end;
   result := FPlayIx;
 end;
 
-function TPlaylist.sort: boolean;
+function TPlaylist.sort: TVoid;
 begin
-  result := FALSE;
-
   FPlaylist.naturalSort;
-
-  result := TRUE;
 end;
 
 function TPlaylist.thisItem(const ix: integer): string;

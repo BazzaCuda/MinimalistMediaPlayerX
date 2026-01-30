@@ -22,6 +22,7 @@ interface
 
 uses
   system.classes, system.sysUtils,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
@@ -156,8 +157,6 @@ end;
 function mmpConfirmDelete(const aFilePath: string; const aShiftState: TShiftState; const aDeleteMethod: TDeleteMethod): boolean;
 var vDeletionObject: TDeletionObject;
 begin
-  result := FALSE;
-
   case ssCtrl in aShiftState of  TRUE: vDeletionObject := doFolder;
                                 FALSE: vDeletionObject := doFile; end;
 
@@ -323,8 +322,6 @@ end;
 
 function mmpFixedDrive(const aFilePath: string): boolean;
 begin
-  result := FALSE;
-
   var vDriveRoot := extractFileDrive(aFilePath);
 
   result := getDriveType(PChar(vDriveRoot)) = DRIVE_FIXED; // large external USB SSDs present as fixed; micro SDs etc don't
@@ -372,7 +369,6 @@ end;
 
 function mmpIsFileInUse(const aFilePath: string; out aSysErrorMessage: string): boolean;
 begin
-  result            := FALSE;
   aSysErrorMessage  := EMPTY;
   setLastError(ERROR_SUCCESS);
 
@@ -524,7 +520,6 @@ end;
 
 function mmpRunTasks: boolean;
 begin
-  result := FALSE;
   mmpStartTasks;
   result := TRUE;
 end;

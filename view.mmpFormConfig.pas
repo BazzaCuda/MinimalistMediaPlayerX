@@ -265,17 +265,18 @@ type
   public
   end;
 
-function mmpConfig(const aTabCaption: string = ''): boolean;
+function mmpConfig(const aTabCaption: string = ''): TVoid;
 
 implementation
 
 uses
+  system.types,
   bazCmd,
   mmpConsts, mmpFolderUtils, mmpGlobalState, mmpKeyboardUtils, mmpShellUtils, mmpUserFolders, mmpUtils,
   model.mmpConfigFile,
   _debugWindow;
 
-function mmpConfig(const aTabCaption: string = ''): boolean;
+function mmpConfig(const aTabCaption: string = ''): TVoid;
 begin
   with TConfigForm.create(NIL) do begin
     mmp.cmd(evGSShowingConfig, TRUE);

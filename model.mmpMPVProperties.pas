@@ -60,7 +60,6 @@ var
   saturation: int64;
   zoomX, zoomY: double;
 begin
-  result := FALSE;
   mpv.getPropertyInt64('brightness', brightness);
   mpv.getPropertyInt64('contrast', contrast);
   mpv.getPropertyInt64('gamma', gamma);

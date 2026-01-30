@@ -180,7 +180,7 @@ type
 
     FBoolean:       boolean;
     FComponent:     TComponent;
-    FDouble:        double;
+    // FDouble:        double;
     FInteger:       integer;
     FMediaType:     TMediaType;
     FMessage:       TMessage;

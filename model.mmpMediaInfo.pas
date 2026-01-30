@@ -23,6 +23,7 @@ interface
 uses
   system.generics.collections,
   vcl.forms, vcl.stdCtrls,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   TMediaStreamClass;
@@ -71,12 +72,12 @@ type
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaStreams: TObjectList<TMediaStream>;
-    function getMetaData(const aMemo: TMemo):       boolean;
+    function getMetaData(const aMemo: TMemo): TVoid;
     function getSelectedCount:      integer;
     function getStreamCount:        integer;
     function getTitle:              string;
 
-    function sortStreams: boolean;
+    function sortStreams: TVoid;
 
     property avsStreamCount:    integer                     read getAVSStreamCount;
     property chapterCount:      integer                     read getChapterCount;
@@ -138,12 +139,12 @@ type
     function getMediaInfo(const aNotice: INotice; const bQuiet: boolean = FALSE): INotice;
     function getMediaChapters:      TObjectList<TMediaChapter>;
     function getMediaStreams:       TObjectList<TMediaStream>;
-    function getMetaData(const aMemo: TMemo):       boolean;
+    function getMetaData(const aMemo: TMemo): TVoid;
     function getSelectedCount:      integer;
     function getStreamCount:        integer;
     function getTitle:              string;
 
-    function sortStreams: boolean;
+    function sortStreams: TVoid;
     function notify(const aNotice: INotice): INotice;
 
     property audioBitRate:        string  read getAudioBitRate;
@@ -240,7 +241,7 @@ begin
   result := 'FS:   ' + mmpFormatFileSize(mmpFileSize(FURL));
 end;
 
-function TMediaInfo.getMetaData(const aMemo: TMemo): boolean;
+function TMediaInfo.getMetaData(const aMemo: TMemo): TVoid;
 begin
   aMemo.clear;
   aMemo.lines.add(EMPTY);
@@ -315,7 +316,7 @@ var
   vInfo:        string;
   vStreamType:  string;
 
-  function createVideoStream(aStreamIx: integer; aFFmpegIx: integer): boolean;
+  function createVideoStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
   begin
 //    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
 
@@ -338,7 +339,7 @@ var
     FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
   end;
 
-  function createAudioStream(aStreamIx: integer; aFFmpegIx: integer): boolean;
+  function createAudioStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
   begin
     vBitRate    := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'BitRate/String',          Info_Text, Info_Name);
     vDuration   := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'Duration/String5',        Info_Text, Info_Name);
@@ -354,7 +355,7 @@ var
     FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
-  function createTextStream(aStreamIx: integer; aFFmpegIx: integer): boolean;
+  function createTextStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
   begin
     vBitRate    := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'BitRate/String',           Info_Text, Info_Name);
     vDuration   := mediaInfo_Get(FHandle, Stream_Text, aStreamIx, 'Duration/String5',         Info_Text, Info_Name);
@@ -370,7 +371,7 @@ var
     FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
-  function createImageStream(aStreamIx: integer; aFFmpegIx: integer): boolean;
+  function createImageStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
   begin
     vBitRate    := EMPTY;
     vDuration   := EMPTY;
@@ -404,14 +405,14 @@ var
     end;
   end;
 
-  function calcChapterEndSS: boolean;
+  function calcChapterEndSS: TVoid;
   begin
     for var i := 0 to chapterCount - 1 do
       case i = chapterCount - 1 of  TRUE: FMediaChapters[i].chapterEndSS := duration;
                                    FALSE: FMediaChapters[i].chapterEndSS := FMediaChapters[i + 1].chapterStartSS - 1; end;
   end;
 
-  function createChapters: boolean;
+  function createChapters: TVoid;
   begin
     var chapterBegin: integer; var chapterEnd: integer;
     case tryStrToInt(mediaInfo_Get(FHandle, Stream_Menu,         0, 'Chapters_Pos_Begin',  Info_Text, Info_Name), chapterBegin) of FALSE: chapterBegin := 0; end;
@@ -586,7 +587,7 @@ begin
   end;
 end;
 
-function TMediaInfo.sortStreams: boolean;
+function TMediaInfo.sortStreams: TVoid;
 begin
   FMediaStreams.sort(TComparer<TMediaStream>.construct(
       function (const L, R: TMediaStream): integer

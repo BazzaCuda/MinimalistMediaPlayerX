@@ -65,7 +65,7 @@ type
     procedure chbDeleteFolderClick(Sender: TObject);
   private
   public
-    constructor Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean);
+    constructor Create(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean); reintroduce;
   end;
   {$ENDREGION}
 

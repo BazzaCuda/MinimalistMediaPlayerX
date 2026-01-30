@@ -848,7 +848,7 @@ end;
 
 function TThumbsForm.whichHost: THostType;
 begin
-//  result := htNoHost; // suppress compiler warning
+  result := htNoHost; // suppress compiler warning
   case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
   case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
@@ -947,8 +947,8 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      begin {debug('koGreaterWindow');} mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
-    koHelpFull:           mmpHelpFull(htIATB, TRUE);
+    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
+    koHelpFull:           mmpHelpFull(htIATB, SELF.HANDLE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;
     koMaximize:           maximizeWindow;

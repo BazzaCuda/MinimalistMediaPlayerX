@@ -23,6 +23,7 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   model.mmpPlaylist,
@@ -32,14 +33,14 @@ type
   TPlayType = (ptGenerateThumbs, ptPlaylistOnly);
 
   IThumbs = interface
-    function    cancel:             boolean;
-    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
-    function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
-    function    playCurrentItem:    boolean;
-    function    playPrevThumbsPage: boolean;
+    function    cancel:             TVoid;
+    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): TVoid;
+    function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): TVoid;
+    function    playCurrentItem:    TVoid;
+    function    playPrevThumbsPage: TVoid;
     function    playThumbs(const aFilePath: string = EMPTY; const aPlayType: TPlayType = ptGenerateThumbs): integer;
-    function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
-    function    showDisplayDimensions(const aHost: THostType): boolean;
+    function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): TVoid;
+    function    showDisplayDimensions(const aHost: THostType): TVoid;
     function    thumbColCount:      integer;
     function    thumbsPerPage:      integer;
     function    thumbRowCount:      integer;
@@ -112,14 +113,14 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
-    function    cancel:             boolean;
-    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
-    function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
-    function    playCurrentItem:    boolean;
-    function    playPrevThumbsPage: boolean;
+    function    cancel:             TVoid;
+    function    fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): TVoid;
+    function    initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): TVoid;
+    function    playCurrentItem:    TVoid;
+    function    playPrevThumbsPage: TVoid;
     function    playThumbs(const aFilePath: string = EMPTY; const aPlayType: TPlayType = ptGenerateThumbs): integer;
-    function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
-    function    showDisplayDimensions(const aHost: THostType): boolean;
+    function    setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): TVoid;
+    function    showDisplayDimensions(const aHost: THostType): TVoid;
     function    thumbColCount:      integer;
     function    thumbsPerPage:      integer;
     function    thumbRowCount:      integer;
@@ -142,7 +143,7 @@ end;
 
 { TThumbs }
 
-function TThumbs.cancel: boolean;
+function TThumbs.cancel: TVoid;
 begin
   FCancel := TRUE;
 end;
@@ -163,7 +164,7 @@ begin
   inherited;
 end;
 
-function TThumbs.fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): boolean;
+function TThumbs.fillPlaylist(const aPlaylist: IPlaylist; const aFilePath: string; const aCurrentFolder: string): TVoid;
 begin
   case aPlaylist.hasItems AND (aPlaylist.currentFolder <> aCurrentFolder) of TRUE: aPlaylist.clear; end;
   case aPlaylist.hasItems of  FALSE: aPlaylist.fillPlaylist(aCurrentFolder, [mtImage]); end;
@@ -177,13 +178,13 @@ var
   vThumbLeft: integer;
   vIx:        integer;
 
-  function adjustCurrentItem: boolean;  // guarantee a full page of thumbnails on the last page
+  function adjustCurrentItem: TVoid;  // guarantee a full page of thumbnails on the last page
   begin
     var vEndIx := FPlaylist.count - 1;
     case (vEndIx - FPlaylist.currentIx) < thumbsPerPage of TRUE: FPlaylist.setIx(vEndIx - (thumbsPerPage - 1)); end;
   end;
 
-  function calcNextThumbPosition: integer;
+  function calcNextThumbPosition: TVoid;
   begin
     vThumbLeft := vThumbLeft + FThumbSize + THUMB_MARGIN;
     case (vThumbLeft + FThumbSize) > FThumbsHost.width of
@@ -192,7 +193,7 @@ var
               vThumbTop   := vThumbTop + FThumbSize + THUMB_MARGIN; end;end;
   end;
 
-  function setPanelPageNo: boolean;
+  function setPanelPageNo: TVoid;
   var
     tpp: integer;
     extra: integer;
@@ -210,6 +211,7 @@ var
   end;
 
 begin
+  result := -1;
   FThumbs.clear;
 
   case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
@@ -276,23 +278,24 @@ end;
 
 function TThumbs.getWhichHost: THostType;
 begin
+  result := htNoHost;
   case FThumbsHost.visible of  TRUE: result := htThumbsHost;  end;
   case FMPVHost.visible    of  TRUE: result := htMPVHost;     end;
 end;
 
-function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): boolean;
+function TThumbs.initThumbs(const aMPVHost: TMPVHost; const aThumbsHost: TWinControl; const aStatusBar: TStatusBar): TVoid;
 begin
   FMPVHost    := aMPVHost;
   FThumbsHost := aThumbsHost;
   FStatusBar  := aStatusBar;
 end;
 
-function TThumbs.playCurrentItem: boolean;
+function TThumbs.playCurrentItem: TVoid;
 begin
   case FPlaylist.hasItems of TRUE: FMPVHost.openFile(FPlaylist.currentItem); end;
 end;
 
-function TThumbs.playPrevThumbsPage: boolean;
+function TThumbs.playPrevThumbsPage: TVoid;
 begin
   case FPlaylist.isFirst of FALSE:  begin
                                       FPlaylist.setIx(FPlaylist.currentIx - (thumbsPerPage * 2));
@@ -329,7 +332,7 @@ begin
   FOnThumbClick := value;
 end;
 
-function TThumbs.setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): boolean;
+function TThumbs.setPanelText(const aURL: string; aTickCount: double = -1; const aGetMediaInfo: boolean = FALSE): TVoid;
 begin
   case FPlaylist.hasItems of  TRUE: mmpSetPanelText(FStatusBar, pnName, extractFileName(aURL));
                              FALSE: mmpSetPanelText(FStatusBar, pnName, THUMB_NO_IMAGES); end;
@@ -371,7 +374,7 @@ begin
   FThumbSize := value;
 end;
 
-function TThumbs.showDisplayDimensions(const aHost: THostType): boolean;
+function TThumbs.showDisplayDimensions(const aHost: THostType): TVoid;
 begin
   case FPlaylist.hasItems of  TRUE: case aHost of htMPVHost:    mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FMPVHost.width, FMPVHost.height]));
                                                   htThumbsHost: mmpSetPanelText(FStatusBar, pnDDXY, format('D: %d x %d', [FThumbsHost.width, FThumbsHost.height])); end;

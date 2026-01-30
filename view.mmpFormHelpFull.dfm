@@ -57,6 +57,7 @@ object HelpFullForm: THelpFullForm
     Width = 584
     Height = 30
     CustomButtons = <>
+    ExplicitWidth = 624
     object sbUp: TSpeedButton
       AlignWithMargins = True
       Left = 500
@@ -133,7 +134,7 @@ object HelpFullForm: THelpFullForm
     object Label1: TLabel
       Left = 1
       Top = 1
-      Width = 138
+      Width = 34
       Height = 15
       Align = alTop
       Alignment = taCenter
@@ -144,7 +145,6 @@ object HelpFullForm: THelpFullForm
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitWidth = 34
     end
     object lbTabCaptions: TListBox
       Left = 1

@@ -540,7 +540,7 @@ procedure TVM.onKeyUp(key: Word; shift: TShiftState);
 begin
   case (key = VK_ESCAPE) and GS.userInput             of TRUE: begin  EXIT; end;end; // close userInput without closing HelpFull on Config
   case (key = VK_ESCAPE) and GS.showingConfig         of TRUE: begin  EXIT; end;end; // close Config without closing Help Full!
-  case (key = VK_ESCAPE) and GS.helpFull              of TRUE: begin mmp.cmd(evGSIgnoreEscape, TRUE);  mmpHelpFull; EXIT; end;end; // on key-up close mmpHelpFull
+  case (key = VK_ESCAPE) and GS.helpFull              of TRUE: begin mmp.cmd(evGSIgnoreEscape, TRUE); mmpHelpFull; EXIT; end;end; // on key-up close mmpHelpFull
   case SS.handled                                     of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   case GS.userInput                                   of TRUE: EXIT; end;
   case GS.showingTimeline and TL.validKey(key, shift) of TRUE: begin focusTimeline; EXIT; end;end;
@@ -650,7 +650,7 @@ begin
     evVMConfig:             mmpConfig(aNotice.text);
     evVMDeleteCurrentItem:  case deleteCurrentItem(aNotice.shiftState) and (aNotice.shiftState = [ssShift]) of TRUE: doCleanup(FALSE); end;
     evVMDoEscapeKey:        doEscapeKey;
-    evVMHelpFull:           mmpHelpFull(htMain, FALSE);
+    evVMHelpFull:           mmpHelpFull(htMain, GS.mainForm.HANDLE);
     evVMKeepCatF1:          sendOpInfo(renameCurrentItem(rtKeepCatF1));
     evVMKeepCatF2:          sendOpInfo(renameCurrentItem(rtKeepCatF2));
     evVMKeepCatF3:          sendOpInfo(renameCurrentItem(rtKeepCatF3));

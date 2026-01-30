@@ -23,6 +23,7 @@ interface
 uses
   system.types,
   MPVBasePlayer,
+  bazAction,
   _debugWindow;
 
 function mpvAdjusted(const mpv: IMPVBasePlayer): boolean;
@@ -39,11 +40,11 @@ function mpvXY(const mpv: IMPVBasePlayer): TPoint;
 function mpvGetPropertyString(const mpv: IMPVBasePlayer; const aProperty: string; var  aString: string): TMPVErrorCode;
 function mpvSetPropertyString(const mpv: IMPVBasePlayer; const aProperty: string; const aValue: string): TMPVErrorCode;
 function mpvgetMute(const mpv: IMPVBasePlayer; var aBoolean: boolean): TMPVErrorCode;
-function mpvSetMute(const mpv: IMPVBasePlayer; const value: boolean): boolean;
-function mpvSetKeepOpen(const mpv: IMPVBasePlayer; const value: boolean): boolean;
-function mpvSetVolume(const mpv: IMPVBasePlayer; const aVolume: integer): boolean;
+function mpvSetMute(const mpv: IMPVBasePlayer; const value: boolean): TVoid;
+function mpvSetKeepOpen(const mpv: IMPVBasePlayer; const value: boolean): TVoid;
+function mpvSetVolume(const mpv: IMPVBasePlayer; const aVolume: integer): TVoid;
 
-function mpvSetDefaults(const mpv: IMPVBasePlayer; const aExePath: string): boolean;
+function mpvSetDefaults(const mpv: IMPVBasePlayer; const aExePath: string): TVoid;
 
 implementation
 
@@ -75,6 +76,7 @@ end;
 
 function mpvDuration(const mpv: IMPVBasePlayer): integer;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := trunc(mpv.totalSeconds);
 end;
@@ -87,24 +89,28 @@ end;
 
 function mpvPosition(const mpv: IMPVBasePlayer): integer;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := trunc(mpv.currentSeconds);
 end;
 
 function mpvState(const mpv: IMPVBasePlayer): TMPVPlayerState;
 begin
+  result := mpsUnk;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.getState;
 end;
 
 function mpvVideoHeight(const mpv: IMPVBasePlayer): int64;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.videoHeight;
 end;
 
 function mpvVideoWidth(const mpv: IMPVBasePlayer): int64;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.videoWidth;
 end;
@@ -119,17 +125,19 @@ end;
 
 function mpvGetPropertyString(const mpv: IMPVBasePlayer; const aProperty: string; var aString: string): TMPVErrorCode;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.getPropertyString(aProperty, aString, FALSE);
 end;
 
 function mpvSetPropertyString(const mpv: IMPVBasePlayer; const aProperty: string; const aValue: string): TMPVErrorCode;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   result := mpv.setPropertyString(aProperty, aValue);
 end;
 
-function mpvSetKeepOpen(const mpv: IMPVBasePlayer; const value: boolean): boolean;
+function mpvSetKeepOpen(const mpv: IMPVBasePlayer; const value: boolean): TVoid;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyBool('keep-open', value); // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
@@ -137,23 +145,24 @@ end;
 
 function mpvgetMute(const mpv: IMPVBasePlayer; var aBoolean: boolean): TMPVErrorCode;
 begin
+  result := -1;
   case mpv = NIL of TRUE: EXIT; end;
   mpv.getPropertyBool('mute', aBoolean);
 end;
 
-function mpvSetMute(const mpv: IMPVBasePlayer; const value: boolean): boolean;
+function mpvSetMute(const mpv: IMPVBasePlayer; const value: boolean): TVoid;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.setPropertyBool('mute', value);
 end;
 
-function mpvSetVolume(const mpv: IMPVBasePlayer; const aVolume: integer): boolean;
+function mpvSetVolume(const mpv: IMPVBasePlayer; const aVolume: integer): TVoid;
 begin
   case mpv = NIL of TRUE: EXIT; end;
   mpv.volume := aVolume;
 end;
 
-function mpvSetDefaults(const mpv: IMPVBasePlayer; const aExePath: string): boolean;
+function mpvSetDefaults(const mpv: IMPVBasePlayer; const aExePath: string): TVoid;
 //===== THESE CAN ALL BE OVERRIDDEN IN MPV.CONF =====
 begin
   case mpv = NIL of TRUE: EXIT; end;

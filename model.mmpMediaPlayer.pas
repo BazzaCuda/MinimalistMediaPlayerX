@@ -37,7 +37,7 @@ implementation
 uses
   system.sysUtils,
   MPVBasePlayer,
-  bazCmd,
+  bazAction, bazCmd,
   mmpConsts, mmpFileUtils, mmpGlobalState, mmpTickTimer, mmpUtils,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpMPVCtrls, model.mmpMPVProperties,
   _debugWindow;
@@ -64,11 +64,11 @@ type
     function    onNotify(const aNotice: INotice):     INotice;
     function    onTickTimer(const aNotice: INotice):  INotice;
 
-    function    detachStates: boolean;
+    function    detachStates: TVoid;
     function    openURL(const aURL: string):          boolean;
     function    pausePlay:                            string;
     function    pausePlayImages:                      string;
-    function    sendOpInfo(const aOpInfo: string):    boolean;
+    function    sendOpInfo(const aOpInfo: string):    TVoid;
   protected
     procedure   setPosition(const aValue: integer);
   public
@@ -105,7 +105,7 @@ begin
   inherited;
 end;
 
-function TMediaPlayer.detachStates: boolean;
+function TMediaPlayer.detachStates: TVoid;
 begin
   case mpv = NIL of TRUE: EXIT; end;
 
@@ -298,7 +298,6 @@ end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
 begin
-  result          := FALSE;
   FIgnoreTicks    := TRUE;
 
   FMediaType      := MT.mediaType(aURL);
@@ -342,11 +341,9 @@ begin
                         FALSE: result := 'slideshow unpaused'; end;
 end;
 
-function TMediaPlayer.sendOpInfo(const aOpInfo: string): boolean;
+function TMediaPlayer.sendOpInfo(const aOpInfo: string): TVoid;
 begin
-  result := FALSE;
   mmp.cmd(evSTOpInfo, aOpInfo);
-  result := TRUE;
 end;
 
 procedure TMediaPlayer.setPosition(const aValue: integer);

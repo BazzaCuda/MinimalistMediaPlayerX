@@ -57,7 +57,6 @@ end;
 
 function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
 begin
-  result := FALSE;
   var vPlaylist := newPlaylist;
   vPlaylist.fillPlaylist(extractFilePath(aFilePath), aSetOfMediaType);
   result := vPlaylist.hasItems;
@@ -74,7 +73,7 @@ var vNum1,
 
   function isDigit(ch: char):Boolean;
   begin
-     result := ch in ['0'..'9'];
+    result := charInSet(ch, ['0'..'9']);
   end;
 
   function getNumber(var pch: PChar): double;

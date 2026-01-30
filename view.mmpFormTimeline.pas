@@ -27,9 +27,10 @@ uses
   {$define designTime} // temporary until we sort out the uses clause
   {$ifdef designTime}
   winApi.messages, winApi.Windows,
-  system.classes, system.generics.collections,
-  system.sysUtils, vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
+  system.classes, system.generics.collections, system.types, system.sysUtils,
+  vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
   {$endif}
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts,
   TSegmentClass, Vcl.Imaging.pngimage;
@@ -54,9 +55,9 @@ type
   private
     function  getCursorPos: integer;
     procedure setCursorPos(const Value: integer);
-    function  updatePositionDisplay(const aPosition: integer): boolean;
+    function  updatePositionDisplay(const aPosition: integer): TVoid;
   protected
-    procedure createParams(var params: TCreateParams);
+    procedure CreateParams(var params: TCreateParams); reintroduce;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     property  cursorPos: integer read getCursorPos write setCursorPos;
@@ -64,7 +65,7 @@ type
 
   TTimeline = class(TObject)
   strict private
-    FCancelled:               boolean;
+    // FCancelled:               boolean;
     FDragging:                boolean;
     FUseKeyFrames:            boolean;
     FMax:                     integer;
@@ -73,15 +74,12 @@ type
     FPlayEdited:              boolean;
     FPositionSS:              integer;
     FPrevAction:              string;
-    FProcessHandle:           THandle;
+    // FProcessHandle:           THandle;
     FUndoList:                TObjectStack<TStringList>;
     FRedoList:                TObjectStack<TStringList>;
     FSubscriber:              ISubscriber;
 
   private
-    constructor Create;
-    destructor  Destroy; override;
-
     function    getMax:       integer;
     function    getPosition:  integer;
     function    getSegCount:  integer;
@@ -94,19 +92,19 @@ type
     function    addUndo(const aAction: string): string;
     function    createDefaultSegment(const aMax: integer): string;
     function    cutSegment(const aSegment: TSegment; const aPositionSS: integer; const bDeleteLeft: boolean = FALSE; const bDeleteRight: boolean = FALSE): boolean;
-    function    drawSegments(const bResetHeight: boolean = FALSE): boolean;
+    function    drawSegments(const bResetHeight: boolean = FALSE): TVoid;
     function    filePathMMP:              string;
-    function    lengthenSegment(const aSegment: TSegment): boolean;
+    function    lengthenSegment(const aSegment: TSegment): TVoid;
     function    loadChapters: TStringList;
     function    loadSegments(const aStringList: TStringList = NIL; const includeTitles: boolean = FALSE): string;
     function    mergeLeft(const aSegment: TSegment): boolean;
     function    mergeRight(const aSegment: TSegment): boolean;
     function    restoreSegment(const aSegment: TSegment): boolean;
     function    saveSegments: string;
-    function    segFileEntry(const aSegFile: string): string;
+    // function    segFileEntry(const aSegFile: string): string;
     function    segmentAtSS(const aSS: integer): TSegment;
     function    segmentTitle(const aNumber: integer): string;
-    function    shortenSegment(const aSegment: TSegment): boolean;
+    function    shortenSegment(const aSegment: TSegment): TVoid;
     function    skipExcludedSegments(const aPosition: integer): integer;
     function    skipToNextSegment(const aPosition: integer): integer;
     procedure   toggleKeyFrames(Sender: TObject);
@@ -116,12 +114,15 @@ type
     procedure   onSegmentDblClick(Sender: TObject);
     procedure   onRedraw(sender: TObject);
   public
-    function    clear:          boolean;
+    constructor Create;
+    destructor  Destroy; override;
+
+    function    clear:          TVoid;
     function    delSegment(const aSegment: TSegment): boolean;
     function    initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
     function    notify(const aNotice: INotice): INotice;
-    function    redo:           boolean;
-    function    undo:           boolean;
+    function    redo:           TVoid;
+    function    undo:           TVoid;
     function    validKey(key: WORD; aShift: TShiftState): boolean;
 
     property    dragging:       boolean               read FDragging      write FDragging;
@@ -135,9 +136,9 @@ type
     property    segments:       TObjectList<TSegment> read getSegments;
   end;
 
-function focusTimeline: boolean;
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
-function shutTimeline: boolean;
+function focusTimeline: TVoid;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): TVoid;
+function shutTimeline: TVoid;
 function TL: TTimeline;
 
 implementation
@@ -151,13 +152,13 @@ uses
   _debugWindow;
 
 var gTimelineForm: TTimelineForm = NIL;
-function focusTimeline: boolean;
+function focusTimeline: TVoid;
 begin
   case gTimeLineForm = NIL of TRUE: EXIT; end;
   setForegroundWindow(gTimelineForm.handle); // so this window also receives keyboard keystrokes
 end;
 
-function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): boolean;
+function showTimeline(const aPt: TPoint; const aWidth: integer; const bPlayEdited: boolean; const bMoveStreamList: boolean; const bCreateNew: boolean = TRUE): TVoid;
 begin
   case (gTimelineForm = NIL) and bCreateNew of TRUE: gTimelineForm := TTimelineForm.create(NIL); end;
   case gTimelineForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current timeline window. Used for repositioning the window when the main UI moves or resizes.
@@ -181,7 +182,7 @@ begin
 end;
 
 var gTL: TTimeline = NIL;
-function shutTimeline: boolean;
+function shutTimeline: TVoid;
 begin
   mmpShutStreamList;
   case gTL            <> NIL of TRUE: begin gTL.free; gTL := NIL; end;end;
@@ -201,7 +202,7 @@ end;
 
 { TTimelineForm }
 
-procedure TTimelineForm.createParams(var params: TCreateParams);
+procedure TTimelineForm.CreateParams(var params: TCreateParams);
 // no taskbar icon for this window
 begin
   inherited;
@@ -286,10 +287,10 @@ procedure TTimelineForm.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   case mmpShiftKeyDown of TRUE: EXIT; end; // EXPERIMENTAL - ignore [S] here if it's Shift-[S]
   key := upCase(key);
-  case key in ['L', 'S'] of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
+  case charInSet(key, ['L', 'S']) of FALSE: EXIT; end; // ignore irrelevant keystrokes - let main window have them
 
-  case key in ['L'] of TRUE: TL.lengthenSegment(TSegment.selSeg); end;
-  case key in ['S'] of TRUE: TL.shortenSegment(TSegment.selSeg);  end;
+  case charInSet(key, ['L']) of TRUE: TL.lengthenSegment(TSegment.selSeg); end;
+  case charInSet(key, ['S']) of TRUE: TL.shortenSegment(TSegment.selSeg);  end;
 
   TL.drawSegments;
 end;
@@ -354,7 +355,7 @@ begin
   updatePositionDisplay(TL.positionSS);
 end;
 
-function TTimelineForm.updatePositionDisplay(const aPosition: integer): boolean;
+function TTimelineForm.updatePositionDisplay(const aPosition: integer): TVoid;
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
   case gTimelineForm = NIL of TRUE: EXIT; end;
@@ -390,7 +391,7 @@ begin
   result      := aAction;
 end;
 
-function TTimeline.clear: boolean;
+function TTimeline.clear: TVoid;
 begin
   segments.clear;
 end;
@@ -457,7 +458,7 @@ begin
   inherited;
 end;
 
-function TTimeline.drawSegments(const bResetHeight: boolean = FALSE): boolean;
+function TTimeline.drawSegments(const bResetHeight: boolean = FALSE): TVoid;
 begin
   case GS.openingURL of TRUE: EXIT; end;
   case FMax = 0 of TRUE: EXIT; end;
@@ -558,7 +559,7 @@ begin
   result := TRUE;
 end;
 
-function TTimeline.lengthenSegment(const aSegment: TSegment): boolean;
+function TTimeline.lengthenSegment(const aSegment: TSegment): TVoid;
 begin
   case aSegment = NIL  of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
@@ -681,7 +682,7 @@ begin
   case vS = vSegment.title of FALSE: vSegment.newTitle := vS; end;
 end;
 
-function TTimeline.redo: boolean;
+function TTimeline.redo: TVoid;
 // discard the most recent action [by moving it straight to the undo list] and apply the subsequent actions from the stack
 begin
   case FRedoList.count = 0 of TRUE: EXIT; end;
@@ -731,10 +732,10 @@ begin
   case (segCount = 1) AND (segments[0].startSS = 0) AND (segments[0].endSS = FMax) AND fileExists(filePathMMP) of TRUE: deleteFile(filePathMMP); end;
 end;
 
-function TTimeline.segFileEntry(const aSegFile: string): string;
-begin
-  result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
-end;
+//function TTimeline.segFileEntry(const aSegFile: string): string;
+//begin
+//  result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
+//end;
 
 function TTimeline.segmentAtSS(const aSS: integer): TSegment;
 begin
@@ -791,7 +792,7 @@ begin
   FPositionSS := value;
 end;
 
-function TTimeline.shortenSegment(const aSegment: TSegment): boolean;
+function TTimeline.shortenSegment(const aSegment: TSegment): TVoid;
 begin
   case aSegment = NIL  of TRUE: EXIT; end;
   case aSegment.isLast of TRUE: EXIT; end;
@@ -850,7 +851,7 @@ begin
   end;
 end;
 
-function TTimeline.undo: boolean;
+function TTimeline.undo: TVoid;
 // discard the most recent action [by moving it straight to the redo list] and apply the subsequent actions from the stack
 begin
   // move the most recent action [reflected in the Timeline] straight to the undo list, and then undo _to_ the action before that.

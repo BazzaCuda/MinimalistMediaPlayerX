@@ -78,7 +78,7 @@ type
     function    playItemIndex(const aItemIndex: integer): TVoid;
     function    visibleItemCount: integer;
   protected
-    procedure   createParams(var params: TCreateParams); reintroduce;
+    procedure   createParams(var params: TCreateParams); override;
   public
     destructor  Destroy; override;
     function    highlightCurrentItem: TVoid;

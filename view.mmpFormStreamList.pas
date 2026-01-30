@@ -123,13 +123,13 @@ type
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    loadConfig: TVoid;
     function    onNotify(const aNotice: INotice): INotice;
-    function    updateExportButton(aEnabled: boolean): boolean;
-    function    updateStreamsCaption: boolean;
+    function    updateExportButton(aEnabled: boolean): TVoid;
+    function    updateStreamsCaption: TVoid;
   protected
-    function    applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
-    function    updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;
-    procedure   createParams(var Params: TCreateParams);
-    function    scrollTo(const aIx: integer): boolean;
+    function    applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): TVoid;
+    function    updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): TVoid;
+    procedure   CreateParams(var Params: TCreateParams); override;
+    function    scrollTo(const aIx: integer): TVoid;
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMSize            (var msg: TWMSize);       message WM_SIZE;
@@ -139,11 +139,11 @@ type
     property onToggleKeyframes: TNotifyEvent read FOnToggleKeyframes write FOnToggleKeyframes;
   end;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
-function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
-function mmpShutStreamList: boolean;
-function mmpScrollTo(const aIx: integer): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): TVoid;
+function mmpRefreshStreamInfo(const aMediaFilePath: string): TVoid;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): TVoid;
+function mmpShutStreamList: TVoid;
+function mmpScrollTo(const aIx: integer): TVoid;
 
 implementation
 
@@ -161,18 +161,18 @@ const
 
 var gStreamListForm: TStreamListForm = NIL;
 
-function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
+function mmpApplySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): TVoid;
 begin
   gStreamListForm.applySegments(aSegments, aMax, bResetHeight);
 end;
 
-function mmpRefreshStreamInfo(const aMediaFilePath: string): boolean;
+function mmpRefreshStreamInfo(const aMediaFilePath: string): TVoid;
 begin
   gStreamListForm.getStreamInfo(aMediaFilePath);
   gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
-function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): boolean;
+function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): TVoid;
 begin
   case (gStreamListForm = NIL) and bCreateNew of TRUE: begin gStreamListForm := TStreamListForm.create(NIL); end;end;
   case gStreamListForm = NIL of TRUE: EXIT; end; // createNew = FALSE and there isn't a current StreamList window. Used for repositioning the window when the main UI moves or resizes.
@@ -195,14 +195,14 @@ begin
   focusTimeline;
 end;
 
-function mmpShutStreamList: boolean;
+function mmpShutStreamList: TVoid;
 begin
   case gStreamListForm <> NIL of TRUE: begin gStreamListForm.close; gStreamListForm.free; gStreamListForm := NIL; end;end;
   mmp.cmd(evGSShowingStreamlist, FALSE);
   mmp.cmd(evGSWidthStreamlist, 0);
 end;
 
-function mmpScrollTo(const aIx: integer): boolean;
+function mmpScrollTo(const aIx: integer): TVoid;
 begin
   gStreamListForm.scrollTo(aIx);
 end;
@@ -211,7 +211,7 @@ end;
 
 { TStreamListForm }
 
-function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): boolean;
+function TStreamListForm.applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): TVoid;
 begin
 //  {$if BazDebugWindow} debugFormat('applySegments: %d', [aMax]); {$endif}
 
@@ -396,12 +396,12 @@ begin
   focusTimeline;
 end;
 
-procedure TStreamListForm.createParams(var params: TCreateParams);
+procedure TStreamListForm.CreateParams(var params: TCreateParams);
 // no taskbar icon for this window
 begin
   inherited;
-  params.ExStyle    := params.ExStyle or (WS_EX_APPWINDOW);
-  params.WndParent  := SELF.Handle; // normally application.handle
+  params.ExStyle    := params.ExStyle and NOT WS_EX_APPWINDOW;
+  params.WndParent  := application.HANDLE;
 end;
 
 procedure TStreamListForm.formCreate(Sender: TObject);
@@ -549,23 +549,23 @@ begin
   focusTimeline;
 end;
 
-function TStreamListForm.scrollTo(const aIx: integer): boolean;
+function TStreamListForm.scrollTo(const aIx: integer): TVoid;
 begin
   case clSegments.itemCount = 0 of TRUE: EXIT; end;
   clSegments.itemIndex := aIx;
 end;
 
-function TStreamListForm.updateExportButton(aEnabled: boolean): boolean;
+function TStreamListForm.updateExportButton(aEnabled: boolean): TVoid;
 begin
   btnExport.enabled := aEnabled;
 end;
 
-function TStreamListForm.updateStreamsCaption: boolean;
+function TStreamListForm.updateStreamsCaption: TVoid;
 begin
   tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.avsStreamCount]);
 end;
 
-function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): boolean;
+function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): TVoid;
   function sumExportSS: integer;
   begin
     result := 0;

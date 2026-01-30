@@ -22,14 +22,15 @@ interface
 
 uses
   winApi.windows,
+  bazAction,
   mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
 function mmpEnvironmentVariable: boolean;
 function mmpExecCommandLine(const aCommandLine: string): boolean;
 function mmpGetExternalApp(const aFnnKeyApp: TFnnKeyApp): string;
-function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
-function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): boolean;
+function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): TVoid;
+function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): TVoid;
 
 implementation
 
@@ -79,12 +80,12 @@ begin
                                   F12_APP: result := SHOTCUT; end;end;
 end;
 
-function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): boolean;
+function mmpOpenExternalApp(const aHWND: HWND; const aFnnKeyApp: TFnnKeyApp; const aParams: string): TVoid;
 begin
   mmpShellExec(aHWND, mmpGetExternalApp(aFnnKeyApp), mmpQuoted(aParams));
 end;
 
-function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): boolean;
+function mmpShellExec(const aHWND: HWND; const anExePath: string; const aParams: string = EMPTY): TVoid;
 begin
   // the aHWND param isn't currently used
   // it was introduced to see if it fixed the problem of the Play Edited MMP window being behind the Editor MMP window

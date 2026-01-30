@@ -120,7 +120,6 @@ end;
 
 function TConfigFile.deleteConfig(const aName: string): boolean;
 begin
-  result := FALSE;
   checkForManualEdits;
   var vIx := FFileContents.indexOfName(aName);
   case vIx <> -1 of TRUE: begin
@@ -137,7 +136,6 @@ end;
 
 function TConfigFile.getAsBoolean(const aName: string): boolean;
 begin
-  result := FALSE;
   checkForManualEdits;
   result := lowerCase(FFileContents.values[aName]) = 'yes';
 end;
@@ -177,14 +175,12 @@ end;
 
 function TConfigFile.initConfigFile(const aFilePath: string): boolean;
 begin
-  result    := FALSE;
   FFilePath := aFilePath;
   result    := TRUE;
 end;
 
 function TConfigFile.saveConfigFile: boolean;
 begin
-  result := FALSE;
   checkForManualEdits;
   try
     FFileContents.saveToFile(FFilePath);

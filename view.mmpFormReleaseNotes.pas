@@ -31,6 +31,7 @@ uses
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
+  bazAction,
   mmpProgramUpdates;
 
 type
@@ -44,12 +45,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure mdHotSpotClick(Sender: TObject; const SRC: string; var Handled: Boolean);
   private
-    function initReleaseNotes: boolean;
-    function loadReleaseNotes(const aReleaseTag: string; const aFilePath: string): boolean;
+    function initReleaseNotes: TVoid;
+    function loadReleaseNotes(const aReleaseTag: string; const aFilePath: string): TVoid;
   public
   end;
 
-function showReleaseNotes(const aReleaseTag: string; const aFilePath: string): boolean;
+function showReleaseNotes(const aReleaseTag: string; const aFilePath: string): TVoid;
 
 implementation
 
@@ -58,7 +59,7 @@ uses
   mmpConsts, mmpFileUtils, mmpMarkDownUtils, mmpShellUtils,
   _debugWindow;
 
-function showReleaseNotes(const aReleaseTag: string; const aFilePath: string): boolean;
+function showReleaseNotes(const aReleaseTag: string; const aFilePath: string): TVoid;
 begin
   with TReleaseNotesForm.create(NIL) do begin
     loadReleaseNotes(aReleaseTag, aFilePath);
@@ -85,7 +86,7 @@ begin
   initReleaseNotes;
 end;
 
-function TReleaseNotesForm.initReleaseNotes: boolean;
+function TReleaseNotesForm.initReleaseNotes: TVoid;
 begin
   mmpInitMarkDownViewer(md);
 
@@ -94,14 +95,14 @@ begin
   btnClose.cancel   := TRUE;
 end;
 
-function TReleaseNotesForm.loadReleaseNotes(const aReleaseTag: string; const aFilePath: string): boolean;
+function TReleaseNotesForm.loadReleaseNotes(const aReleaseTag: string; const aFilePath: string): TVoid;
 begin
   SELF.caption  := aReleaseTag;
   md.serverRoot := mmpExePath;
   md.loadFromFile(aFilePath);
 end;
 
-procedure TReleaseNotesForm.mdHotSpotClick(Sender: TObject; const SRC: string; var Handled: Boolean);
+procedure TReleaseNotesForm.mdHotSpotClick(Sender: TObject; const SRC: string; var handled: boolean);
 begin
   mmpShellExec(0, PWideChar(SRC));
   handled := TRUE;

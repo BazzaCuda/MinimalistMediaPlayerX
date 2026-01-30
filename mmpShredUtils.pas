@@ -26,17 +26,18 @@ uses
   winApi.windows,
   system.math, system.sysUtils,
   vcl.dialogs,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpFolderUtils, mmpUtils;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
-function mmpStartTasks: boolean;
+function mmpStartTasks: TVoid;
 
 implementation
 
 uses
   winApi.shellApi,
-  system.generics.collections, system.threading,
+  system.classes, system.generics.collections, system.threading,
   bazCmd,
   mmpDialogs, mmpGlobalState,
   _debugWindow;
@@ -194,8 +195,6 @@ function recycleFile(const aFilePath: string): boolean;
 var
   vFileOp: TSHFileOpStructW;
 begin
-  result := FALSE;
-
   fillChar(vFileOp, sizeOf(vFileOp), 0);
   vFileOp.wFunc   := FO_DELETE;
   vFileOp.pFrom   := PWideChar(aFilePath + #0); // double-null-terminated
@@ -234,8 +233,8 @@ begin
 end;
 
 function recycleDeleteFile(const aFilePath: string): boolean;
-var
-  vFileOp: TSHFileOpStructW;
+//var
+//  vFileOp: TSHFileOpStructW;
 begin
   result := FALSE;
   case integer(getFileAttributesW(PWideChar(aFilePath))) = -1 of TRUE: EXIT; end;
@@ -274,9 +273,9 @@ begin
 end;
 
 function shredIt(const aFilePath: string; const aDeleteMethod: TDeleteMethod): boolean;
-var
-  threadID:   LONGWORD;
-  vThreadRec: PThreadRec;
+//var
+//  threadID:   LONGWORD;
+//  vThreadRec: PThreadRec;
 begin
   result := FALSE;
   case aDeleteMethod of
@@ -303,11 +302,9 @@ begin
   findClose(SR);
 end;
 
-function monitorTasks: boolean;
+function monitorTasks: TVoid;
 var i: integer;
 begin
-  result := FALSE;
-
   for i := 0 to gTasks.count - 1 do gTasks[i].start;
 
   repeat
@@ -319,13 +316,11 @@ begin
   mmp.cmd(evGSActiveTaskPercent, -1); // suppress mmpVM from sending anything to mmpFormCaptions.OpInfo2 for display
   mmp.cmd(evGSActiveTasks, 0);        // was gCount
   gTasks.clear;
-
-  result := TRUE;
 end;
 
-function mmpStartTasks: boolean;
+function mmpStartTasks: TVoid;
 begin
-  result := monitorTasks;
+  monitorTasks;
 end;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;

@@ -38,9 +38,9 @@ uses
 type
   TMediaTypes = class(TInterfacedObject, IMediaTypes)
   strict private
-    FMediaExts: string;
+//    FMediaExts: string;
   private
-    function    getMediaExts: string;
+//    function    getMediaExts: string;
   protected
   public
     constructor create;
@@ -68,14 +68,14 @@ begin
   inherited;
 end;
 
-function TMediaTypes.getMediaExts: string;
-begin
-  result := FMediaExts;
-  case result <> EMPTY of TRUE: EXIT; end;
-  for var i := low(mediaTypes) to high(mediaTypes) do
-    FMediaExts := FMediaExts + mediaTypes[i].fileExts;
-  result := FMediaExts;
-end;
+//function TMediaTypes.getMediaExts: string;
+//begin
+//  result := FMediaExts;
+//  case result <> EMPTY of TRUE: EXIT; end;
+//  for var i := low(mediaTypes) to high(mediaTypes) do
+//    FMediaExts := FMediaExts + mediaTypes[i].fileExts;
+//  result := FMediaExts;
+//end;
 
 function TMediaTypes.mediaType(const aExt: string): TMediaType;
 begin

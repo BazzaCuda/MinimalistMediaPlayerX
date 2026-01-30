@@ -44,7 +44,7 @@ type
     FOnHintShow:      TShowHintEvent; // BAZ
   private
     procedure   adjustBarLength;
-    procedure   plotKeyFrames;
+    // procedure   plotKeyFrames;
     procedure   setBackgroundColor(const aValue: TColor);
     procedure   setBarColor(const aValue: TColor);
     procedure   setKeyFrames(const aValue: string);
@@ -134,31 +134,31 @@ begin
   canvas.fillRect(rect(0, 0, vBarLength, BAR_HEIGHT));
 end;
 
-procedure TALProgressBar.plotKeyFrames;
-const WIN_SIZE = 60;
-var
-  vVisibleStartSS: double;
-  vVisibleEndSS:   double;
-
-  procedure doCalc;
-  begin
-    vVisibleStartSS := system.math.max(0.0, min(FPosition - (WIN_SIZE div 2), FMax - WIN_SIZE));
-    vVisibleEndSS   := vVisibleStartSS + WIN_SIZE;
-    vVisibleEndSS   := min(FMax, vVisibleEndSS);
-  end;
-
-begin
-  var vPixelsPerSS:double := SELF.width / WIN_SIZE; // our n-second window
-  doCalc;
-
-  canvas.brush.color := clTeal;
-  for var i := 0 to FKeyFrames.count - 1 do begin
-    case FKeyFrames[i] = -1 of TRUE: CONTINUE; end;
-    var vKeyFrame := round(FKeyFrames[i] * vPixelsPerSS);
-    case (FKeyFrames[i] > vVisibleStartSS) and (FKeyFrames[i] < vVisibleEndSS)
-        of TRUE: canvas.fillRect(rect(vKeyFrame, 0, vKeyFrame + 2, BAR_HEIGHT)); end; // 2 is the width of the vertical cursor
-  end;
-end;
+//procedure TALProgressBar.plotKeyFrames;
+//const WIN_SIZE = 60;
+//var
+//  vVisibleStartSS: double;
+//  vVisibleEndSS:   double;
+//
+//  procedure doCalc;
+//  begin
+//    vVisibleStartSS := system.math.max(0.0, min(FPosition - (WIN_SIZE div 2), FMax - WIN_SIZE));
+//    vVisibleEndSS   := vVisibleStartSS + WIN_SIZE;
+//    vVisibleEndSS   := min(FMax, vVisibleEndSS);
+//  end;
+//
+//begin
+//  var vPixelsPerSS:double := SELF.width / WIN_SIZE; // our n-second window
+//  doCalc;
+//
+//  canvas.brush.color := clTeal;
+//  for var i := 0 to FKeyFrames.count - 1 do begin
+//    case FKeyFrames[i] = -1 of TRUE: CONTINUE; end;
+//    var vKeyFrame := round(FKeyFrames[i] * vPixelsPerSS);
+//    case (FKeyFrames[i] > vVisibleStartSS) and (FKeyFrames[i] < vVisibleEndSS)
+//        of TRUE: canvas.fillRect(rect(vKeyFrame, 0, vKeyFrame + 2, BAR_HEIGHT)); end; // 2 is the width of the vertical cursor
+//  end;
+//end;
 
 procedure TALProgressBar.setBackgroundColor(const aValue: TColor);
 begin

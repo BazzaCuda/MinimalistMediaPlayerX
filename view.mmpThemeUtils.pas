@@ -24,15 +24,16 @@ uses
   winApi.shellApi, winApi.windows,
   system.classes,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
+  bazAction,
   mmpConsts, mmpDesktopUtils;
 
 function mmpInitTransparentForm(const aForm: TForm): TForm;
-function mmpInitTransparentLabel(const aLabel: TLabel): boolean;
+function mmpInitTransparentLabel(const aLabel: TLabel): TVoid;
 function mmpThemeCreateVideoPanel(const aForm: TForm): TPanel;
-function mmpThemeInitForm(const aForm: TForm): boolean;
+function mmpThemeInitForm(const aForm: TForm): TVoid;
 
-function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): boolean;
-function mmpSetGlassFrame(const aForm: TForm): boolean;
+function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): TVoid;
+function mmpSetGlassFrame(const aForm: TForm): TVoid;
 
 implementation
 
@@ -64,7 +65,7 @@ begin
   result := aForm;
 end;
 
-function mmpInitTransparentLabel(const aLabel: TLabel): boolean;
+function mmpInitTransparentLabel(const aLabel: TLabel): TVoid;
 begin
   aLabel.align             := alClient;
   aLabel.alignment         := taCenter;
@@ -85,7 +86,7 @@ begin
   aLabel.wordWrap          := FALSE;
 end;
 
-function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): boolean;
+function mmpSetCustomTitleBar(const aForm: TForm; const aHeight: integer = 1): TVoid;
 begin
   aForm.customTitleBar.enabled        := TRUE;
   aForm.customTitleBar.showCaption    := FALSE;
@@ -96,20 +97,20 @@ begin
   aForm.customTitleBar.height         := aHeight; // systemHeight=FALSE must be set before this
 end;
 
-function mmpSetGlassFrame(const aForm: TForm): boolean;
+function mmpSetGlassFrame(const aForm: TForm): TVoid;
 begin
   aForm.glassFrame.enabled  := TRUE;
   aForm.glassFrame.top      := 1;
 end;
 
-function mmpSetWindowStyle(const aForm: TForm): boolean;
+function mmpSetWindowStyle(const aForm: TForm): TVoid;
 begin
   setWindowLong(aForm.handle, GWL_STYLE, getWindowLong(aForm.handle, GWL_STYLE) OR WS_CAPTION AND NOT WS_BORDER AND NOT WS_VISIBLE);
 end;
 
-function mmpThemeInitForm(const aForm: TForm): boolean;
+function mmpThemeInitForm(const aForm: TForm): TVoid;
 
-  function copiedFromDFM: boolean;
+  function copiedFromDFM: TVoid;
   begin
     aForm.Left        := 0;
     aForm.Top         := 0;

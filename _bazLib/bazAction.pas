@@ -81,7 +81,7 @@ type
     FSFuncBoolean:                      TAFuncBoolean                        <TResult>;
     FAFuncBoolean:                      TAFuncBoolean                        <TResult>;
 
-    constructor Create;                           overload;
+    // constructor Create;                           overload;
     constructor Create(const aFuncNIL: pointer);  overload;
 
     constructor Create(const aFuncNoParam:           TOFuncNoParam            <TResult>);     overload;
@@ -141,10 +141,10 @@ uses
 
 { TAction<TResult> }
 
-constructor TAction<TResult>.Create;
-begin
-  raise exception.create('Don''t call TAction.create');
-end;
+//constructor TAction<TResult>.Create;
+//begin
+//  raise exception.create('Don''t call TAction.create');
+//end;
 
 constructor TAction<TResult>.Create(const aFuncNIL: pointer);
 begin

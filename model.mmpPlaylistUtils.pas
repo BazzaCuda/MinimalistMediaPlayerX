@@ -22,12 +22,13 @@ interface
 
 uses
   system.sysUtils,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts, mmpGlobalState,
   model.mmpConfigFile, model.mmpPlaylist;
 
-function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
-function mmpPlayCurrent:                            boolean;
+function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): TVoid;
+function mmpPlayCurrent:                            TVoid;
 function mmpPlayFirst:                              boolean;
 function mmpPlayLast:                               boolean;
 function mmpPlayNext(const aMediaType: TMediaType): boolean;
@@ -45,7 +46,7 @@ uses
   model.mmpBookmark,
   _debugWindow;
 
-function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): boolean;
+function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): TVoid;
 begin
   var vIx := aPL.currentIx;
   var vCI := aPL.currentItem;
@@ -67,7 +68,7 @@ begin
                                                                                                   FALSE:  mmp.cmd(evVMMPPlayCurrent); end;end;end;
 end;
 
-function mmpPlayCurrent: boolean;
+function mmpPlayCurrent: TVoid;
 begin
   GS.notify(newNotice(evGSOpeningURL, TRUE));             // for TVM.reInitTimeline - gets reset in model.mmpMediaPlayer.openURL when all the new info is available
   var vURL := mmp.cmd(evPLReqCurrentItem).text;
@@ -117,8 +118,6 @@ end;
 
 function mmpValidatePlaylist(const aPL: IPlaylist): boolean;
 begin
-  result := FALSE;
-
   for var i := aPL.count - 1 downto 0 do case fileExists(aPL.thisItem(i)) of FALSE: aPL.deleteIx(i); end;
 
   aPL.first;

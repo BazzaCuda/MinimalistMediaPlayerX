@@ -21,7 +21,6 @@ unit mmpExporter;
 interface
 
 uses
-  bazAction,
   mmpConsts;
 
 type
@@ -38,6 +37,7 @@ uses
   winApi.windows,
   system.ioUtils, system.classes, system.generics.collections, system.sysUtils,
   vcl.controls,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazCmd,
   mmpExportExec, mmpFileUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
@@ -68,7 +68,7 @@ type
     function  filePathSEG: string;
     function  filePathTempChapters(const bWriteChapters: boolean; const aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
-    function  log(const aLogEntry: string): boolean;
+    function  log(const aLogEntry: string): TVoid;
     function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
     function  segFileEntry(const aSegFile: string): string;
     function  showProgressForm(const aHeading: string; const aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
@@ -445,7 +445,7 @@ begin
   result := showProgressForm(format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]), '', onCancel);
 end;
 
-function TExporter.log(const aLogEntry: string): boolean;
+function TExporter.log(const aLogEntry: string): TVoid;
 begin
   var vLogFile          := filePathLOG;
   var vLog              := TStringList.create;
@@ -507,7 +507,7 @@ begin
     vSL.add(';FFMETADATA1');
 
     var vTimeStamp := 0;
-    var vSegCount  := 0;
+//    var vSegCount  := 0;
 
     for vSegment in segments do begin
 
@@ -518,7 +518,7 @@ begin
       case vTimeStamp = 0 of   TRUE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration]));
                               FALSE: vSL.add(format('END=%d', [vTimeStamp + vSegment.duration - 1])); end;
 
-      inc(vSegCount);
+      // inc(vSegCount);
       vSL.add(format('title=%s', [vSegment.title]));
 
       case vTimeStamp = 0 of   TRUE: vTimeStamp := vTimeStamp + vSegment.duration + 1;

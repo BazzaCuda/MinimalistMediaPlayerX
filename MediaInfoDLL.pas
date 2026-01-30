@@ -139,17 +139,6 @@ begin
                                     MI_getProcAddress('MediaInfo_Option',     @MediaInfo_Option);
                                     MI_getProcAddress('MediaInfo_State_Get',  @MediaInfo_State_Get);
                                     MI_getProcAddress('MediaInfo_Count_Get',  @MediaInfo_Count_Get);
-
-//                                    MI_getProcAddress('MediaInfoA_New',       @MediaInfoA_New);
-//                                    MI_getProcAddress('MediaInfoA_Delete',    @MediaInfoA_Delete);
-//                                    MI_getProcAddress('MediaInfoA_Open',      @MediaInfoA_Open);
-//                                    MI_getProcAddress('MediaInfoA_Close',     @MediaInfoA_Close);
-//                                    MI_getProcAddress('MediaInfoA_Inform',    @MediaInfoA_Inform);
-//                                    MI_getProcAddress('MediaInfoA_GetI',      @MediaInfoA_GetI);
-//                                    MI_getProcAddress('MediaInfoA_Get',       @MediaInfoA_Get);
-//                                    MI_getProcAddress('MediaInfoA_Option',    @MediaInfoA_Option);
-//                                    MI_getProcAddress('MediaInfoA_State_Get', @MediaInfoA_State_Get);
-//                                    MI_getProcAddress('MediaInfoA_Count_Get', @MediaInfoA_Count_Get);
                                   end);
 
   result := libHandle <> 0;

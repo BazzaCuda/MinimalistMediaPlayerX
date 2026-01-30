@@ -85,7 +85,7 @@ type
     function showForm: TVoid;
   end;
 
-function mmpHelpFull(const aHelpType: THelpType = htMain; const bOnTop: boolean = FALSE): TVoid;
+function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0): TVoid;
 
 implementation
 
@@ -148,7 +148,14 @@ const
 
 var gHelpFullForm: IHelpFullForm = NIL;
 
-function mmpHelpFull(const aHelpType: THelpType = htMain; const bOnTop: boolean = FALSE): TVoid;
+function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0): TVoid;
+
+  function setWindowOwner(const aChild, aOwner: HWND): TVoid;
+  begin
+    // SetWindowLongPtr is the modern 64-bit compatible way to change ownership
+    SetWindowLongPtr(aChild, GWLP_HWNDPARENT, aOwner);
+  end;
+
 begin
   case gHelpFullForm = NIL of  TRUE:  gHelpFullForm := THelpFullForm.create(app);
                               FALSE:  begin
@@ -160,8 +167,8 @@ begin
   mmp.cmd(evGSHelpFull, TRUE);
   gHelpFullForm.init(aHelpType);
 
-  setForegroundWindow(gHelpFullForm.getHandle); // the order of these two is important
-  case bOnTop of TRUE: setWindowPos(gHelpFullForm.getHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE); end; // vital because of focusThumbs in mmpVM
+  setForegroundWindow(gHelpFullForm.getHandle);    // the order of these two is important
+  setWindowOwner(gHelpFullForm.getHandle, aOwner); // vital because of focusThumbs in mmpVM
 
   gHelpFullForm.showForm;
 end;

@@ -168,7 +168,7 @@ begin
 
   FMasterKey.loadFromFile(vKeyFile);
 
-  var vMinuteIx: integer;
+  var vMinuteIx: integer := 0;
 
   for var vLine in FMasterKey do
     case vLine[1] = '[' of TRUE:  begin

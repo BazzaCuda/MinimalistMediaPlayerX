@@ -30,17 +30,18 @@ uses
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   model.mmpConfigFile;
 
 type
   ICaptions = interface
-    function    blankInTimeCaption: boolean;
-    function    blankOutTimeCaption: boolean;
+    function    blankInTimeCaption: TVoid;
+    function    blankOutTimeCaption: TVoid;
     function    getCaptionsForm: TForm;
-    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
+    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
     function    notify(const aNotice: INotice): INotice;
-    function    resetTimer: boolean;
+    function    resetTimer: TVoid;
     property    captionsForm: TForm   read getCaptionsForm;
   end;
 
@@ -61,15 +62,15 @@ type
     FShowData:      boolean;
     FUIWidth:       integer;
 
-    FPLCurrentItem: string;
+    // FPLCurrentItem: string;
 
-    function    getHWND:          HWND;
+    // function    getHWND:          HWND;
     procedure   setDisplayTime(const aValue: string);
     procedure   setOpInfo(const aValue: string);
     procedure   setOpInfo2(const aValue: integer);
     procedure   setShowData(const aValue: boolean);
     procedure   setShowTime(const aValue: boolean);
-    function    getColor:         TColor;
+    // function    getColor:         TColor;
     procedure   setColor(const Value: TColor);
   public
     constructor Create(aOwner: TComponent); override;
@@ -116,13 +117,13 @@ type
   public
     constructor Create(const aOwner: TForm);
     destructor  Destroy; override;
-    function    blankInTimeCaption: boolean;
-    function    blankOutTimeCaption: boolean;
+    function    blankInTimeCaption: TVoid;
+    function    blankOutTimeCaption: TVoid;
     function    getCaptionsForm: TForm;
-    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
+    function    initCaptions(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
     function    notify(const aNotice: INotice): INotice;
-    function    resetTimer: boolean;
-    function    setOpInfo(const aOpInfo: string): boolean;
+    function    resetTimer: TVoid;
+    function    setOpInfo(const aOpInfo: string): TVoid;
   end;
 
   TShadowLabel = class(TLabel)
@@ -152,9 +153,8 @@ begin
 end;
 
 constructor TCaptionsForm.Create(aOwner: TComponent);
-  function defaultFontEtc(aLabel: TLabel): boolean;
+  function defaultFontEtc(aLabel: TLabel): TVoid;
   begin
-    result                := FALSE;
     aLabel.font.name      := FONT_TAHOMA;
     aLabel.font.color     := ST_DEFAULT_COLOR;
     aLabel.font.size      := 10;
@@ -168,7 +168,6 @@ constructor TCaptionsForm.Create(aOwner: TComponent);
     aLabel.wordWrap       := FALSE;
     aLabel.font.style     := [fsBold];
     aLabel.styleElements  := [];
-    result                := TRUE;
   end;
 begin
   inherited Create(aOwner);
@@ -270,15 +269,15 @@ begin
   result := SELF;
 end;
 
-function TCaptionsForm.getColor: TColor;
-begin
-  result := FTimeLabel.font.color;
-end;
-
-function TCaptionsForm.getHWND: HWND;
-begin
-  result := SELF.HANDLE;
-end;
+//function TCaptionsForm.getColor: TColor;
+//begin
+//  result := FTimeLabel.font.color;
+//end;
+//
+//function TCaptionsForm.getHWND: HWND;
+//begin
+//  result := SELF.HANDLE;
+//end;
 
 function TCaptionsForm.initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
 begin
@@ -371,14 +370,14 @@ end;
 
 { TCaptionsProxy }
 
-function TCaptionsProxy.blankInTimeCaption: boolean;
+function TCaptionsProxy.blankInTimeCaption: TVoid;
 begin
   case FSavedColor = 0 of FALSE:  begin
                                     FCaptionsForm.setColor(FSavedColor);
                                     FSavedColor := 0; end;end;
 end;
 
-function TCaptionsProxy.blankOutTimeCaption: boolean;
+function TCaptionsProxy.blankOutTimeCaption: TVoid;
 begin
   case FSavedColor = 0 of TRUE: begin
                                  FSavedColor := FCaptionsForm.FTimeLabel.font.color;
@@ -412,7 +411,7 @@ begin
   result := FCaptionsForm;
 end;
 
-function TCaptionsProxy.initCaptions(const aVideoPanel: TPanel; const aColor: TColor): boolean;
+function TCaptionsProxy.initCaptions(const aVideoPanel: TPanel; const aColor: TColor): TVoid;
 begin
   FCaptionsForm.initCaptions(aVideoPanel, aColor);
 end;
@@ -454,12 +453,12 @@ begin
   FCaptionsForm.setOpInfo(EMPTY);
 end;
 
-function TCaptionsProxy.resetTimer: boolean;
+function TCaptionsProxy.resetTimer: TVoid;
 begin
   FTImerCount := 0;
 end;
 
-function TCaptionsProxy.setOpInfo(const aOpInfo: string): boolean;
+function TCaptionsProxy.setOpInfo(const aOpInfo: string): TVoid;
 begin
   FCaptionsForm.setOpInfo(aOpInfo);
 end;

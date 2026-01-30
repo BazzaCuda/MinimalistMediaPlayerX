@@ -22,13 +22,14 @@ interface
 
 uses
   system.generics.collections, system.generics.defaults,
+  bazAction,
   mmpUtils,
   _debugWindow;
 
 type
   TListHelper = class helper for TList<string>
   public
-    function naturalSort: boolean;
+    function naturalSort: TVoid;
   end;
 
 implementation
@@ -39,9 +40,8 @@ uses
 
 { TListHelper }
 
-function TListHelper.naturalSort: boolean;
+function TListHelper.naturalSort: TVoid;
 begin
-  result := FALSE;
   SELF.sort(
             TComparer<string>.construct(
                                         function(const a, b: string): integer
@@ -54,7 +54,6 @@ begin
                                         end
                                        )
            );
-  result := TRUE;
 end;
 
 end.
