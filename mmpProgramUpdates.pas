@@ -41,7 +41,7 @@ implementation
 
 uses
   idHTTP, idSSLOpenSSL, idComponent,
-  system.json, system.classes, system.ioUtils, system.sysUtils, system.strUtils,
+  system.json, system.classes, system.generics.collections, system.ioUtils, system.sysUtils, system.strUtils,
   vcl.forms,
   bazCmd,
   mmpConsts, mmpFileUtils, mmpUtils,

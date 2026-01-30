@@ -58,8 +58,8 @@ type
     class function cmd(const aBoolean: boolean; const trueProc: TProc): TVoid; overload; static;
 
     //===== TOProcs with a TObject parameter
-    class function cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): boolean; overload; static;
-    class function cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): boolean; overload; static;
+    class function cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): TVoid; overload; static;
+    class function cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): TVoid; overload; static;
 
     //===== TBFuncs which return a boolean result
     class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean; overload; static;
@@ -156,12 +156,12 @@ begin
 end;
 
 //===== TOProcs with a TObject parameter
-class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): TVoid;
 begin
-  result := cmd(aBoolean, trueProc, NIL, aObject);
+  cmd(aBoolean, trueProc, NIL, aObject);
 end;
 
-class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): TVoid;
 var doProc: array[boolean] of TOProc;
 begin
   doProc[TRUE]  := trueProc;
@@ -173,6 +173,7 @@ end;
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean;
 var doFunc: array[boolean] of TBFunc;
 begin
+  result        := FALSE;
   doFunc[TRUE]  := trueFunc;
   doFunc[FALSE] := falseFunc;
   case assigned(doFunc[aBoolean]) of TRUE: result := doFunc[aBoolean](); end;

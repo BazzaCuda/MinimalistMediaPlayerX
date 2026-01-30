@@ -124,7 +124,7 @@ type
     procedure SetCurSec(const Value: Double);
     procedure SetSpeed(const Value: Double);
     procedure SetVol(const Value: Double);
-    procedure SetVolMute(const Value: Boolean);
+//    procedure SetVolMute(const Value: Boolean);
     function GetAudioDev: string;
     procedure SetAudioDev(const Value: string);
     function GetAudioDevList: string;
@@ -1670,10 +1670,10 @@ begin
   end;
 end;
 
-procedure TMPVBasePlayer.SetVolMute(const Value: Boolean);
-begin
-  SetMute(Value);
-end;
+//procedure TMPVBasePlayer.SetVolMute(const Value: Boolean);
+//begin
+//  SetMute(Value);
+//end;
 
 //function TMPVBasePlayer.SetVolume(fVol: Double): TMPVErrorCode;
 //begin
