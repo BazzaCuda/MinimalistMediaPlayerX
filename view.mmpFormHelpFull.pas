@@ -150,10 +150,10 @@ var gHelpFullForm: IHelpFullForm = NIL;
 
 function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0): TVoid;
 
-  function setWindowOwner(const aChild, aOwner: HWND): TVoid;
+  function setWindowOwner(const aChild: HWND; aOwner: HWND): TVoid;
   begin
     // SetWindowLongPtr is the modern 64-bit compatible way to change ownership
-    SetWindowLongPtr(aChild, GWLP_HWNDPARENT, aOwner);
+    setWindowLongPtr(aChild, GWLP_HWNDPARENT, aOwner);
   end;
 
 begin

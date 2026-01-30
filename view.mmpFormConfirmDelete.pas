@@ -82,7 +82,6 @@ uses
 
 function mmpShowConfirmDelete(const aPath: string; const aDeletionObject: TDeletionObject; const aDeleteMethod: TDeleteMethod; const aConfigString: string; aScaleFactor: integer; bCleanup: boolean): TModalResult;
 begin
-  result := mrNo;
   mmp.cmd(evGSUserInput, TRUE);
   with TConfirmDeleteForm.create(aPath, aDeletionObject, aDeleteMethod, aConfigString, aScaleFactor, bCleanup) do begin
     result := showModal;

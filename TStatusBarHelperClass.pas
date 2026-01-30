@@ -34,7 +34,7 @@ type
 implementation
 
 uses
-  system.classes;
+  system.classes, system.types;
 
 function TStatusBarHelper.getPanelAt(const X: integer; const Y: Integer): TStatusPanel;
 begin
@@ -45,7 +45,7 @@ function TStatusBarHelper.getPanelAt(const aPt: TPoint): TStatusPanel;
 var
   vIx:    integer;
   vArr:   array of integer;
-  vPanel: TStatusPanel;
+//  vPanel: TStatusPanel;
 begin
   result := NIL;
 

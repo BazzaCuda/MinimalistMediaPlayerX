@@ -25,14 +25,15 @@ uses
   system.classes,
   vcl.stdCtrls,
   htmlView, markDownUtils, MarkDownViewerComponents,
+  bazAction,
   mmpConsts;
 
-function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): boolean;
-function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
+function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): TVoid;
+function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): TVoid;
 
 implementation
 
-function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): boolean;
+function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): TVoid;
 begin
   case findResourceEx(HINSTANCE, RT_RCDATA, PChar(aResourceName), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)) = 0 of TRUE: EXIT; end; // prevent memory leak on bad resource
 
@@ -49,7 +50,7 @@ begin
   except end;
 end;
 
-function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): boolean;
+function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): TVoid;
 begin
   aMD.DefBackground    := DARK_MODE_DARK;
   aMD.defFontColor     := DARK_MODE_SILVER;

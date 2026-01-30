@@ -34,7 +34,7 @@ function newMMPMenu: IMMPMenu;
 implementation
 
 uses
-  bazCmd,
+  bazAction, bazCmd,
   model.mmpConfigFile,
   _debugWindow;
 
@@ -43,7 +43,7 @@ type
   strict private
     FMenu:      TPopupMenu;
   private
-    function    buildMenu(const aMenu: TPopupMenu): boolean;
+    function    buildMenu(const aMenu: TPopupMenu): TVoid;
   protected
     procedure   onClick(sender: TObject);
   public
@@ -75,7 +75,7 @@ begin
   mmp.cmd(evAppClose);
 end;
 
-function TMMPMenu.buildMenu(const aMenu: TPopupMenu): boolean;
+function TMMPMenu.buildMenu(const aMenu: TPopupMenu): TVoid;
 begin
   var vMenuItem     := TMenuItem.create(FMenu);
   vMenuItem.caption := 'Exit';

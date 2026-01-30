@@ -78,7 +78,7 @@ type
     function    playItemIndex(const aItemIndex: integer): TVoid;
     function    visibleItemCount: integer;
   protected
-    procedure   createParams(var params: TCreateParams); override;
+    procedure   CreateParams(var params: TCreateParams); override;
   public
     destructor  Destroy; override;
     function    highlightCurrentItem: TVoid;
@@ -137,7 +137,7 @@ begin
                                               end;
 end;
 
-procedure TPlaylistForm.createParams(var params: TCreateParams);
+procedure TPlaylistForm.CreateParams(var params: TCreateParams);
 // no taskbar icon for the app
 begin
   inherited;

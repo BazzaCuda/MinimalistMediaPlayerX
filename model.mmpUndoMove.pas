@@ -21,11 +21,12 @@ unit model.mmpUndoMove;
 interface
 
 uses
-  system.generics.collections;
+  system.generics.collections,
+  bazAction;
 
 type
   IUndoMove = interface
-    function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
+    function recordUndo(const aSrcFilePath: string; const aDstFilePath: string): TVoid;
     function undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
   end;
 
@@ -41,7 +42,7 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
-    function    recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
+    function    recordUndo(const aSrcFilePath: string; const aDstFilePath: string): TVoid;
     function    undoPop(var aSrcFilePath: string; var aDstFilePath: string): boolean;
     property    undoRecs: TObjectStack<TUndoRec> read FUndoRecs;
   end;
@@ -76,7 +77,7 @@ begin
   inherited;
 end;
 
-function TUndoMove.recordUndo(const aSrcFilePath: string; const aDstFilePath: string): boolean;
+function TUndoMove.recordUndo(const aSrcFilePath: string; const aDstFilePath: string): TVoid;
 begin
   var vUndoRec           := TUndoRec.create;
   vUndoRec.urSrcFilePath := aSrcFilePath;

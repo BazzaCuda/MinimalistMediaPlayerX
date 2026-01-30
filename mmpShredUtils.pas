@@ -287,7 +287,9 @@ end;
 
 function shredFolderFiles(const aFolderPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 const
+  {$WARN SYMBOL_PLATFORM OFF}
   faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
+  {$WARN SYMBOL_PLATFORM ON}
 var
   vFolderPath:  string;
   SR:           TSearchRec;

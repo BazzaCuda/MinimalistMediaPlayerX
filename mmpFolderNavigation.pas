@@ -48,6 +48,7 @@ begin
   aFolderList.clear;
   aFolderList.sorted := FALSE;
   rc := findFirst(aFolderPath + '*.*', faDirectory, sr);
+  {$WARN SYMBOL_PLATFORM OFF}
   while rc = 0 do begin
     case ((sr.attr AND faDirectory) <> 0) and ((sr.attr AND faSysFile) = 0) of TRUE: begin // faSysFile also applies to system folders
           case (sr.name = 'Windows') and bAllowIntoWindows of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;
@@ -55,6 +56,7 @@ begin
                 of TRUE: aFolderList.add(aFolderPath + sr.name + '\'); end;end;end;
     rc := findNext(sr);
   end;
+  {$WARN SYMBOL_PLATFORM ON}
   findClose(sr);
   aFolderList.customSort(naturalSort);
 end;

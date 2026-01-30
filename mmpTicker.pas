@@ -21,21 +21,22 @@ unit mmpTicker;
 interface
 
 uses
-  system.diagnostics, system.timespan;
+  system.diagnostics, system.timespan,
+  bazAction;
 
-function tickerStart:   boolean;
-function tickerStop:    boolean;
+function tickerStart:   TVoid;
+function tickerStop:    TVoid;
 function tickerTotalMs: double;
 
 implementation
 
 var rStopWatch: TStopWatch;
-function tickerStart: boolean;
+function tickerStart: TVoid;
 begin
   rStopwatch := TStopwatch.startNew;
 end;
 
-function tickerStop: boolean;
+function tickerStop: TVoid;
 begin
   rStopWatch.stop;
 end;

@@ -525,7 +525,7 @@ end;
 
 procedure TTimeline.exportSegments(sender: TObject);
 begin
-  case mmpCtrlKeyDown and mmpShiftKeyDown of   TRUE: mmpNewExporter(FMediaFilePath, GS.mediaType).copySourceFile;
+  case mmpCtrlKeyDown and mmpShiftKeyDown of   TRUE: case mmpNewExporter(FMediaFilePath, GS.mediaType).copySourceFile of TRUE: mmp.cmd(evSTOpInfo, 'copy complete'); end;
                                               FALSE: mmpNewExporter(FMediaFilePath, GS.mediaType).exportEdits; end;
 end;
 

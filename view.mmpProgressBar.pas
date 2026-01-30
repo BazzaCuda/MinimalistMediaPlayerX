@@ -24,6 +24,7 @@ uses
   winApi.windows,
   system.classes,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   model.mmpConfigFile,
   ALProgressBar;
@@ -54,9 +55,9 @@ type
     FSubscriber:      ISubscriber;
   private
     function    brighter:      integer;
-    function    centerCursor:  boolean;
+//    function    centerCursor:  TVoid;
     function    darker:        integer;
-    function    formResize:    boolean;
+    function    formResize:    TVoid;
     function    resetColor: integer;
     function    onNotify(const aNotice: INotice): INotice;
   protected
@@ -93,13 +94,11 @@ begin
   CF[CONF_PROGRESS_BAR] := CF.toHex(result);
 end;
 
-function TProgressBar.centerCursor: boolean;
-begin
-  result := FALSE;
-  var vPoint := FPB.clientToScreen(point(FPB.width div 2, FPB.height div 2));
-  setCursorPos(vPoint.x, vPoint.y);
-  result := TRUE;
-end;
+//function TProgressBar.centerCursor: TVoid;
+//begin
+//  var vPoint := FPB.clientToScreen(point(FPB.width div 2, FPB.height div 2));
+//  setCursorPos(vPoint.x, vPoint.y);
+//end;
 
 constructor TProgressBar.Create;
 begin
@@ -131,11 +130,9 @@ begin
   inherited;
 end;
 
-function TProgressBar.formResize: boolean;
+function TProgressBar.formResize: TVoid;
 begin
-  result := FALSE;
   FPB.invalidate;
-  result := TRUE;
 end;
 
 function TProgressBar.getPosition: integer;

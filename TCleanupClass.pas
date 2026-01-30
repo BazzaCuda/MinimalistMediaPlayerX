@@ -21,11 +21,12 @@ unit TCleanupClass;
 interface
 
 uses
+  bazAction,
   mmpNotify.notices;
 
 type
   ICleanup = interface
-    function cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
+    function cleanup(const aFolderPath: string; const aCurrentItem: string): TVoid;
   end;
 
 function newCleanup: ICleanup;
@@ -41,7 +42,7 @@ uses
 type
   TCleanup = class(TInterfacedObject, ICleanup)
   public
-    function cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
+    function cleanup(const aFolderPath: string; const aCurrentItem: string): TVoid;
   end;
 
 function newCleanup: ICleanup;
@@ -51,15 +52,16 @@ end;
 
 { TCleanup }
 
-function TCleanup.cleanup(const aFolderPath: string; const aCurrentItem: string): boolean;
-const filesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden and NOT faSysFile;
+function TCleanup.cleanup(const aFolderPath: string; const aCurrentItem: string): TVoid;
+const
+  {$WARN SYMBOL_PLATFORM OFF}
+  filesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden and NOT faSysFile;
+  {$WARN SYMBOL_PLATFORM OFF}
 var SR: TSearchRec;
 
-  function processSegFile: boolean;
+  function processSegFile: TVoid;
   var vFN: string;
   begin
-    result := FALSE;
-
     var vSL := TStringList.create;
     vSL.loadFromFile(aFolderPath + SR.name);
 
@@ -74,7 +76,6 @@ var SR: TSearchRec;
       case fileExists(vFN) of TRUE: mmpDeleteThisFile(vFN, [], TRUE, FALSE, sameText(vFN, aCurrentItem)); end; // only mpvStop if it's the current file
     end;
     vSL.free;
-    result := TRUE;
   end;
 
   function extOK: boolean;
@@ -85,15 +86,13 @@ var SR: TSearchRec;
   end;
 
 begin
-  result := FALSE;
-
-  var vResult: boolean := FALSE;
   case findFirst(aFolderPath + '*.*', filesOnly, SR) = 0 of TRUE:
     repeat
-      case extOK of TRUE: vResult := mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE, FALSE); end; // no need to mpvStop for these files
+      case extOK of TRUE: mmpDeleteThisFile(aFolderPath + SR.name, [], TRUE, FALSE, FALSE); end; // no need to mpvStop for these files
     until (findNext(SR) <> 0);
   end;
   findClose(SR);
   mmpRunTasks;
-  result := TRUE;end;
+end;
+
 end.

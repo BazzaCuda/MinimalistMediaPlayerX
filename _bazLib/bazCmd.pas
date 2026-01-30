@@ -54,8 +54,8 @@ type
     class function cmd(const aBoolean: boolean; const trueFunc: TVoidFunc): TVoid; overload; static;
 
     //===== TProcs
-    class function cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean; overload; static;
-    class function cmd(const aBoolean: boolean; const trueProc: TProc): boolean; overload; static;
+    class function cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): TVoid; overload; static;
+    class function cmd(const aBoolean: boolean; const trueProc: TProc): TVoid; overload; static;
 
     //===== TOProcs with a TObject parameter
     class function cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): boolean; overload; static;
@@ -70,8 +70,8 @@ type
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc): string; overload; static;
 
     //===== Event Notices with no result
-    class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): boolean; overload; static;
-    class function cmd(const aBoolean: boolean; const trueNotices: array of TNoticeEvent): boolean; overload; static;
+    class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): TVoid; overload; static;
+    class function cmd(const aBoolean: boolean; const trueNotices: array of TNoticeEvent): TVoid; overload; static;
 
     //===== Event Notices with the INotice returned
     class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent): INotice; overload; static;
@@ -140,8 +140,9 @@ class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc): TVoi
 begin
   result := cmd(aBoolean, trueFunc, NIL);
 end;
+
 //===== TProcs
-class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc; const falseProc: TProc): TVoid;
 var doProc: array[boolean] of TProc;
 begin
   doProc[TRUE]  := trueProc;
@@ -149,9 +150,9 @@ begin
   case assigned(doProc[aBoolean]) of TRUE: doProc[aBoolean](); end;
 end;
 
-class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueProc: TProc): TVoid;
 begin
-  result := cmd(aBoolean, trueProc, NIL);
+  cmd(aBoolean, trueProc, NIL);
 end;
 
 //===== TOProcs with a TObject parameter
@@ -197,17 +198,17 @@ begin
 end;
 
 //===== Event Notices with no result
-class function mmp.cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): TVoid;
 var
   T: TProc;
   F: TProc;
 begin
   T := procedure begin notifyApp(newNotice(trueEvent)); end;
   F := procedure begin notifyApp(newNotice(falseEvent)); end;
-  result := cmd(aBoolean, T, F);
+  cmd(aBoolean, T, F);
 end;
 
-class function mmp.cmd(const aBoolean: boolean; const trueNotices: array of TNoticeEvent): boolean;
+class function mmp.cmd(const aBoolean: boolean; const trueNotices: array of TNoticeEvent): TVoid;
 begin
   for var i := low(trueNotices) to high(trueNotices) do begin
     var vNotice := trueNotices[i];

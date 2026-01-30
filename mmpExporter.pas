@@ -21,6 +21,7 @@ unit mmpExporter;
 interface
 
 uses
+  bazAction,
   mmpConsts;
 
 type
@@ -37,7 +38,6 @@ uses
   winApi.windows,
   system.ioUtils, system.classes, system.generics.collections, system.sysUtils,
   vcl.controls,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazCmd,
   mmpExportExec, mmpFileUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
@@ -115,8 +115,6 @@ const
 var
   cmdLine: string;
 begin
-  result := FALSE;
-
   var vProgressForm := showProgressForm('Copying source file', 'Please wait', onCancel);
 
   cmdLine := '-hide_banner';
@@ -168,7 +166,7 @@ end;
 function TExporter.concatSegments(const aProgressForm: IProgressForm): boolean;
 //====== CONCAT MULTIPLE SEGMENTS ======
 begin
-  result := TRUE; // default to TRUE unless an FFmpeg process fails
+  // result := TRUE; // default to TRUE unless an FFmpeg process fails - pointless
 
 //  var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
 

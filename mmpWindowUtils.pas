@@ -30,7 +30,7 @@ uses
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
-function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint): boolean;
+function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint): TVoid;
 function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): integer; overload;
 function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid; overload;
 function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): TVoid;
@@ -59,17 +59,16 @@ var
 
   function adjustWidthForAspectRatio: integer;
   begin
+    result := -1;
     case (MPvideoWidth <= 0) OR (MPvideoHeight <= 0) of TRUE: EXIT; end;
     result := round(aHeight / MPvideoHeight * MPvideoWidth);
   end;
 
-  function getMediaInfo: boolean;
+  function getMediaInfo: TVoid;
   begin
-    result          := FALSE;
     MPmediaType     := GS.mediaType;
     MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
     MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
-    result          := TRUE;
 //    debugFormat('MP.x:%d, MP.y:%d', [MPvideoWidth, MPvideoHeight]);
   end;
 
@@ -100,18 +99,17 @@ var
 
   function adjustWidthForAspectRatio: integer;
   begin
+    result := -1;
     case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: EXIT; end;
     result := trunc(vHeight / MPvideoHeight * MPvideoWidth);
   end;
 
-  function getMediaInfo: boolean;
+  function getMediaInfo: TVoid;
   begin
-    result          := FALSE;
     MPmediaType     := GS.mediaType;
     MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
     MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
     MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
-    result          := TRUE;
 //    debugFormat('getMediaInfo MP.x:%d, MP.y:%d', [MPvideoWidth, MPvideoHeight]);
   end;
 
@@ -188,13 +186,13 @@ end;
 function mmpArrangeAll(const aWND: HWND): boolean;
 var
   vCount:             integer;
-  vWidth,
+  vWidth:             integer;
   vHeight:            integer;
-  vScreenWidth,
+  vScreenWidth:       integer;
   vScreenHeight:      integer;
   vZero:              integer;
-  vHMiddle,
-  vVMiddle:           integer;
+  vHMiddle:           integer;
+  //vVMiddle:           integer;
 begin
   result := FALSE;
 
@@ -225,7 +223,7 @@ begin
   vScreenWidth  := mmpScreenWidth;
   vScreenHeight := mmpScreenHeight;
   vHMiddle      := vScreenWidth   div 2;
-  vVMiddle      := vScreenHeight  div 2;
+  // vVMiddle      := vScreenHeight  div 2;
   vZero         := vHMiddle - vWidth;
 
   vCount    := mmp.cmd(evPAReqCount).integer;
@@ -260,7 +258,7 @@ begin
   result := TRUE;
 end;
 
-function mmpCenterWindow(const aWND: HWND; const aPt: TPoint): boolean;
+function mmpCenterWindow(const aWND: HWND; const aPt: TPoint): TVoid;
 // aPt is optional and provides the calculated dimensions that a window is going to have
 var
   vR:     TRect;
@@ -269,7 +267,6 @@ var
 
   function alreadyCentred: boolean;
   begin
-    result      := FALSE;
     var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
     vHPos       := ((mmpScreenWidth  - vR.width) div 2);
     case vHPos + vR.width + vDelta > mmpScreenWidth of TRUE: vHPos := mmpScreenWidth - vR.width - vDelta - 1; end; // only shift left if necessary
@@ -278,7 +275,6 @@ var
   end;
 
 begin
-  result := FALSE;
   getWindowRect(aWND, vR);
 
   case (aPt.x <> 0) and (aPt.y <> 0) of  TRUE:  begin // override the current dimensions with those provided
@@ -291,7 +287,6 @@ begin
   case (vHPos > 0) and (vVPos > 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
 
   mmp.cmd(evGSAutoCenter, TRUE);
-  result := TRUE;
 end;
 
 function mmpGreaterWindow(const aWND: HWND; aShiftState: TShiftState): integer;

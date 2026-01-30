@@ -71,8 +71,6 @@ type
     procedure   btnCancelClick(Sender: TObject);
     procedure   FormCreate(Sender: TObject);
   strict private
-    FRefCount: IInterface;
-
     FOnCancel:  TNotifyEvent;
   private
   protected

@@ -233,7 +233,9 @@ end;
 function TPlaylist.fillPlaylist(const aFolder: string; const aSetOfMediaType: TSetOfMediaType = [mtAudio, mtVideo, mtImage]): boolean;
 // in the context of the playlist, mtUnk is a synonym for mtAny except when it's being used to identify unsupported file types
 const
+  {$WARN SYMBOL_PLATFORM OFF}
   faFilesOnly = faAnyFile AND NOT faDirectory {AND NOT faHidden} AND NOT faSysFile;
+  {$WARN SYMBOL_PLATFORM ON}
 var
   vSR: TSearchRec;
   vSetOfMediaType: TSetOfMediaType;

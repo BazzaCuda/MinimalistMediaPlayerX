@@ -124,8 +124,6 @@ end;
 
 function mediaInfoDLL_Load(const libPath: string): boolean;
 begin
-  result := FALSE;
-
   mmp.cmd(libHandle = 0,  procedure begin libHandle := loadLibrary(PChar(libPath)); end);
 
   mmp.cmd(libHandle <> 0, procedure begin

@@ -22,7 +22,8 @@ interface
 
 uses
   winApi.windows,
-  system.classes;
+  system.classes,
+  bazAction;
 
 function mmpAltKeyDown:     boolean;
 function mmpCapsLockOn:     boolean;
@@ -31,7 +32,7 @@ function mmpKBState:        TKeyboardState;
 function mmpNumLockOn:      boolean;
 function mmpShiftKeyDown:   boolean;
 function mmpShiftState:     TShiftState;    // so we don't have to pull vcl.forms into every unit that needs this
-function mmpToggleNumlock:  boolean;
+function mmpToggleNumlock:  TVoid;
 
 implementation
 
@@ -77,13 +78,11 @@ begin
   case getKeyState(VK_MENU)     < 0 of TRUE: include(result, ssAlt);    end;
 end;
 
-function mmpToggleNumlock: boolean;
+function mmpToggleNumlock: TVoid;
 begin
-  result      := FALSE;
   var kbState := mmpKBState;
   keybd_event(VK_NUMLOCK, kbState[VK_NUMLOCK] xor 1, KEYEVENTF_EXTENDEDKEY or 0, 0);
   keybd_event(VK_NUMLOCK, kbState[VK_NUMLOCK] xor 1, KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
-  result      := TRUE;
 end;
 
 end.

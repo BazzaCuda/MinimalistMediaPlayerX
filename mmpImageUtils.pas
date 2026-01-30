@@ -21,13 +21,14 @@ unit mmpImageUtils;
 interface
 
 uses
-  vcl.extCtrls;
+  vcl.extCtrls,
+  bazAction;
 
-function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): boolean;
+function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): TVoid;
 
 implementation
 
-function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): boolean;
+function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): TVoid;
 begin
   // Check if the source image has a picture to copy
   case assigned(sourceImage.picture) and assigned(sourceImage.picture.graphic) of FALSE: EXIT; end;

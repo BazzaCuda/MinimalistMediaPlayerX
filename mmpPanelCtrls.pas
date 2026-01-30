@@ -23,6 +23,7 @@ interface
 uses
   winApi.windows,
   vcl.comCtrls,
+  bazAction,
   mmpConsts, mmpUtils,
   _debugWindow;
 
@@ -40,22 +41,23 @@ const
 type
   TPanelName = (pnName, pnNumb, pnSize, pnXXYY, pnDDXY, pnTick, pnAVAV, pnFold, pnHelp);
 
-function mmpInitStatusBar         (const aStatusBar: TStatusBar): boolean;
+function mmpInitStatusBar         (const aStatusBar: TStatusBar): TVoid;
 
 function mmpIsPanelAt             (const aStatusBar: TStatusBar; const aPanel: integer; const aPt: TPoint): boolean;
 function mmpMousePoint            (const aStatusBar: TStatusBar): TPoint;
-function mmpPartClearStatusBar    (const aStatusBar: TStatusBar): boolean;
-function mmpResetPanelHelp        (const aStatusBar: TStatusBar): boolean;
-function mmpResizeStatusBar       (const aStatusBar: TStatusBar): boolean;
-function mmpSetPanelOwnerDraw     (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
-function mmpSetPanelText          (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
+function mmpPartClearStatusBar    (const aStatusBar: TStatusBar): TVoid;
+function mmpResetPanelHelp        (const aStatusBar: TStatusBar): TVoid;
+function mmpResizeStatusBar       (const aStatusBar: TStatusBar): TVoid;
+function mmpSetPanelOwnerDraw     (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): TVoid;
+function mmpSetPanelText          (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): TVoid;
 
 implementation
 
 uses
+  system.types,
   TStatusBarHelperClass;
 
-function mmpInitStatusBar(const aStatusBar: TStatusBar): boolean;
+function mmpInitStatusBar(const aStatusBar: TStatusBar): TVoid;
 begin
   mmpResetPanelHelp(aStatusBar);
 
@@ -82,13 +84,13 @@ begin
   result := aStatusBar.screenToClient(result);
 end;
 
-function mmpResetPanelHelp(const aStatusBar: TStatusBar): boolean;
+function mmpResetPanelHelp(const aStatusBar: TStatusBar): TVoid;
 begin
   aStatusBar.panels[PANEL_HELP].style := psText;
   aStatusBar.panels[PANEL_HELP].text  := 'Help = Ctrl-[H]';
 end;
 
-function mmpPartClearStatusBar(const aStatusBar: TStatusBar): boolean;
+function mmpPartClearStatusBar(const aStatusBar: TStatusBar): TVoid;
 // don't include pnAVAV: it must stay set until the folder changes
 begin
   mmpSetPanelText(aStatusBar, pnName, THUMB_NO_IMAGES);
@@ -100,7 +102,7 @@ begin
   mmpResetPanelHelp(aStatusBar);
 end;
 
-function mmpResizeStatusBar(const aStatusBar: TStatusBar): boolean;
+function mmpResizeStatusBar(const aStatusBar: TStatusBar): TVoid;
 var
   fixedWidths:  integer;
   availWidth:   integer;
@@ -124,7 +126,7 @@ begin
   mmpProcessMessages;
 end;
 
-function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): boolean;
+function mmpSetPanelOwnerDraw (const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aOwnerDraw: boolean): TVoid;
 begin
   case aStatusBar = NIL of TRUE: EXIT; end;
 
@@ -134,7 +136,7 @@ begin
   mmpProcessMessages;
 end;
 
-function mmpSetPanelText(const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): boolean;
+function mmpSetPanelText(const aStatusBar: TStatusBar; const aPanelName: TPanelName; const aText: string): TVoid;
 begin
   case aStatusBar = NIL of TRUE: EXIT; end;
 

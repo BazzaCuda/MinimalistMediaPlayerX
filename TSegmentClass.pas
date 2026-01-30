@@ -71,11 +71,11 @@ type
     procedure Paint; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
-    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);
+    constructor Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE); reintroduce;
     function    delete: TVoid;
     function    restore: TVoid;
     procedure   setDisplayDetails;
-    function    setAsSelSeg: boolean;
+    function    setAsSelSeg: TVoid;
     property    deleted:   boolean read FDeleted      write FDeleted;
     property    duration:  integer read getDuration;
     property    endSS:     integer read FEndSS        write FEndSS;
@@ -92,7 +92,7 @@ type
     property    title:     string  read getTitle      write setTitle;
     property    trashCan:  TImage  read FTrashCan;
 
-    class function clearFocus:    boolean; static;
+    class function clearFocus:    TVoid; static;
     class property includedCount: integer               read getIncludedCount;
     class property parentForm:    TWinControl                                   write FParent;
     class property segments:      TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
@@ -110,7 +110,7 @@ function generateRandomEvenDarkerSoftColor: TColor; // from a suggestion by chat
 {$J+} const nextColor:        integer = 0;      {$J-}
 {$J+} var   darkerSoftColors: array of TColor;  {$J-}
 
-  function fillSilvers: boolean;
+  function fillSilvers: TVoid;
   begin
 //    darkerSoftColors[0] := RGB(80, 80, 80);   // Very Dark Gray
 //    darkerSoftColors[1] := RGB(70, 70, 70);   // Very Dark Silver
@@ -145,7 +145,7 @@ end;
 
 { TSegment }
 
-class function TSegment.clearFocus: boolean;
+class function TSegment.clearFocus: TVoid;
 begin
   for var i := 0 to FSegments.count - 1 do FSegments[i].selected := FALSE;
   FSelSeg := NIL;
@@ -323,7 +323,7 @@ begin
   FSegID.caption := value;
 end;
 
-function TSegment.setAsSelSeg: boolean;
+function TSegment.setAsSelSeg: TVoid;
 begin
   clearFocus;
   FSelSeg    := SELF;

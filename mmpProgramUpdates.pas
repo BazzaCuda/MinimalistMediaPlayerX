@@ -22,6 +22,7 @@ interface
 
 uses
   system.zip,
+  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
 
 type
@@ -55,12 +56,12 @@ type
     FReleaseTag:    string;
     FZipURL:        string;
   protected
-    function  analyseReleaseNotes(const aReleaseTag: string): boolean;
+    function  analyseReleaseNotes(const aReleaseTag: string): TVoid;
     function  downloadAsset(const aURL, aFilePath: string; const aSuccess: string = EMPTY): string;
     function  downloadRelease(const aReleaseTag: string): string;
     function  extractRelease(const aReleaseTag: string): boolean;
     function  getJSONReleaseTag: string;
-    function  saveReleaseNotes(const aReleaseTag: string): boolean;
+    function  saveReleaseNotes(const aReleaseTag: string): TVoid;
     procedure zipOnProgress(sender: TObject; aFileName: string; aHeader: TZipHeader; aPosition: Int64);
   public
     function  getReleaseTag: string;
@@ -173,7 +174,7 @@ end;
 
 { TProgramUpdates }
 
-function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): boolean;
+function TProgramUpdates.analyseReleaseNotes(const aReleaseTag: string): TVoid;
 // download any and all images in the release notes (nope: GitHub broke direct access and redirect access - see comment below)
 // As of v4.1.3 this just modifies the release notes so each URL for an image is replaced with a local path to the file in the releaseNotes folder
 // The image files themselves are now included in the zip file
@@ -281,8 +282,10 @@ var
 //  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/tags/v2.0.0'); // for DEV only
 
 begin
-  result := EMPTY;
-  json := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
+  result  := EMPTY;
+  json    := fetchURL('https://api.github.com/repos/bazzacuda/minimalistmediaplayerx/releases/latest');
+  obj     := NIL;
+  vAssets := NIL;
 
 ////=== DEV ONLY ===
 //  json := getDevJson('v3.0.0');
@@ -339,7 +342,7 @@ begin
   result := fileExists(mmpReleaseNotesFilePath(aReleaseTag));
 end;
 
-function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): boolean;
+function TProgramUpdates.saveReleaseNotes(const aReleaseTag: string): TVoid;
 begin
   case FReleaseNotes = EMPTY of TRUE: EXIT; end;
 
