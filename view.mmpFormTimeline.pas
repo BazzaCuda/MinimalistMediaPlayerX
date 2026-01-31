@@ -207,7 +207,7 @@ procedure TTimelineForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle    := params.ExStyle or (WS_EX_APPWINDOW);
-  params.WndParent  := SELF.Handle; // normally application.handle
+  params.WndParent  := application.HANDLE;
 end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -249,7 +249,6 @@ begin
                                 var vSeg := TL.segmentAtSS(TL.positionSS);
                                 case vSeg = NIL of FALSE: vSeg.invalidate; end; // it's really not clear which is best here, repaint or invalidate
                               end;end;
-
 end;
 
 procedure TTimelineForm.pnlCursorMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
