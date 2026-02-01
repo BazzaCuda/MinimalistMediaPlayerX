@@ -22,9 +22,8 @@ interface
 
 uses
   system.classes, system.sysUtils,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 function mmpCanDeleteThis(const aFilePath: string; const aShiftState: TShiftState): boolean;
 function mmpChapterContainer(const aFolderPath: string; const aMediaType: TMediaType): string;

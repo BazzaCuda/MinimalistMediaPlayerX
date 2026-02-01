@@ -23,7 +23,7 @@ interface
 uses
   winApi.windows,
   system.classes,
-  bazAction;
+  mmpAction;
 
 function mmpAltKeyDown:     boolean;
 function mmpCapsLockOn:     boolean;

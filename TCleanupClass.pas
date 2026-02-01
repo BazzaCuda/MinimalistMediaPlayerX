@@ -21,8 +21,8 @@ unit TCleanupClass;
 interface
 
 uses
-  bazAction,
-  mmpNotify.notices;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction;
 
 type
   ICleanup = interface

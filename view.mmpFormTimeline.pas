@@ -30,9 +30,8 @@ uses
   system.classes, system.generics.collections, system.types, system.sysUtils,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
   {$endif}
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
+  mmpAction, mmpConsts,
   TSegmentClass, Vcl.Imaging.pngimage;
 
 type

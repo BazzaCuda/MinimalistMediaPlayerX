@@ -22,8 +22,8 @@ interface
 
 uses
   system.zip,
-  bazAction,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction;
 
 type
   IProgramUpdates = interface

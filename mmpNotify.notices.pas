@@ -24,8 +24,7 @@ uses
   winApi.messages, winApi.windows,
   system.classes,
   vcl.forms, vcl.graphics,
-  bazAction,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 type
   TNoticeEvent = (evNone,

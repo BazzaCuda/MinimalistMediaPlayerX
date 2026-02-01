@@ -32,7 +32,7 @@ uses
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Samples.Spin,
   {$endif}
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazAction;
+  mmpAction;
 
 type
   TConfigForm = class(TForm)

@@ -43,9 +43,9 @@ implementation
 
 uses
   winApi.windows,
-  bazAction, bazCmd,
-  mmpNotify.notices,
-  mmpGlobalState,
+  bazCmd,
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction, mmpGlobalState,
   _debugWindow;
 
 const

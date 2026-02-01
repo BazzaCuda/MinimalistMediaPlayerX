@@ -31,9 +31,8 @@ uses
   vcl.buttons, vcl.comCtrls, vcl.controlList, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.imgList, vcl.stdCtrls,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
+  mmpAction, mmpConsts,
   TSegmentClass;
 
 type

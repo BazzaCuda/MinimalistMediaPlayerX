@@ -21,8 +21,7 @@ unit mmpExporter;
 interface
 
 uses
-  bazAction,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 type
   IExporter = interface
@@ -333,7 +332,7 @@ function TExporter.createFinalFile(const bWriteChapters: boolean): boolean;
 //====== NAME THE OUTPUT FILE ======
 // and remove any intermediary files
 begin
-  debugBoolean('bWriteChapters', bWriteChapters);
+  result := TRUE; // unless one of the renames fails
   case bWriteChapters of   TRUE:  begin // replace the incoming [edited] file with the [chapters] file
                                     var vChapterContainer := filePathOut(bWriteChapters);
                                     case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;

@@ -22,8 +22,7 @@ interface
 
 uses
   winApi.windows,
-  bazAction,
-  mmpConsts, mmpUtils,
+  mmpAction, mmpConsts, mmpUtils,
   model.mmpConfigFile;
 
 function mmpEnvironmentVariable: boolean;

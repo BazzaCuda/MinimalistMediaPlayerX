@@ -24,8 +24,7 @@ uses
   winApi.windows,
   system.classes,
   vcl.forms,
-  bazAction,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 function mmpCancelDelay: boolean;
 function mmpCompareStr(const aStr1: string; const aStr2: string): integer;

@@ -16,36 +16,22 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 }
-unit mmpTicker;
+unit mmpAction;
 
 interface
 
 uses
-  system.diagnostics, system.timespan,
-  mmpAction;
+  bazAction;
 
-function tickerStart:   TVoid;
-function tickerStop:    TVoid;
-function tickerTotalMs: double;
+type
+  TVoid = bazAction.TVoid;
+
+  IAction<TResult> = interface(bazAction.IAction<TResult>)
+  end;
+
+  TAction<TResult> = class(bazAction.TAction<TResult>, bazAction.IAction<TResult>)
+  end;
 
 implementation
-
-var rStopWatch: TStopWatch;
-function tickerStart: TVoid;
-begin
-  rStopwatch := TStopwatch.startNew;
-end;
-
-function tickerStop: TVoid;
-begin
-  rStopWatch.stop;
-end;
-
-function tickerTotalMs: double;
-var vTimeSpan: TTimeSpan;
-begin
-  vTimeSpan := rStopWatch.elapsed;
-  result := vTimeSpan.totalMilliseconds;
-end;
 
 end.

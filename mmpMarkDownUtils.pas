@@ -25,8 +25,7 @@ uses
   system.classes,
   vcl.stdCtrls,
   htmlView, markDownUtils, MarkDownViewerComponents,
-  bazAction,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 function mmpInitMarkDownViewer(const aMD: TMarkDownViewer): TVoid;
 function mmpLoadMarkDownFromResource(const aMD: TMarkDownViewer; const aResourceName: string): TVoid;

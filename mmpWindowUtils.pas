@@ -23,9 +23,8 @@ interface
 uses
   winApi.windows,
   system.classes, system.SyncObjs,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpGlobalState;
+  mmpAction, mmpConsts, mmpGlobalState;
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpArrangeAll        (const aWND: HWND): boolean;

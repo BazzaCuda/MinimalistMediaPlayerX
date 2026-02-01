@@ -30,8 +30,8 @@ uses
   system.classes, system.sysUtils, system.variants,
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
-  bazAction,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction;
 
 type
   IMainCaption = interface

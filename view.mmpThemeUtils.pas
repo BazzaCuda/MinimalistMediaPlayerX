@@ -24,8 +24,7 @@ uses
   winApi.shellApi, winApi.windows,
   system.classes,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
-  bazAction,
-  mmpConsts, mmpDesktopUtils;
+  mmpAction, mmpConsts, mmpDesktopUtils;
 
 function mmpInitTransparentForm(const aForm: TForm): TForm;
 function mmpInitTransparentLabel(const aLabel: TLabel): TVoid;

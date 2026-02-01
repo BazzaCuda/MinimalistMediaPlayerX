@@ -23,9 +23,8 @@ interface
 uses
   system.classes, system.generics.collections,
   vcl.comCtrls, vcl.controls, vcl.extCtrls, vcl.forms,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
+  mmpAction, mmpConsts,
   model.mmpPlaylist,
   TMPVHostClass, TThumbClass;
 

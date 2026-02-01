@@ -28,10 +28,10 @@ uses
   {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
-  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls,
+  vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.imaging.pngImage, vcl.stdCtrls, vcl.menus,
   {$endif}
-  bazAction,
-  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber, Vcl.Menus;
+  mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction;
 
 
 type

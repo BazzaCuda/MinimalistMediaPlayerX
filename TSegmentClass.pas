@@ -24,7 +24,7 @@ uses
   winApi.windows, winApi.messages,
   system.classes, system.generics.collections,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
-  bazAction;
+  mmpAction;
 
 const
   NEARLY_BLACK = clBlack + $101010;

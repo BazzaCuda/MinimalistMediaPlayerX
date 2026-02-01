@@ -29,9 +29,8 @@ implementation
 
 uses
   system.sysUtils,
-  bazAction,
   bazCmd,
-  mmpConsts, mmpFolderUtils, mmpFileUtils,
+  mmpAction, mmpConsts, mmpFolderUtils, mmpFileUtils,
   model.mmpConfigFile;
 
 function mmpFolderFromFKey(const aKey: WORD): string;

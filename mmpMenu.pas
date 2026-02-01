@@ -34,7 +34,8 @@ function newMMPMenu: IMMPMenu;
 implementation
 
 uses
-  bazAction, bazCmd,
+  bazCmd,
+  mmpAction,
   model.mmpConfigFile,
   _debugWindow;
 

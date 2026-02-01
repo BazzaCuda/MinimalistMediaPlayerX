@@ -31,9 +31,8 @@ uses
   vcl.appEvnts, vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.Forms, Vcl.ComCtrls,
   {$endif}
   MPVBasePlayer,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
+  mmpAction, mmpConsts,
   view.mmpFormProgress, view.mmpFormHelpFull, view.mmpKeyboardThumbs,
   TMPVHostClass, TThumbsClass;
 

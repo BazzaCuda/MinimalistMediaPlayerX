@@ -23,7 +23,7 @@ interface
 uses
   system.types,
   MPVBasePlayer,
-  bazAction,
+  mmpAction,
   _debugWindow;
 
 function mpvAdjusted(const mpv: IMPVBasePlayer): boolean;

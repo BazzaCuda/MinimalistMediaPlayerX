@@ -23,9 +23,8 @@ interface
 uses
   system.generics.collections,
   vcl.forms, vcl.stdCtrls,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
+  mmpAction, mmpConsts,
   TMediaStreamClass;
 
 type

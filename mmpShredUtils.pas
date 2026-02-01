@@ -26,9 +26,8 @@ uses
   winApi.windows,
   system.math, system.sysUtils,
   vcl.dialogs,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpFolderUtils, mmpUtils;
+  mmpAction, mmpConsts, mmpFolderUtils, mmpUtils;
 
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 function mmpStartTasks: TVoid;

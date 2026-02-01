@@ -22,7 +22,7 @@ interface
 
 uses
   system.generics.collections,
-  bazAction;
+  mmpAction;
 
 type
   IUndoMove = interface

@@ -22,7 +22,7 @@ interface
 
 uses
   vcl.extCtrls,
-  bazAction;
+  mmpAction;
 
 function mmpCopyPNGImage(const sourceImage: TImage; const destImage: TImage): TVoid;
 

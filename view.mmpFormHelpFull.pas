@@ -28,14 +28,12 @@ uses
   {$ifdef designTime}
   winApi.messages, winApi.windows,
   system.sysUtils, system.variants, system.classes,
-  vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics, vcl.stdCtrls,
+  vcl.comCtrls, vcl.controls, vcl.dialogs, vcl.forms, vcl.graphics, vcl.stdCtrls, CommCtrl, Vcl.ExtCtrls,
   {$endif}
   HTMLUn2, HtmlView, Vcl.TitleBarCtrls, Vcl.Buttons, Vcl.ToolWin,
   MarkDownViewerComponents,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazAction,
-  mmpConsts,
-  CommCtrl, Vcl.ExtCtrls;
+  mmpAction, mmpConsts;
 
 type
   IHelpFullForm = interface

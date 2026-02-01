@@ -32,7 +32,7 @@ uses
   winApi.shellApi, winApi.windows,
   system.sysUtils, system.types,
   vcl.Dialogs,
-  bazAction,
+  mmpAction,
   _debugWindow;
 
 const

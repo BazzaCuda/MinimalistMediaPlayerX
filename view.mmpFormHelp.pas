@@ -31,9 +31,8 @@ uses
   vcl.controls, vcl.stdCtrls, vcl.extCtrls, vcl.forms,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 type
   IHelpForm = interface

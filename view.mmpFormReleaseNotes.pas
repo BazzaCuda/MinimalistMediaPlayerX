@@ -31,8 +31,7 @@ uses
   vcl.controls, vcl.dialogs, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
   {$endif}
   HTMLUn2, HtmlView, MarkDownViewerComponents,
-  bazAction,
-  mmpProgramUpdates;
+  mmpAction, mmpProgramUpdates;
 
 type
   TReleaseNotesForm = class(TForm)

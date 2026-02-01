@@ -22,10 +22,8 @@ interface
 
 uses
   winApi.messages, winApi.windows,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts,
-  mmpKeyboardUtils, mmpShellUtils,
+  mmpAction, mmpConsts, mmpKeyboardUtils, mmpShellUtils,
   model.mmpConfigFile, model.mmpMediaPlayer;
 
 function mmpProcessKeyOp(const MP: IMediaPlayer; var SS: TSnapshot): boolean;

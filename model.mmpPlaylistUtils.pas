@@ -22,9 +22,8 @@ interface
 
 uses
   system.sysUtils,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpConsts, mmpGlobalState,
+  mmpAction, mmpConsts, mmpGlobalState,
   model.mmpConfigFile, model.mmpPlaylist;
 
 function mmpCheckPlaylistItemExists(const aPL: IPlaylist; const bNextFolderOnEmpty: boolean): TVoid;

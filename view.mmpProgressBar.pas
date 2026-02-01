@@ -24,8 +24,8 @@ uses
   winApi.windows,
   system.classes,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
+  mmpAction,
   model.mmpConfigFile,
   ALProgressBar;
 

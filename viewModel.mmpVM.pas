@@ -24,9 +24,8 @@ uses
   winApi.messages, winApi.windows,
   system.classes,
   vcl.Controls, vcl.extCtrls, vcl.forms,
-  bazAction,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpMenu,
+  mmpAction, mmpMenu,
   view.mmpFormThumbs, view.mmpProgressBar,
   model.mmpMediaPlayer, model.mmpPlaylist;
 

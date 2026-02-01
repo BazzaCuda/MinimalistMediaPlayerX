@@ -152,7 +152,8 @@ uses
   viewModel.mmpKeyboardOps in 'viewModel.mmpKeyboardOps.pas',
   viewModel.mmpVM in 'viewModel.mmpVM.pas',
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  mmpAction in 'mmpAction.pas';
 
 procedure setupRunMode;
 begin

@@ -23,8 +23,7 @@ interface
 uses
   winApi.windows,
   vcl.comCtrls,
-  bazAction,
-  mmpConsts, mmpUtils,
+  mmpAction, mmpConsts, mmpUtils,
   _debugWindow;
 
 const

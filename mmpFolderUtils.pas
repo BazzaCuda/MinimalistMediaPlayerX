@@ -27,15 +27,14 @@ implementation
 
 uses
   system.sysUtils,
-  bazAction,
   bazCmd,
-  mmpConsts;
+  mmpAction, mmpConsts;
 
 function mmpITBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
   guardClause := (length(result) > 0) and (result[high(result)] <> BACKSLASH);
-  result := mmp.use(guardClause, result + BACKSLASH, result);
+  result := mmp.use<string>(guardClause, result + BACKSLASH, result);
 end;
 
 function mmpRTBS(aFolderPath: string): string;
