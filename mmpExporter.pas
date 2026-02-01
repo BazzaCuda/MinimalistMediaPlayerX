@@ -342,6 +342,7 @@ begin
                                   end;
                            FALSE: begin // replace the incoming [edited] file with the [chapters] file, which audio used to re-attach the cover art
                                     case FMediaType of mtAudio: begin
+                                                                  FProgressForm.subHeading := 'Deleting Intermediary File';
                                                                   case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
                                                                   result := renameFile(filePathTempChapters(bWriteChapters), filePathOUT); end;end;
                                   end;end;
