@@ -321,7 +321,7 @@ begin
   FSubscriberTT := NIL;
   appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
-  mmp.free(FSlideshowTimer <> NIL, FSlideshowTimer);
+  case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
   inherited;
 end;
 
@@ -1182,22 +1182,22 @@ var
   vTab:       integer;
   vPosition:  integer;
 begin
-  vTab      := mmp.use(aSeconds = 0, 5, aSeconds);
+  vTab      := mmp.use<integer>(aSeconds = 0, 5, aSeconds);
 
   VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
-  vPosition := mmp.use((vPosition + vTab) < 0, 0, vPosition + vTab);
-  vPosition := mmp.use((vPosition + vTab) > GS.duration, GS.duration, vPosition);
+  vPosition := mmp.use<integer>((vPosition + vTab) < 0, 0, vPosition + vTab);
+  vPosition := mmp.use<integer>((vPosition + vTab) > GS.duration, GS.duration, vPosition);
 
-  vTab      := mmp.use(vPosition = 0, 0, vTab);
-  vTab      := mmp.use(vPosition = GS.duration, 0, vTab);
+  vTab      := mmp.use<integer>(vPosition = 0, 0, vTab);
+  vTab      := mmp.use<integer>(vPosition = GS.duration, 0, vTab);
 
   FMP.notify(newNotice(evPBClick, vPosition));     // change MP position
   onMPNotify(newNotice(evMPPosition, vPosition));  // immediately update time display
 
   result    := format('Skip %ds', [vTab]);
 
-  result    := mmp.use(aSeconds < 0, '<< ' + result, '>> ' + result);
+  result    := mmp.use<string>(aSeconds < 0, '<< ' + result, '>> ' + result);
 end;
 
 function TVM.tab(const aCapsLock: boolean; const aFactor: integer = 0): string;
@@ -1208,29 +1208,29 @@ var
   vDuration:  integer;
   vPosition:  integer;
 begin
-  vFactor := mmp.use(aFactor > 0, aFactor, 100);
+  vFactor := mmp.use<integer>(aFactor > 0, aFactor, 100);
 
-  vFactor := mmp.use(aCapsLock, 200, vFactor);
+  vFactor := mmp.use<integer>(aCapsLock, 200, vFactor);
 
-  vFactor := mmp.use(ssShift in mmpShiftState, 50, vFactor);
+  vFactor := mmp.use<integer>(ssShift in mmpShiftState, 50, vFactor);
 
   vDuration := GS.duration; //   FMP.notify(newNotice(evMPReqDuration)).integer;
   VPosition := FMP.notify(newNotice(evMPReqPosition)).integer;
 
   vTab := trunc(vDuration / vFactor);
-  vTab := mmp.use((vTab = 0) or (aFactor = -1), 1, vTab);
-  vTab := mmp.use((vTab = 1) and (ssShift in mmpShiftState), 2, vTab);
+  vTab := mmp.use<integer>((vTab = 0) or (aFactor = -1), 1, vTab);
+  vTab := mmp.use<integer>((vTab = 1) and (ssShift in mmpShiftState), 2, vTab);
 
-  vPosition := mmp.use(ssCtrl in mmpShiftState, vPosition - vTab, vPosition + vTab);
-  vPosition := mmp.use((ssCtrl in mmpShiftState) and (vPosition < 1), 1, vPosition); // prevent wrap-around to the end of the audio/video
+  vPosition := mmp.use<integer>(ssCtrl in mmpShiftState, vPosition - vTab, vPosition + vTab);
+  vPosition := mmp.use<integer>((ssCtrl in mmpShiftState) and (vPosition < 1), 1, vPosition); // prevent wrap-around to the end of the audio/video
 
   FMP.notify(newNotice(evPBClick, vPosition));    // change MP position
   onMPNotify(newNotice(evMPPosition, vPosition)); // immediately update time display
 
-  newInfo := mmp.use(aFactor = -1, format('TAB = %ds', [vTab]),
-                                   format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]));
+  newInfo := mmp.use<string>(aFactor = -1,  format('TAB = %ds', [vTab]),
+                                            format('%dth = %s', [vFactor, mmpFormatSeconds(round(vDuration / vFactor))]));
 
-  newInfo := mmp.use(ssCtrl in mmpShiftState, '<< ' + newInfo, '>> ' + newInfo);
+  newInfo := mmp.use<string>(ssCtrl in mmpShiftState, '<< ' + newInfo, '>> ' + newInfo);
 
   result := newInfo;
 end;

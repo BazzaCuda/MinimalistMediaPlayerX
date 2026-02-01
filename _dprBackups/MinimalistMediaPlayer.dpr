@@ -159,7 +159,7 @@ begin
   {$ifndef useMadExcept}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
   {$endif}
-  {$if BazDebugWindow} debugClear; debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
+  {$if BazDebugWindow} {debugClear;} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 
   {$ifdef FastMM5}
   FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);

@@ -46,27 +46,12 @@ type
   TSFuncBoolean             <TResult> = function(const aBoolean: boolean):                                              TResult;           // static method - no class instance
   TAFuncBoolean             <TResult> = reference to function(const aBoolean: boolean):                                 TResult;           // anonymous method
 
-  TOFuncWord                <TResult> = function(const aWORD: WORD):                                                    TResult of object; // method of class instance
-  TSFuncWord                <TResult> = function(const aWORD: WORD):                                                    TResult;           // static method - no class instance
-  TAFuncWord                <TResult> = reference to function(const aWORD: WORD):                                       TResult;           // anonymous method
-
-  TOFuncCardinal            <TResult> = function(const aCardinal: cardinal):                                            TResult of object; // method of class instance
-  TSFuncCardinal            <TResult> = function(const aCardinal: cardinal):                                            TResult;           // static method - no class instance
-  TAFuncCardinal            <TResult> = reference to function(const aCardinal: cardinal):                               TResult;           // anonymous method
-
-  TOFuncStringString        <TResult> = function(const aString1: string; const aString2: string):                       TResult of object; // method of class instance
-  TSFuncStringString        <TResult> = function(const aString1: string; const aString2: string):                       TResult;           // static method - no class instance
-  TAFuncStringString        <TResult> = reference to function(const aString1: string; const aString2: string):          TResult;           // anonymous method
-
   IAction<TResult> = interface
     function perform():                                                                    TResult; overload;
     function perform(const aString: string):                                               TResult; overload;
     function perform(const aInteger: integer):                                             TResult; overload;
     function perform(const aString: string; const aInteger: integer):                      TResult; overload;
     function perform(const aBoolean: boolean):                                             TResult; overload;
-    function perform(const aWORD: WORD):                                                   TResult; overload;
-    function perform(const aCardinal: cardinal):                                           TResult; overload;
-    function perform(const aString1: string; const aString2: string):                      TResult; overload;
 
     function getAssigned: boolean;
     property assigned:    boolean read getAssigned;
@@ -96,19 +81,7 @@ type
     FSFuncBoolean:                      TAFuncBoolean                        <TResult>;
     FAFuncBoolean:                      TAFuncBoolean                        <TResult>;
 
-    FOFuncWord:                         TOFuncWord                           <TResult>;
-    FSFuncWord:                         TAFuncWord                           <TResult>;
-    FAFuncWord:                         TAFuncWord                           <TResult>;
-
-    FOFuncCardinal:                     TOFuncCardinal                       <TResult>;
-    FSFuncCardinal:                     TAFuncCardinal                       <TResult>;
-    FAFuncCardinal:                     TAFuncCardinal                       <TResult>;
-
-    FOFuncStringString:                 TOFuncStringString                   <TResult>;
-    FSFuncStringString:                 TAFuncStringString                   <TResult>;
-    FAFuncStringString:                 TAFuncStringString                   <TResult>;
-
-    constructor Create;                           overload;
+    // constructor Create;                           overload;
     constructor Create(const aFuncNIL: pointer);  overload;
 
     constructor Create(const aFuncNoParam:           TOFuncNoParam            <TResult>);     overload;
@@ -130,18 +103,6 @@ type
     constructor Create(const aFuncBoolean:           TOFuncBoolean            <TResult>);     overload;
     constructor Create(const aFuncBoolean:           TSFuncBoolean            <TResult>);     overload;
     constructor Create(const aFuncBoolean:           TAFuncBoolean            <TResult>);     overload;
-
-    constructor Create(const aFuncWord:              TOFuncWord               <TResult>);     overload;
-    constructor Create(const aFuncWord:              TSFuncWord               <TResult>);     overload;
-    constructor Create(const aFuncWord:              TAFuncWord               <TResult>);     overload;
-
-    constructor Create(const aFuncCardinal:          TOFuncCardinal           <TResult>);     overload;
-    constructor Create(const aFuncCardinal:          TSFuncCardinal           <TResult>);     overload;
-    constructor Create(const aFuncCardinal:          TAFuncCardinal           <TResult>);     overload;
-
-    constructor Create(const aFuncStringString:      TOFuncStringString       <TResult>);     overload;
-    constructor Create(const aFuncStringString:      TSFuncStringString       <TResult>);     overload;
-    constructor Create(const aFuncStringString:      TAFuncStringString       <TResult>);     overload;
 
   public
     function getAssigned: boolean;
@@ -166,26 +127,11 @@ type
     class function pick(const aBoolean: boolean; const aTrueFuncBoolean:            TSFuncBoolean            <TResult>):           IAction<TResult>; overload;
     class function pick(const aBoolean: boolean; const aTrueFuncBoolean:            TAFuncBoolean            <TResult>):           IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TOFuncWord               <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TSFuncWord               <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TAFuncWord               <TResult>):           IAction<TResult>; overload;
-
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TOFuncCardinal           <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TSFuncCardinal           <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TAFuncCardinal           <TResult>):           IAction<TResult>; overload;
-
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TOFuncStringString       <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TSFuncStringString       <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TAFuncStringString       <TResult>):           IAction<TResult>; overload;
-
     function perform():                                                          TResult; overload;
     function perform(const aString: string):                                     TResult; overload;
     function perform(const aInteger: integer):                                   TResult; overload;
     function perform(const aString: string; const aInteger: integer):            TResult; overload;
     function perform(const aBoolean: boolean):                                   TResult; overload;
-    function perform(const aWORD: WORD):                                         TResult; overload;
-    function perform(const aCardinal: cardinal):                                 TResult; overload;
-    function perform(const aString1: string; const aString2: string):            TResult; overload;
   end;
 
 implementation
@@ -195,10 +141,10 @@ uses
 
 { TAction<TResult> }
 
-constructor TAction<TResult>.Create;
-begin
-  raise exception.create('Don''t call TAction.create');
-end;
+//constructor TAction<TResult>.Create;
+//begin
+//  raise exception.create('Don''t call TAction.create');
+//end;
 
 constructor TAction<TResult>.Create(const aFuncNIL: pointer);
 begin
@@ -294,60 +240,6 @@ constructor TAction<TResult>.Create(const aFuncBoolean: TAFuncBoolean<TResult>);
 begin
   FAFuncBoolean        := aFuncBoolean;
   FFuncAssigned        := assigned(aFuncBoolean);
-end;
-
-constructor TAction<TResult>.Create(const aFuncWord: TOFuncWord<TResult>);
-begin
-  FOFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
-end;
-
-constructor TAction<TResult>.Create(const aFuncWord: TSFuncWord<TResult>);
-begin
-  FSFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
-end;
-
-constructor TAction<TResult>.Create(const aFuncWord: TAFuncWord<TResult>);
-begin
-  FAFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
-end;
-
-constructor TAction<TResult>.Create(const aFuncCardinal: TOFuncCardinal<TResult>);
-begin
-  FOFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
-end;
-
-constructor TAction<TResult>.Create(const aFuncCardinal: TSFuncCardinal<TResult>);
-begin
-  FSFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
-end;
-
-constructor TAction<TResult>.Create(const aFuncCardinal: TAFuncCardinal<TResult>);
-begin
-  FAFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
-end;
-
-constructor TAction<TResult>.Create(const aFuncStringString: TOFuncStringString<TResult>);
-begin
-  FOFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
-end;
-
-constructor TAction<TResult>.Create(const aFuncStringString: TSFuncStringString<TResult>);
-begin
-  FSFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
-end;
-
-constructor TAction<TResult>.Create(const aFuncStringString: TAFuncStringString<TResult>);
-begin
-  FAFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
 end;
 
 class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncNoParam: TOFuncNoParam<TResult>): IAction<TResult>;
@@ -470,78 +362,6 @@ begin
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TOFuncWord<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TSFuncWord<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TAFuncWord<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TOFuncCardinal<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TSFuncCardinal<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TAFuncCardinal<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TOFuncStringString<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TSFuncStringString<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TAFuncStringString<TResult>): IAction<TResult>;
-begin
-  case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
-    FALSE:  result := TAction<TResult>.Create(NIL);
-  end;
-end;
-
 function TAction<TResult>.getAssigned: boolean;
 begin
   result := FFuncAssigned;
@@ -585,30 +405,6 @@ begin
   case assigned(FOFuncBoolean) of TRUE: EXIT(FOFuncBoolean(aBoolean)); end;
   case assigned(FSFuncBoolean) of TRUE: EXIT(FSFuncBoolean(aBoolean)); end;
   case assigned(FAFuncBoolean) of TRUE: EXIT(FAFuncBoolean(aBoolean)); end;
-end;
-
-function TAction<TResult>.perform(const aWORD: WORD): TResult;
-begin
-  result := default(TResult);
-  case assigned(FOFuncWord) of TRUE: EXIT(FOFuncWord(aWORD)); end;
-  case assigned(FSFuncWord) of TRUE: EXIT(FSFuncWord(aWORD)); end;
-  case assigned(FAFuncWord) of TRUE: EXIT(FAFuncWord(aWORD)); end;
-end;
-
-function TAction<TResult>.perform(const aCardinal: cardinal): TResult;
-begin
-  result := default(TResult);
-  case assigned(FOFuncCardinal) of TRUE: EXIT(FOFuncCardinal(aCardinal)); end;
-  case assigned(FSFuncCardinal) of TRUE: EXIT(FSFuncCardinal(aCardinal)); end;
-  case assigned(FAFuncCardinal) of TRUE: EXIT(FAFuncCardinal(aCardinal)); end;
-end;
-
-function TAction<TResult>.perform(const aString1: string; const aString2: string): TResult;
-begin
-  result := default(TResult);
-  case assigned(FOFuncStringString) of TRUE: EXIT(FOFuncStringString(aString1, aString2)); end;
-  case assigned(FSFuncStringString) of TRUE: EXIT(FSFuncStringString(aString1, aString2)); end;
-  case assigned(FAFuncStringString) of TRUE: EXIT(FAFuncStringString(aString1, aString2)); end;
 end;
 
 end.

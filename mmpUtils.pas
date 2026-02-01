@@ -29,7 +29,7 @@ uses
 
 function mmpCancelDelay: boolean;
 function mmpCompareStr(const aStr1: string; const aStr2: string): integer;
-function mmpDelay(const dwMilliseconds: DWORD): TVoid;
+function mmpDelay(const dwMilliseconds: cardinal): TVoid;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
@@ -131,10 +131,10 @@ begin
                                                                         FALSE: result :=  1; end;end;
 end;
 
-function mmpDelay(const dwMilliseconds: DWORD): TVoid;
+function mmpDelay(const dwMilliseconds: cardinal): TVoid;
 // Used to delay an operation; "sleep()" would suspend the thread, which is not what is required
 var
-  iStart, iStop: DWORD;
+  iStart, iStop: cardinal;
 begin
   gCancel := FALSE;
   iStart  := getTickCount;

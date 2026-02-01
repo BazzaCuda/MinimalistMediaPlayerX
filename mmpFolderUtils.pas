@@ -42,7 +42,7 @@ function mmpRTBS(aFolderPath: string): string;
 begin
   result := aFolderPath;
   guardClause := (length(result) > 1) and charInSet(result[length(result)], ['\','/']) and ((length(result) <> 3) or (result[2] <> ':'));
-  setLength(result, mmp.use(guardClause, length(result) - 1, length(result)));
+  setLength(result, mmp.use<integer>(guardClause, length(result) - 1, length(result)));
 end;
 
 

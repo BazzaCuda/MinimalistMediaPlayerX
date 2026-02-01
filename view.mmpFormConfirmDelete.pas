@@ -142,8 +142,8 @@ begin
   imageList.getBitmap(ord(aDeleteMethod), imgDeleteMethod.picture.bitmap);
 
   var vScaleFactor          := aScaleFactor;
-  vScaleFactor              := mmp.use(vScaleFactor <  MIN_SCALE_FACTOR, MIN_SCALE_FACTOR, vScaleFactor);
-  vScaleFactor              := mmp.use(vScaleFactor >  MAX_SCALE_FACTOR, MAX_SCALE_FACTOR, vScaleFactor);
+  vScaleFactor              := mmp.use<integer>(vScaleFactor <  MIN_SCALE_FACTOR, MIN_SCALE_FACTOR, vScaleFactor);
+  vScaleFactor              := mmp.use<integer>(vScaleFactor >  MAX_SCALE_FACTOR, MAX_SCALE_FACTOR, vScaleFactor);
   SELF.scaleBy(vScaleFactor, MAX_SCALE_FACTOR);
   imgDeleteMethod.top       := lblShred.top;
   imgDeleteMethod.left      := lblShred.left - imgDeleteMethod.width;

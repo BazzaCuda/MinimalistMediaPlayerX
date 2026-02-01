@@ -144,7 +144,7 @@ begin
 
   var vImageDisplayDuration: string;
   mpvGetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, vImageDisplayDuration);
-  vImageDisplayDuration   := mmp.use(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
+  vImageDisplayDuration   := mmp.use<string>(vImageDisplayDuration = 'inf', IMAGE_DISPLAY_DURATION_STRING, vImageDisplayDuration); // if there's no image-display-duration= entry at all in mpv.conf, MPV defaults to 5
   FImageDisplayDurationMs := trunc(strToFloatDef(vImageDisplayDuration, IMAGE_DISPLAY_DURATION)) * MILLISECONDS;                  // if the image-display-duration= entry isn't a valid integer
 
   FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // let the minimalistmediaplayer.conf override mpv.conf

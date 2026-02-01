@@ -297,7 +297,7 @@ begin
 
   GS.notify(newNotice(evGSMaxSize, FALSE)); // pressing [M] reinstates maxSize
 
-  result := mmp.use(ssCtrl in aShiftState, vR.height - 30, vR.height + 30);
+  result := mmp.use<integer>(ssCtrl in aShiftState, vR.height - 30, vR.height + 30);
 end;
 
 function mmpGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid;

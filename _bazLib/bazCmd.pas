@@ -44,10 +44,6 @@ type
 type
   mmp = record
     class function use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: cardinal; const aFalseValue: cardinal):  cardinal; overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: int64;    const aFalseValue: int64   ):  int64;    overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: integer;  const aFalseValue: integer ):  integer;  overload; static;
-    class function use(const aBoolean: boolean; const aTrueValue: string;   const aFalseValue: string  ):  string;   overload; static;
 
     //===== TVoidFuncs which return a TVoid result
     class function cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid; overload; static;
@@ -65,6 +61,10 @@ type
     class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean; overload; static;
     class function cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean; overload; static;
 
+    //===== TBFuncs which return a boolean result while maintaning a current state
+    class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc; const falseBoolean: boolean): boolean; overload; static;
+    class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseBoolean: boolean): boolean; overload; static;
+
     //===== TSFuncs which return a string result
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string; overload; static;
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc): string; overload; static;
@@ -78,6 +78,7 @@ type
     class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const aInteger: integer): INotice; overload; static;
 
     //===== Event Notices with the INotice returned (no boolean test)
+//    class function cmd<T>(const aEvent: TNoticeEvent; const aParam: T): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aBoolean: boolean): INotice; overload; static;
     class function cmd(const aEvent: TNoticeEvent; const aInteger: integer): INotice; overload; static;
@@ -105,26 +106,6 @@ begin
 end;
 
 { mmp }
-
-class function mmp.use(const aBoolean: boolean; const aTrueValue: int64; const aFalseValue: int64):  int64;
-begin
-  result := mmp.use<int64>(aBoolean, aTrueValue, aFalseValue);
-end;
-
-class function mmp.use(const aBoolean: boolean; const aTrueValue: cardinal; const aFalseValue: cardinal): cardinal;
-begin
-  result := mmp.use<cardinal>(aBoolean, aTrueValue, aFalseValue);
-end;
-
-class function mmp.use(const aBoolean: boolean; const aTrueValue: integer; const aFalseValue: integer): integer;
-begin
-  result := mmp.use<integer>(aBoolean, aTrueValue, aFalseValue);
-end;
-
-class function mmp.use(const aBoolean: boolean; const aTrueValue: string; const aFalseValue: string): string;
-begin
-  result := mmp.use<string>(aBoolean, aTrueValue, aFalseValue);
-end;
 
 //===== TVoidFuncs which return a TVoid result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid;
@@ -169,7 +150,7 @@ begin
   case assigned(doProc[aBoolean]) of TRUE: doProc[aBoolean](aObject); end;
 end;
 
-//===== TRFuncs which return a boolean result
+//===== TBFuncs which return a boolean result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean;
 var doFunc: array[boolean] of TBFunc;
 begin
@@ -183,6 +164,24 @@ class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean
 begin
   result := cmd(aBoolean, trueFunc, NIL);
 end;
+
+//===== TBFuncs which return a boolean result while maintaning a current state
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc; const falseBoolean: boolean): boolean;
+var
+  doFunc: array[boolean] of TBFunc;
+begin
+  result        := falseBoolean; // in case falseFunc can be NIL
+  doFunc[TRUE]  := trueFunc;
+  doFunc[FALSE] := falseFunc;
+
+  case assigned(doFunc[aBoolean]) of TRUE: result := doFunc[aBoolean](); end;
+end;
+
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseBoolean: boolean): boolean;
+begin
+  result := cmd(aBoolean, trueFunc, NIL, falseBoolean);
+end;
+
 
 //===== TSFuncs which return a string result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string;
@@ -232,6 +231,11 @@ begin
 end;
 
 //===== Event Notices with the INotice returned (no boolean test)
+//class function mmp.cmd<T>(const aEvent: TNoticeEvent; const aParam: T): INotice;
+//begin
+//  result := notifyApp(newNotice(aEvent, aParam));
+//end;
+
 class function mmp.cmd(const aEvent: TNoticeEvent): INotice;
 begin
   result := notifyApp(newNotice(aEvent));

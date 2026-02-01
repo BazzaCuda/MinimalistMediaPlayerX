@@ -24,6 +24,7 @@ uses
   winApi.messages, winApi.windows,
   system.classes,
   vcl.forms, vcl.graphics,
+  bazAction,
   mmpConsts;
 
 type
@@ -110,10 +111,14 @@ type
     function  getMessage:     TMessage;
     function  getMonitor:     TMonitor;
     function  getPoint:       TPoint;
+    function  getPointer:     pointer;
     function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
+    function  getSizeOf:      integer;
     function  getText:        string;
     function  getWndRec:      TWndRec;
+
+    function  asRecord(out aDest):  TVoid;
 
     procedure setEvent(const aValue: TNoticeEvent);
     procedure setBoolean(const aValue: boolean);
@@ -123,8 +128,10 @@ type
     procedure setMessage(const aValue: TMessage);
     procedure setMonitor(const aValue: TMonitor);
     procedure setPoint(const aValue: TPoint);
+    procedure setPointer(const aValue: pointer);
     procedure setReasonType(const aValue: TReasonType);
     procedure setShiftState(const aValue: TShiftState);
+    procedure setSizeOf(const aValue: integer);
     procedure setText(const aValue: string);
     procedure setWndRec(const aValue: TWndRec);
 
@@ -135,8 +142,10 @@ type
     property  monitor:        TMonitor            read getMonitor        write setMonitor;
     property  msg:            TMessage            read getMessage        write setMessage;
     property  point:          TPoint              read getPoint          write setPoint;
+    property  pointer:        pointer             read getPointer        write setPointer;
     property  reasonType:     TReasonType         read getReasonType     write setReasonType;
     property  shiftState:     TShiftState         read getShiftState     write setShiftState;
+    property  sizeOf:         integer             read getSizeOf         write setSizeOf;
     property  text:           string              read getText           write setText;
     property  tf:             boolean             read getBoolean        write setBoolean;
     property  wndRec:         TWndRec             read getWndRec         write setWndRec;
@@ -158,6 +167,16 @@ type
 
   INotifier = interface(ISubscribable)
     procedure notifySubscribers(const aNotice: INotice);
+  end;
+
+type
+  TNoticeType = (ntNone, ntBoolean, ntByte, ntWord, ntCardinal, ntInteger, ntInt64, ntSingle, ntDouble, ntCurrency, ntDateTime, ntString, ntWideString, ntUnicodeString, ntChar, ntWideChar, ntPointer,
+                 ntTComponent, ntRecord);
+  PComponent = ^TComponent;
+  baz = record
+    class function  newNotice: INotice; overload; static;
+    class function  newNotice<T>(const  aEvent: TNoticeEvent; const  aNoticeType: TNoticeType; const  aParam: T): INotice; overload; static;
+    // ... any multi-parameter overloads that can't be generic ...
   end;
 
 function newNotice:                                                                                           INotice; overload;
@@ -193,7 +212,10 @@ type
     FShiftState:    TShiftState;
     FText:          string;
     FWndRec:        TWndRec;
+
+    FPointer:       pointer;
   protected
+    FSizeOf:        integer;
     function  getEvent:       TNoticeEvent;
 
     function  getBoolean:     boolean;
@@ -203,10 +225,15 @@ type
     function  getMessage:     TMessage;
     function  getMonitor:     TMonitor;
     function  getPoint:       TPoint;
+    function  getPointer:     pointer;
     function  getReasonType:  TReasonType;
     function  getShiftState:  TShiftState;
+    function  getSizeOf:      integer;
     function  getText:        string;
     function  getWndRec:      TWndRec;
+
+
+    function  asRecord(out aDest): TVoid;
 
     procedure setEvent      (const aValue: TNoticeEvent);
 
@@ -217,8 +244,10 @@ type
     procedure setMessage    (const aValue: TMessage);
     procedure setMonitor    (const aValue: TMonitor);
     procedure setPoint      (const aValue: TPoint);
+    procedure setPointer    (const aValue: pointer);
     procedure setReasonType (const aValue: TReasonType);
     procedure setShiftState (const aValue: TShiftState);
+    procedure setSizeOf     (const aValue: integer);
     procedure setText       (const aValue: string);
     procedure setWndRec     (const aValue: TWndRec);
   public
@@ -317,6 +346,11 @@ end;
 
 { TNotice }
 
+function TNotice.asRecord(out aDest): TVoid;
+begin
+  move(FPointer^, aDest, FSizeOf);
+end;
+
 function TNotice.getBoolean: boolean;
 begin
   result := FBoolean;
@@ -362,6 +396,11 @@ begin
   result := FPoint;
 end;
 
+function TNotice.getPointer: pointer;
+begin
+  result := FPointer;
+end;
+
 function TNotice.getReasonType: TReasonType;
 begin
   result := FReasonType;
@@ -370,6 +409,11 @@ end;
 function TNotice.getShiftState: TShiftState;
 begin
   result := FShiftState;
+end;
+
+function TNotice.getSizeOf: integer;
+begin
+  result := FSizeOf;
 end;
 
 function TNotice.getText: string;
@@ -427,6 +471,11 @@ begin
   FPoint := aValue;
 end;
 
+procedure TNotice.setPointer(const aValue: pointer);
+begin
+  FPointer := aValue;
+end;
+
 procedure TNotice.setReasonType(const aValue: TReasonType);
 begin
   FReasonType := aValue;
@@ -435,6 +484,11 @@ end;
 procedure TNotice.setShiftState(const aValue: TShiftState);
 begin
   FShiftState := aValue;
+end;
+
+procedure TNotice.setSizeOf(const aValue: integer);
+begin
+  FSizeOf := aValue;
 end;
 
 procedure TNotice.setText(const aValue: string);
@@ -447,4 +501,39 @@ begin
   FWndRec := aValue;
 end;
 
+{ baz }
+
+class function baz.newNotice: INotice;
+begin
+  result        := TNotice.Create;
+end;
+
+class function  baz.newNotice<T>(const  aEvent: TNoticeEvent; const  aNoticeType: TNoticeType; const  aParam: T): INotice;
+begin
+  result        := newNotice;
+  result.event  := aEvent;
+  result.sizeOf := sizeOf(T);
+
+  case aNoticeType = ntBoolean        of TRUE: result.tf        := PBoolean   (@aParam)^;       end;
+  case aNoticeType = ntInteger        of TRUE: result.integer   := PInteger   (@aParam)^;       end;
+  case aNoticeType = ntString         of TRUE: result.text      := PString    (@aParam)^;       end;
+  case aNoticeType = ntTComponent     of TRUE: result.component := PComponent (@aParam)^;       end;
+  case aNoticeType = ntRecord         of TRUE: result.pointer   := PPointer   (@aParam)^;       end;
+
+//  case aNoticeType = ntByte          of TRUE: result.vByte           := PByte(@aParam)^; end;
+//  case aNoticeType = ntWord          of TRUE: result.vWord           := PWord(@aParam)^; end;
+//  case aNoticeType = ntCardinal      of TRUE: result.vCardinal       := PCardinal(@aParam)^; end;
+//  case aNoticeType = ntInt64         of TRUE: result.vInt64          := PInt64(@aParam)^; end;
+//  case aNoticeType = ntSingle        of TRUE: result.vSingle         := PSingle(@aParam)^; end;
+//  case aNoticeType = ntDouble        of TRUE: result.vDouble         := PDouble(@aParam)^; end;
+//  case aNoticeType = ntCurrency      of TRUE: result.vCurrency       := PCurrency(@aParam)^; end;
+//  case aNoticeType = ntDateTime      of TRUE: result.dateTime        := PDateTime(@aParam)^; end;
+//  case aNoticeType = ntWideString    of TRUE: result.vWideString     := PWideString(@aParam)^; end;
+//  case aNoticeType = ntUnicodeString of TRUE: result.vUnicodeString  := PUnicodeString(@aParam)^; end;
+//  case aNoticeType = ntChar          of TRUE: result.vChar           := PChar(@aParam)^; end;
+//  case aNoticeType = ntWideChar      of TRUE: result.vWideChar       := PWideChar(@aParam)^; end;
+//  case aNoticeType = ntPointer       of TRUE: result.vPointer        := PPointer(@aParam)^; end
+  end;
+
 end.
+

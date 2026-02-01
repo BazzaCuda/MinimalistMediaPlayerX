@@ -355,37 +355,45 @@ begin
   var vProgressForm := initProgressForm;
 
   // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
-  case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
+  //  case fileExists(fileChapterData) of TRUE: mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end;
+  // mmp.cmd(fileExists(fileChapterData), procedure begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end);
+  mmp.cmd(fileExists(fileChapterData), procedure begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end);
 
   var vSegOneFN       := EMPTY;
   var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-  case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
-  case result of FALSE: EXIT; end;
+//  case (NOT mmpCtrlKeyDown) and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf of TRUE: result := exportCoverArt(vProgressForm); end;
+  result := mmp.cmd(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, function: boolean begin result := exportCoverArt(vProgressForm); end, result);
+  //case result of FALSE: EXIT; end;
 
   //====== EXPORT SEGMENTS ======
-  case mmpCtrlKeyDown of FALSE: case exportSegments(vProgressForm, vSegOneFN, vExportCoverArt) of FALSE: EXIT; end;end; // exit if at least one of the segment exports failed
+  case result and NOT mmpCtrlKeyDown of TRUE: result := exportSegments(vProgressForm, vSegOneFN, vExportCoverArt); end; // exit if at least one of the segment exports failed
+  result := mmp.cmd(result and NOT mmpCtrlKeyDown, function: boolean begin result := exportSegments(vProgressForm, vSegOneFN, vExportCoverArt); end, result); // abort if at least one of the segment exports failed
 
-  deletePreviousExport; // now we have newly-exported segment(s)
+  mmp.cmd(result, deletePreviousExport); // now we have newly-exported segment(s)
 
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
   // single segment so just rename without the concat stage
   var  vDoConcat := vSegOneFN = EMPTY;
-  case vDoConcat of FALSE: renameFile(vSegOneFN, filePathOUT); end;
+//  case result and NOT vDoConcat of TRUE: renameFile(vSegOneFN, filePathOUT); end;
+  TAction<boolean>.pick(result and NOT VDoConcat, renameFile).perform(vSegOneFN, filePathOUT);
 
   //====== CONCAT MULTIPLE SEGMENTS ======
-  case vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
+//  case result and vDoConcat of TRUE: result := concatSegments(vProgressForm); end;
+  result := mmp.cmd(result and vDoConcat, function: boolean begin result := concatSegments(vProgressForm); end, result);
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
   //======         AND/OR ATTACH COVER ART         ======
-  case result and (vWriteChapters or vExportCoverArt) of TRUE: result := createChaptersAndOrCoverArt(vProgressForm, vWriteChapters); end;
+//  case result and (vWriteChapters or vExportCoverArt) of TRUE: result := createChaptersAndOrCoverArt(vProgressForm, vWriteChapters); end;
+  result := mmp.cmd(result and (vWriteChapters or vExportCoverArt), function: boolean begin result := createChaptersAndOrCoverArt(vProgressForm, vWriteChapters); end, result);
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
-  case result and CF.asBoolean[CONF_PLAY_EDITED] of TRUE: playExportedMediaFile(vProgressForm, vDoConcat); end;
+  mmp.cmd(result and CF.asBoolean[CONF_PLAY_EDITED], procedure begin playExportedMediaFile(vProgressForm, vDoConcat); end);
 
-  mmpDelay(500); // so we can see the final message
+//  mmp.cmd(result, procedure begin mmpDelay(500); end); // so we can see the final message
+  TAction<TVoid>.pick(result, mmpDelay).perform(500);
   vProgressForm := NIL;
 end;
 
@@ -472,7 +480,7 @@ function TExporter.playExportedMediaFile(const aProgressForm: IProgressForm; bMu
 begin
   aProgressForm.subHeading := 'Playing Exported File';
   var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
-  case bMultiSegs and vWriteChapters of  TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType));
+  case bMultiSegs and vWriteChapters of  TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType)); // EXPERIMENTAL why do we care about bMultiSegs?
                                         FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;
 end;
 

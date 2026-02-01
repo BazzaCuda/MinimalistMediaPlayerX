@@ -128,7 +128,7 @@ begin
 
 //  var vPosition := mmp.cmd(evMPReqPrecisePos).double;
 
-  var vBarLength := mmp.use(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
+  var vBarLength := mmp.use<integer>(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
   canvas.brush.color := FBarColor;
   canvas.fillRect(rect(0, 0, vBarLength, BAR_HEIGHT));

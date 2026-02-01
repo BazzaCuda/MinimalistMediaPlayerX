@@ -130,7 +130,7 @@ end;
 
 destructor TConfigFile.Destroy;
 begin
-  mmp.free(FFileContents <> NIL, FFileContents);
+  case FFileContents = NIL of FALSE: FFileContents.free; end;
   inherited;
 end;
 
