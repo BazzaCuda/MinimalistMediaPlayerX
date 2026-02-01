@@ -69,8 +69,9 @@ begin
 end;
 
 function mmpScreenWidth: integer;
+// this was getting the width of the virtual desktop not the main monitor!
 begin
-  result := getSystemMetrics(SM_CXVIRTUALSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
+  result := getSystemMetrics(SM_CXSCREEN); // we'll assume that the taskbar is in it's usual place at the bottom of the screen
 end;
 
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;

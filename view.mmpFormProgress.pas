@@ -150,7 +150,7 @@ begin
 
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
-  position          := poScreenCenter;
+  position          := poDesigned; // poScreenCenter;
 
   FTimer.enabled    := FALSE;
 

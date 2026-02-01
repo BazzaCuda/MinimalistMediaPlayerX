@@ -269,8 +269,17 @@ var
   begin
     var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
     vHPos       := ((mmpScreenWidth  - vR.width) div 2);
+
     case vHPos + vR.width + vDelta > mmpScreenWidth of TRUE: vHPos := mmpScreenWidth - vR.width - vDelta - 1; end; // only shift left if necessary
-    vVPos       := (mmpScreenHeight - vR.height)          div 2;
+
+    // ensure we never shift into negative space (left monitor)
+    case vHPos < 0 of TRUE: vHPos := 0; end;
+
+    vVPos       := (mmpScreenHeight - vR.height) div 2;
+
+    // ensure we never shift into negative space (top monitor)
+    case vVPos < 0 of TRUE: vVPos := 0; end;
+
     result      := (vR.left = vHPos) and (vR.top = vVPos);
   end;
 
@@ -284,7 +293,7 @@ begin
 
   case alreadyCentred of TRUE: EXIT; end;
 
-  case (vHPos > 0) and (vVPos > 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
+  case (vHPos >= 0) and (vVPos >= 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
 
   mmp.cmd(evGSAutoCenter, TRUE);
 end;
