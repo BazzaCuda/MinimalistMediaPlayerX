@@ -54,13 +54,16 @@ type
 
     FCancelled:     boolean;
     FProcessHandle: THandle;
+
+    FProgressForm:  IProgressForm;
+    FSegOneFN:      string;
   private
-    function  concatSegments(const aProgressForm: IProgressForm): boolean;
-    function  createChaptersAndOrCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+    function  concatSegments: boolean;
+    function  createChaptersAndOrCoverArt(const bWriteChapters: boolean): boolean;
     function  createChaptersFromOutput: TVoid;
-    function  createFinalFile(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
-    function  createSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bExportedCoverArt: boolean): boolean;
-    function  createCoverArt(const aProgressForm: IProgressForm): boolean;
+    function  createFinalFile(const bWriteChapters: boolean): boolean;
+    function  createSegments(const bExportedCoverArt: boolean): boolean;
+    function  createCoverArt: boolean;
     function  deletePreviousExport: TVoid;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
     function  fileChapterData: string;
@@ -71,7 +74,7 @@ type
     function  filePathTempChapters(const bWriteChapters: boolean; const aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
     function  log(const aLogEntry: string): TVoid;
-    function  playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
+    function  playExportedMediaFile(const bMultiSegs: boolean): TVoid;
     function  segFileEntry(const aSegFile: string): string;
     function  showProgressForm(const aHeading: string; const aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
 
@@ -164,7 +167,7 @@ begin
   TDebug.debugEnum<TMediaType>('aMediaType', aMediaType);
 end;
 
-function TExporter.concatSegments(const aProgressForm: IProgressForm): boolean;
+function TExporter.concatSegments: boolean;
 //====== CONCAT MULTIPLE SEGMENTS ======
 begin
   // result := TRUE; // default to TRUE unless an FFmpeg process fails - pointless
@@ -174,7 +177,7 @@ begin
   var cmdLine := EMPTY;
 
   // concatenate exported segments
-  aProgressForm.subHeading := 'Joining segments';
+  FProgressForm.subHeading := 'Joining segments';
   cmdLine := '-f concat -safe 0 -i "' + changeFileExt(FMediaFilePath, '.seg') + '"';
 
   cmdLine := cmdLine + ' -i "' + FMediaFilePath + '" -map_metadata 1'; // artist/title/album metadata donor
@@ -190,10 +193,10 @@ begin
   log(cmdLine); log(EMPTY);
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
-  case result of FALSE: case exportFailRerun(aProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
+  case result of FALSE: case exportFailRerun(FProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
 end;
 
-function TExporter.createChaptersAndOrCoverArt(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+function TExporter.createChaptersAndOrCoverArt(const bWriteChapters: boolean): boolean;
 //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
 //======      ATTACH COVER.JPG IF IT EXISTS      ======
 
@@ -217,8 +220,8 @@ begin
 
   var cmdLine := EMPTY;
 
-  case bWriteChapters of   TRUE: aProgressForm.subHeading := 'Creating Chapters';
-                          FALSE: aProgressForm.subHeading := 'Attaching Cover Art'; end;
+  case bWriteChapters of   TRUE: FProgressForm.subHeading := 'Creating Chapters';
+                          FALSE: FProgressForm.subHeading := 'Attaching Cover Art'; end;
 
   case bWriteChapters of TRUE:  begin
                                   createChaptersFromOutput;
@@ -307,7 +310,7 @@ begin
   end;
 end;
 
-function TExporter.createCoverArt(const aProgressForm: IProgressForm): boolean;
+function TExporter.createCoverArt: boolean;
 //====== CHECK COVER ART ======
 // when chapters are required, export any cover art to a separate file
 // then re-attach it when adding the chapter metadata
@@ -316,7 +319,7 @@ function TExporter.createCoverArt(const aProgressForm: IProgressForm): boolean;
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
-  aProgressForm.subHeading := 'Extracting Cover Art';
+  FProgressForm.subHeading := 'Extracting Cover Art';
 
   case fileExists(filePathCover) of TRUE: EXIT; end; // we don't overwrite a user's beloved album art, they have to delete it themselves!
 
@@ -326,24 +329,26 @@ begin
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
 
-function TExporter.createFinalFile(const aProgressForm: IProgressForm; const bWriteChapters: boolean): boolean;
+function TExporter.createFinalFile(const bWriteChapters: boolean): boolean;
 //====== NAME THE OUTPUT FILE ======
 // and remove any intermediary files
 begin
+  debugBoolean('bWriteChapters', bWriteChapters);
   case bWriteChapters of   TRUE:  begin // replace the incoming [edited] file with the [chapters] file
                                     var vChapterContainer := filePathOut(bWriteChapters);
                                     case fileExists(vChapterContainer) of TRUE: mmpDeleteThisFile(vChapterContainer, [], TRUE, TRUE, FALSE); end;
                                     result := renameFile(filePathTempChapters(bWriteChapters), vChapterContainer);
-                                    aProgressForm.subHeading := 'Deleting Intermediary File';
+                                    FProgressForm.subHeading := 'Deleting Intermediary File';
                                     case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
                                   end;
-                           FALSE: begin // replace the incoming [edited] file with the [chapters] file
-                                    case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
-                                    result := renameFile(filePathTempChapters(bWriteChapters), filePathOUT);
+                           FALSE: begin // replace the incoming [edited] file with the [chapters] file, which audio used to re-attach the cover art
+                                    case FMediaType of mtAudio: begin
+                                                                  case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
+                                                                  result := renameFile(filePathTempChapters(bWriteChapters), filePathOUT); end;end;
                                   end;end;
 end;
 
-function TExporter.createSegments(const aProgressForm: IProgressForm; var vSegOneFN: string; const bExportedCoverArt: boolean): boolean;
+function TExporter.createSegments(const bExportedCoverArt: boolean): boolean;
 //====== EXPORT SEGMENTS ======
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
@@ -375,19 +380,19 @@ begin
       cmdLine := cmdLine + STD_SEG_PARAMS + STD_MAP_METADATA_0;
 
       var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
-      case TSegment.includedCount = 1 of TRUE: vSegOneFN := segFile; end;
+      case TSegment.includedCount = 1 of TRUE: FSegOneFN := segFile; end;
 
       cmdLine := cmdLine + ' -y "' + segFile + '"';
       log(cmdLine); log(EMPTY);
 
-      aProgressForm.dummyLabel.caption := extractFileName(segFile);
-      aProgressForm.subHeading := mmpWrapText(extractFileName(segFile), aProgressForm.dummyLabel.width, aProgressForm.subHeadingWidth - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
+      FProgressForm.dummyLabel.caption := extractFileName(segFile);
+      FProgressForm.subHeading := mmpWrapText(extractFileName(segFile), FProgressForm.dummyLabel.width, FProgressForm.subHeadingWidth - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
       case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled) of
               TRUE:   vSL.add(segFileEntry(segFile));
               FALSE:  begin
                         result := FALSE; // stays false during all other segment exports
-                        case exportFailRerun(aProgressForm, vSegment.segID) = mrYes of TRUE:  begin
+                        case exportFailRerun(FProgressForm, vSegment.segID) = mrYes of TRUE:  begin
                                                                                                 vSL.add(segFileEntry(segFile)); // the user will correct the export
                                                                                                 mmpExportExecAndWait(cmdLine, rtCmd, FProcessHandle, FCancelled); end;end;end;end; // result will still be FALSE
     end;
@@ -412,45 +417,46 @@ begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
   //====== SETUP PROGRESS FORM ======
-  var vProgressForm := initProgressForm;
+  FProgressForm     := initProgressForm;
 
   // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
   mmp.cmd(fileExists(fileChapterData), procedure begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end);
 
-  var vSegOneFN       := EMPTY;
+  var FSegOneFN       := EMPTY;
   var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-  result := mmp.cmd(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, function: boolean begin result := createCoverArt(vProgressForm); end, result);
+//  result := mmp.cmd(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, function: boolean begin result := createCoverArt{(vProgressForm)}; end, result);
+  result := TAction<boolean>.pick(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, createCoverArt).default(result).perform;
 
   //====== EXPORT SEGMENTS ======
-  result := mmp.cmd(result and NOT mmpCtrlKeyDown, function: boolean begin result := createSegments(vProgressForm, vSegOneFN, vExportCoverArt); end, result); // abort if at least one of the segment exports failed
+  result := TAction<boolean>.pick(result and NOT mmpCtrlKeyDown, createSegments).default(result).perform(vExportCoverArt); // abort if at least one of the segment exports failed
 
   mmp.cmd(result, deletePreviousExport); // now we have newly-exported segment(s)
 
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
   // single segment so just rename without the concat stage
-  var vDoConcat := (vSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
-  TAction<boolean>.pick(result and NOT VDoConcat, renameFile).perform(vSegOneFN, filePathOUT);
+  var vDoConcat := (FSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
+  TAction<boolean>.pick(result and NOT vDoConcat, renameFile).perform(filePathOUT);
 
   //====== CONCAT MULTIPLE SEGMENTS ======
-  result := mmp.cmd(result and vDoConcat, function: boolean begin result := concatSegments(vProgressForm); end, result);
+  result := TAction<boolean>.pick(result and vDoConcat, concatSegments).default(result).perform;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
   //======         AND/OR ATTACH COVER ART         ======
-  result := mmp.cmd(result and (vWriteChapters or vExportCoverArt), function: boolean begin result := createChaptersAndOrCoverArt(vProgressForm, vWriteChapters); end, result);
+  result := TAction<boolean>.pick(result and (vWriteChapters or vExportCoverArt), createChaptersAndOrCoverArt).default(result).perform(vWriteChapters);
 
   //====== NAME THE OUTPUT FILE ======
   // and remove any intermediary files
-  mmp.cmd(result, procedure begin createFinalFile(vProgressForm, vWriteChapters); end);
+  result := TAction<boolean>.pick(result, createFinalFile).default(result).perform(vWriteChapters);
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
-  mmp.cmd(result and CF.asBoolean[CONF_PLAY_EDITED], procedure begin playExportedMediaFile(vProgressForm, vDoConcat); end);
+  TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
 
 //  mmp.cmd(result, procedure begin mmpDelay(500); end); // so we can see the final message
   TAction<TVoid>.pick(result, mmpDelay).perform(500);
-  vProgressForm := NIL;
+  FProgressForm := NIL;
 end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
@@ -532,9 +538,9 @@ begin
   result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
 end;
 
-function TExporter.playExportedMediaFile(const aProgressForm: IProgressForm; bMultiSegs: boolean): TVoid;
+function TExporter.playExportedMediaFile(const bMultiSegs: boolean): TVoid;
 begin
-  aProgressForm.subHeading := 'Playing Exported File';
+  FProgressForm.subHeading := 'Playing Exported File';
   var vWriteChapters := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
   case {bMultiSegs and} vWriteChapters of  TRUE: mmp.cmd(evVMMPPlayEdited, mmpChapterContainer(filePathOUT, FMediaType)); // EXPERIMENTAL why do we care about bMultiSegs?
                                           FALSE: mmp.cmd(evVMMPPlayEdited, filePathOUT()); end;

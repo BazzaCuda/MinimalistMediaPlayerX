@@ -144,7 +144,7 @@ function mmpThemeInitForm(const aForm: TForm): TVoid;
 
 begin
   copiedFromDFM;
-  aForm.position      := poDesigned; // poScreenCenter;
+  aForm.position      := poMainFormCenter;
   aForm.borderIcons   := [biSystemMenu];
   aForm.styleElements := [];
   mmpSetGlassFrame(aForm);

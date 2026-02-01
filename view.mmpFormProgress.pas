@@ -150,7 +150,7 @@ begin
 
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
-  position          := poDesigned; // poScreenCenter;
+  position          := poMainFormCenter; // poScreenCenter;
 
   FTimer.enabled    := FALSE;
 
@@ -241,6 +241,7 @@ constructor TProxyForm.Create;
 begin
   inherited;
   FForm := TProgressForm.create(NIL);
+  FForm.position := poMainFormCenter;
 end;
 
 destructor TProxyForm.Destroy;
