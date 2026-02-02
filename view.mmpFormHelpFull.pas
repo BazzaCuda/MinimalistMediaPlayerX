@@ -159,10 +159,10 @@ begin
                               FALSE:  begin
                                         gHelpFullForm.closeForm;
                                         gHelpFullForm := NIL;
-                                        mmp.cmd(evGSHelpFull, FALSE);
+                                        mmp.cmd(evGSShowingHelpFull, FALSE);
                                         EXIT; end;end;
 
-  mmp.cmd(evGSHelpFull, TRUE);
+  mmp.cmd(evGSShowingHelpFull, TRUE);
   gHelpFullForm.init(aHelpType);
 
   setForegroundWindow(gHelpFullForm.getHandle);    // the order of these two is important

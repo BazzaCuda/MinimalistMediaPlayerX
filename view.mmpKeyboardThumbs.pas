@@ -173,7 +173,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl and     shift                                      of TRUE: result := koThumbsDn; end;
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl and NOT shift                                      of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(VK_END)                                                                      of TRUE: result := koPlayLast; end;
-//    case keyUp and keyIs(VK_ESCAPE)                 and     GS.helpFull                               of TRUE: result := koHelpFull; end; // close Help Full  - this is handled in mmpVM.onKeyUp
+//    case keyUp and keyIs(VK_ESCAPE)                 and     GS.showingHelpFull                        of TRUE: result := koHelpFull; end; // close Help Full  - this is handled in mmpVM.onKeyUp
     case keyUp and keyIs(VK_ESCAPE)                and NOT GS.ignoreEscape    and NOT GS.userInput    of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(VK_HOME)                                                                     of TRUE: result := koPlayFirst; end;
     case keyUp and keyIs(VK_INSERT)                                                                   of TRUE: result := koClipboard; end;

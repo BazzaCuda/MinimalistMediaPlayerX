@@ -3,7 +3,7 @@
         <ProjectGuid>{6D814CB3-CD5A-49C9-BB9B-7C65A4A6BEFF}</ProjectGuid>
         <MainSource>MinimalistMediaPlayer.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>

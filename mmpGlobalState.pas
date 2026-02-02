@@ -52,7 +52,6 @@ type
     function getAutoCenter:               boolean;
     function getCleanup:                  boolean;
     function getDuration:                 integer;
-    function getHelpFull:                 boolean;
     function getIDDms:                    integer;
     function getIgnoreEscape:             boolean;
     function getImagesPaused:             boolean;
@@ -70,6 +69,7 @@ type
     function getShowingAbout:             boolean;
     function getShowingConfig:            boolean;
     function getShowingHelp:              boolean;
+    function getShowingHelpFull:          boolean;
     function getShowingPlaylist:          boolean;
     function getShowingStreamlist:        boolean;
     function getShowingThumbs:            boolean;
@@ -93,7 +93,6 @@ type
     property autoCenter:                boolean             read getAutoCenter;
     property cleanup:                   boolean             read getCleanup;
     property duration:                  integer             read getDuration;
-    property helpFull:                  boolean             read getHelpFull;
     property IDDms:                     integer             read getIDDms;       // image-display-duration in milliseconds
     property ignoreEscape:              boolean             read getIgnoreEscape;
     property imagesPaused:              boolean             read getImagesPaused;
@@ -111,6 +110,7 @@ type
     property showingAbout:              boolean             read getShowingAbout;
     property showingConfig:             boolean             read getShowingConfig;
     property showingHelp:               boolean             read getShowingHelp;
+    property showingHelpFull:           boolean             read getShowingHelpFull;
     property showingPlaylist:           boolean             read getShowingPlaylist;
     property showingStreamlist:         boolean             read getShowingStreamlist;
     property showingThumbs:             boolean             read getShowingThumbs;
@@ -142,7 +142,6 @@ type
     FAutoCenter:              boolean;
     FCleanup:                 boolean;
     FDuration:                integer;
-    FHelpFull:                boolean;
     FIDDms:                   integer;
     FIgnoreEscape:            boolean;
     FImagesPaused:            boolean;
@@ -160,6 +159,7 @@ type
     FShowingAbout:            boolean;
     FShowingConfig:           boolean;
     FShowingHelp:             boolean;
+    FShowingHelpFull:         boolean;
     FShowingPlaylist:         boolean;
     FShowingStreamlist:       boolean;
     FShowingThumbs:           boolean;
@@ -184,7 +184,6 @@ type
     function  getAutoCenter:                boolean;
     function  getCleanup:                   boolean;
     function  getDuration:                  integer;
-    function  getHelpFull:                  boolean;
     function  getIDDms:                     integer;
     function  getIgnoreEscape:              boolean;
     function  getImagesPaused:              boolean;
@@ -202,6 +201,7 @@ type
     function  getShowingAbout:              boolean;
     function  getShowingConfig:             boolean;
     function  getShowingHelp:               boolean;
+    function  getShowingHelpFull:           boolean;
     function  getShowingPlaylist:           boolean;
     function  getShowingStreamlist:         boolean;
     function  getShowingThumbs:             boolean;
@@ -271,11 +271,6 @@ end;
 function TGlobalState.getDuration: integer;
 begin
   result := FDuration;
-end;
-
-function TGlobalState.getHelpFull: boolean;
-begin
-  result := FHelpFull;
 end;
 
 function TGlobalState.getIDDms: integer;
@@ -363,6 +358,11 @@ begin
   result := FShowingHelp;
 end;
 
+function TGlobalState.getShowingHelpFull: boolean;
+begin
+  result := FShowingHelpFull;
+end;
+
 function TGlobalState.getShowingPlaylist: boolean;
 begin
   result := FShowingPlaylist;
@@ -439,7 +439,6 @@ begin
     evGSAutoCenter:               FAutoCenter             := aNotice.tf;
     evGSCleanup:                  FCleanup                := aNotice.tf;
     evGSDuration:                 FDuration               := aNotice.integer;
-    evGSHelpFull:                 FHelpFull               := aNotice.tf;
     evGSIDDms:                    FIDDms                  := aNotice.integer;
     evGSIgnoreEscape:             FIgnoreEscape           := aNotice.tf;
     evGSImagesPaused:             FImagesPaused           := aNotice.tf;
@@ -457,6 +456,7 @@ begin
     evGSShowingAbout:             FShowingAbout           := aNotice.tf;
     evGSShowingConfig:            FShowingConfig          := aNotice.tf;
     evGSShowingHelp:              FShowingHelp            := aNotice.tf;
+    evGSShowingHelpFull:          FShowingHelpFull        := aNotice.tf;
     evGSShowingPlaylist:          FShowingPlaylist        := aNotice.tf;
     evGSShowingStreamlist:        FShowingStreamlist      := aNotice.tf;
     evGSShowingThumbs:            FShowingThumbs          := aNotice.tf;

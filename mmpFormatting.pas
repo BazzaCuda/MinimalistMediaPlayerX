@@ -52,8 +52,8 @@ var
 begin
   try
     vFormatString := '%.0f KB';
-    vFormatString := mmp.use(aSize >= _1MB, '%.2f MB', vFormatString);
-    vFormatString := mmp.use(aSize >= _xGB, '%.3f GB', vFormatString); // >= 0.98 of 1GB
+    vFormatString := mmp.use<string>(aSize >= _1MB, '%.2f MB', vFormatString);
+    vFormatString := mmp.use<string>(aSize >= _xGB, '%.3f GB', vFormatString); // >= 0.98 of 1GB
 
     vSize         := trunc(aSize / _1KB);
     vSize         := mmp.use<double>(aSize >= _1MB, aSize / _1MB, vSize);

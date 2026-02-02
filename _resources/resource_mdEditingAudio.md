@@ -48,6 +48,13 @@ FFmpeg's production of audio files is a little more involved than its handling o
 - simply have any "cover.jpg" file in the same folder as your edited audio file
 - the Cover Art image will be attached during the final stage of the export
 - if you don't want add Cover Art, just ensure that you're editing the file in a folder that doesn't already contain a "cover.jpg" file
+- if all you want to do is to add Cover Art to an audio file, simply
+    - have your desired "cover.jpg" file in the same folder as the audio file
+    - open the audio file in **MMP**
+    - open the **Audio & Video Timeline Editor** (Ctrl-[E])
+    - on the "Options" tab of the **Segments & Streams** panel, **_uncheck_** "Write Chapters for Audio files"
+    - click the **Export** button
+    - that's it!
 
 **.flac Lossless Audio Files**
 

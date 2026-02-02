@@ -326,6 +326,8 @@ end;
 
 function TVM.doAppClose: TVoid;
 begin
+  case GS.showingHelpFull or GS.showingConfig of TRUE: EXIT; end;
+
   mmp.cmd(evMPDetachStates);
   mmp.cmd(evGSSuspended, TRUE);
   mmp.cmd(evMPStop);
@@ -524,7 +526,7 @@ procedure TVM.onKeyDown(key: Word; shift: TShiftState);
 begin
   case GS.userInput                                   of TRUE: EXIT; end;
   case GS.showingTimeline and TL.validKey(key, shift) of TRUE: begin focusTimeline; EXIT; end;end;
-  case (key = VK_ESCAPE) and GS.helpFull              of TRUE: begin EXIT; end;end; // close Help Full
+  case (key = VK_ESCAPE) and GS.showingHelpFull       of TRUE: begin EXIT; end;end; // close Help Full
   case GS.showingThumbs                               of TRUE: begin focusThumbs;   EXIT; end;end;
 
   SS                  := default(TSnapshot);
@@ -539,7 +541,7 @@ procedure TVM.onKeyUp(key: Word; shift: TShiftState);
 begin
   case (key = VK_ESCAPE) and GS.userInput             of TRUE: begin  EXIT; end;end; // close userInput without closing HelpFull on Config
   case (key = VK_ESCAPE) and GS.showingConfig         of TRUE: begin  EXIT; end;end; // close Config without closing Help Full!
-  case (key = VK_ESCAPE) and GS.helpFull              of TRUE: begin mmp.cmd(evGSIgnoreEscape, TRUE); mmpHelpFull; EXIT; end;end; // on key-up close mmpHelpFull
+  case (key = VK_ESCAPE) and GS.showingHelpFull       of TRUE: begin mmp.cmd(evGSIgnoreEscape, TRUE); mmpHelpFull; EXIT; end;end; // on key-up close mmpHelpFull
   case SS.handled                                     of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   case GS.userInput                                   of TRUE: EXIT; end;
   case GS.showingTimeline and TL.validKey(key, shift) of TRUE: begin focusTimeline; EXIT; end;end;
@@ -1160,7 +1162,7 @@ begin
   var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
   case vModalResult of
     mrAll:      EXIT; // user pressed Ctrl-[0]
-    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', evAppClose); // normal exit from browser
+    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', evAppClose); // normal exit from browser and app
     mrIgnore:   ;     // user pressed Ctrl-[X] - ignore exitApp setting, whatever it is
   end;
 
