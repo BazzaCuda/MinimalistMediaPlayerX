@@ -125,15 +125,16 @@ begin
   cmdLine := cmdLine + COPY_PARAMS;
   var vFilePathOUT := filePathOUT(FALSE, ' [c]');
 
-  case lowerCase(extractFileExt(vFilePathOUT)) = '.m4v' of TRUE: vFilePathOUT := changeFileExt(vFilePathOUT, '.mp4'); end; // FFmpeg fix ?
+  vFilePathOUT := TAction<string>.pick(lowerCase(extractFileExt(vFilePathOUT)) = '.m4v', changeFileExt).default(vFilePathOUT).perform(vFilePathOUT, '.mp4');
 
   cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
   log(cmdLine); log(EMPTY);
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled);
 
-  case result of TRUE:  begin
-                          case fileExists(vFilePathOUT) of FALSE: EXIT; end;
+  mmp.cmd(result and fileExists(vFilePathOUT), procedure begin
+//  case result of TRUE:  begin
+                          //case fileExists(vFilePathOUT) of FALSE: EXIT; end;
 
                           var vWasPlaying := mmp.cmd(evMPReqPlaying).tf;
                           var vPosition   := mmp.cmd(evMPReqPosition).integer;
@@ -146,15 +147,15 @@ begin
                           mmp.cmd(evPLFind, vFilePathOUT);
                           mmp.cmd(evPLFormLoadBox);
 
-                          case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // mute while we load and reposition the copy
+                          mmp.cmd(NOT vWasMuted, evMPMuteUnmute); // mute while we load and reposition the copy
                           FMediaFilePath := vFilePathOUT;
                           mmp.cmd(evVMMPPlayCurrent);
                           while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
                           mmp.cmd(evMPSeek, vPosition);
-                          case vWasMuted of FALSE: mmp.cmd(evMPMuteUnmute); end; // unmute now we're at the correct timestamp
+                          mmp.cmd(NOT vWasMuted, evMPMuteUnmute); // unmute now we're at the correct timestamp
 
-                          case vWasPlaying of FALSE: mmp.cmd(evMPPause); end;
-                        end;end;
+                          mmp.cmd(NOT vWasPlaying, evMPPause);
+                        end); // end;
 end;
 
 constructor TExporter.Create(const aMediaFilePath: string; const aMediaType: TMediaType);
@@ -163,7 +164,7 @@ begin
 
   FMediaFilePath  := aMediaFilePath;
   FMediaType      := aMediaType;
-  TDebug.debugEnum<TMediaType>('aMediaType', aMediaType);
+  // TDebug.debugEnum<TMediaType>('aMediaType', aMediaType);
 end;
 
 function TExporter.concatSegments: boolean;
@@ -427,7 +428,6 @@ begin
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-//  result := mmp.cmd(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, function: boolean begin result := createCoverArt{(vProgressForm)}; end, result);
   result := TAction<boolean>.pick(result and NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf, createCoverArt).default(result).perform;
 
   //====== EXPORT SEGMENTS ======
@@ -454,8 +454,7 @@ begin
   //====== PLAY THE EXPORTED MEDIA FILE ======
   TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
 
-//  mmp.cmd(result, procedure begin mmpDelay(500); end); // so we can see the final message
-  TAction<TVoid>.pick(result, mmpDelay).perform(500);
+  TAction<TVoid>.pick(result, mmpDelay).perform(500); // so we can see the final message
   FProgressForm := NIL;
 end;
 
