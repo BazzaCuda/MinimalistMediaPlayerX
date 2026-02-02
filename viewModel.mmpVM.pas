@@ -25,7 +25,7 @@ uses
   system.classes,
   vcl.Controls, vcl.extCtrls, vcl.forms,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpAction, mmpMenu,
+  mmpAction, mmpActionTypes, mmpMenu,
   view.mmpFormThumbs, view.mmpProgressBar,
   model.mmpMediaPlayer, model.mmpPlaylist;
 
@@ -324,35 +324,26 @@ begin
   inherited;
 end;
 
+
 function TVM.doAppClose: TVoid;
 begin
-  case GS.showingHelpFull or GS.showingConfig of TRUE: EXIT; end;
+//==========
+  var vShutdown: TAFuncNoParamTVoid := function: TVoid  begin
+                                                          mmp.cmd(evMPDetachStates);
+                                                          mmp.cmd(evGSSuspended, TRUE);
+                                                          mmp.cmd(evMPStop);
 
-  mmp.cmd(evMPDetachStates);
-  mmp.cmd(evGSSuspended, TRUE);
-  mmp.cmd(evMPStop);
+                                                          mmp.cmd(evPLFormShutForm);
+                                                          mmp.cmd(evHelpShutHelp);
+                                                          mmp.cmd(evVMShutTimeline);
 
-  mmp.cmd(evPLFormShutForm);
-  mmp.cmd(evHelpShutHelp);
-  mmp.cmd(evVMShutTimeline);
+                                                          postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0); // inspiration is a wonderful thing! :D
+                                                        end;
 
-//  TT.unsubscribeAll;
-//  FMP.unsubscribeAll;
-//  appEvents.unsubscribeAll;
+  TAction<TVoid>.pick(NOT GS.showingHelpFull and NOT GS.showingConfig, vShutdown).perform;
+//==========
 
-// this will prevent the app from closing. So does setting mpv = NIL in TMediaPlayer
-//  FMP           := NIL;
-
-//  FMenu         := NIL;
-//  FPlaylist     := NIL;
-//  FPB           := NIL;
-//  FSubscriber   := NIL;
-//  FSubscriberTT := NIL;
-
-  // inspiration is a wonderful thing! :D
-  postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0);
-
-//  terminateProcess(getCurrentProcess(), 0); // desperate times... :D
+//    terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 end;
 
 function TVM.doCleanup(const bConfirm: boolean = TRUE): TVoid;

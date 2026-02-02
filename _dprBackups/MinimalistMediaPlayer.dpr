@@ -153,7 +153,8 @@ uses
   viewModel.mmpVM in 'viewModel.mmpVM.pas',
   Vcl.Themes,
   Vcl.Styles,
-  mmpAction in 'mmpAction.pas';
+  mmpAction in 'mmpAction.pas',
+  mmpActionTypes in 'mmpActionTypes.pas';
 
 procedure setupRunMode;
 begin

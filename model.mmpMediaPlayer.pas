@@ -113,9 +113,10 @@ begin
   mpv.onStateChged  := NIL;
   mpv.onInitMPV     := NIL;
 
-  mpv.stop;
-  mpv.totalShutdown;
-  mpv               := NIL;
+// this causes more problems than it's worth!
+//  mpv.stop;
+//  mpv.totalShutdown;
+//  mpv               := NIL;
 end;
 
 function TMediaPlayer.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
