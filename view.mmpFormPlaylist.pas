@@ -142,7 +142,7 @@ procedure TPlaylistForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle    := params.ExStyle OR (WS_EX_APPWINDOW);
-  params.WndParent  := application.HANDLE;
+  params.WndParent  := GS.mainForm.HANDLE; //  application.HANDLE;
 end;
 
 destructor TPlaylistForm.Destroy;

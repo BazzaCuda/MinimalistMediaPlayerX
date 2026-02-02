@@ -13,6 +13,6 @@ This includes all the captions (top and bottom of the window) and the audio/vide
 |Shift-**[B]**      | make the progress [B]ar and the captions darker - can be held down for rapid change |
 |Ctrl-Shift-**[B]** | reset the progress [B]ar and the captions to their default color/brightness |
 |**[C]**            | hide/show the video timestamp |
-|Ctrl-**[C]**       | hide/show showing the video timestamp and the media file's metadata (frame rate, etc.) |
+|Ctrl-**[C]**       | hide/show the video timestamp _and_ the media file's metadata (frame rate, etc.) |
 
 

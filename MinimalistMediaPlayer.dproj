@@ -123,8 +123,6 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>9</VerInfo_MinorVer>
         <VerInfo_Release>9</VerInfo_Release>
         <VerInfo_Build>9</VerInfo_Build>
-        <DCC_DebugInformation>2</DCC_DebugInformation>
-        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -154,7 +152,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\Cropes001-136\010.jpg&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\The Naked Gun (1988).mp4&quot;</Debugger_RunParams>
         <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>

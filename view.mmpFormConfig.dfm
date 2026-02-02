@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsChapters
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging
@@ -52,7 +52,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -66,6 +66,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label3: TLabel
         Left = 128
@@ -832,6 +833,190 @@ object ConfigForm: TConfigForm
         TabOrder = 5
         TabStop = True
         OnClick = rbFilterAudioVideoClick
+      end
+    end
+    object tsQuickRename: TTabSheet
+      Caption = 'Quick Rename'
+      ImageIndex = 5
+      object Label10: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
+      end
+      object Label35: TLabel
+        Left = 87
+        Top = 10
+        Width = 414
+        Height = 120
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP'#39's main media window provides four function keys and [K]'#13#10'whi' +
+          'ch you can use to quickly rename the current media file'#13#10#13#10'[K]ee' +
+          'p renames the file with a leading ! (and a space)'#13#10'to bring all ' +
+          'such files to top of the folder listing in your file explorer so' +
+          'ftware'#13#10#13#10'You can then, if you wish, use Ctrl-[K]eep/delete to d' +
+          'elete all files in the folder*'#13#10'except those you designated as [' +
+          'K]eep'
+      end
+      object Label36: TLabel
+        Left = 79
+        Top = 284
+        Width = 429
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          'Note: although [K] and Ctrl-[K] are available in the Image && Th' +
+          'umbnail Browser'#13#10'the prefix/suffix keys aren'#39't as all the functi' +
+          'on keys can be assigned to user folders'
+        Color = clBtnFace
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentColor = False
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label37: TLabel
+        Left = 28
+        Top = 132
+        Width = 521
+        Height = 30
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          '* deletion operations only ever affect the files in the current ' +
+          'playlist folder'#13#10'MMP never touches the contents of any subfolder' +
+          's'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        StyleElements = [seClient, seBorder]
+      end
+      object Label38: TLabel
+        Left = 122
+        Top = 176
+        Width = 332
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          'You can use F1 - F4 to set up to three prefixes and one suffix'#13#10 +
+          'Any leading and/or trailing spaces you include will be recorded'
+      end
+      object GroupBox2: TGroupBox
+        Left = 40
+        Top = 0
+        Width = 521
+        Height = 168
+        TabOrder = 4
+      end
+      object edtPrefixF1: TLabeledEdit
+        Left = 129
+        Top = 218
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F1 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 0
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtPrefixF2: TLabeledEdit
+        Left = 127
+        Top = 250
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F2 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtPrefixF3: TLabeledEdit
+        Left = 323
+        Top = 218
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F3 Prefix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        Text = ''
+        OnChange = edtPrefixF1Change
+      end
+      object edtSuffixF4: TLabeledEdit
+        Left = 323
+        Top = 250
+        Width = 126
+        Height = 23
+        Hint = 'Defaults to subfolder "folder1"'
+        EditLabel.Width = 50
+        EditLabel.Height = 23
+        EditLabel.Caption = 'F4 Suffix'
+        EditLabel.Font.Charset = DEFAULT_CHARSET
+        EditLabel.Font.Color = clWindowText
+        EditLabel.Font.Height = -12
+        EditLabel.Font.Name = 'Segoe UI'
+        EditLabel.Font.Style = [fsBold]
+        EditLabel.ParentFont = False
+        LabelPosition = lpLeft
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        Text = ''
+        OnChange = edtPrefixF1Change
       end
     end
     object tsUserFolders: TTabSheet
@@ -2230,6 +2415,410 @@ object ConfigForm: TConfigForm
         OnChange = edtCopiedChange
       end
     end
+    object tsEditing: TTabSheet
+      Caption = 'Editing'
+      ImageIndex = 10
+      object Label50: TLabel
+        Left = 0
+        Top = 316
+        Width = 406
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label51: TLabel
+        Left = 131
+        Top = 30
+        Width = 445
+        Height = 32
+        AutoSize = False
+        Caption = 
+          'Determines whether MMP will autoplay the [edited] audio or video' +
+          ' file after successfully exporting and joining the segments from' +
+          ' your Timeline*'
+        WordWrap = True
+      end
+      object Label52: TLabel
+        Left = 205
+        Top = 4
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label53: TLabel
+        Left = 20
+        Top = 73
+        Width = 543
+        Height = 212
+        AutoSize = False
+        Caption = 
+          '1. MMP will play the [edited] file in a new instance of MMP'#13#10#13#10'2' +
+          '. In the new MMP, the [edited] file will be the only file in the' +
+          ' playlist'#13#10#13#10'3. Playback will stop when MMP reaches the end of t' +
+          'he file and will ignore '#13#10'    the nextFolderOnEnd [of playlist] ' +
+          'setting so that you can further review your edits'#13#10#13#10'4. You can ' +
+          '[Esc]ape to close the second MMP and return to your editing, or'#13 +
+          #10'    You might Ctrl-[M]ove your successful edit to an e.g. "Fina' +
+          'l Edits" folder, or'#13#10'    You can open the Audio && Video Timelin' +
+          'e Editor in the second MMP and edit your [edited] file'#13#10'    to c' +
+          'reate an "[edited] [edited]" file'#13#10#13#10'5. If you [Del]ete the [edi' +
+          'ted] file with nextFolderOnEmpty=no, '#13#10'    the second MMP will c' +
+          'lose and return you to your editing session'
+        WordWrap = True
+      end
+      object Label54: TLabel
+        Left = 41
+        Top = 288
+        Width = 494
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* Shift-[E] will also play the [edited] version of an audio or v' +
+          'ideo file in a new instance of MMP'#13#10'Shift-[E] is available while' +
+          ' the Audio && Video Timeline Editor is open'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object chbPlayEdited: TCheckBox
+        Left = 20
+        Top = 30
+        Width = 101
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Play Edited'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbPlayEditedClick
+      end
+    end
+    object tsKeyframes: TTabSheet
+      Caption = 'Keyframes'
+      ImageIndex = 12
+      object Label57: TLabel
+        Left = 0
+        Top = 316
+        Width = 406
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label58: TLabel
+        Left = 205
+        Top = 4
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label59: TLabel
+        Left = 3
+        Top = 24
+        Width = 558
+        Height = 90
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'Determines whether, for video files, the editor will always open' +
+          ' with keyframes turned on. '#13#10'Keyframes help you to more accurate' +
+          'ly determine where the start of each segment should be cut.'#13#10#13#10'K' +
+          'eyframe processing is now so fast that keeping keyframes turned ' +
+          'on permanently is a viable option.'#13#10#13#10'The vertical cursor will c' +
+          'hange color to indicate how close it is the previous keyframe:'
+        WordWrap = True
+      end
+      object lblWhite: TLabel
+        Left = 58
+        Top = 120
+        Width = 32
+        Height = 15
+        Alignment = taCenter
+        Caption = 'white'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object lblYellow: TLabel
+        Left = 58
+        Top = 141
+        Width = 36
+        Height = 15
+        Alignment = taCenter
+        Caption = 'yellow'
+        Color = clYellow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object lblPurple: TLabel
+        Left = 58
+        Top = 162
+        Width = 36
+        Height = 15
+        Alignment = taCenter
+        Caption = 'purple'
+        Color = clFuchsia
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label60: TLabel
+        Left = 175
+        Top = 120
+        Width = 377
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is more than 1.0 seconds prior to this vid' +
+          'eo point'
+      end
+      object Label61: TLabel
+        Left = 175
+        Top = 141
+        Width = 351
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is 0.5 to 1.0 seconds prior to this video ' +
+          'point'
+      end
+      object Label62: TLabel
+        Left = 175
+        Top = 162
+        Width = 368
+        Height = 15
+        Alignment = taCenter
+        Caption = 
+          'the previous keyframe is less than 0.5 seconds prior to this vid' +
+          'eo point'
+      end
+      object Label63: TLabel
+        Left = 0
+        Top = 183
+        Width = 573
+        Height = 76
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'FFmpeg will cut on the closet seek-point keyframe it can find'#13#10'p' +
+          'rior to where you set your cut segment to start*'#13#10#13#10'Rough cuts w' +
+          'ork really welll. If you prefer more accurate cuts for a particu' +
+          'lar video'#13#10'work with FFmpeg by using keyframes in the MMP editor'
+        WordWrap = True
+      end
+      object Label64: TLabel
+        Left = 46
+        Top = 263
+        Width = 484
+        Height = 30
+        Alignment = taCenter
+        Caption = 
+          '* FFmpeg will always make a cut segment at least as long as you ' +
+          'set it to be.'#13#10'A segment will always contain at least what you w' +
+          'ant it to contain, give or take a few frames'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clAqua
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label65: TLabel
+        Left = 107
+        Top = 120
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'rough cut:'
+        WordWrap = True
+      end
+      object Label66: TLabel
+        Left = 107
+        Top = 141
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'good cut:'
+        WordWrap = True
+      end
+      object Label67: TLabel
+        Left = 107
+        Top = 162
+        Width = 60
+        Height = 15
+        AutoSize = False
+        Caption = 'best cut:'
+        WordWrap = True
+      end
+      object chbKeyframes: TCheckBox
+        Left = 230
+        Top = 299
+        Width = 116
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Keyframes On'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbKeyframesClick
+      end
+    end
+    object tsChapters: TTabSheet
+      Caption = 'Editing Chapters'
+      ImageIndex = 13
+      object Label72: TLabel
+        Left = 0
+        Top = 316
+        Width = 406
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label73: TLabel
+        Left = 205
+        Top = 12
+        Width = 167
+        Height = 15
+        Caption = 'Audio && Video Timeline Editor'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label74: TLabel
+        Left = 91
+        Top = 33
+        Width = 395
+        Height = 135
+        Alignment = taCenter
+        Caption = 
+          'You can add chapters to your audio and/or video files'#13#10'and each ' +
+          'chapter can be given a title'#13#10#13#10'During playback, you can jump be' +
+          'tween chapters using F8 and F9'#13#10'to jump to the previous chapter ' +
+          'or the next chapter'#13#10'and the title will be displayed in the Noti' +
+          'fication Area (bottom right corner)'#13#10#13#10'Even if you don'#39't intend ' +
+          'to write chapters to your exported file'#13#10'it can be useful to hav' +
+          'e the segment titles displayed during editing'
+      end
+      object chbChaptersShow: TCheckBox
+        Left = 86
+        Top = 201
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Show Chapters During Editing'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbChaptersShowClick
+      end
+      object chbChaptersAudioWrite: TCheckBox
+        Left = 86
+        Top = 233
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Write Chapters for Audio files'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        OnClick = chbChaptersAudioWriteClick
+      end
+      object chbChaptersVideoWrite: TCheckBox
+        Left = 86
+        Top = 265
+        Width = 203
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Write Chapters for Video files'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnClick = chbChaptersVideoWriteClick
+      end
+    end
     object tsExternalApps: TTabSheet
       Caption = 'External Apps'
       ImageIndex = 4
@@ -2516,264 +3105,6 @@ object ConfigForm: TConfigForm
         OnChange = edtAppF10Change
       end
     end
-    object tsQuickRename: TTabSheet
-      Caption = 'Quick Rename'
-      ImageIndex = 5
-      object Label10: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label35: TLabel
-        Left = 87
-        Top = 10
-        Width = 414
-        Height = 120
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          'MMP'#39's main media window provides four function keys and [K]'#13#10'whi' +
-          'ch you can use to quickly rename the current media file'#13#10#13#10'[K]ee' +
-          'p renames the file with a leading ! (and a space)'#13#10'to bring all ' +
-          'such files to top of the folder listing in your file explorer so' +
-          'ftware'#13#10#13#10'You can then, if you wish, use Ctrl-[K]eep/delete to d' +
-          'elete all files in the folder*'#13#10'except those you designated as [' +
-          'K]eep'
-      end
-      object Label36: TLabel
-        Left = 79
-        Top = 284
-        Width = 429
-        Height = 30
-        Alignment = taCenter
-        Caption = 
-          'Note: although [K] and Ctrl-[K] are available in the Image && Th' +
-          'umbnail Browser'#13#10'the prefix/suffix keys aren'#39't as all the functi' +
-          'on keys can be assigned to user folders'
-        Color = clBtnFace
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clAqua
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentColor = False
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label37: TLabel
-        Left = 28
-        Top = 132
-        Width = 521
-        Height = 30
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          '* deletion operations only ever affect the files in the current ' +
-          'playlist folder'#13#10'MMP never touches the contents of any subfolder' +
-          's'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clAqua
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        WordWrap = True
-        StyleElements = [seClient, seBorder]
-      end
-      object Label38: TLabel
-        Left = 122
-        Top = 176
-        Width = 332
-        Height = 30
-        Alignment = taCenter
-        Caption = 
-          'You can use F1 - F4 to set up to three prefixes and one suffix'#13#10 +
-          'Any leading and/or trailing spaces you include will be recorded'
-      end
-      object GroupBox2: TGroupBox
-        Left = 40
-        Top = 0
-        Width = 521
-        Height = 168
-        TabOrder = 4
-      end
-      object edtPrefixF1: TLabeledEdit
-        Left = 129
-        Top = 218
-        Width = 126
-        Height = 23
-        Hint = 'Defaults to subfolder "folder1"'
-        EditLabel.Width = 50
-        EditLabel.Height = 23
-        EditLabel.Caption = 'F1 Prefix'
-        EditLabel.Font.Charset = DEFAULT_CHARSET
-        EditLabel.Font.Color = clWindowText
-        EditLabel.Font.Height = -12
-        EditLabel.Font.Name = 'Segoe UI'
-        EditLabel.Font.Style = [fsBold]
-        EditLabel.ParentFont = False
-        LabelPosition = lpLeft
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-        Text = ''
-        OnChange = edtPrefixF1Change
-      end
-      object edtPrefixF2: TLabeledEdit
-        Left = 127
-        Top = 250
-        Width = 126
-        Height = 23
-        Hint = 'Defaults to subfolder "folder1"'
-        EditLabel.Width = 50
-        EditLabel.Height = 23
-        EditLabel.Caption = 'F2 Prefix'
-        EditLabel.Font.Charset = DEFAULT_CHARSET
-        EditLabel.Font.Color = clWindowText
-        EditLabel.Font.Height = -12
-        EditLabel.Font.Name = 'Segoe UI'
-        EditLabel.Font.Style = [fsBold]
-        EditLabel.ParentFont = False
-        LabelPosition = lpLeft
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-        Text = ''
-        OnChange = edtPrefixF1Change
-      end
-      object edtPrefixF3: TLabeledEdit
-        Left = 323
-        Top = 218
-        Width = 126
-        Height = 23
-        Hint = 'Defaults to subfolder "folder1"'
-        EditLabel.Width = 50
-        EditLabel.Height = 23
-        EditLabel.Caption = 'F3 Prefix'
-        EditLabel.Font.Charset = DEFAULT_CHARSET
-        EditLabel.Font.Color = clWindowText
-        EditLabel.Font.Height = -12
-        EditLabel.Font.Name = 'Segoe UI'
-        EditLabel.Font.Style = [fsBold]
-        EditLabel.ParentFont = False
-        LabelPosition = lpLeft
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 2
-        Text = ''
-        OnChange = edtPrefixF1Change
-      end
-      object edtSuffixF4: TLabeledEdit
-        Left = 323
-        Top = 250
-        Width = 126
-        Height = 23
-        Hint = 'Defaults to subfolder "folder1"'
-        EditLabel.Width = 50
-        EditLabel.Height = 23
-        EditLabel.Caption = 'F4 Suffix'
-        EditLabel.Font.Charset = DEFAULT_CHARSET
-        EditLabel.Font.Color = clWindowText
-        EditLabel.Font.Height = -12
-        EditLabel.Font.Name = 'Segoe UI'
-        EditLabel.Font.Style = [fsBold]
-        EditLabel.ParentFont = False
-        LabelPosition = lpLeft
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 3
-        Text = ''
-        OnChange = edtPrefixF1Change
-      end
-    end
-    object tsScaleFactor: TTabSheet
-      Caption = 'Scale Factor'
-      ImageIndex = 8
-      object Label41: TLabel
-        Left = 148
-        Top = 293
-        Width = 142
-        Height = 15
-        Caption = 'Scale Factor (percentage)'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label42: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label43: TLabel
-        Left = 20
-        Top = 16
-        Width = 543
-        Height = 217
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          'MMP is developed on a large, wide-screen monitor with a resoluti' +
-          'on of 3440 x 1440'#13#10#13#10'While reasonable attempts are always made t' +
-          'o ensure that popup dialog boxes (in particular) are a suitable ' +
-          'size for typical monitors, it'#39's not always possible to suit ever' +
-          'ybody'#39's monitors'#13#10#13#10'If you find that the Delete Confirmation dia' +
-          'log looks too big on your monitor'#13#10'you can scale down its design' +
-          '-time size'#13#10#13#10'The recommended setting is 90% of the design-time ' +
-          'size'#13#10#13#10'Obviously, you can experiment to find a size you'#39're comf' +
-          'ortable with'#13#10#13#10'The minimum setting is 50% and the maximum is 10' +
-          '0%'
-        WordWrap = True
-      end
-      object spinScaleFactor: TSpinEdit
-        Left = 296
-        Top = 289
-        Width = 51
-        Height = 24
-        MaxValue = 999999
-        MinValue = 0
-        TabOrder = 0
-        Value = 100
-        OnChange = spinScaleFactorChange
-      end
-      object btnScaleFactorDefault: TButton
-        Left = 352
-        Top = 288
-        Width = 75
-        Height = 25
-        Caption = 'Default'
-        TabOrder = 1
-        OnClick = btnScaleFactorDefaultClick
-      end
-    end
     object tsSlideshowIntervalMs: TTabSheet
       Caption = 'Slideshows'
       ImageIndex = 9
@@ -2850,491 +3181,6 @@ object ConfigForm: TConfigForm
         Caption = 'Default'
         TabOrder = 1
         OnClick = btnSlideshowIntervalMsDefaultClick
-      end
-    end
-    object TabSheet2: TTabSheet
-      Caption = 'Repeat Delay'
-      ImageIndex = 6
-      object Label12: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label39: TLabel
-        Left = 11
-        Top = 3
-        Width = 555
-        Height = 285
-        Caption = 
-          'This setting affects not only the Image && Thumbnail Browser, bu' +
-          't also MMP'#39's main media window when it'#39's displaying many images ' +
-          'in succession.'#13#10#13#10'When you hold down the left arrow key or the r' +
-          'ight arrow key, MMP will cycle through the images at the rate of' +
-          ' one every 100ms.'#13#10#13#10'This seems to be a reasonable speed for the' +
-          ' average image collection. However, if you have a mixture of [e.' +
-          'g.] 1MB images and 20MB images in the same folder, you may find ' +
-          'that the 20MB image hasn'#39't finished rendering to the screen befo' +
-          're the next image file gets loaded. Consequently it can appear t' +
-          'hat MMP has skipped past it.'#13#10#13#10'The problem is, if you drop the ' +
-          'speed down to [e.g.] 500ms, this might be appropriate for the 20' +
-          'MB images but now the 1MB images progress too slowly.'#13#10#13#10'There a' +
-          're two solutions to this:'#13#10'1) be aware that when you hold down a' +
-          'n arrow key you are not guaranteed to see every image. If you mu' +
-          'st see every image, tap the arrow keys rather than holding them ' +
-          'down.'#13#10'2) you can experiment with the following setting to find ' +
-          'a delay between images that suits your machine and the average s' +
-          'ize of your images.'
-        WordWrap = True
-      end
-      object Label40: TLabel
-        Left = 144
-        Top = 293
-        Width = 152
-        Height = 15
-        Caption = 'Repeat Delay (milliseconds)'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object spinImageDelayMs: TSpinEdit
-        Left = 301
-        Top = 289
-        Width = 51
-        Height = 24
-        MaxValue = 999999
-        MinValue = 0
-        TabOrder = 0
-        Value = 100
-        OnChange = spinImageDelayMsChange
-      end
-      object btnRepeatDelayDefault: TButton
-        Left = 357
-        Top = 288
-        Width = 75
-        Height = 25
-        Caption = 'Default'
-        TabOrder = 1
-        OnClick = btnRepeatDelayDefaultClick
-      end
-    end
-    object tsEditing: TTabSheet
-      Caption = 'Editing'
-      ImageIndex = 10
-      object Label50: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label51: TLabel
-        Left = 131
-        Top = 30
-        Width = 445
-        Height = 32
-        AutoSize = False
-        Caption = 
-          'Determines whether MMP will autoplay the [edited] audio or video' +
-          ' file after successfully exporting and joining the segments from' +
-          ' your Timeline*'
-        WordWrap = True
-      end
-      object Label52: TLabel
-        Left = 205
-        Top = 4
-        Width = 167
-        Height = 15
-        Caption = 'Audio && Video Timeline Editor'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label53: TLabel
-        Left = 20
-        Top = 73
-        Width = 543
-        Height = 212
-        AutoSize = False
-        Caption = 
-          '1. MMP will play the [edited] file in a new instance of MMP'#13#10#13#10'2' +
-          '. In the new MMP, the [edited] file will be the only file in the' +
-          ' playlist'#13#10#13#10'3. Playback will stop when MMP reaches the end of t' +
-          'he file and will ignore '#13#10'    the nextFolderOnEnd [of playlist] ' +
-          'setting so that you can further review your edits'#13#10#13#10'4. You can ' +
-          '[Esc]ape to close the second MMP and return to your editing, or'#13 +
-          #10'    You might Ctrl-[M]ove your successful edit to an e.g. "Fina' +
-          'l Edits" folder, or'#13#10'    You can open the Audio && Video Timelin' +
-          'e Editor in the second MMP and edit your [edited] file'#13#10'    to c' +
-          'reate an "[edited] [edited]" file'#13#10#13#10'5. If you [Del]ete the [edi' +
-          'ted] file with nextFolderOnEmpty=no, '#13#10'    the second MMP will c' +
-          'lose and return you to your editing session'
-        WordWrap = True
-      end
-      object Label54: TLabel
-        Left = 41
-        Top = 288
-        Width = 494
-        Height = 30
-        Alignment = taCenter
-        Caption = 
-          '* Shift-[E] will also play the [edited] version of an audio or v' +
-          'ideo file in a new instance of MMP'#13#10'Shift-[E] is available while' +
-          ' the Audio && Video Timeline Editor is open'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clAqua
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object chbPlayEdited: TCheckBox
-        Left = 20
-        Top = 30
-        Width = 101
-        Height = 17
-        Alignment = taLeftJustify
-        Caption = 'Play Edited'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-        OnClick = chbPlayEditedClick
-      end
-    end
-    object tsChapters: TTabSheet
-      Caption = 'Editing Chapters'
-      ImageIndex = 13
-      object Label72: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label73: TLabel
-        Left = 205
-        Top = 12
-        Width = 167
-        Height = 15
-        Caption = 'Audio && Video Timeline Editor'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label74: TLabel
-        Left = 91
-        Top = 33
-        Width = 395
-        Height = 135
-        Alignment = taCenter
-        Caption = 
-          'You can add chapters to your audio and/or video files'#13#10'and each ' +
-          'chapter can be given a title'#13#10#13#10'During playback, you can jump be' +
-          'tween chapters using F8 and F9'#13#10'to jump to the previous chapter ' +
-          'or the next chapter'#13#10'and the title will be displayed in the Noti' +
-          'fication Area (bottom right corner)'#13#10#13#10'Even if you don'#39't intend ' +
-          'to write chapters to your exported file'#13#10'it can be useful to hav' +
-          'e the segment titles displayed during editing'
-      end
-      object chbChaptersShow: TCheckBox
-        Left = 86
-        Top = 201
-        Width = 203
-        Height = 17
-        Alignment = taLeftJustify
-        Caption = 'Show Chapters During Editing'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-        OnClick = chbChaptersShowClick
-      end
-      object chbChaptersAudioWrite: TCheckBox
-        Left = 86
-        Top = 233
-        Width = 203
-        Height = 17
-        Alignment = taLeftJustify
-        Caption = 'Write Chapters for Audio files'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 1
-        OnClick = chbChaptersAudioWriteClick
-      end
-      object chbChaptersVideoWrite: TCheckBox
-        Left = 86
-        Top = 265
-        Width = 203
-        Height = 17
-        Alignment = taLeftJustify
-        Caption = 'Write Chapters for Video files'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 2
-        OnClick = chbChaptersVideoWriteClick
-      end
-    end
-    object tsKeyframes: TTabSheet
-      Caption = 'Keyframes'
-      ImageIndex = 12
-      object Label57: TLabel
-        Left = 0
-        Top = 316
-        Width = 406
-        Height = 15
-        Align = alBottom
-        Alignment = taCenter
-        Caption = 
-          'changes are saved immediately - hit [Escape] to close this confi' +
-          'g window'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clTeal
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsItalic]
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label58: TLabel
-        Left = 205
-        Top = 4
-        Width = 167
-        Height = 15
-        Caption = 'Audio && Video Timeline Editor'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label59: TLabel
-        Left = 3
-        Top = 24
-        Width = 558
-        Height = 90
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          'Determines whether, for video files, the editor will always open' +
-          ' with keyframes turned on. '#13#10'Keyframes help you to more accurate' +
-          'ly determine where the start of each segment should be cut.'#13#10#13#10'K' +
-          'eyframe processing is now so fast that keeping keyframes turned ' +
-          'on permanently is a viable option.'#13#10#13#10'The vertical cursor will c' +
-          'hange color to indicate how close it is the previous keyframe:'
-        WordWrap = True
-      end
-      object lblWhite: TLabel
-        Left = 58
-        Top = 120
-        Width = 32
-        Height = 15
-        Alignment = taCenter
-        Caption = 'white'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-      end
-      object lblYellow: TLabel
-        Left = 58
-        Top = 141
-        Width = 36
-        Height = 15
-        Alignment = taCenter
-        Caption = 'yellow'
-        Color = clYellow
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-      end
-      object lblPurple: TLabel
-        Left = 58
-        Top = 162
-        Width = 36
-        Height = 15
-        Alignment = taCenter
-        Caption = 'purple'
-        Color = clFuchsia
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
-      end
-      object Label60: TLabel
-        Left = 175
-        Top = 120
-        Width = 377
-        Height = 15
-        Alignment = taCenter
-        Caption = 
-          'the previous keyframe is more than 1.0 seconds prior to this vid' +
-          'eo point'
-      end
-      object Label61: TLabel
-        Left = 175
-        Top = 141
-        Width = 351
-        Height = 15
-        Alignment = taCenter
-        Caption = 
-          'the previous keyframe is 0.5 to 1.0 seconds prior to this video ' +
-          'point'
-      end
-      object Label62: TLabel
-        Left = 175
-        Top = 162
-        Width = 368
-        Height = 15
-        Alignment = taCenter
-        Caption = 
-          'the previous keyframe is less than 0.5 seconds prior to this vid' +
-          'eo point'
-      end
-      object Label63: TLabel
-        Left = 0
-        Top = 183
-        Width = 573
-        Height = 76
-        Alignment = taCenter
-        AutoSize = False
-        Caption = 
-          'FFmpeg will cut on the closet seek-point keyframe it can find'#13#10'p' +
-          'rior to where you set your cut segment to start*'#13#10#13#10'Rough cuts w' +
-          'ork really welll. If you prefer more accurate cuts for a particu' +
-          'lar video'#13#10'work with FFmpeg by using keyframes in the MMP editor'
-        WordWrap = True
-      end
-      object Label64: TLabel
-        Left = 46
-        Top = 263
-        Width = 484
-        Height = 30
-        Alignment = taCenter
-        Caption = 
-          '* FFmpeg will always make a cut segment at least as long as you ' +
-          'set it to be.'#13#10'A segment will always contain at least what you w' +
-          'ant it to contain, give or take a few frames'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clAqua
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        StyleElements = [seClient, seBorder]
-      end
-      object Label65: TLabel
-        Left = 107
-        Top = 120
-        Width = 60
-        Height = 15
-        AutoSize = False
-        Caption = 'rough cut:'
-        WordWrap = True
-      end
-      object Label66: TLabel
-        Left = 107
-        Top = 141
-        Width = 60
-        Height = 15
-        AutoSize = False
-        Caption = 'good cut:'
-        WordWrap = True
-      end
-      object Label67: TLabel
-        Left = 107
-        Top = 162
-        Width = 60
-        Height = 15
-        AutoSize = False
-        Caption = 'best cut:'
-        WordWrap = True
-      end
-      object chbKeyframes: TCheckBox
-        Left = 230
-        Top = 299
-        Width = 116
-        Height = 17
-        Alignment = taLeftJustify
-        Caption = 'Keyframes On'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-        OnClick = chbKeyframesClick
       end
     end
     object tsCleanFile: TTabSheet
@@ -3422,6 +3268,162 @@ object ConfigForm: TConfigForm
         Caption = 'Default'
         TabOrder = 1
         OnClick = btnDirtyCharsDefaultClick
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Repeat Delay'
+      ImageIndex = 6
+      object Label12: TLabel
+        Left = 0
+        Top = 316
+        Width = 406
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label39: TLabel
+        Left = 11
+        Top = 3
+        Width = 555
+        Height = 285
+        Caption = 
+          'This setting affects not only the Image && Thumbnail Browser, bu' +
+          't also MMP'#39's main media window when it'#39's displaying many images ' +
+          'in succession.'#13#10#13#10'When you hold down the left arrow key or the r' +
+          'ight arrow key, MMP will cycle through the images at the rate of' +
+          ' one every 100ms.'#13#10#13#10'This seems to be a reasonable speed for the' +
+          ' average image collection. However, if you have a mixture of [e.' +
+          'g.] 1MB images and 20MB images in the same folder, you may find ' +
+          'that the 20MB image hasn'#39't finished rendering to the screen befo' +
+          're the next image file gets loaded. Consequently it can appear t' +
+          'hat MMP has skipped past it.'#13#10#13#10'The problem is, if you drop the ' +
+          'speed down to [e.g.] 500ms, this might be appropriate for the 20' +
+          'MB images but now the 1MB images progress too slowly.'#13#10#13#10'There a' +
+          're two solutions to this:'#13#10'1) be aware that when you hold down a' +
+          'n arrow key you are not guaranteed to see every image. If you mu' +
+          'st see every image, tap the arrow keys rather than holding them ' +
+          'down.'#13#10'2) you can experiment with the following setting to find ' +
+          'a delay between images that suits your machine and the average s' +
+          'ize of your images.'
+        WordWrap = True
+      end
+      object Label40: TLabel
+        Left = 144
+        Top = 293
+        Width = 152
+        Height = 15
+        Caption = 'Repeat Delay (milliseconds)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object spinImageDelayMs: TSpinEdit
+        Left = 301
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinImageDelayMsChange
+      end
+      object btnRepeatDelayDefault: TButton
+        Left = 357
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnRepeatDelayDefaultClick
+      end
+    end
+    object tsScaleFactor: TTabSheet
+      Caption = 'Scale Factor'
+      ImageIndex = 8
+      object Label41: TLabel
+        Left = 148
+        Top = 293
+        Width = 142
+        Height = 15
+        Caption = 'Scale Factor (percentage)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label42: TLabel
+        Left = 0
+        Top = 316
+        Width = 406
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+      end
+      object Label43: TLabel
+        Left = 20
+        Top = 16
+        Width = 543
+        Height = 217
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 
+          'MMP is developed on a large, wide-screen monitor with a resoluti' +
+          'on of 3440 x 1440'#13#10#13#10'While reasonable attempts are always made t' +
+          'o ensure that popup dialog boxes (in particular) are a suitable ' +
+          'size for typical monitors, it'#39's not always possible to suit ever' +
+          'ybody'#39's monitors'#13#10#13#10'If you find that the Delete Confirmation dia' +
+          'log looks too big on your monitor'#13#10'you can scale down its design' +
+          '-time size'#13#10#13#10'The recommended setting is 90% of the design-time ' +
+          'size'#13#10#13#10'Obviously, you can experiment to find a size you'#39're comf' +
+          'ortable with'#13#10#13#10'The minimum setting is 50% and the maximum is 10' +
+          '0%'
+        WordWrap = True
+      end
+      object spinScaleFactor: TSpinEdit
+        Left = 296
+        Top = 289
+        Width = 51
+        Height = 24
+        MaxValue = 999999
+        MinValue = 0
+        TabOrder = 0
+        Value = 100
+        OnChange = spinScaleFactorChange
+      end
+      object btnScaleFactorDefault: TButton
+        Left = 352
+        Top = 288
+        Width = 75
+        Height = 25
+        Caption = 'Default'
+        TabOrder = 1
+        OnClick = btnScaleFactorDefaultClick
       end
     end
   end

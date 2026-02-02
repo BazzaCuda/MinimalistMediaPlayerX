@@ -151,7 +151,7 @@ procedure THelpForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   params.exStyle    := params.ExStyle or (WS_EX_APPWINDOW);
-  params.wndParent  := application.HANDLE;
+  params.wndParent  := GS.mainForm.HANDLE; //  application.HANDLE;
 end;
 
 procedure THelpForm.FormResize(Sender: TObject);

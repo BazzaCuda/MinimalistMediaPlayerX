@@ -10,16 +10,20 @@
  //
  // Baz Cuda, 2022: Renamed, rejigged, camelhumped and augmented.
  //                 All credit rests with the original authors for this very handy tool.
+
 unit _debugWindow;
 
 interface
 
 uses
-  windows, dialogs, system.classes, system.generics.collections; // We need "Dialogs" for TMsgDlgType
+  winApi.windows, // for HWND
+  system.classes, // for TStringlist
+  vcl.dialogs;    // for TMsgDlgType
 
-{$I BazDebugWindow.inc}
+{$I BazDebugWindow.inc} // defines a const so can't go any earlier than this
 
 {$if BazDebugWindow}
+
 type
    TDebug = class(TObject)
      class procedure debugEnum<T>(const identifier: string; const value: T); // because...E2530 Type parameters not allowed on global procedure or function
@@ -49,7 +53,7 @@ procedure debugString(const identifier: string; const value: string);
 procedure debugStringList(const identifier: string; const value: TStringList);
 procedure debugWarning(const msg: string);
 procedure showDebugMessage(msg: string);
-function  startDebugWin: hWnd;
+function  startDebugWin: HWND;
 
 implementation
 
@@ -58,7 +62,7 @@ uses
   SysUtils,
   Registry,
   Forms, // We need "Forms" for the Application object
-  RTTI;
+  RTTI;  // for the TDebug.enum
 
 threadvar
   msgPrefix: string;
@@ -80,7 +84,7 @@ begin
   showMessage(msg);
 end;
 
-function startDebugWin: hWnd;
+function startDebugWin: HWND;
 var
   debugFileName: string;
   buf: array[0..MAX_PATH + 1] of char;
@@ -180,7 +184,7 @@ end;
 procedure debugEx(const msg: string; MType: TMsgDlgType);
 var
   CDS: TCopyDataStruct;
-  debugWin: hWnd;
+  debugWin: HWND;
   messageString: string;
   msgBytes: array of Byte;
   msgType: AnsiChar;

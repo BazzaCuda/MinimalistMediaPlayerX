@@ -1157,18 +1157,17 @@ begin
   mmp.cmd(GS.imagesPaused, evNone, evMPPausePlay);
   mmp.cmd(evMPPause);
 
-//  debugInteger('VM.showThumbnails: GS.mainForm.height', GS.mainForm.Height);
-
   var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
   case vModalResult of
     mrAll:      EXIT; // user pressed Ctrl-[0]
-    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', procedure begin mmp.cmd(evAppClose); EXIT; end); // normal exit from browser
+    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', evAppClose); // normal exit from browser
     mrIgnore:   ;     // user pressed Ctrl-[X] - ignore exitApp setting, whatever it is
   end;
 
-  GS.mainForm.show;
-  setActiveWindow(GS.mainForm.handle);
-  mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]);
+  mmp.cmd(vModalResult = mrIgnore, procedure  begin
+                                                GS.mainForm.show;
+                                                setActiveWindow(GS.mainForm.handle);
+                                                mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end);
 end;
 
 function TVM.showUI: TVoid;

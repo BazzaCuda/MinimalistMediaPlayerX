@@ -344,7 +344,7 @@ begin
   case FShowData of FALSE: FDataMemo.clear;
                      TRUE: mmp.cmd(evMIFillMetaData, FDataMemo); end;
 
-  FDataMemo.visible := FShowData and (SELF.width > 336);
+  FDataMemo.visible := FShowData { and (SELF.width > 336)}; // EXPERIMENTAL
 
   case FShowData of  TRUE: CF[CONF_SHOW_METADATA] := 'yes';
                     FALSE: CF[CONF_SHOW_METADATA] := 'no'; end;

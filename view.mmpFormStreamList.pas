@@ -400,7 +400,7 @@ procedure TStreamListForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle    := params.ExStyle and NOT WS_EX_APPWINDOW;
-  params.WndParent  := application.HANDLE;
+  params.WndParent  := GS.mainForm.HANDLE; //   application.HANDLE;
 end;
 
 procedure TStreamListForm.formCreate(Sender: TObject);

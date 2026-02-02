@@ -206,7 +206,7 @@ procedure TTimelineForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle    := params.ExStyle or (WS_EX_APPWINDOW);
-  params.WndParent  := application.HANDLE;
+  params.WndParent  := GS.mainForm.HANDLE; // application.HANDLE;
 end;
 
 procedure TTimelineForm.pnlCursorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
