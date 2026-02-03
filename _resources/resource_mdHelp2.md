@@ -68,7 +68,11 @@ CAPS LOCK+**T**, tab forward 200th duration<br />
 CAPS LOCK+CTRL-**T**, tab back 200th duration<br />
 _(hold for rapid repeat)_<br />
 
-_hold down **TAB** or **T** to fast forward or fast reverse_<br />
+Shift-&rarr; **right** arrow, jump n seconds forwards<br />
+Shift-&larr; **left** arrow, jump n seconds backwards<br />
+_(hold for rapid repeat)_<br />
+
+_hold down **TAB** or **T** or arrow key to fast forward or fast reverse_<br />
 
 **Volume**<br />
 &uarr; **Up** arrow, increase<br />

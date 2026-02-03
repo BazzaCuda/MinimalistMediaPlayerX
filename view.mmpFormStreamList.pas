@@ -143,6 +143,7 @@ function mmpRefreshStreamInfo(const aMediaFilePath: string): TVoid;
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): TVoid;
 function mmpShutStreamList: TVoid;
 function mmpScrollTo(const aIx: integer): TVoid;
+function mmpStreamListHandle: HWND;
 
 implementation
 
@@ -191,6 +192,8 @@ begin
   mmp.cmd(evGSShowingStreamlist, TRUE);
   mmp.cmd(evGSWidthStreamlist, gStreamListForm.width);
 
+  case GS.showingHelp of TRUE: gStreamListForm.SendToBack; end; // EXPERIMENTAL
+
   focusTimeline;
 end;
 
@@ -204,6 +207,13 @@ end;
 function mmpScrollTo(const aIx: integer): TVoid;
 begin
   gStreamListForm.scrollTo(aIx);
+end;
+
+function mmpStreamListHandle: HWND;
+begin
+  result := 0;
+  case gStreamListForm = NIL of TRUE: EXIT; end;
+  result := gStreamListForm.HANDLE;
 end;
 
 {$R *.dfm}

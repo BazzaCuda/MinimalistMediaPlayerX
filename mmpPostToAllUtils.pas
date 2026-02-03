@@ -134,7 +134,7 @@ begin
   clear;
   enumWindows(@enumAllWindows, 0);
   result := length(FWNDs);
-  {$if BazDebugWindow} debugInteger('postToAllCount', result); {$endif}
+//  {$if BazDebugWindow} debugInteger('postToAllCount', result); {$endif}
 end;
 
 function TPostToAll.postToAllEx(const aCmd: WORD; const WParam: NativeUInt; const LParam: NativeInt; const bPostToAll: boolean = FALSE): boolean;

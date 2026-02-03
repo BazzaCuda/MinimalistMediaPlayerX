@@ -62,6 +62,7 @@ uses
   winApi.shellAPI, system.strUtils,
   bazCmd,
   mmpGlobalState, mmpMarkDownUtils,
+  view.mmpFormStreamList,
   _debugWindow;
 
 type
@@ -151,7 +152,8 @@ procedure THelpForm.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   params.exStyle    := params.ExStyle or (WS_EX_APPWINDOW);
-  params.wndParent  := GS.mainForm.HANDLE; //  application.HANDLE;
+  case GS.showingTimeline of   TRUE: params.wndParent := mmpStreamListHandle;
+                              FALSE: params.wndParent := GS.mainForm.HANDLE; end; //  application.HANDLE;
 end;
 
 procedure THelpForm.FormResize(Sender: TObject);

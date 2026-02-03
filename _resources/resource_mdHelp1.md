@@ -29,16 +29,19 @@ Ctrl-Shift-**C** [C]leanup editing files<br />
 
 **File Control**<br />
 **INSERT** copy filename to clipboard<br />
-Ctrl-Shift-**C** cleanup timeline editing files<br />
+Ctrl-Shift-**C** cleanup timeline editing files after confirm<br />
 **DEL** [D]elete file after confirm<br />
-Ctrl-**DEL** [D]elete folder contents after confirm\*\*<br />
+Ctrl-**[DEL]** [D]elete folder contents after confirm\*\*<br />
+Shift-**[DEL]** - combined **DEL** and Ctrl-**[DEL** after confirm<br />
+
 **K** [K]eep file (rename with leading ! and space )<br />
-Ctrl-**K** [K]eep/Delete all non-[K]eep files in folder\*\*<br />
+Ctrl-**K** [K]eep/Delete all non-[K]eep files in folder after confirm\*\*<br />
+
 Ctrl-**M** [M]ove file to folder in moved= user folder<br />
 Shift-**M** [M]ove file to folder in moved= user folder<br />
 **R** [R]ename file<br />
-Ctrl-Shift-**R** [R]ename to a clean file name<br />
-Shift-**S** [S]ave file to folder in saved= user folder<br />
+Ctrl-Shift-**R** [R]ename to a cleaned file name<br />
+Shift-**S** [S]ave/Move file to folder in saved= user folder<br />
 
 _\*\* doesn't touch the contents of subfolders_<br />
 

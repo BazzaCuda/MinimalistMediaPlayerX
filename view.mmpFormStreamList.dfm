@@ -49,7 +49,7 @@ object StreamListForm: TStreamListForm
       Top = 3
       Width = 454
       Height = 533
-      ActivePage = tsOptions
+      ActivePage = tsSegments
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -88,8 +88,8 @@ object StreamListForm: TStreamListForm
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 0
-            Height = 0
+            Width = 442
+            Height = 70
             Align = alClient
             Brush.Color = 2302755
             Shape = stRoundRect
@@ -2300,7 +2300,7 @@ object StreamListForm: TStreamListForm
         object Label59: TLabel
           Left = 0
           Top = 0
-          Width = 446
+          Width = 322
           Height = 17
           Align = alTop
           Alignment = taCenter
@@ -2312,7 +2312,6 @@ object StreamListForm: TStreamListForm
           Font.Style = []
           ParentFont = False
           WordWrap = True
-          ExplicitWidth = 322
         end
         object Label3: TLabel
           Left = 9

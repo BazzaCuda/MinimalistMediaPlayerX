@@ -154,6 +154,7 @@ var gTimelineForm: TTimelineForm = NIL;
 function focusTimeline: TVoid;
 begin
   case gTimeLineForm = NIL of TRUE: EXIT; end;
+  case GS.showingTimeline of FALSE: EXIT; end; // EXPERIMENTAL
   setForegroundWindow(gTimelineForm.handle); // so this window also receives keyboard keystrokes
 end;
 

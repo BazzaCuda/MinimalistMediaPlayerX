@@ -61,6 +61,7 @@ N.B. **_All other controls operate on the **Main Media Window** as normal_**
 | &nbsp; ||
 | **Additional** ||
 | **right-click** a segment   | toggle include/exclude/restore for that segment (same as [X] and [R]) |
+| **double-click** a segment  | rename segment and/or chapter title |
 | **[F]**                     | toggle key[F]rames on and off |
 | **\`** (back tick)          | restart/startover from beginning of media file |
 | Ctrl-**[R]**                | [R]ename file |

@@ -47,7 +47,9 @@ begin
   result := CF[CONF_BASE_FOLDER];
 //  result := mmp.use(result = EMPTY, result, mmpITBS(result));  // EXPERIMENTAL
 //  result := TAction<string>.pick(result <> EMPTY, mmpITBS).perform(result); // EXPERIMENTAL TACTION pick/perform
-  case result <> EMPTY of TRUE: result := mmpITBS(result); end;
+//  case result <> EMPTY of TRUE: result := mmpITBS(result); end;
+
+  result := TAction<string>.pick(result <> EMPTY, mmpITBS).default(result).perform(result); // EXPERIMENTAL TACTION pick/perform
 end;
 
 function mmpUserDstFolder(const aFolder: string): string;

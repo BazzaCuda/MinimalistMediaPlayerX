@@ -20,8 +20,8 @@ unit mmpFolderUtils;
 
 interface
 
-function mmpITBS(aFolderPath: string): string;
-function mmpRTBS(aFolderPath: string): string;
+function mmpITBS(const aFolderPath: string): string;
+function mmpRTBS(const aFolderPath: string): string;
 
 implementation
 
@@ -30,14 +30,14 @@ uses
   bazCmd,
   mmpAction, mmpConsts;
 
-function mmpITBS(aFolderPath: string): string;
+function mmpITBS(const aFolderPath: string): string;
 begin
   result := aFolderPath;
   guardClause := (length(result) > 0) and (result[high(result)] <> BACKSLASH);
   result := mmp.use<string>(guardClause, result + BACKSLASH, result);
 end;
 
-function mmpRTBS(aFolderPath: string): string;
+function mmpRTBS(const aFolderPath: string): string;
 begin
   result := aFolderPath;
   guardClause := (length(result) > 1) and charInSet(result[length(result)], ['\','/']) and ((length(result) <> 3) or (result[2] <> ':'));

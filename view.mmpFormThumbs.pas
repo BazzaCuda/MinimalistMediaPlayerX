@@ -555,7 +555,7 @@ function TThumbsForm.pausePlay: TVoid;
 begin
   FPlayingSlideshow := NOT FPlayingSlideshow;
 
-  FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // has the user changed .conf since the last pause/play
+//  FImageDisplayDurationMs := imageDisplayDurationMs(FImageDisplayDurationMs); // has the user changed .conf since the last pause/play - EXPERIMENTAL: WHAT!??
 
   case NOT FPlayingSlideshow of TRUE: mmpCancelDelay; end;
 
@@ -966,7 +966,6 @@ begin
     koPlayPrev:           playPrev;
     koPlayThumbs:         case whichHost of htThumbsHost: showHost(htMPVHost); htMPVHost: begin showHost(htThumbsHost); FThumbs.playThumbs; end;end;
     koPrevFolder:         playPrevFolder;
-//    koReloadPlaylist:     begin FThumbs.playlist.clear; FThumbs.playThumbs(FThumbs.playlist.currentFolder, ptPlaylistOnly); playCurrentItem; end;
     koReloadPlaylist:     reloadPlaylist;
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;
     koRenameCleanFile:    case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem, TRUE); end;
