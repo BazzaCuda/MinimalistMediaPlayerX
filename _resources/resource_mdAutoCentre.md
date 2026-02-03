@@ -1,4 +1,4 @@
-[Wiki Page: Window](https://minimalistmediaplayer.com/video/window)
+Wiki Page: [Window](https://minimalistmediaplayer.com/video/window)
 
 Unless you explicitly move the **MMP** window off-center, somehow, it will always be auto-centered to sit in the middle of your desktop
 

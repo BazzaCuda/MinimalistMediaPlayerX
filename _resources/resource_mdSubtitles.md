@@ -1,4 +1,4 @@
-[Wiki Page: Subtitles](https://minimalistmediaplayer.com/video/subtitles)<br />
+Wiki Page: [Subtitles](https://minimalistmediaplayer.com/video/subtitles)<br />
 
 If a media file contains multiple subtitle streams, you can cycle through them all and select each one in turn<br />
 

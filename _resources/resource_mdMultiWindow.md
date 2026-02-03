@@ -1,5 +1,6 @@
-[Wiki Page: Multi-View](https://minimalistmediaplayer.com/video/multiview)<br />
-[Help Page: Aspect Ratio](Aspect_Ratio)<br />
+Wiki Page: [Multi-View](https://minimalistmediaplayer.com/video/multiview)<br />
+
+Help Page: [Aspect Ratio](Aspect_Ratio)<br />
 
 You can view and control any number of **MMP** instances simultaneously
 

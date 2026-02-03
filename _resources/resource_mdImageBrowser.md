@@ -1,12 +1,13 @@
-[Wiki Page: Image & Thumbnail Browser Overview](https://minimalistmediaplayer.com/image/overview)<br />
-[Help Page: Adjust Image](Adjust_Image)<br />
-[Help Page: File Control](File_Control)<br />
-[Help Page: Screenshots](Screenshots)<br />
+Wiki Page: [Image & Thumbnail Browser Overview](https://minimalistmediaplayer.com/image/overview)<br />
+
+Help Page: [Adjust Image](Adjust_Image)<br />
+Help Page: [File Control](File_Control)<br />
+Help Page: [Screenshots](Screenshots)<br />
 <br />
-[Config Dialog: Slideshows](ConfigDialog:Slideshows)<br />
-[Config Dialog: Repeat Delay](ConfigDialog:Repeat_Delay)<br />
-[Config Dialog: Start in Browser](ConfigDialog:General)<br />
-[Config Dialog: Playlist Filter](ConfigDialog:Playlist_Filter)<br />
+Config Dialog: [Slideshows](ConfigDialog:Slideshows)<br />
+Config Dialog: [Repeat Delay](ConfigDialog:Repeat_Delay)<br />
+Config Dialog: [Start in Browser](ConfigDialog:General)<br />
+Config Dialog: [Playlist Filter](ConfigDialog:Playlist_Filter)<br />
 <br />
 
 ------
@@ -128,37 +129,37 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 - once you have reached the maximum number of rows (with **[M]** or **[G]**), subsequently pressing **[G]** will expand the number of columns width-ways until the maximum window size is reached
 
 **Adjust Image** (Brightness, Contrast, Gamma, Saturation)<br />
-[Help Page: Adjust Image](Adjust_Image)<br />
+Help Page: [Adjust Image](Adjust_Image)<br />
 | Control | Action |
 | ------ | ------ |
 | **[BACKSPACE]** | reset all image adjustments |
 
 **Auto-Center**<br />
-[Help Page: Auto-Center](Auto-Center)<br />
+Help Page: [Auto-Center](Auto-Center)<br />
 
 **File Control** (renaming and deleting files)<br />
-[Help Page: File Control](File_Control)<br />
+Help Page: [File Control](File_Control)<br />
 
 **Opening an Image in an External App**<br />
-[Help Page: External Apps](External_Apps)<br />
+Help Page: [External Apps](External_Apps)<br />
 
 **Panning / Scrolling the Image**<br />
-[Help Page: Panning](Panning)<br />
+Help Page: [Panning](Panning)<br />
 
 **Rotation**<br />
-[Help Page: Rotation](Rotation)<br />
+Help Page: [Rotation](Rotation)<br />
 
 **Screenshots**<br />
-[Help Page: Screenshots](Screenshots)<br />
+Help Page: [Screenshots](Screenshots)<br />
 
 **User-Defined Folders**<br />
-[Help Page: User-Defined Folders](User_Folders)<br />
+Help Page: [User-Defined Folders](User_Folders)<br />
 
 **Zoom**<br />
-[Help Page: Zoom](Zoom)<br />
+Help Page: [Zoom](Zoom)<br />
 
 **Slideshows**<br />
-[Help Page: Slideshows](Slideshows)<br />
+Help Page: [Slideshows](Slideshows)<br />
 
 **Slideshow Controls**
 

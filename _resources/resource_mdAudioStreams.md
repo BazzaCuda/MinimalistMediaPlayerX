@@ -1,5 +1,6 @@
-[Wiki Page: Audio](https://minimalistmediaplayer.com/audio/overview)<br />
-[Help Page: Volume](Volume)<br />
+Wiki Page: [Audio](https://minimalistmediaplayer.com/audio/overview)<br />
+
+Help Page: [Volume](Volume)<br />
 
 If a media file contains multiple audio streams, you can cycle through them all and select each one in turn<br />
 

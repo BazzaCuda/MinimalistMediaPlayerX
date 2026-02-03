@@ -1,6 +1,7 @@
-[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
-[Help Page: Screenshots](Screenshots)<br />
-[Help Page: Auto-Center](Auto-Center)<br />
+Wiki Page: [Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
+
+Help Page: [Screenshots](Screenshots)<br />
+Help Page: [Auto-Center](Auto-Center)<br />
 <br />
 
 You can resize the **Image & Thumbnail Browser** window so that the image is displayed at the exact dimensions you require

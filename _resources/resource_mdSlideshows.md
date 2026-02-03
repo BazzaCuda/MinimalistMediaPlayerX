@@ -1,7 +1,8 @@
-[Wiki Page: Slideshows](https://minimalistmediaplayer.com/image/slideshow)<br />
-[Help Page: Playlist Filter](Playlist)<br />
+Wiki Page: [Slideshows](https://minimalistmediaplayer.com/image/slideshow)<br />
+
+Help Page: [Playlist Filter](Playlist)<br />
 <br />
-[Config Dialog: Playlist Filter](ConfigDialog:Playlist_Filter)<br />
+Config Dialog: [Playlist Filter](ConfigDialog:Playlist_Filter)<br />
 <br />
 
 Both the **Main Media Window** and the **Image & Thumbnail Browser** provide slideshows

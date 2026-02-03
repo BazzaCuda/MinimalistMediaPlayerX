@@ -1,4 +1,4 @@
- [Help Page: Adjust Image](Adjust_Image)<br />
+Help Page: [Adjust Image](Adjust_Image)<br />
 
 You can rotate any image or video by 45 degrees at a time
 

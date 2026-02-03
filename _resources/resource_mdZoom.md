@@ -1,4 +1,4 @@
-[Help Page: Adjust Image](Adjust_Image)<br />
+Help Page: [Adjust Image](Adjust_Image)<br />
 
 You can zoom in and out on an image or video
 

@@ -1,5 +1,6 @@
-[Wiki Page: Images Overview](https://minimalistmediaplayer.com/image/overview)<br />
-[Help Page: Image & Thumbnail Browser](Image_Browser)<br />
+Wiki Page: [Images Overview](https://minimalistmediaplayer.com/image/overview)<br />
+
+Help Page: [Image & Thumbnail Browser](Image_Browser)<br />
 
 <br />
 
@@ -80,7 +81,7 @@ When showing a page of thumbnails, you can resize the window to show more thumbn
 - once you have reached the maximum number of rows (with **[M]** or **[G]**), subsequently pressing **[G]** will expand the number of columns width-ways until the maximum window size is reached
 
 **Auto-Center**<br />
-[Help Page: Auto-Center](Auto-Center)<br />
+Help Page: [Auto-Center](Auto-Center)<br />
 
 **Exiting the Image & Thumbnail Browser**
 

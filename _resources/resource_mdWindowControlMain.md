@@ -1,6 +1,7 @@
-[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
-[Help Page: Screenshots](Screenshots)<br />
-[Help Page: Auto-Center](Auto-Center)<br />
+Wiki Page: [Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
+
+Help Page: [Screenshots](Screenshots)<br />
+Help Page: [Auto-Center](Auto-Center)<br />
 <br />
 
 The **Main Media Window** can be resized using either keyboard controls or the mouse

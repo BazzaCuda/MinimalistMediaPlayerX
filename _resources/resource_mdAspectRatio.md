@@ -1,5 +1,6 @@
-[Help Page: Window Control](Window_Control)<br />
-[Help Page: Screenshots](Screenshots)<br />
+Help Page: [Window Control](Window_Control)<br />
+
+Help Page: [Screenshots](Screenshots)<br />
 
 Aspect ratio is the proportional relationship between the width and height of a video, an image, or a window<br />
 

@@ -83,6 +83,7 @@ type
     function showForm: TVoid;
   end;
 
+function mmpCloseHelpFull: TVoid;
 function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0): TVoid;
 
 implementation
@@ -146,6 +147,14 @@ const
 
 var gHelpFullForm: IHelpFullForm = NIL;
 
+function mmpCloseHelpFull: TVoid;
+begin
+  mmp.cmd(gHelpFullForm <> NIL, procedure begin
+                                            gHelpFullForm.closeForm;
+                                            gHelpFullForm := NIL;
+                                            mmp.cmd(evGSShowingHelpFull, FALSE); end);
+end;
+
 function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0): TVoid;
 
   function setWindowOwner(const aChild: HWND; aOwner: HWND): TVoid;
@@ -156,11 +165,8 @@ function mmpHelpFull(const aHelpType: THelpType = htMain; const aOwner: HWND = 0
 
 begin
   case gHelpFullForm = NIL of  TRUE:  gHelpFullForm := THelpFullForm.create(app);
-                              FALSE:  begin
-                                        gHelpFullForm.closeForm;
-                                        gHelpFullForm := NIL;
-                                        mmp.cmd(evGSShowingHelpFull, FALSE);
-                                        EXIT; end;end;
+                              FALSE:  begin mmpCloseHelpFull;
+                                            EXIT; end;end;
 
   mmp.cmd(evGSShowingHelpFull, TRUE);
   gHelpFullForm.init(aHelpType);
@@ -203,6 +209,7 @@ begin
   case vMarkdownViewer = NIL of TRUE: EXIT; end;
 
   var  vResourceIx := getResourceIx(FHelpType, aIx);
+  case vResourceIx = -1 of TRUE: EXIT; end;
   case vMarkdownViewer.lines.count = 0 of TRUE: mmpLoadMarkDownFromResource(vMarkdownViewer, MARKDOWN_RESOURCES[vResourceIx].resource); end;
 
   case lbTabCaptions.itemIndex = pageControl.activePageIndex of FALSE: lbTabCaptions.itemIndex := aIx; end;

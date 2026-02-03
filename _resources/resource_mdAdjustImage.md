@@ -1,5 +1,6 @@
-[Wiki Page: Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
-[Help Page: Screenshots](Screenshots)
+Wiki Page: [Screenshots](https://minimalistmediaplayer.com/image/screenshots)<br />
+
+Help Page: [Screenshots](Screenshots)
 
 You can make adjustments to the displayed image or video picture/frame to alter<br />
 **brightness**, **contrast**, **gamma**, **rotation** and **saturation**,  and to **zoom** in or out

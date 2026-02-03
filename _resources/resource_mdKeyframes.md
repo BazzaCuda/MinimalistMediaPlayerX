@@ -1,9 +1,10 @@
-[Wiki Page: Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
-[Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
-[Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
-[Help Page: Main Editing Topic](Editing_Audio_&_Video)<br />
+Wiki Page: [Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
+Wiki Page: [Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
+Wiki Page: [4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
+
+Help Page: [Main Editing Topic](Editing_Audio_&_Video)<br />
 <br />
-[Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
+Config Dialog: [Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
 **MMP** provides excellent audio and video editing facilities<br />

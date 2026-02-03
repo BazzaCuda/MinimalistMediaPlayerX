@@ -1,6 +1,6 @@
-[Config Dialog: Playlist Filter](ConfigDialog:Playlist_Filter)<br />
-[Config Dialog: Next Folder on End](ConfigDialog:Playlist)<br />
-[Config Dialog: Next Folder on Empty](ConfigDialog:Playlist)<br />
+Config Dialog: [Playlist Filter](ConfigDialog:Playlist_Filter)<br />
+Config Dialog: [Next Folder on End](ConfigDialog:Playlist)<br />
+Config Dialog: [Next Folder on Empty](ConfigDialog:Playlist)<br />
 
 When you launch MMP by opening a media file from your File Explorer
 a playlist will be created containing that file and all the media files in the

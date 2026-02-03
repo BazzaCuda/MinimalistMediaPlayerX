@@ -1,11 +1,12 @@
-[Wiki Page: Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
-[Wiki Page: Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
-[Wiki Page: 4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
-[Help Page: Main Editing Topic](Editing_Audio_&_Video)<br />
-[Help Page: Keyframes](Keyframes)<br />
-[Help Page: Editing Troubleshooting](Editing_Troubleshooting)<br />
+Wiki Page: [Video Editing](https://minimalistmediaplayer.com/video/editing)<br />
+Wiki Page: [Video Editing Example](https://minimalistmediaplayer.com/video/editingexample)<br />
+Wiki Page: [4-Key Edits](https://minimalistmediaplayer.com/video/fourkeyedits)<br />
+
+Help Page: [Main Editing Topic](Editing_Audio_&_Video)<br />
+Help Page: [Keyframes](Keyframes)<br />
+Help Page: [Editing Troubleshooting](Editing_Troubleshooting)<br />
 <br />
-[Config Dialog: Keyframes](ConfigDialog:Keyframes)<br />
+Config Dialog: [Keyframes](ConfigDialog:Keyframes)<br />
 <br />
 
 **Editing Chapters**

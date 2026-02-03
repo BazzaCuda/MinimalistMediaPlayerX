@@ -1,5 +1,6 @@
-[Help Page: User-Defined Folders](User-Defined_Folders)<br />
-[Config Dialog: File Deletion](ConfigDialog:File_Deletion)<br />
+Help Page: [User-Defined Folders](User-Defined_Folders)<br />
+
+Config Dialog: [File Deletion](ConfigDialog:File_Deletion)<br />
 <br />
 With the **MMP** media library management facilities, you get a lot of control over what media files are called and where they reside
 

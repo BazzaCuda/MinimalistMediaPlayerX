@@ -1,7 +1,4 @@
-[Help Page: Aspect Ratio](Aspect_Ratio)<br />
-
-What can be said about the mouse that hasn't already been said?
-
+Help Page: [Aspect Ratio](Aspect_Ratio)<br />
 
 | Control | Action |
 | ------- | ------ |

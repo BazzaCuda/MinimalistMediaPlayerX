@@ -1,5 +1,4 @@
-<br />
-[Config Dialog: User-Defined Folders](ConfigDialog:User_Folders)<br />
+Config Dialog: [User-Defined Folders](ConfigDialog:User_Folders)<br />
 <br />
 
 **User-Defined Folders for Managing your Image Library**

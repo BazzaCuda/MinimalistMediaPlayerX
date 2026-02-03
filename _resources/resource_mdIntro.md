@@ -1,7 +1,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_To close this help panel, either hit **[Escape]** or use Ctrl-Shift-**[H]** again_
 <br />
 <br />
-[Help Page: Best Practice](Image_Browser)<br />
+Help Page: [Best Practice](Image_Browser)<br />
 <br />
 <br />
 The Ctrl-**[H]** Quick Help panels (available from the **Main Media Window** and the **Image & Thumbnail Browser**) give a compact summary of all the user-controls available in those windows
