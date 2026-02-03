@@ -1,7 +1,7 @@
 MMP: Minimalist Media Player
 =====================
 
-**NEWS: v6.0.0 Released!! See what's new in this major release!](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/63)
+**NEWS: v6.0.0 Released!!** [See what's new in this major release!](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/63)
 
 An all-in-one media player, image library manager (with built-in image & thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
