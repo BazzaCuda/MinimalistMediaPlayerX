@@ -1,4 +1,4 @@
-Wiki Page: [Captions](https://minimalistmediaplayer.com/video/captions)
+[Wiki Page: Captions](https://minimalistmediaplayer.com/video/captions)
 
 The on-screen displays in **MMP** are designed to be subtle and unobtrusive so as to give full focus to the media content
 

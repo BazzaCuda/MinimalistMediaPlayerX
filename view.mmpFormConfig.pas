@@ -284,8 +284,8 @@ begin
     populateListBox;
     loadConfig;
 
-    var  vTabCaption := aTabCaption;
-    case vTabCaption = '' of TRUE: vTabCaption := 'General'; end;
+    var  vTabCaption := trim(aTabCaption);
+    case lbTabCaptions.items.indexOf(vTabCaption) = -1 of TRUE: vTabCaption := 'General'; end; // safety check
 
     var vListIx             := lbTabCaptions.items.indexOf(vTabCaption);
     lbTabCaptions.itemIndex := vListIx;
