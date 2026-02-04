@@ -85,6 +85,7 @@ type
 
     function  copySourceFile:  boolean;
     function  exportEdits:     boolean;
+    function  exportEdits2:    boolean;
   end;
 
 function mmpNewExporter(const aMediaFilePath: string; const aMediaType: TMediaType): IExporter;
@@ -465,6 +466,17 @@ begin
 
   TAction<TVoid>.pick(result, mmpDelay).perform(500); // so we can see the final message
   FProgressForm := NIL;
+end;
+
+function TExporter.exportEdits2: boolean;
+begin
+
+  var vExportCoverArt := (FMediaType = mtAudio);
+
+  result := TAction<boolean>.startWith(TRUE)
+                   .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
+                   .andThen(TRUE, createCoverArt)
+                   .thenFinish;
 end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
