@@ -54,8 +54,10 @@ type
     FCancelled:     boolean;
     FProcessHandle: THandle;
 
-    FProgressForm:  IProgressForm;
-    FSegOneFN:      string;
+    FProgressForm:      IProgressForm;
+    FCreatedCoverArt:   boolean;
+    FReAttachCoverArt:  boolean;
+    FSegOneFN:          string;
   private
     function  concatSegments: boolean;
     function  createChaptersAndOrCoverArt(const bWriteChapters: boolean): boolean;
@@ -220,6 +222,8 @@ begin
 
   var cmdLine := EMPTY;
 
+  mmp.cmd(FCreatedCoverArt and NOT FReAttachCoverArt, procedure begin mmpDeleteThisFile(filePathCover, [], TRUE, TRUE, FALSE); end);
+
   case bWriteChapters of   TRUE: FProgressForm.subHeading := 'Creating Chapters';
                           FALSE: FProgressForm.subHeading := 'Attaching Cover Art'; end;
 
@@ -317,7 +321,8 @@ function TExporter.createCoverArt: boolean;
 // otherwise ffmpeg will create a video stream from it at the concat stage
 // and an exported audio file will become a video file
 begin
-  result := TRUE; // default to TRUE unless an FFmpeg process fails
+  result            := TRUE; // default to TRUE unless an FFmpeg process fails
+  FCreatedCoverArt  := FALSE;
 
   FProgressForm.subHeading := 'Extracting Cover Art';
 
@@ -327,6 +332,8 @@ begin
   log(cmdLine); log(EMPTY);
 
   result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+
+  FCreatedCoverArt := result;
 end;
 
 function TExporter.createFinalFile(const bWriteChapters: boolean): boolean;
@@ -354,7 +361,8 @@ function TExporter.createSegments(const bExportedCoverArt: boolean): boolean;
 begin
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
-  var cmdLine := EMPTY;
+  var cmdLine       := EMPTY;
+  FReAttachCoverArt := TRUE;
 
   var vSL := TStringList.create;
   try
@@ -373,6 +381,7 @@ begin
       for var vMediaStream in MI.mediaStreams do begin
         // exclude any cover art streams from the exported segments if we're going to be adding chapter metadata or concatenating multiple segments
         // otherwise FFmpeg will convert the cover art to a video stream during the concat stage
+        case NOT vMediaStream.selected and (vMediaStream.streamType = 'Image') of TRUE: FReAttachCoverArt := FALSE; end;
         case bExportedCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end; // ignore the cover art - it will be re-attached later
         case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d', [vMediaStream.Ix]); end;end;
 

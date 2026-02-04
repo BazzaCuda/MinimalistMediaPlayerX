@@ -1,6 +1,6 @@
 {   bazLib / bazAction
     Copyright (C) 2021-2099 Baz Cuda
-    https://github.com/BazzaCuda/
+    https://github.com/BazzaCuda/bazLib
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,18 +62,56 @@ type
   TSFuncStringBoolean       <TResult> = function(const aString: string; const aBoolean: boolean):                       TResult;           // static method - no class instance
   TAFuncStringBoolean       <TResult> = reference to function(const aString: string; const aBoolean: boolean):          TResult;           // anonymous method
 
+
+  TOProcNoParam              = procedure()                                                                      of object; // method of class instance
+  TSProcNoParam              = procedure()                                                                     ;           // static method - no class instance
+  TAProcNoParam              = reference to procedure()                                                        ;           // anonymous method
+
+  TOProcString               = procedure(const aString: string)                                                 of object; // method of class instance
+  TSProcString               = procedure(const aString: string)                                                ;           // static method - no class instance
+  TAProcString               = reference to procedure(const aString: string)                                   ;           // anonymous method
+
+  TOProcInteger              = procedure(const aInteger: integer)                                               of object; // method of class instance
+  TSProcInteger              = procedure(const aInteger: integer)                                              ;           // static method - no class instance
+  TAProcInteger              = reference to procedure(const aInteger: integer)                                 ;           // anonymous method
+
+  TOProcStringInteger        = procedure(const aString: string; const aInteger: integer)                        of object; // method of class instance
+  TSProcStringInteger        = procedure(const aString: string; const aInteger: integer)                       ;           // static method - no class instance
+  TAProcStringInteger        = reference to procedure(const aString: string; const aInteger: integer)          ;           // anonymous method
+
+  TOProcBoolean              = procedure(const aBoolean: boolean)                                               of object; // method of class instance
+  TSProcBoolean              = procedure(const aBoolean: boolean)                                              ;           // static method - no class instance
+  TAProcBoolean              = reference to procedure(const aBoolean: boolean)                                 ;           // anonymous method
+
+  TOProcWord                 = procedure(const aWORD: WORD)                                                     of object; // method of class instance
+  TSProcWord                 = procedure(const aWORD: WORD)                                                    ;           // static method - no class instance
+  TAProcWord                 = reference to procedure(const aWORD: WORD)                                       ;           // anonymous method
+
+  TOProcCardinal             = procedure(const aCardinal: cardinal)                                             of object; // method of class instance
+  TSProcCardinal             = procedure(const aCardinal: cardinal)                                            ;           // static method - no class instance
+  TAProcCardinal             = reference to procedure(const aCardinal: cardinal)                               ;           // anonymous method
+
+  TOProcStringString         = procedure(const aString1: string; const aString2: string)                        of object; // method of class instance
+  TSProcStringString         = procedure(const aString1: string; const aString2: string)                       ;           // static method - no class instance
+  TAProcStringString         = reference to procedure(const aString1: string; const aString2: string)          ;           // anonymous method
+
+  TOProcStringBoolean        = procedure(const aString: string; const aBoolean: boolean)                        of object; // method of class instance
+  TSProcStringBoolean        = procedure(const aString: string; const aBoolean: boolean)                       ;           // static method - no class instance
+  TAProcStringBoolean        = reference to procedure(const aString: string; const aBoolean: boolean)          ;           // anonymous method
+
+
   IAction<TResult> = interface
     function default(const aValue: TResult): IAction<TResult>; // the fallback value
 
-    function perform():                                                                    TResult; overload;
-    function perform(const aString: string):                                               TResult; overload;
-    function perform(const aInteger: integer):                                             TResult; overload;
-    function perform(const aString: string; const aInteger: integer):                      TResult; overload;
-    function perform(const aBoolean: boolean):                                             TResult; overload;
-    function perform(const aWORD: WORD):                                                   TResult; overload;
-    function perform(const aCardinal: cardinal):                                           TResult; overload;
-    function perform(const aString1: string; const aString2: string):                      TResult; overload;
-    function perform(const aString: string; const aBoolean: boolean):                      TResult; overload;
+    function perform(): TResult; overload;
+    function perform(const aString: string): TResult; overload;
+    function perform(const aInteger: integer): TResult; overload;
+    function perform(const aString: string; const aInteger: integer): TResult; overload;
+    function perform(const aBoolean: boolean): TResult; overload;
+    function perform(const aWORD: WORD): TResult; overload;
+    function perform(const aCardinal: cardinal): TResult; overload;
+    function perform(const aString1: string; const aString2: string): TResult; overload;
+    function perform(const aString: string; const aBoolean: boolean): TResult; overload;
 
     function getAssigned: boolean;
     property assigned:    boolean read getAssigned;
@@ -81,8 +119,8 @@ type
 
   TAction<TResult> = class(TInterfacedObject, IAction<TResult>)
   strict private
-    FFuncAssigned: boolean;
-    FDefault:      TResult; // initialised in constructor, used in perform
+    FCallAssigned: boolean;
+    FDefault:      TResult; // initialised by constructor, set by optional .default(), used in .perform()
 
     FOFuncNoParam:                      TOFuncNoParam                        <TResult>;
     FSFuncNoParam:                      TAFuncNoParam                        <TResult>;
@@ -163,51 +201,267 @@ type
     function getAssigned: boolean;
     function default(const aValue: TResult): IAction<TResult>;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncNoParam:            TOFuncNoParam            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncNoParam:            TSFuncNoParam            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncNoParam:            TAFuncNoParam            <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncNoParam<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncNoParam<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncNoParam<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncString:             TOFuncString             <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncString:             TSFuncString             <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncString:             TAFuncString             <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncNoParam<TResult>; const aFalseFunc: TOFuncNoParam<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncNoParam<TResult>; const aFalseFunc: TSFuncNoParam<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncNoParam<TResult>; const aFalseFunc: TAFuncNoParam<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncInteger:            TOFuncInteger            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncInteger:            TSFuncInteger            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncInteger:            TAFuncInteger            <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncString<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncStringInteger:      TOFuncStringInteger      <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringInteger:      TSFuncStringInteger      <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringInteger:      TAFuncStringInteger      <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncString<TResult>; const aFalseFunc: TOFuncString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncString<TResult>; const aFalseFunc: TSFuncString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncString<TResult>; const aFalseFunc: TAFuncString<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncBoolean:            TOFuncBoolean            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncBoolean:            TSFuncBoolean            <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncBoolean:            TAFuncBoolean            <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncInteger<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TOFuncWord               <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TSFuncWord               <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncWord:               TAFuncWord               <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncInteger<TResult>; const aFalseFunc: TOFuncInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncInteger<TResult>; const aFalseFunc: TSFuncInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncInteger<TResult>; const aFalseFunc: TAFuncInteger<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TOFuncCardinal           <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TSFuncCardinal           <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncCardinal:           TAFuncCardinal           <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringInteger<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TOFuncStringString       <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TSFuncStringString       <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringString:       TAFuncStringString       <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringInteger<TResult>; const aFalseFunc: TOFuncStringInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringInteger<TResult>; const aFalseFunc: TSFuncStringInteger<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringInteger<TResult>; const aFalseFunc: TAFuncStringInteger<TResult>): IAction<TResult>; overload;
 
-    class function pick(const aBoolean: boolean; const aTrueFuncStringBoolean:      TOFuncStringBoolean      <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringBoolean:      TSFuncStringBoolean      <TResult>):           IAction<TResult>; overload;
-    class function pick(const aBoolean: boolean; const aTrueFuncStringBoolean:      TAFuncStringBoolean      <TResult>):           IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncBoolean<TResult>): IAction<TResult>; overload;
 
-    function perform():                                                          TResult; overload;
-    function perform(const aString: string):                                     TResult; overload;
-    function perform(const aInteger: integer):                                   TResult; overload;
-    function perform(const aString: string; const aInteger: integer):            TResult; overload;
-    function perform(const aBoolean: boolean):                                   TResult; overload;
-    function perform(const aWORD: WORD):                                         TResult; overload;
-    function perform(const aCardinal: cardinal):                                 TResult; overload;
-    function perform(const aString1: string; const aString2: string):            TResult; overload;
-    function perform(const aString: string; const aBoolean: boolean):            TResult; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncBoolean<TResult>; const aFalseFunc: TOFuncBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncBoolean<TResult>; const aFalseFunc: TSFuncBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncBoolean<TResult>; const aFalseFunc: TAFuncBoolean<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncWord<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncWord<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncWord<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncWord<TResult>; const aFalseFunc: TOFuncWord<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncWord<TResult>; const aFalseFunc: TSFuncWord<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncWord<TResult>; const aFalseFunc: TAFuncWord<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncCardinal<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncCardinal<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncCardinal<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncCardinal<TResult>; const aFalseFunc: TOFuncCardinal<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncCardinal<TResult>; const aFalseFunc: TSFuncCardinal<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncCardinal<TResult>; const aFalseFunc: TAFuncCardinal<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringString<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringString<TResult>; const aFalseFunc: TOFuncStringString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringString<TResult>; const aFalseFunc: TSFuncStringString<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringString<TResult>; const aFalseFunc: TAFuncStringString<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>): IAction<TResult>; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringBoolean<TResult>; const aFalseFunc: TOFuncStringBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>; const aFalseFunc: TSFuncStringBoolean<TResult>): IAction<TResult>; overload;
+    class function pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>; const aFalseFunc: TAFuncStringBoolean<TResult>): IAction<TResult>; overload;
+
+    function perform(): TResult; overload;
+    function perform(const aString: string): TResult; overload;
+    function perform(const aInteger: integer): TResult; overload;
+    function perform(const aString: string; const aInteger: integer): TResult; overload;
+    function perform(const aBoolean: boolean): TResult; overload;
+    function perform(const aWORD: WORD): TResult; overload;
+    function perform(const aCardinal: cardinal): TResult; overload;
+    function perform(const aString1: string; const aString2: string): TResult; overload;
+    function perform(const aString: string; const aBoolean: boolean): TResult; overload;
+  end;
+
+  IAction = interface
+    procedure perform(); overload;
+    procedure perform(const aString: string); overload;
+    procedure perform(const aInteger: integer); overload;
+    procedure perform(const aString: string; const aInteger: integer); overload;
+    procedure perform(const aBoolean: boolean); overload;
+    procedure perform(const aWORD: WORD); overload;
+    procedure perform(const aCardinal: cardinal); overload;
+    procedure perform(const aString1: string; const aString2: string); overload;
+    procedure perform(const aString: string; const aBoolean: boolean); overload;
+
+    function getAssigned: boolean;
+    property assigned:    boolean read getAssigned;
+  end;
+
+  TAction = class(TInterfacedObject, IAction)
+  strict private
+    FCallAssigned: boolean;
+
+    FOProcNoParam:                      TOProcNoParam                        ;
+    FSProcNoParam:                      TAProcNoParam                        ;
+    FAProcNoParam:                      TAProcNoParam                        ;
+
+    FOProcString:                       TOProcString                         ;
+    FSProcString:                       TAProcString                         ;
+    FAProcString:                       TAProcString                         ;
+
+    FOProcInteger:                      TOProcInteger                        ;
+    FSProcInteger:                      TAProcInteger                        ;
+    FAProcInteger:                      TAProcInteger                        ;
+
+    FOProcStringInteger:                TOProcStringInteger                  ;
+    FSProcStringInteger:                TAProcStringInteger                  ;
+    FAProcStringInteger:                TAProcStringInteger                  ;
+
+    FOProcBoolean:                      TOProcBoolean                        ;
+    FSProcBoolean:                      TAProcBoolean                        ;
+    FAProcBoolean:                      TAProcBoolean                        ;
+
+    FOProcWord:                         TOProcWord                           ;
+    FSProcWord:                         TAProcWord                           ;
+    FAProcWord:                         TAProcWord                           ;
+
+    FOProcCardinal:                     TOProcCardinal                       ;
+    FSProcCardinal:                     TAProcCardinal                       ;
+    FAProcCardinal:                     TAProcCardinal                       ;
+
+    FOProcStringString:                 TOProcStringString                   ;
+    FSProcStringString:                 TAProcStringString                   ;
+    FAProcStringString:                 TAProcStringString                   ;
+
+    FOProcStringBoolean:                TOProcStringBoolean                  ;
+    FSProcStringBoolean:                TAProcStringBoolean                  ;
+    FAProcStringBoolean:                TAProcStringBoolean                  ;
+
+    constructor Create;                           overload;
+    constructor Create(const aProcNIL: pointer);  overload;
+
+    constructor Create(const aProcNoParam:           TOProcNoParam             );     overload;
+    constructor Create(const aProcNoParam:           TSProcNoParam             );     overload;
+    constructor Create(const aProcNoParam:           TAProcNoParam             );     overload;
+
+    constructor Create(const aProcString:            TOProcString              );     overload;
+    constructor Create(const aProcString:            TSProcString              );     overload;
+    constructor Create(const aProcString:            TAProcString              );     overload;
+
+    constructor Create(const aProcInteger:           TOProcInteger             );     overload;
+    constructor Create(const aProcInteger:           TSProcInteger             );     overload;
+    constructor Create(const aProcInteger:           TAProcInteger             );     overload;
+
+    constructor Create(const aProcStringInteger:     TOProcStringInteger       );     overload;
+    constructor Create(const aProcStringInteger:     TSProcStringInteger       );     overload;
+    constructor Create(const aProcStringInteger:     TAProcStringInteger       );     overload;
+
+    constructor Create(const aProcBoolean:           TOProcBoolean             );     overload;
+    constructor Create(const aProcBoolean:           TSProcBoolean             );     overload;
+    constructor Create(const aProcBoolean:           TAProcBoolean             );     overload;
+
+    constructor Create(const aProcWord:              TOProcWord                );     overload;
+    constructor Create(const aProcWord:              TSProcWord                );     overload;
+    constructor Create(const aProcWord:              TAProcWord                );     overload;
+
+    constructor Create(const aProcCardinal:          TOProcCardinal            );     overload;
+    constructor Create(const aProcCardinal:          TSProcCardinal            );     overload;
+    constructor Create(const aProcCardinal:          TAProcCardinal            );     overload;
+
+    constructor Create(const aProcStringString:      TOProcStringString        );     overload;
+    constructor Create(const aProcStringString:      TSProcStringString        );     overload;
+    constructor Create(const aProcStringString:      TAProcStringString        );     overload;
+
+    constructor Create(const aProcStringBoolean:     TOProcStringBoolean       );     overload;
+    constructor Create(const aProcStringBoolean:     TSProcStringBoolean       );     overload;
+    constructor Create(const aProcStringBoolean:     TAProcStringBoolean       );     overload;
+
+  public
+    function getAssigned: boolean;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcNoParam): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcNoParam): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcNoParam): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcNoParam; const aFalseProc: TOProcNoParam): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcNoParam; const aFalseProc: TSProcNoParam): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcNoParam; const aFalseProc: TAProcNoParam): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcString): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcString; const aFalseProc: TOProcString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcString; const aFalseProc: TSProcString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcString; const aFalseProc: TAProcString): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcInteger): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcInteger; const aFalseProc: TOProcInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcInteger; const aFalseProc: TSProcInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcInteger; const aFalseProc: TAProcInteger): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringInteger): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringInteger; const aFalseProc: TOProcStringInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringInteger; const aFalseProc: TSProcStringInteger): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringInteger; const aFalseProc: TAProcStringInteger): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcBoolean): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcBoolean; const aFalseProc: TOProcBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcBoolean; const aFalseProc: TSProcBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcBoolean; const aFalseProc: TAProcBoolean): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcWord): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcWord): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcWord): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcWord; const aFalseProc: TOProcWord): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcWord; const aFalseProc: TSProcWord): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcWord; const aFalseProc: TAProcWord): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcCardinal): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcCardinal): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcCardinal): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcCardinal; const aFalseProc: TOProcCardinal): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcCardinal; const aFalseProc: TSProcCardinal): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcCardinal; const aFalseProc: TAProcCardinal): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringString): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringString; const aFalseProc: TOProcStringString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringString; const aFalseProc: TSProcStringString): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringString; const aFalseProc: TAProcStringString): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringBoolean): IAction; overload;
+
+    class function pick(const aBoolean: boolean; const aTrueProc: TOProcStringBoolean; const aFalseProc: TOProcStringBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TSProcStringBoolean; const aFalseProc: TSProcStringBoolean): IAction; overload;
+    class function pick(const aBoolean: boolean; const aTrueProc: TAProcStringBoolean; const aFalseProc: TAProcStringBoolean): IAction; overload;
+
+    procedure perform(); overload;
+    procedure perform(const aString: string); overload;
+    procedure perform(const aInteger: integer); overload;
+    procedure perform(const aString: string; const aInteger: integer); overload;
+    procedure perform(const aBoolean: boolean); overload;
+    procedure perform(const aWORD: WORD); overload;
+    procedure perform(const aCardinal: cardinal); overload;
+    procedure perform(const aString1: string; const aString2: string); overload;
+    procedure perform(const aString: string; const aBoolean: boolean); overload;
   end;
 
 implementation
@@ -225,390 +479,605 @@ end;
 constructor TAction<TResult>.Create(const aFuncNIL: pointer);
 begin
   case aFuncNIL = NIL of   TRUE: EXIT;
-                          FALSE: raise exception.Create('Functionless constructor must be called with NIL'); end;
+                          FALSE: raise exception.Create('Methodless constructor must be called with NIL'); end;
 end;
-
 constructor TAction<TResult>.Create(const aFuncNoParam: TOFuncNoParam<TResult>);
 begin
   FOFuncNoParam        := aFuncNoParam;
-  FFuncAssigned        := assigned(aFuncNoParam);
+  FCallAssigned        := assigned(aFuncNoParam);
 end;
 
 constructor TAction<TResult>.Create(const aFuncNoParam: TSFuncNoParam<TResult>);
 begin
   FSFuncNoParam        := aFuncNoParam;
-  FFuncAssigned        := assigned(aFuncNoParam);
+  FCallAssigned        := assigned(aFuncNoParam);
 end;
 
 constructor TAction<TResult>.Create(const aFuncNoParam: TAFuncNoParam<TResult>);
 begin
   FAFuncNoParam        := aFuncNoParam;
-  FFuncAssigned        := assigned(aFuncNoParam);
+  FCallAssigned        := assigned(aFuncNoParam);
 end;
 
 constructor TAction<TResult>.Create(const aFuncString: TOFuncString<TResult>);
 begin
   FOFuncString         := aFuncString;
-  FFuncAssigned        := assigned(aFuncString);
+  FCallAssigned        := assigned(aFuncString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncString: TSFuncString<TResult>);
 begin
   FSFuncString         := aFuncString;
-  FFuncAssigned        := assigned(aFuncString);
+  FCallAssigned        := assigned(aFuncString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncString: TAFuncString<TResult>);
 begin
   FAFuncString         := aFuncString;
-  FFuncAssigned        := assigned(aFuncString);
+  FCallAssigned        := assigned(aFuncString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncInteger: TOFuncInteger<TResult>);
 begin
   FOFuncInteger        := aFuncInteger;
-  FFuncAssigned        := assigned(aFuncInteger);
+  FCallAssigned        := assigned(aFuncInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncInteger: TSFuncInteger<TResult>);
 begin
   FSFuncInteger        := aFuncInteger;
-  FFuncAssigned        := assigned(aFuncInteger);
+  FCallAssigned        := assigned(aFuncInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncInteger: TAFuncInteger<TResult>);
 begin
   FAFuncInteger        := aFuncInteger;
-  FFuncAssigned        := assigned(aFuncInteger);
+  FCallAssigned        := assigned(aFuncInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringInteger: TOFuncStringInteger<TResult>);
 begin
   FOFuncStringInteger  := aFuncStringInteger;
-  FFuncAssigned        := assigned(aFuncStringInteger);
+  FCallAssigned        := assigned(aFuncStringInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringInteger: TSFuncStringInteger<TResult>);
 begin
   FSFuncStringInteger  := aFuncStringInteger;
-  FFuncAssigned        := assigned(aFuncStringInteger);
+  FCallAssigned        := assigned(aFuncStringInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringInteger: TAFuncStringInteger<TResult>);
 begin
   FAFuncStringInteger  := aFuncStringInteger;
-  FFuncAssigned        := assigned(aFuncStringInteger);
+  FCallAssigned        := assigned(aFuncStringInteger);
 end;
 
 constructor TAction<TResult>.Create(const aFuncBoolean: TOFuncBoolean<TResult>);
 begin
   FOFuncBoolean        := aFuncBoolean;
-  FFuncAssigned        := assigned(aFuncBoolean);
+  FCallAssigned        := assigned(aFuncBoolean);
 end;
 
 constructor TAction<TResult>.Create(const aFuncBoolean: TSFuncBoolean<TResult>);
 begin
   FSFuncBoolean        := aFuncBoolean;
-  FFuncAssigned        := assigned(aFuncBoolean);
+  FCallAssigned        := assigned(aFuncBoolean);
 end;
 
 constructor TAction<TResult>.Create(const aFuncBoolean: TAFuncBoolean<TResult>);
 begin
   FAFuncBoolean        := aFuncBoolean;
-  FFuncAssigned        := assigned(aFuncBoolean);
+  FCallAssigned        := assigned(aFuncBoolean);
 end;
 
 constructor TAction<TResult>.Create(const aFuncWord: TOFuncWord<TResult>);
 begin
   FOFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
+  FCallAssigned        := assigned(aFuncWord);
 end;
 
 constructor TAction<TResult>.Create(const aFuncWord: TSFuncWord<TResult>);
 begin
   FSFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
+  FCallAssigned        := assigned(aFuncWord);
 end;
 
 constructor TAction<TResult>.Create(const aFuncWord: TAFuncWord<TResult>);
 begin
   FAFuncWord           := aFuncWord;
-  FFuncAssigned        := assigned(aFuncWord);
+  FCallAssigned        := assigned(aFuncWord);
 end;
 
 constructor TAction<TResult>.Create(const aFuncCardinal: TOFuncCardinal<TResult>);
 begin
   FOFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
+  FCallAssigned        := assigned(aFuncCardinal);
 end;
 
 constructor TAction<TResult>.Create(const aFuncCardinal: TSFuncCardinal<TResult>);
 begin
   FSFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
+  FCallAssigned        := assigned(aFuncCardinal);
 end;
 
 constructor TAction<TResult>.Create(const aFuncCardinal: TAFuncCardinal<TResult>);
 begin
   FAFuncCardinal       := aFuncCardinal;
-  FFuncAssigned        := assigned(aFuncCardinal);
+  FCallAssigned        := assigned(aFuncCardinal);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringString: TOFuncStringString<TResult>);
 begin
   FOFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
+  FCallAssigned        := assigned(aFuncStringString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringString: TSFuncStringString<TResult>);
 begin
   FSFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
+  FCallAssigned        := assigned(aFuncStringString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringString: TAFuncStringString<TResult>);
 begin
   FAFuncStringString   := aFuncStringString;
-  FFuncAssigned        := assigned(aFuncStringString);
+  FCallAssigned        := assigned(aFuncStringString);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringBoolean: TOFuncStringBoolean<TResult>);
 begin
   FOFuncStringBoolean  := aFuncStringBoolean;
-  FFuncAssigned        := assigned(aFuncStringBoolean);
+  FCallAssigned        := assigned(aFuncStringBoolean);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringBoolean: TSFuncStringBoolean<TResult>);
 begin
   FSFuncStringBoolean  := aFuncStringBoolean;
-  FFuncAssigned        := assigned(aFuncStringBoolean);
+  FCallAssigned        := assigned(aFuncStringBoolean);
 end;
 
 constructor TAction<TResult>.Create(const aFuncStringBoolean: TAFuncStringBoolean<TResult>);
 begin
   FAFuncStringBoolean  := aFuncStringBoolean;
-  FFuncAssigned        := assigned(aFuncStringBoolean);
+  FCallAssigned        := assigned(aFuncStringBoolean);
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncNoParam: TOFuncNoParam<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncNoParam<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncNoParam);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncNoParam: TSFuncNoParam<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncNoParam<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncNoParam);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncNoParam: TAFuncNoParam<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncNoParam<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncNoParam);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncString: TOFuncString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncString: TSFuncString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncString: TAFuncString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncInteger: TOFuncInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncInteger: TSFuncInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncInteger: TAFuncInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringInteger: TOFuncStringInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringInteger: TSFuncStringInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringInteger: TAFuncStringInteger<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringInteger<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringInteger);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncBoolean: TOFuncBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncBoolean: TSFuncBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncBoolean: TAFuncBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TOFuncWord<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncWord<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TSFuncWord<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncWord<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncWord: TAFuncWord<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncWord<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncWord);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TOFuncCardinal<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncCardinal<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TSFuncCardinal<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncCardinal<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncCardinal: TAFuncCardinal<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncCardinal<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncCardinal);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TOFuncStringString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TSFuncStringString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringString: TAFuncStringString<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringString<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringString);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringBoolean: TOFuncStringBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringBoolean: TSFuncStringBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
   end;
 end;
 
-class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFuncStringBoolean: TAFuncStringBoolean<TResult>): IAction<TResult>;
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>): IAction<TResult>;
 begin
   case aBoolean of
-     TRUE:  result := TAction<TResult>.Create(aTrueFuncStringBoolean);
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
     FALSE:  result := TAction<TResult>.Create(NIL);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncNoParam<TResult>; const aFalseFunc: TOFuncNoParam<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncNoParam<TResult>; const aFalseFunc: TSFuncNoParam<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncNoParam<TResult>; const aFalseFunc: TAFuncNoParam<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncString<TResult>; const aFalseFunc: TOFuncString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncString<TResult>; const aFalseFunc: TSFuncString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncString<TResult>; const aFalseFunc: TAFuncString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncInteger<TResult>; const aFalseFunc: TOFuncInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncInteger<TResult>; const aFalseFunc: TSFuncInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncInteger<TResult>; const aFalseFunc: TAFuncInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringInteger<TResult>; const aFalseFunc: TOFuncStringInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringInteger<TResult>; const aFalseFunc: TSFuncStringInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringInteger<TResult>; const aFalseFunc: TAFuncStringInteger<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncBoolean<TResult>; const aFalseFunc: TOFuncBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncBoolean<TResult>; const aFalseFunc: TSFuncBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncBoolean<TResult>; const aFalseFunc: TAFuncBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncWord<TResult>; const aFalseFunc: TOFuncWord<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncWord<TResult>; const aFalseFunc: TSFuncWord<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncWord<TResult>; const aFalseFunc: TAFuncWord<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncCardinal<TResult>; const aFalseFunc: TOFuncCardinal<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncCardinal<TResult>; const aFalseFunc: TSFuncCardinal<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncCardinal<TResult>; const aFalseFunc: TAFuncCardinal<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringString<TResult>; const aFalseFunc: TOFuncStringString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringString<TResult>; const aFalseFunc: TSFuncStringString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringString<TResult>; const aFalseFunc: TAFuncStringString<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TOFuncStringBoolean<TResult>; const aFalseFunc: TOFuncStringBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>; const aFalseFunc: TSFuncStringBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
+  end;
+end;
+
+class function TAction<TResult>.pick(const aBoolean: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>; const aFalseFunc: TAFuncStringBoolean<TResult>): IAction<TResult>;
+begin
+  case aBoolean of
+     TRUE:  result := TAction<TResult>.Create(aTrueFunc);
+    FALSE:  result := TAction<TResult>.Create(aFalseFunc);
   end;
 end;
 
 function TAction<TResult>.getAssigned: boolean;
 begin
-  result := FFuncAssigned;
+  result := FCallAssigned;
 end;
 
 function TAction<TResult>.default(const aValue: TResult): IAction<TResult>;
@@ -687,6 +1156,681 @@ begin
   case assigned(FOFuncStringBoolean) of TRUE: EXIT(FOFuncStringBoolean(aString, aBoolean)); end;
   case assigned(FSFuncStringBoolean) of TRUE: EXIT(FSFuncStringBoolean(aString, aBoolean)); end;
   case assigned(FAFuncStringBoolean) of TRUE: EXIT(FAFuncStringBoolean(aString, aBoolean)); end;
+end;
+
+
+{ TAction }
+
+constructor TAction.Create;
+begin
+  raise exception.create('Don''t call TAction.create');
+end;
+
+constructor TAction.Create(const aProcNIL: pointer);
+begin
+  case aProcNIL = NIL of   TRUE: EXIT;
+                          FALSE: raise exception.Create('Methodless constructor must be called with NIL'); end;
+end;
+constructor TAction.Create(const aProcNoParam: TOProcNoParam);
+begin
+  FOProcNoParam        := aProcNoParam;
+  FCallAssigned        := assigned(aProcNoParam);
+end;
+
+constructor TAction.Create(const aProcNoParam: TSProcNoParam);
+begin
+  FSProcNoParam        := aProcNoParam;
+  FCallAssigned        := assigned(aProcNoParam);
+end;
+
+constructor TAction.Create(const aProcNoParam: TAProcNoParam);
+begin
+  FAProcNoParam        := aProcNoParam;
+  FCallAssigned        := assigned(aProcNoParam);
+end;
+
+constructor TAction.Create(const aProcString: TOProcString);
+begin
+  FOProcString         := aProcString;
+  FCallAssigned        := assigned(aProcString);
+end;
+
+constructor TAction.Create(const aProcString: TSProcString);
+begin
+  FSProcString         := aProcString;
+  FCallAssigned        := assigned(aProcString);
+end;
+
+constructor TAction.Create(const aProcString: TAProcString);
+begin
+  FAProcString         := aProcString;
+  FCallAssigned        := assigned(aProcString);
+end;
+
+constructor TAction.Create(const aProcInteger: TOProcInteger);
+begin
+  FOProcInteger        := aProcInteger;
+  FCallAssigned        := assigned(aProcInteger);
+end;
+
+constructor TAction.Create(const aProcInteger: TSProcInteger);
+begin
+  FSProcInteger        := aProcInteger;
+  FCallAssigned        := assigned(aProcInteger);
+end;
+
+constructor TAction.Create(const aProcInteger: TAProcInteger);
+begin
+  FAProcInteger        := aProcInteger;
+  FCallAssigned        := assigned(aProcInteger);
+end;
+
+constructor TAction.Create(const aProcStringInteger: TOProcStringInteger);
+begin
+  FOProcStringInteger  := aProcStringInteger;
+  FCallAssigned        := assigned(aProcStringInteger);
+end;
+
+constructor TAction.Create(const aProcStringInteger: TSProcStringInteger);
+begin
+  FSProcStringInteger  := aProcStringInteger;
+  FCallAssigned        := assigned(aProcStringInteger);
+end;
+
+constructor TAction.Create(const aProcStringInteger: TAProcStringInteger);
+begin
+  FAProcStringInteger  := aProcStringInteger;
+  FCallAssigned        := assigned(aProcStringInteger);
+end;
+
+constructor TAction.Create(const aProcBoolean: TOProcBoolean);
+begin
+  FOProcBoolean        := aProcBoolean;
+  FCallAssigned        := assigned(aProcBoolean);
+end;
+
+constructor TAction.Create(const aProcBoolean: TSProcBoolean);
+begin
+  FSProcBoolean        := aProcBoolean;
+  FCallAssigned        := assigned(aProcBoolean);
+end;
+
+constructor TAction.Create(const aProcBoolean: TAProcBoolean);
+begin
+  FAProcBoolean        := aProcBoolean;
+  FCallAssigned        := assigned(aProcBoolean);
+end;
+
+constructor TAction.Create(const aProcWord: TOProcWord);
+begin
+  FOProcWord           := aProcWord;
+  FCallAssigned        := assigned(aProcWord);
+end;
+
+constructor TAction.Create(const aProcWord: TSProcWord);
+begin
+  FSProcWord           := aProcWord;
+  FCallAssigned        := assigned(aProcWord);
+end;
+
+constructor TAction.Create(const aProcWord: TAProcWord);
+begin
+  FAProcWord           := aProcWord;
+  FCallAssigned        := assigned(aProcWord);
+end;
+
+constructor TAction.Create(const aProcCardinal: TOProcCardinal);
+begin
+  FOProcCardinal       := aProcCardinal;
+  FCallAssigned        := assigned(aProcCardinal);
+end;
+
+constructor TAction.Create(const aProcCardinal: TSProcCardinal);
+begin
+  FSProcCardinal       := aProcCardinal;
+  FCallAssigned        := assigned(aProcCardinal);
+end;
+
+constructor TAction.Create(const aProcCardinal: TAProcCardinal);
+begin
+  FAProcCardinal       := aProcCardinal;
+  FCallAssigned        := assigned(aProcCardinal);
+end;
+
+constructor TAction.Create(const aProcStringString: TOProcStringString);
+begin
+  FOProcStringString   := aProcStringString;
+  FCallAssigned        := assigned(aProcStringString);
+end;
+
+constructor TAction.Create(const aProcStringString: TSProcStringString);
+begin
+  FSProcStringString   := aProcStringString;
+  FCallAssigned        := assigned(aProcStringString);
+end;
+
+constructor TAction.Create(const aProcStringString: TAProcStringString);
+begin
+  FAProcStringString   := aProcStringString;
+  FCallAssigned        := assigned(aProcStringString);
+end;
+
+constructor TAction.Create(const aProcStringBoolean: TOProcStringBoolean);
+begin
+  FOProcStringBoolean  := aProcStringBoolean;
+  FCallAssigned        := assigned(aProcStringBoolean);
+end;
+
+constructor TAction.Create(const aProcStringBoolean: TSProcStringBoolean);
+begin
+  FSProcStringBoolean  := aProcStringBoolean;
+  FCallAssigned        := assigned(aProcStringBoolean);
+end;
+
+constructor TAction.Create(const aProcStringBoolean: TAProcStringBoolean);
+begin
+  FAProcStringBoolean  := aProcStringBoolean;
+  FCallAssigned        := assigned(aProcStringBoolean);
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(NIL);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcNoParam; const aFalseProc: TOProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcNoParam; const aFalseProc: TSProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcNoParam; const aFalseProc: TAProcNoParam): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcString; const aFalseProc: TOProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcString; const aFalseProc: TSProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcString; const aFalseProc: TAProcString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcInteger; const aFalseProc: TOProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcInteger; const aFalseProc: TSProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcInteger; const aFalseProc: TAProcInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringInteger; const aFalseProc: TOProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringInteger; const aFalseProc: TSProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringInteger; const aFalseProc: TAProcStringInteger): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcBoolean; const aFalseProc: TOProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcBoolean; const aFalseProc: TSProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcBoolean; const aFalseProc: TAProcBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcWord; const aFalseProc: TOProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcWord; const aFalseProc: TSProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcWord; const aFalseProc: TAProcWord): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcCardinal; const aFalseProc: TOProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcCardinal; const aFalseProc: TSProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcCardinal; const aFalseProc: TAProcCardinal): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringString; const aFalseProc: TOProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringString; const aFalseProc: TSProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringString; const aFalseProc: TAProcStringString): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TOProcStringBoolean; const aFalseProc: TOProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TSProcStringBoolean; const aFalseProc: TSProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+class function TAction.pick(const aBoolean: boolean; const aTrueProc: TAProcStringBoolean; const aFalseProc: TAProcStringBoolean): IAction;
+begin
+  case aBoolean of
+     TRUE:  result := TAction.Create(aTrueProc);
+    FALSE:  result := TAction.Create(aFalseProc);
+  end;
+end;
+
+function TAction.getAssigned: boolean;
+begin
+  result := FCallAssigned;
+end;
+
+procedure TAction.perform();
+begin
+  case assigned(FOProcNoParam) of TRUE: FOProcNoParam(); end;
+  case assigned(FSProcNoParam) of TRUE: FSProcNoParam(); end;
+  case assigned(FAProcNoParam) of TRUE: FAProcNoParam(); end;
+end;
+
+procedure TAction.perform(const aString: string);
+begin
+  case assigned(FOProcString) of TRUE: FOProcString(aString); end;
+  case assigned(FSProcString) of TRUE: FSProcString(aString); end;
+  case assigned(FAProcString) of TRUE: FAProcString(aString); end;
+end;
+
+procedure TAction.perform(const aInteger: integer);
+begin
+  case assigned(FOProcInteger) of TRUE: FOProcInteger(aInteger); end;
+  case assigned(FSProcInteger) of TRUE: FSProcInteger(aInteger); end;
+  case assigned(FAProcInteger) of TRUE: FAProcInteger(aInteger); end;
+end;
+
+procedure TAction.perform(const aString: string; const aInteger: integer);
+begin
+  case assigned(FOProcStringInteger) of TRUE: FOProcStringInteger(aString, aInteger); end;
+  case assigned(FSProcStringInteger) of TRUE: FSProcStringInteger(aString, aInteger); end;
+  case assigned(FAProcStringInteger) of TRUE: FAProcStringInteger(aString, aInteger); end;
+end;
+
+procedure TAction.perform(const aBoolean: boolean);
+begin
+  case assigned(FOProcBoolean) of TRUE: FOProcBoolean(aBoolean); end;
+  case assigned(FSProcBoolean) of TRUE: FSProcBoolean(aBoolean); end;
+  case assigned(FAProcBoolean) of TRUE: FAProcBoolean(aBoolean); end;
+end;
+
+procedure TAction.perform(const aWORD: WORD);
+begin
+  case assigned(FOProcWord) of TRUE: FOProcWord(aWORD); end;
+  case assigned(FSProcWord) of TRUE: FSProcWord(aWORD); end;
+  case assigned(FAProcWord) of TRUE: FAProcWord(aWORD); end;
+end;
+
+procedure TAction.perform(const aCardinal: cardinal);
+begin
+  case assigned(FOProcCardinal) of TRUE: FOProcCardinal(aCardinal); end;
+  case assigned(FSProcCardinal) of TRUE: FSProcCardinal(aCardinal); end;
+  case assigned(FAProcCardinal) of TRUE: FAProcCardinal(aCardinal); end;
+end;
+
+procedure TAction.perform(const aString1: string; const aString2: string);
+begin
+  case assigned(FOProcStringString) of TRUE: FOProcStringString(aString1, aString2); end;
+  case assigned(FSProcStringString) of TRUE: FSProcStringString(aString1, aString2); end;
+  case assigned(FAProcStringString) of TRUE: FAProcStringString(aString1, aString2); end;
+end;
+
+procedure TAction.perform(const aString: string; const aBoolean: boolean);
+begin
+  case assigned(FOProcStringBoolean) of TRUE: FOProcStringBoolean(aString, aBoolean); end;
+  case assigned(FSProcStringBoolean) of TRUE: FSProcStringBoolean(aString, aBoolean); end;
+  case assigned(FAProcStringBoolean) of TRUE: FAProcStringBoolean(aString, aBoolean); end;
 end;
 
 end.

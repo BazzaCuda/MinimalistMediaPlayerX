@@ -73,7 +73,7 @@ implementation
 uses
   system.math, system.sysUtils,
   bazCmd,
-  mmpConsts,
+  mmpAction, mmpConsts,
   _debugWindow;
 
 const
@@ -83,7 +83,10 @@ const
 
 procedure TALProgressBar.CMHintShow(var message: TCMHintShow); // BAZ
 begin
-  case assigned(FOnHintShow) of TRUE: FOnHintShow(message); end;
+  var vMessage := message;
+  mmp.cmd(assigned(FOnHintShow), procedure begin FOnHintShow(vMessage); end);
+//  case assigned(FOnHintShow) of TRUE: FOnHintShow(message); end;
+  message := vMessage;
 end;
 
 constructor TALProgressBar.Create(AOwner: TComponent);
@@ -107,7 +110,7 @@ end;
 
 destructor TALProgressBar.Destroy;
 begin
-  case FKeyFrames = NIL of FALSE: FKeyFrames.free; end;
+  mmp.cmd(FKeyFrames <> NIL, procedure begin FKeyFrames.free; end);
   inherited;
 end;
 
@@ -125,8 +128,6 @@ begin
   canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
   case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
-
-//  var vPosition := mmp.cmd(evMPReqPrecisePos).double;
 
   var vBarLength := mmp.use<integer>(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
@@ -162,21 +163,21 @@ end;
 
 procedure TALProgressBar.setBackgroundColor(const aValue: TColor);
 begin
-  case FBackgroundColor = aValue of FALSE:  begin
-                                              FBackgroundColor := aValue;
-                                              invalidate; end;end;
+  mmp.cmd(FBackgroundColor <> aValue, procedure begin
+                                                 FBackgroundColor := aValue;
+                                                 invalidate; end);
 end;
 
 procedure TALProgressBar.setPosition(const aValue: integer);
 begin
-  case FPosition = aValue of FALSE: begin
-                                      FPosition := aValue;
-                                      invalidate; end;end;
+  mmp.cmd(FPosition <> aValue, procedure  begin
+                                            FPosition := aValue;
+                                            invalidate; end);
 end;
 
 procedure TALProgressBar.setMax(const aValue: Integer);
 begin
-  case aValue > 0 of TRUE: FMax := aValue; end;
+  mmp.cmd(aValue > 0, procedure begin FMax := aValue; end);
   invalidate;
 end;
 
