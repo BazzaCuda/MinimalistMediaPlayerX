@@ -78,32 +78,5 @@ object HelpForm: THelpForm
         ExplicitWidth = 561
       end
     end
-    object md1: TMarkdownViewer
-      Left = 40
-      Top = 168
-      PrintMarginBottom = 2.000000000000000000
-      PrintMarginLeft = 2.000000000000000000
-      PrintMarginRight = 2.000000000000000000
-      PrintMarginTop = 2.000000000000000000
-      TabOrder = 1
-    end
-    object md2: TMarkdownViewer
-      Left = 232
-      Top = 168
-      PrintMarginBottom = 2.000000000000000000
-      PrintMarginLeft = 2.000000000000000000
-      PrintMarginRight = 2.000000000000000000
-      PrintMarginTop = 2.000000000000000000
-      TabOrder = 2
-    end
-    object md3: TMarkdownViewer
-      Left = 424
-      Top = 168
-      PrintMarginBottom = 2.000000000000000000
-      PrintMarginLeft = 2.000000000000000000
-      PrintMarginRight = 2.000000000000000000
-      PrintMarginTop = 2.000000000000000000
-      TabOrder = 3
-    end
   end
 end

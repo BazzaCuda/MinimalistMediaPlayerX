@@ -45,9 +45,6 @@ type
     buttonPanel:  TPanel;
     shiftLabel:   TLabel;
     helpLabel:    TLabel;
-    md1:          TMarkdownViewer;
-    md2:          TMarkdownViewer;
-    md3:          TMarkdownViewer;
     procedure   FormResize(Sender: TObject);
   protected
     constructor Create(const aHeight: integer; const aHelpType: THelpType); reintroduce;
@@ -98,6 +95,14 @@ end;
 constructor THelpForm.Create(const aHeight: integer; const aHelpType: THelpType);
 begin
   inherited Create(NIL);
+
+  var md1 := TMarkdownViewer.create(backPanel);
+  var md2 := TMarkdownViewer.create(backPanel);
+  var md3 := TMarkdownViewer.create(backPanel);
+
+  md1.parent := backPanel;
+  md2.parent := backPanel;
+  md3.parent := backPanel;
 
   mmpInitMarkDownViewer(md1);
   mmpInitMarkDownViewer(md2);
