@@ -475,7 +475,7 @@ begin
 
   result := TAction<boolean>.startWith(TRUE)
                    .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
-                   .andThen(TRUE, createCoverArt)
+                   .aside(TRUE, createCoverArt)
                    .thenFinish;
 end;
 
