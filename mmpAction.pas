@@ -32,6 +32,12 @@ type
   TAction<TResult> = class(bazAction.TAction<TResult>, bazAction.IAction<TResult>)
   end;
 
+  IAction = interface(bazAction.IAction)
+  end;
+
+  TAction = class(bazAction.TAction, bazAction.IAction)
+  end;
+
 implementation
 
 end.

@@ -127,12 +127,12 @@ begin
   canvas.brush.color := FBackgroundColor;
   canvas.fillRect(rect(0, 0, SELF.width, SELF.height));
 
-  case FMax = 0 of TRUE: EXIT; end; // prevent division by zero
+  // prevent division by zero
+  TAction.pick(FMax <>  0, procedure  begin
+                                        var vBarLength := mmp.use<integer>(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
 
-  var vBarLength := mmp.use<integer>(FPosition > 0, ceil((FPosition / FMax) * SELF.width), 0);
-
-  canvas.brush.color := FBarColor;
-  canvas.fillRect(rect(0, 0, vBarLength, BAR_HEIGHT));
+                                        canvas.brush.color := FBarColor;
+                                        canvas.fillRect(rect(0, 0, vBarLength, BAR_HEIGHT)); end).perform;
 end;
 
 //procedure TALProgressBar.plotKeyFrames;
