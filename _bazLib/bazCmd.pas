@@ -182,7 +182,6 @@ begin
   result := cmd(aBoolean, trueFunc, NIL, falseBoolean);
 end;
 
-
 //===== TSFuncs which return a string result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string;
 var doFunc: array[boolean] of TSFunc;
