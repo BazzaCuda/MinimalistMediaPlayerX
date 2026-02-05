@@ -195,7 +195,7 @@ type
     function aside(const aGuardClause: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>; const aString: string; const aBoolean: boolean): IAction<TResult>; overload;
     function aside(const aGuardClause: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>; const aString: string; const aBoolean: boolean): IAction<TResult>; overload;
 
-    function thenFinish: boolean;
+    function thenStop: boolean;
   end;
 
   TAction<TResult> = class(TInterfacedObject, IAction<TResult>)
@@ -443,7 +443,7 @@ type
     function aside(const aGuardClause: boolean; const aTrueFunc: TSFuncStringBoolean<TResult>; const aString: string; const aBoolean: boolean): IAction<TResult>; overload;
     function aside(const aGuardClause: boolean; const aTrueFunc: TAFuncStringBoolean<TResult>; const aString: string; const aBoolean: boolean): IAction<TResult>; overload;
 
-    function thenFinish: boolean;
+    function thenStop: boolean;
 
     property success:        boolean read getSuccess         write setSuccess;
     property methodAssigned: boolean read getMethodAssigned  write setMethodAssigned;
@@ -1828,7 +1828,7 @@ begin
   result.success     := aBoolean;
 end;
 
-function TAction<TResult>.thenFinish: boolean;
+function TAction<TResult>.thenStop: boolean;
 begin
   result := FSuccess;
 end;

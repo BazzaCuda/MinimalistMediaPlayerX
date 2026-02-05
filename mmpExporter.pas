@@ -392,6 +392,7 @@ begin
 
       var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
       case TSegment.includedCount = 1 of TRUE: FSegOneFN := segFile; end;
+      debugString('FSegOneFN 1', FSegOneFN);
 
       cmdLine := cmdLine + ' -y "' + segFile + '"';
       log(cmdLine); log(EMPTY);
@@ -433,7 +434,7 @@ begin
   // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
   mmp.cmd(fileExists(fileChapterData), procedure begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end);
 
-  var FSegOneFN       := EMPTY;
+  FSegOneFN           := EMPTY;
   var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
   var vExportCoverArt := (FMediaType = mtAudio);
 
@@ -448,7 +449,7 @@ begin
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
   // single segment so just rename without the concat stage
   var vDoConcat := (FSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
-  TAction<boolean>.pick(result and NOT vDoConcat, renameFile).perform(filePathOUT);
+  TAction<boolean>.pick(result and NOT vDoConcat, renameFile).perform(FSegOneFN, filePathOUT);
 
   //====== CONCAT MULTIPLE SEGMENTS ======
   result := TAction<boolean>.pick(result and vDoConcat, concatSegments).default(result).perform;
@@ -470,13 +471,47 @@ end;
 
 function TExporter.exportEdits2: boolean;
 begin
+  result := TRUE; // default to TRUE unless an FFmpeg process fails
 
+  //====== SETUP PROGRESS FORM ======
+  FProgressForm     := initProgressForm;
+
+  // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
+  TAction<boolean>.startWith(result)
+                  .ensure(fileExists(fileChapterData))
+                  .aside(TRUE, function:boolean begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end)
+                  .thenStop;
+
+  FSegOneFN           := EMPTY;
+  var vWriteChapters  := mmp.use<boolean>(FMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
   var vExportCoverArt := (FMediaType = mtAudio);
 
+  //====== CHECK COVER ART ======
   result := TAction<boolean>.startWith(TRUE)
                    .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
                    .aside(TRUE, createCoverArt)
-                   .thenFinish;
+                   .thenStop;
+
+  //====== EXPORT SEGMENTS ======
+  // abort if at least one of the segment exports fails
+  result := TAction<boolean>.startWith(result)
+                            .ensure(NOT mmpCtrlKeyDown)
+                            .andThen(TRUE, createSegments, vExportCoverArt)
+                            .thenStop;
+
+  mmp.cmd(result, deletePreviousExport); // now we have newly-exported segment(s)
+
+  //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
+  // single segment so just rename without the concat stage
+  var vDoConcat := (FSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
+  TAction<boolean>.pick(result and NOT vDoConcat, renameFile).perform(filePathOUT);
+
+//  TAction<boolean>.startWith(result)
+//                  .andThen(NOT vDoConcat, renameFile, filePathOUT)
+//                  .thenStop;
+
+
+
 end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
