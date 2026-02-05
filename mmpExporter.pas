@@ -489,11 +489,10 @@ begin
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-  TAction<boolean>.startWith(TRUE)
-                   .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
-                   .aside(TRUE, createCoverArt)
-                   .thenStop;
-
+  TAction<boolean>.startWith(result)
+                  .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
+                  .aside(TRUE, createCoverArt)
+                  .thenStop;
 
   //====== EXPORT SEGMENTS ======
   // abort if at least one of the segment exports fails
@@ -517,8 +516,8 @@ begin
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
   //======         AND/OR ATTACH COVER ART         ======
   result := TAction<boolean>.startWith(result)
-                  .andThen(vWriteChapters or vExportCoverArt, createChaptersAndOrCoverArt, vWriteChapters)
-                  .thenStop;
+                            .andThen(vWriteChapters or vExportCoverArt, createChaptersAndOrCoverArt, vWriteChapters)
+                            .thenStop;
 
   //====== NAME THE OUTPUT FILE ======
   // and remove any intermediary files
@@ -526,8 +525,8 @@ begin
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
   TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
-//
-//  TAction<boolean>.startWith(result and CF.asBoolean[CONF_PLAY_EDITED])
+
+//  TAction<TVoid>.startWith(result and CF.asBoolean[CONF_PLAY_EDITED])
 //                  .andThen(TRUE, playExportedMediaFile, vDoConcat)
 //                  .thenStop;
 

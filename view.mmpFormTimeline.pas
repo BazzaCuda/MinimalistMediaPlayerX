@@ -629,6 +629,7 @@ begin
   var ix                  := aSegment.ix;
   aSegment.startSS        := segments[ix - 1].startSS;
   segments.delete(ix - 1);
+  TSegment.reTitleSegments;
   result := TRUE;
 end;
 
@@ -640,6 +641,7 @@ begin
   var ix          := aSegment.ix;
   aSegment.endSS  := segments[ix + 1].endSS;
   segments.delete(ix + 1);
+  TSegment.reTitleSegments;
   result := TRUE;
 end;
 
