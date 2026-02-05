@@ -93,6 +93,8 @@ type
     property    trashCan:  TImage  read FTrashCan;
 
     class function clearFocus:    TVoid; static;
+    class function findTitle(const aTitle: string): TSegment;
+    class function reTitleSegments: TVoid;
     class property includedCount: integer               read getIncludedCount;
     class property parentForm:    TWinControl                                   write FParent;
     class property segments:      TObjectList<TSegment> read getSegments; // technique copied from system.messaging.TMessageManager
@@ -164,6 +166,15 @@ begin
                                   FSegments := TObjectList<TSegment>.create;
                                   FSegments.ownsObjects := TRUE; end;end;
   result := FSegments;
+end;
+
+class function TSegment.findTitle(const aTitle: string): TSegment;
+begin
+  result := NIL;
+  for var i := 0 to FSegments.count  - 1 do
+    case FSegments[i].title = aTitle of TRUE: begin
+                                                result := FSegments[i];
+                                                BREAK; end;end;
 end;
 
 class destructor TSegment.freeSegments;
@@ -316,6 +327,12 @@ function TSegment.restore: TVoid;
 begin
   deleted := FALSE;
   case oldColor = NEARLY_BLACK of FALSE: color := oldColor; end;
+end;
+
+class function TSegment.reTitleSegments: TVoid;
+begin
+  for var i := 0 to FSegments.count - 1 do
+    case FSegments[i].title.startsWith('Segment') of TRUE: FSegments[i].title := format('Segment %.2d', [i + 1]); end;
 end;
 
 procedure TSegment.setSegID(const Value: string);

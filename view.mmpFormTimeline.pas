@@ -745,7 +745,8 @@ end;
 
 function TTimeline.segmentTitle(const aNumber: integer): string;
 begin
-  result := format('Segment %.2d', [aNumber]);
+  result := format('Segment %.2d', [aNumber]); // EXPERIMENTAL
+  TSegment.reTitleSegments;
 end;
 
 procedure TTimeline.setMax(const Value: integer);
