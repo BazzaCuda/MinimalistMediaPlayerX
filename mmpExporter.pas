@@ -392,7 +392,6 @@ begin
 
       var segFile := extractFilePath(FMediaFilePath) + mmpFileNameWithoutExtension(FMediaFilePath) + '.seg' + vSegment.segID + extractFileExt(FMediaFilePath);
       case TSegment.includedCount = 1 of TRUE: FSegOneFN := segFile; end;
-      debugString('FSegOneFN 1', FSegOneFN);
 
       cmdLine := cmdLine + ' -y "' + segFile + '"';
       log(cmdLine); log(EMPTY);
@@ -426,6 +425,9 @@ end;
 
 function TExporter.exportEdits: boolean;
 begin
+//  result := exportEdits2;
+//  EXIT;
+
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
   //====== SETUP PROGRESS FORM ======
@@ -487,7 +489,7 @@ begin
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-  result := TAction<boolean>.startWith(TRUE)
+  result := TAction<boolean>.startWith(result)
                    .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
                    .aside(TRUE, createCoverArt)
                    .thenStop;
@@ -504,14 +506,35 @@ begin
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
   // single segment so just rename without the concat stage
   var vDoConcat := (FSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
-  TAction<boolean>.pick(result and NOT vDoConcat, renameFile).perform(filePathOUT);
+  TAction<boolean>.startWith(result)
+                  .andThen(NOT vDoConcat, renameFile, FSegOneFN, filePathOUT)
+                  .thenStop;
 
-//  TAction<boolean>.startWith(result)
-//                  .andThen(NOT vDoConcat, renameFile, filePathOUT)
+  //====== CONCAT MULTIPLE SEGMENTS ======
+  TAction<boolean>.startWith(result).andThen(vDoConcat, concatSegments).thenStop;
+
+  //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
+  //======         AND/OR ATTACH COVER ART         ======
+  result := TAction<boolean>.pick(result and (vWriteChapters or vExportCoverArt), createChaptersAndOrCoverArt).default(result).perform(vWriteChapters);
+
+  TAction<boolean>.startWith(result)
+                  .ensure(vWriteChapters or vExportCoverArt)
+                  .andThen(TRUE, createChaptersAndOrCoverArt, vWriteChapters)
+                  .thenStop;
+
+  //====== NAME THE OUTPUT FILE ======
+  // and remove any intermediary files
+  result := TAction<boolean>.startWith(result).andThen(TRUE, createFinalFile, vWriteChapters).thenStop;
+
+  //====== PLAY THE EXPORTED MEDIA FILE ======
+  TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
+//
+//  TAction<boolean>.startWith(result and CF.asBoolean[CONF_PLAY_EDITED])
+//                  .andThen(TRUE, playExportedMediaFile, vDoConcat)
 //                  .thenStop;
 
-
-
+  TAction<TVoid>.pick(result, mmpDelay).perform(500); // so we can see the final message
+  FProgressForm := NIL;
 end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
