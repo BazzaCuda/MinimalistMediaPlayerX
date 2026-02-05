@@ -57,9 +57,9 @@ uses
   vcl.controls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazCmd,
-  mmpExportExec, mmpFileUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  mmpExportExec, mmpFileUtils, mmpKeyboardUtils, mmpUtils,
   TSegmentClass,
-  model.mmpConfigFile, model.mmpMediaInfo,
+  model.mmpMediaInfo,
   view.mmpFormProgress,
   _debugWindow;
 
@@ -559,7 +559,7 @@ begin
 
                             // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
                             // Standalone: Logic runs if file exists; result remains TRUE regardless
-                            .aside(fileExists(fileChapterData), function:boolean begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end) // non-standard parameter list
+                            .aside(fileExists(fileChapterData), function:boolean begin result := mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end) // non-standard parameter list
 
   //====== CHECK COVER ART ======
 
@@ -571,7 +571,7 @@ begin
                             // CRITICAL PATH: Failure here sets result to FALSE and stops the chain
                             // abort if at least one of the segment exports fails
                             .andThen(NOT FEC.ecCtrlKeyDown, createSegments)
-                            .aside(result, function:boolean begin deletePreviousExport end) // now we have newly-exported segment(s)
+                            .aside(TRUE, function:boolean begin deletePreviousExport; result := TRUE; end) // now we have newly-exported segment(s)
 
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
 
@@ -598,8 +598,8 @@ begin
   //====== PLAY THE EXPORTED MEDIA FILE ======
 
                             // Post-process actions that do not impact the final result
-                            .aside(FEC.ecPlayEdited,  function:boolean begin playExportedMediaFile; end) // these methods don't return a boolean so we force one which we then ignore
-                            .aside(TRUE,              function:boolean begin mmpDelay(500);         end) // so we can see the final message
+                            .aside(FEC.ecPlayEdited,  function:boolean begin playExportedMediaFile; result := TRUE; end) // these methods don't return a boolean so we force one which we then ignore
+                            .aside(TRUE,              function:boolean begin mmpDelay(500);         result := TRUE; end) // so we can see the final message
 
                             // return the final boolean to result
                             .thenStop;
