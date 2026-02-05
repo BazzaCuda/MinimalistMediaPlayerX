@@ -158,7 +158,7 @@ begin
                           mmp.cmd(evPLFormLoadBox);
 
                           mmp.cmd(NOT FEC.ecWasMuted, evMPMuteUnmute); // mute while we load and reposition the copy
-                          FEC.ecMediaFilePath := vFilePathOUT;
+                          // FEC.ecMediaFilePath := vFilePathOUT; // ???
                           mmp.cmd(evVMMPPlayCurrent);
                           while mmp.cmd(evMPReqPosition).integer < 2 do mmpProcessMessages;
                           mmp.cmd(evMPSeek, vPosition);
@@ -331,7 +331,7 @@ function TExporter.createCoverArt: boolean;
 // and an exported audio file will become a video file
 begin
   result                  := TRUE; // default to TRUE unless an FFmpeg process fails
-  FEC.ecExportedCoverArt   := FALSE;
+  FEC.ecExportedCoverArt  := FALSE;
 
   FProgressForm.subHeading := 'Extracting Cover Art';
 
@@ -358,6 +358,8 @@ begin
                                         case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
                                       end;
                               FALSE:  begin // replace the incoming [edited] file with the [chapters] file, which audio used to re-attach the cover art
+                                        debugString('filePathOUT', filePathOUT);
+                                        debugString('filePathTempChapters(FEC.ecWriteChapters)', filePathTempChapters(FEC.ecWriteChapters));
                                         case FEC.ecMediaType of mtAudio:  begin
                                                                             FProgressForm.subHeading := 'Deleting Intermediary File';
                                                                             case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end;
@@ -591,7 +593,7 @@ begin
   //====== NAME THE OUTPUT FILE ======
   // and remove any intermediary files
 
-                            .andThen(result, createFinalFile)
+                            .andThen(TRUE, createFinalFile)
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
 
