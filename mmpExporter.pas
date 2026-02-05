@@ -489,10 +489,11 @@ begin
   var vExportCoverArt := (FMediaType = mtAudio);
 
   //====== CHECK COVER ART ======
-  result := TAction<boolean>.startWith(result)
+  TAction<boolean>.startWith(TRUE)
                    .ensure(NOT mmpCtrlKeyDown and vExportCoverArt and mmp.cmd(evMIReqHasCoverArt).tf)
                    .aside(TRUE, createCoverArt)
                    .thenStop;
+
 
   //====== EXPORT SEGMENTS ======
   // abort if at least one of the segment exports fails
@@ -507,19 +508,16 @@ begin
   // single segment so just rename without the concat stage
   var vDoConcat := (FSegOneFN = EMPTY) or vWriteChapters; // vDoCancat is also a synonym for bHasMultiSegs
   TAction<boolean>.startWith(result)
-                  .andThen(NOT vDoConcat, renameFile, FSegOneFN, filePathOUT)
+                  .aside(NOT vDoConcat, renameFile, FSegOneFN, filePathOUT)
                   .thenStop;
 
   //====== CONCAT MULTIPLE SEGMENTS ======
-  TAction<boolean>.startWith(result).andThen(vDoConcat, concatSegments).thenStop;
+  result := TAction<boolean>.startWith(result).andThen(vDoConcat, concatSegments).thenStop;
 
   //====== CREATE CHAPTERS FROM MULTIPLE SEG FILES ======
   //======         AND/OR ATTACH COVER ART         ======
-  result := TAction<boolean>.pick(result and (vWriteChapters or vExportCoverArt), createChaptersAndOrCoverArt).default(result).perform(vWriteChapters);
-
-  TAction<boolean>.startWith(result)
-                  .ensure(vWriteChapters or vExportCoverArt)
-                  .andThen(TRUE, createChaptersAndOrCoverArt, vWriteChapters)
+  result := TAction<boolean>.startWith(result)
+                  .andThen(vWriteChapters or vExportCoverArt, createChaptersAndOrCoverArt, vWriteChapters)
                   .thenStop;
 
   //====== NAME THE OUTPUT FILE ======
