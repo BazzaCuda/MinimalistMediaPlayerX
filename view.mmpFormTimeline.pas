@@ -524,8 +524,18 @@ end;
 
 procedure TTimeline.exportSegments(sender: TObject);
 begin
-  case mmpCtrlKeyDown and mmpShiftKeyDown of   TRUE: case mmpNewExporter(FMediaFilePath, GS.mediaType).copySourceFile of TRUE: mmp.cmd(evSTOpInfo, 'copy complete'); end;
-                                              FALSE: mmpNewExporter(FMediaFilePath, GS.mediaType).exportEdits; end;
+  var vEC: TExportContext;
+  vEC.ecMediaFilePath   := FMediaFilePath;
+  vEC.ecMediaType       := GS.mediaType;
+  vEC.ecWriteChapters   := mmp.use<boolean>(vEC.ecMediaType = mtAudio, CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE], CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE]);
+  vEC.ecHasCoverArt     := mmp.cmd(evMIReqHasCoverArt).tf;
+  vEC.ecCtrlKeyDown     := mmpCtrlKeyDown;
+  vEC.ecWasPlaying      := mmp.cmd(evMPReqPlaying).tf;
+  vEC.ecWasMuted        := CF.asBoolean[CONF_MUTED];
+  vEC.ecPlayEdited      := CF.asBoolean[CONF_PLAY_EDITED];
+
+  case mmpCtrlKeyDown and mmpShiftKeyDown of   TRUE: case mmpNewExporter(vEC).copySourceFile of TRUE: mmp.cmd(evSTOpInfo, 'copy complete'); end;
+                                              FALSE: mmpNewExporter(vEC).exportEdits; end;
 end;
 
 function TTimeline.initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
