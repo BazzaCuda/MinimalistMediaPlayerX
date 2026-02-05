@@ -425,8 +425,8 @@ end;
 
 function TExporter.exportEdits: boolean;
 begin
-//  result := exportEdits2;
-//  EXIT;
+  result := exportEdits2;
+  EXIT;
 
   result := TRUE; // default to TRUE unless an FFmpeg process fails
 
@@ -524,13 +524,16 @@ begin
   result := TAction<boolean>.startWith(result).andThen(TRUE, createFinalFile, vWriteChapters).thenStop;
 
   //====== PLAY THE EXPORTED MEDIA FILE ======
-  TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
+//  TAction<TVoid>.pick(result and CF.asBoolean[CONF_PLAY_EDITED], playExportedMediaFile).perform(vDoConcat);
+  TAction<TVoid>.startWith(result and CF.asBoolean[CONF_PLAY_EDITED])
+                  .andThen(TRUE, playExportedMediaFile, vDoConcat)
+                  .thenStop;
 
-//  TAction<TVoid>.startWith(result and CF.asBoolean[CONF_PLAY_EDITED])
-//                  .andThen(TRUE, playExportedMediaFile, vDoConcat)
-//                  .thenStop;
+  // so we can see the final message
+  TAction<TVoid>.startWith(result)
+                .aside(TRUE, mmpDelay, 500)
+                .thenStop;
 
-  TAction<TVoid>.pick(result, mmpDelay).perform(500); // so we can see the final message
   FProgressForm := NIL;
 end;
 
