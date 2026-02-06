@@ -427,7 +427,7 @@ function TExporter.deletePreviousExport: TVoid;
 begin
   // Previously, FFmpeg would have overwritten the output file, except now we don't run FFmpeg if we only have one segment
   // and renaming that segment would fail if we don't delete the output file or at least rename it. So we may as well delete it.
-  case fileExists(filePathOUT) of TRUE: mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end; // use the user's specified deleteMethod; don't mpvStop the video being edited
+  mmp.cmd(fileExists(filePathOUT), procedure begin mmpDeleteThisFile(filePathOUT, [], TRUE, TRUE, FALSE); end);
 
   while fileExists(filePathOUT) do mmpDelay(1 * MILLISECONDS); // give the thread time to run.
 end;

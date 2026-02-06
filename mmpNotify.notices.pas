@@ -150,7 +150,10 @@ type
     property  wndRec:         TWndRec             read getWndRec         write setWndRec;
   end;
 
-  TNotifyMethod = function(const aNotice: INotice): INotice of object;
+  TNotifyMethod           = function(const aNotice: INotice): INotice of object;
+  TNotifyFunc             = function(const aNotice: INotice): INotice;
+  TEventTrigger           = function(const aEvent: TNoticeEvent): INotice;
+  TEventTriggerInteger    = function(const aEvent: TNoticeEvent; const aInteger: integer): INotice;
 
   ISubscriber = interface
     function  notifySubscriber(const aNotice: INotice): INotice;
