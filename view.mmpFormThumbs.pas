@@ -273,10 +273,10 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  mpv := NIL; // do this first or the user will briefly see the blank form background
-  case FMPVHost       = NIL of FALSE: freeAndNIL(FMPVHost); end;
-  case FThumbs        = NIL of FALSE: FThumbs := NIL; end;
-  case FProgressForm  = NIL of FALSE: FProgressForm := NIL; end;
+  mpv           := NIL; // do this first or the user will briefly see the blank form background
+  freeAndNIL(FMPVHost);
+  FThumbs       := NIL;
+  FProgressForm := NIL;
   mmp.cmd(evHelpShutHelp);
   appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
@@ -314,13 +314,20 @@ end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
 begin
-  case FThumbs = NIL of TRUE:  EXIT; end;
-  case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
-  case whichHost of htThumbsHost: playCurrentItem; end;
-  moveHelpWindow;
+//  case FThumbs = NIL of TRUE:  EXIT; end;
+//  case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
+//  case whichHost of htThumbsHost: playCurrentItem; end;
+//  moveHelpWindow;
+//
+//  case whichHost of htMPVHost:    FThumbs.showDisplayDimensions(htMPVHost);
+//                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
 
-  case whichHost of htMPVHost:    FThumbs.showDisplayDimensions(htMPVHost);
-                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
+  TAction<TVoid>.startWith((FThumbs <> NIL) and FShowing)
+                  .aside(whichHost = htThumbsHost, playCurrentItem)
+                  .aside(TRUE, moveHelpWindow, FALSE)
+                  .aside(whichHost = htMPVHost,     function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost); end)
+                  .aside(whichHost = htThumbsHost,  function:TVoid begin FThumbs.showDisplayDimensions(htThumbsHost); end)
+                  .thenStop;
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);

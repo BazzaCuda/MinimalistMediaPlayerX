@@ -37,6 +37,8 @@ type
   TVoidSFunc  = function(const aString: string): TVoid of object;
   TVoidFunc   = function: TVoid of object;
   TProcVar    = procedure;
+  TRefProc    = procedure(const [ref] Obj: TObject);
+  PObject     = ^TObject;
 
 type
   mmp = record
@@ -52,6 +54,7 @@ type
 
     //===== TOProcs with a TObject parameter
     class function cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): TVoid; overload; static;
+    class function cmd(const aBoolean: boolean; const trueProc: TRefProc; const aObject: PObject): TVoid; overload; static;
     class function cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): TVoid; overload; static;
 
     //===== TBFuncs which return a boolean result
@@ -90,10 +93,16 @@ type
     class procedure cmd(const aBoolean: boolean; const aProcVar: TProcVar); overload; static;
    end;
 
+   procedure doNowt;
+
 implementation
 
 uses
   _debugWindow;
+
+procedure doNowt;
+begin
+end;
 
 class function mmp.use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T;
 var setTypeVal: array[boolean] of T;
@@ -184,6 +193,11 @@ end;
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): TVoid;
 begin
   cmd(aBoolean, trueProc, gNull.nullOProc, aObject);
+end;
+
+class function mmp.cmd(const aBoolean: boolean; const trueProc: TRefProc; const aObject: PObject): TVoid;
+begin
+  mmp.cmd(aBoolean, procedure begin trueProc(aObject^); end);
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const falseProc: TOProc; const aObject: TObject): TVoid;

@@ -1124,15 +1124,15 @@ end;
 
 function TVM.setupSlideshowTimer: TVoid;
 begin
-  case FSlideshowTimer = NIL of FALSE: freeAndNIL(FSlideshowTimer); end;
+  mmp.cmd(FSlideShowTimer <> NIL, freeAndNIL, @FSlideshowTimer);
 
-  mmp.cmd(NOT GS.imagesPaused, procedure  begin
-                                            mmp.cmd(evGSIDDms, mmp.cmd(evMPReqIDDms, GS.IDDms).integer); // check if minimalistMediaPlayer.conf has changed since last slideshow
+  mmp.cmd(GS.imagesPaused, doNowt, procedure  begin
+                                                mmp.cmd(evGSIDDms, mmp.cmd(evMPReqIDDms, GS.IDDms).integer); // check if minimalistMediaPlayer.conf has changed since last slideshow
 
-                                            FSlideshowTimer           := TTimer.create(NIL);
-                                            FSlideshowTimer.interval  := GS.IDDms;
-                                            FSlideshowTimer.OnTimer   := onSlideshowTimer;
-                                            FSlideshowTimer.enabled   := TRUE; end);
+                                                FSlideshowTimer           := TTimer.create(NIL);
+                                                FSlideshowTimer.interval  := GS.IDDms;
+                                                FSlideshowTimer.OnTimer   := onSlideshowTimer;
+                                                FSlideshowTimer.enabled   := TRUE; end);
 end;
 
 function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): TVoid;

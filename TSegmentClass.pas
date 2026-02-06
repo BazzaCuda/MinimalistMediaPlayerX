@@ -24,6 +24,7 @@ uses
   winApi.windows, winApi.messages,
   system.classes, system.generics.collections,
   vcl.controls, vcl.extCtrls, vcl.forms, vcl.graphics, vcl.stdCtrls,
+  bazCmd,
   mmpAction;
 
 const
@@ -179,7 +180,7 @@ end;
 
 class destructor TSegment.freeSegments;
 begin
-  freeAndNil(FSegments);
+  mmp.cmd(TRUE, freeAndNil, @FSegments);
 end;
 
 constructor TSegment.Create(const aStartSS: integer; const aEndSS: integer; const onRedraw: TNotifyEvent = NIL; const onDoubleClick: TNotifyEvent = NIL; const bDeleted: boolean = FALSE);

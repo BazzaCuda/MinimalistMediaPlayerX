@@ -434,10 +434,11 @@ end;
 
 function TExporter.exportEdits: boolean; // v3
 begin
-  //====== SETUP PROGRESS FORM ======
-  FProgressForm := initProgressForm;
 
   result := TAction<boolean>.startWith(TRUE) // default to TRUE unless an FFmpeg process fails
+
+  //====== SETUP PROGRESS FORM ======
+                            .aside(TRUE, function:boolean begin FProgressForm := initProgressForm; end)
 
   //====== DELETE PREVIOUS CHAPTER DATA ======
 
@@ -485,10 +486,13 @@ begin
                             .aside(FEC.ecPlayEdited,  function:boolean begin playExportedMediaFile; result := TRUE; end) // these methods don't return a boolean so we force one which we then ignore
                             .aside(TRUE,              function:boolean begin mmpDelay(500);         result := TRUE; end) // delay briefly so we can see the final message
 
+  //====== TEARDONW PROGRESS FORM ======
+
+                            .aside(TRUE, function:boolean begin FProgressForm := NIL; end)
+
                             // return the final boolean to result
                             .thenStop;
 
-  FProgressForm := NIL;
 end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
