@@ -27,19 +27,16 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
-
-const
-  doNowt = NIL;
-
 var
   guardClause:  boolean;
 
 type
-  TOProc    = TProc<TObject>;
-  TBFunc    = TFunc<boolean>;
-  TSFunc    = TFunc<string>;
-  TVoidFunc = function: TVoid of object;
-  TProcVar  = procedure;
+  TOProc      = TProc<TObject>;
+  TBFunc      = TFunc<boolean>;
+  TSFunc      = TFunc<string>;
+  TVoidSFunc  = function(const aString: string): TVoid of object;
+  TVoidFunc   = function: TVoid of object;
+  TProcVar    = procedure;
 
 type
   mmp = record
@@ -60,6 +57,9 @@ type
     //===== TBFuncs which return a boolean result
     class function cmd(const aBoolean: boolean; const trueFunc: TBFunc; const falseFunc: TBFunc): boolean; overload; static;
     class function cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean; overload; static;
+
+    //===== TVoidSFuncs which take a string and return a TVoid result
+    class function cmd(const aBoolean: boolean; const trueFunc: TVoidSFunc; const aString: string): TVoid; overload; static;
 
     //===== TSFuncs which return a string result
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string; overload; static;
@@ -107,6 +107,7 @@ type
   TNull = class
     function  nullBFunc:          boolean;
     function  nullSFunc:          string;
+    function  nullVoidSFunc(const aString: string): TVoid;
     function  nullVoidFunc:       TVoid;
     procedure nullProc;
     procedure nullOProc(aObject: TObject);
@@ -130,6 +131,11 @@ end;
 function TNull.nullSFunc: string;
 begin
   result := EMPTY;
+end;
+
+function TNull.nullVoidSFunc(const aString: string): TVoid;
+begin
+  result := default(TVoid);
 end;
 
 function TNull.nullVoidFunc: TVoid;
@@ -194,6 +200,13 @@ end;
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean;
 begin
   result := cmd(aBoolean, trueFunc, gNull.nullBFunc);
+end;
+
+//===== TSVoidFuncs which take a string and return a TVoid result
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidSFunc; const aString: string): TVoid;
+begin
+  use<TVoidSFunc>(aBoolean, trueFunc, gNull.nullVoidSFunc)(aString);
+  result := default(TVoid);
 end;
 
 //===== TSFuncs which return a string result

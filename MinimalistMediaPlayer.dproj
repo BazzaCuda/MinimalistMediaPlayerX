@@ -150,7 +150,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_Release>1</VerInfo_Release>
-        <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\The Naked Gun (1988).mp4&quot;</Debugger_RunParams>
+        <Debugger_RunParams>&quot;B:\Downloads\MMP Testing\Django Unchained (2012).mp4&quot;</Debugger_RunParams>
         <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>

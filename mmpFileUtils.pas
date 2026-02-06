@@ -108,7 +108,7 @@ begin
                    mmp.cmd(vWasPlaying, evMPResume); end;
 
   result := mmpIsEditFriendly(aFilePath);
-  mmp.cmd(result, NIL, F);
+  mmp.cmd(NOT result, F);
 end;
 
 function mmpCheckRecycleBin(const aFilePath: string): boolean;

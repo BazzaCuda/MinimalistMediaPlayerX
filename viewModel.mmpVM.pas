@@ -635,7 +635,7 @@ begin
 
   case aNotice.event of
     evAppClose:             doAppClose;
-    evGSActiveTasks:        case GS.activeTasks > 0 of TRUE: sendOpInfo(format('Shredding: %d', [GS.activeTasks])); end;
+    evGSActiveTasks:        mmp.cmd(GS.activeTasks > 0, sendOpInfo, ''); //    case GS.activeTasks > 0 of TRUE: sendOpInfo(format('Shredding: %d', [GS.activeTasks])); end;
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
@@ -1126,13 +1126,13 @@ function TVM.setupSlideshowTimer: TVoid;
 begin
   case FSlideshowTimer = NIL of FALSE: freeAndNIL(FSlideshowTimer); end;
 
-  mmp.cmd(GS.imagesPaused, doNowt, procedure  begin
-                                              mmp.cmd(evGSIDDms, mmp.cmd(evMPReqIDDms, GS.IDDms).integer); // check if minimalistMediaPlayer.conf has changed since last slideshow
+  mmp.cmd(NOT GS.imagesPaused, procedure  begin
+                                            mmp.cmd(evGSIDDms, mmp.cmd(evMPReqIDDms, GS.IDDms).integer); // check if minimalistMediaPlayer.conf has changed since last slideshow
 
-                                              FSlideshowTimer           := TTimer.create(NIL);
-                                              FSlideshowTimer.interval  := GS.IDDms;
-                                              FSlideshowTimer.OnTimer   := onSlideshowTimer;
-                                              FSlideshowTimer.enabled   := TRUE; end);
+                                            FSlideshowTimer           := TTimer.create(NIL);
+                                            FSlideshowTimer.interval  := GS.IDDms;
+                                            FSlideshowTimer.OnTimer   := onSlideshowTimer;
+                                            FSlideshowTimer.enabled   := TRUE; end);
 end;
 
 function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): TVoid;
