@@ -114,17 +114,17 @@ end;
 function mmpCheckRecycleBin(const aFilePath: string): boolean;
 begin
   result := TRUE;
-  case (CF.asDeleteMethod[CONF_DELETE_METHOD] = dmRecycle) of FALSE: EXIT; end;
+  var vMsg: string := EMPTY;
 
-  var vMsg:string := EMPTY;
-
-  case mmpFixedDrive(aFilePath)         of FALSE: vMsg := 'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10; end;
-  case mmpFixedDriveRecycles(aFilePath) of FALSE: vMsg := 'This FIXED drive is set to not use the Recycle Bin'#13#10#13#10; end;
-
-  case vMsg = EMPTY of FALSE: result := mmpUserOK(aFilePath + #13#10#13#10 +
-                                                  vMsg +
-                                                  'If you continue, Windows will simply delete the file(s)'#13#10#13#10 +
-                                                  'Do you want to continue?'); end;
+  TAction<boolean>.startWith(CF.asDeleteMethod[CONF_DELETE_METHOD] = dmRecycle)
+                            .assign<string>(NOT mmpFixedDrive(aFilePath),         vMsg, 'Windows has this as a REMOVABLE drive and won''t use the Recycle Bin'#13#10#13#10)
+                            .assign<String>(NOT mmpFixedDriveRecycles(aFilePath), vMsg, 'This FIXED drive is set to not use the Recycle Bin'#13#10#13#10)
+                            .assignFrom<boolean>(vMsg <> EMPTY, result, function: boolean begin
+                                                                                            result := mmpUserOK(aFilePath + #13#10#13#10 +
+                                                                                            vMsg +
+                                                                                            'If you continue, Windows will simply delete the file(s)'#13#10#13#10 +
+                                                                                            'Do you want to continue?'); end)
+                            .thenStop;
 end;
 
 function mmpConfigFilePath: string;

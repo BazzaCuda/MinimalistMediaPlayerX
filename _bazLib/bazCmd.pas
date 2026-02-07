@@ -31,6 +31,7 @@ type
   TOProc      = reference to procedure(aObject: TObject);
   TBFunc      = reference to function: boolean;
   TSFunc      = reference to function: string;
+  TSFuncS     = reference to function(const aString: string): string;
   TVoidSFunc  = reference to function(const aString: string): TVoid;
   TVoidFunc   = reference to function: TVoid;
   TProcVar    = reference to procedure;
@@ -40,6 +41,8 @@ type
 type
   mmp = record
     class function use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T; overload; static;
+    class function use<T>(const aBoolean: boolean; const aTrueFunc: TFunc<T>; aFalseValue: T): T; overload; static;
+    class function use<T>(const aBoolean: boolean; const aTrueFunc: TFunc<T>; const aFalseFunc: TFunc<T>): T; overload; static;
 
     //===== TVoidFuncs which return a TVoid result
     class function cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid; overload; static;
@@ -64,6 +67,10 @@ type
     //===== TSFuncs which return a string result
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseFunc: TSFunc): string; overload; static;
     class function cmd(const aBoolean: boolean; const trueFunc: TSFunc): string; overload; static;
+    class function cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseValue: string): string; overload; static;
+
+    //===== TSFuncSs which take a string and return a string result
+    class function cmd(const aBoolean: boolean; const trueFunc: TSFuncS; const aString: string): string; overload; static;
 
     //===== Event Notices with no result
     class function cmd(const aBoolean: boolean; const trueEvent: TNoticeEvent; const falseEvent: TNoticeEvent): TVoid; overload; static;
@@ -123,6 +130,11 @@ begin
   result := EMPTY;
 end;
 
+function nullSFuncS(const aString: string): string;
+begin
+  result := EMPTY;
+end;
+
 function nullVoidSFunc(const aString: string): TVoid;
 begin
   result := default(TVoid);
@@ -143,11 +155,35 @@ end;
 { mmp }
 
 class function mmp.use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T;
-var setTypeVal: array[boolean] of T;
+var resolution: array[boolean] of T;
 begin
-  setTypeVal[TRUE]  := aTrueValue;
-  setTypeVal[FALSE] := aFalseValue;
-  result            := setTypeVal[aBoolean];
+  resolution[TRUE]  := aTrueValue;
+  resolution[FALSE] := aFalseValue;
+  result            := resolution[aBoolean];
+end;
+
+class function mmp.use<T>(const aBoolean: boolean; const aTrueFunc: TFunc<T>; aFalseValue: T): T;
+type
+  TResolver = reference to function: T;
+var
+  resolution: array[boolean] of TResolver;
+begin
+  resolution[TRUE]  := function: T begin result := aTrueFunc(); end;
+  resolution[FALSE] := function: T begin result := aFalseValue; end;
+
+  result := resolution[aBoolean]();
+end;
+
+class function mmp.use<T>(const aBoolean: boolean; const aTrueFunc: TFunc<T>; const aFalseFunc: TFunc<T>): T;
+type
+  TResolver = reference to function: T;
+var
+  resolution: array[boolean] of TResolver;
+begin
+  resolution[TRUE]  := function: T begin result := aTrueFunc(); end;
+  resolution[FALSE] := function: T begin result := aFalseFunc(); end;
+
+  result := resolution[aBoolean]();
 end;
 
 //===== TVoidFuncs which return a TVoid result
@@ -215,6 +251,17 @@ end;
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc): string;
 begin
   result := cmd(aBoolean, trueFunc, nullSFunc);
+end;
+
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc; const falseValue: string): string;
+begin
+  result := cmd(aBoolean, trueFunc, function: string begin result := falseValue; end);
+end;
+
+//===== TSFuncSs which take a string and return a string result
+class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFuncS; const aString: string): string;
+begin
+  result := use<TSFuncS>(aBoolean, trueFunc, nullSFuncS)(aString);
 end;
 
 function eventTrigger(const aNoticeEvent: TNoticeEvent): INotice;

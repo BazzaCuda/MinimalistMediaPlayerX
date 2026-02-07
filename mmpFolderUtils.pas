@@ -34,7 +34,7 @@ function mmpITBS(const aFolderPath: string): string;
 begin
   result := aFolderPath;
   guardClause := (length(result) > 0) and (result[high(result)] <> BACKSLASH);
-  result := mmp.use<string>(guardClause, result + BACKSLASH, result);
+  result := mmp.use<string>(guardClause, function: string begin result := aFolderPath + BACKSLASH; end, result);
 end;
 
 function mmpRTBS(const aFolderPath: string): string;

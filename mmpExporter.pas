@@ -444,7 +444,7 @@ begin
 
                             // delete any previous .chp file up front to ensure that TVM.playEdited plays the correct [edited] if both exist after this export
                             // Standalone: Logic runs if file exists; result remains TRUE regardless
-                            .aside(fileExists(fileChapterData), function:boolean begin result := mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end) // non-standard parameter list
+                            .aside<TVoid>(fileExists(fileChapterData), function:TVoid begin mmpDeleteThisFile(fileChapterData, [], TRUE, TRUE, FALSE); end) // non-standard parameter list
 
   //====== CHECK COVER ART ======
 

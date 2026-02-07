@@ -323,10 +323,10 @@ begin
 //                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
 
   TAction<TVoid>.startWith((FThumbs <> NIL) and FShowing)
-                  .aside(whichHost = htThumbsHost, playCurrentItem)
-                  .aside(TRUE, moveHelpWindow, FALSE)
-                  .aside(whichHost = htMPVHost,     function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost); end)
-                  .aside(whichHost = htThumbsHost,  function:TVoid begin FThumbs.showDisplayDimensions(htThumbsHost); end)
+                  .aside<TVoid>(whichHost = htThumbsHost, playCurrentItem)
+                  .aside<TVoid>(TRUE, moveHelpWindow, FALSE)
+                  .aside<TVoid>(whichHost = htMPVHost,  function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost); end)
+                  .aside<TVoid>(whichHost = htThumbsHost,  function:TVoid begin FThumbs.showDisplayDimensions(htThumbsHost); end)
                   .thenStop;
 end;
 
