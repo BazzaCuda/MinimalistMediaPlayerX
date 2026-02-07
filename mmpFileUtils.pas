@@ -140,8 +140,23 @@ begin
     case vDirtyChars.contains(result[i]) of TRUE: result[i] := ' '; end;
 end;
 
+  function cfts(const aFile1: string; const afile2: string): boolean;
+  begin
+    var vTimestamp1: TDateTime := TFile.getLastWriteTime(aFile1);
+    var vTimestamp2: TDateTime := TFile.getLastWriteTime(aFile2);
+    result := vTimestamp1 < vTimestamp2;
+  end;
+
 function mmpCompareFileTimestamps(const aFile1: string; const aFile2: string): boolean;
 begin
+
+  result := TAction<boolean>.pick(TFile.exists(aFile1) and TFile.exists(aFile2), cfts).default(FALSE).perform(aFile1, aFile2);
+
+
+
+
+//===== original =====
+
   result := FALSE;
 
   case NOT TFile.exists(aFile1) of TRUE: EXIT; end;
