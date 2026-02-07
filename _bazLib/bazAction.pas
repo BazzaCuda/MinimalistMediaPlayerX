@@ -636,7 +636,7 @@ type
 implementation
 
 uses
-  bazRTL;
+  bazCmd, bazRTL;
 
 { TAction<TResult> }
 

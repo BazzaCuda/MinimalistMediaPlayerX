@@ -31,12 +31,12 @@ var
   guardClause:  boolean;
 
 type
-  TOProc      = TProc<TObject>;
-  TBFunc      = TFunc<boolean>;
-  TSFunc      = TFunc<string>;
-  TVoidSFunc  = function(const aString: string): TVoid of object;
-  TVoidFunc   = function: TVoid of object;
-  TProcVar    = procedure;
+  TOProc      = reference to procedure(aObject: TObject);
+  TBFunc      = reference to function: boolean;
+  TSFunc      = reference to function: string;
+  TVoidSFunc  = reference to function(const aString: string): TVoid;
+  TVoidFunc   = reference to function: TVoid;
+  TProcVar    = reference to procedure;
   TRefProc    = procedure(const [ref] Obj: TObject);
   PObject     = ^TObject;
 
@@ -90,7 +90,6 @@ type
 
     //===== Misc
     class procedure free(const aBoolean: boolean; const aObject: TObject); static;
-    class procedure cmd(const aBoolean: boolean; const aProcVar: TProcVar); overload; static;
    end;
 
    procedure doNowt;
@@ -112,42 +111,32 @@ begin
   result            := setTypeVal[aBoolean];
 end;
 
-type
-  TNull = class
-    function  nullBFunc:          boolean;
-    function  nullSFunc:          string;
-    function  nullVoidSFunc(const aString: string): TVoid;
-    function  nullVoidFunc:       TVoid;
-    procedure nullProc;
-    procedure nullOProc(aObject: TObject);
-  end;
+{ Global Null Methods }
 
-{ TNull }
-
-function TNull.nullBFunc: boolean;
+function nullBFunc: boolean;
 begin
   result := FALSE;
 end;
 
-procedure TNull.nullOProc(aObject: TObject);
+procedure nullOProc(aObject: TObject);
 begin
 end;
 
-procedure TNull.nullProc;
+procedure nullProc;
 begin
 end;
 
-function TNull.nullSFunc: string;
+function nullSFunc: string;
 begin
   result := EMPTY;
 end;
 
-function TNull.nullVoidSFunc(const aString: string): TVoid;
+function nullVoidSFunc(const aString: string): TVoid;
 begin
   result := default(TVoid);
 end;
 
-function TNull.nullVoidFunc: TVoid;
+function nullVoidFunc: TVoid;
 begin
   result := default(TVoid);
 end;
@@ -159,12 +148,6 @@ begin
   aObject.free;
 end;
 
-procedure nullProc;
-begin
-end;
-
-var gNull: TNull;
-
 { mmp }
 
 //===== TVoidFuncs which return a TVoid result
@@ -175,7 +158,7 @@ end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc): TVoid;
 begin
-  result := cmd(aBoolean, trueFunc, gNull.nullVoidFunc);
+  result := cmd(aBoolean, trueFunc, nullVoidFunc);
 end;
 
 //===== TProcs
@@ -192,7 +175,7 @@ end;
 //===== TOProcs with a TObject parameter
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TOProc; const aObject: TObject): TVoid;
 begin
-  cmd(aBoolean, trueProc, gNull.nullOProc, aObject);
+  cmd(aBoolean, trueProc, nullOProc, aObject);
 end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueProc: TRefProc; const aObject: PObject): TVoid;
@@ -213,13 +196,13 @@ end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TBFunc): boolean;
 begin
-  result := cmd(aBoolean, trueFunc, gNull.nullBFunc);
+  result := cmd(aBoolean, trueFunc, nullBFunc);
 end;
 
 //===== TSVoidFuncs which take a string and return a TVoid result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidSFunc; const aString: string): TVoid;
 begin
-  use<TVoidSFunc>(aBoolean, trueFunc, gNull.nullVoidSFunc)(aString);
+  use<TVoidSFunc>(aBoolean, trueFunc, nullVoidSFunc)(aString);
   result := default(TVoid);
 end;
 
@@ -231,7 +214,7 @@ end;
 
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TSFunc): string;
 begin
-  result := cmd(aBoolean, trueFunc, gNull.nullSFunc);
+  result := cmd(aBoolean, trueFunc, nullSFunc);
 end;
 
 function eventTrigger(const aNoticeEvent: TNoticeEvent): INotice;
@@ -331,23 +314,12 @@ end;
 //===== Misc
 class procedure mmp.free(const aBoolean: boolean; const aObject: TObject);
 begin
-  use<TOProc>(aBoolean and assigned(aObject), freeObject, gNull.nullOProc)(aObject);
-end;
-
-class procedure mmp.cmd(const aBoolean: boolean; const aProcVar: TProcVar);
-begin
-  use<TProcVar>(aBoolean, aProcVar, nullProc)();
+  use<TOProc>(aBoolean and assigned(aObject), freeObject, nullOProc)(aObject);
 end;
 
 function testSyntax: boolean;
 begin
   result := mmp.use<TMediaType>(TRUE, mtAudio, mtVideo) = mtVideo;
 end;
-
-initialization
-  gNull := TNull.create;
-
-finalization
-  gNull.free;
 
 end.
