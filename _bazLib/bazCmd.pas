@@ -27,9 +27,6 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 
-var
-  guardClause:  boolean;
-
 type
   TOProc      = reference to procedure(aObject: TObject);
   TBFunc      = reference to function: boolean;
@@ -94,24 +91,19 @@ type
 
    procedure doNowt;
 
+var
+  guardClause: boolean;
+
 implementation
 
 uses
   _debugWindow;
 
+{ Global Null Methods }
+
 procedure doNowt;
 begin
 end;
-
-class function mmp.use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T;
-var setTypeVal: array[boolean] of T;
-begin
-  setTypeVal[TRUE]  := aTrueValue;
-  setTypeVal[FALSE] := aFalseValue;
-  result            := setTypeVal[aBoolean];
-end;
-
-{ Global Null Methods }
 
 function nullBFunc: boolean;
 begin
@@ -149,6 +141,14 @@ begin
 end;
 
 { mmp }
+
+class function mmp.use<T>(const aBoolean: boolean; const aTrueValue: T; aFalseValue: T): T;
+var setTypeVal: array[boolean] of T;
+begin
+  setTypeVal[TRUE]  := aTrueValue;
+  setTypeVal[FALSE] := aFalseValue;
+  result            := setTypeVal[aBoolean];
+end;
 
 //===== TVoidFuncs which return a TVoid result
 class function mmp.cmd(const aBoolean: boolean; const trueFunc: TVoidFunc; const falseFunc: TVoidFunc): TVoid;
