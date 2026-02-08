@@ -25,7 +25,7 @@ uses
   system.classes,
   vcl.Controls, vcl.extCtrls, vcl.forms,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpAction, mmpActionTypes, mmpMenu,
+  mmpAction, mmpMenu,
   view.mmpFormThumbs, view.mmpProgressBar,
   model.mmpMediaPlayer, model.mmpPlaylist;
 
@@ -94,7 +94,7 @@ uses
   winApi.shellApi,
   system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
-  bazCmd,
+  bazCmd, bazFuncDefs,
   mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpFormHelpFull, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
@@ -328,7 +328,7 @@ end;
 function TVM.doAppClose: TVoid;
 begin
 //==========
-  var vShutdown: TAFuncNoParamTVoid := function: TVoid  begin
+  var vShutdown: TAFuncNoParam<TVoid> := function: TVoid  begin
                                                           mmp.cmd(evMPDetachStates);
                                                           mmp.cmd(evGSSuspended, TRUE);
                                                           mmp.cmd(evMPStop);

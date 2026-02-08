@@ -25,7 +25,6 @@ uses
   vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpAction, mmpConsts;
-
 type
   IPlaylist = interface
     function    add(const anItem: string):                  boolean;
@@ -112,6 +111,7 @@ type
     function    notify(const aNotice: INotice):             INotice;
     function    prev(const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
     function    replaceCurrentItem(const aNewItem: string): boolean;
+    function    setItem(const aIx: integer; const aItem: string): TVoid;
     function    setIx(const ix: integer):                   integer;
     function    sort:                                       TVoid;
     function    thisItem(const ix: integer):                string;
@@ -473,11 +473,18 @@ begin
   case hasItems of FALSE: EXIT; end;
   FPlaylist[FPlayIx] := aNewItem;
   result := TRUE;
+
+  TAction<TVoid>.pick(hasItems, setItem).perform(FPlayIx, aNewItem);
 end;
 
 procedure TPlaylist.setCurrentFolder(const aValue: string);
 begin
   FCurrentFolder := aValue;
+end;
+
+function TPlaylist.setItem(const aIx: integer; const aItem: string): TVoid;
+begin
+  FPlaylist[aIx] := aItem;
 end;
 
 function TPlaylist.setIx(const ix: integer): integer;

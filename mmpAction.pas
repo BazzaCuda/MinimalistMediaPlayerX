@@ -21,20 +21,26 @@ unit mmpAction;
 interface
 
 uses
-  bazAction;
+  bazAction, bazFuncDefs;
 
 type
-  TVoid = bazAction.TVoid;
-
-//  IAction<TResult> = interface(bazAction.IAction<TResult>)
-//  end;
+  TVoid = bazFuncDefs.TVoid;
+//
+//  TFunc<T> = reference to function: T;
+//  TAFuncNoParam             <TResult> = reference to function():                                                        TResult;
+//  TAFuncString              <TResult> = reference to function(const aString: string):                                   TResult;
+//  TAFuncInteger             <TResult> = reference to function(const aInteger: integer):                                 TResult;
+//  TAFuncIntegerString       <TResult> = reference to function(const aInteger: integer; const aString: string):          TResult;
+//  TAFuncStringInteger       <TResult> = reference to function(const aString: string; const aInteger: integer):          TResult;
+//  TAFuncBoolean             <TResult> = reference to function(const aBoolean: boolean):                                 TResult;
+//  TAFuncWord                <TResult> = reference to function(const aWORD: WORD):                                       TResult;
+//  TAFuncCardinal            <TResult> = reference to function(const aCardinal: cardinal):                               TResult;
+//  TAFuncStringString        <TResult> = reference to function(const aString1: string; const aString2: string):          TResult;
+//  TAFuncStringBoolean       <TResult> = reference to function(const aString: string; const aBoolean: boolean):          TResult;
 
   TAction<TResult> = class(bazAction.TAction<TResult>)
   end;
 
-//  IAction = interface(bazAction.IAction)
-//  end;
-//
   TAction = class(bazAction.TAction)
   end;
 

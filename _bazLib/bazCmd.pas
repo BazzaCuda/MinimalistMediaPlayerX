@@ -23,7 +23,7 @@ interface
 uses
   winApi.messages,
   system.classes, system.sysUtils,
-  bazAction,
+  bazAction, bazFuncDefs,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpConsts;
 

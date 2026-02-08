@@ -154,7 +154,7 @@ uses
   Vcl.Themes,
   Vcl.Styles,
   mmpAction in 'mmpAction.pas',
-  mmpActionTypes in 'mmpActionTypes.pas';
+  bazFuncDefs in '_bazLib\bazFuncDefs.pas';
 
 procedure setupRunMode;
 begin
