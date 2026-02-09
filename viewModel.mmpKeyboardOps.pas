@@ -117,6 +117,7 @@ begin
     koPlayNextFolder:     mmp.cmd(evVMPlayNextFolder, TRUE);
     koPlayPrev:           mmp.cmd(evVMMPPlayPrev);
     koPlayPrevFolder:     mmp.cmd(evVMPlayPrevFolder);
+    koPreviewSheet:       mmp.cmd(evVMPreviewSheet);
     koReloadPlaylist:     mmp.cmd(evVMReloadPlaylist);
     koRenameCleanFile:    mmp.cmd(evVMRenameCleanFile);
     koRenameFile:         mmp.cmd(evVMRenameCurrentItem);

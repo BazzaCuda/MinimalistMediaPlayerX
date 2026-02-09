@@ -85,7 +85,7 @@ const
   DARK_MODE_DKGRAY = $808080; // clDkGray
 
   COLOR_SEGMENT_TITLE = $E6CC4C;
-  COLOR_SEGMENT_ID    = $004B96AF; // RGB(175, 150, 75);
+  COLOR_SEGMENT_ID    = $004B96AF; // RGB(175, 150, 75) or vice versa;
 
   FONT_TAHOMA      = 'Tahoma';
   FONT_SEGOE_UI    = 'Segoe UI';
@@ -172,7 +172,7 @@ type
             koToggleEditMode, koAboutBox, koMaximize, koCycleAudio, koCycleSubs, koPrevChapter, koNextChapter, koThumbnails, koAdjustAspectRatio, koWiki,
             koToggleNumlock, koKeepDelete, koPlayNextFolder, koPlayPrevFolder, koImageInBrowser, koExploreFolder, koPBReset, koSysVolMax, koToggleFiltering, koCleanup,
             koKeepCatF1, koKeepCatF2, koKeepCatF3, koKeepCatF4, koKeepMove, koKeepSave, koConfig, koPlayEdited, koRenameCleanFile, koToggleSkipExcluded,
-            koToggleShuffle, koHelpFull, koHelpThumbs, koSyncAudioUp, koSyncAudioDn, koSkipBackwards, koSkipForwards);
+            koToggleShuffle, koHelpFull, koHelpThumbs, koSyncAudioUp, koSyncAudioDn, koSkipBackwards, koSkipForwards, koPreviewSheet);
 
   TDeleteMethod = (dmRecycle, dmStandard, dmShred);
   TKeyDirection = (kdDn, kdUp);

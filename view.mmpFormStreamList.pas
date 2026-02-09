@@ -422,17 +422,18 @@ end;
 procedure TStreamListForm.formCreate(Sender: TObject);
 begin
   clSegments.borderStyle       := bsNone;
-  clSegments.styleElements     := []; // don't allow any theme alterations
+//  clSegments.styleElements     := []; // don't allow any theme alterations
   clSegments.color                              := DARK_MODE_LIGHT;
   clSegments.itemSelectionOptions.focusedColor  := DARK_MODE_LIGHT;
   clSegments.itemSelectionOptions.hotColor      := DARK_MODE_LIGHT;
   clSegments.itemSelectionOptions.selectedColor := DARK_MODE_LIGHT;
   clStreams.borderStyle        := bsNone;
-  clStreams.styleElements      := []; // don't allow any theme alterations
+//  clStreams.styleElements      := []; // don't allow any theme alterations
   clStreams.color                               := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.focusedColor   := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.hotColor       := DARK_MODE_LIGHT;
   clStreams.itemSelectionOptions.selectedColor  := DARK_MODE_LIGHT;
+
 
   FMediaType := GS.mediaType;
 
@@ -440,10 +441,10 @@ begin
   SELF.height := DEFAULT_HEIGHT;
 
   pageControl.tabWidth  := 0; // tab widths are controlled by the width of the captions
-  tsSegments.caption    := '      Segments      ';
-  tsStreams.caption     := '      Streams      ';
-  tsOptions.caption     := 'Options';
-  tsHelp.caption        := '       Help        ';
+  tsSegments.caption    := '     Segments     ';
+  tsStreams.caption     := '     Streams     ';
+  tsOptions.caption     := '    Options    ';
+  tsHelp.caption        := '       Help       ';
 
 
   btnExport.left := (pnlButtons.width div 2) - (btnExport.width div 2);
@@ -577,7 +578,7 @@ end;
 
 function TStreamListForm.updateStreamsCaption: TVoid;
 begin
-  tsStreams.caption := format('          Streams %d/%d          ', [MI.selectedCount, MI.avsStreamCount]);
+  tsStreams.caption := format('     Streams %d/%d     ', [MI.selectedCount, MI.avsStreamCount]);
 end;
 
 function TStreamListForm.updateTotals(const aSegments: TObjectList<TSegment>; const aMax: integer): TVoid;

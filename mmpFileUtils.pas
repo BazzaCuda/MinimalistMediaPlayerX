@@ -374,7 +374,7 @@ end;
 function mmpIsEditFriendly(const aFilePath: string): boolean;
 begin
   result := FALSE;
-  var vDirtyChars:string  := DIRTY_CHARS;
+  var vDirtyChars:string  := ''; // DIRTY_CHARS; EXPERIMENTAL
   var vNoExt              := extractFilePath(aFilePath) + mmpFileNameWithoutExtension(aFilePath);
   for var i := 1 to length(vNoExt) do
     case vDirtyChars.contains(vNoExt[i]) of TRUE: EXIT; end;

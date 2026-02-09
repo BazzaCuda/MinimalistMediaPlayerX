@@ -77,7 +77,7 @@ type
     function  createChaptersFromOutput: TVoid;
     function  createFinalFile: boolean;
     function  createSegments: boolean;
-    function  createCoverArt: boolean;
+    function  createCoverArt: TVoid;
     function  deletePreviousExport: TVoid;
     function  exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
     function  fileChapterData: string;
@@ -266,7 +266,7 @@ begin
 
   log(cmdLine); log(EMPTY);
 
-  result  := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
 
 function TExporter.createChaptersFromOutput: TVoid;
@@ -323,14 +323,14 @@ begin
   end;
 end;
 
-function TExporter.createCoverArt: boolean;
+function TExporter.createCoverArt: TVoid;
 //====== CHECK COVER ART ======
 // when chapters are required, export any cover art to a separate file
 // then re-attach it when adding the chapter metadata
 // otherwise ffmpeg will create a video stream from it at the concat stage
 // and an exported audio file will become a video file
 begin
-  result                  := TRUE; // default to TRUE unless an FFmpeg process fails
+//  result                  := TRUE; // default to TRUE unless an FFmpeg process fails
   FEC.ecExportedCoverArt  := FALSE;
 
   FProgressForm.subHeading := 'Extracting Cover Art';
@@ -340,9 +340,7 @@ begin
   var cmdLine := ' -i "' + FEC.ecMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
   log(cmdLine); log(EMPTY);
 
-  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
-
-  FEC.ecExportedCoverArt := result;
+  FEC.ecExportedCoverArt := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
 end;
 
 function TExporter.createFinalFile: boolean;
@@ -449,20 +447,20 @@ begin
   //====== CHECK COVER ART ======
 
                             // Standalone: result remains TRUE even if NOT FEC.ecHasCoverArt
-                            .aside(NOT FEC.ecCtrlKeyDown and FEC.ecExportCoverArt and FEC.ecHasCoverArt, createCoverArt)
+                            .aside<TVoid>(NOT FEC.ecCtrlKeyDown and FEC.ecExportCoverArt and FEC.ecHasCoverArt, createCoverArt)
 
   //====== EXPORT SEGMENTS ======
 
                             // CRITICAL PATH: Failure here sets result to FALSE and stops the chain
                             // abort if at least one of the segment exports fails
                             .andThen(NOT FEC.ecCtrlKeyDown, createSegments)
-                            .aside(TRUE, function:boolean begin deletePreviousExport; result := TRUE; end) // now we have newly-exported segment(s)
+                            .aside<TVoid>(TRUE, function:TVoid begin deletePreviousExport; end) // now we have newly-exported segment(s)
 
   //====== CHECK FOR SINGLE OR MULTIPLE SEGMENTS ======
 
                             // single segment so just rename without the concat stage
                             // Aside rename doesn't overwrite the success of segments
-                            .aside(NOT FEC.ecDoConcat, renameFile, FEC.ecSegOneFN, filePathOUT)
+                            .aside(NOT FEC.ecDoConcat, system.sysUtils.renameFile, FEC.ecSegOneFN, filePathOUT)
 
   //====== CONCAT MULTIPLE SEGMENTS ======
 
@@ -483,12 +481,12 @@ begin
   //====== PLAY THE EXPORTED MEDIA FILE ======
 
                             // Post-process actions that do not impact the final result
-                            .aside(FEC.ecPlayEdited,  function:boolean begin playExportedMediaFile; result := TRUE; end) // these methods don't return a boolean so we force one which we then ignore
-                            .aside(TRUE,              function:boolean begin mmpDelay(500);         result := TRUE; end) // delay briefly so we can see the final message
+                            .aside<TVoid>(FEC.ecPlayEdited,  function:TVoid begin playExportedMediaFile;  end) // these methods don't return a boolean so we force one which we then ignore
+                            .aside<TVoid>(TRUE,              function:TVoid begin mmpDelay(500);          end) // delay briefly so we can see the final message
 
   //====== TEARDONW PROGRESS FORM ======
 
-                            .aside(TRUE, function:boolean begin FProgressForm := NIL; end)
+                            .aside<TVoid>(TRUE, function:TVoid begin FProgressForm := NIL; end)
 
                             // return the final boolean to result
                             .thenStop;
@@ -572,8 +570,17 @@ begin
 end;
 
 function TExporter.segFileEntry(const aSegFile: string): string;
+//                                                                               file 'B:\\Movies\\Monty Python'\''s Life of Brian (1979).seg02.mp4'
+// 1. you have to close the first half of the single-quoted string
+// 2. then add the escaped quote in the file name
+// 3. then start a second single-quoted string
+// 4. All while making sure backslashes are doubled
+// 5. ffmpeg then glues them all together
+// 6. ridiculous!
 begin
-  result := 'file ''' + stringReplace(aSegFile, '\', '\\', [rfReplaceAll]) + '''';
+  result := stringReplace(aSegFile, '\', '\\', [rfReplaceAll]);
+  result := stringReplace(result, '''', '''\''''', [rfReplaceAll]);
+  result := 'file ''' + result + '''';
 end;
 
 function TExporter.playExportedMediaFile{(const bMultiSegs: boolean)}: TVoid;

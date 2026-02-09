@@ -92,12 +92,12 @@ implementation
 
 uses
   winApi.shellApi,
-  system.strUtils, system.sysUtils, system.types,
+  system.math, system.strUtils, system.sysUtils, system.types,
   vcl.dialogs,
   bazCmd, bazFuncDefs,
-  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
+  mmpConsts, mmpDesktopUtils, mmpDialogs, mmpExportExec, mmpFileUtils, mmpFolderNavigation, mmpFolderUtils, mmpFormatting, mmpGlobalState,
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
-  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormTimeline, view.mmpFormHelpFull, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
+  view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormProgress, view.mmpFormTimeline, view.mmpFormHelpFull, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
   model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
   TCleanupClass,
@@ -123,6 +123,7 @@ type
 
   private
     function    adjustAspectRatio:    TVoid;
+    function    createPreviewSheet:   TVoid;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           TVoid;
     function    doCleanup(const bConfirm: boolean = TRUE): TVoid;
@@ -276,6 +277,71 @@ begin
   inherited;
   FSubscriber   := appEvents.subscribe(newSubscriber(onNotify));
   FSubscriberTT := TT.subscribe(newSubscriber(onTickTimer));
+end;
+
+function TVM.createPreviewSheet: TVoid;
+var
+  vProcessHandle: THANDLE;
+  vCancelled:     boolean;
+
+
+  function log(const vFilePathLOG: string; const aLogEntry: string): TVoid;
+  begin
+    var vLogFile          := vFilePathLOG;
+    var vLog              := TStringList.create;
+    vLog.defaultEncoding  := TEncoding.UTF8;
+    try
+      case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
+      vLog.add(aLogEntry);
+      vLog.saveToFile(vLogFile);
+    finally
+      vLog.free;
+    end;
+  end;
+
+begin
+  var vSkipIntro:       integer := 300; // previewSkipIntro=300
+  var vSkipOutro:       integer := 300; // previewSkipOutro=300
+  var vMediaFile:       string  := mmp.cmd(evPLReqCurrentItem).text;
+  var vEscapedMediaFile:string  := stringReplace(extractFileName(vMediaFile), '''', '''''', [rfReplaceAll]);
+  var vPrelim:          string  := ' -threads 1 -skip_frame nokey -an -sn';
+  var vSeek:            string  := format(' -ss %d -lowres 2', [vSkipIntro]);
+  var vInputFile:       string  := format(' -i %s',  [mmpQuoted(vMediaFile)]);
+  var vVF:              string  := format(' -vf "setpts=PTS+%d/TB,', [vSkipIntro + 1]); // Presentation TimeStamp
+  var vCols:            integer :=   4; // previewColumns=4
+  var VRows:            integer :=   5; // previewRows=5
+  var vIntervalSS:      integer := ceil((GS.duration - vSkipIntro - vSkipOutro) / ((vCols * vRows) - 1));
+  var vInterval:        string  := format(' select=''isnan(prev_selected_t)+gte(t-prev_selected_t,%d)'',', [vIntervalSS]);
+  var vThumbWidth:      integer := 300; // previewThumbWidth=300
+  var vScale:           string  := format('scale=%d:-1,', [vThumbWidth]);
+  var vDrawTimeStamp:   string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%{pts\:gmtime\:0\:%H\\\:%M\\\:%S}'':fontcolor=0x4B96AF:fontsize=12:x=w-tw-8:y=h-th-8,';
+  var vTile:            string  := format('tile=%dx%d:padding=4:margin=4:color=black,pad=iw:ih+75:0:75:color=black,', [vCols, vRows]);
+  var vDrawLine1:       string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdanab.ttf'':text=''File\: %s'':fontcolor=0xAF964B:fontsize=14:x=10:y=10,', [vEscapedMediaFile]);
+  var vLine2:           string  := 'Size\: ';
+  var vDrawLine2:       string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=28,', [vLine2]);
+  var vLine3:           string  := 'Audio\: ';
+  var vDrawLine3:       string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=46,', [vLine3]);
+  var vLine4:           string  := 'Video\: ';
+  var vDrawLine4:       string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=64,', [vLine4]);
+  var vDrawLogo1:       string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdanab.ttf'':text=''MMP'':fontcolor=0x404040:fontsize=48:x=w-tw-10:y=10,';
+  var vDrawLogo2:       string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''Minimalist Media Player'':fontcolor=0x404040:fontsize=12:x=w-tw-5:y=48"';
+  var vImage:           string  := ' -frames:v 1 -update 1 -q:v 2';
+  var vImageFile:       string  := changeFileExt(vMediaFile, '.jpg');
+  var vOutputFile:      string  := format(' -y %s', [mmpQuoted(vImageFile)]);
+
+  var vCmdLine := vPrelim + vSeek + vInputFile + vVF + vInterval + vScale + vDrawTimeStamp + vTile + vDrawLine1 + vDrawLine2 + vDrawLine3 + vDrawLine4 + vDrawLogo1 + vDrawLogo2 + vImage + vOutputFile;
+
+  log(changeFileExt(vMediaFile, '.log'), vCmdLine); log(changeFileExt(vMediaFile, '.log'), '');
+
+  var FProgressForm := mmpNewProgressForm;
+  FProgressForm.heading    := 'Create Preview Contact Sheet';
+  FProgressForm.subHeading := 'Please wait...';
+  FProgressForm.onCancel   := NIL;
+  FProgressForm.formShow;
+
+  mmpExportExecAndWait(vCmdLine, rtFFmpegShow, vProcessHandle, vCancelled);
+
+  case fileExists(vImageFile) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vImageFile + '" noplaylist'); end;
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -665,6 +731,7 @@ begin
     evVMMPPlayPrev:         playPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder(aNotice.tf);
     evVMPlayPrevFolder:     aNotice.tf := playPrevFolder;
+    evVMPreviewSheet:       createPreviewSheet;
     evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
     evVMRenameCleanFile:    sendOpInfo(renameCurrentItem(rtKeepClean));

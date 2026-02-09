@@ -64,11 +64,12 @@ var SR: TSearchRec;
   begin
     var vSL := TStringList.create;
     vSL.loadFromFile(aFolderPath + SR.name);
-
+                                                                    // file 'B:\\Movies\\Kelly'\''s Heroes (1970).seg02.mp4'
     for var i := 0 to vSL.count - 1 do begin
       vFN := copy(vSL[i], 7);
       delete(vFN, length(vFN), 1); // delete the trailing quote
-      vFN := replaceStr(vFN, '\\', '\');
+      vFN := stringReplace(vFN, '''\''''', '''', [rfReplaceAll]); // EXPERIMENTAL - collapse each '\'' back to a single quote
+      vFN := replaceStr(vFN, '\\', '\');                          // un-double the backslashes
 
       var vFound := mmp.cmd(evPLFind, vFN).tf;
 
