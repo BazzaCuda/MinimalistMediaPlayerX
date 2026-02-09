@@ -448,6 +448,7 @@ end;
 
 destructor TTimeline.Destroy;
 begin
+  appEvents.unsubscribe(FSubScriber);
   try
     segments.clear;
   finally

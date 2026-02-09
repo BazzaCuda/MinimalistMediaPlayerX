@@ -177,6 +177,7 @@ end;
 
 function THelpFormProxy.createForm(const wr: TWndRec): THelpForm;
 begin
+  appEvents.unsubscribe(FSubscriber);
   result := FHelpForm;
   case wr.createNew of FALSE: EXIT; end;
   result := THelpForm.create(wr.height, wr.helpType);

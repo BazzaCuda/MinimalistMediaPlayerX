@@ -182,10 +182,8 @@ end;
 
 function secureDeleteFile(const aFilePath: string): integer;
 begin
-  // debugString('secureDeleteFile', aFilePath);
   result := -10;
   case fileExists(aFilePath) of TRUE: result := secureDelete(aFilePath); end;
-  // debugInteger('secureDeleteFile', result);
 end;
 
 //=====
@@ -262,10 +260,13 @@ begin
                         procedure
                         begin
                           try
-                            interlockedIncrement(gCount);
-                            secureDeleteFile(aFilePath);
-                            interlockedDecrement(gCount);
-                          except end;
+                            try
+                              secureDeleteFile(aFilePath);
+                            finally
+                              interlockedDecrement(gCount);
+                            end;
+                          except
+                          end;
                         end);
   gTasks.add(vTask);
   result := TRUE;
@@ -306,17 +307,27 @@ end;
 function monitorTasks: TVoid;
 var i: integer;
 begin
-  for i := 0 to gTasks.count - 1 do gTasks[i].start;
+  var vMax := TThreadPool.default.maxWorkerThreads;
+  try
+    TThreadPool.default.maxWorkerThreads := 10;
 
-  repeat
+    gCount := gTasks.count;
     mmp.cmd(evGSActiveTasks, gCount);
-    mmpDelay(100);
-  until gCount = 0;
 
-  mmp.cmd(evSTOpInfo2, -1);
-  mmp.cmd(evGSActiveTaskPercent, -1); // suppress mmpVM from sending anything to mmpFormCaptions.OpInfo2 for display
-  mmp.cmd(evGSActiveTasks, 0);        // was gCount
-  gTasks.clear;
+    for i := 0 to gTasks.count - 1 do gTasks[i].start;
+
+    repeat
+      mmp.cmd(evGSActiveTasks, gCount);
+      mmpDelay(100);
+    until gCount = 0;
+
+    mmp.cmd(evSTOpInfo2, -1);
+    mmp.cmd(evGSActiveTaskPercent, -1); // mmpVM's evSTOpInfo2 event will clear mmpFormCaptions.OpInfo2
+    mmp.cmd(evGSActiveTasks, 0);        // was gCount
+    gTasks.clear;
+  finally
+    TThreadPool.default.maxWorkerThreads := vMax;
+  end;
 end;
 
 function mmpStartTasks: TVoid;

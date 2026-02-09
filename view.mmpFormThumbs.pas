@@ -273,6 +273,7 @@ end;
 
 procedure TThumbsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  appEvents.unsubscribe(FSubscriber);
   mpv           := NIL; // do this first or the user will briefly see the blank form background
   freeAndNIL(FMPVHost);
   FThumbs       := NIL;
@@ -508,7 +509,9 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.activeTasks = 0 of TRUE: EXIT; end;
-  mmp.cmd(aNotice.event = evGSActiveTasks, procedure begin mmpSetPanelText(FStatusBar, pnHelp, format('Shredding: %d', [GS.activeTasks])); end);
+  case aNotice.event of
+    evGSActiveTasks: begin {debugInteger('GS.activeTasks', GS.activeTasks);} mmpSetPanelText(FStatusBar, pnHelp, format('Shredding: %d', [GS.activeTasks])); end;
+  end;
 end;
 
 procedure TThumbsForm.onInitMPV(sender: TObject);

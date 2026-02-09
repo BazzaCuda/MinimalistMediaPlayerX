@@ -36,6 +36,8 @@ type
   end;
 
   TMixer = class(TInterfacedObject, IMixer)
+  strict private
+    FSubscriber: ISubscriber;
   private
     function    onNotify(const aNotice: INotice): INotice;
   protected
@@ -45,6 +47,7 @@ type
     procedure   setVolume(aValue: integer); virtual; abstract;
   public
     constructor Create;
+    destructor  Destroy; override;
     function    notify(const aNotice: INotice): INotice;
     function    setSysVolMax: string;
     property    muted:  boolean read getMute   write setMute;
@@ -298,6 +301,12 @@ end;
 constructor TMixer.Create;
 begin
   appEvents.subscribe(newSubscriber(onNotify));
+end;
+
+destructor TMixer.Destroy;
+begin
+//  appEvents.unsubscribe(FSubscriber);
+  inherited;
 end;
 
 function TMixer.notify(const aNotice: INotice): INotice;

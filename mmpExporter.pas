@@ -56,7 +56,7 @@ uses
   system.ioUtils, system.classes, system.generics.collections, system.sysUtils,
   vcl.controls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  bazCmd,
+  bazCmd, bazFuncDefs,
   mmpExportExec, mmpFileUtils, mmpKeyboardUtils, mmpUtils,
   TSegmentClass,
   model.mmpMediaInfo,
@@ -438,7 +438,7 @@ begin
   result := TAction<boolean>.startWith(TRUE) // default to TRUE unless an FFmpeg process fails
 
   //====== SETUP PROGRESS FORM ======
-                            .aside(TRUE, function:boolean begin FProgressForm := initProgressForm; end)
+                            .aside<TVoid>(TRUE, function:TVoid begin FProgressForm := initProgressForm; end)
 
   //====== DELETE PREVIOUS CHAPTER DATA ======
 
@@ -497,8 +497,10 @@ end;
 
 function TExporter.exportFailRerun(const aProgressForm: IProgressForm; const aSegID: string = EMPTY): TModalResult;
 begin
-  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading := 'Concatenation failed';
-                          FALSE: aProgressForm.subHeading := format('Export of seg%s failed', [aSegID]); end;
+  aProgressForm.subHeading := mmp.use<string>(aSegID = EMPTY, 'Concatenation failed', format('Export of seg%s failed', [aSegID]));
+
+//  case aSegID = EMPTY of   TRUE: aProgressForm.subHeading := 'Concatenation failed';
+//                          FALSE: aProgressForm.subHeading := format('Export of seg%s failed', [aSegID]); end;
 
   aProgressForm.modal := TRUE;
 

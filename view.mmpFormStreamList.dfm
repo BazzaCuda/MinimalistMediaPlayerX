@@ -13,6 +13,7 @@ object StreamListForm: TStreamListForm
   Font.Style = []
   KeyPreview = True
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress

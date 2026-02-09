@@ -59,7 +59,7 @@ object HelpForm: THelpForm
       object helpLabel: TLabel
         Left = 0
         Top = 0
-        Width = 742
+        Width = 561
         Height = 18
         Align = alBottom
         Alignment = taCenter
@@ -75,7 +75,6 @@ object HelpForm: THelpForm
         ParentColor = False
         ParentFont = False
         Transparent = False
-        ExplicitWidth = 561
       end
     end
   end

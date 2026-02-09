@@ -87,6 +87,7 @@ type
     lblConfig4: TLabel;
     lblConfigLink4: TLabel;
     procedure formCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
     procedure clSegmentsItemClick(Sender: TObject);
     procedure clStreamsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -411,6 +412,11 @@ begin
   inherited;
   params.ExStyle    := params.ExStyle and NOT WS_EX_APPWINDOW;
   params.WndParent  := GS.mainForm.HANDLE; //   application.HANDLE;
+end;
+
+procedure TStreamListForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  appEvents.unsubscribe(FSubscriber);
 end;
 
 procedure TStreamListForm.formCreate(Sender: TObject);

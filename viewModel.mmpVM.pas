@@ -635,7 +635,7 @@ begin
 
   case aNotice.event of
     evAppClose:             doAppClose;
-    evGSActiveTasks:        mmp.cmd(GS.activeTasks > 0, sendOpInfo, ''); //    case GS.activeTasks > 0 of TRUE: sendOpInfo(format('Shredding: %d', [GS.activeTasks])); end;
+    evGSActiveTasks:        mmp.cmd(GS.activeTasks > 0, sendOpInfo, format('Shredding: %d', [GS.activeTasks])); //   case GS.activeTasks > 0 of TRUE: sendOpInfo(format('Shredding: %d', [GS.activeTasks])); end;
     evVMArrangeAll:         mmpArrangeAll(GS.mainForm.handle);
     evVMAdjustAspectRatio:  adjustAspectRatio;
     evVMCenterWindow:       begin mmpCenterWindow(GS.mainForm.handle, noPoint); mmp.cmd(evVMMoveTimeline); end;
@@ -777,12 +777,16 @@ end;
 
 procedure TVM.onWINSkipBackwards(msg: TMessage);
 begin
-  mmp.cmd(evVMSkipSeconds, CF.asInteger[CONF_SKIP_SECONDS] * -1);
+  var vTab := CF.asInteger[CONF_SKIP_SECONDS];
+  vTab := mmp.use<integer>(vTab = 0, 5, vTab);
+  mmp.cmd(evVMSkipSeconds, vTab * -1);
 end;
 
 procedure TVM.onWINSkipForwards(msg: TMessage);
 begin
-  mmp.cmd(evVMSkipSeconds, CF.asInteger[CONF_SKIP_SECONDS]);
+  var vTab := CF.asInteger[CONF_SKIP_SECONDS];
+  vTab := mmp.use<integer>(vTab = 0, 5, vTab);
+  mmp.cmd(evVMSkipSeconds, vTab);
 end;
 
 procedure TVM.onWINStartOver(var msg: TMessage);

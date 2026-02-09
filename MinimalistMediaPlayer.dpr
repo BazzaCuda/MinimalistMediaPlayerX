@@ -28,15 +28,6 @@ program MinimalistMediaPlayer;
   {$ifopt O-} {$MESSAGE ERROR 'Release Build: Optimization          (O-) disabled'} {$endif}
 {$endif}
 
-{$ifdef FastMM5}
-  {$ifopt D+}
-    {$define UseFastMM5MemoryLeakReporting}
-    {$ifdef UseFastMM5MemoryLeakReporting}
-      {$define FastMM_DebugLibraryStaticDependency}
-    {$endif}
-  {$endif}
-{$endif}
-
 {$ifopt D+}
   // {$define designTimeThemes} // comment out when not required
 {$endif}
@@ -51,9 +42,6 @@ program MinimalistMediaPlayer;
 
 // dontTouchUses
 uses
-  {$ifdef FastMM5}
-  FastMM5 in '_FastMM5\FastMM5.pas',
-  {$endif }
   {$ifdef designTimeThemes}
   vcl.forms,
   {$endif }
@@ -162,21 +150,6 @@ begin
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
   {$endif}
   {$if BazDebugWindow} {debugClear;} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
-
-  {$ifdef FastMM5}
-  FastMM_SetOptimizationStrategy(mmosOptimizeForSpeed);
-//  {$if BazDebugWindow} debugClear; {$endif}            // done already in mmpStackTrace initialization section - unless that unit has been commented out or we have D+ set
-
-  case reportMemoryLeaksOnShutdown of TRUE: begin
-                                              {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
-                                              {$ifdef useFastMM5MemoryLeakReporting}
-                                              // FastMM_DeleteEventLogFile;
-                                              FastMM_EnterDebugMode;
-                                              FastMM_LogToFileEvents  := FastMM_LogToFileEvents   + [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary];
-                                              FastMM_MessageBoxEvents := FastMM_MessageBoxEvents  + [mmetUnexpectedMemoryLeakSummary];
-                                              {$endif}
-                                            end;end;
-  {$endif}
 
   {$ifdef useMadExcept}
 //  madExcept.SetLeakReportFile(extractFilePath(paramStr(0)) + 'madExcept.log'); // this suppresses the dialog

@@ -54,6 +54,7 @@ type
     FMediaType:               TMediaType;
     FMPVScreenshotDirectory:  string;
     FNotifier:                INotifier;
+    FSubscriber:              ISubscriber;
     FVideoHeight:             integer;
     FVideoWidth:              integer;
   private
@@ -96,11 +97,12 @@ constructor TMediaPlayer.Create;
 begin
   FNotifier := newNotifier;
   TT.subscribe(newSubscriber(onTickTimer));
-  appEvents.subscribe(newSubscriber(onNotify));
+  FSubscriber := appEvents.subscribe(newSubscriber(onNotify)); // EXPERIMENTAL - WASN'T STORING FSUBSCRIBER
 end;
 
 destructor TMediaPlayer.Destroy;
 begin
+  appEvents.unsubscribe(FSubscriber);
   mpv := NIL;
   inherited;
 end;
