@@ -243,6 +243,7 @@ $(PostBuildEvent)]]></PostBuildEvent>
         <DCCReference Include="viewModel.mmpVM.pas"/>
         <DCCReference Include="mmpAction.pas"/>
         <DCCReference Include="_bazLib\bazFuncDefs.pas"/>
+        <DCCReference Include="model.mmpPreviewSheet.pas"/>
         <None Include="_debugWindow\bazDebugWindow.inc"/>
         <RcItem Include="_resources\DarkMode.vsf">
             <ContainerId>ResourceItem</ContainerId>

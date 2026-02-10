@@ -99,7 +99,7 @@ uses
   mmpKeyboardUtils, mmpShellUtils, mmpTickTimer, mmpUtils, mmpWindowUtils,
   view.mmpFormCaptions, view.mmpFormConfig, view.mmpFormConfirmDelete, view.mmpFormProgress, view.mmpFormTimeline, view.mmpFormHelpFull, view.mmpKeyboardMain, view.mmpThemeUtils, mmpUserFolders,
   viewModel.mmpKeyboardOps,
-  model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils,
+  model.mmpConfigFile, model.mmpMediaTypes, model.mmpPlaylistUtils, model.mmpPreviewSheet,
   TCleanupClass,
   _debugWindow;
 
@@ -123,7 +123,6 @@ type
 
   private
     function    adjustAspectRatio:    TVoid;
-    function    createPreviewSheet:   TVoid;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           TVoid;
     function    doCleanup(const bConfirm: boolean = TRUE): TVoid;
@@ -277,58 +276,6 @@ begin
   inherited;
   FSubscriber   := appEvents.subscribe(newSubscriber(onNotify));
   FSubscriberTT := TT.subscribe(newSubscriber(onTickTimer));
-end;
-
-function TVM.createPreviewSheet: TVoid;
-var
-  vProcessHandle: THANDLE;
-  vCancelled:     boolean;
-begin
-  var vSkipIntroPercent:    integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_SKIP_INTRO] <> 0, CF.asInteger[CONF_PREVIEW_SKIP_INTRO], 5);
-  var vSkipOutroPercent:    integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_SKIP_OUTRO] <> 0, CF.asInteger[CONF_PREVIEW_SKIP_OUTRO], 5);
-  var vSkipIntro:           integer := round(GS.duration * vSkipIntroPercent / 100);
-  var vSkipOutro:           integer := round(GS.duration * vSkipOutroPercent / 100);
-  var vMediaFile:           string  := mmp.cmd(evPLReqCurrentItem).text;
-  var vEscapedMediaFile:    string  := stringReplace(extractFileName(vMediaFile), '''', '''''', [rfReplaceAll]);
-  var vPrelim:              string  := ' -threads 1 -skip_frame nokey -an -sn';
-  var vSeek:                string  := format(' -ss %d -lowres 2', [vSkipIntro]);
-  var vInputFile:           string  := format(' -i %s',  [mmpQuoted(vMediaFile)]);
-  var vVF:                  string  := format(' -vf "setpts=PTS+%d/TB,', [vSkipIntro + 1]); // Presentation TimeStamp
-  var vCols:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] <> 0, CF.asInteger[CONF_PREVIEW_COLUMNS], 4);
-  var VRows:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS] <> 0, CF.asInteger[CONF_PREVIEW_ROWS], 5);
-  var vIntervalSS:          integer := ceil((GS.duration - vSkipIntro - vSkipOutro) / ((vCols * vRows) - 1));
-  var vInterval:            string  := format(' select=''isnan(prev_selected_t)+gte(t-prev_selected_t,%d)'',', [vIntervalSS]);
-  var vThumbWidth:          integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_THUMB_WIDTH] <> 0, CF.asInteger[CONF_PREVIEW_THUMB_WIDTH], 300);
-  var vScale:               string  := format('scale=%d:-1,', [vThumbWidth]);
-  var vDrawTimeStamp:       string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%{pts\:gmtime\:0\:%H\\\:%M\\\:%S}'':fontcolor=0x4B96AF:fontsize=12:x=w-tw-8:y=h-th-8,';
-  var vTile:                string  := format('tile=%dx%d:padding=4:margin=4:color=black,pad=iw:ih+75:0:75:color=black,', [vCols, vRows]);
-  var vDrawLine1:           string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdanab.ttf'':text=''File\: %s'':fontcolor=0xAF964B:fontsize=14:x=10:y=10,', [vEscapedMediaFile]);
-  var vLine2:               string  := 'Size: ';
-      vLine2                        := stringReplace(vLine2, ':', '\:', [rfReplaceAll]);
-  var vDrawLine2:           string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=28,', [vLine2]);
-  var vLine3:               string  := 'Audio: ';
-      vLine3                        := stringReplace(vLine3, ':', '\:', [rfReplaceAll]);
-  var vDrawLine3:           string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=46,', [vLine3]);
-  var vLine4:               string  := format('Video: %dx%d, Duration: %s', [mmp.cmd(evMPReqVideoWidth).integer, mmp.cmd(evMPReqVideoHeight).integer, mmpFormatTime(GS.duration)]);
-      vLine4                        := stringReplace(vLine4, ':', '\:', [rfReplaceAll]);
-  var vDrawLine4:           string  := format('drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%s'':fontcolor=0xAF964B:fontsize=12:x=10:y=64,', [vLine4]);
-  var vDrawLogo1:           string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdanab.ttf'':text=''MMP'':fontcolor=0x404040:fontsize=48:x=w-tw-10:y=10,';
-  var vDrawLogo2:           string  := 'drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''Minimalist Media Player'':fontcolor=0x404040:fontsize=12:x=w-tw-5:y=48"';
-  var vImage:               string  := ' -frames:v 1 -update 1 -q:v 2';
-  var vImageFile:           string  := changeFileExt(vMediaFile, '.jpg');
-  var vOutputFile:          string  := format(' -y %s', [mmpQuoted(vImageFile)]);
-
-  var vCmdLine := vPrelim + vSeek + vInputFile + vVF + vInterval + vScale + vDrawTimeStamp + vTile + vDrawLine1 + vDrawLine2 + vDrawLine3 + vDrawLine4 + vDrawLogo1 + vDrawLogo2 + vImage + vOutputFile;
-
-  var FProgressForm         := mmpNewProgressForm;
-  FProgressForm.heading     := 'Create Preview Contact Sheet';
-  FProgressForm.subHeading  := 'Please wait...';
-  FProgressForm.onCancel    := NIL;
-  FProgressForm.formShow;
-
-  mmpExportExecAndWait(vCmdLine, rtFFmpeg, vProcessHandle, vCancelled, EMPTY {changeFileExt(vMediaFile, '.log')});
-
-  case fileExists(vImageFile) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vImageFile + '" noplaylist'); end;
 end;
 
 function TVM.deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -718,7 +665,7 @@ begin
     evVMMPPlayPrev:         playPrev;
     evVMPlayNextFolder:     aNotice.tf := playNextFolder(aNotice.tf);
     evVMPlayPrevFolder:     aNotice.tf := playPrevFolder;
-    evVMPreviewSheet:       mmp.cmd(GS.mediaType = mtVideo, createPreviewSheet);
+    evVMPreviewSheet:       TAction<TVoid>.pick(GS.mediaType = mtVideo, mmpCreatePreviewSheet).perform(mmp.cmd(evPLReqCurrentItem).text);
     evVMReInitTimeline:     reInitTimeline(aNotice.integer);
     evVMPlaySomething:      playSomething(aNotice.integer);
     evVMRenameCleanFile:    sendOpInfo(renameCurrentItem(rtKeepClean));

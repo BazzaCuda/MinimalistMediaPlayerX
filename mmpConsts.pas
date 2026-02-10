@@ -132,6 +132,7 @@ const
   CONF_OPEN_IMAGE             = 'openImage';
   CONF_PLAY_EDITED            = 'playEdited';
   CONF_PLAYLIST_FORMAT        = 'playlistFormat';
+  CONF_PREVIEW_SHOW_PREVIEW   = 'previewShowPreview';
   CONF_PREVIEW_SKIP_INTRO     = 'previewSkipIntroPercent';
   CONF_PREVIEW_SKIP_OUTRO     = 'previewSkipOutroPercent';
   CONF_PREVIEW_COLUMNS        = 'previewColumns';

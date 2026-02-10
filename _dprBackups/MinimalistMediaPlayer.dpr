@@ -142,7 +142,8 @@ uses
   Vcl.Themes,
   Vcl.Styles,
   mmpAction in 'mmpAction.pas',
-  bazFuncDefs in '_bazLib\bazFuncDefs.pas';
+  bazFuncDefs in '_bazLib\bazFuncDefs.pas',
+  model.mmpPreviewSheet in 'model.mmpPreviewSheet.pas';
 
 procedure setupRunMode;
 begin
