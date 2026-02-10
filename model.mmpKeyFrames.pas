@@ -263,7 +263,7 @@ begin
 
   var vProcessHandle: THandle;
   var vCancelled:     boolean := FALSE;
-  mmpExportExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe, vProcessHandle, vCancelled);
+  mmpExportExecAndWait(vParams + vInterval + vKeyFileO + vInFile, rtFFProbe, vProcessHandle, vCancelled, changeFileExt(paramStr(0), EMPTY));
 
   case fileExists(vKeyFile) of   TRUE: aStringList.loadFromFile(vKeyFile);
                                 FALSE: EXIT; end;

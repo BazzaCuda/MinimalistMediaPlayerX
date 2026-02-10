@@ -87,7 +87,6 @@ type
     function  filePathSEG: string;
     function  filePathTempChapters(const bWriteChapters: boolean; const aSuffix: string = ' [chapters]'): string;
     function  initProgressForm: IProgressForm;
-    function  log(const aLogEntry: string): TVoid;
     function  playExportedMediaFile: TVoid;
     function  segFileEntry(const aSegFile: string): string;
     function  showProgressForm(const aHeading: string; const aSubHeading: string; const aOnCancel: TNotifyEvent): IProgressForm;
@@ -143,9 +142,8 @@ begin
   vFilePathOUT := TAction<string>.pick(lowerCase(extractFileExt(vFilePathOUT)) = '.m4v', changeFileExt).default(vFilePathOUT).perform(vFilePathOUT, '.mp4');
 
   cmdLine := cmdLine + ' -y "' + vFilePathOUT + '"';
-  log(cmdLine); log(EMPTY);
 
-  result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled);
+  result := mmpExportExecAndWait(cmdLine, rtFFmpegShow, FProcessHandle, FCancelled, filePathLOG);
 
   mmp.cmd(result and fileExists(vFilePathOUT), procedure begin
                           var vPosition := mmp.cmd(evMPReqPosition).integer; // wait for the copy to finish before getting the current position
@@ -201,10 +199,8 @@ begin
 
   cmdLine := cmdLine + ' -y "' + filePathOUT + '"';
 
-  log(cmdLine); log(EMPTY);
-
-  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
-  case result of FALSE: case exportFailRerun(FProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled); end;end;
+  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled, filePathLOG);
+  case result of FALSE: case exportFailRerun(FProgressForm) = mrYes of TRUE: result := mmpExportExecAndWait(cmdLine, rtCMD, FProcessHandle, FCancelled, filePathLOG); end;end;
 end;
 
 function TExporter.createChaptersAndOrCoverArt: boolean;
@@ -264,9 +260,7 @@ begin
   case fileExists(filePathTempChapters(FEC.ecWriteChapters)) of TRUE: mmpDeleteThisFile(filePathTempChapters(FEC.ecWriteChapters), [], TRUE, TRUE, FALSE); end;
   cmdLine := cmdLine + ' "' + filePathTempChapters(FEC.ecWriteChapters) + '"';
 
-  log(cmdLine); log(EMPTY);
-
-  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+  result := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled, filePathLOG);
 end;
 
 function TExporter.createChaptersFromOutput: TVoid;
@@ -338,9 +332,8 @@ begin
   case fileExists(filePathCover) of TRUE: EXIT; end; // we don't overwrite a user's beloved album art, they have to delete it themselves!
 
   var cmdLine := ' -i "' + FEC.ecMediaFilePath + '" -map 0:V? -c copy "' + filePathCover + '"';
-  log(cmdLine); log(EMPTY);
 
-  FEC.ecExportedCoverArt := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled);
+  FEC.ecExportedCoverArt := mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled, filePathLOG);
 end;
 
 function TExporter.createFinalFile: boolean;
@@ -400,18 +393,17 @@ begin
       case TSegment.includedCount = 1 of TRUE: FEC.ecSegOneFN := segFile; end;
 
       cmdLine := cmdLine + ' -y "' + segFile + '"';
-      log(cmdLine); log(EMPTY);
 
       FProgressForm.dummyLabel.caption := extractFileName(segFile);
       FProgressForm.subHeading := mmpWrapText(extractFileName(segFile), FProgressForm.dummyLabel.width, FProgressForm.subHeadingWidth - 50, TRUE); // -50 to create a minimum 25-pixel margin on each end
 
-      case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled) of
+      case  mmpExportExecAndWait(cmdLine, rtFFmpeg, FProcessHandle, FCancelled, filePathLOG) of
               TRUE:   vSL.add(segFileEntry(segFile));
               FALSE:  begin
                         result := FALSE; // stays false during all other segment exports
                         case exportFailRerun(FProgressForm, vSegment.segID) = mrYes of TRUE:  begin
                                                                                                 vSL.add(segFileEntry(segFile)); // the user will correct the export
-                                                                                                mmpExportExecAndWait(cmdLine, rtCmd, FProcessHandle, FCancelled); end;end;end;end; // result will still be FALSE
+                                                                                                mmpExportExecAndWait(cmdLine, rtCmd, FProcessHandle, FCancelled, filePathLOG); end;end;end;end; // result will still be FALSE
     end;
     vSL.saveToFile(filePathSEG);
     FEC.ecDoConcat := (FEC.ecSegOneFN = EMPTY) or FEC.ecWriteChapters
@@ -547,20 +539,6 @@ begin
   var vS2 := EMPTY; case MI.selectedCount > 1 of  TRUE: vS2 := 's'; end;
 
   result := showProgressForm(format('Exporting %d segment%s (%d stream%s)', [TSegment.includedCount, vS1, MI.selectedCount, vS2]), '', onCancel);
-end;
-
-function TExporter.log(const aLogEntry: string): TVoid;
-begin
-  var vLogFile          := filePathLOG;
-  var vLog              := TStringList.create;
-  vLog.defaultEncoding  := TEncoding.UTF8;
-  try
-    case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
-    vLog.add(aLogEntry);
-    vLog.saveToFile(vLogFile);
-  finally
-    vLog.free;
-  end;
 end;
 
 procedure TExporter.onCancel(sender: TObject);

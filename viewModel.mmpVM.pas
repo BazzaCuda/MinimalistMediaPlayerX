@@ -283,21 +283,6 @@ function TVM.createPreviewSheet: TVoid;
 var
   vProcessHandle: THANDLE;
   vCancelled:     boolean;
-
-  function log(const vFilePathLOG: string; const aLogEntry: string): TVoid;
-  begin
-    var vLogFile          := vFilePathLOG;
-    var vLog              := TStringList.create;
-    vLog.defaultEncoding  := TEncoding.UTF8;
-    try
-      case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
-      vLog.add(aLogEntry);
-      vLog.saveToFile(vLogFile);
-    finally
-      vLog.free;
-    end;
-  end;
-
 begin
   var vSkipIntroPercent:    integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_SKIP_INTRO] <> 0, CF.asInteger[CONF_PREVIEW_SKIP_INTRO], 5);
   var vSkipOutroPercent:    integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_SKIP_OUTRO] <> 0, CF.asInteger[CONF_PREVIEW_SKIP_OUTRO], 5);
@@ -335,15 +320,13 @@ begin
 
   var vCmdLine := vPrelim + vSeek + vInputFile + vVF + vInterval + vScale + vDrawTimeStamp + vTile + vDrawLine1 + vDrawLine2 + vDrawLine3 + vDrawLine4 + vDrawLogo1 + vDrawLogo2 + vImage + vOutputFile;
 
-  log(changeFileExt(vMediaFile, '.log'), vCmdLine); log(changeFileExt(vMediaFile, '.log'), '');
-
-  var FProgressForm := mmpNewProgressForm;
-  FProgressForm.heading    := 'Create Preview Contact Sheet';
-  FProgressForm.subHeading := 'Please wait...';
-  FProgressForm.onCancel   := NIL;
+  var FProgressForm         := mmpNewProgressForm;
+  FProgressForm.heading     := 'Create Preview Contact Sheet';
+  FProgressForm.subHeading  := 'Please wait...';
+  FProgressForm.onCancel    := NIL;
   FProgressForm.formShow;
 
-  mmpExportExecAndWait(vCmdLine, rtFFmpeg, vProcessHandle, vCancelled);
+  mmpExportExecAndWait(vCmdLine, rtFFmpeg, vProcessHandle, vCancelled, EMPTY {changeFileExt(vMediaFile, '.log')});
 
   case fileExists(vImageFile) of  TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vImageFile + '" noplaylist'); end;
 end;

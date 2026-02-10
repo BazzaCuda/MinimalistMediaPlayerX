@@ -2,25 +2,32 @@ unit mmpExportExec;
 
 interface
 
+uses
+  bazCmd,
+  mmpAction;
+
 type
   TRunType = (rtFFmpeg, rtCMD, rtFFmpegShow, rtFFprobe, rtFFProbeShow);
 
-function mmpExportExecAndWait(const aCmdLine: string; const aRunType: TRunType; var vProcessHandle: THandle; var vCancelled: boolean): boolean;
+function mmpExportExecAndWait(const aCmdLine: string; const aRunType: TRunType; var vProcessHandle: THandle; var vCancelled: boolean; const aLogFilePath: string): boolean;
+function mmpLog(const aLogFilePath: string; const aLogEntry: string): TVoid;
 
 implementation
 
 uses
   winApi.shellApi, winApi.windows,
-  mmpFileUtils, mmpUtils;
+  system.classes, system.sysUtils,
+  mmpConsts, mmpFileUtils, mmpUtils;
 
-
-function mmpExportExecAndWait(const aCmdLine: string; const aRunType: TRunType; var vProcessHandle: THandle; var vCancelled: boolean): boolean;
+function mmpExportExecAndWait(const aCmdLine: string; const aRunType: TRunType; var vProcessHandle: THandle; var vCancelled: boolean; const aLogFilePath: string): boolean;
 // rtFFMPeg: normal running - the user just gets to see progress dialogs
 // rtCMD: a segment export failed, so we rerun showing the cmd prompt box so the user can view the FFMPeg error messages
 var
   vExecInfo: TShellExecuteInfo;
   vExitCode: cardinal;
 begin
+  mmpLog(aLogFilePath, aCmdLine);
+
   vCancelled := FALSE;
   zeroMemory(@vExecInfo, SizeOf(vExecInfo));
   with vExecInfo do
@@ -74,6 +81,22 @@ begin
                                                       closeHandle(vExecInfo.hProcess);
                                                     end;
   end;
+end;
+
+function mmpLog(const aLogFilePath: string; const aLogEntry: string): TVoid;
+begin
+  mmp.cmd(aLogFilePath <> EMPTY, function:TVoid begin
+                                                  var vLogFile          := aLogFilePath;
+                                                  var vLog              := TStringList.create;
+                                                  vLog.defaultEncoding  := TEncoding.UTF8;
+                                                  try
+                                                    TAction.pick(fileExists(vLogFile), vLog.LoadFromFile).perform(vLogFile);
+                                                    // case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
+                                                    vLog.add(aLogEntry); vLog.add(EMPTY);
+                                                    vLog.saveToFile(vLogFile);
+                                                  finally
+                                                    vLog.free;
+                                                  end; end);
 end;
 
 end.
