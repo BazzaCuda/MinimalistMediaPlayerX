@@ -508,9 +508,9 @@ function TThumbsForm.onNotify(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
-  case GS.activeTasks = 0 of TRUE: EXIT; end;
   case aNotice.event of
-    evGSActiveTasks: begin {debugInteger('GS.activeTasks', GS.activeTasks);} mmpSetPanelText(FStatusBar, pnHelp, format('Shredding: %d', [GS.activeTasks])); end;
+    evGSActiveTasks: case GS.activeTasks = 0 of  TRUE: mmpResetPanelHelp(FStatusBar);
+                                                FALSE: mmpSetPanelText(FStatusBar, pnHelp, format('Shredding: %d', [GS.activeTasks])); end;
   end;
 end;
 
