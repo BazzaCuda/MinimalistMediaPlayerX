@@ -143,7 +143,8 @@ uses
   Vcl.Styles,
   mmpAction in 'mmpAction.pas',
   bazFuncDefs in '_bazLib\bazFuncDefs.pas',
-  model.mmpPreviewSheet in 'model.mmpPreviewSheet.pas';
+  model.mmpPreviewSheet in 'model.mmpPreviewSheet.pas',
+  mmpStringUtils in 'mmpStringUtils.pas';
 
 procedure setupRunMode;
 begin

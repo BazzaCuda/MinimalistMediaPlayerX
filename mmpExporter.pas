@@ -381,8 +381,8 @@ begin
       for var vMediaStream in MI.mediaStreams do begin
         // exclude any cover art streams from the exported segments if we're going to be adding chapter metadata or concatenating multiple segments
         // otherwise FFmpeg will convert the cover art to a video stream during the concat stage
-        case NOT vMediaStream.selected and (vMediaStream.streamType = 'Image') of TRUE: FEC.ecReAttachCoverArt := FALSE; end;
-        case FEC.ecExportedCoverArt and (vMediaStream.streamType = 'Image') of TRUE: CONTINUE; end; // ignore the cover art - it will be re-attached later
+        case NOT vMediaStream.selected and (vMediaStream.streamType = TStreamType.stImage) of TRUE: FEC.ecReAttachCoverArt := FALSE; end;
+        case FEC.ecExportedCoverArt and (vMediaStream.streamType = TStreamType.stImage) of TRUE: CONTINUE; end; // ignore the cover art - it will be re-attached later
         case vMediaStream.selected of TRUE: vMaps := vMaps + format(' -map 0:%d', [vMediaStream.Ix]); end;end;
 
       vMaps   := vMaps + ' -c copy -metadata title="' +vSegment.title + '"';
@@ -552,7 +552,7 @@ function TExporter.segFileEntry(const aSegFile: string): string;
 // 1. you have to close the first half of the single-quoted string
 // 2. then add the escaped quote in the file name
 // 3. then start a second single-quoted string
-// 4. All while making sure backslashes are doubled
+// 4. all while making sure that other backslashes are doubled
 // 5. ffmpeg then glues them all together
 // 6. ridiculous!
 begin

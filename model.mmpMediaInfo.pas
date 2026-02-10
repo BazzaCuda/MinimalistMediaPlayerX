@@ -28,6 +28,8 @@ uses
   TMediaStreamClass;
 
 type
+  TStreamType = TMediaStreamClass.TStreamType; // so other units don't have to "use" TMediaStreamClass.pas
+
   TMediaChapter = class(TObject)
   private
     FChapterTitle:    string;
@@ -315,6 +317,13 @@ var
   vInfo:        string;
   vStreamType:  string;
 
+  function truncDuration(const aDuration: string): string;
+  begin
+    result := aDuration;
+    var vPosDot := pos('.', result);
+    case vPosDot > 0 of TRUE: delete(result, vPosDot, length(result)); end;
+  end;
+
   function createVideoStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
   begin
 //    debug(mediaInfo_Get(handle, Stream_Video, aStreamIx, 'Format_Settings_RefFrames',         Info_Text, Info_Name));
@@ -331,11 +340,11 @@ var
                  + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'Height',                  Info_Text, Info_Name) + ' '
                  + mediaInfo_Get(FHandle, Stream_Video, aStreamIx, 'FrameRate',               Info_Text, Info_Name) + ' fps';
 
-    vBitRate := stringReplace(vBitRate, ' ', ',', []);
+    //vBitRate := stringReplace(vBitRate, ' ', ',', []); // WHY !?
     case pos(' (', vDuration) > 1 of TRUE: vDuration := copy(vDuration, 1, pos(' (', vDuration) - 1); end;
 
     vID := format('%.2d', [aFFmpegIx + 1]);
-    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
+    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, stVideo, truncDuration(vDuration), vFormat, vBitRate, vTitle, vLanguage, vInfo, 0));
   end;
 
   function createAudioStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
@@ -351,7 +360,7 @@ var
     vInfo       := mediaInfo_Get(FHandle, Stream_Audio, aStreamIx, 'SamplingRate/String',     Info_Text, Info_Name);
 
     vID := format('%.2d', [aFFmpegIx + 1]);
-    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
+    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, stAudio, truncDuration(vDuration), vFormat, vBitRate, vTitle, vLanguage, vInfo, 2));
   end;
 
   function createTextStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
@@ -367,7 +376,7 @@ var
     vInfo       := EMPTY;
 
     vID := format('%.2d', [aFFmpegIx + 1]);
-    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
+    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, stText, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 4));
   end;
 
   function createImageStream(aStreamIx: integer; aFFmpegIx: integer): TVoid;
@@ -384,7 +393,7 @@ var
                  + mediaInfo_Get(FHandle, Stream_Image, aStreamIx, 'Height',                  Info_Text, Info_Name);
 
     vID := format('%.2d', [aFFmpegIx + 1]);
-    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, vStreamType, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 6));
+    FMediaStreams.add(TMediaStream.create(aFFmpegIx, vID, stImage, vDuration, vFormat, vBitRate, vTitle, vLanguage, vInfo, 6));
   end;
 
   function cleanChapterTitle(const aChapterTitle: string): string;

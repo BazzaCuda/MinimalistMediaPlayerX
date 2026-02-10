@@ -383,18 +383,18 @@ begin
 
   lblStreamID.caption := MI.mediaStreams[aIndex].ID;
 
-  case MI.mediaStreams[aIndex].streamType = 'Image' of   TRUE:  lblStream.caption := 'format: '      + MI.mediaStreams[aIndex].format
-                                                                                   + ' '             + MI.mediaStreams[aIndex].duration
-                                                                                   + ' '             + MI.mediaStreams[aIndex].bitRate + #13#10
-                                                                                   + 'title: '       + MI.mediaStreams[aIndex].title
-                                                                                   + ''              + MI.mediaStreams[aIndex].language + #13#10
-                                                                                   + 'info: '        + MI.mediaStreams[aIndex].info;
-                                                        FALSE:  lblStream.caption := 'format: '      + MI.mediaStreams[aIndex].format
-                                                                                   + '  duration: '  + MI.mediaStreams[aIndex].duration
-                                                                                   + '  bitrate: '   + MI.mediaStreams[aIndex].bitRate + #13#10
-                                                                                   + 'title: '       + MI.mediaStreams[aIndex].title
-                                                                                   + '  language: '  + MI.mediaStreams[aIndex].language + #13#10
-                                                                                   + 'info: '        + MI.mediaStreams[aIndex].info; end;
+  case MI.mediaStreams[aIndex].streamType = TStreamType.stImage of   TRUE:  lblStream.caption  := 'format: '      + MI.mediaStreams[aIndex].format
+                                                                                                + ' '             + MI.mediaStreams[aIndex].duration
+                                                                                                + ' '             + MI.mediaStreams[aIndex].bitRate + #13#10
+                                                                                                + 'title: '       + MI.mediaStreams[aIndex].title
+                                                                                                + ''              + MI.mediaStreams[aIndex].language + #13#10
+                                                                                                + 'info: '        + MI.mediaStreams[aIndex].info;
+                                                                    FALSE:  lblStream.caption  := 'format: '      + MI.mediaStreams[aIndex].format
+                                                                                                + '  duration: '  + MI.mediaStreams[aIndex].duration
+                                                                                                + '  bitrate: '   + MI.mediaStreams[aIndex].bitRate + #13#10
+                                                                                                + 'title: '       + MI.mediaStreams[aIndex].title
+                                                                                                + '  language: '  + MI.mediaStreams[aIndex].language + #13#10
+                                                                                                + 'info: '        + MI.mediaStreams[aIndex].info; end;
 end;
 
 procedure TStreamListForm.clStreamsItemClick(Sender: TObject);

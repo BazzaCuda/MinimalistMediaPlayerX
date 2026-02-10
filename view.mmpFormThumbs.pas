@@ -835,7 +835,9 @@ begin
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
-                    playCurrentItem; end;end;
+                    playCurrentItem;
+                    adjustAspectRatio; // EXPERIMENTAL
+                  end;end;
 
   checkAudioVideo;
 
