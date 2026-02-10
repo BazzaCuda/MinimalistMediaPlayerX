@@ -59,7 +59,7 @@ Significant Releases
 --------------------
 
 `MMP` (`v6.1.0`) 
-    - Contact/Preview Sheet created almost instantly:
+    - create Preview/Contact Sheet almost instantly:
     ![High Plains Drifter (1973)](https://github.com/user-attachments/assets/236359fc-e650-4315-9cd9-3f95cafc37b5)
 
 
