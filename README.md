@@ -58,6 +58,11 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
+`MMP` (`v6.1.0`) 
+    - Contact/Preview Sheet create almost instantaneusly:
+    ![High Plains Drifter (1973)](https://github.com/user-attachments/assets/236359fc-e650-4315-9cd9-3f95cafc37b5)
+
+
 `MMP` (`v6.0.0`) 
 
 - new features include:
