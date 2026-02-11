@@ -54,7 +54,7 @@ begin
   case vIx <> -1 of TRUE: begin
                             result := format('%s %s %s %s', [MI.mediaStreams[vIx].format, MI.mediaStreams[vIx].language, MI.mediaStreams[vIx].bitRate, MI.mediaStreams[vIx].info]);
                             result := mmpRemoveSingleQuotes(result);end;end;
-  debugString('mmpFirstAudio', result);
+//  debugString('mmpFirstAudio', result);
 end;
 
 function mmpFirstVideo: string;
@@ -67,7 +67,7 @@ begin
                             result := format('%s %s %s %s', [MI.mediaStreams[vIx].format, MI.mediaStreams[vIx].duration, MI.mediaStreams[vIx].info, MI.mediaStreams[vIx].bitRate]); // info: width x height fps
                             result := mmpRemoveSingleQuotes(result);
                             end;end;
-  debugString('mmpFirstVideo', result);
+//  debugString('mmpFirstVideo', result);
 end;
 
 function mmpCreatePreviewSheet(const aMediaFilePath: string): TVoid;
@@ -195,12 +195,6 @@ begin
   case pos(lowerCase('vp9'), vLine4) > 0 of TRUE: vPrelim := stringReplace(vPrelim, '-threads 1', '-threads 0', [rfReplaceAll]); end;
 
   var vCmdLine := vPrelim + vSeek + vInputFile + vVF + vInterval + vScale + vDrawTimeStamp + vTile + vDrawLine1 + vDrawLine2 + vDrawLine3 + vDrawLine4 + vDrawLogo1 + vDrawLogo2 + vImage + vOutputFile;
-
-//  var FProgressForm         := mmpNewProgressForm;
-//  FProgressForm.heading     := 'Create Preview Contact Sheet';
-//  FProgressForm.subHeading  := 'Please wait...';
-//  FProgressForm.onCancel    := NIL;
-//  FProgressForm.formShow;
 
   mmp.cmd(evSTOpInfo, 'creating preview sheet...');
 
