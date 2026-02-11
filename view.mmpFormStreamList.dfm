@@ -66,7 +66,6 @@ object StreamListForm: TStreamListForm
     ParentBackground = False
     TabOrder = 0
     StyleElements = []
-    ExplicitHeight = 586
     object pageControl: TPageControl
       AlignWithMargins = True
       Left = 3
@@ -85,7 +84,6 @@ object StreamListForm: TStreamListForm
       TabOrder = 0
       OnChange = pageControlChange
       OnMouseUp = pageControlMouseUp
-      ExplicitHeight = 533
       object tsSegments: TTabSheet
         Caption = '          Segments          '
         object clSegments: TControlList
@@ -110,7 +108,6 @@ object StreamListForm: TStreamListForm
           OnMouseUp = clSegmentsMouseUp
           OnItemClick = clSegmentsItemClick
           OnItemDblClick = clSegmentsItemDblClick
-          ExplicitHeight = 499
           object Shape1: TShape
             Left = 0
             Top = 0
@@ -2208,7 +2205,6 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
           OnBeforeDrawItem = clStreamsBeforeDrawItem
           OnItemClick = clStreamsItemClick
-          ExplicitHeight = 499
           object Shape2: TShape
             Left = 0
             Top = 0
@@ -2468,7 +2464,7 @@ object StreamListForm: TStreamListForm
           OnClick = lblConfigLink1Click
         end
         object Label4: TLabel
-          Left = 13
+          Left = 12
           Top = 220
           Width = 147
           Height = 17
@@ -2631,7 +2627,6 @@ object StreamListForm: TStreamListForm
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 539
       object lblSegments: TLabel
         Left = 16
         Top = 6

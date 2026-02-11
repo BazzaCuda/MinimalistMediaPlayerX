@@ -199,6 +199,8 @@ begin
   // design-time only - not for actual builds
   // this is purely to get around the Delphi IDE's nonsense of needing these lines
   // in order to show Project/Options/Appearance and use the selected VCL style at design time
+  // N.B. This doesn't need to compile:
+  // just go into Project/Options/Appearance and back out again to activate design-time themes
   application.Initialize;
   TStyleManager.trySetStyle('Charcoal Dark Slate');
   var mainUI: TMMPUI;
