@@ -31,7 +31,8 @@ Config Dialog: [Keyframes](ConfigDialog:Keyframes)<br />
 
 | Control | Action |
 | ------- | ------ |
-| Ctrl-**[E]**     | show/hide the **Audio & Video Timeline Editor** for fast, lossless editing
+| Ctrl-**[E]**     | show/hide the **Audio & Video Timeline Editor** for fast, lossless editing |
+| Ctrl-Shift-**[P]** | create a Preview/Contact Sheet for the current video |
 <br />
 <br />
 

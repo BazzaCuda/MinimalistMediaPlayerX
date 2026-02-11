@@ -86,6 +86,11 @@ type
     chbStartInEditor: TCheckBox;
     lblConfig4: TLabel;
     lblConfigLink4: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    lblConfig5: TLabel;
+    lblConfigLink5: TLabel;
     procedure formCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure clSegmentsBeforeDrawItem(aIndex: Integer; aCanvas: TCanvas; aRect: TRect; aState: TOwnerDrawState);
@@ -158,7 +163,7 @@ uses
 
 const
   DEFAULT_WIDTH  = 460;
-  DEFAULT_HEIGHT = 400;
+  DEFAULT_HEIGHT = 430;
 
 var gStreamListForm: TStreamListForm = NIL;
 
@@ -486,6 +491,8 @@ begin
   lblConfig3.font.color         := DARK_MODE_DARK;
   lblConfig4.styleElements      := [seBorder, seClient];
   lblConfig4.font.color         := DARK_MODE_DARK;
+  lblConfig5.styleElements      := [seBorder, seClient];
+  lblConfig5.font.color         := DARK_MODE_DARK;
 
   lblConfigLink1.styleElements  := [seBorder, seClient];
   lblConfigLink1.font.Color     := clAqua; // clTeal;
@@ -495,6 +502,8 @@ begin
   lblConfigLink3.font.Color     := clAqua; // clTeal;
   lblConfigLink4.styleElements  := [seBorder, seClient];
   lblConfigLink4.font.Color     := clAqua; // clTeal;
+  lblConfigLink5.styleElements  := [seBorder, seClient];
+  lblConfigLink5.font.Color     := clAqua; // clTeal;
 
   FSubscriber := appEvents.subscribe(newSubscriber(onNotify));
 end;

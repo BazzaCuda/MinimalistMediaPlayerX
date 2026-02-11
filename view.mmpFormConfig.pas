@@ -212,6 +212,27 @@ type
     chbChaptersAudioWrite: TCheckBox;
     chbChaptersVideoWrite: TCheckBox;
     Label74: TLabel;
+    TabSheet1: TTabSheet;
+    Label75: TLabel;
+    Label76: TLabel;
+    chbPreviewShowPreview: TCheckBox;
+    edtPreviewSkipIntroPercent: TEdit;
+    Label77: TLabel;
+    Label78: TLabel;
+    Label79: TLabel;
+    Label80: TLabel;
+    Label81: TLabel;
+    edtPreviewSkipOutroPercent: TEdit;
+    edtPreviewColumns: TEdit;
+    edtPreviewRows: TEdit;
+    edtPreviewThumbWidth: TEdit;
+    Label82: TLabel;
+    Label83: TLabel;
+    Label84: TLabel;
+    Label85: TLabel;
+    Label86: TLabel;
+    Label87: TLabel;
+    btnPreviewDefaults: TButton;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -256,6 +277,13 @@ type
     procedure chbChaptersVideoWriteClick(Sender: TObject);
     procedure pageControlChanging(Sender: TObject; var AllowChange: Boolean);
     procedure pageControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure btnPreviewDefaultsClick(Sender: TObject);
+    procedure chbPreviewShowPreviewClick(Sender: TObject);
+    procedure edtPreviewSkipIntroPercentChange(Sender: TObject);
+    procedure edtPreviewSkipOutroPercentChange(Sender: TObject);
+    procedure edtPreviewColumnsChange(Sender: TObject);
+    procedure edtPreviewRowsChange(Sender: TObject);
+    procedure edtPreviewThumbWidthChange(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -385,6 +413,16 @@ begin
   edtDirtyChars.text := ' '; // don't specify an empty string otherwise CF will delete the entry in the .conf file
 end;
 
+procedure TConfigForm.btnPreviewDefaultsClick(Sender: TObject);
+begin
+  edtPreviewSkipIntroPercent.text := '5';
+  edtPreviewSkipOutroPercent.text := '5';
+  edtPreviewColumns.text          := '4';
+  edtPreviewRows.Text             := '5';
+  edtPreviewThumbWidth.text       := '300';
+  chbPreviewShowPreview.checked   := TRUE;
+end;
+
 procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
 begin
   spinImageDelayMs.value := DEFAULT_REPEAT_DELAY_MS;
@@ -482,6 +520,11 @@ begin
   mmp.cmd(evConfigReload);
 end;
 
+procedure TConfigForm.chbPreviewShowPreviewClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW] := chbPreviewShowPreview.checked;
+end;
+
 procedure TConfigForm.chbStartInEditorClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_START_IN_EDITOR] := chbStartInEditor.checked;
@@ -542,6 +585,31 @@ begin
   case sender = edtPrefixF2 of TRUE: CF[CONF_CAT_F2] := vText; end;
   case sender = edtPrefixF3 of TRUE: CF[CONF_CAT_F3] := vText; end;
   case sender = edtSuffixF4 of TRUE: CF[CONF_CAT_F4] := vText; end;
+end;
+
+procedure TConfigForm.edtPreviewColumnsChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_COLUMNS] := edtPreviewColumns.text;
+end;
+
+procedure TConfigForm.edtPreviewRowsChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_ROWS] := edtPreviewRows.text;
+end;
+
+procedure TConfigForm.edtPreviewSkipIntroPercentChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_SKIP_INTRO] := edtPreviewSkipIntroPercent.text;
+end;
+
+procedure TConfigForm.edtPreviewSkipOutroPercentChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_SKIP_OUTRO] := edtPreviewSkipOutroPercent.text;
+end;
+
+procedure TConfigForm.edtPreviewThumbWidthChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_THUMB_WIDTH] := edtPreviewThumbWidth.text;
 end;
 
 procedure TConfigForm.FormCreate(Sender: TObject);
@@ -619,6 +687,13 @@ begin
   chbChaptersShow.checked       := CF.asBoolean[CONF_CHAPTERS_SHOW];
   chbChaptersAudioWrite.checked := CF.asBoolean[CONF_CHAPTERS_AUDIO_WRITE];
   chbChaptersVideoWrite.checked := CF.asBoolean[CONF_CHAPTERS_VIDEO_WRITE];
+
+  edtPreviewSkipIntroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_INTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_INTRO],                '5');
+  edtPreviewSkipOutroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_OUTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_OUTRO],                '5');
+  edtPreviewColumns.text          := mmp.use<string>(CF[CONF_PREVIEW_COLUMNS]       <> EMPTY, CF[CONF_PREVIEW_COLUMNS],                   '4');
+  edtPreviewRows.text             := mmp.use<string>(CF[CONF_PREVIEW_ROWS]          <> EMPTY, CF[CONF_PREVIEW_ROWS],                      '5');
+  edtPreviewThumbWidth.text       := mmp.use<string>(CF[CONF_PREVIEW_THUMB_WIDTH]   <> EMPTY, CF[CONF_PREVIEW_THUMB_WIDTH],             '300');
+  chbPreviewShowPreview.checked   := mmp.use<boolean>(CF[CONF_PREVIEW_SHOW_PREVIEW] <> EMPTY, CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW],  TRUE);
 end;
 
 function TConfigForm.populateListBox: TVoid;

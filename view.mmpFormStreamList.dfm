@@ -3,7 +3,7 @@ object StreamListForm: TStreamListForm
   Top = 0
   BorderStyle = bsNone
   Caption = 'Segments & Streams'
-  ClientHeight = 586
+  ClientHeight = 431
   ClientWidth = 460
   Color = 2829099
   Font.Charset = DEFAULT_CHARSET
@@ -33,24 +33,47 @@ object StreamListForm: TStreamListForm
     Height = 13
     Caption = 'lblSegID'
   end
+  object Label5: TLabel
+    Left = 242
+    Top = 200
+    Width = 75
+    Height = 13
+    Caption = 'Config Dialog:'
+  end
+  object Label6: TLabel
+    Left = 338
+    Top = 200
+    Width = 47
+    Height = 17
+    Cursor = crHandPoint
+    Caption = 'General'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -13
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+    OnClick = lblConfigLink1Click
+  end
   object backPanel: TPanel
     Left = 0
     Top = 0
     Width = 460
-    Height = 586
+    Height = 431
     Align = alClient
     BevelOuter = bvNone
     Color = 2302755
     ParentBackground = False
     TabOrder = 0
     StyleElements = []
+    ExplicitHeight = 586
     object pageControl: TPageControl
       AlignWithMargins = True
       Left = 3
       Top = 3
       Width = 454
-      Height = 533
-      ActivePage = tsHelp
+      Height = 378
+      ActivePage = tsOptions
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWhite
@@ -62,13 +85,14 @@ object StreamListForm: TStreamListForm
       TabOrder = 0
       OnChange = pageControlChange
       OnMouseUp = pageControlMouseUp
+      ExplicitHeight = 533
       object tsSegments: TTabSheet
         Caption = '          Segments          '
         object clSegments: TControlList
           Left = 0
           Top = 0
           Width = 446
-          Height = 499
+          Height = 344
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWhite
@@ -86,6 +110,7 @@ object StreamListForm: TStreamListForm
           OnMouseUp = clSegmentsMouseUp
           OnItemClick = clSegmentsItemClick
           OnItemDblClick = clSegmentsItemDblClick
+          ExplicitHeight = 499
           object Shape1: TShape
             Left = 0
             Top = 0
@@ -2173,7 +2198,7 @@ object StreamListForm: TStreamListForm
           Left = 0
           Top = 0
           Width = 446
-          Height = 499
+          Height = 344
           Align = alClient
           ItemMargins.Left = 0
           ItemMargins.Top = 0
@@ -2183,6 +2208,7 @@ object StreamListForm: TStreamListForm
           TabOrder = 0
           OnBeforeDrawItem = clStreamsBeforeDrawItem
           OnItemClick = clStreamsItemClick
+          ExplicitHeight = 499
           object Shape2: TShape
             Left = 0
             Top = 0
@@ -2301,7 +2327,7 @@ object StreamListForm: TStreamListForm
         object Label59: TLabel
           Left = 0
           Top = 0
-          Width = 322
+          Width = 446
           Height = 17
           Align = alTop
           Alignment = taCenter
@@ -2313,10 +2339,11 @@ object StreamListForm: TStreamListForm
           Font.Style = []
           ParentFont = False
           WordWrap = True
+          ExplicitWidth = 322
         end
         object Label3: TLabel
           Left = 9
-          Top = 248
+          Top = 280
           Width = 427
           Height = 81
           Alignment = taCenter
@@ -2336,7 +2363,7 @@ object StreamListForm: TStreamListForm
         end
         object Bevel1: TBevel
           Left = 9
-          Top = 219
+          Top = 251
           Width = 416
           Height = 2
         end
@@ -2440,6 +2467,35 @@ object StreamListForm: TStreamListForm
           ParentFont = False
           OnClick = lblConfigLink1Click
         end
+        object Label4: TLabel
+          Left = 13
+          Top = 220
+          Width = 147
+          Height = 17
+          Caption = 'Preview / Contact Sheet'
+        end
+        object lblConfig5: TLabel
+          Left = 234
+          Top = 223
+          Width = 90
+          Height = 17
+          Caption = 'Config Dialog:'
+        end
+        object lblConfigLink5: TLabel
+          Left = 331
+          Top = 223
+          Width = 86
+          Height = 17
+          Cursor = crHandPoint
+          Caption = 'Preview Sheet'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -13
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold, fsUnderline]
+          ParentFont = False
+          OnClick = lblConfigLink1Click
+        end
         object chbChaptersShow: TCheckBox
           Left = 9
           Top = 34
@@ -2522,7 +2578,7 @@ object StreamListForm: TStreamListForm
         end
         object chbExportJoinOnly: TCheckBox
           Left = 9
-          Top = 225
+          Top = 257
           Width = 203
           Height = 17
           Alignment = taLeftJustify
@@ -2569,12 +2625,13 @@ object StreamListForm: TStreamListForm
     end
     object pnlButtons: TPanel
       Left = 0
-      Top = 539
+      Top = 384
       Width = 460
       Height = 47
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitTop = 539
       object lblSegments: TLabel
         Left = 16
         Top = 6

@@ -49,11 +49,14 @@ _\*(add **SHIFT** for quicker zooming)_<br />
 Ctrl-Shift-**B** = reset [B]ar and caption color/brightness<br />
 
 **Other**<br />
-**Spacebar** = pause/play\*<br />
+**Spacebar** = pause/play\*<br /><br />
 Ctrl-**A** show [A]bout Box<br />
 Ctrl-**I** display this [I]mage in the [I]mage & Thumbnail Browser<br />
 Ctrl-**N** toggle [N]umlock On/Off<br />
 Ctrl-**W** go to the [W]iki at MinimalistMediaPlayer.com<br />
+
+Ctrl-Shift-**P** create video Preview/Contact Sheet<br />
+
 **T** show [T]humbnails if this is an image (else Tab)<br />
 **Y** show thumbnails regardless<br />
 **V** = sync all [V]ideo windows (or Audio)<br />
