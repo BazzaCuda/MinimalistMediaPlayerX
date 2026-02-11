@@ -373,7 +373,6 @@ end;
 
 function TPlayListFormProxy.createForm(const bCreateNew: boolean): TPlaylistForm;
 begin
-  appEvents.unsubscribe(FSubscriber);
   result := FPlaylistForm;
   case bCreateNew of FALSE: EXIT; end;
   result := TPlaylistForm.create(NIL);

@@ -279,7 +279,6 @@ begin
   FThumbs       := NIL;
   FProgressForm := NIL;
   mmp.cmd(evHelpShutHelp);
-  appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
 end;
 

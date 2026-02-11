@@ -1269,8 +1269,8 @@ begin
   mmp.cmd(evPLFormShutForm);
   GS.notify(newNotice(evGSShowingHelp, NOT GS.showingHelp));
 
-  mmp.cmd(GS.showingHelp, procedure begin mmp.cmd(evVMMoveHelp, TRUE); end,
-                        procedure begin mmp.cmd(evHelpShutHelp); end);
+  mmp.cmd(GS.showingHelp, procedure begin mmp.cmd(evVMMoveHelp, TRUE);  end,
+                          procedure begin mmp.cmd(evHelpShutHelp);      end);
 end;
 
 function TVM.togglePlaylist: TVoid;
@@ -1278,8 +1278,8 @@ begin
   mmp.cmd(evHelpShutHelp);
   GS.notify(newNotice(evGSShowingPlaylist, NOT GS.showingPlaylist));
 
-  mmp.cmd(GS.showingPlaylist, procedure begin mmp.cmd(evVMMovePlaylist, TRUE); end,
-                            procedure begin mmp.cmd(evPLFormShutForm); end);
+  mmp.cmd(GS.showingPlaylist, procedure begin mmp.cmd(evVMMovePlaylist, TRUE);  end,
+                              procedure begin mmp.cmd(evPLFormShutForm);        end);
 end;
 
 function TVM.toggleShuffle: string;

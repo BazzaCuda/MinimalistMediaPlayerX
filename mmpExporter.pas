@@ -128,7 +128,8 @@ end;
 function TExporter.copySourceFile: boolean;
 //====== DO FFMPEG COPY ONLY ======
 const
-  COPY_PARAMS = ' -map 0 -c copy -ignore_unknown';
+//  COPY_PARAMS = ' -map 0 -c copy -ignore_unknown';
+  COPY_PARAMS = ' -c copy -ignore_unknown' + STD_MAP_METADATA_0;
 var
   cmdLine: string;
 begin

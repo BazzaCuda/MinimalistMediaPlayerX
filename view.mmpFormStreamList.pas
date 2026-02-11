@@ -170,7 +170,7 @@ end;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): TVoid;
 begin
   gStreamListForm.getStreamInfo(aMediaFilePath);
-  gStreamListForm.updateExportButton(MI.selectedCount > 0);
+//  gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): TVoid;
