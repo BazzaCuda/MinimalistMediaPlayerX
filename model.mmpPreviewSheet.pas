@@ -91,6 +91,7 @@ begin
   var vThumbWidth:          integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_THUMB_WIDTH] <> 0, CF.asInteger[CONF_PREVIEW_THUMB_WIDTH], 300);
 
   var FProgressForm         := mmpNewProgressForm;
+  FProgressForm.buttons     := FALSE;
   FProgressForm.heading     := 'Create Preview Contact Sheet';
   FProgressForm.subHeading  := 'Please wait...';
   FProgressForm.onCancel    := NIL;

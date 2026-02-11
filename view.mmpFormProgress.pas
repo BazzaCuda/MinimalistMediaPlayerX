@@ -150,7 +150,7 @@ begin
 
   styleElements     := []; // don't allow any theme alterations
   borderStyle       := bsNone;
-  position          := poMainFormCenter; // poScreenCenter;
+  position          := poMainFormCenter;
 
   FTimer.enabled    := FALSE;
 
@@ -210,7 +210,7 @@ begin
   btnRerun.visible  := bVisible;
   btnIgnore.visible := bVisible;
   btnCancel.visible := bVisible;
-  case bVisible of FALSE: SELF.height := SELF.height - btnRerun.height; end;
+  case bVisible of FALSE: SELF.height := SELF.height - btnRerun.height - 20; end;
 end;
 
 procedure TProgressForm.setHeading(const aValue: string);
