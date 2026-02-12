@@ -104,7 +104,7 @@ begin
   var vCols:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] <> 0, CF.asInteger[CONF_PREVIEW_COLUMNS], 4);
   var vRows:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS] <> 0, CF.asInteger[CONF_PREVIEW_ROWS], 5);
   var vTotalFrames:         integer := vCols * vRows;
-  var vIntervalSS:          double  := checkInterval(vSkipIntro, vSkipOutro, vTotalFrames, GS.duration);
+  var vIntervalSS:          double  := checkInterval(vSkipIntro, vSkipOutro, vTotalFrames, GS.duration - 1);
   var vThumbWidth:          integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_THUMB_WIDTH] <> 0, CF.asInteger[CONF_PREVIEW_THUMB_WIDTH], 300);
 
   var FProgressForm         := mmpNewProgressForm;

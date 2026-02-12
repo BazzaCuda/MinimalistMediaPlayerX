@@ -597,11 +597,13 @@ end;
 
 procedure TConfigForm.edtPreviewColumnsChange(Sender: TObject);
 begin
+  case strToInt(edtPreviewColumns.text) < 2 of TRUE: edtPreviewColumns.text := '2'; end;
   CF[CONF_PREVIEW_COLUMNS] := edtPreviewColumns.text;
 end;
 
 procedure TConfigForm.edtPreviewRowsChange(Sender: TObject);
 begin
+  case strToInt(edtPreviewRows.text) < 2 of TRUE: edtPreviewRows.text := '2'; end;
   CF[CONF_PREVIEW_ROWS] := edtPreviewRows.text;
 end;
 
@@ -698,8 +700,10 @@ begin
 
   edtPreviewSkipIntroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_INTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_INTRO],                '5');
   edtPreviewSkipOutroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_OUTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_OUTRO],                '5');
-  edtPreviewColumns.text          := mmp.use<string>(CF[CONF_PREVIEW_COLUMNS]       <> EMPTY, CF[CONF_PREVIEW_COLUMNS],                   '4');
-  edtPreviewRows.text             := mmp.use<string>(CF[CONF_PREVIEW_ROWS]          <> EMPTY, CF[CONF_PREVIEW_ROWS],                      '5');
+//  edtPreviewColumns.text          := mmp.use<string>(CF[CONF_PREVIEW_COLUMNS]       <> EMPTY, CF[CONF_PREVIEW_COLUMNS],                   '4');
+//  edtPreviewRows.text             := mmp.use<string>(CF[CONF_PREVIEW_ROWS]          <> EMPTY, CF[CONF_PREVIEW_ROWS],                      '5');
+  edtPreviewColumns.text          := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] > 1, CF.asInteger[CONF_PREVIEW_COLUMNS],   4));
+  edtPreviewRows.text             := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS]    > 1, CF.asInteger[CONF_PREVIEW_ROWS],      5));
   edtPreviewThumbWidth.text       := mmp.use<string>(CF[CONF_PREVIEW_THUMB_WIDTH]   <> EMPTY, CF[CONF_PREVIEW_THUMB_WIDTH],             '300');
   chbPreviewShowPreview.checked   := mmp.use<boolean>(CF[CONF_PREVIEW_SHOW_PREVIEW] <> EMPTY, CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW],  TRUE);
 

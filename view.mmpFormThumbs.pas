@@ -142,7 +142,7 @@ uses
   mmpDesktopUtils, mmpDialogs, mmpFileUtils, mmpFolderNavigation, mmpGlobalState, mmpKeyboardUtils, mmpPanelCtrls, mmpPostToAllUtils, mmpShellUtils, mmpTicker,
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
-  model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
+  model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpParamStrings, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
   TStatusBarHelperClass,
   _debugWindow;
 
@@ -374,6 +374,7 @@ begin
 end;
 
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
+// it all really starts in timertimer
 begin
   FInitialFilePath := aFilePath;
 
@@ -848,7 +849,8 @@ begin
   case FInitialHost of
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
-                    FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
+                    case GS.noPlaylist of  TRUE: FThumbs.playlist.add(PS.fileFolderAndName);
+                                          FALSE: FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly); end;
                     playCurrentItem;
                     mmpDelay(100);
                     adjustAspectRatio; // EXPERIMENTAL
