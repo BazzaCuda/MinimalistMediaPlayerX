@@ -46,6 +46,7 @@ type
     procedure   setHeading(const aValue: string);
     procedure   setModal(const bModal: boolean);
     procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setOwner(const aValue: HWND);
     procedure   setSubHeading(const aValue: string);
 
     property    buttons:          boolean                               write setButtons;
@@ -54,6 +55,7 @@ type
     property    heading:          string                                write setHeading;
     property    modal:            boolean                               write setModal;
     property    onCancel:         TNotifyEvent                          write setOnCancel;
+    property    owner:            HWND                                  write setOwner;
     property    subHeading:       string                                write setSubHeading;
     property    subHeadingWidth:  integer     read getSubHeadingWidth;
     property    timer:            TTimer      read getTimer;
@@ -88,6 +90,7 @@ type
     procedure   setHeading(const aValue: string);
     procedure   setModal(const bModal: boolean);
     procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setOwner(const aValue: HWND);
     procedure   setSubHeading(const aValue: string);
   end;
 
@@ -120,6 +123,7 @@ type
     procedure   setHeading(const aValue: string);
     procedure   setModal(const bModal: boolean);
     procedure   setOnCancel(const aValue: TNotifyEvent);
+    procedure   setOwner(const aValue: HWND);
     procedure   setSubHeading(const aValue: string);
 
     property    buttons:      boolean                         write setButtons;
@@ -230,6 +234,11 @@ begin
   FOnCancel := aValue;
 end;
 
+procedure TProgressForm.setOwner(const aValue: HWND);
+begin
+  setWindowLongPtr(SELF.HANDLE, GWLP_HWNDPARENT, aValue);
+end;
+
 procedure TProgressForm.setSubHeading(const aValue: string);
 begin
   FSubHeading.caption := aValue;
@@ -303,6 +312,11 @@ end;
 procedure TProxyForm.setOnCancel(const aValue: TNotifyEvent);
 begin
   FForm.setOnCancel(aValue);
+end;
+
+procedure TProxyForm.setOwner(const aValue: HWND);
+begin
+  FForm.setOwner(aValue);
 end;
 
 procedure TProxyForm.setSubHeading(const aValue: string);

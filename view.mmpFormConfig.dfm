@@ -3139,7 +3139,7 @@ object ConfigForm: TConfigForm
         Left = 0
         Top = 0
         Width = 576
-        Height = 67
+        Height = 63
         Align = alTop
         Alignment = taCenter
         AutoSize = False
@@ -3152,7 +3152,7 @@ object ConfigForm: TConfigForm
       end
       object Label77: TLabel
         Left = 62
-        Top = 73
+        Top = 76
         Width = 102
         Height = 15
         Caption = 'Skip Intro Percent'
@@ -3165,7 +3165,7 @@ object ConfigForm: TConfigForm
       end
       object Label78: TLabel
         Left = 62
-        Top = 107
+        Top = 110
         Width = 107
         Height = 15
         Caption = 'Skip Outro Percent'
@@ -3178,7 +3178,7 @@ object ConfigForm: TConfigForm
       end
       object Label79: TLabel
         Left = 62
-        Top = 141
+        Top = 144
         Width = 47
         Height = 15
         Caption = 'Columns'
@@ -3191,7 +3191,7 @@ object ConfigForm: TConfigForm
       end
       object Label80: TLabel
         Left = 62
-        Top = 175
+        Top = 178
         Width = 30
         Height = 15
         Caption = 'Rows'
@@ -3204,7 +3204,7 @@ object ConfigForm: TConfigForm
       end
       object Label81: TLabel
         Left = 62
-        Top = 210
+        Top = 213
         Width = 95
         Height = 15
         Caption = 'Thumbnail Width'
@@ -3217,7 +3217,7 @@ object ConfigForm: TConfigForm
       end
       object Label82: TLabel
         Left = 310
-        Top = 252
+        Top = 242
         Width = 199
         Height = 30
         Caption = 
@@ -3226,7 +3226,7 @@ object ConfigForm: TConfigForm
       end
       object Label83: TLabel
         Left = 310
-        Top = 66
+        Top = 69
         Width = 225
         Height = 30
         Caption = 
@@ -3235,7 +3235,7 @@ object ConfigForm: TConfigForm
       end
       object Label84: TLabel
         Left = 310
-        Top = 100
+        Top = 103
         Width = 222
         Height = 30
         Caption = 
@@ -3244,30 +3244,43 @@ object ConfigForm: TConfigForm
       end
       object Label85: TLabel
         Left = 310
-        Top = 141
+        Top = 144
         Width = 191
         Height = 15
         Caption = 'Number of frame thumbnails across'
       end
       object Label86: TLabel
         Left = 310
-        Top = 173
+        Top = 176
         Width = 188
         Height = 15
         Caption = 'Number of frame thumbnails down'
       end
       object Label87: TLabel
         Left = 309
-        Top = 200
+        Top = 203
         Width = 238
         Height = 30
         Caption = 
           'The pixel width of each thumbnail in the grid'#13#10'The height will r' +
           'eflect the video'#39's aspect ratio'
       end
+      object Label88: TLabel
+        Left = 62
+        Top = 282
+        Width = 78
+        Height = 15
+        Caption = 'Image Format'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
       object chbPreviewShowPreview: TCheckBox
         Left = 62
-        Top = 252
+        Top = 242
         Width = 219
         Height = 17
         Alignment = taLeftJustify
@@ -3283,7 +3296,7 @@ object ConfigForm: TConfigForm
       end
       object edtPreviewSkipIntroPercent: TEdit
         Left = 240
-        Top = 70
+        Top = 73
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3294,7 +3307,7 @@ object ConfigForm: TConfigForm
       end
       object edtPreviewSkipOutroPercent: TEdit
         Left = 240
-        Top = 103
+        Top = 106
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3305,7 +3318,7 @@ object ConfigForm: TConfigForm
       end
       object edtPreviewColumns: TEdit
         Left = 240
-        Top = 136
+        Top = 139
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3316,7 +3329,7 @@ object ConfigForm: TConfigForm
       end
       object edtPreviewRows: TEdit
         Left = 240
-        Top = 169
+        Top = 172
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3327,7 +3340,7 @@ object ConfigForm: TConfigForm
       end
       object edtPreviewThumbWidth: TEdit
         Left = 240
-        Top = 202
+        Top = 205
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3337,13 +3350,27 @@ object ConfigForm: TConfigForm
         OnChange = edtPreviewThumbWidthChange
       end
       object btnPreviewDefaults: TButton
-        Left = 251
-        Top = 288
+        Left = 308
+        Top = 282
         Width = 75
         Height = 25
         Caption = 'Defaults'
         TabOrder = 6
         OnClick = btnPreviewDefaultsClick
+      end
+      object cbPreviewImageExt: TComboBox
+        Left = 232
+        Top = 280
+        Width = 49
+        Height = 23
+        Style = csDropDownList
+        ItemIndex = 0
+        TabOrder = 7
+        Text = 'JPG'
+        OnChange = cbPreviewImageExtChange
+        Items.Strings = (
+          'JPG'
+          'PNG')
       end
     end
     object tsSlideshowIntervalMs: TTabSheet

@@ -233,6 +233,8 @@ type
     Label86: TLabel;
     Label87: TLabel;
     btnPreviewDefaults: TButton;
+    cbPreviewImageExt: TComboBox;
+    Label88: TLabel;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -284,6 +286,7 @@ type
     procedure edtPreviewColumnsChange(Sender: TObject);
     procedure edtPreviewRowsChange(Sender: TObject);
     procedure edtPreviewThumbWidthChange(Sender: TObject);
+    procedure cbPreviewImageExtChange(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -436,6 +439,11 @@ end;
 procedure TConfigForm.btnSlideshowIntervalMsDefaultClick(Sender: TObject);
 begin
   spinSlideshowIntervalMs.value := IMAGE_DISPLAY_DURATION * MILLISECONDS;
+end;
+
+procedure TConfigForm.cbPreviewImageExtChange(Sender: TObject);
+begin
+  CF[CONF_PREVIEW_IMAGE_FORMAT] := lowerCase(cbPreviewImageExt.text);
 end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
@@ -694,6 +702,10 @@ begin
   edtPreviewRows.text             := mmp.use<string>(CF[CONF_PREVIEW_ROWS]          <> EMPTY, CF[CONF_PREVIEW_ROWS],                      '5');
   edtPreviewThumbWidth.text       := mmp.use<string>(CF[CONF_PREVIEW_THUMB_WIDTH]   <> EMPTY, CF[CONF_PREVIEW_THUMB_WIDTH],             '300');
   chbPreviewShowPreview.checked   := mmp.use<boolean>(CF[CONF_PREVIEW_SHOW_PREVIEW] <> EMPTY, CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW],  TRUE);
+
+  var vImageExt: string := trim(upperCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
+  case vImageExt = EMPTY of TRUE: vImageExt := 'JPG'; end;
+  cbPreviewImageExt.itemIndex     := cbPreviewImageExt.items.indexOf(vImageExt);
 end;
 
 function TConfigForm.populateListBox: TVoid;

@@ -70,6 +70,23 @@ begin
 //  debugString('mmpFirstVideo', result);
 end;
 
+function checkInterval(var aSkipIntro: integer; var aSkipOutro: integer; aTotalFrames: integer; aDuration: integer): double;
+begin
+  result := (GS.duration - aSkipIntro - aSkipOutro) / (aTotalFrames - 1);
+  case result * (aTotalFrames - 1) <= aDuration of TRUE: EXIT; end;
+
+  aSkipIntro := 0;
+  result := (aDuration - aSkipOutro) / (aTotalFrames - 1);
+  case result * (aTotalFrames - 1) <= aDuration of TRUE: EXIT; end;
+
+  aSkipOutro := 0;
+  result := aDuration / (aTotalFrames - 1);
+  case (result < 1) of TRUE: result := 1; end;
+  case result * (aTotalFrames - 1) <= aDuration of TRUE: EXIT; end;
+
+  result := aDuration / (aTotalFrames - 1);
+end;
+
 function mmpCreatePreviewSheet(const aMediaFilePath: string): TVoid;
 var
   vProcessHandle: THANDLE;
@@ -87,28 +104,30 @@ begin
   var vCols:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] <> 0, CF.asInteger[CONF_PREVIEW_COLUMNS], 4);
   var vRows:                integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS] <> 0, CF.asInteger[CONF_PREVIEW_ROWS], 5);
   var vTotalFrames:         integer := vCols * vRows;
-  var vIntervalSS:          integer := ceil((GS.duration - vSkipIntro - vSkipOutro) / (vTotalFrames - 1));
+  var vIntervalSS:          double  := checkInterval(vSkipIntro, vSkipOutro, vTotalFrames, GS.duration);
   var vThumbWidth:          integer := mmp.use<integer>(CF.asInteger[CONF_PREVIEW_THUMB_WIDTH] <> 0, CF.asInteger[CONF_PREVIEW_THUMB_WIDTH], 300);
 
   var FProgressForm         := mmpNewProgressForm;
   FProgressForm.buttons     := FALSE;
   FProgressForm.heading     := 'Create Preview Contact Sheet';
-  FProgressForm.subHeading  := 'Please wait...';
+  FProgressForm.subHeading  := 'Grabbing frames...';
   FProgressForm.onCancel    := NIL;
   FProgressForm.formShow;
 
   for i := 0 to vTotalFrames - 1 do
   begin
-    var vCurrentSeek: integer := vSkipIntro + (i * vIntervalSS);
+    var vCurrentSeek: double := vSkipIntro + (i * vIntervalSS);
+    case (vCurrentSeek >= GS.duration) of TRUE: vCurrentSeek := GS.duration; end;
+
     var vTempName:    string  := format('mmpPreview_%3.3d.jpg', [i + 1]);
     var vTempPath:    string  := vMediaDir + vTempName;
 
-    var vExtractVF:   string  := format(' -vf "setpts=PTS+%d/TB,scale=%d:-1,drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%%{pts\:gmtime\:0\:%%H\\\:%%M\\\:%%S}'':fontcolor=0x4B96AF:fontsize=12:x=w-tw-8:y=h-th-8"', [vCurrentSeek, vThumbWidth]);
-    var vExtractCmd:  string  := format(' -an -sn -ss %d -i %s %s -frames:v 1 -q:v 2 -y %s', [vCurrentSeek, mmpQuoted(vMediaFile), vExtractVF, mmpQuoted(vTempPath)]);
+    var vExtractVF:   string  := format(' -vf "setpts=PTS+%d/TB,scale=%d:-1:flags=lanczos:out_range=pc,drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''%%{pts\:gmtime\:0\:%%H\\\:%%M\\\:%%S}'':fontcolor=0x4B96AF:fontsize=12:x=w-tw-8:y=h-th-8"', [trunc(vCurrentSeek), vThumbWidth]);
+    var vExtractCmd:  string  := format(' -an -sn -ss %g -i %s %s -frames:v 1 -q:v 2 -y %s', [vCurrentSeek, mmpQuoted(vMediaFile), vExtractVF, mmpQuoted(vTempPath)]);
 
     FProgressForm.subHeading  := format('Preview %3.3d of %d', [i + 1, vTotalFrames]);
 
-    mmpExportExecAndWait(vExtractCmd, rtFFmpeg, vProcessHandle, vCancelled, '');
+    mmpExportExecAndWait(vExtractCmd, rtFFmpeg, vProcessHandle, vCancelled, {EMPTY} changeFileExt(vMediaFile, '.log'));
   end;
 
   FProgressForm.subHeading := 'Nearly done...';
@@ -137,20 +156,24 @@ begin
   var vDrawLogo1:     string := 'drawtext=fontfile=''C\:/Windows/Fonts/verdanab.ttf'':text=''MMP'':fontcolor=0x404040:fontsize=48:x=w-tw-10:y=10,';
   var vDrawLogo2:     string := 'drawtext=fontfile=''C\:/Windows/Fonts/verdana.ttf'':text=''Minimalist Media Player'':fontcolor=0x404040:fontsize=12:x=w-tw-5:y=48"';
 
-  var vImageFile:     string := changeFileExt(vMediaFile, '.jpg');
+  var vImageExt:      string := trim(lowerCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
+  case vImageExt = EMPTY of TRUE: vImageExt := 'jpg'; end;
+
+  var vImageFile:     string := changeFileExt(vMediaFile, '.' + vImageExt);
   var vFilterComplex: string := ' -filter_complex "' + vLabels + format('concat=n=%d:v=1:a=0,', [vTotalFrames]);
   var vEpilogue:      string := ' -frames:v 1 -q:v 2 -y ' + mmpQuoted(vImageFile);
 
   var vCmdLine:       string := vInputs + vFilterComplex + vTile + vDrawLine1 + vDrawLine2 + vDrawLine3 + vDrawLine4 + vDrawLogo1 + vDrawLogo2 + vEpilogue;
 
-  mmpExportExecAndWait(vCmdLine, rtFFmpeg, vProcessHandle, vCancelled, '');
+  mmpExportExecAndWait(vCmdLine, rtFFmpeg, vProcessHandle, vCancelled, EMPTY {changeFileExt(vMediaFile, '.log')});
 
   FProgressForm.subHeading := 'preview sheet created';
 
   case fileExists(vImageFile) and CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW] of TRUE: mmpShellExec(GS.mainForm.Handle, paramStr(0), '"' + vImageFile + '" noplaylist'); end;
 
-  for i := 1 to vTotalFrames do
-    mmpDeleteThisFile(vMediaDir + format('mmpPreview_%3.3d.jpg', [i]), [], TRUE, TRUE, FALSE);
+  for i := 1 to vTotalFrames do begin
+    var vFileName := vMediaDir + format('mmpPreview_%3.3d.jpg', [i]);
+    case fileExists(vFileName) of TRUE: mmpDeleteThisFile(vMediaDir + format('mmpPreview_%3.3d.jpg', [i]), [], TRUE, TRUE, FALSE); end;end;
 end;
 
 function mmpCreatePreviewSheet_v1(const aMediaFilePath: string): TVoid;

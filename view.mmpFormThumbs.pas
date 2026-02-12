@@ -59,6 +59,7 @@ type
     procedure FormActivate(Sender: TObject);
   strict private
     mpv: IMPVBasePlayer;
+    FBookmarkIx:              integer;
     FDurationResetSpeed:      integer;
     FImageDisplayDurationMs:  integer;
     FInitialFilePath:         string;
@@ -112,6 +113,7 @@ type
     function speedReset:          TVoid;
     function speedUp:             TVoid;
     function takeScreenshot:      string;
+    function toggleThumbs:        TVoid;
     function undoMove:            string;
     function whichHost:           THostType;
     function windowSize(const aKeyOp: TKeyOp): TVoid;
@@ -225,7 +227,6 @@ end;
 
 function TThumbsForm.checkThumbsPerPage: TVoid;
 begin
-//  debug('checkThumbsPerPage');
   var  vThumbsSize   := THUMB_DEFAULT_SIZE + THUMB_MARGIN;
   var  vThumbsPerRow := (FThumbsHost.width  - THUMB_MARGIN) div vThumbsSize;
   var  vThumbsPerCol := (FThumbsHost.height - THUMB_MARGIN) div vThumbsSize;
@@ -284,6 +285,12 @@ end;
 
 procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
+  SELF.styleElements := [];
+  SELF.color         := clBlack;
+
+  FThumbsHost.styleElements := [];
+  FThumbsHost.Color         := clBlack;
+
   FMPVHost              := TMPVHost.create(SELF);
   FMPVHost.parent       := SELF;
   FMPVHost.onDblClick   := onDoubleClick;
@@ -321,11 +328,12 @@ begin
 //
 //  case whichHost of htMPVHost:    FThumbs.showDisplayDimensions(htMPVHost);
 //                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
-
+//
+//EXIT;
   TAction<TVoid>.startWith((FThumbs <> NIL) and FShowing)
-                  .aside<TVoid>(whichHost = htThumbsHost, playCurrentItem)
+                  .aside<TVoid>(whichHost = htThumbsHost, playCurrentItem)  // this will redraw the thumnbails to fit the new size!
                   .aside<TVoid>(TRUE, moveHelpWindow, FALSE)
-                  .aside<TVoid>(whichHost = htMPVHost,  function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost); end)
+                  .aside<TVoid>(whichHost = htMPVHost,     function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost);    end)
                   .aside<TVoid>(whichHost = htThumbsHost,  function:TVoid begin FThumbs.showDisplayDimensions(htThumbsHost); end)
                   .thenStop;
 end;
@@ -338,14 +346,15 @@ begin
 
   FProgressForm := mmpNewProgressForm;
   try
+    FProgressForm.owner               := SELF.HANDLE;
     FProgressForm.modal               := FALSE;
     FProgressForm.buttons             := FALSE;
     FProgressForm.heading             := 'MMP Image & Thumbnail Browser';
     case FInitialHost = htThumbsHost of  TRUE: FProgressForm.subHeading := 'Creating Thumbnails';
-                                        FALSE: FProgressForm.subHeading := 'Opening'; end;
-    case FInitialHost = htThumbsHost of  TRUE: FProgressForm.formShow; end;
+                                        FALSE: FProgressForm.subHeading := 'Building image playlist...'; end;
+    {case FInitialHost = htThumbsHost of  TRUE:} FProgressForm.formShow; {end;}
     mmpProcessMessages;
-    mmpSetWindowTopmost(FProgressForm.handle);
+//    mmpSetWindowTopmost(FProgressForm.handle);
     FProgressForm.timer.interval  := FTimerInterval;
     FProgressForm.timer.onTimer   := timerTimer;
     FProgressForm.timer.enabled   := TRUE;
@@ -390,7 +399,7 @@ begin
   FThumbsHost.visible := FInitialHost = htThumbsHost;
 
   case FInitialHost of     htMPVHost: FTimerInterval := 100;
-                        htThumbsHost: FTimerInterval := 250; end;
+                        htThumbsHost: FTimerInterval := 100; end;
 
   FThumbsHost.styleElements  := [];
   FThumbsHost.bevelOuter     := bvNone;
@@ -419,15 +428,21 @@ var
   vWidth:  integer;
   vHeight: integer;
 begin
+  mmp.cmd(evGSAutoCenter, TRUE);
   case (MI.imageWidth <= 0) OR (MI.imageHeight <= 0) of TRUE: EXIT; end;
 
   vHeight := mmpScreenHeight - 20; // EXPERIMENTAL WAS 50: this now matches the 20 in mmpWindowUtils.mmpCalcWindowSize
 
   vWidth  := trunc(vHeight / MI.imageHeight * MI.imageWidth);
 
-  mmpSetWindowPos(SELF.Handle, point((mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2)); // center window
+//  mmpSetWindowPos(SELF.Handle, point((mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2)); // center window
   mmpProcessMessages;
   mmpSetWindowSize(SELF.Handle, point(vWidth, vHeight)); // resize window
+  adjustAspectRatio; // EXPERIMENTAL
+
+  var vRect: TRect;
+  getWindowRect(SELF.HANDLE, vRect);
+  case GS.autoCenter of TRUE: mmpCenterWindow(SELF.HANDLE, point(vRect.width, vRect.height)); end;
 end;
 
 function TThumbsForm.minimizeWindow: TVoid;
@@ -436,7 +451,7 @@ begin
 end;
 
 function TThumbsForm.moveHelp(const bCreateNew: boolean = FALSE): TVoid;
-var vHostPanel: TPanel;
+var vHostPanel: TCustomControl;
 begin
   vHostPanel := NIL; // suppress compiler warning
   case whichHost of htMPVHost:    vHostPanel := FMPVHost;
@@ -557,6 +572,7 @@ begin
   mmpResetPanelHelp(FStatusBar);
   showHost(htMPVHost);
   FThumbs.playlist.setIx(TControl(sender).tag);
+  FBookmarkIx := FThumbs.playlist.currentIx; // EXPERIMENTAL
   playCurrentItem;
 end;
 
@@ -828,19 +844,33 @@ begin
   case GS.mainForm <> NIL of TRUE: showWindow(GS.mainForm.handle, SW_HIDE); end;
 
   FShowing := TRUE;
-  FProgressForm := NIL;
 
   case FInitialHost of
     htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
     htMPVHost:    begin
                     FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly);
                     playCurrentItem;
+                    mmpDelay(100);
                     adjustAspectRatio; // EXPERIMENTAL
                   end;end;
 
   checkAudioVideo;
 
   case GS.showingConfig of FALSE: focusThumbs; end;
+
+  FProgressForm := NIL;
+end;
+
+function TThumbsForm.toggleThumbs: TVoid;
+begin
+  case whichHost of htThumbsHost: begin
+                                    FThumbs.playlist.setIx(FBookmarkIx);
+                                    showHost(htMPVHost);
+                                    playCurrentItem; end;
+                    htMPVHost:    begin
+                                    FBookmarkIx := FThumbs.playlist.currentIx;
+                                    showHost(htThumbsHost);
+                                    FThumbs.playThumbs; end;end;
 end;
 
 function TThumbsForm.undoMove: string;
@@ -928,6 +958,25 @@ begin
 end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
+
+   procedure syncAlignment;
+    var
+      vRect: TRect;
+      vHost: HWND;
+    begin
+      case whichHost of
+        htMPVHost:    vHost := FMPVHost.HANDLE;
+        htThumbsHost: vHost := FThumbsHost.HANDLE; end;
+
+      winApi.windows.getClientRect(SELF.Handle, vRect);
+      winApi.windows.setWindowPos(
+          vHost,
+          0,
+          0, 0, vRect.right, vRect.bottom,
+          SWP_NOZORDER or SWP_NOMOVE or SWP_NOCOPYBITS or SWP_DEFERERASE or SWP_NOACTIVATE
+        );
+    end;
+
 begin
   result := FALSE;
 
@@ -957,7 +1006,7 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      begin mmpGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); autoCenter; end;
+    koGreaterWindow:      begin var vPt := mmpCalcGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); case GS.autoCenter of TRUE: mmpCenterWindow(SELF.handle, vPt, SWP_NOZORDER or SWP_FRAMECHANGED); end; syncAlignment; end; // EXPERIMENTAL
     koHelpFull:           mmpHelpFull(htIATB, SELF.HANDLE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;
@@ -975,7 +1024,7 @@ begin
     koPlayLast:           playLast;
     koPlayNext:           playNext;
     koPlayPrev:           playPrev;
-    koPlayThumbs:         case whichHost of htThumbsHost: showHost(htMPVHost); htMPVHost: begin showHost(htThumbsHost); FThumbs.playThumbs; end;end;
+    koPlayThumbs:         toggleThumbs;
     koPrevFolder:         playPrevFolder;
     koReloadPlaylist:     reloadPlaylist;
     koRenameFile:         case whichHost of htMPVHost: renameFile(FThumbs.playlist.currentItem); end;

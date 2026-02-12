@@ -21,7 +21,8 @@ unit TMPVHostClass;
 interface
 
 uses
-  vcl.extCtrls;
+  system.classes,
+  vcl.controls, vcl.extCtrls, vcl.graphics;
 
 type
   TOpenFileEvent = procedure(const aURL: string) of object;
@@ -29,18 +30,44 @@ type
   TMPVHost = class(TPanel)
   strict private
     FOnOpenFile: TOpenFileEvent;
+  private
+//    procedure Paint;
   public
     function openFile(const aURL: string): string;
+    constructor Create(AOwner: TComponent);
     property onOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
+  published
+    property OnClick;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property Align;
   end;
 
 implementation
 
 { TMPVHost }
 
+constructor TMPVHost.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  styleElements := [];
+  color         := clBlack;
+//  // csOpaque tells the VCL that the control fills its own area,
+//  // preventing the parent from trying to paint behind it.
+//  controlStyle := ControlStyle + [csOpaque];
+end;
+
 function TMPVHost.openFile(const aURL: string): string;
 begin
   case assigned(FOnOpenFile) of TRUE: FOnOpenFile(aURL); end;
 end;
+
+//procedure TMPVHost.Paint;
+//begin
+//  // Do nothing. MPV is responsible for the pixels.
+//  // This prevents the VCL canvas from trying to draw themed backgrounds.
+//end;
 
 end.

@@ -95,6 +95,7 @@ uses
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   bazCmd,
   mmpConsts, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  view.mmpFormStreamList,
   viewModel.mmpKeyboardOps,
   _debugWindow;
 
@@ -142,7 +143,8 @@ procedure TPlaylistForm.CreateParams(var params: TCreateParams);
 begin
   inherited;
   params.ExStyle    := params.ExStyle OR (WS_EX_APPWINDOW);
-  params.WndParent  := GS.mainForm.HANDLE; //  application.HANDLE;
+  case GS.showingTimeline of   TRUE: params.wndParent := mmpStreamListHandle;
+                              FALSE: params.wndParent := GS.mainForm.HANDLE; end; //  application.HANDLE;
 end;
 
 destructor TPlaylistForm.Destroy;

@@ -28,12 +28,13 @@ uses
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpArrangeAll        (const aWND: HWND): boolean;
+function mmpCalcGreaterWindow (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
-function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint): TVoid;
+function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
 function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): integer; overload;
 function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid; overload;
 function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): TVoid;
-function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint): TVoid;
+function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
 function mmpSetWindowTop      (const aWND: HWND): TVoid;
 function mmpSetWindowTopmost  (const aWND: HWND): TVoid;
 function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): TVoid;
@@ -257,7 +258,68 @@ begin
   result := TRUE;
 end;
 
-function mmpCenterWindow(const aWND: HWND; const aPt: TPoint): TVoid;
+function mmpCalcGreaterWindow(const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
+var
+  dx:   integer;
+  dy:   integer;
+  newW: integer;
+  newH: integer;
+  vR:   TRect;
+
+  function calcDeltas: TVoid;
+  begin
+    case aHostType of
+      htMPVHost:    begin
+                      dx := 50;
+                      dy := 30;
+                    end;
+      htThumbsHost: begin
+                      dx := aThumbSize + THUMB_MARGIN;
+                      dy := aThumbSize + THUMB_MARGIN;
+                    end;
+    end;
+  end;
+
+  function checkDesktop: TVoid;
+  begin
+    case ssCtrl in aShiftState of  TRUE:  begin
+                                            case newW - dx < dx of TRUE: dx := 0; end;
+                                            case newH - dy < dy of TRUE: dy := 0; end;end;
+                                  FALSE:  begin
+                                            case newW + dx > mmpScreenWidth  of TRUE: dx := 0; end;
+                                            case newH + dy > mmpScreenHeight of TRUE: dy := 0; end;end;end;
+  end;
+
+  function calcDimensions: TVoid;
+  begin
+    case ssCtrl in aShiftState of
+      TRUE: begin
+              newW := newW - dx;
+              newH := newH - dy;
+            end;
+     FALSE: begin
+              newW := newW + dx;
+              newH := newH + dy;
+            end;
+    end;
+  end;
+
+begin
+  getWindowRect(aWND, vR);
+  newW := vR.Width;
+  newH := vR.height;
+
+//  debugInteger('greaterWindow vR.height', vR.height);
+//  TDebug.debugEnum<THostType>('aHostType', aHostType);
+
+  calcDeltas;
+  checkDesktop;
+  calcDimensions; // do what the user requested
+
+  result := point(newW, newH);
+end;
+
+function mmpCenterWindow(const aWND: HWND; const aPt: TPoint; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
 // aPt is optional and provides the calculated dimensions that a window is going to have
 var
   vR:     TRect;
@@ -292,7 +354,7 @@ begin
 
   case alreadyCentred of TRUE: EXIT; end;
 
-  case (vHPos >= 0) and (vVPos >= 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos)); end;
+  case (vHPos >= 0) and (vVPos >= 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos), vR.width, vR.height, aFlags); end;
 
   mmp.cmd(evGSAutoCenter, TRUE);
 end;
@@ -374,9 +436,9 @@ begin
   mmpSetWindowPos(aWND, point(x, y));
 end;
 
-function mmpSetWindowPos(const aWND: HWND; aPt: TPoint): TVoid;
+function mmpSetWindowPos(const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
 begin
-  setWindowPos(aWND, HWND_TOP, aPt.x, aPt.y, 0, 0, SWP_NOSIZE);
+  setWindowPos(aWND, HWND_TOP, aPt.x, aPt.y, aWidth, aHeight, aFlags);
 end;
 
 function mmpSetWindowSize(const aWND: HWND; aPt: TPoint): TVoid;

@@ -138,6 +138,7 @@ const
   CONF_PREVIEW_COLUMNS        = 'previewColumns';
   CONF_PREVIEW_ROWS           = 'previewRows';
   CONF_PREVIEW_THUMB_WIDTH    = 'previewThumbnailWidth';
+  CONF_PREVIEW_IMAGE_FORMAT   = 'previewImageFormat';
   CONF_PROGRESS_BAR           = 'progressBar';
   CONF_REPEAT_DELAY_MS        = 'repeatDelayMs';
   CONF_SCALE_FACTOR           = 'scaleFactor';
