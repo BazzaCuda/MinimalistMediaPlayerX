@@ -233,7 +233,7 @@ type
     Label86: TLabel;
     Label87: TLabel;
     btnPreviewDefaults: TButton;
-    cbPreviewImageExt: TComboBox;
+    cbPreviewImageFormat: TComboBox;
     Label88: TLabel;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
@@ -286,7 +286,7 @@ type
     procedure edtPreviewColumnsChange(Sender: TObject);
     procedure edtPreviewRowsChange(Sender: TObject);
     procedure edtPreviewThumbWidthChange(Sender: TObject);
-    procedure cbPreviewImageExtChange(Sender: TObject);
+    procedure cbPreviewImageFormatChange(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -424,6 +424,8 @@ begin
   edtPreviewRows.Text             := '5';
   edtPreviewThumbWidth.text       := '300';
   chbPreviewShowPreview.checked   := TRUE;
+  cbPreviewImageFormat.itemIndex  := cbPreviewImageFormat.items.indexOf('JPG');
+  cbPreviewImageFormatChange(NIL);
 end;
 
 procedure TConfigForm.btnRepeatDelayDefaultClick(Sender: TObject);
@@ -441,9 +443,10 @@ begin
   spinSlideshowIntervalMs.value := IMAGE_DISPLAY_DURATION * MILLISECONDS;
 end;
 
-procedure TConfigForm.cbPreviewImageExtChange(Sender: TObject);
+procedure TConfigForm.cbPreviewImageFormatChange(Sender: TObject);
 begin
-  CF[CONF_PREVIEW_IMAGE_FORMAT] := lowerCase(cbPreviewImageExt.text);
+  debug('.cbPreviewImageFormatChange');
+  CF[CONF_PREVIEW_IMAGE_FORMAT] := lowerCase(cbPreviewImageFormat.text);
 end;
 
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
@@ -700,16 +703,14 @@ begin
 
   edtPreviewSkipIntroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_INTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_INTRO],                '5');
   edtPreviewSkipOutroPercent.text := mmp.use<string>(CF[CONF_PREVIEW_SKIP_OUTRO]    <> EMPTY, CF[CONF_PREVIEW_SKIP_OUTRO],                '5');
-//  edtPreviewColumns.text          := mmp.use<string>(CF[CONF_PREVIEW_COLUMNS]       <> EMPTY, CF[CONF_PREVIEW_COLUMNS],                   '4');
-//  edtPreviewRows.text             := mmp.use<string>(CF[CONF_PREVIEW_ROWS]          <> EMPTY, CF[CONF_PREVIEW_ROWS],                      '5');
-  edtPreviewColumns.text          := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] > 1, CF.asInteger[CONF_PREVIEW_COLUMNS],   4));
-  edtPreviewRows.text             := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS]    > 1, CF.asInteger[CONF_PREVIEW_ROWS],      5));
+  edtPreviewColumns.text          := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_COLUMNS] > 1, CF.asInteger[CONF_PREVIEW_COLUMNS], 4));
+  edtPreviewRows.text             := intToStr(mmp.use<integer>(CF.asInteger[CONF_PREVIEW_ROWS]    > 1, CF.asInteger[CONF_PREVIEW_ROWS],    5));
   edtPreviewThumbWidth.text       := mmp.use<string>(CF[CONF_PREVIEW_THUMB_WIDTH]   <> EMPTY, CF[CONF_PREVIEW_THUMB_WIDTH],             '300');
   chbPreviewShowPreview.checked   := mmp.use<boolean>(CF[CONF_PREVIEW_SHOW_PREVIEW] <> EMPTY, CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW],  TRUE);
 
   var vImageExt: string := trim(upperCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
   case vImageExt = EMPTY of TRUE: vImageExt := 'JPG'; end;
-  cbPreviewImageExt.itemIndex     := cbPreviewImageExt.items.indexOf(vImageExt);
+  cbPreviewImageFormat.itemIndex     := cbPreviewImageFormat.items.indexOf(vImageExt);
 end;
 
 function TConfigForm.populateListBox: TVoid;

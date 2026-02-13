@@ -127,13 +127,13 @@ begin
 
     FProgressForm.subHeading  := format('Preview %3.3d of %d', [i + 1, vTotalFrames]);
 
-    mmpExportExecAndWait(vExtractCmd, rtFFmpeg, vProcessHandle, vCancelled, {EMPTY} changeFileExt(vMediaFile, '.log'));
+    mmpExportExecAndWait(vExtractCmd, rtFFmpeg, vProcessHandle, vCancelled, EMPTY {changeFileExt(vMediaFile, '.log')});
   end;
 
   FProgressForm.subHeading := 'Nearly done...';
 
-  var vInputs:        string := '';
-  var vLabels:        string := '';
+  var vInputs:        string := EMPTY;
+  var vLabels:        string := EMPTY;
   for i := 1 to vTotalFrames do
   begin
     vInputs := vInputs + format(' -i %s', [mmpQuoted(vMediaDir + format('mmpPreview_%3.3d.jpg', [i]))]);

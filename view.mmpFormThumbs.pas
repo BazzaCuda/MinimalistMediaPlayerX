@@ -143,6 +143,7 @@ uses
   mmpUserFolders, mmpUtils, mmpWindowUtils,
   view.mmpFormAbout, view.mmpFormHelp, view.mmpFormPlaylist,
   model.mmpConfigFile, model.mmpMediaInfo, model.mmpMPVCtrls, model.mmpParamStrings, model.mmpPlaylistUtils, model.mmpUndoMove, {these should be refactored away somehow}
+  view.mmpThemeUtils,
   TStatusBarHelperClass,
   _debugWindow;
 
@@ -339,6 +340,7 @@ begin
 end;
 
 procedure TThumbsForm.FormShow(Sender: TObject);
+// final init happens in timertime
 begin
   FThumbs := newThumbs;
   FThumbs.initThumbs(FMPVHost, FThumbsHost, FStatusBar);

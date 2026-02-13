@@ -3280,7 +3280,7 @@ object ConfigForm: TConfigForm
       end
       object chbPreviewShowPreview: TCheckBox
         Left = 62
-        Top = 242
+        Top = 247
         Width = 219
         Height = 17
         Alignment = taLeftJustify
@@ -3358,16 +3358,16 @@ object ConfigForm: TConfigForm
         TabOrder = 6
         OnClick = btnPreviewDefaultsClick
       end
-      object cbPreviewImageExt: TComboBox
-        Left = 232
+      object cbPreviewImageFormat: TComboBox
+        Left = 224
         Top = 280
-        Width = 49
+        Width = 57
         Height = 23
         Style = csDropDownList
         ItemIndex = 0
         TabOrder = 7
         Text = 'JPG'
-        OnChange = cbPreviewImageExtChange
+        OnChange = cbPreviewImageFormatChange
         Items.Strings = (
           'JPG'
           'PNG')
