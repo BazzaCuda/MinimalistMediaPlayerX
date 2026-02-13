@@ -137,7 +137,7 @@ begin
     koStartOver:          mmp.cmd(evPAPostToAll, WIN_START_OVER);
     koSyncAudioUp:        MP.notify(newNotice(evMPSyncAudioUp));
     koSyncAudioDn:        MP.notify(newNotice(evMPSyncAudioDn));
-    koSysVolMax:          mmp.cmd(evMXSysVolMax); // someone or something needs to know this but we don't know (or care) who or what
+    koSysVolMax:          begin mmp.cmd(evMXSysVolMax); case CF.asBoolean[CONF_MUTED] of TRUE: mmp.cmd(evPAPostToAll, WIN_MUTE_UNMUTE); end;end; // someone or something needs to know this but we don't know (or care) who or what
     koTab:                mmp.cmd(evPAPostToAll, WIN_TAB);
     koTabTab:             mmp.cmd(evPAPostToAll, WIN_TABTAB);
     koSaturationDn:       MP.notify(newNotice(evMPSaturationDn));
