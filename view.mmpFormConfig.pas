@@ -445,7 +445,6 @@ end;
 
 procedure TConfigForm.cbPreviewImageFormatChange(Sender: TObject);
 begin
-  debug('.cbPreviewImageFormatChange');
   CF[CONF_PREVIEW_IMAGE_FORMAT] := lowerCase(cbPreviewImageFormat.text);
 end;
 
