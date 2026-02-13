@@ -84,6 +84,7 @@ type
     function checkAudioVideo:     TVoid;
     function checkThumbsPerPage:  TVoid;
     function deleteCurrentItem(const aShiftState: TShiftState): TVoid;
+    function greaterWindow(const aShiftState: TShiftState):     TVoid;
     function imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
     function keepFile(const aFilePath: string): TVoid;
     function maximizeWindow:      TVoid;
@@ -125,7 +126,7 @@ type
     procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage); message WM_MOVE;
-  public
+public
     function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
   end;
 
@@ -830,6 +831,35 @@ begin
   mmpResizeStatusBar(FStatusBar);
 end;
 
+function TThumbsForm.greaterWindow(const aShiftState: TShiftState): TVoid;
+
+   procedure syncAlignment;
+   // with rapid [G] and Ctrl-[G] the VCL can't always keep up with align := alClient
+   var
+     vRect: TRect;
+     vHost: HWND;
+    begin
+      case whichHost of
+        htMPVHost:    vHost := FMPVHost.HANDLE;
+        htThumbsHost: vHost := FThumbsHost.HANDLE; end;
+
+      winApi.windows.getClientRect(SELF.Handle, vRect);
+      winApi.windows.setWindowPos(
+          vHost,
+          0,
+          0, 0, vRect.right, vRect.bottom,
+          SWP_NOZORDER or SWP_NOMOVE {or SWP_NOCOPYBITS or SWP_DEFERERASE or SWP_NOACTIVATE}
+        );
+    end;
+
+begin
+  var vPt := mmpCalcGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost);
+  case GS.autoCenter of  TRUE: mmpCenterWindow(SELF.HANDLE, vPt, SWP_NOZORDER {or SWP_FRAMECHANGED});
+                        FALSE: mmpSetWindowSize(SELF.HANDLE, vPt); end;
+
+  //syncAlignment; // EXPERIMENTAL
+end;
+
 function TThumbsForm.takeScreenshot: string;
 begin
   case whichHost of htThumbsHost: EXIT; end;
@@ -962,25 +992,6 @@ begin
 end;
 
 function TThumbsForm.processKeyOp(const aKeyOp: TKeyOp; const aShiftState: TShiftState; const aKey: WORD): boolean;
-
-   procedure syncAlignment;
-    var
-      vRect: TRect;
-      vHost: HWND;
-    begin
-      case whichHost of
-        htMPVHost:    vHost := FMPVHost.HANDLE;
-        htThumbsHost: vHost := FThumbsHost.HANDLE; end;
-
-      winApi.windows.getClientRect(SELF.Handle, vRect);
-      winApi.windows.setWindowPos(
-          vHost,
-          0,
-          0, 0, vRect.right, vRect.bottom,
-          SWP_NOZORDER or SWP_NOMOVE or SWP_NOCOPYBITS or SWP_DEFERERASE or SWP_NOACTIVATE
-        );
-    end;
-
 begin
   result := FALSE;
 
@@ -1010,7 +1021,7 @@ begin
     koGammaUp:            mpvGammaUp(mpv);
     koGammaDn:            mpvGammaDn(mpv);
     koGammaReset:         mpvGammaReset(mpv);
-    koGreaterWindow:      begin var vPt := mmpCalcGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost); case GS.autoCenter of TRUE: mmpCenterWindow(SELF.handle, vPt, SWP_NOZORDER or SWP_FRAMECHANGED); end; syncAlignment; end; // EXPERIMENTAL
+    koGreaterWindow:      greaterWindow(aShiftState);
     koHelpFull:           mmpHelpFull(htIATB, SELF.HANDLE);
     koKeep:               keepFile(FThumbs.playlist.currentItem);
     koKeepDelete:         begin mmpCancelDelay; case mmpKeepDelete(FThumbs.playlist.currentFolder) of TRUE: playNextFolder end;end;

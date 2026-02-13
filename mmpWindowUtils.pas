@@ -34,7 +34,7 @@ function mmpCenterWindow      (const aWND: HWND; const aPt: TPoint; const aFlags
 function mmpGreaterWindow     (const aWND: HWND; aShiftState: TShiftState): integer; overload;
 function mmpGreaterWindow     (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TVoid; overload;
 function mmpPosWinXY          (const aWND: HWND; const x: integer; const y: integer): TVoid;
-function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
+function mmpSetWindowPos      (const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: cardinal = SWP_NOSIZE): TVoid;
 function mmpSetWindowTop      (const aWND: HWND): TVoid;
 function mmpSetWindowTopmost  (const aWND: HWND): TVoid;
 function mmpSetWindowSize     (const aWND: HWND; aPt: TPoint): TVoid;
@@ -436,7 +436,7 @@ begin
   mmpSetWindowPos(aWND, point(x, y));
 end;
 
-function mmpSetWindowPos(const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: Cardinal = SWP_NOSIZE): TVoid;
+function mmpSetWindowPos(const aWND: HWND; aPt: TPoint; const aWidth: integer = 0; const aHeight: integer = 0; const aFlags: cardinal = SWP_NOSIZE): TVoid;
 begin
   setWindowPos(aWND, HWND_TOP, aPt.x, aPt.y, aWidth, aHeight, aFlags);
 end;
