@@ -27,6 +27,7 @@
 | Ctrl-**[R]**                | [R]ename file |
 | Ctrl-**[S]**                | toggle [S]kip excluded segments during playback |
 | Shift-**[S]**               | [S]kip to the next [S]egment |
+| Ctrl-Shift-**[P]**          | create Preview/Contact Sheet for the current video |
 | Ctrl-Shift-**[S]**          | [S]kip to the previous [S]egment |
 | &nbsp; ||
 | Export Button Operation ||

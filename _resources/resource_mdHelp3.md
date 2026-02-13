@@ -1,5 +1,5 @@
 
-**Ctrl-Shift-[H]] for the Full Help**
+**Ctrl-Shift-[H]<br /> for Full Help**
 
 **Window Control**<br />
 **ESC**ape, exit fullscreen or dialog or app<br />

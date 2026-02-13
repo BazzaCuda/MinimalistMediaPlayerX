@@ -1,5 +1,5 @@
 
-**Ctrl-Shift-[H]] for the Full Help**
+**Ctrl-Shift-[H]<br /> for Full Help**
 
 **Playlist**<br />
 First\*: **A** or **HOME**<br />

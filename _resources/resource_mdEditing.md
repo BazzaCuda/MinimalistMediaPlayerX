@@ -8,6 +8,7 @@ Help Page: [Editing Troubleshooting](Editing_Troubleshooting)<br />
 Help Page: [Keyframes](Keyframes)<br />
 <br />
 Config Dialog: [Keyframes](ConfigDialog:Keyframes)<br />
+Config Dialog: [Preview/Contact Sheet](ConfigDialog:Preview_Sheet)<br />
 <br />
 
 **Editing Audio & Video**
@@ -32,7 +33,7 @@ Config Dialog: [Keyframes](ConfigDialog:Keyframes)<br />
 | Control | Action |
 | ------- | ------ |
 | Ctrl-**[E]**     | show/hide the **Audio & Video Timeline Editor** for fast, lossless editing |
-| Ctrl-Shift-**[P]** | create a Preview/Contact Sheet for the current video |
+| Ctrl-Shift-**[P]** | create a [Preview/Contact Sheet](ConfigDialog:Preview_Sheet) for the current video |
 <br />
 <br />
 
@@ -66,6 +67,7 @@ N.B. **_All other controls operate on the **Main Media Window** as normal_**
 | **double-click** a segment  | rename segment and/or chapter title |
 | **[F]**                     | toggle key[F]rames on and off |
 | **\`** (back tick)          | restart/startover from beginning of media file |
+| Ctrl-Shift-**[P]**          | create Preview/Contact Sheet for the current video |
 | Ctrl-**[R]**                | [R]ename file |
 | Ctrl-**[S]**                | toggle [S]kip excluded segments during playback |
 | Shift-**[S]**               | [S]kip to the next [S]egment |
