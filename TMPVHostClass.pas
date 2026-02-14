@@ -47,6 +47,9 @@ type
 
 implementation
 
+uses
+  mmpUtils;
+
 { TMPVHost }
 
 constructor TMPVHost.Create(AOwner: TComponent);
@@ -56,7 +59,7 @@ begin
   color         := clBlack;
 //  // csOpaque tells the VCL that the control fills its own area,
 //  // preventing the parent from trying to paint behind it.
-//  controlStyle := ControlStyle + [csOpaque];
+  mmpOpaque(SELF);
 end;
 
 function TMPVHost.openFile(const aURL: string): string;

@@ -29,18 +29,41 @@ procedure mmpExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: 
 
 implementation
 
-const
-  IEIFLAG_OFFLINE = $0008;      // whether the extractor shouldn't hit the net to get any content needed for the rendering
-  IEIFLAG_SCREEN  = $0020;      // render as if for the screen  (this is exlusive with IEIFLAG_ASPECT )
+uses
+  mmpConsts;
 
-type
-  IExtractImage = interface
-    ['{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1}']
-    function getLocation(pszPathBuffer: pWideChar; cch: DWORD; var pdwPriority: DWORD; var prgSize: TSize; dwRecClrDepth: DWORD; var pdwFlags: DWORD): HRESULT; stdcall;
-    function extract(var phBmpThumbnail: HBITMAP): HRESULT; stdcall;
-  end;
+//const
+//  IEIFLAG_OFFLINE = $0008;      // whether the extractor shouldn't hit the net to get any content needed for the rendering
+//  IEIFLAG_SCREEN  = $0020;      // render as if for the screen  (this is exlusive with IEIFLAG_ASPECT )
+//
+//type
+//  IExtractImage = interface
+//    ['{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1}']
+//    function getLocation(pszPathBuffer: pWideChar; cch: DWORD; var pdwPriority: DWORD; var prgSize: TSize; dwRecClrDepth: DWORD; var pdwFlags: DWORD): HRESULT; stdcall;
+//    function extract(var phBmpThumbnail: HBITMAP): HRESULT; stdcall;
+//  end;
 
 procedure mmpExtractThumb(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
+var
+  shellItem: IShellItemImageFactory;
+  size: TSize;
+  h: HBITMAP;
+begin
+  case aFilePath = EMPTY of TRUE: EXIT; end;
+
+  // convert path to Shell Item Factory
+  // IShellItemImageFactory is a specialised interface that provides the getImage method for high-performance thumbnail retrieval
+  case succeeded(SHCreateItemFromParsingName(pWideChar(WideString(aFilePath)), nil, IShellItemImageFactory, shellItem)) of
+    TRUE: begin
+            size.cx := aDesiredWidth;
+            size.cy := aDesiredHeight;
+
+            // Extract the bitmap handle
+            // SIIGBF_RESIZETOFIT instructs Windows to perform the high-quality scaling internally before returning the bitmap handle
+            case succeeded(shellItem.getImage(size, SIIGBF_RESIZETOFIT, h)) of TRUE: aBitmap.handle := h; end;end;end;
+end;
+
+procedure mmpExtractThumb_v1(const aBitmap: vcl.graphics.TBitmap; const aFilePath: string; const aDesiredWidth: integer = 120; const aDesiredHeight: integer = 120);
 var
   malloc:         IMalloc;
   desktopFolder:  IShellFolder;
@@ -54,7 +77,7 @@ var
   h:              HBITMAP;
   w:              WideString;
 begin
-  coInitialize(NIL); //move this to app startup code
+//  coInitialize(NIL); // moved to the initialization section
 
 try
   try
@@ -94,5 +117,11 @@ try
   end;
 except end;
 end;
+
+initialization
+  coInitialize(NIL); // EXPERIMENTAL - moved from mmpThumbUtils.mmpExtractThumb
+
+finalization
+  coUninitialize;
 
 end.

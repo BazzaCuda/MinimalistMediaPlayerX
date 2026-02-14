@@ -43,6 +43,7 @@ type
     function    getVideoPanel:        TPanel;
 
     function    initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
+    function    reallyShowUI:         TVoid;
     function    showUI:               TVoid;
 
     procedure   onFormResize;
@@ -207,6 +208,7 @@ type
     constructor Create;
     destructor  Destroy; override;
     function    initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
+    function    reallyShowUI:           TVoid;
     function    showUI:                 TVoid;
   end;
 
@@ -982,6 +984,12 @@ begin
                                               evVMMPPlayNext);    // ...hence, playNext
 end;
 
+function TVM.reallyShowUI: TVoid;
+begin
+  GS.mainForm.alphaBlendValue := 255;
+  GS.mainForm.alphaBlend      := TRUE;
+end;
+
 function TVM.reInitTimeline(const aDuration: integer): TVoid;
 begin
   case GS.showingTimeline of FALSE: EXIT; end;
@@ -1092,6 +1100,9 @@ begin
   case FResizingWindow of TRUE: EXIT; end;
   FResizingWindow := TRUE;
 
+  var MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
+  var MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
+
 //  debugInteger('GS.mainForm.height', GS.mainForm.height);
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
 
@@ -1104,6 +1115,9 @@ begin
   mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
 
   FResizingWindow := FALSE;
+
+  mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
+  mmp.cmd(evGSSuppressMainUI, FALSE); // every subsequent call to resizeWindow will now call reallyShowUI
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;

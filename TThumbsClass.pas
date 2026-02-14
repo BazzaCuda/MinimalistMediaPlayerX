@@ -73,7 +73,7 @@ function newThumbs: IThumbs;
 implementation
 
 uses
-  winApi.windows,
+  winApi.messages, winApi.windows,
   system.sysUtils,
   vcl.graphics,
   mmpFileUtils, mmpFormatting, mmpPanelCtrls, mmpUtils,
@@ -222,6 +222,10 @@ begin
   vThumbTop  := THUMB_MARGIN;
   vThumbLeft := THUMB_MARGIN;
 
+//  // Tell the OS to stop redrawing the host
+//  sendMessage(FThumbsHost.handle, WM_SETREDRAW, 0, 0); // EXPERIMENTAL
+//  try
+
   repeat
     FThumbs.add(newThumb(FPlayList.currentItem, FThumbSize, FThumbSize));
     vIx := FThumbs.count - 1;
@@ -241,6 +245,12 @@ begin
     calcNextThumbPosition;
 
   until (NOT FPlaylist.next) OR ((vThumbTop + FThumbSize) > FThumbsHost.height) OR FCancel;
+
+//  finally
+//    // Re-enable drawing and force a single, clean final paint
+//    sendMessage(FThumbsHost.handle, WM_SETREDRAW, 1, 0);
+//    redrawWindow(FThumbsHost.handle, NIL, 0, RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
+//  end;
 
   result := FPlaylist.currentIx;
 end;
@@ -287,6 +297,7 @@ begin
   FMPVHost    := aMPVHost;
   FThumbsHost := aThumbsHost;
   FStatusBar  := aStatusBar;
+  mmpOpaque(FThumbsHost); // EXPERIMENTAL
 end;
 
 function TThumbs.playCurrentItem: TVoid;

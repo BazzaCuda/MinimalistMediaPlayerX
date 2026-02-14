@@ -50,6 +50,7 @@ type
     FViewModel: IViewModel;
   protected
     procedure   FormCreate(Sender: TObject);
+    procedure   Loaded; override;
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMDropFiles       (var msg: TWMDropFiles);  message WM_DROPFILES;
@@ -154,6 +155,13 @@ end;
 function TMMPUI.getViewModel: IViewModel;
 begin
   result := FViewModel;
+end;
+
+procedure TMMPUI.Loaded;
+begin
+  inherited;
+  SELF.alphaBlend      := TRUE; // EXPERIMENTAL
+  SELF.alphaBlendValue := 0;
 end;
 
 procedure TMMPUI.setViewModel(const aValue: IViewModel);

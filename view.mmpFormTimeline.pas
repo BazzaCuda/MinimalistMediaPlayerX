@@ -277,7 +277,7 @@ begin
   lblPosition.borderStyle   := bsNone;
   lblPosition.bevelOuter    := bvNone;
   lblPosition.color         := TL_DEFAULT_COLOR;
-  lblPosition.controlStyle  := lblPosition.controlStyle + [csOpaque];
+  mmpOpaque(lblPosition);
   lblPosition.visible       := TRUE;
 end;
 

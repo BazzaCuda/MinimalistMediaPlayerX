@@ -183,6 +183,7 @@ var
   vVideoPanel: TPanel;
 begin
   vVideoPanel                   := mmpThemeCreateVideoPanel(aMainForm);
+  mmpOpaque(vVideoPanel); // EXPERIMENTAL
 
   MMPUI.viewModel               := newViewModel;
   MMPUI.viewModel.mediaPlayer   := newMediaPlayer;
@@ -247,16 +248,19 @@ begin
   MMPUI.viewModel.playlist.add(PS.fileFolderAndName); // always include the file the user used to launch MMP, which includes the [edited] file from the Timeline
   MMPUI.viewModel.playlist.sort;                      // force a resort now we've manually added a file at the end of the playlist
 
-  mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent);
+  mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent); // this give us GS.mediaType
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
-  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy
+  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy - this has probably been superseded by auto-adjustAspectRatio
 
   mmp.cmd(evSTForceCaptions);
 
   mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown and NOT GS.noPlaylist, evVMToggleEditMode);
 
+  mmp.cmd(evGSSuppressMainUI, (lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage)); // evGSSuppressmainUI starts TRUE, this resets it if appropriate
   mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
+
+  // the Main Media Window will eventually be shown in TVM.resizeWindow in response to an evVMResizeWindow from model.mmpMediaPlayer.onTickTimer
 
   app.Run; // now it's ok to raise test exceptions
   {$endif}

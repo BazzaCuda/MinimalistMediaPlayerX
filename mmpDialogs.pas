@@ -51,7 +51,7 @@ function mmpShowOKCancelMsgDlg(const aMsg: string;
 // The standard dialog would unhelpfully truncate them.
 begin
   screen.cursor := crDefault;
-  coInitialize(NIL);
+//  coInitialize(NIL); // done once in mmpThumbUtils initialization section
   with createMessageDialog(aMsg, msgDlgType, msgDlgButtons, defButton) do
   try
     mmp.cmd(evGSUserInput, TRUE);
@@ -72,7 +72,7 @@ begin
   finally
     free;
     mmp.cmd(evGSUserInput, FALSE);
-    coUninitialize;
+//    coUninitialize;
   end;
 end;
 

@@ -23,6 +23,7 @@ interface
 uses
   winApi.windows,
   system.classes,
+  vcl.controls,
   vcl.forms,
   mmpAction, mmpConsts;
 
@@ -32,6 +33,7 @@ function mmpDelay(const dwMilliseconds: cardinal): TVoid;
 function mmpFnnKeyAppToString(const aFnnKeyApp: TFnnKeyApp): string;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: string;  aFalse: string): string; overload;
 function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer): integer; overload;
+procedure mmpOpaque(const aControl: TWinControl);
 function mmpPlaylistFolderContains(const aFilePath: string; const aSetOfMediaType: TSetOfMediaType = [mtUnk]): boolean;
 function mmpProcessMessages: TVoid;
 function mmpQuoted(const aString: string): string;
@@ -158,6 +160,12 @@ function mmpIfThenElse(const bBoolean: boolean; aTrue: integer; aFalse: integer)
 begin
   case bBoolean of   TRUE: result := aTrue;
                     FALSE: result := aFalse; end;
+end;
+
+procedure mmpOpaque(const aControl: TWinControl);
+begin
+  case aControl = NIL of TRUE: EXIT; end;
+  aControl.controlStyle := aControl.controlStyle + [csOpaque];
 end;
 
 function mmpProcessMessages: TVoid;

@@ -136,6 +136,7 @@ function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType
 implementation
 
 uses
+  winApi.activeX,
   winApi.shellApi,
   system.types,
   mmpMPVProperties,
@@ -290,6 +291,9 @@ begin
   SELF.styleElements := [];
   SELF.color         := clBlack;
 
+  SELF.alphaBlend      := TRUE; // EXPERIMENTAL
+  SELF.alphaBlendValue := 0;    // EXPERIMENTAL
+
   FThumbsHost.styleElements := [];
   FThumbsHost.Color         := clBlack;
 
@@ -367,7 +371,7 @@ begin
   mmpSetWindowTop(SELF.handle);
 
   case FInitialHost of htThumbsHost: checkThumbsPerPage; end; // EXPERIMENTAL it was calling checkThumbsPerPage regardless
-  autoCenter;                                                 // EXPERIMENTAL and it wasn't calling this at all
+  // autoCenter; // will be done by the initial adjustAspectRatio in timerTimer  // EXPERIMENTAL and it wasn't calling this at all
 end;
 
 function TThumbsForm.imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
@@ -379,10 +383,12 @@ end;
 function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
 // it all really starts in timertimer
 begin
+  case GS.mainForm <> NIL of TRUE: showWindow(GS.mainForm.handle, SW_HIDE); end; // EXPERIMENTAL
+
   FInitialFilePath := aFilePath;
 
-  SELF.top    := aRect.top;
-  SELF.left   := aRect.left;
+//  SELF.top    := aRect.top; // EXPERIMENTAL
+//  SELF.left   := aRect.left;
   SELF.width  := aRect.width;
   SELF.height := aRect.height;
 
@@ -876,6 +882,8 @@ begin
   case GS.mainForm <> NIL of TRUE: GS.mainForm.hide; end;
   case GS.mainForm <> NIL of TRUE: showWindow(GS.mainForm.handle, SW_HIDE); end;
 
+  mmpCenterWindow(SELF.HANDLE, point(0, 0), 0); // EXPERIMENTAL
+
   FShowing := TRUE;
 
   case FInitialHost of
@@ -889,6 +897,10 @@ begin
                   end;end;
 
   checkAudioVideo;
+
+  // Now that dimensions are set and centering is done, reveal the form
+  SELF.alphaBlendValue := 255;  // EXPERIMENTAL
+  SELF.alphaBlend      := FALSE;
 
   case GS.showingConfig of FALSE: focusThumbs; end;
 
