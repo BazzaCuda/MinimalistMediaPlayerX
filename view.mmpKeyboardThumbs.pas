@@ -174,7 +174,7 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyDn and keyIs(VK_DOWN)     and NOT ctrl and NOT shift                                      of TRUE: result := koNextFolder; end;
     case keyUp and keyIs(VK_END)                                                                      of TRUE: result := koPlayLast; end;
 //    case keyUp and keyIs(VK_ESCAPE)                 and     GS.showingHelpFull                        of TRUE: result := koHelpFull; end; // close Help Full  - this is handled in mmpVM.onKeyUp
-    case keyUp and keyIs(VK_ESCAPE)                and NOT GS.ignoreEscape    and NOT GS.userInput    of TRUE: result := koCloseImageBrowser; end;
+    case keyUp and keyIs(VK_ESCAPE)                and NOT GS.ignoreEscape    and NOT GS.userInput and NOT GS.showingAbout    of TRUE: result := koCloseImageBrowser; end;
     case keyUp and keyIs(VK_HOME)                                                                     of TRUE: result := koPlayFirst; end;
     case keyUp and keyIs(VK_INSERT)                                                                   of TRUE: result := koClipboard; end;
     case keyDn and keyIs(VK_LEFT)     and     ctrl                                                    of TRUE: result := koPanLeft; end;
@@ -214,12 +214,17 @@ begin
   result := getKeyOp;
 
   {$if BazDebugWindow}
+  //  TDebug.debugEnum<TKeyOp>('getKeyOp', result);
+  {$endif}
+
+
+
+  {$if BazDebugWindow}
 //  case keyIs(VK_ESCAPE) of TRUE:  begin
 //                                    TDebug.debugEnum<TKeyOp>('getKeyOp', result);
 //                                    debugBoolean('keyboardThumbs: evGSIgnoreEscape', GS.ignoreEscape); end;end;
   {$endif}
-
-  mmp.cmd(evGSIgnoreEscape, FALSE);
+  case keyIs(VK_ESCAPE) of TRUE: mmp.cmd(evGSIgnoreEscape, FALSE); end;
 end;
 
 initialization

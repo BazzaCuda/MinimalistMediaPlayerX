@@ -12,6 +12,8 @@ object AboutForm: TAboutForm
   Font.Name = 'Tahoma'
   Font.Style = []
   Position = poScreenCenter
+  OnActivate = FormActivate
+  OnKeyUp = FormKeyUp
   OnShow = FormShow
   TextHeight = 13
   object Bevel1: TBevel

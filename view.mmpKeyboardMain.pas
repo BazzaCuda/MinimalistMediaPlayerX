@@ -197,7 +197,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
                                                                                                                     of TRUE: result := koPlayNextFolder; end;
     case keyUp and keyIs(VK_END)                                                                                    of TRUE: result := koPlayLast; end;
     case keyUp and keyIs(VK_ESCAPE)                                 and      GS.showingHelpFull                     of TRUE: result := koHelpFull; end;
-    case keyUp and keyIs(VK_ESCAPE)           and NOT GS.userInput  and NOT  GS.showingHelpFull                     of TRUE: result := koEscape; end;
+    case keyUp and keyIs(VK_ESCAPE)           and NOT GS.userInput  and NOT  GS.showingHelpFull and NOT GS.showingAbout                     of TRUE: result := koEscape; end;
     case keyUp and keyIs(VK_F1)                                                                                     of TRUE: result := koKeepCatF1; end;
     case keyUp and keyIs(VK_F2)                                                                                     of TRUE: result := koKeepCatF2; end;
     case keyUp and keyIs(VK_F3)                                                                                     of TRUE: result := koKeepCatF3; end;

@@ -72,6 +72,8 @@ type
     procedure lblWikiURLMouseEnter(Sender: TObject);
     procedure lblWikiURLMouseLeave(Sender: TObject);
     procedure btnLicenceClick(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
   private
     procedure menuClick(sender: TObject);
   protected
@@ -84,6 +86,7 @@ type
     function checkPreviousReleaseNotes: TVoid;
     function compareVersions(const thisVersion: string; const latestVersion: string): TVoid;
   public
+    constructor Create(aOwner: TComponent);
   end;
   {$ENDREGION}
 
@@ -93,7 +96,7 @@ uses
   winApi.shellAPI,
   system.types,
   bazCmd,
-  mmpConsts, mmpFileUtils, mmpProgramUpdates, mmpShellUtils, mmpUtils,
+  mmpConsts, mmpFileUtils, mmpGlobalState, mmpProgramUpdates, mmpShellUtils, mmpUtils,
   view.mmpFormProgress, view.mmpFormReleaseNotes,
   _debugWindow;
 
@@ -253,10 +256,25 @@ begin
 //  case thisVersion = latestVersion of FALSE: lblLatestReleaseVersion.font.style := [fsBold, fsUnderline]; end;
 end;
 
+constructor TAboutForm.Create(aOwner: TComponent);
+begin
+  inherited;
+  keyPreview      := TRUE; // EXPERIMENTAL
+end;
+
+procedure TAboutForm.FormActivate(Sender: TObject);
+begin
+  setForegroundWindow(SELF.HANDLE);
+end;
+
+procedure TAboutForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  case key = VK_ESCAPE of TRUE: modalResult := mrOK; end;
+end;
+
 procedure TAboutForm.FormShow(Sender: TObject);
 begin
   case btnWhatsNew.visible of TRUE: btnWhatsNew.setFocus; end;
-  btnClose.cancel := TRUE;
 end;
 
 procedure TAboutForm.lblWebsiteURLClick(Sender: TObject);
@@ -361,7 +379,7 @@ function TAboutFormProxy.showForm(const thisVersion: string; const buildVersion:
 begin
   mmp.cmd(evGSShowingAbout, TRUE);
   showProgressForm;
-  with TAboutForm.create(NIL) do
+  with TAboutForm.create(GS.mainForm) do
   try
     setNoStyle;
     setCopyrightYear(currentYear);

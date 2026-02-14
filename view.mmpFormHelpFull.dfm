@@ -32,7 +32,6 @@ object HelpFullForm: THelpFullForm
   Font.Style = []
   GlassFrame.Enabled = True
   GlassFrame.Top = 31
-  KeyPreview = True
   Position = poScreenCenter
   StyleElements = [seFont, seClient]
   OnClose = FormClose

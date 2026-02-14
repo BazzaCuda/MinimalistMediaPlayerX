@@ -151,7 +151,7 @@ begin
   {$ifndef useMadExcept}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
   {$endif}
-  {$if BazDebugWindow} {debugClear;} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
+  {$if BazDebugWindow} debugClear; debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 
   {$ifdef useMadExcept}
 //  madExcept.SetLeakReportFile(extractFilePath(paramStr(0)) + 'madExcept.log'); // this suppresses the dialog
@@ -251,7 +251,7 @@ begin
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent); // this give us GS.mediaType
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
-  MMPUI.viewModel.showUI; // if we open an image in the browser (below), this gives us the window dimensions and desktop location to copy - this has probably been superseded by auto-adjustAspectRatio
+  MMPUI.viewModel.showUI; // this instantiates the Main Media Window but its display is current suppressed by alphaBlendValue = 0
 
   mmp.cmd(evSTForceCaptions);
 
