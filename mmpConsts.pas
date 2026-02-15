@@ -107,6 +107,10 @@ const
   CMDLINE_OPTION_NOPLAYLIST   = 'noplaylist';
 
   CONF_ALLOW_INTO_WINDOWS     = 'allowIntoWindows';
+  CONF_ANIMATE_MAIN           = 'animateMain';
+  CONF_ANIMATE_MAIN_MS        = 'animateMainMs';
+  CONF_ANIMATE_BROWSER        = 'animateBrowser';
+  CONF_ANIMATE_BROWSER_MS     = 'animateBrowserMs';
   CONF_AUDIO_DELETE           = 'audioDelete';
   CONF_AUTO_UPDATE            = 'autoUpdate';
   CONF_BASE_FOLDER            = 'baseFolder';

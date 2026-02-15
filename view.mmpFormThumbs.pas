@@ -80,6 +80,8 @@ type
     procedure onOpenFile(const aURL: string);
     procedure onStateChange(cSender: TObject; eState: TMPVPlayerState);
     function adjustAspectRatio:   TVoid;
+    function animateMs:           integer;
+    function animateTF:           boolean;
     function autoCenter:          TVoid;
     function checkAudioVideo:     TVoid;
     function checkThumbsPerPage:  TVoid;
@@ -125,6 +127,7 @@ type
     procedure onMouseDown(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
+    procedure WMSysCommand(var Message: TWMSysCommand); message WM_SYSCOMMAND;
     procedure WMMove(var Message: TMessage); message WM_MOVE;
   public
     function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
@@ -195,12 +198,22 @@ begin
 
   vHeight := vHeight + mmpCaptionHeight + FStatusBar.height + (mmpBorderWidth * 2);
 
-//  mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
-  debugBoolean('adjustAspectRatio: GS.autoCenter', GS.autoCenter);
-  mmpAnimateResize(SELF.handle, vWidth, vHeight, 0, 0, GS.autoCenter, 500); // EXPERIMENTAL
+ // EXPERIMENTAL
+  case animateTF of  TRUE: mmpAnimateResize(SELF.handle, vWidth, vHeight, 0, 0, GS.autoCenter, animateMs);
+                    FALSE: mmpSetWindowSize(SELF.handle, point(vWidth, vHeight)); end;
   mmpProcessMessages;
 
   mmp.cmd(GS.autoCenter, autoCenter);
+end;
+
+function TThumbsForm.animateMs: integer;
+begin
+  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_BROWSER_MS] <= 0, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 500);
+end;
+
+function TThumbsForm.animateTF: boolean;
+begin
+  result := CF.asBoolean[CONF_ANIMATE_BROWSER];
 end;
 
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);
@@ -292,9 +305,6 @@ procedure TThumbsForm.FormCreate(Sender: TObject);
 begin
   SELF.styleElements := [];
   SELF.color         := clBlack;
-
-//  SELF.alphaBlend      := TRUE; // EXPERIMENTAL
-//  SELF.alphaBlendValue := 0;    // EXPERIMENTAL
 
   FThumbsHost.styleElements := [];
   FThumbsHost.Color         := clBlack;
@@ -393,11 +403,15 @@ begin
 //  SELF.top    := aRect.top; // EXPERIMENTAL
 //  SELF.left   := aRect.left;
 
-//  SELF.width  := aRect.width;  // EVEN MORE EXPERIMENTAL
-//  SELF.height := aRect.height;
+  // EXPERIMENTAL
+  case animateTF of  TRUE:  begin
+                              SELF.width  := 100;
+                              SELF.height := 100; end;
+                    FALSE:  begin
+                              SELF.width  := aRect.width;  // EVEN MORE EXPERIMENTAL
+                              SELF.height := aRect.height; end;end;
 
-  SELF.width  := 100; // EXPERIMENTAL
-  SELF.height := 100;
+
   // mmpAnimateResize(SELF.HANDLE, aRect.width, aRect.height, 0, 0, 500);
 
 //  debugInteger('initThumbails aRect.height', aRect.height);
@@ -895,16 +909,18 @@ begin
 
   mmp.cmd(evGSAutoCenter, TRUE);
 
+  case animateTF of FALSE: FSHowing := TRUE; end;
+
   case FInitialHost of
     htThumbsHost: begin
                     FThumbs.playThumbs(FInitialFilePath);
-                    mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, 500); end;
+                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;end;
     htMPVHost:    begin
                     case GS.noPlaylist of  TRUE: FThumbs.playlist.add(PS.fileFolderAndName);
                                           FALSE: FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly); end;
                     playCurrentItem;
                     mmpDelay(100);
-                    mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, 500);
+                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
                     adjustAspectRatio; // EXPERIMENTAL
                   end;end;
 
@@ -912,11 +928,7 @@ begin
 
   checkAudioVideo;
 
-  // Now that dimensions are set and centering is done, reveal the form
-  SELF.alphaBlendValue := 255;  // EXPERIMENTAL
-  SELF.alphaBlend      := FALSE;
-
-  case GS.showingConfig of FALSE: focusThumbs; end;
+  case GS.showingConfig of FALSE: focusThumbs; end; // how could this NOT be FALSE when opening the browser!?
 
   FProgressForm := NIL;
 end;
@@ -973,6 +985,12 @@ begin
   case FShowing      of FALSE: EXIT; end; // ignore the initial resizing while the form starts up
   moveHelpWindow;
   mmp.cmd(evGSAutoCenter, FALSE);
+end;
+
+procedure TThumbsForm.WMSysCommand(var message: TWMSysCommand);
+begin
+  case (message.cmdType and $FFF0) = SC_CLOSE of   TRUE: processKeyOp(koCloseImageBrowser, [], 0);
+                                                  FALSE: inherited; end;
 end;
 
 //==========
