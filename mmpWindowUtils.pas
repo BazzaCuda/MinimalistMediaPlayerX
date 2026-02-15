@@ -306,18 +306,18 @@ begin
     var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
     var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
 
-    // 1. Calculate the 'Ideal' position where the video window itself is centered
+    // Calculate the 'Ideal' position where the video window itself is centered
     var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
     var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2);
 
-    // 2. Determine if the attached Delta would push past the right/bottom screen edges
+    // Determine if the attached Delta would push past the right/bottom screen edges
     var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
     var vMaxAllowedB: integer := vWorkArea.top + vWorkArea.height;
 
     var vOverhangX: integer := max(0, (vIdealL + vCurrentW + aWidthDelta) - vMaxAllowedR);
     var vOverhangY: integer := max(0, (vIdealT + vCurrentH + aHeightDelta) - vMaxAllowedB);
 
-    // 3. Shift the window left/up only by the amount of the overhang
+    // Shift the window left/up only by the amount of the overhang
     var vCurrentL: integer := vIdealL - vOverhangX;
     var vCurrentT: integer := vIdealT - vOverhangY;
 
