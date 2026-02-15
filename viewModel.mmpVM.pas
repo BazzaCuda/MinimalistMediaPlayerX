@@ -280,12 +280,13 @@ end;
 
 function TVM.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_MAIN_MS] <= 0, CF.asInteger[CONF_ANIMATE_MAIN_MS], 1000);
+  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_MAIN_MS] > 0, CF.asInteger[CONF_ANIMATE_MAIN_MS], 1000);
 end;
 
 function TVM.animateTF: boolean;
 begin
-  result := CF.asBoolean[CONF_ANIMATE_MAIN];
+  case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := TRUE;
+                                        FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN]; end;
 end;
 
 constructor TVM.Create;

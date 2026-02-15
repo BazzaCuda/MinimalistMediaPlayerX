@@ -208,12 +208,13 @@ end;
 
 function TThumbsForm.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_BROWSER_MS] <= 0, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 500);
+  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_BROWSER_MS] > 0, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 500);
 end;
 
 function TThumbsForm.animateTF: boolean;
 begin
-  result := CF.asBoolean[CONF_ANIMATE_BROWSER];
+  case CF[CONF_ANIMATE_BROWSER] = EMPTY of   TRUE: result := TRUE;
+                                            FALSE: result := CF.asBoolean[CONF_ANIMATE_BROWSER]; end;
 end;
 
 procedure TThumbsForm.applicationEventsHint(Sender: TObject);

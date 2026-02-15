@@ -149,8 +149,7 @@ begin
         end;
     end;
 
-    setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
-      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+    setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
 
     updateWindow(aWND);
     application.processMessages();
