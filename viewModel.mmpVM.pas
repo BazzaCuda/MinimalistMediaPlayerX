@@ -122,6 +122,9 @@ type
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
 
+    FMPVHeight:             integer;
+    FMPVWidth:              integer;
+
   private
     function    adjustAspectRatio:    TVoid;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -622,6 +625,8 @@ end;
 function TVM.onMPOpen(const aNotice: INotice): TVoid;
 begin
 //  FLocked := FALSE;
+  FMPVWidth   := 0;
+  FMPVHeight  := 0;
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -706,6 +711,11 @@ function TVM.onTickTimer(const aNotice: INotice): INotice;
 begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
+
+  case (FMPVWidth <> GS.mpvWidth) or (FMPVHeight <> GS.mpvHeight) of TRUE:  begin
+                                                                              FMPVWidth   := GS.mpvWidth;
+                                                                              FMPVHeight  := GS.mpvHeight;
+                                                                              mmp.cmd(evVMResizeWindow); end;end; // EXPERIMENTAL
 
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
@@ -890,6 +900,7 @@ end;
 function TVM.playNext(const bRecurseFolders: boolean): TVoid;
 var T, F: TProc;
 begin
+  debugClear;
   case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -909,6 +920,7 @@ end;
 function TVM.playPrev: TVoid;
 var T, F: TProc;
 begin
+  debugClear;
   case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -986,8 +998,9 @@ end;
 
 function TVM.reallyShowUI: TVoid;
 begin
-  GS.mainForm.alphaBlendValue := 255;
-  GS.mainForm.alphaBlend      := TRUE;
+  case GS.mainForm.alphaBlendValue = 0 of TRUE: begin
+                                                  GS.mainForm.alphaBlendValue := 255;
+                                                  GS.mainForm.alphaBlend      := TRUE; end;end;
 end;
 
 function TVM.reInitTimeline(const aDuration: integer): TVoid;
@@ -1102,22 +1115,33 @@ begin
 
   var MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
   var MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
+  var MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 
-//  debugInteger('GS.mainForm.height', GS.mainForm.height);
+  debugFormat('%d x %d', [MPvideoWidth, MPvideoHeight]);
+  case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
+
+  mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
+
   var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
 
   mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
 
-  mmpSetWindowSize(GS.mainForm.handle, vPt);
+  var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
+  var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
+
+  case (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, 1000); end;
+
+  case GS.suppressMainUI of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work
 
   mmp.cmd(evWndResize); // reposition the help, playlist and timeline windows
 
   mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
 
-  FResizingWindow := FALSE;
-
+  mmp.cmd(GS.mediaType = mtAudio, reallyShowUI); // either we've already animated the cover art or now we need to just show the window regardless
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
   mmp.cmd(evGSSuppressMainUI, FALSE); // every subsequent call to resizeWindow will now call reallyShowUI
+
+  FResizingWindow := FALSE;
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;
@@ -1179,6 +1203,7 @@ begin
 
   mmp.cmd(vModalResult = mrIgnore, procedure  begin
                                                 GS.mainForm.show;
+                                                reallyShowUI;
                                                 setActiveWindow(GS.mainForm.handle);
                                                 mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end);
 end;

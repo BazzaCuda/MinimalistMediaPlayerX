@@ -126,7 +126,7 @@ type
     procedure onMouseUp(sender: TObject; button: TMouseButton; shift: TShiftState; X, Y: integer);
     procedure onThumbClick(sender: TObject);
     procedure WMMove(var Message: TMessage); message WM_MOVE;
-public
+  public
     function initThumbnails(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TVoid;
   end;
 
@@ -195,7 +195,9 @@ begin
 
   vHeight := vHeight + mmpCaptionHeight + FStatusBar.height + (mmpBorderWidth * 2);
 
-  mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
+//  mmpSetWindowSize(SELF.handle, point(vWidth, vHeight));
+  debugBoolean('adjustAspectRatio: GS.autoCenter', GS.autoCenter);
+  mmpAnimateResize(SELF.handle, vWidth, vHeight, 0, 0, GS.autoCenter, 500); // EXPERIMENTAL
   mmpProcessMessages;
 
   mmp.cmd(GS.autoCenter, autoCenter);
@@ -291,8 +293,8 @@ begin
   SELF.styleElements := [];
   SELF.color         := clBlack;
 
-  SELF.alphaBlend      := TRUE; // EXPERIMENTAL
-  SELF.alphaBlendValue := 0;    // EXPERIMENTAL
+//  SELF.alphaBlend      := TRUE; // EXPERIMENTAL
+//  SELF.alphaBlendValue := 0;    // EXPERIMENTAL
 
   FThumbsHost.styleElements := [];
   FThumbsHost.Color         := clBlack;
@@ -385,12 +387,18 @@ function TThumbsForm.initThumbnails(const aFilePath: string; const aRect: TRect;
 begin
   case GS.mainForm <> NIL of TRUE: showWindow(GS.mainForm.handle, SW_HIDE); end; // EXPERIMENTAL
 
+  FShowing := FALSE; // EXPERIMENTAL
   FInitialFilePath := aFilePath;
 
 //  SELF.top    := aRect.top; // EXPERIMENTAL
 //  SELF.left   := aRect.left;
-  SELF.width  := aRect.width;
-  SELF.height := aRect.height;
+
+//  SELF.width  := aRect.width;  // EVEN MORE EXPERIMENTAL
+//  SELF.height := aRect.height;
+
+  SELF.width  := 100; // EXPERIMENTAL
+  SELF.height := 100;
+  // mmpAnimateResize(SELF.HANDLE, aRect.width, aRect.height, 0, 0, 500);
 
 //  debugInteger('initThumbails aRect.height', aRect.height);
 
@@ -448,6 +456,7 @@ begin
 //  mmpSetWindowPos(SELF.Handle, point((mmpScreenWidth - vWidth) div 2, (mmpScreenHeight - vHeight) div 2)); // center window
   mmpProcessMessages;
   mmpSetWindowSize(SELF.Handle, point(vWidth, vHeight)); // resize window
+
   adjustAspectRatio; // EXPERIMENTAL
 
   var vRect: TRect;
@@ -884,17 +893,22 @@ begin
 
   mmpCenterWindow(SELF.HANDLE, point(0, 0), 0); // EXPERIMENTAL
 
-  FShowing := TRUE;
+  mmp.cmd(evGSAutoCenter, TRUE);
 
   case FInitialHost of
-    htThumbsHost: FThumbs.playThumbs(FInitialFilePath);
+    htThumbsHost: begin
+                    FThumbs.playThumbs(FInitialFilePath);
+                    mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, 500); end;
     htMPVHost:    begin
                     case GS.noPlaylist of  TRUE: FThumbs.playlist.add(PS.fileFolderAndName);
                                           FALSE: FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly); end;
                     playCurrentItem;
                     mmpDelay(100);
+                    mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, 500);
                     adjustAspectRatio; // EXPERIMENTAL
                   end;end;
+
+   FShowing := TRUE;
 
   checkAudioVideo;
 

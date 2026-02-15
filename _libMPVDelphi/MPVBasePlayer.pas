@@ -617,8 +617,12 @@ begin
   m_sFileName := '';
   GetPropertyString(STR_PATH, m_sFileName);
   // TODO: "://" => get 'media-title'
+
+  m_clock.enter; // BAZ EXPERIMENTAL
   GetPropertyInt64(STR_WIDTH, m_nX);
   GetPropertyInt64(STR_HEIGHT, m_nY);
+  m_clock.leave; // BAZ EXPERIMENTAL
+
   DoSetVideoSize;
 
   m_cLock.Enter;
@@ -910,11 +914,13 @@ end;
 function TMPVBasePlayer.DoEventVideoReconfig: TMPVErrorCode;
 begin
   // Could be error at the beginning
+  m_clock.enter; // BAZ EXPERIMENTAL
   if GetPropertyInt64(STR_DWIDTH, m_nX, False)=MPV_ERROR_SUCCESS then
   begin
     if GetPropertyInt64(STR_DHEIGHT, m_nY)=MPV_ERROR_SUCCESS then
       DoSetVideoSize;
   end;
+  m_clock.leave; // BAZ EXPERIMENTAL
   Result := MPV_ERROR_SUCCESS;
 end;
 
@@ -1178,12 +1184,16 @@ end;
 
 function TMPVBasePlayer.getVideoHeight: Int64;
 begin
+  m_clock.enter; // BAZ EXPERIMENTAL
   result := m_nY;
+  m_clock.leave;
 end;
 
 function TMPVBasePlayer.getVideoWidth: Int64;
 begin
+  m_clock.enter; // BAZ EXPERIMENTAL
   result := m_nX;
+  m_clock.leave;
 end;
 
 function TMPVBasePlayer.getVol: Double;

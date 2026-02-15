@@ -61,7 +61,9 @@ type
     function getMonitor:                  TMonitor;
     function getMonitorCount:             integer;
     function getMonitorIx:                integer;
+    function getMPVHeight:                integer;
     function getMPVScreenshotDirectory:   string;
+    function getMPVWidth:                 integer;
     function getNoPlaylist:               boolean;
     function getOpeningURL:               boolean;
     function getRenameFile:               boolean;
@@ -103,7 +105,9 @@ type
     property monitor:                   TMonitor            read getMonitor;
     property monitorCount:              integer             read getMonitorCount;
     property monitorIx:                 integer             read getMonitorIx;
+    property mpvHeight:                 integer             read getMPVHeight;
     property MPVScreenshotDirectory:    string              read getMPVScreenshotDirectory;
+    property mpvWidth:                  integer             read getMPVWidth;
     property noPlaylist:                boolean             read getNoPlaylist;
     property openingURL:                boolean             read getOpeningURL;
     property repeatDelayMs:             integer             read getRepeatDelayMs;
@@ -118,7 +122,7 @@ type
     property showingTimeline:           boolean             read getShowingTimeline;
     property shuffle:                   boolean             read getShuffle;
     property skipExcluded:              boolean             read getSkipExcluded;
-    property SuppressMainUI:            boolean             read getSuppressMainUI;
+    property suppressMainUI:            boolean             read getSuppressMainUI;
     property suspended:                 boolean             read getSuspended;
     property timelineHeight:            integer             read getTimelineHeight;
     property userInput:                 boolean             read getUserInput;
@@ -153,7 +157,9 @@ type
     FMonitor:                 TMonitor;
     FMonitorCount:            integer;
     FMonitorIx:               integer;
+    FMPVHeight:               integer;
     FMPVScreenshotDirectory:  string;
+    FMPVWidth:                integer;
     FNoPlaylist:              boolean;
     FOpeningURL:              boolean;
     FRenameFile:              boolean;
@@ -196,7 +202,9 @@ type
     function  getMonitor:                   TMonitor;
     function  getMonitorCount:              integer;
     function  getMonitorIx:                 integer;
+    function  getMPVHeight:                 integer;
     function  getMPVScreenshotDirectory:    string;
+    function  getMPVWidth:                  integer;
     function  getNoPlaylist:                boolean;
     function  getOpeningURL:                boolean;
     function  getRenameFile:                boolean;
@@ -323,9 +331,19 @@ begin
   result := FMonitorIx;
 end;
 
+function TGlobalState.getMPVHeight: integer;
+begin
+  result := FMPVHeight;
+end;
+
 function TGlobalState.getMPVScreenshotDirectory: string;
 begin
   result := FMPVScreenshotDirectory;
+end;
+
+function TGlobalState.getMPVWidth: integer;
+begin
+  result := FMPVWidth;
 end;
 
 function TGlobalState.getNoPlaylist: boolean;
@@ -458,7 +476,9 @@ begin
     evGSMonitor:                  FMonitor                := aNotice.monitor;
     evGSMonitorCount:             FMonitorCount           := aNotice.integer;
     evGSMonitorIx:                FMonitorIx              := aNotice.integer;
+    evGSMPVHeight:                FMPVHeight              := aNotice.integer;
     evGSMPVScreenshotDirectory:   FMPVScreenshotDirectory := aNotice.text;
+    evGSMPVWidth:                 FMPVWidth               := aNotice.integer;
     evGSNoPlaylist:               FNoPlaylist             := aNotice.tf;
     evGSOpeningURL:               FOpeningURL             := aNotice.tf;
     evGSRenameFile:               FRenameFile             := aNotice.tf;

@@ -23,10 +23,13 @@ interface
 uses
   winApi.windows,
   system.classes, system.SyncObjs,
+  vcl.forms,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpAction, mmpConsts, mmpGlobalState;
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
+function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid; overload;
+function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid; overload;
 function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcGreaterWindow (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
@@ -44,7 +47,7 @@ implementation
 
 uses
   winApi.messages,
-  system.types,
+  system.math, system.types,
   bazCmd,
   mmpDesktopUtils, mmpPostToAllUtils, mmpUtils,
   _debugWindow;
@@ -83,6 +86,453 @@ begin
 
   result.x := vWidth;
   result.y := aHeight + 2;
+end;
+
+function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid;
+begin
+  var vWorkArea: tRect := screen.workareaRect;
+  var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
+
+  var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
+  var vDesktopCenterY: integer := vWorkArea.top + (vLogicalHeight div 2);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+
+  var vR: tRect;
+  getWindowRect(aWND, vR);
+  var vInitialWidth: integer := vR.width;
+  var vInitialHeight: integer := vR.height;
+  var vInitialLeft: integer := vR.left;
+  var vInitialTop: integer := vR.top;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    var vCurrentL: integer := vInitialLeft;
+    var vCurrentT: integer := vInitialTop;
+
+    case aCenter of
+      TRUE:
+        begin
+          // Calculate 'Ideal' position centered on the desktop for the video window
+          var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
+          var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2);
+
+          var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
+
+          // Check for overhang on Right and Bottom caused by Deltas
+          var vOverhangX: integer := max(0, (vIdealL + vCurrentW + aWidthDelta) - (vMaxAllowedR - 1));
+          var vOverhangY: integer := max(0, (vIdealT + vCurrentH) - (vWorkArea.top + vLogicalHeight));
+
+          // Subtract overhang to shift window only as much as necessary
+          vCurrentL := vIdealL - vOverhangX;
+          vCurrentT := vIdealT - vOverhangY;
+
+          // Prevent shifting into negative space/off-monitor
+          vCurrentL := max(vWorkArea.left, vCurrentL);
+          vCurrentT := max(vWorkArea.top, vCurrentT);
+        end;
+    end;
+
+    setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    updateWindow(aWND);
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid;
+begin
+  mmpAnimateResize(aTargetForm.HANDLE, aTargetWidth, aTargetHeight, aWidthDelta, aHeightDelta, aCenter, aDurationMs);
+end;
+
+function mmpAnimateResize_v7(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid;
+begin
+  var vWorkArea: tRect := screen.workareaRect;
+
+  // Logical screen height matches mmpScreenHeight calculation
+  var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
+
+  var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
+  var vDesktopCenterY: integer := vWorkArea.top + (vLogicalHeight div 2);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+
+  var vR: tRect;
+  getWindowRect(aWND, vR);
+  var vInitialWidth:  integer := vR.width;
+  var vInitialHeight: integer := vR.height;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth   + round((aTargetWidth   - vInitialWidth)  * vProgress);
+    var vCurrentH: integer := vInitialHeight  + round((aTargetHeight  - vInitialHeight) * vProgress);
+
+    // Calculate ideal position based on the Logical Height
+    var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
+    var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2);
+
+    var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
+
+    var vOverhangX: integer := max(0, (vIdealL + vCurrentW + aWidthDelta) - (vMaxAllowedR - 1));
+    var vOverhangY: integer := max(0, (vIdealT + vCurrentH) - (vWorkArea.top + vLogicalHeight));
+
+    var vCurrentL: integer := vIdealL - vOverhangX;
+    var vCurrentT: integer := vIdealT - vOverhangY;
+
+    vCurrentL := max(vWorkArea.left, vCurrentL);
+    vCurrentT := max(vWorkArea.top, vCurrentT);
+
+    setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    updateWindow(aWND);
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_v6(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aDurationMs: integer): TVoid;
+const
+  Y_OFFSET_ADJUSTMENT = 2; // Increase this value to move the window higher (reduces Y)
+begin
+  var vWorkArea: tRect := screen.workareaRect;
+
+  var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
+  var vDesktopCenterY: integer := vWorkArea.top + (vWorkArea.height div 2);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    // 1. Calculate the 'Ideal' position centered on the desktop
+    var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
+    var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2) - Y_OFFSET_ADJUSTMENT;
+
+    // 2. Determine if the attached Delta would push past the right/bottom screen edges
+    var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
+    var vMaxAllowedB: integer := vWorkArea.top + vWorkArea.height;
+
+    var vOverhangX: integer := max(0, (vIdealL + vCurrentW + aWidthDelta) - vMaxAllowedR);
+    var vOverhangY: integer := max(0, (vIdealT + vCurrentH + aHeightDelta) - vMaxAllowedB);
+
+    // 3. Shift the window left/up only by the amount of the overhang
+    var vCurrentL: integer := vIdealL - vOverhangX;
+    var vCurrentT: integer := vIdealT - vOverhangY;
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_beforeConstant(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aDurationMs: integer): TVoid;
+begin
+  var vWorkArea: tRect := screen.workareaRect;
+
+  var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
+  var vDesktopCenterY: integer := vWorkArea.top + (vWorkArea.height div 2);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    // 1. Calculate the 'Ideal' position where the video window itself is centered
+    var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
+    var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2);
+
+    // 2. Determine if the attached Delta would push past the right/bottom screen edges
+    var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
+    var vMaxAllowedB: integer := vWorkArea.top + vWorkArea.height;
+
+    var vOverhangX: integer := max(0, (vIdealL + vCurrentW + aWidthDelta) - vMaxAllowedR);
+    var vOverhangY: integer := max(0, (vIdealT + vCurrentH + aHeightDelta) - vMaxAllowedB);
+
+    // 3. Shift the window left/up only by the amount of the overhang
+    var vCurrentL: integer := vIdealL - vOverhangX;
+    var vCurrentT: integer := vIdealT - vOverhangY;
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_v4(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aDurationMs: integer): TVoid;
+begin
+  var vWorkArea: tRect := screen.workareaRect;
+
+  var vAvailableW: integer := vWorkArea.width - aWidthDelta;
+  var vAvailableH: integer := vWorkArea.height - aHeightDelta;
+
+  var vCenterX: integer := vWorkArea.left + (vAvailableW div 2);
+  var vCenterY: integer := vWorkArea.top + (vAvailableH div 2);
+
+  var vStartL: integer := vCenterX - (aTargetForm.width div 2);
+  var vStartT: integer := vCenterY - (aTargetForm.height div 2);
+
+  setWindowPos(aTargetForm.handle, 0, vStartL, vStartT, aTargetForm.width, aTargetForm.height,
+    SWP_NOZORDER or SWP_NOACTIVATE);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    var vCurrentL: integer := vCenterX - (vCurrentW div 2);
+    var vCurrentT: integer := vCenterY - (vCurrentH div 2);
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_v3(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aDurationMs: integer): TVoid;
+begin
+  var vWorkArea: tRect  := screen.workareaRect;
+  var vScreenW: integer := vWorkArea.width;
+  var vScreenH: integer := vWorkArea.height;
+
+  var vCenteredL: integer := vWorkArea.left + (vScreenW div 2) - (aTargetForm.width div 2);
+  var vCenteredT: integer := vWorkArea.top + (vScreenH div 2) - (aTargetForm.height div 2);
+
+  setWindowPos(aTargetForm.handle, 0, vCenteredL, vCenteredT, aTargetForm.width, aTargetForm.height, SWP_NOZORDER or SWP_NOACTIVATE);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+
+  var vCenterX: integer := vWorkArea.left + (vScreenW div 2);
+  var vCenterY: integer := vWorkArea.top + (vScreenH div 2);
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    var vCurrentL: integer := vCenterX - (vCurrentW div 2);
+    var vCurrentT: integer := vCenterY - (vCurrentH div 2);
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_v2(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aDurationMs: integer): TVoid;
+begin
+  var vScreenW: integer := screen.width;
+  var vScreenH: integer := screen.height;
+
+  var vCenteredL: integer := (vScreenW div 2) - (aTargetForm.width div 2);
+  var vCenteredT: integer := (vScreenH div 2) - (aTargetForm.height div 2);
+
+  setWindowPos(aTargetForm.handle, 0, vCenteredL, vCenteredT, aTargetForm.width, aTargetForm.height,
+    SWP_NOZORDER or SWP_NOACTIVATE);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+
+  // Replacement lines: Use screen center as the fixed anchor
+  // var vInitialLeft: integer := aTargetForm.left;
+  // var vInitialTop: integer := aTargetForm.top;
+  // var vCenterX: integer := vInitialLeft + (vInitialWidth div 2);
+  // var vCenterY: integer := vInitialTop + (vInitialHeight div 2);
+  var vCenterX: integer := vScreenW div 2;
+  var vCenterY: integer := vScreenH div 2;
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    var vCurrentL: integer := vCenterX - (vCurrentW div 2);
+    var vCurrentT: integer := vCenterY - (vCurrentH div 2);
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
+end;
+
+function mmpAnimateResize_v1(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aDurationMs: integer): TVoid;
+begin
+  var vScreenW: integer := screen.width;
+  var vScreenH: integer := screen.height;
+
+  var vCenteredL: integer := (vScreenW div 2) - (aTargetForm.width div 2);
+  var vCenteredT: integer := (vScreenH div 2) - (aTargetForm.height div 2);
+
+  setWindowPos(aTargetForm.handle, 0, vCenteredL, vCenteredT, aTargetForm.width, aTargetForm.height,
+    SWP_NOZORDER or SWP_NOACTIVATE);
+
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+  var vInitialWidth: integer := aTargetForm.width;
+  var vInitialHeight: integer := aTargetForm.height;
+  var vInitialLeft: integer := aTargetForm.left;
+  var vInitialTop: integer := aTargetForm.top;
+
+  var vCenterX: integer := vInitialLeft + (vInitialWidth div 2);
+  var vCenterY: integer := vInitialTop + (vInitialHeight div 2);
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+
+    // vProgress := vElapsedSeconds / vTotalDurationSeconds;
+    // vEasedProgress := abs(sin(vProgress * 1.57079));
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    // var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vEasedProgress);
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+
+    // var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vEasedProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    var vCurrentL: integer := vCenterX - (vCurrentW div 2);
+    var vCurrentT: integer := vCenterY - (vCurrentH div 2);
+
+    setWindowPos(aTargetForm.handle, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH,
+      SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    aTargetForm.update();
+    application.processMessages();
+  end;
 end;
 
 function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
@@ -328,16 +778,16 @@ var
 
   function alreadyCentred: boolean;
   begin
-    var vDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // one of either widthHelp or widthPlaylist will be zero
-    vHPos       := ((mmpScreenWidth  - vR.width) div 2);
+    var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
 
-    case vHPos + vR.width + vDelta > mmpScreenWidth of TRUE: vHPos := mmpScreenWidth - vR.width - vDelta - 1; end; // only shift left if necessary
+    vHPos       := ((mmpScreenWidth  - vR.width) div 2);
+    case vHPos + vR.width + vWidthDelta > mmpScreenWidth of TRUE: vHPos := mmpScreenWidth - vR.width - vWidthDelta - 1; end; // only shift left if necessary
 
     // ensure we never shift into negative space (left monitor)
     case vHPos < 0 of TRUE: vHPos := 0; end;
 
     vVPos       := (mmpScreenHeight - vR.height) div 2;
-
+    case vVPos + vR.height > mmpScreenHeight of TRUE: vVPos := mmpScreenHeight - vR.height - 1; end;
     // ensure we never shift into negative space (top monitor)
     case vVPos < 0 of TRUE: vVPos := 0; end;
 

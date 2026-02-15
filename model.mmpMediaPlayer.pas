@@ -289,12 +289,14 @@ begin
   case FIgnoreTicks     of TRUE: EXIT; end;
   case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(mmp.cmd(evMPPosition, mpvPosition(mpv))); end;
 
-  case FDimensionsDone of FALSE:  begin // only ever false for videos
+  case FDimensionsDone of FALSE:  begin // only ever false for videos (I might have fixed this in MPVBasePlayer.pas)
     inc(FCheckCount);
-    FDimensionsDone := FCheckCount >= 3; // that's quite enough of that!
+    FDimensionsDone := FCheckCount >= 10; // that's quite enough of that! // EXPERIMENTAL was 3
     case (mpvVideoWidth(mpv) <> FVideoWidth) or (mpvVideoHeight(mpv) <> FVideoHeight) of TRUE:  begin
                                                                                                   FVideoWidth     := mpvVideoWidth(mpv);
                                                                                                   FVideoHeight    := mpvVideoHeight(mpv);
+                                                                                                  mmp.cmd(evGSMPVWidth, FVideoWidth); // EXPERIMENTAL
+                                                                                                  mmp.cmd(evGSMPVHeight, FVideoHeight);
                                                                                                   mmp.cmd(evVMResizeWindow); end;end;end;
   end;
 end;

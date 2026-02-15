@@ -37,7 +37,7 @@ type
     evGSShowingAbout, evGSShowingHelp, evGSShowingPlaylist, evGSShowingStreamlist, evGSShowingThumbs, evGSShowingTimeline,
     evGSTimelineHeight, evGSUserInput, evGSIgnoreEscape,
     evGSWidthHelp, evGSWidthPlaylist, evGSWidthStreamlist, evGSOpeningURL, evGSShowingConfig, evGSNoPlaylist, evGSCleanup, evGSRenameFile, evGSSkipExcluded, evGSDuration,
-    evGSShuffle, evGSArrangeAll, evGSSuspended, evGSShowingHelpFull, evGSMonitor, evGSMonitorCount, evGSMonitorIx, evGSSuppressMainUI,
+    evGSShuffle, evGSArrangeAll, evGSSuspended, evGSShowingHelpFull, evGSMonitor, evGSMonitorCount, evGSMonitorIx, evGSSuppressMainUI, evGSMPVHeight, evGSMPVWidth,
 
     evHelpMoveHelp, evHelpShutHelp, evHelpShowHelp,
 
