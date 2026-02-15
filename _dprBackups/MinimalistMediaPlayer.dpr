@@ -223,8 +223,8 @@ begin
   checkParam;
 
   CF.initConfigFile(mmpConfigFilePath);
-  mmp.cmd(evGSRepeatDelayMs, CF.asInteger[CONF_REPEAT_DELAY_MS]);
-  mmp.cmd(GS.repeatDelayMs <= 0, evGSRepeatDelayMs, DEFAULT_REPEAT_DELAY_MS);
+  mmp.cmd(evGSRepeatDelayMs,      CF.asInteger[CONF_REPEAT_DELAY_MS]);
+  mmp.cmd(GS.repeatDelayMs <= 0,  evGSRepeatDelayMs, DEFAULT_REPEAT_DELAY_MS);
 
   app.createForm(TMMPUI, MMPUI);
   mmp.cmd(evGSMainForm, MMPUI);
@@ -252,6 +252,7 @@ begin
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
   MMPUI.viewModel.showUI; // this instantiates the Main Media Window but its display is current suppressed by alphaBlendValue = 0
+  //case GS.suppressMainUI of FALSE: MMPUI.viewModel.reallyShowUI; end;
 
   mmp.cmd(evSTForceCaptions);
 

@@ -127,6 +127,8 @@ type
 
   private
     function    adjustAspectRatio:    TVoid;
+    function    animateMs:            integer;
+    function    animateTF:            boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
     function    doAppClose:           TVoid;
     function    doCleanup(const bConfirm: boolean = TRUE): TVoid;
@@ -274,6 +276,16 @@ begin
   mmpSetWindowSize(GS.mainForm.handle, vPt);
   mmp.cmd(evSTDisplayXY);
   FResizingWindow := FALSE;
+end;
+
+function TVM.animateMs: integer;
+begin
+  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_MAIN_MS] <= 0, CF.asInteger[CONF_ANIMATE_MAIN_MS], 1000);
+end;
+
+function TVM.animateTF: boolean;
+begin
+  result := CF.asBoolean[CONF_ANIMATE_MAIN];
 end;
 
 constructor TVM.Create;
@@ -1129,9 +1141,9 @@ begin
   var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
-  case (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, 1000); end;
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs); end;
 
-  case GS.suppressMainUI of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work
+  case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
   mmp.cmd(evWndResize); // reposition the help, playlist and timeline windows
 
