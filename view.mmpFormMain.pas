@@ -55,6 +55,7 @@ type
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMDropFiles       (var msg: TWMDropFiles);  message WM_DROPFILES;
     procedure   WMEnterSizeMove   (var msg: TMessage);      message WM_ENTERSIZEMOVE;
+    procedure   WMExitSizeMove    (var msg: TMessage);      message WM_EXITSIZEMOVE;
 
     procedure   WINAutoCenterOff  (var msg: TMessage);      message WIN_AUTOCENTER_OFF;
     procedure   WINCaption        (var msg: TMessage);      message WIN_CAPTION;
@@ -288,6 +289,14 @@ procedure TMMPUI.WMEnterSizeMove(var msg: TMessage);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onWMEnterSizeMove(msg);
+  inherited; // EXPERIMENTAL
+end;
+
+procedure TMMPUI.WMExitSizeMove(var msg: TMessage);
+begin
+  case FViewModel = NIL of TRUE: EXIT; end;
+  FViewModel.onWMExitSizeMove(msg);
+  inherited; // EXPERIMENTAL
 end;
 
 procedure TMMPUI.WMNCHitTest(var msg: TWMNCHitTest);

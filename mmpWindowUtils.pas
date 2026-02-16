@@ -183,8 +183,8 @@ var
   function getMediaInfo: TVoid;
   begin
     MPmediaType     := GS.mediaType;
-    MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
-    MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
+    MPvideoWidth    := GS.mpvWidth;
+    MPvideoHeight   := GS.mpvHeight;
     MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 //    debugFormat('getMediaInfo MP.x:%d, MP.y:%d', [MPvideoWidth, MPvideoHeight]);
   end;
@@ -233,23 +233,26 @@ begin
                                   end;
 
                         mtImage:  begin
+                                        //debugFormat('CWS: %d x %d', [MPvideoWidth, MPvideoHeight]);
                                         vStartingHeight := aStartingHeight;
                                         case GS.maxSize of TRUE: vStartingHeight := -1; end;
                                         case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := vPrevImageHeight; end;
                                         case (vStartingHeight <> -1) and (vStartingHeight <= UI_DEFAULT_AUDIO_HEIGHT) of TRUE: vStartingHeight := -1; end;
 
                                         case vStartingHeight = -1 of  TRUE: begin
-                                                                              vWidth  := trunc((mmpScreenHeight - 20) * 1.5); // EXPERIMENTAL WAS 100
+                                                                               vWidth  := trunc((mmpScreenHeight - 20) * 1.5); // EXPERIMENTAL WAS 100
                                                                               vHeight := mmpScreenHeight - 20; end;           // EXPERIMENTAL WAS 100
                                                                      FALSE: begin
                                                                               vWidth  := trunc(vStartingHeight * 1.5);
                                                                               vHeight := vStartingHeight; end;end;
 
-                                        while NOT withinScreenLimits do
-                                        begin
-                                          vWidth  := vWidth  - 30;
-                                          vHeight := vHeight - 30;
-                                        end;
+                                       //vWidth := adjustWidthForAspectRatio;
+
+                                       while NOT withinScreenLimits do
+                                       begin
+                                         vWidth   := vWidth - 30;
+                                         vHeight  := vHeight - 30;
+                                       end;
 
                                         vPrevImageHeight := vHeight;
                                   end;

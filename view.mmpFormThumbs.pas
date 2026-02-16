@@ -307,6 +307,12 @@ begin
   SELF.styleElements := [];
   SELF.color         := clBlack;
 
+//  mmpOpaque(SELF);
+//  mmpOpaque(FThumbsHost);
+
+  alphaBlendValue := 0;
+  alphaBlend      := TRUE;
+
   FThumbsHost.styleElements := [];
   FThumbsHost.Color         := clBlack;
 
@@ -409,13 +415,12 @@ begin
                               SELF.width  := 100;
                               SELF.height := 100; end;
                     FALSE:  begin
-                              SELF.width  := aRect.width;  // EVEN MORE EXPERIMENTAL
-                              SELF.height := aRect.height; end;end;
-
+                              SELF.width  := mmpScreenHeight;
+                              SELF.height := mmpScreenHeight; end;end;
 
   // mmpAnimateResize(SELF.HANDLE, aRect.width, aRect.height, 0, 0, 500);
 
-//  debugInteger('initThumbails aRect.height', aRect.height);
+  //  debugInteger('initThumbails aRect.height', aRect.height);
 
   case GS.autoCenter of TRUE: autoCenter; end;
 
@@ -910,22 +915,25 @@ begin
 
   mmp.cmd(evGSAutoCenter, TRUE);
 
-  case animateTF of FALSE: FSHowing := TRUE; end;
+  case animateTF of FALSE: FShowing := TRUE; end;
 
   case FInitialHost of
     htThumbsHost: begin
+                    alphaBlend  := FALSE;
+                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
                     FThumbs.playThumbs(FInitialFilePath);
-                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;end;
+                    end;
     htMPVHost:    begin
                     case GS.noPlaylist of  TRUE: FThumbs.playlist.add(PS.fileFolderAndName);
                                           FALSE: FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly); end;
                     playCurrentItem;
-                    mmpDelay(100);
+                    //mmpDelay(100);
+                    alphaBlend  := FALSE;
                     case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
                     adjustAspectRatio; // EXPERIMENTAL
                   end;end;
 
-   FShowing := TRUE;
+  FShowing := TRUE;
 
   checkAudioVideo;
 

@@ -57,6 +57,7 @@ type
     procedure   onNCHitTest(var msg: TWMNCHitTest);
     procedure   onWMDropFiles(var msg: TWMDropFiles);
     procedure   onWMEnterSizeMove(var msg: TMessage);
+    procedure   onWMExitSizeMove(var msg: TMessage);
     procedure   onWMSizing(var msg: TMessage);
 
     procedure   onWINAutoCenterOff(var msg: TMessage);
@@ -117,7 +118,9 @@ type
     FDoubleClick:           boolean;
     FDragged:               boolean;
     FLocked:                boolean;
+    FManualResizing:        boolean;
     FResizingWindow:        boolean;
+    FShowingBrowser:        boolean;
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
@@ -174,6 +177,7 @@ type
     procedure   onSlideshowTimer(sender: TObject);
     procedure   onWMDropFiles(var msg: TWMDropFiles);
     procedure   onWMEnterSizeMove(var msg: TMessage);
+    procedure   onWMExitSizeMove(var msg: TMessage);
     procedure   onWMSizing(var msg: TMessage);
     procedure   onVideoPanelDblClick(sender: TObject);
 
@@ -185,7 +189,7 @@ type
     procedure   onWINMaxSizeOff(var msg: TMessage);
     procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
-    procedure   onWinResize(var msg: TMessage);
+    procedure   onWINResize(var msg: TMessage);
     procedure   onWINSkipBackwards(msg: TMessage);
     procedure   onWINSkipForwards(msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
@@ -285,8 +289,10 @@ end;
 
 function TVM.animateTF: boolean;
 begin
-  case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := TRUE;
-                                        FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN]; end;
+  result := FALSE;
+  case GS.mediaType = mtImage of TRUE: EXIT; end;
+  case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := NOT FManualResizing;
+                                        FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN] and NOT FManualResizing; end;
 end;
 
 constructor TVM.Create;
@@ -637,9 +643,8 @@ end;
 
 function TVM.onMPOpen(const aNotice: INotice): TVoid;
 begin
-//  FLocked := FALSE;
-  FMPVWidth   := 0;
-  FMPVHeight  := 0;
+  FMPVWidth   := -1;
+  FMPVHeight  := -1;
 end;
 
 procedure TVM.onNCHitTest(var msg: TWMNCHitTest);
@@ -725,10 +730,10 @@ begin
   result := aNotice;
   case aNotice = NIL of TRUE: EXIT; end;
 
-  case (FMPVWidth <> GS.mpvWidth) or (FMPVHeight <> GS.mpvHeight) of TRUE:  begin
-                                                                              FMPVWidth   := GS.mpvWidth;
-                                                                              FMPVHeight  := GS.mpvHeight;
-                                                                              mmp.cmd(evVMResizeWindow); end;end; // EXPERIMENTAL
+  case (GS.mpvWidth <> 0) and (GS.mpvHeight <> 0) and ((FMPVWidth <> GS.mpvWidth) or (FMPVHeight <> GS.mpvHeight)) of TRUE: begin
+                                                                                                                              FMPVWidth  := GS.mpvWidth;
+                                                                                                                              FMPVHeight := GS.mpvHeight;
+                                                                                                                              mmp.cmd(evVMResizeWindow); end;end;
 
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
@@ -794,7 +799,7 @@ begin
   setupSlideshowTimer;
 end;
 
-procedure TVM.onWinResize(var msg: TMessage);
+procedure TVM.onWINResize(var msg: TMessage);
 begin
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evHelpShutHelp);
@@ -880,6 +885,12 @@ procedure TVM.onWMEnterSizeMove(var msg: TMessage);
 begin
   mmp.cmd(evGSAutoCenter, FALSE);
   mmp.cmd(evGSMaxSize,    FALSE);
+  FManualResizing := TRUE;
+end;
+
+procedure TVM.onWMExitSizeMove(var msg: TMessage);
+begin
+  FManualResizing := FALSE;
 end;
 
 procedure TVM.onWMSizing(var msg: TMessage);
@@ -1121,21 +1132,28 @@ end;
 
 function TVM.resizeWindow: TVoid;
 begin
+  case FShowingBrowser of TRUE: EXIT; end;
+  debug('TVM.resizeWindow');
   case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
 
   case FResizingWindow of TRUE: EXIT; end;
   FResizingWindow := TRUE;
 
-  var MPvideoWidth    := mmp.cmd(evMPReqVideoWidth).integer;
-  var MPvideoHeight   := mmp.cmd(evMPReqVideoHeight).integer;
+  // GS.mainForm.alphaBlend := animateTF;
+
+  var MPvideoWidth    := GS.mpvWidth;
+  var MPvideoHeight   := GS.mpvHeight;
   var MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 
-  debugFormat('%d x %d', [MPvideoWidth, MPvideoHeight]);
+//  debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
+
+  case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: begin FResizingWindow := FALSE; EXIT; end;end;
+
   case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
-  var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize);
+  var vPt := mmpCalcWindowSize(GS.mainForm.height, GS.maxSize); // must be GS.mainForm.height to allow the user to resize manually
 
   mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
 
@@ -1200,6 +1218,9 @@ function TVM.showThumbnails(const aHostType: THostType = htThumbsHost): TVoid;
     result.height := GS.mainForm.height;
   end;
 begin
+  FShowingBrowser  := TRUE;
+  try
+
   mmp.cmd(evHelpShutHelp);
   mmp.cmd(evPLFormShutForm);
   mmp.cmd(evVMShutTimeline);
@@ -1219,6 +1240,9 @@ begin
                                                 reallyShowUI;
                                                 setActiveWindow(GS.mainForm.handle);
                                                 mmpCheckPlaylistItemExists(FPlaylist, CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY]); end);
+  finally
+    FShowingBrowser := FALSE;
+  end;
 end;
 
 function TVM.showUI: TVoid;

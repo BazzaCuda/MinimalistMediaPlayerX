@@ -283,22 +283,51 @@ begin
 end;
 
 function TMediaPlayer.onTickTimer(const aNotice: INotice): INotice;
+
+  function notZero: boolean;
+  begin
+    result := (mpvVideoWidth(mpv) <> 0) and (mpvVideoHeight(mpv) <> 0);
+  end;
+
+  function changed: boolean;
+  begin
+    result := (FVideoWidth <> mpvVideoWidth(mpv)) or (FVideoHeight <> mpvVideoHeight(mpv));
+  end;
+
+  function setDimensions: TVoid;
+  begin
+    FVideoWidth   := mpvVideoWidth(mpv);
+    FVideoHeight  := mpvVideoHeight(mpv);
+    mmp.cmd(evGSMPVWidth,  FVideoWidth);
+    mmp.cmd(evGSMPVHeight, FVideoHeight);
+  end;
+
+  function setGlobals: TVoid;
+  begin
+    mmp.cmd(evGSMPVWidth,  mpvVideoWidth(mpv));
+    mmp.cmd(evGSMPVHeight, mpvVideoHeight(mpv));
+  end;
+
 begin
   result := aNotice;
   case FNotifier = NIL  of TRUE: EXIT; end;
   case FIgnoreTicks     of TRUE: EXIT; end;
   case FMediaType       of mtAudio, mtVideo: FNotifier.notifySubscribers(mmp.cmd(evMPPosition, mpvPosition(mpv))); end;
 
-  case FDimensionsDone of FALSE:  begin // only ever false for videos (I might have fixed this in MPVBasePlayer.pas)
-    inc(FCheckCount);
-    FDimensionsDone := FCheckCount >= 10; // that's quite enough of that! // EXPERIMENTAL was 3
-    case (mpvVideoWidth(mpv) <> FVideoWidth) or (mpvVideoHeight(mpv) <> FVideoHeight) of TRUE:  begin
-                                                                                                  FVideoWidth     := mpvVideoWidth(mpv);
-                                                                                                  FVideoHeight    := mpvVideoHeight(mpv);
-                                                                                                  mmp.cmd(evGSMPVWidth, FVideoWidth); // EXPERIMENTAL
-                                                                                                  mmp.cmd(evGSMPVHeight, FVideoHeight);
-                                                                                                  mmp.cmd(evVMResizeWindow); end;end;end;
-  end;
+  setGlobals; // mostly for images when not "Open Image in Browser"
+
+  case FDimensionsDone of FALSE: // only ever false for videos - see initialisation in .openURL
+    case notZero of TRUE: begin
+      case changed of
+        TRUE:  begin
+                 setDimensions;
+                 mmp.cmd(evVMResizeWindow);
+                 FCheckCount := 0; // reset stability counter because dimensions just fluctuated
+               end;
+        FALSE: inc(FCheckCount); // dimensions are stable this tick
+      end;
+
+      FDimensionsDone := FCheckCount > 10; end;end;end; // that's quite enough of that!
 end;
 
 function TMediaPlayer.openURL(const aURL: string): boolean;
@@ -315,8 +344,8 @@ begin
   FDimensionsDone := FMediaType in [mtAudio, mtImage]; // only applies to video
   case FMediaType of mtAudio, mtVideo: mpvSetKeepOpen(mpv, FALSE); end; // ideally, we only want audio and video files to issue mpsEnd events at end of playback
 
-  FVideoWidth   := 0;
-  FVideoHeight  := 0;
+  FVideoWidth   := -1;
+  FVideoHeight  := -1;
   FCheckCount   := 0;
   FIgnoreTicks  := FALSE; // react in onTickTimer
 
