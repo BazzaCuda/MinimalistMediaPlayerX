@@ -288,6 +288,7 @@ end;
 
 function TVM.animateCloseApp: TVoid;
 begin
+  case GS.autoCenter of FALSE: EXIT; end;
   var vDummyCancel: boolean := FALSE;
   case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 0, 0, TRUE, 500, vDummyCancel); end;
   case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         0, 0, TRUE, 500, vDummyCancel); end;
@@ -1256,6 +1257,9 @@ begin
   end;
 
   mmp.cmd(vModalResult = mrIgnore, procedure  begin
+                                                GS.mainform.width   := GS.mpvWidth;
+                                                GS.mainform.height  := GS.mpvHeight;
+                                                mmpCenterWindow(GS.mainform.HANDLE, point(GS.mainForm.width, GS.mainForm.height));
                                                 GS.mainForm.show;
                                                 reallyShowUI;
                                                 setActiveWindow(GS.mainForm.handle);
