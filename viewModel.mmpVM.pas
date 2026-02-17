@@ -288,10 +288,9 @@ end;
 
 function TVM.animateCloseApp: TVoid;
 begin
-  case GS.autoCenter of FALSE: EXIT; end;
-  var vDummyCancel: boolean := FALSE;
-  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 0, 0, TRUE, 500, vDummyCancel); end;
-  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         0, 0, TRUE, 500, vDummyCancel); end;
+//  case GS.autoCenter of FALSE: EXIT; end;
+  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 500); end;
+  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         500); end;
 end;
 
 function TVM.animateMs: integer;

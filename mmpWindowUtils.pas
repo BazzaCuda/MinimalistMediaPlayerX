@@ -30,6 +30,7 @@ uses
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
 function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
+function mmpAnimateShrink(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aDurationMs: integer): TVoid;
 function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcGreaterWindow (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
@@ -89,7 +90,7 @@ end;
 
 function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid;
 begin
-  var vWorkArea: tRect := screen.workareaRect;
+  var vWorkArea:      TRect   := screen.workareaRect;
   var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
 
   var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
@@ -103,12 +104,12 @@ begin
 
   var vTotalDurationSeconds: double := aDurationMs / 1000;
 
-  var vR: tRect;
+  var vR: TRect;
   getWindowRect(aWND, vR);
-  var vInitialWidth: integer := vR.width;
+  var vInitialWidth: integer  := vR.width;
   var vInitialHeight: integer := vR.height;
-  var vInitialLeft: integer := vR.left;
-  var vInitialTop: integer := vR.top;
+  var vInitialLeft: integer   := vR.left;
+  var vInitialTop: integer    := vR.top;
 
   var vProgress: double := 0;
 
@@ -154,13 +155,58 @@ begin
     setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
 
     updateWindow(aWND);
-    application.processMessages();
+    application.processMessages;
   end;
 end;
 
 function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid;
 begin
   mmpAnimateResize(aTargetForm.HANDLE, aTargetWidth, aTargetHeight, aWidthDelta, aHeightDelta, aCenter, aDurationMs, aCancel);
+end;
+
+function mmpAnimateShrink(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aDurationMs: integer): TVoid;
+begin
+  var vFreq: int64;
+  queryPerformanceFrequency(vFreq);
+
+  var vStartTick: int64;
+  queryPerformanceCounter(vStartTick);
+
+  var vTotalDurationSeconds: double := aDurationMs / 1000;
+
+  var vR: TRect;
+  getWindowRect(aWND, vR);
+  var vInitialWidth:  integer := vR.width;
+  var vInitialHeight: integer := vR.height;
+  var vInitialLeft:   integer := vR.left;
+  var vInitialTop:    integer := vR.top;
+
+  // identify the fixed anchor point: the current center of the window
+  var vAnchorX: integer := vInitialLeft + (vInitialWidth div 2);
+  var vAnchorY: integer := vInitialTop + (vInitialHeight div 2);
+
+  var vProgress: double := 0;
+
+  while vProgress < 1.0 do
+  begin
+    var vCurrentTick: int64;
+    queryPerformanceCounter(vCurrentTick);
+
+    var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
+    vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
+
+    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+
+    // calculate top/left so the midpoint remains at the anchor point
+    var vCurrentL: integer := vAnchorX - (vCurrentW div 2);
+    var vCurrentT: integer := vAnchorY - (vCurrentH div 2);
+
+    setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
+
+    updateWindow(aWND);
+    application.processMessages;
+  end;
 end;
 
 function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;

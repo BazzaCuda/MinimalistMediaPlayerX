@@ -214,11 +214,9 @@ end;
 
 function TThumbsForm.animateCloseBrowser: TVoid;
 begin
-  case GS.autoCenter of FALSE: EXIT; end;
-  var vDummyCancel: boolean := FALSE;
-  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateResize(SELF.HANDLE, 370, SELF.height, 0, 0, TRUE, 500, vDummyCancel); end;
-//  case animateTF of TRUE: mmpAnimateResize(SELF.HANDLE, mmpScreenMinWidth, mmpScreenMinHeight, 0, 0, TRUE, 500, vDummyCancel); end;
-  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateResize(SELF.HANDLE, 370, mmpScreenMinHeight, 0, 0, TRUE, 500, vDummyCancel); end;
+  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateShrink(SELF.HANDLE, 370, SELF.height,        500); end;
+  mmpDelay(250);
+  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateShrink(SELF.HANDLE, 370, mmpScreenMinHeight, 500); end;
   setWindowPos(SELF.HANDLE, 0, 0, 0, 0, 0, SWP_HIDEWINDOW);
 end;
 
