@@ -87,6 +87,7 @@ type
     function autoCenter:          TVoid;
     function checkAudioVideo:     TVoid;
     function checkThumbsPerPage:  TVoid;
+    function closingBrowser:      TVoid;
     function deleteCurrentItem(const aShiftState: TShiftState): TVoid;
     function greaterWindow(const aShiftState: TShiftState):     TVoid;
     function imageDisplayDurationMs(const aImageDisplayDurationMs: integer): integer;
@@ -154,6 +155,8 @@ uses
   TStatusBarHelperClass,
   _debugWindow;
 
+var gClosingBrowser: boolean = FALSE;
+
 var gTF: TThumbsForm = NIL;
 function showThumbs(const aFilePath: string; const aRect: TRect; const aHostType: THostType): TModalResult;
 begin
@@ -201,7 +204,7 @@ begin
   vHeight := vHeight + mmpCaptionHeight + FStatusBar.height + (mmpBorderWidth * 2);
 
  // EXPERIMENTAL
-  case animateTF of  TRUE: mmpAnimateResize(SELF.handle, vWidth, vHeight, 0, 0, GS.autoCenter, animateMs);
+  case animateTF of  TRUE: mmpAnimateResize(SELF.handle, vWidth, vHeight, 0, 0, GS.autoCenter, animateMs, gClosingBrowser);
                     FALSE: mmpSetWindowSize(SELF.handle, point(vWidth, vHeight)); end;
   mmpProcessMessages;
 
@@ -210,7 +213,7 @@ end;
 
 function TThumbsForm.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF[CONF_ANIMATE_BROWSER_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 250);
+  result := mmp.use<integer>(CF[CONF_ANIMATE_BROWSER_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS], DEFAULT_ANIMATE_BROWSER_MS);
 end;
 
 function TThumbsForm.animateTF: boolean;
@@ -260,6 +263,11 @@ begin
   case vBlankHeight  >  vThumbsSize div 3 of  TRUE: SELF.height := SELF.height + (vThumbsSize - vBlankHeight);
                                              FALSE: SELF.height := SELF.height - vBlankHeight; end;
   case (SELF.width > mmpScreenWidth) or (SELF.height > mmpScreenHeight) of TRUE: mmpGreaterWindow(SELF.handle, [ssCtrl], vThumbsSize, htThumbsHost); end;
+end;
+
+function TThumbsForm.closingBrowser: TVoid;
+begin
+  gClosingBrowser := TRUE;
 end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);
@@ -930,7 +938,7 @@ begin
   case FInitialHost of
     htThumbsHost: begin
                     alphaBlend  := FALSE;
-                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
+                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs, gClosingBrowser); end;
                     FProgressForm := NIL;
                     FThumbs.playThumbs(FInitialFilePath);
                     end;
@@ -941,7 +949,7 @@ begin
                     playCurrentItem;
                     //mmpDelay(100);
                     alphaBlend  := FALSE;
-                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
+                    case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs, gClosingBrowser); end;
                     adjustAspectRatio; // EXPERIMENTAL
                   end;end;
 
@@ -1079,9 +1087,9 @@ begin
     koBrightnessReset:    mpvBrightnessReset(mpv);
     koCentreWindow:       mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height));
     koClipboard:          case whichHost of htMPVHost: FThumbs.playlist.copyToClipboard; end;
-    koCloseAll:           begin mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP); end;
-    koCloseImageBrowser:  begin mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
-    koCloseToMain:        begin mmpCancelDelay; FThumbs.cancel; modalResult := mrIgnore; end;
+    koCloseAll:           begin closingBrowser; mmpCancelDelay; FThumbs.cancel; modalResult := mrAll; mmp.cmd(evPAPostToEvery, WIN_CLOSEAPP); end;
+    koCloseImageBrowser:  begin closingBrowser; mmpCancelDelay; FThumbs.cancel; modalResult := mrClose; end;
+    koCloseToMain:        begin closingBrowser; mmpCancelDelay; FThumbs.cancel; modalResult := mrIgnore; end;
     koConfig:             mmp.cmd(evVMConfig);
     koContrastUp:         mpvContrastUp(mpv);
     koContrastDn:         mpvContrastDn(mpv);

@@ -408,8 +408,8 @@ procedure TConfigForm.btnAnimateDefaultsClick(Sender: TObject);
 begin
   chbAnimateMain.checked    := TRUE;
   chbAnimateBrowser.checked := TRUE;
-  edtAnimateMainMs.text     := '1000';
-  edtAnimateBrowserMs.text  := '250';
+  edtAnimateMainMs.text     := intToStr(DEFAULT_ANIMATE_MAIN_MS);
+  edtAnimateBrowserMs.text  := intToStr(DEFAULT_ANIMATE_BROWSER_MS);
   chbAnimateMain.onClick(NIL);
   chbAnimateBrowser.OnClick(NIL);
 end;

@@ -123,6 +123,7 @@ type
     FMinWidth:              integer;
     FResizingWindow:        boolean;
     FShowingBrowser:        boolean;
+    FShuttingDown:          boolean;
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
@@ -286,7 +287,7 @@ end;
 
 function TVM.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF[CONF_ANIMATE_MAIN_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS], 999);
+  result := mmp.use<integer>(CF[CONF_ANIMATE_MAIN_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS], DEFAULT_ANIMATE_MAIN_MS);
 end;
 
 function TVM.animateTF: boolean;
@@ -353,6 +354,7 @@ end;
 
 function TVM.doAppClose: TVoid;
 begin
+  FShuttingDown := TRUE;
 //==========
   var vShutdown: TAFuncNoParam<TVoid> := function: TVoid  begin
                                                           mmp.cmd(evMPDetachStates);
@@ -1149,13 +1151,13 @@ begin
   var MPvideoHeight   := GS.mpvHeight;
   var MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 
-//  debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
+  // debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
 
   case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: begin FResizingWindow := FALSE; EXIT; end;end;
 
-  //case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
+  // case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
 
-  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, mmpScreenHeight, 0, 0, TRUE, 500); end;
+  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, mmpScreenHeight, 0, 0, TRUE, 500, FShuttingDown); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
@@ -1166,7 +1168,7 @@ begin
   var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
-  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs); end;
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown); end;
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
@@ -1180,7 +1182,7 @@ begin
 
   FResizingWindow := FALSE;
 
-  case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during our animation?
+  case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: begin {mmpDelay(1000);} mmp.cmd(evVMResizeWindow); end;end; // did the outside World change during our animation?
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;

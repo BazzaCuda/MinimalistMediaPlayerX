@@ -28,8 +28,8 @@ uses
   mmpAction, mmpConsts, mmpGlobalState;
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
-function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid; overload;
-function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid; overload;
+function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
+function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
 function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcGreaterWindow (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
 function mmpCalcWindowSize    (const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
@@ -87,7 +87,7 @@ begin
   result.y := aHeight + 2;
 end;
 
-function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid;
+function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid;
 begin
   var vWorkArea: tRect := screen.workareaRect;
   var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
@@ -114,6 +114,8 @@ begin
 
   while vProgress < 1.0 do
   begin
+    case aCancel of TRUE: BREAK; end;
+
     var vCurrentTick: int64;
     queryPerformanceCounter(vCurrentTick);
 
@@ -156,9 +158,9 @@ begin
   end;
 end;
 
-function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer): TVoid;
+function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid;
 begin
-  mmpAnimateResize(aTargetForm.HANDLE, aTargetWidth, aTargetHeight, aWidthDelta, aHeightDelta, aCenter, aDurationMs);
+  mmpAnimateResize(aTargetForm.HANDLE, aTargetWidth, aTargetHeight, aWidthDelta, aHeightDelta, aCenter, aDurationMs, aCancel);
 end;
 
 function mmpCalcWindowSize(const aStartingHeight: integer; const bMaxSize: boolean): TPoint;
