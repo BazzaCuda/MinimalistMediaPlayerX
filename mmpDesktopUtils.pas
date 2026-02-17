@@ -28,6 +28,8 @@ function mmpCaptionHeight: integer;
 function mmpOffScreen(const aHWND: HWND): boolean;
 function mmpScreenCentre: integer;
 function mmpScreenHeight: integer;
+function mmpScreenMinHeight: integer;
+function mmpScreenMinWidth: integer;
 function mmpScreenWidth: integer;
 function mmpWithinScreenLimits(const aWidth: integer; const aHeight: integer): boolean;
 function mmpWndWidthHeight(const aWnd: HWND; var aWidth: integer; var aHeight: integer): boolean;
@@ -66,6 +68,16 @@ function mmpScreenHeight: integer;
 begin
   var vRect := screen.WorkAreaRect; // the screen minus the taskbar
   result    := vRect.height - GS.timelineHeight;
+end;
+
+function mmpScreenMinHeight: integer;
+begin
+  result := getSystemMetrics(SM_CYMINTRACK);
+end;
+
+function mmpScreenMinWidth: integer;
+begin
+  result := getSystemMetrics(SM_CXMINTRACK);
 end;
 
 function mmpScreenWidth: integer;

@@ -93,7 +93,7 @@ const
   DEFAULT_REPEAT_DELAY_MS     =  100;
   MILLISECONDS                = 1000;
   DEFAULT_ANIMATE_MAIN_MS     = 2500;
-  DEFAULT_ANIMATE_BROWSER_MS  =  250;
+  DEFAULT_ANIMATE_BROWSER_MS  =  500;
 
   THUMB_DEFAULT_SIZE  = 160;
   THUMB_MARGIN        = 10;
@@ -110,8 +110,10 @@ const
 
   CONF_ALLOW_INTO_WINDOWS     = 'allowIntoWindows';
   CONF_ANIMATE_MAIN           = 'animateMain';
+  CONF_ANIMATE_MAIN_CLOSE     = 'animateMainClose';
   CONF_ANIMATE_MAIN_MS        = 'animateMainMs';
   CONF_ANIMATE_BROWSER        = 'animateBrowser';
+  CONF_ANIMATE_BROWSER_CLOSE  = 'animateBrowserClose';
   CONF_ANIMATE_BROWSER_MS     = 'animateBrowserMs';
   CONF_AUDIO_DELETE           = 'audioDelete';
   CONF_AUTO_UPDATE            = 'autoUpdate';

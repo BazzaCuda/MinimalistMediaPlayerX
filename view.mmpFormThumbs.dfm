@@ -2,8 +2,8 @@ object ThumbsForm: TThumbsForm
   Left = 0
   Top = 0
   Caption = 'MMP Image & Thumbnail Browser'
-  ClientHeight = 433
-  ClientWidth = 620
+  ClientHeight = 421
+  ClientWidth = 629
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3029,8 +3029,8 @@ object ThumbsForm: TThumbsForm
   TextHeight = 15
   object FStatusBar: TStatusBar
     Left = 0
-    Top = 413
-    Width = 620
+    Top = 401
+    Width = 629
     Height = 20
     Color = clMedGray
     Font.Charset = DEFAULT_CHARSET
@@ -3096,6 +3096,8 @@ object ThumbsForm: TThumbsForm
     OnMouseMove = FStatusBarMouseMove
     OnDrawPanel = FStatusBarDrawPanel
     OnResize = FStatusBarResize
+    ExplicitTop = 413
+    ExplicitWidth = 620
   end
   object FThumbsHost: TPanel
     Left = 112

@@ -123,6 +123,7 @@ type
     function undoMove:            string;
     function whichHost:           THostType;
     function windowSize(const aKeyOp: TKeyOp): TVoid;
+    function animateCloseBrowser: TVoid;
   protected
     procedure beginDrag;
     procedure CreateParams(var params: TCreateParams); override;
@@ -211,6 +212,15 @@ begin
   mmp.cmd(GS.autoCenter, autoCenter);
 end;
 
+function TThumbsForm.animateCloseBrowser: TVoid;
+begin
+  var vDummyCancel: boolean := FALSE;
+  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateResize(SELF.HANDLE, 370, SELF.height, 0, 0, TRUE, 500, vDummyCancel); end;
+//  case animateTF of TRUE: mmpAnimateResize(SELF.HANDLE, mmpScreenMinWidth, mmpScreenMinHeight, 0, 0, TRUE, 500, vDummyCancel); end;
+  case CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] of TRUE: mmpAnimateResize(SELF.HANDLE, 370, mmpScreenMinHeight, 0, 0, TRUE, 500, vDummyCancel); end;
+  setWindowPos(SELF.HANDLE, 0, 0, 0, 0, 0, SWP_HIDEWINDOW);
+end;
+
 function TThumbsForm.animateMs: integer;
 begin
   result := mmp.use<integer>(CF[CONF_ANIMATE_BROWSER_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS], DEFAULT_ANIMATE_BROWSER_MS);
@@ -268,6 +278,7 @@ end;
 function TThumbsForm.closingBrowser: TVoid;
 begin
   gClosingBrowser := TRUE;
+  animateCloseBrowser;
 end;
 
 procedure TThumbsForm.CreateParams(var params: TCreateParams);

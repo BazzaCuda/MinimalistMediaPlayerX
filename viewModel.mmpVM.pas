@@ -133,6 +133,7 @@ type
 
   private
     function    adjustAspectRatio:    TVoid;
+    function    animateCloseApp:      TVoid;
     function    animateMs:            integer;
     function    animateTF:            boolean;
     function    deleteCurrentItem(const aShiftState: TShiftState): boolean;
@@ -285,6 +286,13 @@ begin
   FResizingWindow := FALSE;
 end;
 
+function TVM.animateCloseApp: TVoid;
+begin
+  var vDummyCancel: boolean := FALSE;
+  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 0, 0, TRUE, 500, vDummyCancel); end;
+  case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         0, 0, TRUE, 500, vDummyCancel); end;
+end;
+
 function TVM.animateMs: integer;
 begin
   result := mmp.use<integer>(CF[CONF_ANIMATE_MAIN_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS], DEFAULT_ANIMATE_MAIN_MS);
@@ -370,6 +378,8 @@ begin
                                                         end;
 
   TAction<TVoid>.pick(NOT GS.showingHelpFull and NOT GS.showingConfig, vShutdown).perform;
+
+  animateCloseApp;
 //==========
 
 //    terminateProcess(getCurrentProcess(), 0); // desperate times... :D
@@ -474,8 +484,8 @@ begin
   FVideoPanel             := aVideoPanel;
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
 
-  FMinHeight := getSystemMetrics(SM_CYMINTRACK);
-  FMinWidth  := getSystemMetrics(SM_CXMINTRACK);
+  FMinWidth  := mmpScreenMinWidth;
+  FMinHeight := mmpScreenMinHeight;
 
   mmpThemeInitForm(aForm);
 

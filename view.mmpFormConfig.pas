@@ -248,6 +248,8 @@ type
     Label93: TLabel;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
+    chbAnimateMainClose: TCheckBox;
+    chbAnimateBrowserClose: TCheckBox;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -305,6 +307,8 @@ type
     procedure edtAnimateBrowserMsChange(Sender: TObject);
     procedure chbAnimateBrowserClick(Sender: TObject);
     procedure chbAnimateMainClick(Sender: TObject);
+    procedure chbAnimateMainCloseClick(Sender: TObject);
+    procedure chbAnimateBrowserCloseClick(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -406,12 +410,16 @@ end;
 
 procedure TConfigForm.btnAnimateDefaultsClick(Sender: TObject);
 begin
-  chbAnimateMain.checked    := TRUE;
-  chbAnimateBrowser.checked := TRUE;
-  edtAnimateMainMs.text     := intToStr(DEFAULT_ANIMATE_MAIN_MS);
-  edtAnimateBrowserMs.text  := intToStr(DEFAULT_ANIMATE_BROWSER_MS);
+  chbAnimateMain.checked          := TRUE;
   chbAnimateMain.onClick(NIL);
+  chbAnimateMainClose.checked     := TRUE;
+  chbAnimateMainClose.onClick(NIL);
+  edtAnimateMainMs.text           := intToStr(DEFAULT_ANIMATE_MAIN_MS);
+  chbAnimateBrowser.checked       := TRUE;
   chbAnimateBrowser.OnClick(NIL);
+  chbAnimateBrowserClose.checked  := TRUE;
+  chbAnimateBrowserClose.OnClick(NIL);
+  edtAnimateBrowserMs.text        := intToStr(DEFAULT_ANIMATE_BROWSER_MS);
 end;
 
 procedure TConfigForm.btnAppF10Click(Sender: TObject);
@@ -486,9 +494,19 @@ begin
   CF.asBoolean[CONF_ANIMATE_BROWSER] := chbAnimateBrowser.checked;
 end;
 
+procedure TConfigForm.chbAnimateBrowserCloseClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE] := chbAnimateBrowserClose.checked;
+end;
+
 procedure TConfigForm.chbAnimateMainClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_ANIMATE_MAIN] := chbAnimateMain.checked;
+end;
+
+procedure TConfigForm.chbAnimateMainCloseClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] := chbAnimateMainClose.checked;
 end;
 
 procedure TConfigForm.chbAudioClick(Sender: TObject);
@@ -757,14 +775,16 @@ begin
   edtPreviewThumbWidth.text       := mmp.use<string>(CF[CONF_PREVIEW_THUMB_WIDTH]   <> EMPTY, CF[CONF_PREVIEW_THUMB_WIDTH],             '300');
   chbPreviewShowPreview.checked   := mmp.use<boolean>(CF[CONF_PREVIEW_SHOW_PREVIEW] <> EMPTY, CF.asBoolean[CONF_PREVIEW_SHOW_PREVIEW],  TRUE);
 
-  var vImageExt: string := trim(upperCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
+  var vImageExt: string           := trim(upperCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
   case vImageExt = EMPTY of TRUE: vImageExt := 'JPG'; end;
-  cbPreviewImageFormat.itemIndex     := cbPreviewImageFormat.items.indexOf(vImageExt);
+  cbPreviewImageFormat.itemIndex  := cbPreviewImageFormat.items.indexOf(vImageExt);
 
-  chbAnimateMain.checked      := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN])     <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN],    TRUE);
-  chbAnimateBrowser.checked   := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER])  <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER], TRUE);
-  edtAnimateMainMs.text       := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_MAIN_MS])     <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS],     999));
-  edtAnimateBrowserMs.text    := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_BROWSER_MS])  <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS],  250));
+  chbAnimateMain.checked          := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN])                 <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN],          TRUE);
+  chbAnimateMainClose.checked     := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN_CLOSE])           <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE],    TRUE);
+  edtAnimateMainMs.text           := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_MAIN_MS])     <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS],       DEFAULT_ANIMATE_MAIN_MS));
+  chbAnimateBrowser.checked       := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER])              <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER],       TRUE);
+  chbAnimateBrowserClose.checked  := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER_CLOSE])        <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE], TRUE);
+  edtAnimateBrowserMs.text        := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_BROWSER_MS])  <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS],    DEFAULT_ANIMATE_BROWSER_MS));
 end;
 
 function TConfigForm.populateListBox: TVoid;
