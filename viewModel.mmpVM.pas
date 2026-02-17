@@ -292,8 +292,8 @@ end;
 
 function TVM.animateTF: boolean;
 begin
-  result := FALSE;
-  case GS.mediaType = mtImage of TRUE: EXIT; end;
+//  result := FALSE;
+//  case GS.mediaType = mtImage of TRUE: EXIT; end;
   case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := NOT FManualResizing;
                                         FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN] and NOT FManualResizing; end;
 end;
