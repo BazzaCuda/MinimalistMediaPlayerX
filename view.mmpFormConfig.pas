@@ -235,6 +235,19 @@ type
     btnPreviewDefaults: TButton;
     cbPreviewImageFormat: TComboBox;
     Label88: TLabel;
+    tsAnimations: TTabSheet;
+    Label89: TLabel;
+    chbAnimateMain: TCheckBox;
+    chbAnimateBrowser: TCheckBox;
+    edtAnimateMainMs: TEdit;
+    Label90: TLabel;
+    Label91: TLabel;
+    edtAnimateBrowserMs: TEdit;
+    Label92: TLabel;
+    btnAnimateDefaults: TButton;
+    Label93: TLabel;
+    GroupBox3: TGroupBox;
+    GroupBox4: TGroupBox;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -287,6 +300,11 @@ type
     procedure edtPreviewRowsChange(Sender: TObject);
     procedure edtPreviewThumbWidthChange(Sender: TObject);
     procedure cbPreviewImageFormatChange(Sender: TObject);
+    procedure btnAnimateDefaultsClick(Sender: TObject);
+    procedure edtAnimateMainMsChange(Sender: TObject);
+    procedure edtAnimateBrowserMsChange(Sender: TObject);
+    procedure chbAnimateBrowserClick(Sender: TObject);
+    procedure chbAnimateMainClick(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -386,6 +404,16 @@ end;
 
 {$R *.dfm}
 
+procedure TConfigForm.btnAnimateDefaultsClick(Sender: TObject);
+begin
+  chbAnimateMain.checked    := TRUE;
+  chbAnimateBrowser.checked := TRUE;
+  edtAnimateMainMs.text     := '1000';
+  edtAnimateBrowserMs.text  := '250';
+  chbAnimateMain.onClick(NIL);
+  chbAnimateBrowser.OnClick(NIL);
+end;
+
 procedure TConfigForm.btnAppF10Click(Sender: TObject);
 {$J+} const vPrevFolder: string = EMPTY; {$J-}
 begin
@@ -451,6 +479,16 @@ end;
 procedure TConfigForm.chbAllowIntoWindowsClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_ALLOW_INTO_WINDOWS] := chbAllowIntoWindows.checked;
+end;
+
+procedure TConfigForm.chbAnimateBrowserClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_ANIMATE_BROWSER] := chbAnimateBrowser.checked;
+end;
+
+procedure TConfigForm.chbAnimateMainClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_ANIMATE_MAIN] := chbAnimateMain.checked;
 end;
 
 procedure TConfigForm.chbAudioClick(Sender: TObject);
@@ -544,6 +582,18 @@ end;
 procedure TConfigForm.chbVideoClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_VIDEO_DELETE] := chbVideo.checked;
+end;
+
+procedure TConfigForm.edtAnimateBrowserMsChange(Sender: TObject);
+begin
+//  case strToInt(edtAnimateBrowserMs.text) > 999 of TRUE: edtAnimateBrowserMs.text := '999'; end;
+  CF[CONF_ANIMATE_BROWSER_MS] := edtAnimateBrowserMs.text;
+end;
+
+procedure TConfigForm.edtAnimateMainMsChange(Sender: TObject);
+begin
+//  case strToInt(edtAnimateMainMs.text) > 999 of TRUE: edtAnimateMainMs.text := '999'; end;
+  CF[CONF_ANIMATE_MAIN_MS] := edtAnimateMainMs.text;
 end;
 
 procedure TConfigForm.edtAppF10Change(Sender: TObject);
@@ -710,6 +760,11 @@ begin
   var vImageExt: string := trim(upperCase(stringReplace(CF[CONF_PREVIEW_IMAGE_FORMAT], '.', '', [rfReplaceAll])));
   case vImageExt = EMPTY of TRUE: vImageExt := 'JPG'; end;
   cbPreviewImageFormat.itemIndex     := cbPreviewImageFormat.items.indexOf(vImageExt);
+
+  chbAnimateMain.checked      := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN])     <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN],    TRUE);
+  chbAnimateBrowser.checked   := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER])  <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER], TRUE);
+  edtAnimateMainMs.text       := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_MAIN_MS])     <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS],     999));
+  edtAnimateBrowserMs.text    := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_BROWSER_MS])  <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS],  250));
 end;
 
 function TConfigForm.populateListBox: TVoid;

@@ -27,6 +27,7 @@ uses
 
 type
   ITickTimer = interface(ISubscribable)
+    procedure tickNow;
   end;
 
 function TT: ITickTimer;
@@ -36,7 +37,8 @@ implementation
 uses
   winApi.windows,
   bazCmd,
-  mmpConsts;
+  mmpConsts,
+  _debugWindow;
 
 type
   TTickTimer = class(TInterfacedObject, ITickTimer)
@@ -48,6 +50,9 @@ type
   public
     constructor Create;
     destructor  Destroy; override;
+
+    // ITickTimer
+    procedure   tickNow;
 
     // ISubscribable
     function    subscribe(const aSubscriber: ISubscriber): ISubscriber;
@@ -82,6 +87,13 @@ end;
 function TTickTimer.subscribe(const aSubscriber: ISubscriber): ISubscriber;
 begin
   result := FNotifier.subscribe(aSubscriber);
+end;
+
+procedure TTickTimer.tickNow;
+begin
+  FTimer.enabled := FALSE;
+  timerEvent(NIL);
+  FTimer.enabled := TRUE; // restart a complete 999ms cycle
 end;
 
 procedure TTickTimer.timerEvent(aSender: TObject);

@@ -246,7 +246,7 @@ begin
                                                                               vWidth  := trunc(vStartingHeight * 1.5);
                                                                               vHeight := vStartingHeight; end;end;
 
-                                       //vWidth := adjustWidthForAspectRatio;
+                                       //vWidth := adjustWidthForAspectRatio; // NO!
 
                                        while NOT withinScreenLimits do
                                        begin

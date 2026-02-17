@@ -86,6 +86,7 @@ type
     FCancel:            boolean;
 
     FCurrentFolder:     string;
+    FGenerating:        boolean;
     FHasAudioVideo:     boolean;
     FMPVHost:           TMPVHost;
     FOnThumbClick:      TNotifyEvent;
@@ -210,42 +211,49 @@ var
   end;
 
 begin
-  result := -1;
-  FThumbs.clear;
+  case FGenerating of TRUE: EXIT; end;
+  FGenerating := TRUE;
 
-  case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
+  try
+    result := -1;
+    FThumbs.clear;
 
-  adjustCurrentItem;
+    case FPlaylist.validIx(aItemIx) of FALSE: EXIT; end;
 
-  setPanelPageNo;
+    adjustCurrentItem;
 
-  vThumbTop  := THUMB_MARGIN;
-  vThumbLeft := THUMB_MARGIN;
+    setPanelPageNo;
 
-//  // Tell the OS to stop redrawing the host
-//  sendMessage(FThumbsHost.handle, WM_SETREDRAW, 0, 0); // EXPERIMENTAL
-//  try
+    vThumbTop  := THUMB_MARGIN;
+    vThumbLeft := THUMB_MARGIN;
 
-  repeat
-    FThumbs.add(newThumb(FPlayList.currentItem, FThumbSize, FThumbSize));
-    vIx := FThumbs.count - 1;
+  //  // Tell the OS to stop redrawing the host
+  //  sendMessage(FThumbsHost.handle, WM_SETREDRAW, 0, 0); // EXPERIMENTAL
+  //  try
 
-    FThumbs[vIx].thumbTop      := vThumbTop;
-    FThumbs[vIx].thumbLeft     := vThumbLeft;
-    FThumbs[vIx].thumbTag      := FPlaylist.currentIx;
-    FThumbs[vIx].onThumbClick  := FOnThumbClick;
-    FThumbs[vIx].thumbHint     := '|$' + FPlaylist.currentItem;
+    repeat
+      FThumbs.add(newThumb(FPlayList.currentItem, FThumbSize, FThumbSize));
+      vIx := FThumbs.count - 1;
 
-    FThumbs[vIx].thumbParent   := FThumbsHost;  // delay to prevent flicker of top left thumbnail
+      FThumbs[vIx].thumbTop      := vThumbTop;
+      FThumbs[vIx].thumbLeft     := vThumbLeft;
+      FThumbs[vIx].thumbTag      := FPlaylist.currentIx;
+      FThumbs[vIx].onThumbClick  := FOnThumbClick;
+      FThumbs[vIx].thumbHint     := '|$' + FPlaylist.currentItem;
 
-    setPanelText(FPlaylist.currentItem);
+      FThumbs[vIx].thumbParent   := FThumbsHost;  // delay to prevent flicker of top left thumbnail
 
-    mmpProcessMessages; // show the thumbnails as they're drawn
+      setPanelText(FPlaylist.currentItem);
 
-    calcNextThumbPosition;
+      mmpProcessMessages; // show the thumbnails as they're drawn
 
-  until (NOT FPlaylist.next) OR ((vThumbTop + FThumbSize) > FThumbsHost.height) OR FCancel;
+      calcNextThumbPosition;
 
+    until (NOT FPlaylist.next) OR ((vThumbTop + FThumbSize) > FThumbsHost.height) OR FCancel;
+
+  finally
+    FGenerating := FALSE;
+  end;
 //  finally
 //    // Re-enable drawing and force a single, clean final paint
 //    sendMessage(FThumbsHost.handle, WM_SETREDRAW, 1, 0);

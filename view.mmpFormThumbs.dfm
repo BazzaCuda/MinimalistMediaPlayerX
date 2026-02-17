@@ -3110,4 +3110,9 @@ object ThumbsForm: TThumbsForm
     Left = 80
     Top = 40
   end
+  object tmrTimer: TTimer
+    OnTimer = tmrTimerTimer
+    Left = 352
+    Top = 48
+  end
 end

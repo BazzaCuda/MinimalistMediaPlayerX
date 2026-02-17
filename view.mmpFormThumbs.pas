@@ -41,6 +41,7 @@ type
     FStatusBar: TStatusBar;
     FThumbsHost: TPanel;
     applicationEvents: TApplicationEvents;
+    tmrTimer: TTimer;
     procedure applicationEventsHint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -57,6 +58,7 @@ type
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure FormActivate(Sender: TObject);
+    procedure tmrTimerTimer(Sender: TObject);
   strict private
     mpv: IMPVBasePlayer;
     FBookmarkIx:              integer;
@@ -208,7 +210,7 @@ end;
 
 function TThumbsForm.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_BROWSER_MS] > 0, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 500);
+  result := mmp.use<integer>(CF[CONF_ANIMATE_BROWSER_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS], 250);
 end;
 
 function TThumbsForm.animateTF: boolean;
@@ -310,6 +312,8 @@ begin
 //  mmpOpaque(SELF);
 //  mmpOpaque(FThumbsHost);
 
+  tmrTimer.interval := 250;
+
   alphaBlendValue := 0;
   alphaBlend      := TRUE;
 
@@ -355,8 +359,13 @@ begin
 //                    htThumbsHost: FThumbs.showDisplayDimensions(htThumbsHost); end;
 //
 //EXIT;
+  case FThumbs <> NIL of TRUE:  begin
+                                  FThumbs.cancel;
+                                  tmrTimer.enabled := FALSE;
+                                  tmrTimer.enabled := TRUE; end;end;
+
   TAction<TVoid>.startWith((FThumbs <> NIL) and FShowing)
-                  .aside<TVoid>(whichHost = htThumbsHost, playCurrentItem)  // this will redraw the thumnbails to fit the new size!
+                  // .aside<TVoid>(whichHost = htThumbsHost, playCurrentItem)  // this will redraw the thumnbails to fit the new size!
                   .aside<TVoid>(TRUE, moveHelpWindow, FALSE)
                   .aside<TVoid>(whichHost = htMPVHost,     function:TVoid begin FThumbs.showDisplayDimensions(htMPVHost);    end)
                   .aside<TVoid>(whichHost = htThumbsHost,  function:TVoid begin FThumbs.showDisplayDimensions(htThumbsHost); end)
@@ -888,6 +897,7 @@ function TThumbsForm.greaterWindow(const aShiftState: TShiftState): TVoid;
     end;
 
 begin
+  FThumbs.cancel; // EXPERIMENTAL
   var vPt := mmpCalcGreaterWindow(SELF.handle, aShiftState, FThumbs.thumbSize, whichHost);
   case GS.autoCenter of  TRUE: mmpCenterWindow(SELF.HANDLE, vPt, SWP_NOZORDER {or SWP_FRAMECHANGED});
                         FALSE: mmpSetWindowSize(SELF.HANDLE, vPt); end;
@@ -921,11 +931,13 @@ begin
     htThumbsHost: begin
                     alphaBlend  := FALSE;
                     case animateTF of  TRUE: mmpAnimateResize(SELF.HANDLE, 1000, mmpScreenHeight, 0, 0, TRUE, animateMs); end;
+                    FProgressForm := NIL;
                     FThumbs.playThumbs(FInitialFilePath);
                     end;
     htMPVHost:    begin
                     case GS.noPlaylist of  TRUE: FThumbs.playlist.add(PS.fileFolderAndName);
                                           FALSE: FThumbs.playThumbs(FInitialFilePath, ptPlaylistOnly); end;
+                    FProgressForm := NIL;
                     playCurrentItem;
                     //mmpDelay(100);
                     alphaBlend  := FALSE;
@@ -940,6 +952,12 @@ begin
   case GS.showingConfig of FALSE: focusThumbs; end; // how could this NOT be FALSE when opening the browser!?
 
   FProgressForm := NIL;
+end;
+
+procedure TThumbsForm.tmrTimerTimer(Sender: TObject);
+begin
+  tmrTimer.enabled := FALSE;
+  case (FThumbs <> NIL) and (whichHost = htThumbsHost) of TRUE: playCurrentItem; end;
 end;
 
 function TThumbsForm.toggleThumbs: TVoid;

@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = TabSheet1
+    ActivePage = tsAnimations
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging
@@ -52,7 +52,7 @@ object ConfigForm: TConfigForm
       object Label1: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -66,6 +66,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label3: TLabel
         Left = 128
@@ -201,7 +202,7 @@ object ConfigForm: TConfigForm
       object Label5: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -215,6 +216,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label13: TLabel
         Left = 16
@@ -470,7 +472,7 @@ object ConfigForm: TConfigForm
       object Label4: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -484,6 +486,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label21: TLabel
         Left = 49
@@ -642,7 +645,7 @@ object ConfigForm: TConfigForm
       object Label27: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -656,6 +659,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label28: TLabel
         Left = 170
@@ -840,7 +844,7 @@ object ConfigForm: TConfigForm
       object Label10: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -854,6 +858,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label35: TLabel
         Left = 87
@@ -1023,7 +1028,7 @@ object ConfigForm: TConfigForm
       object Label8: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -1037,6 +1042,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label30: TLabel
         Left = 55
@@ -2419,7 +2425,7 @@ object ConfigForm: TConfigForm
       object Label50: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2433,6 +2439,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label51: TLabel
         Left = 131
@@ -2521,7 +2528,7 @@ object ConfigForm: TConfigForm
       object Label57: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2535,6 +2542,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label58: TLabel
         Left = 205
@@ -2725,7 +2733,7 @@ object ConfigForm: TConfigForm
       object Label72: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2739,6 +2747,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label73: TLabel
         Left = 205
@@ -2823,7 +2832,7 @@ object ConfigForm: TConfigForm
       object Label9: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -2837,6 +2846,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label29: TLabel
         Left = 28
@@ -3363,6 +3373,155 @@ object ConfigForm: TConfigForm
           'PNG')
       end
     end
+    object tsAnimations: TTabSheet
+      Caption = 'Animations'
+      ImageIndex = 15
+      object Label89: TLabel
+        Left = 0
+        Top = 316
+        Width = 576
+        Height = 15
+        Align = alBottom
+        Alignment = taCenter
+        Caption = 
+          'changes are saved immediately - hit [Escape] to close this confi' +
+          'g window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clTeal
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsItalic]
+        ParentFont = False
+        StyleElements = [seClient, seBorder]
+        ExplicitTop = 317
+      end
+      object Label90: TLabel
+        Left = 159
+        Top = 126
+        Width = 185
+        Height = 15
+        Caption = 'Animation duration (milliseconds)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label91: TLabel
+        Left = 159
+        Top = 274
+        Width = 185
+        Height = 15
+        Caption = 'Animation duration (milliseconds)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label92: TLabel
+        Left = 106
+        Top = 2
+        Width = 363
+        Height = 60
+        Alignment = taCenter
+        Caption = 
+          'You can animate the initial display of video and image files'#13#10'an' +
+          'd of audio files whether they contain Cover Art or not'#13#10'The tran' +
+          'sition between audio and video files will also be animated'#13#10'as M' +
+          'MP adjusts the window to the new dimensions and Aspect Ratio'
+      end
+      object Label93: TLabel
+        Left = 129
+        Top = 183
+        Width = 318
+        Height = 45
+        Alignment = taCenter
+        Caption = 
+          'In the Image && Thumbnail Browser'#13#10'after the animated launch of ' +
+          'the initial image'#13#10'the resizing of images and the window will be' +
+          ' smoothed out'
+      end
+      object GroupBox4: TGroupBox
+        Left = 82
+        Top = 174
+        Width = 405
+        Height = 132
+        TabOrder = 6
+      end
+      object GroupBox3: TGroupBox
+        Left = 82
+        Top = 70
+        Width = 405
+        Height = 98
+        TabOrder = 5
+      end
+      object chbAnimateMain: TCheckBox
+        Left = 159
+        Top = 93
+        Width = 261
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Animate the Main Media Window'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = chbAnimateMainClick
+      end
+      object chbAnimateBrowser: TCheckBox
+        Left = 159
+        Top = 239
+        Width = 261
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Animate the Image && Thumbnail Browser'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnClick = chbAnimateBrowserClick
+      end
+      object edtAnimateMainMs: TEdit
+        Left = 379
+        Top = 123
+        Width = 41
+        Height = 23
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 1
+        Text = '999'
+        OnChange = edtAnimateMainMsChange
+      end
+      object edtAnimateBrowserMs: TEdit
+        Left = 379
+        Top = 271
+        Width = 41
+        Height = 23
+        Alignment = taRightJustify
+        NumbersOnly = True
+        TabOrder = 3
+        Text = '999'
+        OnChange = edtAnimateBrowserMsChange
+      end
+      object btnAnimateDefaults: TButton
+        Left = 498
+        Top = 275
+        Width = 75
+        Height = 25
+        Caption = 'Defaults'
+        TabOrder = 4
+        OnClick = btnAnimateDefaultsClick
+      end
+    end
     object tsSlideshowIntervalMs: TTabSheet
       Caption = 'Slideshows'
       ImageIndex = 9
@@ -3382,7 +3541,7 @@ object ConfigForm: TConfigForm
       object Label45: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3396,6 +3555,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label46: TLabel
         Left = 0
@@ -3447,7 +3607,7 @@ object ConfigForm: TConfigForm
       object Label55: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3461,6 +3621,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object lblDirtyChars: TLabel
         Left = 36
@@ -3534,7 +3695,7 @@ object ConfigForm: TConfigForm
       object Label12: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3548,6 +3709,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label39: TLabel
         Left = 11
@@ -3628,7 +3790,7 @@ object ConfigForm: TConfigForm
       object Label42: TLabel
         Left = 0
         Top = 316
-        Width = 406
+        Width = 576
         Height = 15
         Align = alBottom
         Alignment = taCenter
@@ -3642,6 +3804,7 @@ object ConfigForm: TConfigForm
         Font.Style = [fsBold, fsItalic]
         ParentFont = False
         StyleElements = [seClient, seBorder]
+        ExplicitWidth = 406
       end
       object Label43: TLabel
         Left = 20

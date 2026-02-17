@@ -156,6 +156,9 @@ begin
   borderStyle       := bsNone;
   position          := poMainFormCenter;
 
+  FHeading.showAccelChar    := FALSE;
+  FSubHeading.showAccelChar := FALSE;
+
   FTimer.enabled    := FALSE;
 
   with panel1 do begin

@@ -46,11 +46,15 @@ type
     procedure   FormMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure   FormResize(Sender: TObject);
     procedure   FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   strict private
     FViewModel: IViewModel;
+  private
+    function animateMs: integer;
   protected
     procedure   FormCreate(Sender: TObject);
-    procedure   Loaded; override;
+    procedure   createWnd;  override;
+    procedure   Loaded;     override;
     procedure   WMNCHitTest       (var msg: TWMNCHitTest);  message WM_NCHITTEST;
     procedure   WMSizing          (var msg: TMessage);      message WM_SIZING;
     procedure   WMDropFiles       (var msg: TWMDropFiles);  message WM_DROPFILES;
@@ -91,7 +95,9 @@ implementation
 
 uses
   winApi.shellApi,
-  mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils,
+  mmpDesktopUtils, mmpGlobalState, mmpKeyboardUtils, mmpUtils, mmpWindowUtils,
+  bazCmd,
+  model.mmpConfigFile,
   view.mmpFormTimeline,
   _debugWindow;
 
@@ -113,14 +119,26 @@ begin
   case msg.message = WM_KEYUP       of TRUE: FViewModel.onKeyUp(WORD(msg.WParam), mmpShiftState); end;
 end;
 
+procedure TMMPUI.createWnd;
+begin
+  inherited;
+  width  := 0;
+  height := 0;
+end;
+
 procedure TMMPUI.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   mmpProcessMessages;
 end;
 
+function TMMPUI.animateMs: integer;
+begin
+  result := mmp.use<integer>(CF[CONF_ANIMATE_MAIN_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS], 999);
+end;
+
 procedure TMMPUI.FormCreate(Sender: TObject);
 begin
-  position := poDesigned;
+  position := poScreenCenter;
 end;
 
 procedure TMMPUI.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -151,6 +169,12 @@ procedure TMMPUI.FormResize(Sender: TObject);
 begin
   case FViewModel = NIL of TRUE: EXIT; end;
   FViewModel.onFormResize;
+end;
+
+procedure TMMPUI.FormShow(Sender: TObject);
+begin
+//  alphaBlend := FALSE;
+//  mmpAnimateResize(SELF.HANDLE, width, mmpScreenHeight, 0, 0, TRUE, 1000);
 end;
 
 function TMMPUI.getViewModel: IViewModel;

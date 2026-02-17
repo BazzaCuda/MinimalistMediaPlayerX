@@ -1,8 +1,8 @@
 object MMPUI: TMMPUI
   Left = 0
   Top = 0
-  ClientHeight = 445
-  ClientWidth = 626
+  ClientHeight = 111
+  ClientWidth = 314
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3022,10 +3022,11 @@ object MMPUI: TMMPUI
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
   OnResize = FormResize
+  OnShow = FormShow
   TextHeight = 15
   object applicationEvents: TApplicationEvents
     OnMessage = applicationEventsMessage
-    Left = 288
-    Top = 152
+    Left = 40
+    Top = 16
   end
 end

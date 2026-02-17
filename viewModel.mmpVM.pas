@@ -119,6 +119,8 @@ type
     FDragged:               boolean;
     FLocked:                boolean;
     FManualResizing:        boolean;
+    FMinHeight:             integer;
+    FMinWidth:              integer;
     FResizingWindow:        boolean;
     FShowingBrowser:        boolean;
     FSlideshowTimer:        TTimer;
@@ -284,7 +286,7 @@ end;
 
 function TVM.animateMs: integer;
 begin
-  result := mmp.use<integer>(CF.asInteger[CONF_ANIMATE_MAIN_MS] > 0, CF.asInteger[CONF_ANIMATE_MAIN_MS], 1000);
+  result := mmp.use<integer>(CF[CONF_ANIMATE_MAIN_MS] <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS], 999);
 end;
 
 function TVM.animateTF: boolean;
@@ -470,6 +472,9 @@ begin
   FVideoPanel             := aVideoPanel;
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
 
+  FMinHeight := getSystemMetrics(SM_CYMINTRACK);
+  FMinWidth  := getSystemMetrics(SM_CXMINTRACK);
+
   mmpThemeInitForm(aForm);
 
   mmp.cmd(FMP <> NIL, procedure begin
@@ -617,6 +622,8 @@ begin
   case aNotice = NIL of TRUE: EXIT; end;
   case GS.suspended of TRUE: EXIT; end;
 
+  //TDebug.debugEnum<TNoticeEvent>('onMPNotify', aNotice.event);
+
   case aNotice.event of evMPStatePlay: case GS.mediaType of mtImage: begin mmpDelay(GS.repeatDelayMs); FLocked := FALSE; end;
                                                     mtAudio,mtVideo: FLocked := FALSE; end;end;
 
@@ -627,6 +634,8 @@ begin
     evMPStateEnd:   case (GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist of TRUE: mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end; // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
+                      reallyShowUI; // prevent the main media window showing an image briefly when launching into the browser
+                      //TT.tickNow;   // force TPlayerMediaPlayer.onTickTimer ahead of TTickTimer's schedule - no, this will shrink an existing 16:9 and then re-expand it
                       vMPPrevPosition := -1; // reset for each new audio/video, see below
                       mmp.cmd(evPBMax, GS.duration);
                       mmp.cmd(GS.showingTimeline, evTLMax, GS.duration);
@@ -733,7 +742,7 @@ begin
   case (GS.mpvWidth <> 0) and (GS.mpvHeight <> 0) and ((FMPVWidth <> GS.mpvWidth) or (FMPVHeight <> GS.mpvHeight)) of TRUE: begin
                                                                                                                               FMPVWidth  := GS.mpvWidth;
                                                                                                                               FMPVHeight := GS.mpvHeight;
-                                                                                                                              mmp.cmd(evVMResizeWindow); end;end;
+                                                                                                                              {mmp.cmd(evVMResizeWindow);} end;end;
 
   case GS.showingAbout or GS.showingHelp or GS.showingPlaylist or GS.showingThumbs or GS.showingTimeline of TRUE: EXIT; end;
   screen.cursor := crNone;
@@ -924,7 +933,6 @@ end;
 function TVM.playNext(const bRecurseFolders: boolean): TVoid;
 var T, F: TProc;
 begin
-  debugClear;
   case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -944,7 +952,6 @@ end;
 function TVM.playPrev: TVoid;
 var T, F: TProc;
 begin
-  debugClear;
   case GS.noPlaylist of TRUE: EXIT; end;
   case FLocked of TRUE: EXIT; end;
   FLocked := TRUE;
@@ -1133,13 +1140,10 @@ end;
 function TVM.resizeWindow: TVoid;
 begin
   case FShowingBrowser of TRUE: EXIT; end;
-  debug('TVM.resizeWindow');
   case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
 
   case FResizingWindow of TRUE: EXIT; end;
   FResizingWindow := TRUE;
-
-  // GS.mainForm.alphaBlend := animateTF;
 
   var MPvideoWidth    := GS.mpvWidth;
   var MPvideoHeight   := GS.mpvHeight;
@@ -1149,7 +1153,9 @@ begin
 
   case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: begin FResizingWindow := FALSE; EXIT; end;end;
 
-  case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
+  //case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
+
+  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, mmpScreenHeight, 0, 0, TRUE, 500); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
@@ -1173,6 +1179,8 @@ begin
   mmp.cmd(evGSSuppressMainUI, FALSE); // every subsequent call to resizeWindow will now call reallyShowUI
 
   FResizingWindow := FALSE;
+
+  case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during our animation?
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;

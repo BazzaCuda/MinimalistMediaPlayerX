@@ -239,6 +239,8 @@ begin
 
   mmp.cmd(evVMCenterWindow); // EXPERIMENTAL - override the poDesigned for the blank window
 
+  mmp.cmd(PS.noFile, procedure begin MMPUI.viewModel.reallyShowUI; end);
+
   MMPUI.viewModel.playlist := newPlaylist;
 
   mmp.cmd(evGSNoPlaylist, PS.noPlaylist);
