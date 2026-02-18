@@ -1043,7 +1043,7 @@ function TVM.reallyShowUI: TVoid;
 begin
   case GS.mainForm.alphaBlendValue = 0 of TRUE: begin
                                                   GS.mainForm.alphaBlendValue := 255;
-                                                  GS.mainForm.alphaBlend      := TRUE; end;end;
+                                                  GS.mainForm.alphaBlend      := FALSE; end;end;
 end;
 
 function TVM.reInitTimeline(const aDuration: integer): TVoid;
@@ -1161,7 +1161,7 @@ begin
   var MPvideoHeight   := GS.mpvHeight;
   var MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 
-  // debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
+  debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
 
   case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: begin FResizingWindow := FALSE; EXIT; end;end;
 
@@ -1339,6 +1339,11 @@ begin
   var vCurrentItem := mmp.cmd(evPLReqCurrentItem).text;
 
   case mmpCheckIfEditFriendly(vCurrentItem) of FALSE: EXIT; end;
+
+  while (GS.mpvWidth = 0) or (GS.mpvHeight = 0) do mmpDelay(10);
+
+  debugFormat('TVM.toggleEditMode.mmpAnimateResize %d x %d', [GS.mpvWidth, GS.mpvHeight]);
+//  case GS.mainForm.alphaBlend of TRUE: begin reallyShowUI; mmpAnimateResize(GS.mainForm.HANDLE, 100, mmpScreenHeight, 0, 0, TRUE, 250, FShuttingDown); end;end; // override animation settings
 
   mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);

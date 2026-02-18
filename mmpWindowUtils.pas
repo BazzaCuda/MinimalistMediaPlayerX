@@ -93,8 +93,8 @@ begin
   var vWorkArea:      TRect   := screen.workareaRect;
   var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
 
-  var vDesktopCenterX: integer := vWorkArea.left + (vWorkArea.width div 2);
-  var vDesktopCenterY: integer := vWorkArea.top + (vLogicalHeight div 2);
+  var vDesktopCenterX: integer := vWorkArea.left  + (vWorkArea.width div 2);
+  var vDesktopCenterY: integer := vWorkArea.top   + (vLogicalHeight div 2);
 
   var vFreq: int64;
   queryPerformanceFrequency(vFreq);
@@ -123,8 +123,8 @@ begin
     var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
     vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
 
-    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
-    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+    var vCurrentW: integer := vInitialWidth   + round((aTargetWidth   - vInitialWidth)  * vProgress);
+    var vCurrentH: integer := vInitialHeight  + round((aTargetHeight  - vInitialHeight) * vProgress);
 
     var vCurrentL: integer := vInitialLeft;
     var vCurrentT: integer := vInitialTop;
@@ -183,7 +183,7 @@ begin
 
   // identify the fixed anchor point: the current center of the window
   var vAnchorX: integer := vInitialLeft + (vInitialWidth div 2);
-  var vAnchorY: integer := vInitialTop + (vInitialHeight div 2);
+  var vAnchorY: integer := vInitialTop  + (vInitialHeight div 2);
 
   var vProgress: double := 0;
 
@@ -195,8 +195,8 @@ begin
     var vElapsedSeconds: double := (vCurrentTick - vStartTick) / vFreq;
     vProgress := min(1.0, max(0.0, vElapsedSeconds / vTotalDurationSeconds));
 
-    var vCurrentW: integer := vInitialWidth + round((aTargetWidth - vInitialWidth) * vProgress);
-    var vCurrentH: integer := vInitialHeight + round((aTargetHeight - vInitialHeight) * vProgress);
+    var vCurrentW: integer := vInitialWidth   + round((aTargetWidth - vInitialWidth) * vProgress);
+    var vCurrentH: integer := vInitialHeight  + round((aTargetHeight - vInitialHeight) * vProgress);
 
     // calculate top/left so the midpoint remains at the anchor point
     var vCurrentL: integer := vAnchorX - (vCurrentW div 2);
@@ -477,7 +477,6 @@ begin
   case (aPt.x <> 0) and (aPt.y <> 0) of  TRUE:  begin // override the current dimensions with those provided
                                                   vR.width  := aPt.x;
                                                   vR.height := aPt.y; end;end;
-
 
   case alreadyCentred of TRUE: EXIT; end;
 
