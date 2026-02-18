@@ -719,8 +719,10 @@ begin
   chbOpenImageClick(NIL);
   chbOpenImage.enabled          := FALSE;
 
-
-  chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = lowerCase(CONF_EXIT_APP);
+//  chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = lowerCase(CONF_EXIT_APP);
+  chbExitBrowser.checked        := TRUE;
+  chbExitBrowserClick(NIL);
+  chbExitBrowser.enabled        := FALSE;
 
   chbAudio.checked              := CF.asBoolean[CONF_AUDIO_DELETE];
   chbVideo.checked              := CF.asBoolean[CONF_VIDEO_DELETE];

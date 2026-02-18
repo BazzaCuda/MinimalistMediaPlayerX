@@ -1250,7 +1250,7 @@ begin
   var vModalResult := showThumbs(FPlaylist.currentItem, mainFormDimensions, aHostType); // showModal
   case vModalResult of
     mrAll:      EXIT; // user pressed Ctrl-[0]
-    mrClose:    mmp.cmd(lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp', evAppClose); // normal exit from browser and app
+    mrClose:    mmp.cmd({lowercase(CF[CONF_EXIT_BROWSER]) = 'exitapp'} TRUE, evAppClose); // normal exit from browser and app
     mrIgnore:   ;     // user pressed Ctrl-[X] - ignore exitApp setting, whatever it is
   end;
 
