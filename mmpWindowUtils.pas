@@ -111,6 +111,8 @@ begin
   var vInitialLeft: integer   := vR.left;
   var vInitialTop: integer    := vR.top;
 
+  case (vInitialWidth = aTargetWidth) and (vInitialHeight = aTargetHeight) {and (NOT aCenter)} of TRUE: EXIT; end;
+
   var vProgress: double := 0;
 
   while vProgress < 1.0 do

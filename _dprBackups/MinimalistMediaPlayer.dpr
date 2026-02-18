@@ -261,7 +261,7 @@ begin
   mmp.cmd((GS.mediaType = mtVideo) and CF.asBoolean[CONF_START_IN_EDITOR] and NOT mmpShiftKeyDown and NOT GS.noPlaylist, evVMToggleEditMode);
 
   mmp.cmd(evGSSuppressMainUI, (lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage)); // evGSSuppressmainUI starts TRUE, this resets it if appropriate
-  mmp.cmd((lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
+  mmp.cmd({(lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and} (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
   // the Main Media Window will eventually be shown in TVM.resizeWindow in response to an evVMResizeWindow from model.mmpMediaPlayer.onTickTimer
 

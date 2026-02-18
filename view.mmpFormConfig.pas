@@ -713,7 +713,13 @@ function TConfigForm.loadConfig: TVoid;
 begin
   chbAutoUpdate.checked         := CF.asBoolean[CONF_AUTO_UPDATE];
   chbStartInEditor.checked      := CF.asBoolean[CONF_START_IN_EDITOR];
-  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE])   = CONF_BROWSER;
+
+//  chbOpenImage.checked          := lowerCase(CF[CONF_OPEN_IMAGE])   = CONF_BROWSER;
+  chbOpenImage.checked          := TRUE;
+  chbOpenImageClick(NIL);
+  chbOpenImage.enabled          := FALSE;
+
+
   chbExitBrowser.checked        := lowerCase(CF[CONF_EXIT_BROWSER]) = lowerCase(CONF_EXIT_APP);
 
   chbAudio.checked              := CF.asBoolean[CONF_AUDIO_DELETE];

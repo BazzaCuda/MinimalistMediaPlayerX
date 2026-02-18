@@ -288,7 +288,6 @@ end;
 
 function TVM.animateCloseApp: TVoid;
 begin
-//  case GS.autoCenter of FALSE: EXIT; end;
   case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 500); end;
   case CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         500); end;
 end;
@@ -1161,7 +1160,7 @@ begin
   var MPvideoHeight   := GS.mpvHeight;
   var MIhasCoverArt   := mmp.cmd(evMIReqHasCoverArt).tf;
 
-  debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
+  // debugFormat('RW: %d x %d', [MPvideoWidth, MPvideoHeight]);
 
   case (MPvideoWidth = 0) or (MPvideoHeight = 0) of TRUE: begin FResizingWindow := FALSE; EXIT; end;end;
 
@@ -1192,7 +1191,7 @@ begin
 
   FResizingWindow := FALSE;
 
-  case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: begin {mmpDelay(1000);} mmp.cmd(evVMResizeWindow); end;end; // did the outside World change during our animation?
+  case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;
@@ -1340,10 +1339,9 @@ begin
 
   case mmpCheckIfEditFriendly(vCurrentItem) of FALSE: EXIT; end;
 
-  while (GS.mpvWidth = 0) or (GS.mpvHeight = 0) do mmpDelay(10);
+  while (GS.mpvWidth = 0) or (GS.mpvHeight = 0) do mmpDelay(10); // give MPV chance to open the file and report its dimensions
 
-  debugFormat('TVM.toggleEditMode.mmpAnimateResize %d x %d', [GS.mpvWidth, GS.mpvHeight]);
-//  case GS.mainForm.alphaBlend of TRUE: begin reallyShowUI; mmpAnimateResize(GS.mainForm.HANDLE, 100, mmpScreenHeight, 0, 0, TRUE, 250, FShuttingDown); end;end; // override animation settings
+  // debugFormat('TVM.toggleEditMode.mmpAnimateResize %d x %d', [GS.mpvWidth, GS.mpvHeight]);
 
   mmp.cmd(GS.showingTimeline, procedure begin shutTimeline; end, // sets GS.showingTimeline := FALSE
                               procedure begin mmp.cmd(evVMMoveTimeline, TRUE); end);

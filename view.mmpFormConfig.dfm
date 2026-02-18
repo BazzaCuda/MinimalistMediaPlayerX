@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsAnimations
+    ActivePage = tsGeneral
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging
@@ -90,7 +90,7 @@ object ConfigForm: TConfigForm
         Caption = 
           'Determines whether, for image files, MMP should launch directly ' +
           'into the Image'#160'&&'#160'Thumbnail'#160'Browser, rather than display the ima' +
-          'ge in the main media window'
+          'ge in the main media window. This is the recommended setting'
         WordWrap = True
       end
       object Label7: TLabel
