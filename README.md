@@ -63,7 +63,7 @@ Significant Releases
 ![output](https://github.com/user-attachments/assets/9a9c2be9-bf3c-4e09-a0b2-1fdb6a7187be)
 - especially designed for videos, the `Main Media Window` adjusts smoothly to the dimensions and Aspect Ratio of the new video
 - this mimics how the screen in cinemas quietly adjusts after the ads and the trailers
-- the animations do not delay the start of playback whatsoever - the blank screens in the animation are at the start of the videos themselves
+- the animations do not delay the start of playback whatsoever - the blank screens in the above animation are at the start of the videos themselves
 - the `Image & Thumbanail Browser` also incorporates this smooth adjustment when using `[J]` and/or `[M]` to adjust the window to the dimensions and Aspect Ratio of an image
 - when playing audio files, `MMP` smoothly adjusts the audio player window depending on whether any Cover Art is present or not
 
