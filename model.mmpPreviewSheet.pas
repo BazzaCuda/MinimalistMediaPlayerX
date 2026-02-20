@@ -52,7 +52,7 @@ begin
   var vIx := mmpFirstStreamType(TStreamType.stAudio);
 
   case vIx <> -1 of TRUE: begin
-                            result := format('%s %s %s %s', [MI.mediaStreams[vIx].format, MI.mediaStreams[vIx].language, MI.mediaStreams[vIx].bitRate, MI.mediaStreams[vIx].info]);
+                            result := format('%s %s %s %s', [MI.mediaStreams[vIx].format, MI.mediaStreams[vIx].language, MI.mediaStreams[vIx].info, MI.mediaStreams[vIx].bitRate]);
                             result := mmpRemoveSingleQuotes(result);end;end;
 //  debugString('mmpFirstAudio', result);
 end;
