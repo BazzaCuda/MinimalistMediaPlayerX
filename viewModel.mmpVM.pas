@@ -69,6 +69,7 @@ type
     procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
     procedure   onWINResize(var msg: TMessage);
+    procedure   onWINSkipAnimation(var msg: TMessage);
     procedure   onWINSkipBackwards(msg: TMessage);
     procedure   onWINSkipForwards(msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
@@ -124,6 +125,7 @@ type
     FResizingWindow:        boolean;
     FShowingBrowser:        boolean;
     FShuttingDown:          boolean;
+    FSkipAnimation:         boolean;
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
@@ -194,6 +196,7 @@ type
     procedure   onWINMuteUnmute(var msg: TMessage);
     procedure   onWINPausePlay(var msg: TMessage);
     procedure   onWINResize(var msg: TMessage);
+    procedure   onWINSkipAnimation(var msg: TMessage);
     procedure   onWINSkipBackwards(msg: TMessage);
     procedure   onWINSkipForwards(msg: TMessage);
     procedure   onWINStartOver(var msg: TMessage);
@@ -302,8 +305,8 @@ function TVM.animateTF: boolean;
 begin
 //  result := FALSE;
 //  case GS.mediaType = mtImage of TRUE: EXIT; end;
-  case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := NOT FManualResizing;
-                                        FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN] and NOT FManualResizing; end;
+  case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := NOT FManualResizing and NOT FSkipAnimation;
+                                        FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN] and NOT FManualResizing and NOT FSkipAnimation; end;
 end;
 
 constructor TVM.Create;
@@ -827,6 +830,11 @@ begin
   forcedResize(GS.mainForm.handle, point(msg.WParam, msg.LParam), mmp.cmd(evMPReqVideoWidth).integer, mmp.cmd(evMPReqVideoHeight).integer);
 end;
 
+procedure TVM.onWINSkipAnimation(var msg: TMessage);
+begin
+  FSkipAnimation := TRUE;
+end;
+
 procedure TVM.onWINSkipBackwards(msg: TMessage);
 begin
   var vTab := CF.asInteger[CONF_SKIP_SECONDS];
@@ -1191,6 +1199,7 @@ begin
   mmp.cmd(evGSSuppressMainUI, FALSE); // every subsequent call to resizeWindow will now call reallyShowUI
 
   FResizingWindow := FALSE;
+  FSkipAnimation  := FALSE;
 
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 end;

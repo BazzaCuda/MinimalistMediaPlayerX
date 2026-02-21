@@ -300,7 +300,7 @@ begin
                                                       var vIx := FThumbs.playlist.currentIx;
                                                       FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);  // this decrements PL's FPlayIx...
                                                       case (ssCtrl in aShiftState) or (NOT FThumbs.playlist.hasItems) of
-                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end; // shortcut logic!
+                                                         TRUE:  case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] AND playNextFolder of FALSE: begin processKeyOp(koCloseImageBrowser, [], 0); {close; mmp.cmd(evAppClose);} end;end; // shortcut logic!
                                                         FALSE:  begin
                                                                   mmp.cmd(evPLFormLoadBox);
                                                                   case (vIx = 0) or FThumbs.playlist.isLast of  TRUE: playCurrentItem; // vIx = 0 is not the same as .isFirst
@@ -805,8 +805,8 @@ begin
 //  FThumbs.playlist.deleteIx(FThumbs.playlist.currentIx);
   FThumbs.playlist.deleteIx(-1); // EXPERIMENTAL - after rewriting IPlaylist.deleteIx, passing -1 to delete the current index now seems to be the preferred method
   case FThumbs.playlist.hasItems of FALSE:  begin mpvStop(mpv); mmpPartClearStatusBar(FStatusBar);
-                                              case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: begin close; mmp.cmd(evAppClose); end;end;
-                                                                                              FALSE: begin close; mmp.cmd(evAppClose); end;
+                                              case CF.asBoolean[CONF_NEXT_FOLDER_ON_EMPTY] of  TRUE: case playNextFolder of FALSE: begin processKeyOp(koCloseImageBrowser, [], 0); {close; mmp.cmd(evAppClose);} end;end;
+                                                                                              FALSE: begin processKeyOp(koCloseImageBrowser, [], 0); {close; mmp.cmd(evAppClose);} end;
                                               end;
                                             end;
                                      TRUE:  begin

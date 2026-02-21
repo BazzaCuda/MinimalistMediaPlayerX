@@ -335,6 +335,8 @@ begin
                                   mmp.cmd(evPAPostToEvery, WIN_AUTOCENTER_OFF);
                                   mmp.cmd(evPAPostToEvery, WIN_MAX_SIZE_OFF); end;end;
 
+  mmp.cmd(evPAPostToEvery, WIN_SKIP_ANIMATION); // tell each window to skip the next animation in TVM.resizeWindow
+
   var vMsg: TMessage;
   vMsg := default(TMessage);
   case vCount of

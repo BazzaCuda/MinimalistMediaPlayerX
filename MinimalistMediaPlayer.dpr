@@ -253,7 +253,7 @@ begin
   mmp.cmd(mmp.cmd(evPLFind, PS.fileFolderAndName).tf, evVMMPPlayCurrent); // this give us GS.mediaType
   mmp.cmd(evMPKeepOpen, GS.noPlaylist); // because MP.openURL will have set it to false for audio and video
 
-  MMPUI.viewModel.showUI; // this instantiates the Main Media Window but its display is current suppressed by alphaBlendValue = 0
+  MMPUI.viewModel.showUI; // this instantiates the Main Media Window but its display is currently suppressed by alphaBlendValue = 0
   //case GS.suppressMainUI of FALSE: MMPUI.viewModel.reallyShowUI; end;
 
   mmp.cmd(evSTForceCaptions);

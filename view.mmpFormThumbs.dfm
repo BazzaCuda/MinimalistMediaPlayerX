@@ -3096,8 +3096,6 @@ object ThumbsForm: TThumbsForm
     OnMouseMove = FStatusBarMouseMove
     OnDrawPanel = FStatusBarDrawPanel
     OnResize = FStatusBarResize
-    ExplicitTop = 413
-    ExplicitWidth = 620
   end
   object FThumbsHost: TPanel
     Left = 112
