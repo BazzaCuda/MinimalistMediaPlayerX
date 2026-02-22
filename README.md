@@ -7,8 +7,6 @@ An all-in-one media player, image library manager (with built-in image & thumbna
 
 Fully portable - just unzip and go!
 
-Good or bad, what do you like or dislike about `MMP`? Love it, or not what you were looking for? Let me know [here](https://github.com/BazzaCuda/MinimalistMediaPlayerX/discussions/47). I'm _**very**_ keen to hear from you. What additional features would you like to see in `MMP`?
-
 _Note that `openImage=browser` and `exitBrowser=exitApp` are the recommended settings. After running `mmp-install.bat` to register all the file extensions that `MMP` supports, this will allow you to take full advantage of the image library management controls in the `Image & Thumbnail Browser` by operating `MMP` as [in effect] two applications in one: the `Main Media Window` for playing (**and editing**) audio and video files, and the `Image & Thumbnail Browser` for managing your image library._
 
 - `Ctrl-[H]` to open the Help Panel(s) in both the `Main Media Window` and in the `Image & Thumbnail Browser`, listing all the ~200 controls for audio, video, and images
