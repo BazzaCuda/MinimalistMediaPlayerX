@@ -460,8 +460,6 @@ _NB required binaries are distributed with each release of `MMP` - this section 
 
 4. Acknowledgement is due to the author of Perpetual Notes v4.05 (https://www.enselsoftware.com/product/PerpetualNotes.html) for being the only RTF editor I could find on the entire internet that could actually [,accurately] read back in what it had written out! (And I tested some big players during my search!)
 
-   No longer uses FastMM5 (https://github.com/pleriche/FastMM5). For full debug mode: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder
-
 6. Uses BazDebugWindow (https://github.com/BazzaCuda/BazDebugWindow) for writing debug messages to a separate window, rather than having lots of "ShowMessage" calls which interrupt the operation of the application. This is a reworking of the original GExperts DebugWindow. If desired, applications can be distributed with the debug messsages intact and as long as a user doesn't have the BazDebugWindow.exe installed, the calls do nothing
 
 7. Uses JCL (https://github.com/project-jedi/jcl) _(jclDebug.pas)_ to populate the stackTrace string in Delphi exceptions _(mmpStackTrace.pas)_, reported in _mmpExceptionHandler.pas_
@@ -473,4 +471,10 @@ _NB required binaries are distributed with each release of `MMP` - this section 
 10. Uses FFPROBE.exe (https://ffmpeg.org) to obtain the timestamps of all the keyframes in a video. This allows for greater precision _(and more accurate cuts)_ when deciding where to start a new segment during video editing
 
 11. Uses the 64-bit versions of libeay32.dll and ssleay32.dll from the Open SSL Shared Library (https://openssl.org) to obtain a secure internet connection to GitHub to check for and download the latest release. `MMP: Minimalist Media Player` requires both DLLs to be in the same folder as the executable
+
+12. Uses the excellent madExcept (https://www.madshi.net) for reporting  and fixing exceptions and memory leaks
+
+Removed Dependencies
+----------
+No longer uses FastMM5 (https://github.com/pleriche/FastMM5). Previously, for full debug mode, you had to: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder 
 
