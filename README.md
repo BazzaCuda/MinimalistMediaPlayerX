@@ -60,7 +60,9 @@ Significant Releases
 
 `MMP` (`v6.2.0`)
 **Animated Window**
-![output](https://github.com/user-attachments/assets/9a9c2be9-bf3c-4e09-a0b2-1fdb6a7187be)
+
+![output](https://github.com/user-attachments/assets/02b2674c-87aa-47de-98ef-95718d689894)
+
 - especially designed for videos, the `Main Media Window` adjusts smoothly to the dimensions and Aspect Ratio of the new video
 - this mimics how the screen in cinemas quietly adjusts after the ads and the trailers
 - the animations do not delay the start of playback whatsoever - the blank screens in the above animation are at the start of the videos themselves
