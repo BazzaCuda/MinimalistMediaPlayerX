@@ -1190,7 +1190,7 @@ begin
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
-  mmp.cmd(evWndResize); // reposition the help, playlist and timeline windows
+  case FShuttingDown of FALSE: mmp.cmd(evWndResize); end; // reposition the help, playlist and timeline windows (also view.mmpFormCaptions, view.mmpFormMainCaptions, view.mmpProgressBar; i.e. subscribers to evWndResize)
 
   mmp.cmd(GS.mediaType in [mtVideo, mtImage], evSTDisplayXY);
 

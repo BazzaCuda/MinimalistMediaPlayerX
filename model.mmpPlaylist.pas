@@ -25,6 +25,7 @@ uses
   vcl.stdCtrls,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
   mmpAction, mmpConsts;
+
 type
   IPlaylist = interface
     function    add(const anItem: string):                  boolean;
@@ -61,7 +62,7 @@ implementation
 
 uses
   winApi.windows,
-  system.regularExpressions, system.sysUtils,
+  {system.regularExpressions,} system.sysUtils,
   vcl.clipbrd,
   bazCmd,
   mmpFileUtils, mmpGlobalState, mmpUtils,
