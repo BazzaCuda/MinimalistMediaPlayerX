@@ -293,6 +293,7 @@ function TVM.animateCloseApp: TVoid;
 begin
   var  vAnimateClose := mmp.use<boolean>(CF[CONF_ANIMATE_MAIN_CLOSE] <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE], TRUE);
   case vAnimateClose of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, GS.mainForm.height, 500); end;
+  mmpDelay(250);
   case vAnimateClose of TRUE: mmpAnimateShrink(GS.mainForm.HANDLE, FMinWidth, FMinHeight,         500); end;
 end;
 
@@ -303,8 +304,6 @@ end;
 
 function TVM.animateTF: boolean;
 begin
-//  result := FALSE;
-//  case GS.mediaType = mtImage of TRUE: EXIT; end;
   case CF[CONF_ANIMATE_MAIN] = EMPTY of  TRUE: result := NOT FManualResizing and NOT FSkipAnimation;
                                         FALSE: result := CF.asBoolean[CONF_ANIMATE_MAIN] and NOT FManualResizing and NOT FSkipAnimation; end;
 end;
@@ -1159,6 +1158,7 @@ end;
 
 function TVM.resizeWindow: TVoid;
 begin
+  case FShuttingDown   of TRUE: EXIT; end;
   case FShowingBrowser of TRUE: EXIT; end;
   case mmp.cmd(evPLReqHasItems).tf of FALSE: EXIT; end; // no MP dimensions with which to calculate a resize
 
