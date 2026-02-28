@@ -128,7 +128,7 @@ type
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    loadConfig: TVoid;
     function    onNotify(const aNotice: INotice): INotice;
-    function    updateExportButton(aEnabled: boolean): TVoid;
+    function    updateExportButton(const bCheckCtrlShift: boolean = TRUE): TVoid;
     function    updateStreamsCaption: TVoid;
   protected
     function    applySegments(const aSegments: TObjectList<TSegment>; const aMax: integer; const bResetHeight: boolean = FALSE): TVoid;
@@ -175,7 +175,7 @@ end;
 function mmpRefreshStreamInfo(const aMediaFilePath: string): TVoid;
 begin
   gStreamListForm.getStreamInfo(aMediaFilePath);
-//  gStreamListForm.updateExportButton(MI.selectedCount > 0);
+  gStreamListForm.updateExportButton(FALSE);  //  gStreamListForm.updateExportButton(MI.selectedCount > 0);
 end;
 
 function mmpShowStreamList(const aPt: TPoint; const aHeight: integer; const aRedrawEvent: TNotifyEvent; const aExportEvent: TNotifyEvent; const aToggleKeyframesEvent: TNotifyEvent; const bCreateNew: boolean = TRUE): TVoid;
@@ -277,21 +277,17 @@ end;
 
 procedure TStreamListForm.btnExportMouseEnter(Sender: TObject);
 begin
-  case mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
-                                                          FALSE: btnExport.caption := 'Join'; end;
-                          FALSE: btnExport.caption := 'Export'; end;
+  updateExportButton;
 end;
 
 procedure TStreamListForm.btnExportMouseLeave(Sender: TObject);
 begin
-  btnExport.caption := 'Export';
+  updateExportButton;
 end;
 
 procedure TStreamListForm.btnExportMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  case mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
-                                                          FALSE: btnExport.caption := 'Join'; end;
-                          FALSE: btnExport.caption := 'Export'; end;
+  updateExportButton;
 end;
 
 procedure TStreamListForm.chbChaptersAudioWriteClick(Sender: TObject);
@@ -407,7 +403,7 @@ begin
   MI.mediaStreams[clStreams.itemIndex].selected := NOT MI.mediaStreams[clStreams.itemIndex].selected;
   clStreams.itemIndex := -1; // otherwise, TControlList won't let you click the same item twice in succession!
   updateStreamsCaption;
-  updateExportButton(TRUE); // updateExportButton(MI.selectedCount > 0);
+  updateExportButton; // updateExportButton(MI.selectedCount > 0);
   focusTimeline;
 end;
 
@@ -580,9 +576,13 @@ begin
   clSegments.itemIndex := aIx;
 end;
 
-function TStreamListForm.updateExportButton(aEnabled: boolean): TVoid;
+function TStreamListForm.updateExportButton(const bCheckCtrlShift: boolean = TRUE): TVoid;
 begin
-  btnExport.enabled := aEnabled;
+  case bCheckCtrlShift and mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
+                                                                              FALSE: btnExport.caption := 'Join'; end;
+
+                                              FALSE: case MI.selectedCount > 0 of  TRUE: btnExport.caption := 'Export';
+                                                                                  FALSE: btnExport.caption := 'Copy'; end;end;
 end;
 
 function TStreamListForm.updateStreamsCaption: TVoid;
