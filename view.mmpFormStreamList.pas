@@ -125,6 +125,7 @@ type
     FOnRedraw:          TNotifyEvent;
     FOnToggleKeyframes: TNotifyEvent;
     FSubscriber:        ISubscriber;
+    FTotalDuration:     integer;
     function    getStreamInfo(const aMediaFilePath: string): integer;
     function    loadConfig: TVoid;
     function    onNotify(const aNotice: INotice): INotice;
@@ -233,6 +234,8 @@ begin
   clSegments.itemCount := 0;
   clSegments.itemCount := aSegments.count;
 
+  FTotalDuration := aMax;
+
   updateTotals(aSegments, aMax);
 
   FMediaType := GS.mediaType;
@@ -244,6 +247,8 @@ begin
                                                                   SELF.height := SELF.height + clSegments.itemHeight;
                                                                   winApi.windows.setWindowPos(HANDLE, HWND_TOP, SELF.left, SELF.top - clSegments.itemHeight, 0, 0, SWP_NOSIZE); // Y - itemHeight
                                                                 end;
+
+  updateExportButton(FALSE);
 
   focusTimeline;
 end;
@@ -581,8 +586,10 @@ begin
   case bCheckCtrlShift and mmpCtrlKeyDown of   TRUE: case mmpShiftKeyDown of   TRUE: btnExport.caption := 'Copy';
                                                                               FALSE: btnExport.caption := 'Join'; end;
 
-                                              FALSE: case MI.selectedCount > 0 of  TRUE: btnExport.caption := 'Export';
-                                                                                  FALSE: btnExport.caption := 'Copy'; end;end;
+                                              FALSE: case (MI.selectedCount = 0)
+                                                           and (TSegment.includedCount = 1)
+                                                           and (TSegment.segments[0].duration = FTotalDuration) of   TRUE: btnExport.caption := 'Copy';
+                                                                                                                    FALSE: btnExport.caption := 'Export'; end;end;
 end;
 
 function TStreamListForm.updateStreamsCaption: TVoid;
