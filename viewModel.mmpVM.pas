@@ -125,7 +125,7 @@ type
     FResizingWindow:        boolean;
     FShowingBrowser:        boolean;
     FShuttingDown:          boolean;
-    FSkipAnimation:         boolean;
+    FSkipAnimation:         boolean; // strictly speaking, this is FSkipTheAnimationDuringTheNextResizeWindowOnly
     FSlideshowTimer:        TTimer;
     FSubscriber:            ISubscriber;
     FSubscriberTT:          ISubscriber;
@@ -720,6 +720,7 @@ begin
     evVMRenameCurrentItem:  sendOpInfo(renameCurrentItem(rtUser));
     evVMReloadPlaylist:     reloadPlaylist;
     evVMResizeWindow:       resizeWindow;
+    evVMSkipAnimation:      FSkipAnimation := TRUE;
     evVMSkipSeconds:        sendOpInfo(skipSeconds(aNotice.integer));
     evVMShowThumbs:         showThumbnails(htThumbsHost);
     evVMShutTimeline:       shutTimeline;

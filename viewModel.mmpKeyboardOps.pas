@@ -122,8 +122,8 @@ begin
     koRenameCleanFile:    mmp.cmd(evVMRenameCleanFile);
     koRenameFile:         mmp.cmd(evVMRenameCurrentItem);
     koResetAll:           MP.notify(newNotice(evMPResetAll));
-    koRotateL:            MP.notify(newNotice(evMPRotateLeft));
-    koRotateR:            MP.notify(newNotice(evMPRotateRight));
+    koRotateL:            begin case CF.asBoolean[CONF_ANIMATE_MAIN_ROTATIONS] of FALSE: mmp.cmd(evVMSkipAnimation); end; MP.notify(newNotice(evMPRotateLeft));  end;
+    koRotateR:            begin case CF.asBoolean[CONF_ANIMATE_MAIN_ROTATIONS] of FALSE: mmp.cmd(evVMSkipAnimation); end; MP.notify(newNotice(evMPRotateRight)); end;
     koRotateReset:        MP.notify(newNotice(evMPRotateReset));
     koRunF10:             mmpOpenExternalApp(GS.mainForm.Handle, F10_APP, mmp.cmd(evPLReqCurrentItem).text);
     koRunF11:             mmpOpenExternalApp(GS.mainForm.Handle, F11_APP, mmp.cmd(evPLReqCurrentItem).text);

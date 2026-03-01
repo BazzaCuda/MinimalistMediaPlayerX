@@ -113,6 +113,7 @@ const
   CONF_ANIMATE_MAIN           = 'animateMain';
   CONF_ANIMATE_MAIN_CLOSE     = 'animateMainClose';
   CONF_ANIMATE_MAIN_MS        = 'animateMainMs';
+  CONF_ANIMATE_MAIN_ROTATIONS = 'animateMainRotations';
   CONF_ANIMATE_BROWSER        = 'animateBrowser';
   CONF_ANIMATE_BROWSER_CLOSE  = 'animateBrowserClose';
   CONF_ANIMATE_BROWSER_MS     = 'animateBrowserMs';

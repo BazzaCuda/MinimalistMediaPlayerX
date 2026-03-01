@@ -89,7 +89,7 @@ type
     evVMMPPlayCurrent, evVMPlayNextFolder, evVMPlayPrevFolder, evVMReloadPlaylist, evVMResizeWindow, evVMToggleFullscreen, evVMToggleHelp, evVMTogglePlaylist, evVMToggleEditMode,
     evVMToggleFiltering,
     evVMMPOnOpen, evVMMPPlayFirst, evVMMPPlayLast, evVMMPPlayNext, evVMMPPlayPrev, evVMShutTimeline, evVMPlaySomething, evVMRenameCurrentItem, evVMReInitTimeline, evVMConfig,
-    evVMMPPlayEdited, evVMRenameCleanFile, evVMToggleSkipExcluded, evVMToggleShuffle, evVMHelpFull, evVMSkipSeconds, evVMPreviewSheet,
+    evVMMPPlayEdited, evVMRenameCleanFile, evVMToggleSkipExcluded, evVMToggleShuffle, evVMHelpFull, evVMSkipSeconds, evVMPreviewSheet, evVMSkipAnimation,
 
     evConfigReload,
 

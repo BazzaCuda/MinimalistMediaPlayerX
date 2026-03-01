@@ -30,7 +30,7 @@ object ConfigForm: TConfigForm
     Top = 0
     Width = 584
     Height = 361
-    ActivePage = tsGeneral
+    ActivePage = tsAnimations
     Align = alClient
     TabOrder = 0
     OnChanging = pageControlChanging
@@ -3397,7 +3397,7 @@ object ConfigForm: TConfigForm
       end
       object Label90: TLabel
         Left = 162
-        Top = 116
+        Top = 107
         Width = 185
         Height = 15
         Caption = 'Animation duration (milliseconds)'
@@ -3410,7 +3410,7 @@ object ConfigForm: TConfigForm
       end
       object Label91: TLabel
         Left = 162
-        Top = 259
+        Top = 249
         Width = 185
         Height = 15
         Caption = 'Animation duration (milliseconds)'
@@ -3435,28 +3435,28 @@ object ConfigForm: TConfigForm
           'e animations do not delay the start of audio/video playback'
       end
       object Label93: TLabel
-        Left = 129
-        Top = 181
-        Width = 318
-        Height = 45
+        Left = 73
+        Top = 192
+        Width = 432
+        Height = 30
         Alignment = taCenter
         Caption = 
-          'In the Image && Thumbnail Browser'#13#10'after the animated launch of ' +
-          'the initial image'#13#10'the resizing of images and the window will be' +
-          ' smoothed out'
+          'In the Image && Thumbnail Browser, after the animated launch of ' +
+          'the initial image,'#13#10'the resizing of images and the window will b' +
+          'e smoothed out'
       end
       object GroupBox4: TGroupBox
-        Left = 82
-        Top = 171
-        Width = 405
-        Height = 139
+        Left = 60
+        Top = 179
+        Width = 455
+        Height = 114
         TabOrder = 6
       end
       object GroupBox3: TGroupBox
-        Left = 82
-        Top = 79
+        Left = 90
+        Top = 83
         Width = 405
-        Height = 89
+        Height = 90
         TabOrder = 5
       end
       object chbAnimateMain: TCheckBox
@@ -3477,7 +3477,7 @@ object ConfigForm: TConfigForm
       end
       object chbAnimateBrowser: TCheckBox
         Left = 159
-        Top = 231
+        Top = 227
         Width = 261
         Height = 17
         Alignment = taLeftJustify
@@ -3493,7 +3493,7 @@ object ConfigForm: TConfigForm
       end
       object edtAnimateMainMs: TEdit
         Left = 379
-        Top = 111
+        Top = 102
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3504,7 +3504,7 @@ object ConfigForm: TConfigForm
       end
       object edtAnimateBrowserMs: TEdit
         Left = 379
-        Top = 256
+        Top = 246
         Width = 41
         Height = 23
         Alignment = taRightJustify
@@ -3515,7 +3515,7 @@ object ConfigForm: TConfigForm
       end
       object btnAnimateDefaults: TButton
         Left = 498
-        Top = 285
+        Top = 296
         Width = 75
         Height = 25
         Caption = 'Defaults'
@@ -3524,7 +3524,7 @@ object ConfigForm: TConfigForm
       end
       object chbAnimateMainClose: TCheckBox
         Left = 159
-        Top = 146
+        Top = 127
         Width = 261
         Height = 17
         Alignment = taLeftJustify
@@ -3540,7 +3540,7 @@ object ConfigForm: TConfigForm
       end
       object chbAnimateBrowserClose: TCheckBox
         Left = 159
-        Top = 287
+        Top = 271
         Width = 261
         Height = 17
         Alignment = taLeftJustify
@@ -3553,6 +3553,22 @@ object ConfigForm: TConfigForm
         ParentFont = False
         TabOrder = 8
         OnClick = chbAnimateBrowserCloseClick
+      end
+      object chbAnimateMainRotations: TCheckBox
+        Left = 159
+        Top = 150
+        Width = 261
+        Height = 17
+        Alignment = taLeftJustify
+        Caption = 'Animate Rotations'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 9
+        OnClick = chbAnimateMainRotationsClick
       end
     end
     object tsSlideshowIntervalMs: TTabSheet

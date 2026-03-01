@@ -250,6 +250,7 @@ type
     GroupBox4: TGroupBox;
     chbAnimateMainClose: TCheckBox;
     chbAnimateBrowserClose: TCheckBox;
+    chbAnimateMainRotations: TCheckBox;
     procedure chbAutoUpdateClick(Sender: TObject);
     procedure chbStartInEditorClick(Sender: TObject);
     procedure chbOpenImageClick(Sender: TObject);
@@ -309,6 +310,7 @@ type
     procedure chbAnimateMainClick(Sender: TObject);
     procedure chbAnimateMainCloseClick(Sender: TObject);
     procedure chbAnimateBrowserCloseClick(Sender: TObject);
+    procedure chbAnimateMainRotationsClick(Sender: TObject);
   strict private
   private
     procedure SetActiveTabByIx(const aTabIx: Integer);
@@ -420,6 +422,8 @@ begin
   chbAnimateBrowserClose.checked  := TRUE;
   chbAnimateBrowserClose.OnClick(NIL);
   edtAnimateBrowserMs.text        := intToStr(DEFAULT_ANIMATE_BROWSER_MS);
+  chbAnimateMainRotations.checked := TRUE;
+  chbAnimateMainRotationsClick(NIL);
 end;
 
 procedure TConfigForm.btnAppF10Click(Sender: TObject);
@@ -507,6 +511,11 @@ end;
 procedure TConfigForm.chbAnimateMainCloseClick(Sender: TObject);
 begin
   CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE] := chbAnimateMainClose.checked;
+end;
+
+procedure TConfigForm.chbAnimateMainRotationsClick(Sender: TObject);
+begin
+  CF.asBoolean[CONF_ANIMATE_MAIN_ROTATIONS] := chbAnimateMainRotations.checked;
 end;
 
 procedure TConfigForm.chbAudioClick(Sender: TObject);
@@ -790,6 +799,7 @@ begin
   chbAnimateMain.checked          := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN])                 <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN],          TRUE);
   chbAnimateMainClose.checked     := mmp.use<boolean>(trim(CF[CONF_ANIMATE_MAIN_CLOSE])           <> EMPTY, CF.asBoolean[CONF_ANIMATE_MAIN_CLOSE],    TRUE);
   edtAnimateMainMs.text           := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_MAIN_MS])     <> EMPTY, CF.asInteger[CONF_ANIMATE_MAIN_MS],       DEFAULT_ANIMATE_MAIN_MS));
+  chbAnimateMainRotations.checked := CF.asBoolean[CONF_ANIMATE_MAIN_ROTATIONS];
   chbAnimateBrowser.checked       := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER])              <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER],       TRUE);
   chbAnimateBrowserClose.checked  := mmp.use<boolean>(trim(CF[CONF_ANIMATE_BROWSER_CLOSE])        <> EMPTY, CF.asBoolean[CONF_ANIMATE_BROWSER_CLOSE], TRUE);
   edtAnimateBrowserMs.text        := intToStr(mmp.use<integer>(trim(CF[CONF_ANIMATE_BROWSER_MS])  <> EMPTY, CF.asInteger[CONF_ANIMATE_BROWSER_MS],    DEFAULT_ANIMATE_BROWSER_MS));
