@@ -353,36 +353,45 @@ end;
 
 destructor TVM.Destroy;
 begin
-  TT.unsubscribe(FSubscriberTT);
-  FSubscriberTT := NIL;
-  appEvents.unsubscribe(FSubscriber);
+//  TT.unsubscribe(FSubscriberTT);
+//  FSubscriberTT := NIL;
+//  appEvents.unsubscribe(FSubscriber);
 //  FSubscriber := NIL;
   case FSlideshowTimer = NIL of FALSE: FSlideshowTimer.free; end;
   inherited;
 end;
 
-
 function TVM.doAppClose: TVoid;
 begin
+  case GS.showingHelpFull or GS.showingConfig of TRUE: EXIT; end;
+
   FShuttingDown := TRUE;
+
+  TT.unsubscribeAll;
+  FSubscriberTT := NIL;
+  appEvents.unsubscribe(FSubscriber);
+  FSubscriber   := NIL;
+
 //==========
   var vShutdown: TAFuncNoParam<TVoid> := function: TVoid  begin
-                                                          mmp.cmd(evMPDetachStates);
-                                                          mmp.cmd(evGSSuspended, TRUE);
-                                                          mmp.cmd(evMPStop);
+                                                            mmp.cmd(evMPDetachStates);
+                                                            mmp.cmd(evGSSuspended, TRUE);
+                                                            mmp.cmd(evMPStop);
 
-                                                          mmp.cmd(evPLFormShutForm);
-                                                          mmp.cmd(evHelpShutHelp);
-                                                          mmp.cmd(evVMShutTimeline);
-                                                          mmpCloseHelpFull;           // one of these is not like the others!
+                                                            mmp.cmd(evPLFormShutForm);
+                                                            mmp.cmd(evHelpShutHelp);
+                                                            mmp.cmd(evVMShutTimeline);
+                                                            mmpCloseHelpFull;           // one of these is not like the others!
 
-                                                          postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0); // inspiration is a wonderful thing! :D
-                                                        end;
+                                                            // postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0); // inspiration is a wonderful thing! :D
+                                                          end;
 
-  TAction<TVoid>.pick(NOT GS.showingHelpFull and NOT GS.showingConfig, vShutdown).perform;
+  TAction<TVoid>.pick(TRUE, vShutdown).perform;
+//==========
 
   animateCloseApp;
-//==========
+
+  postMessage(GS.mainForm.handle, WIN_TERMINATE, 0, 0); // inspiration is a wonderful thing! :D
 
 //    terminateProcess(getCurrentProcess(), 0); // desperate times... :D
 end;

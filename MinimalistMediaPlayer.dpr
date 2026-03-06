@@ -148,10 +148,12 @@ uses
 
 procedure setupRunMode;
 begin
+  {$if BazDebugWindow} debugClear; {$endif}
+
   {$ifndef useMadExcept}
   reportMemoryLeaksOnShutdown := mmpEnvironmentVariable; // done already in mmpStackTrace initialization section - unless that unit has been commented out
+  {$if BazDebugWindow} debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
   {$endif}
-  {$if BazDebugWindow} debugClear; debugBoolean('reportMemoryLeaksOnShutdown', reportMemoryLeaksOnShutdown); {$endif}
 
   {$ifdef useMadExcept}
 //  madExcept.SetLeakReportFile(extractFilePath(paramStr(0)) + 'madExcept.log'); // this suppresses the dialog
