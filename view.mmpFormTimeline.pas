@@ -121,6 +121,7 @@ type
     function    initTimeline(const aMediaFilePath: string; const aMax: integer): boolean;
     function    notify(const aNotice: INotice): INotice;
     function    redo:           TVoid;
+    function    skipToPosition(const aPosition: integer): TVoid;
     function    undo:           TVoid;
     function    validKey(key: WORD; aShift: TShiftState): boolean;
 
@@ -843,6 +844,11 @@ begin
   case result < 0 of TRUE: result := 0; end;
 
   case result = aPosition of FALSE: mmp.cmd(evMPSeek, result); end;
+end;
+
+function TTimeline.skipToPosition(const aPosition: integer): TVoid;
+begin
+  mmp.cmd(evMPSeek, aPosition);
 end;
 
 procedure TTimeline.toggleKeyFrames(Sender: TObject);

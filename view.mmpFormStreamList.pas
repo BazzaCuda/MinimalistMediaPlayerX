@@ -356,6 +356,7 @@ end;
 procedure TStreamListForm.clSegmentsItemClick(Sender: TObject);
 begin
   TL.segments[clSegments.itemIndex].setAsSelSeg;
+  TL.skipToPosition(TL.segments[clSegments.itemIndex].startSS);
   focusTimeline;
 end;
 
