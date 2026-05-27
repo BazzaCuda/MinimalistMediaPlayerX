@@ -43,6 +43,7 @@ type
     applicationEvents: TApplicationEvents;
     tmrTimer: TTimer;
     procedure applicationEventsHint(Sender: TObject);
+    procedure applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -239,6 +240,14 @@ begin
                                            FALSE: mmpSetPanelText(FStatusBar, pnTick, application.hint); end;end;
 end;
 
+procedure TThumbsForm.applicationEventsMessage(var msg: tagMSG; var handled: Boolean);
+begin
+  case (msg.message = WM_KEYDOWN) and (msg.wParam = VK_TAB) of   TRUE:  begin
+                                                                          var vKey:WORD := msg.wParam;
+                                                                          FormKeyDown(SELF, vKey, mmpShiftState);
+                                                                          handled := TRUE; end;end;
+end;
+
 function TThumbsForm.autoCenter: TVoid;
 begin
   case GS.autoCenter of TRUE: mmpCenterWindow(SELF.handle, point(SELF.width, SELF.height)); end;
@@ -365,6 +374,8 @@ begin
   FSlideshowDirection     := sdForwards;
   mpvSetPropertyString(mpv, MPV_IMAGE_DISPLAY_DURATION, 'inf'); // get the user's duration setting, if any, then override it. MMP controls how long an image is displayed for, not MPV
   FSubscriber             := appEvents.subscribe(newSubscriber(onNotify));
+
+  //keyPreview := TRUE;
 end;
 
 procedure TThumbsForm.FormResize(Sender: TObject);
@@ -1046,6 +1057,8 @@ begin
   case (key = VK_ESCAPE) and GS.showingHelpFull of TRUE: EXIT; end;
   case whichHost of htMPVHost: mmpResetPanelHelp(FStatusBar); end; // don't obliterate thumbnail page numbers
 
+  // case key = VK_TAB of TRUE: debug('VK_TAB DN'); end;
+
   var vKeyOp: TKeyOp := processKeyStroke(mpv, key, shift, kdDn);
 
 // COMMENTED OUT - adjustments are applied to every subsequent image, so not sure why this is necessary anymore
@@ -1059,6 +1072,7 @@ end;
 
 procedure TThumbsForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  // case key = VK_TAB of TRUE: debug('VK_TAB UP'); end;
   case (key = VK_ESCAPE) and GS.showingHelpFull of TRUE: EXIT; end;
   case FKeyHandled of TRUE: EXIT; end; //  Keys that can be pressed singly or held down for repeat action: don't process the KeyUp as well as the KeyDown
   processKeyOp(processKeyStroke(mpv, key, shift, kdUp), shift, key);

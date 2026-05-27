@@ -240,7 +240,7 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
 
 begin
   result := getKeyOp;
-  // {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('getKeyOp', result); {$endif}
+  // {$if BazDebugWindow} TDebug.debugEnum<TKeyOp>('KBmain.getKeyOp', result); {$endif}
   // {$if BazDebugWindow} debugBoolean('keyboardMain: evGSIgnoreEscape', GS.ignoreEscape); {$endif}
 end;
 

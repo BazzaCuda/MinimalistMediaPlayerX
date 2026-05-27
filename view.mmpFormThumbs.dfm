@@ -3107,6 +3107,7 @@ object ThumbsForm: TThumbsForm
   end
   object applicationEvents: TApplicationEvents
     OnHint = applicationEventsHint
+    OnMessage = applicationEventsMessage
     Left = 80
     Top = 40
   end

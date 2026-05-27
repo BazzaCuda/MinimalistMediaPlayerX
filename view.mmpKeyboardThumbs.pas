@@ -53,7 +53,7 @@ const
   N = 'N'; O = 'O'; P = 'P'; Q = 'Q'; R = 'R'; S = 'S'; T = 'T'; U = 'U'; V = 'V'; W = 'W'; X = 'X'; Y = 'Y'; Z = 'Z';
   _0 = '0'; _1 = '1'; _2 = '2'; _3 = '3'; _4 = '4'; _5 = '5'; _6 = '6'; _7 = '7'; _8 = '8'; _9 = '9';
   _EQUALS = 187; SLASH = 191; BACKSLASH = 220; OPEN_BRACKET = 219; CLOSE_BRACKET = 221; HYPHEN = 189; HASH = 222; BACKSPACE = 8;
-  OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186;
+  OPEN_BRACE = 219; CLOSE_BRACE = 221; SINGLE_QUOTE = 192; SEMICOLON = 186; TICK = 223;
 
 
 var
@@ -89,6 +89,11 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
   function keyIs(const aKeyCode: WORD): boolean; overload;
   begin
     result := aKey = transform(aKeyCode);
+
+    {$if BazDebugWindow}
+    // case transform(aKey) = VK_TAB of TRUE: debugInteger('keyIs', transform(aKey)); end;
+    {$endif}
+
   end;
 
   function keyIs(const aChar: char): boolean; overload;
@@ -185,6 +190,8 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
     case keyUp and keyIs(VK_RETURN)   and NOT ctrl and NOT GS.showingPlaylist and NOT GS.userInput    of TRUE: result := koPlayNext; end;
     case keyDn and keyIs(VK_RIGHT)    and     ctrl                                                    of TRUE: result := koPanRight; end;
     case keyDn and keyIs(VK_RIGHT)    and NOT ctrl                                                    of TRUE: result := koPlayNext; end;
+    case keyDn and keyIs(VK_TAB)      and     ctrl                                                    of TRUE: result := koPlayPrev; end;
+    case keyDn and keyIs(VK_TAB)      and NOT ctrl                                                    of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(VK_SPACE)    and     ctrl                                                    of TRUE: result := koReverseSlideshow; end;
     case keyUp and keyIs(VK_SPACE)    and NOT ctrl                                                    of TRUE: result := koPausePlay; end;
     case keyDn and keyIs(VK_SUBTRACT) and     ctrl                                                    of TRUE: result := koWindowNarrower; end;
@@ -202,7 +209,6 @@ function processKeyStroke(const mpv: IMPVBasePlayer; const aKey: word; const aSh
 
 // spare keys
 //    case keyUp and keyIs(R) and ctrl                            of TRUE: result := koNone; end;
-//    case keyDn and keyIs(VK_TAB)                                of TRUE: result := koNone; end;
 //    case keyUp and keyIs(P) and ctrl                            of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_5)                                    of TRUE: result := koNone; end;
 //    case keyUp and keyIs(_6)                                    of TRUE: result := koNone; end;
@@ -216,8 +222,6 @@ begin
   {$if BazDebugWindow}
   //  TDebug.debugEnum<TKeyOp>('getKeyOp', result);
   {$endif}
-
-
 
   {$if BazDebugWindow}
 //  case keyIs(VK_ESCAPE) of TRUE:  begin
