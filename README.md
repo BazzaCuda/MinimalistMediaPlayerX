@@ -476,6 +476,8 @@ _NB required binaries are distributed with each release of `MMP` - this section 
 
 12. Uses the excellent madExcept (https://www.madshi.net) for reporting  and fixing exceptions and memory leaks
 
+13. JXL Thumbnailer: https://github.com/saschanaz/jxl-winthumb
+
 Removed Dependencies
 ----------
 No longer uses FastMM5 (https://github.com/pleriche/FastMM5). Previously, for full debug mode, you had to: 1) create an MMP_CHECK=MMP_CHECK environment variable and, 2) include FastMM_FullDebugMode64.dll in the executable's folder 
