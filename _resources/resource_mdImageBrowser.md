@@ -82,6 +82,9 @@ You can return to the **Image & Thumbnail Browser** or launch it at any time<br 
 |**[&rarr;]**&nbsp;right&nbsp;arrow| show NEXT image or thumbnail page |
 |**[&larr;]**&nbsp;left&nbsp;arrow | show PREVIOUS image or thumbnail page |
 | &nbsp; ||
+|**[TAB]** | show NEXT image or thumbnail page |
+|Ctrl-**[TAB] | show PREVIOUS image or thumbnail page |
+| &nbsp; ||
 |**[W]** | [W]atch, ie.show, NEXT image or thumbnail page |
 |**[Q]** | show PREVIOUS image or thumbnail page (Q is previous to W on a QWERTY keyboard) |
 | &nbsp; ||

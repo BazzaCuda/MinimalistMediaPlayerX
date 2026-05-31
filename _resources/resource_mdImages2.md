@@ -11,6 +11,9 @@ Last\*:  **Z** or **END**<br />
 &uarr; **Up arrow**, previous folder<br />
 <br />
 **Alternatives to the arrow keys**<br />
+**TAB**, next image or thumb page<br />
+Ctrl-**TAB** previous image or thumb page<br />
+<br />
 Next\*:<br />
   **W** [W]atch next<br />
   Numpad **ENTER**<br />
