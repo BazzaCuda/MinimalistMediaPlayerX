@@ -160,6 +160,7 @@ const
   CONF_TIME_CAPTION           = 'timeCaption';
   CONF_VIDEO_DELETE           = 'videoDelete';
   CONF_VOLUME                 = 'volume';
+  CONF_WINDOW_HEIGHT          = 'windowHeight';
 
   CONF_CAT_F1                 = 'catF1';
   CONF_CAT_F2                 = 'catF2';

@@ -508,6 +508,10 @@ begin
   mmp.cmd(evGSAutoCenter, TRUE);
   mmp.cmd(evGSMaxSize, TRUE);
   mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
+
+  var vWindowHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
+  mmp.cmd(evGSMaxSize, vWindowHeight = -1);
+  case vWindowHeight = -1 of FALSE: aForm.height := vWindowHeight; end;
 end;
 
 function TVM.keepDelete: TVoid;
@@ -809,6 +813,7 @@ begin
   var vPt     := mmpCalcWindowSize(vHeight, GS.maxSize);
   mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
+  CF.asInteger[CONF_WINDOW_HEIGHT] := vPt.Y;
   moveHelp;
   movePlaylist;
   moveTimeline;
@@ -1212,6 +1217,8 @@ begin
   FSkipAnimation  := FALSE;
 
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
+
+  CF.asInteger[CONF_WINDOW_HEIGHT] := GS.mainForm.height;
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;
