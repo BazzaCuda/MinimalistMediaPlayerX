@@ -505,24 +505,10 @@ begin
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
 
-//  mmp.cmd(evGSAutoCenter, TRUE);
-//  mmp.cmd(evGSMaxSize, TRUE);
   mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
 
-//  var vWindowHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
   mmp.cmd(evGSMaxSize, CF.asInteger[CONF_WINDOW_HEIGHT] = -1);
   mmp.cmd(evGSAutoCenter, GS.maxSize);
-//  case GS.maxSize of FALSE: begin
-//                                      // aForm.height := vWindowHeight;
-//                                      mmp.cmd(evGSAutoCenter, FALSE); // left and top will be set in .dpr
-////                                      var vWindowLeft := CF.asInteger[CONF_WINDOW_LEFT];
-////                                      var vWindowTop  := CF.asInteger[CONF_WINDOW_TOP];
-////                                      aForm.left      := vWindowLeft;
-////                                      aForm.Top       := vWindowTop;
-//                                    end;end;
-
-//  debugInteger('aForm.left', aForm.left);
-//  debugInteger('aForm.top', aForm.top);
 end;
 
 function TVM.keepDelete: TVoid;
