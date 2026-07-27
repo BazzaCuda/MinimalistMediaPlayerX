@@ -239,7 +239,7 @@ begin
 
   initUI(MMPUI);
 
-  mmp.cmd(evVMCenterWindow); // EXPERIMENTAL - override the poDesigned for the blank window
+  case GS.maxSize of TRUE: mmp.cmd(evVMCenterWindow); end; // EXPERIMENTAL - override the poDesigned for the blank window
 
   mmp.cmd(PS.noFile, procedure begin MMPUI.viewModel.reallyShowUI; end);
 
@@ -266,6 +266,10 @@ begin
   mmp.cmd({(lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and} (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
   // the Main Media Window will eventually be shown in TVM.resizeWindow in response to an evVMResizeWindow from model.mmpMediaPlayer.onTickTimer
+
+  case GS.maxSize of FALSE: begin
+                              GS.mainForm.left := CF.asInteger[CONF_WINDOW_LEFT];
+                              GS.mainForm.top  := CF.asInteger[CONF_WINDOW_TOP]; end;end;
 
   app.Run; // now it's ok to raise test exceptions
   {$endif}

@@ -505,13 +505,24 @@ begin
                                 FMP.initMediaPlayer(aForm.handle);
                               end);
 
-  mmp.cmd(evGSAutoCenter, TRUE);
-  mmp.cmd(evGSMaxSize, TRUE);
+//  mmp.cmd(evGSAutoCenter, TRUE);
+//  mmp.cmd(evGSMaxSize, TRUE);
   mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
 
-  var vWindowHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
-  mmp.cmd(evGSMaxSize, vWindowHeight = -1);
-  case vWindowHeight = -1 of FALSE: aForm.height := vWindowHeight; end;
+//  var vWindowHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
+  mmp.cmd(evGSMaxSize, CF.asInteger[CONF_WINDOW_HEIGHT] = -1);
+  mmp.cmd(evGSAutoCenter, GS.maxSize);
+//  case GS.maxSize of FALSE: begin
+//                                      // aForm.height := vWindowHeight;
+//                                      mmp.cmd(evGSAutoCenter, FALSE); // left and top will be set in .dpr
+////                                      var vWindowLeft := CF.asInteger[CONF_WINDOW_LEFT];
+////                                      var vWindowTop  := CF.asInteger[CONF_WINDOW_TOP];
+////                                      aForm.left      := vWindowLeft;
+////                                      aForm.Top       := vWindowTop;
+//                                    end;end;
+
+//  debugInteger('aForm.left', aForm.left);
+//  debugInteger('aForm.top', aForm.top);
 end;
 
 function TVM.keepDelete: TVoid;
@@ -624,7 +635,11 @@ begin
   case ptInRect(FVideoPanel.clientRect, FVideoPanel.screenToClient(point(X, Y))) of FALSE: EXIT; end;
   case button = mbLeft  of TRUE: mouseDown := FALSE; end;
   case button = mbRight of TRUE: onWINPausePlay(msg); end;
+
   case FDragged         of TRUE: mmp.cmd(evVMMoveTimeline); end;
+  case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_HEIGHT] := GS.mainForm.height; end;
+  case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_LEFT]   := GS.mainForm.left; end;
+  case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_TOP]    := GS.mainForm.top; end;
 //  case button = mbRight of TRUE: FMenu := newMMPMenu.popup(X, Y); end;
 end;
 
@@ -813,7 +828,7 @@ begin
   var vPt     := mmpCalcWindowSize(vHeight, GS.maxSize);
   mmp.cmd(GS.autoCenter, procedure begin mmpCenterWindow(GS.mainForm.handle, vPt); end);
   mmpSetWindowSize(GS.mainForm.handle, vPt);
-  CF.asInteger[CONF_WINDOW_HEIGHT] := vPt.Y;
+  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_HEIGHT] := vPt.Y; end;
   moveHelp;
   movePlaylist;
   moveTimeline;
@@ -1190,7 +1205,15 @@ begin
 
   // case GS.mediaType = mtAudio of TRUE: debugBoolean('MIHasCoverArt', MIhasCoverArt); end;
 
-  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, FMinWidth, mmpScreenHeight, 0, 0, TRUE, 500, FShuttingDown); end;
+  var vTargetWidth  := FMinWidth;
+  var vTargetHeight := mmpScreenHeight;
+  case GS.maxSize of FALSE: begin
+                              vTargetHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
+                              vTargetWidth  := mmpCalcWindowSize(vTargetHeight, FALSE).X;
+                              end;end;
+
+//  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, TRUE, 500, FShuttingDown); end;
+  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
@@ -1218,7 +1241,9 @@ begin
 
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 
-  CF.asInteger[CONF_WINDOW_HEIGHT] := GS.mainForm.height;
+  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height; end;
+  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_LEFT]    := GS.mainForm.left; end;
+  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_TOP]     := GS.mainForm.top; end;
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;

@@ -25,7 +25,8 @@ uses
   system.classes, system.SyncObjs,
   vcl.forms,
   mmpNotify.notices, mmpNotify.notifier, mmpNotify.subscriber,
-  mmpAction, mmpConsts, mmpGlobalState;
+  mmpAction, mmpConsts, mmpGlobalState,
+  model.mmpConfigFile;
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
@@ -485,6 +486,9 @@ begin
   case alreadyCentred of TRUE: EXIT; end;
 
   case (vHPos >= 0) and (vVPos >= 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos), vR.width, vR.height, aFlags); end;
+
+  CF.asInteger[CONF_WINDOW_LEFT]  := vHPos;
+  CF.asInteger[CONF_WINDOW_TOP]   := vVPos;
 
   mmp.cmd(evGSAutoCenter, TRUE);
 end;
