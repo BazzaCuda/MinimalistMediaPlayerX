@@ -114,6 +114,9 @@ begin
 
   case (vInitialWidth = aTargetWidth) and (vInitialHeight = aTargetHeight) {and (NOT aCenter)} of TRUE: EXIT; end;
 
+//  var vFixedTargetCenterX: integer := vInitialLeft + (aTargetWidth div 2);
+//  var vFixedTargetCenterY: integer := vInitialTop  + (aTargetHeight div 2);
+
   var vProgress: double := 0;
 
   while vProgress < 1.0 do
@@ -152,6 +155,11 @@ begin
           // Prevent shifting into negative space/off-monitor
           vCurrentL := max(vWorkArea.left, vCurrentL);
           vCurrentT := max(vWorkArea.top, vCurrentT);
+        end;
+      FALSE:
+        begin
+//          vCurrentL := vFixedTargetCenterX - (vCurrentW div 2);
+//          vCurrentT := vFixedTargetCenterY - (vCurrentH div 2);
         end;
     end;
 

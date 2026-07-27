@@ -40,7 +40,7 @@ function mpvXY          (const mpv: IMPVBasePlayer): TPoint;
 
 function mpvGetPropertyString (const mpv: IMPVBasePlayer; const aProperty: string; var  aString: string): boolean;
 function mpvSetPropertyString (const mpv: IMPVBasePlayer; const aProperty: string; const aValue: string): boolean;
-function mpvgetMute           (const mpv: IMPVBasePlayer; var aBoolean: boolean): boolean;
+function mpvGetMute           (const mpv: IMPVBasePlayer; var aBoolean: boolean): boolean;
 function mpvSetMute           (const mpv: IMPVBasePlayer; const value: boolean): boolean;
 function mpvSetKeepOpen       (const mpv: IMPVBasePlayer; const value: boolean): boolean;
 function mpvSetVolume         (const mpv: IMPVBasePlayer; const aVolume: integer): boolean;
@@ -157,7 +157,7 @@ begin
   result := mpv.setPropertyBool('keep-open', value) = MPV_ERROR_SUCCESS; // ensure libmpv MPV_EVENT_END_FILE_ event at the end of every media file
 end;
 
-function mpvgetMute(const mpv: IMPVBasePlayer; var aBoolean: boolean): boolean;
+function mpvGetMute(const mpv: IMPVBasePlayer; var aBoolean: boolean): boolean;
 begin
   result := FALSE;
   case mpv = NIL of TRUE: EXIT; end;

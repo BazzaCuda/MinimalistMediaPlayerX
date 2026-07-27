@@ -22,6 +22,7 @@ interface
 
 uses
   system.classes, system.ioUtils,
+  bazFuncDefs,
   mmpConsts;
 
 type
@@ -51,10 +52,14 @@ type
 
 function CF: IConfigFile;
 
+function mmpConfigClearWindow:  TVoid;
+function mmpConfigMaxWindow:    boolean;
+function mmpConfigWindowHeight: integer;
+
 implementation
 
 uses
-  system.sysUtils,
+  system.math, system.sysUtils,
   bazCmd,
   _debugWindow;
 
@@ -93,6 +98,23 @@ function CF: IConfigFile;
 begin
   case gCF = NIL of TRUE: gCF := TConfigFile.create; end;
   result := gCF;
+end;
+
+function mmpConfigClearWindow: TVoid;
+begin
+  CF[CONF_WINDOW_HEIGHT]  := '-1';
+  CF[CONF_WINDOW_LEFT]    := '-1';
+  CF[CONF_WINDOW_TOP]     := '-1';
+end;
+
+function mmpConfigMaxWindow:  boolean;
+begin
+  result := mmpConfigWindowHeight = -1;
+end;
+
+function mmpConfigWindowHeight: integer;
+begin
+  result := max(UI_DEFAULT_AUDIO_HEIGHT + 1, CF.asInteger[CONF_WINDOW_HEIGHT]); // prevent the audio player from setting the window too short
 end;
 
 { TConfigFile }

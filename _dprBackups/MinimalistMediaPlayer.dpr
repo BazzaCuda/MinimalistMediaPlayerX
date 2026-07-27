@@ -265,11 +265,11 @@ begin
   mmp.cmd(evGSSuppressMainUI, (lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and (GS.mediaType = mtImage)); // evGSSuppressmainUI starts TRUE, this resets it if appropriate
   mmp.cmd({(lowerCase(CF[CONF_OPEN_IMAGE]) = CONF_BROWSER) and} (GS.mediaType = mtImage), [evMPStop, evVMImageInBrowser]);
 
-  // the Main Media Window will eventually be shown in TVM.resizeWindow in response to an evVMResizeWindow from model.mmpMediaPlayer.onTickTimer
-
   case GS.maxSize of FALSE: begin
                               GS.mainForm.left := CF.asInteger[CONF_WINDOW_LEFT];
                               GS.mainForm.top  := CF.asInteger[CONF_WINDOW_TOP]; end;end;
+
+  // the Main Media Window will eventually be shown in TVM.resizeWindow in response to an evVMResizeWindow from model.mmpMediaPlayer.onTickTimer
 
   app.Run; // now it's ok to raise test exceptions
   {$endif}

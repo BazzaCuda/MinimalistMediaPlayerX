@@ -83,7 +83,7 @@ begin
     koExploreFolder:      mmpShellExec(GS.mainForm.Handle, mmp.cmd(evPLReqCurrentFolder).text);
     koFrameBackwards:     MP.notify(newNotice(evMPFrameBackwards));
     koFrameForwards:      MP.notify(newNotice(evMPFrameForwards));
-    koFullscreen:         notifyApp(mmp.cmd(evVMToggleFullscreen));
+    koFullscreen:         mmp.cmd(evVMToggleFullscreen);
     koGammaDn:            MP.notify(newNotice(evMPGammaDn));
     koGammaReset:         MP.notify(newNotice(evMPGammaReset));
     koGammaUp:            MP.notify(newNotice(evMPGammaUp));
@@ -98,7 +98,7 @@ begin
     koKeepMove:           mmp.cmd(evVMKeepMove);
     koKeepSave:           mmp.cmd(evVMKeepSave);
     koImageInBrowser:     mmp.cmd(evVMImageInBrowser);
-    koMaximize:           begin mmp.cmd(evGSAutoCenter, TRUE); mmp.cmd(evGSMaxSize, TRUE); mmp.cmd(evVMResizeWindow); CF[CONF_WINDOW_HEIGHT] := '-1'; CF[CONF_WINDOW_LEFT] := '-1'; CF[CONF_WINDOW_TOP] := '-1'; end; // maximize the video according to the height of the screen
+    koMaximize:           begin mmp.cmd(evGSAutoCenter, TRUE); mmp.cmd(evGSMaxSize, TRUE); mmp.cmd(evVMResizeWindow); mmpConfigClearWindow; end; // maximize the video according to the height of the screen
     koMinimizeWindow:     mmp.cmd(evVMMinimize);
     koMuteUnmute:         mmp.cmd(evPAPostToAll, WIN_MUTE_UNMUTE);
     koNextChapter:        MP.notify(newNotice(evMPNextChapter));

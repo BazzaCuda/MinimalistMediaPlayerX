@@ -621,8 +621,10 @@ end;
 procedure TStreamListForm.WMSize(var msg: TWMSize); // called when setWindowPos is called without SWP_NOSIZE
 begin
   case FMediaType = mtVideo of FALSE: EXIT; end; // the following code would break the audio editor
+
+  var vSafeMin := min(DEFAULT_HEIGHT, GS.mainForm.height);
   case msg.height > GS.mainForm.height  of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, GS.mainForm.height,  SWP_NOMOVE); end;
-  case msg.height < DEFAULT_HEIGHT      of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, DEFAULT_HEIGHT,      SWP_NOMOVE); end;
+  case msg.height < vSafeMin            of TRUE: setWindowPos(SELF.handle, HWND_TOP, 0, 0, SELF.width, vSafeMin,            SWP_NOMOVE); end;
   backPanel.height := SELF.height; // force align := alClient
 end;
 

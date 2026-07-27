@@ -491,6 +491,12 @@ begin
 end;
 
 function TVM.initUI(const aForm: TForm; const aVideoPanel: TPanel): TVoid;
+
+  function animateTF: boolean;
+  begin
+     result := (CF[CONF_ANIMATE_MAIN] = EMPTY) or CF.asBoolean[CONF_ANIMATE_MAIN];
+  end;
+
 begin
   FVideoPanel             := aVideoPanel;
   FVideoPanel.OnDblClick  := onVideoPanelDblClick;
@@ -507,7 +513,8 @@ begin
 
   mmp.cmd(evGSShuffle, CF.asBoolean[CONF_SHUFFLE_MODE]);
 
-  mmp.cmd(evGSMaxSize, CF.asInteger[CONF_WINDOW_HEIGHT] = -1);
+  mmp.cmd(evGSMaxSize, mmpConfigMaxWindow);
+  case NOT GS.maxSize and NOT animateTF of TRUE: aForm.height := mmpConfigWindowHeight; end;
   mmp.cmd(evGSAutoCenter, GS.maxSize);
 end;
 
@@ -1193,13 +1200,10 @@ begin
 
   var vTargetWidth  := FMinWidth;
   var vTargetHeight := mmpScreenHeight;
-  case GS.maxSize of FALSE: begin
-                              vTargetHeight := CF.asInteger[CONF_WINDOW_HEIGHT];
-                              vTargetWidth  := mmpCalcWindowSize(vTargetHeight, FALSE).X;
-                              end;end;
+  case GS.maxSize of FALSE: vTargetHeight := mmpConfigWindowHeight; end;
 
-//  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, TRUE, 500, FShuttingDown); end;
-  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
+  // animate window vertically
+  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of   TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
@@ -1210,7 +1214,9 @@ begin
   var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
-  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown); end;
+//  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown); end;
+  // animate window horizontally
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown); end;
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
