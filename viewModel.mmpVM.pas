@@ -1214,9 +1214,8 @@ begin
   var vWidthDelta  := mmpIfThenElse(GS.showingTimeline, GS.widthStreamlist, GS.widthHelp + GS.widthPlaylist); // at least one of either widthHelp or widthPlaylist will be zero
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
-//  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown); end;
   // animate window horizontally
-  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown); end;
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown); end;
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
@@ -1233,9 +1232,10 @@ begin
 
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 
-  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height; end;
-  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_LEFT]    := GS.mainForm.left; end;
-  case GS.maxSize of FALSE: CF.asInteger[CONF_WINDOW_TOP]     := GS.mainForm.top; end;
+  case NOT GS.maxSize and (GS.mediaType in [mtAudio, mtVideo]) of  TRUE:  begin
+                                                                            CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height;
+                                                                            CF.asInteger[CONF_WINDOW_LEFT]    := GS.mainForm.left;
+                                                                            CF.asInteger[CONF_WINDOW_TOP]     := GS.mainForm.top; end;end;
 end;
 
 function TVM.sendOpInfo(const aOpInfo: string): TVoid;

@@ -114,9 +114,6 @@ begin
 
   case (vInitialWidth = aTargetWidth) and (vInitialHeight = aTargetHeight) {and (NOT aCenter)} of TRUE: EXIT; end;
 
-//  var vFixedTargetCenterX: integer := vInitialLeft + (aTargetWidth div 2);
-//  var vFixedTargetCenterY: integer := vInitialTop  + (aTargetHeight div 2);
-
   var vProgress: double := 0;
 
   while vProgress < 1.0 do
@@ -158,8 +155,6 @@ begin
         end;
       FALSE:
         begin
-//          vCurrentL := vFixedTargetCenterX - (vCurrentW div 2);
-//          vCurrentT := vFixedTargetCenterY - (vCurrentH div 2);
         end;
     end;
 
@@ -495,8 +490,9 @@ begin
 
   case (vHPos >= 0) and (vVPos >= 0) of TRUE: mmpSetWindowPos(aWND, point(vHPos, vVPos), vR.width, vR.height, aFlags); end;
 
-  CF.asInteger[CONF_WINDOW_LEFT]  := vHPos;
-  CF.asInteger[CONF_WINDOW_TOP]   := vVPos;
+  case GS.mediaType in [mtAudio, mtVideo] of   TRUE:  begin
+                                                        CF.asInteger[CONF_WINDOW_LEFT]  := vHPos;
+                                                        CF.asInteger[CONF_WINDOW_TOP]   := vVPos; end;end;
 
   mmp.cmd(evGSAutoCenter, TRUE);
 end;

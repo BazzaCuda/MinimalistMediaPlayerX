@@ -114,6 +114,9 @@ end;
 
 function mmpConfigWindowHeight: integer;
 begin
+  result := CF.asInteger[CONF_WINDOW_HEIGHT];
+  case result = -1 of TRUE: EXIT; end;
+
   result := max(UI_DEFAULT_AUDIO_HEIGHT + 1, CF.asInteger[CONF_WINDOW_HEIGHT]); // prevent the audio player from setting the window too short
 end;
 
