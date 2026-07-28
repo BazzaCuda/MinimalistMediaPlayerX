@@ -369,8 +369,8 @@ begin
 
   TT.unsubscribeAll;
   FSubscriberTT := NIL;
-  appEvents.unsubscribe(FSubscriber);
-  FSubscriber   := NIL;
+//  appEvents.unsubscribe(FSubscriber);
+//  FSubscriber   := NIL;
 
 //==========
   var vShutdown: TAFuncNoParam<TVoid> := function: TVoid  begin
@@ -388,6 +388,9 @@ begin
 
   TAction<TVoid>.pick(TRUE, vShutdown).perform;
 //==========
+
+  appEvents.unsubscribe(FSubscriber);
+  FSubscriber   := NIL;
 
   animateCloseApp;
 
@@ -1203,7 +1206,7 @@ begin
   case GS.maxSize of FALSE: vTargetHeight := mmpConfigWindowHeight; end;
 
   // animate window vertically
-  case animateTF and (GS.mediaType = mtVideo) and (GS.mainForm.height = FMinHeight) of   TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
+  case animateTF and ((GS.mediaType = mtVideo) or MIhasCoverArt) and (GS.mainForm.height = FMinHeight) of   TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
