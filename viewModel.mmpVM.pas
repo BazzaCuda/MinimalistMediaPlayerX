@@ -1217,8 +1217,8 @@ begin
       reallyShowUI;
   end;end;
 
-  // animate window vertically
-  case animateTF and ((GS.mediaType = mtVideo) or MIhasCoverArt) and (GS.mainForm.height = FMinHeight) of   TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
+  // animate initial window vertically
+  case animateTF and ((GS.mediaType = mtVideo) or MIhasCoverArt) and (GS.mainForm.height = FMinHeight) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
 
   mmp.cmd((NOT GS.SuppressMainUI) and (MPvideoWidth <> 0) and (MPvideoHeight <> 0), reallyShowUI); // EXPERIMENTAL
 
@@ -1231,7 +1231,7 @@ begin
 
   // animate window horizontally
   case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown, FAnchor); end;
-  FAnchor := TRUE; // after the initial animation of a non-centred window, any subsequent window size changes will be anchored to the current top left
+  FAnchor := TRUE; // after the initial animation of a non-centred window, any subsequent window size changes will be anchored to the current top left position
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
