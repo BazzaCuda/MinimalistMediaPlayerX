@@ -1211,9 +1211,6 @@ begin
 
   case (GS.mediaType = mtAudio) and NOT MIHasCoverArt of TRUE: vTargetHeight := UI_DEFAULT_AUDIO_HEIGHT; end;
 
-  debugInteger('vTargetHeight', vTargetHeight);
-  debugInteger('vConfigTargetWidth', vConfigTargetWidth);
-
   case (GS.mainForm.alphaBlendValue = 0) and NOT GS.maxSize of TRUE: begin
       GS.mainForm.left  := GS.mainForm.left + (vConfigTargetWidth  div 2) - (GS.mainForm.width  div 2);
       GS.mainForm.top   := GS.mainForm.top  + (vTargetHeight div 2) - (GS.mainForm.height div 2);
@@ -1233,7 +1230,7 @@ begin
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
   // animate window horizontally
-  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown, FAnchor); end;
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.autoCenter, animateMs, FShuttingDown, FAnchor); end;
   FAnchor := TRUE; // after the initial animation of a non-centred window, any subsequent window size changes will be anchored to the current top left
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
@@ -1252,7 +1249,6 @@ begin
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 
   case NOT GS.maxSize and (GS.mediaType in [mtAudio, mtVideo]) of  TRUE:  begin
-                                                                            debugInteger('newHeight', GS.mainForm.height);
                                                                             case GS.mainForm.height > UI_DEFAULT_AUDIO_HEIGHT + 1 of TRUE:
                                                                                 CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height; end;
                                                                             CF.asInteger[CONF_WINDOW_LEFT]    := GS.mainForm.left;
