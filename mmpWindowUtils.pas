@@ -30,7 +30,7 @@ uses
 
 function mmpAdjustAspectRatio (const aWND: HWND; const aHeight: integer): TPoint;
 function mmpAnimateResize(const aTargetForm: TForm; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
-function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid; overload;
+function mmpAnimateResize(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean; bAnchor: boolean = FALSE): TVoid; overload;
 function mmpAnimateShrink(const aWND: HWND;         const aTargetWidth: integer; const aTargetHeight: integer; const aDurationMs: integer): TVoid;
 function mmpArrangeAll        (const aWND: HWND): boolean;
 function mmpCalcGreaterWindow (const aWND: HWND; const aShiftState: TShiftState; const aThumbSize: integer; const aHostType: THostType): TPoint;
@@ -89,13 +89,13 @@ begin
   result.y := aHeight + 2;
 end;
 
-function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean): TVoid;
+function mmpAnimateResize(const aWND: HWND; const aTargetWidth: integer; const aTargetHeight: integer; const aWidthDelta: integer; const aHeightDelta: integer; const aCenter: boolean; const aDurationMs: integer; var aCancel: boolean; bAnchor: boolean = FALSE): TVoid;
 begin
   var vWorkArea:      TRect   := screen.workareaRect;
   var vLogicalHeight: integer := vWorkArea.height - aHeightDelta;
 
-  var vDesktopCenterX: integer := vWorkArea.left  + (vWorkArea.width div 2);
-  var vDesktopCenterY: integer := vWorkArea.top   + (vLogicalHeight div 2);
+  var vCenterX: integer := vWorkArea.left  + (vWorkArea.width div 2);
+  var vCenterY: integer := vWorkArea.top   + (vLogicalHeight div 2);
 
   var vFreq: int64;
   queryPerformanceFrequency(vFreq);
@@ -113,6 +113,10 @@ begin
   var vInitialTop: integer    := vR.top;
 
   case (vInitialWidth = aTargetWidth) and (vInitialHeight = aTargetHeight) of TRUE: EXIT; end;
+
+  case aCenter of FALSE:  begin
+                            vCenterX := vInitialLeft + (vInitialWidth  div 2);
+                            vCenterY := vInitialTop  + (vInitialHeight div 2); end;end;
 
   var vProgress: double := 0;
 
@@ -136,8 +140,8 @@ begin
       TRUE:
         begin
           // Calculate 'Ideal' position centered on the desktop for the video window
-          var vIdealL: integer := vDesktopCenterX - (vCurrentW div 2);
-          var vIdealT: integer := vDesktopCenterY - (vCurrentH div 2);
+          var vIdealL: integer := vCenterX - (vCurrentW div 2);
+          var vIdealT: integer := vCenterY - (vCurrentH div 2);
 
           var vMaxAllowedR: integer := vWorkArea.left + vWorkArea.width;
 
@@ -153,9 +157,11 @@ begin
           vCurrentL := max(vWorkArea.left, vCurrentL);
           vCurrentT := max(vWorkArea.top, vCurrentT);
         end;
-      FALSE:
-        begin
-        end;
+      FALSE:  begin
+                case bAnchor of FALSE: begin
+                                         vCurrentL := vCenterX - (vCurrentW div 2);
+                                         vCurrentT := vCenterY - (vCurrentH div 2); end;end;
+              end;
     end;
 
     setWindowPos(aWND, 0, vCurrentL, vCurrentT, vCurrentW, vCurrentH, SWP_NOZORDER or SWP_NOACTIVATE or SWP_ASYNCWINDOWPOS);
@@ -262,6 +268,9 @@ begin
                                                               FALSE: vWidth  := 600; end;
                                         case MIhasCoverArt of  TRUE: vHeight := 400;
                                                               FALSE: vHeight := UI_DEFAULT_AUDIO_HEIGHT; end;
+                                        case MIhasCoverArt and NOT GS.maxSize of TRUE: vHeight := aStartingHeight; end;
+                                        case MIhasCoverArt and NOT GS.maxSize and (vHeight < UI_DEFAULT_AUDIO_HEIGHT + 1) of TRUE: vHeight := mmpConfigWindowHeight; end;
+
                                         case MIhasCoverArt of  TRUE: vWidth := adjustWidthForAspectRatio; end;
                                   end;
 

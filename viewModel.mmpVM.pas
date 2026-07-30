@@ -116,6 +116,7 @@ type
     FPlaylist:              IPlaylist;
     FPB:                    IProgressBar;
 
+    FAnchor:                boolean;
     FDoubleClick:           boolean;
     FDragged:               boolean;
     FLocked:                boolean;
@@ -633,7 +634,8 @@ begin
   case button = mbRight of TRUE: onWINPausePlay(msg); end;
 
   case FDragged         of TRUE: mmp.cmd(evVMMoveTimeline); end;
-  case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_HEIGHT] := GS.mainForm.height; end;
+  case GS.mainForm.height > UI_DEFAULT_AUDIO_HEIGHT + 1 of TRUE:
+      case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_HEIGHT] := GS.mainForm.height; end;end;
   case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_LEFT]   := GS.mainForm.left; end;
   case FDragged         of TRUE: CF.asInteger[CONF_WINDOW_TOP]    := GS.mainForm.top; end;
 //  case button = mbRight of TRUE: FMenu := newMMPMenu.popup(X, Y); end;
@@ -672,7 +674,8 @@ begin
     evMPStateEnd:   case (GS.mediaType in [mtAudio, mtVideo]) and NOT GS.showingTimeline and NOT GS.noPlaylist of TRUE: mmp.cmd(evVMMPPlayNext, CF.asBoolean[CONF_NEXT_FOLDER_ON_END]); end; // for mtImage ignore everything. Let onSlideshowTimer handle it.
 
     evMPDuration:   begin
-                      reallyShowUI; // prevent the main media window showing an image briefly when launching into the browser
+                      case GS.maxSize of TRUE: reallyShowUI; end; // prevent the main media window showing an image briefly when launching into the browser
+
                       //TT.tickNow;   // force TPlayerMediaPlayer.onTickTimer ahead of TTickTimer's schedule - no, this will shrink an existing 16:9 and then re-expand it
                       vMPPrevPosition := -1; // reset for each new audio/video, see below
                       mmp.cmd(evPBMax, GS.duration);
@@ -1204,6 +1207,18 @@ begin
   var vTargetWidth  := FMinWidth;
   var vTargetHeight := mmpScreenHeight;
   case GS.maxSize of FALSE: vTargetHeight := mmpConfigWindowHeight; end;
+  var vConfigTargetWidth := mmpCalcWindowSize(vTargetHeight, FALSE).X;
+
+  case (GS.mediaType = mtAudio) and NOT MIHasCoverArt of TRUE: vTargetHeight := UI_DEFAULT_AUDIO_HEIGHT; end;
+
+  debugInteger('vTargetHeight', vTargetHeight);
+  debugInteger('vConfigTargetWidth', vConfigTargetWidth);
+
+  case (GS.mainForm.alphaBlendValue = 0) and NOT GS.maxSize of TRUE: begin
+      GS.mainForm.left  := GS.mainForm.left + (vConfigTargetWidth  div 2) - (GS.mainForm.width  div 2);
+      GS.mainForm.top   := GS.mainForm.top  + (vTargetHeight div 2) - (GS.mainForm.height div 2);
+      reallyShowUI;
+  end;end;
 
   // animate window vertically
   case animateTF and ((GS.mediaType = mtVideo) or MIhasCoverArt) and (GS.mainForm.height = FMinHeight) of   TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vTargetWidth, vTargetHeight, 0, 0, GS.maxSize, 500, FShuttingDown); end;
@@ -1218,7 +1233,8 @@ begin
   var vHeightDelta := mmpIfThenElse(GS.showingTimeline, GS.timelineHeight, 0);
 
   // animate window horizontally
-  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown); end;
+  case animateTF and (MPvideoWidth <> 0) and (MPvideoHeight <> 0) of TRUE: mmpAnimateResize(GS.mainForm.HANDLE, vPt.X, vPt.Y, vWidthDelta, vHeightDelta, GS.maxSize, animateMs, FShuttingDown, FAnchor); end;
+  FAnchor := TRUE; // after the initial animation of a non-centred window, any subsequent window size changes will be anchored to the current top left
 
   case GS.suppressMainUI or NOT animateTF of TRUE: mmpSetWindowSize(GS.mainForm.handle, vPt); end; // give the browser a basis from which to work and the proper size if not animating main
 
@@ -1236,7 +1252,9 @@ begin
   case (MPvideoWidth <> GS.mpvWidth) or (MPvideoHeight <> GS.mpvHeight) of TRUE: mmp.cmd(evVMResizeWindow); end; // did the outside World change during the animation?
 
   case NOT GS.maxSize and (GS.mediaType in [mtAudio, mtVideo]) of  TRUE:  begin
-                                                                            CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height;
+                                                                            debugInteger('newHeight', GS.mainForm.height);
+                                                                            case GS.mainForm.height > UI_DEFAULT_AUDIO_HEIGHT + 1 of TRUE:
+                                                                                CF.asInteger[CONF_WINDOW_HEIGHT]  := GS.mainForm.height; end;
                                                                             CF.asInteger[CONF_WINDOW_LEFT]    := GS.mainForm.left;
                                                                             CF.asInteger[CONF_WINDOW_TOP]     := GS.mainForm.top; end;end;
 end;
