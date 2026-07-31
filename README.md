@@ -1,7 +1,7 @@
 MMP: Minimalist Media Player
 =====================
 
-**NEWS: v6.2.5 Released!!**
+**NEWS: v6.2.9 Released!!**
 
 An all-in-one media player, image library manager (with built-in image & thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
@@ -57,6 +57,10 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 
 Significant Releases
 --------------------
+
+`MMP` (`v6.2.9`)
+**Save window location and height between launches**
+
 
 `MMP` (`v6.2.0`)
 **Animated Window**
