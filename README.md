@@ -58,7 +58,7 @@ For Delphi developers interested in `MMP`'s MVVM architecture and its enhanced, 
 Significant Releases
 --------------------
 
-`MMP` (`v6.2.9`) - Save window location and height between launches
+`MMP` (`v6.2.9`) - save window location and height between launches
 
 
 `MMP` (`v6.2.0`)
