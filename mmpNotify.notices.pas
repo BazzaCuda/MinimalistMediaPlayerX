@@ -101,7 +101,7 @@ type
 
     );
 
-  TNoticeEvents = set of TNoticeEvent; // not currently used
+  TNoticeEvents = array of TNoticeEvent; // not currently used
 
   INotice = interface
     function  getEvent:       TNoticeEvent;

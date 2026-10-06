@@ -58,119 +58,110 @@ type
 const
   FSCTL_FILE_LEVEL_TRIM = $00098208;
 
-function  trimFileRange(const aFilePath: string): boolean;
+function trimFileRange(const aFilePath: string): boolean;
 begin
-  result     := FALSE;
+  result := FALSE;
   var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
   case vHFile = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
 
   try
-    var  vFileLength: int64 := 0;
+    var vFileLength: int64 := 0;
     case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
 
-    var vTrim:          TFileLevelTrim;
+    var vTrim: TFileLevelTrim;
     var vBytesReturned: cardinal;
 
-    vTrim.Key              := 0;
-    vTrim.NumRanges        := 1;
+    vTrim.Key := 0;
+    vTrim.NumRanges := 1;
     vTrim.Ranges[0].Offset := 0;
     vTrim.Ranges[0].Length := vFileLength;
 
-    // We call the control code but don't force a FALSE result if the drive simply doesn't support TRIM (e.g., an HDD).
-    deviceIoControl(vHFile, FSCTL_FILE_LEVEL_TRIM, @vTrim, sizeof(vTrim), nil, 0, vBytesReturned, nil);
+    deviceIoControl(vHFile, FSCTL_FILE_LEVEL_TRIM, @vTrim, sizeOf(vTrim), NIL, 0, vBytesReturned, NIL);
     result := TRUE;
   finally
-    closeHandle(vHFile); end;
+    closeHandle(vHFile);
+  end;
 end;
 
-procedure renameDelay(const aMilliseconds: Cardinal);
-var
-  vStart: uint64;
+procedure renameDelay(const aMilliseconds: cardinal);
 begin
-  vStart := getTickCount64;
+  var vStart: uint64 := getTickCount64;
   repeat
-    { A 1ms sleep is the most effective way to yield a background thread }
-    { while ensuring the CPU doesn't spike to 100% during the wait }
     sleep(1);
   until (getTickCount64 - vStart) >= aMilliseconds;
 end;
 
-function overwriteFileName(const aFilePath:  string): string;
+function overwriteFileName(const aFilePath: string): string;
 begin
-  result        := aFilePath;
-  var lastSlash := lastDelimiter('\', result);
-	var ix        := lastSlash + 1;
+  result := aFilePath;
+  var vLastSlash := lastDelimiter('\', result);
+  var vIx := vLastSlash + 1;
+  var vNewName := aFilePath;
 
-	// rename the file 26 times
-	var newName := aFilePath;
-	for var i := 0 to 25 do begin
-		// Replace each non-'.' character with a random alphabetic
-		for var j := ix to length(aFilePath) do
-			case aFilePath[j] = '.' of FALSE: newName[j] := chr(ord('A') + random(26)); end;
-		// Got a new name so rename
-    case moveFile(PWideChar(result), PWideChar(newName)) of FALSE:  begin
-                                                                      renameDelay(10); // don't compete with anti-virus scanners now we've closed the file handle
-                                                                      case moveFile(PWideChar(result), PWideChar(newName)) of FALSE: EXIT; end;end;end; // OK, they win!
+  for var i := 0 to 25 do begin
+    for var j := vIx to length(aFilePath) do
+      case aFilePath[j] = '.' of FALSE: vNewName[j] := chr(ord('A') + random(26)); end;
 
-	  result := newName;
+    var vMoved := moveFile(pWideChar(result), pWideChar(vNewName));
+    case vMoved of FALSE: renameDelay(10); end;
+    case not vMoved and not moveFile(pWideChar(result), pWideChar(vNewName)) of TRUE: EXIT; end;
 
-	end;
+    result := vNewName;
+  end;
 end;
 
 function secureOverwrite(const aFileHandle: THandle; const aLength: ULONGLONG): boolean;
 const
-  CLEAN_BUF_SIZE = 65536;
+  CLEAN_BUF_SIZE = 1048576;
 begin
   result := FALSE;
   var vCleanBuffer: PBYTE := virtualAlloc(NIL, CLEAN_BUF_SIZE, MEM_COMMIT, PAGE_READWRITE);
   case vCleanBuffer = NIL of TRUE: EXIT; end;
 
   try
-    for var i: WORD := 0 to CLEAN_BUF_SIZE - 1 do vCleanBuffer[i] := 0;
-
     var vTotalWritten: ULONGLONG := 0;
     while vTotalWritten < aLength do begin
-      var vBytesToWrite:  DWORD := DWORD(min(ULONGLONG(CLEAN_BUF_SIZE), aLength - vTotalWritten));
-      var vWritten:       DWORD := 0;
+      var vBytesToWrite: DWORD := DWORD(min(uint64(CLEAN_BUF_SIZE), aLength - vTotalWritten));
+      var vWritten: DWORD := 0;
 
       case writeFile(aFileHandle, vCleanBuffer^, vBytesToWrite, vWritten, NIL) of FALSE: EXIT; end;
       case (vWritten = 0) and (vBytesToWrite > 0) of TRUE: EXIT; end;
 
-      vTotalWritten := vTotalWritten + ULONGLONG(vWritten); end;
+      vTotalWritten := vTotalWritten + ULONGLONG(vWritten);
+    end;
 
     case flushFileBuffers(aFileHandle) of FALSE: EXIT; end;
-
     result := TRUE;
   finally
-    virtualFree(vCleanBuffer, 0, MEM_RELEASE); end;
+    virtualFree(vCleanBuffer, 0, MEM_RELEASE);
+  end;
 end;
 
 function secureDelete(const aFilePath: string): integer;
 begin
-  result     := -1;
+  result := -1;
   var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
   case vHFile = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
 
   try
     var vFileLength: int64 := 0;
-    result                 := -2;
+    result := -2;
     case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
 
     var vBytesWritten: int64 := 0;
     while vBytesWritten < vFileLength do begin
-      var vBytesToWrite: ULONGLONG := ULONGLONG(min(int64(65536), vFileLength - vBytesWritten));
-      result                       := -3;
+      var vBytesToWrite: ULONGLONG := ULONGLONG(min(int64(1048576), vFileLength - vBytesWritten));
+      result := -3;
       case secureOverwrite(vHFile, vBytesToWrite) of FALSE: EXIT; end;
 
       vBytesWritten := vBytesWritten + int64(vBytesToWrite);
-      case vFileLength > 0 of TRUE: mmp.cmd(evGSActiveTaskPercent, trunc((vBytesWritten * 100) / vFileLength)); end;end;
+      case vFileLength > 0 of TRUE: mmp.cmd(evGSActiveTaskPercent, trunc((vBytesWritten * 100) / vFileLength)); end;
+    end;
   finally
     closeHandle(vHFile);
   end;
 
   var vScrambledPath := overwriteFileName(aFilePath);
-  // debugString('scrambledPath', vScrambledPath);
-
   result := -6;
   case trimFileRange(vScrambledPath) of FALSE: EXIT; end;
 
@@ -193,48 +184,36 @@ var
   vFileOp: TSHFileOpStructW;
 begin
   fillChar(vFileOp, sizeOf(vFileOp), 0);
-  vFileOp.wFunc   := FO_DELETE;
-  vFileOp.pFrom   := PWideChar(aFilePath + #0); // double-null-terminated
-  vFileOp.fFlags  := FOF_ALLOWUNDO OR FOF_SILENT OR FOF_NOCONFIRMATION; // FOF_ALLOWUNDO is a request not a demand
+  vFileOp.wFunc  := FO_DELETE;
+  vFileOp.pFrom  := pWideChar(aFilePath + #0);
+  vFileOp.fFlags := FOF_ALLOWUNDO or FOF_SILENT or FOF_NOCONFIRMATION;
 
-  result          := SHFileOperationW(vFileOp) = 0;
+  result := shFileOperationW(vFileOp) = 0;
 end;
 
 function driveSupportsRecycleBin(const aFilePath: string): boolean;
-// currently redundant. Superseded by mmpCheckRecycleBin and mmpDriveHasRecycleBin in mmpFileUtils
 begin
-  var vDrive      := mmpITBS(extractFileDrive(aFilePath));
+  var vDrive := mmpITBS(extractFileDrive(aFilePath));
   var vRecycleBin := vDrive + '$RECYCLE.BIN';
 
   result := TRUE;
   case directoryExists(vRecycleBin) of TRUE: EXIT; end;
 
   var vTempFilePath := vDrive + '__MMP_RECYCLE_BIN_TEST__';
-
-  var vHandle: THandle := createFileW(PWideChar(vTempFilePath),
-    GENERIC_WRITE,
-    0,
-    NIL,
-    CREATE_ALWAYS,
-    FILE_ATTRIBUTE_NORMAL,
-    0);
+  var vHandle: THandle := createFileW(pWideChar(vTempFilePath), GENERIC_WRITE, 0, NIL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 
   result := FALSE;
   case vHandle = INVALID_HANDLE_VALUE of TRUE: EXIT; end;
 
   closeHandle(vHandle);
-
   recycleFile(vTempFilePath);
-
   result := directoryExists(vRecycleBin);
 end;
 
 function recycleDeleteFile(const aFilePath: string): boolean;
-//var
-//  vFileOp: TSHFileOpStructW;
 begin
   result := FALSE;
-  case integer(getFileAttributesW(PWideChar(aFilePath))) = -1 of TRUE: EXIT; end;
+  case integer(getFileAttributesW(pWideChar(aFilePath))) = -1 of TRUE: EXIT; end;
   result := recycleFile(aFilePath);
 end;
 
@@ -245,37 +224,31 @@ begin
   result := TRUE;
 end;
 
-type
-  PThreadRec  = ^TThreadRec;
-  TThreadRec  = record
-    trFilePath: string;
-  end;
+var
+  gTasks: TList<ITask>;
+  gCount: integer = 0;
+  gShredThreadPool: TThreadPool;
 
-var gTasks: TList<ITask>;
-    gCount: integer = 0;
 function threadIt(const aFilePath: string): boolean;
-var vTask: ITask;
 begin
-  vTask := TTask.create(
-                        procedure
-                        begin
-                          try
-                            try
-                              secureDeleteFile(aFilePath);
-                            finally
-                              interlockedDecrement(gCount);
-                            end;
-                          except
-                          end;
-                        end);
+  var vTask: ITask := TTask.create(
+    procedure
+    begin
+      try
+        try
+          secureDeleteFile(aFilePath);
+        finally
+          interlockedDecrement(gCount);
+        end;
+      except
+      end;
+    end, gShredThreadPool);
+
   gTasks.add(vTask);
   result := TRUE;
 end;
 
 function shredIt(const aFilePath: string; const aDeleteMethod: TDeleteMethod): boolean;
-//var
-//  threadID:   LONGWORD;
-//  vThreadRec: PThreadRec;
 begin
   result := FALSE;
   case aDeleteMethod of
@@ -288,46 +261,41 @@ end;
 function shredFolderFiles(const aFolderPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 const
   {$WARN SYMBOL_PLATFORM OFF}
-  faFilesOnly = faAnyFile AND NOT faDirectory AND NOT faHidden AND NOT faSysFile;
+  faFilesOnly = faAnyFile and not faDirectory and not faHidden and not faSysFile;
   {$WARN SYMBOL_PLATFORM ON}
-var
-  vFolderPath:  string;
-  SR:           TSearchRec;
 begin
   result := FALSE;
-  vFolderPath := mmpITBS(aFolderPath);
-  case findFirst(vFolderPath + '*.*', faFilesOnly, SR) = 0 of TRUE:
-    repeat
-      result := shredIt(vFolderPath + SR.name, aDeleteMethod);
-    until findNext(SR) <> 0;
+  var vFolderPath := mmpITBS(aFolderPath);
+  var SR: TSearchRec;
+
+  var vFound := findFirst(vFolderPath + '*.*', faFilesOnly, SR) = 0;
+  try
+    case vFound of
+      TRUE: repeat
+        result := shredIt(vFolderPath + SR.name, aDeleteMethod);
+      until findNext(SR) <> 0;
+    end;
+  finally
+    case vFound of TRUE: findClose(SR); end;
   end;
-  findClose(SR);
 end;
 
 function monitorTasks: TVoid;
-var i: integer;
 begin
-  var vMax := TThreadPool.default.maxWorkerThreads;
-  try
-    TThreadPool.default.maxWorkerThreads := 10;
+  gCount := gTasks.count;
+  mmp.cmd(evGSActiveTasks, gCount);
 
-    gCount := gTasks.count;
+  for var i := 0 to gTasks.count - 1 do gTasks[i].start;
+
+  repeat
     mmp.cmd(evGSActiveTasks, gCount);
+    mmpDelay(100);
+  until gCount = 0;
 
-    for i := 0 to gTasks.count - 1 do gTasks[i].start;
-
-    repeat
-      mmp.cmd(evGSActiveTasks, gCount);
-      mmpDelay(100);
-    until gCount = 0;
-
-    mmp.cmd(evSTOpInfo2, -1);
-    mmp.cmd(evGSActiveTaskPercent, -1); // mmpVM's evSTOpInfo2 event will clear mmpFormCaptions.OpInfo2
-    mmp.cmd(evGSActiveTasks, 0);        // was gCount
-    gTasks.clear;
-  finally
-    TThreadPool.default.maxWorkerThreads := vMax;
-  end;
+  mmp.cmd(evSTOpInfo2, -1);
+  mmp.cmd(evGSActiveTaskPercent, -1);
+  mmp.cmd(evGSActiveTasks, 0);
+  gTasks.clear;
 end;
 
 function mmpStartTasks: TVoid;
@@ -338,14 +306,19 @@ end;
 function mmpShredThis(const aFullPath: string; const aDeleteMethod: TDeleteMethod): boolean;
 begin
   result := FALSE;
-  case fileExists(aFullPath) of  TRUE: result := shredIt(aFullPath, aDeleteMethod);
-                                FALSE: case directoryExists(aFullPath) of TRUE: result := shredFolderFiles(aFullPath, aDeleteMethod); end;end;
+  case fileExists(aFullPath) of
+    TRUE:  result := shredIt(aFullPath, aDeleteMethod);
+    FALSE: case directoryExists(aFullPath) of TRUE: result := shredFolderFiles(aFullPath, aDeleteMethod); end;
+  end;
 end;
 
 initialization
-  gTasks  := TList<ITask>.create;
+  gShredThreadPool := TThreadPool.create;
+  gShredThreadPool.setMaxWorkerThreads(10);
+  gTasks := TList<ITask>.create;
 
 finalization
   gTasks.free;
+  gShredThreadPool.free;
 
 end.
