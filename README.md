@@ -1,8 +1,6 @@
 MMP: Minimalist Media Player
 =====================
 
-**NEWS: v6.2.9 Released!!**
-
 An all-in-one media player, image library manager (with built-in image & thumbnail browser, and image manipulation), and timeline editor for fast lossless editing of audio and video files.
 
 Fully portable - just unzip and go!
