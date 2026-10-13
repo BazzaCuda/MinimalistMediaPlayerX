@@ -138,6 +138,8 @@ begin
 end;
 
 function secureDelete(const aFilePath: string): integer;
+const
+  CLEAN_BUF_SIZE = 1048576;
 begin
   result := -1;
   var vHFile := createFile(pWideChar(aFilePath), GENERIC_WRITE, FILE_SHARE_READ or FILE_SHARE_WRITE, NIL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, 0);
@@ -148,14 +150,24 @@ begin
     result := -2;
     case getFileSizeEx(vHFile, vFileLength) of FALSE: EXIT; end;
 
-    var vBytesWritten: int64 := 0;
-    while vBytesWritten < vFileLength do begin
-      var vBytesToWrite: ULONGLONG := ULONGLONG(min(int64(1048576), vFileLength - vBytesWritten));
-      result := -3;
-      case secureOverwrite(vHFile, vBytesToWrite) of FALSE: EXIT; end;
+    result := -3;
+    var vCleanBuffer: PBYTE := virtualAlloc(NIL, CLEAN_BUF_SIZE, MEM_COMMIT, PAGE_READWRITE);
+    case vCleanBuffer = NIL of TRUE: EXIT; end;
 
-      vBytesWritten := vBytesWritten + int64(vBytesToWrite);
-      case vFileLength > 0 of TRUE: mmp.cmd(evGSActiveTaskPercent, trunc((vBytesWritten * 100) / vFileLength)); end;
+    try
+      var vBytesWritten: int64 := 0;
+      while vBytesWritten < vFileLength do begin
+        var vBytesToWrite: DWORD := DWORD(min(int64(CLEAN_BUF_SIZE), vFileLength - vBytesWritten));
+        var vWritten: DWORD := 0;
+
+        case writeFile(vHFile, vCleanBuffer^, vBytesToWrite, vWritten, NIL) of FALSE: EXIT; end;
+        case (vWritten = 0) and (vBytesToWrite > 0) of TRUE: EXIT; end;
+
+        vBytesWritten := vBytesWritten + int64(vWritten);
+        case vFileLength > 0 of TRUE: mmp.cmd(evGSActiveTaskPercent, trunc((vBytesWritten * 100) / vFileLength)); end;
+      end;
+    finally
+      virtualFree(vCleanBuffer, 0, MEM_RELEASE);
     end;
   finally
     closeHandle(vHFile);
