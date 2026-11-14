@@ -335,6 +335,9 @@ begin
 
   case mmpCheckRecycleBin(vCurrentItem) of FALSE: EXIT; end;
 
+  FResizingWindow := TRUE; // EXPERIMENTAL
+  try // EXPERIMENTAL
+
   result := mmpDeleteThisFile(vCurrentItem, aShiftState); // defaults to mpvStop as it's the current file
   case result of FALSE: EXIT; end;
 
@@ -350,6 +353,10 @@ begin
   // {$if BazDebugWindow} debug('finding something to play'); {$endif}
   mmp.cmd(nothingToPlay, T, F);
   mmp.cmd(evPLFormLoadBox);
+
+  finally
+    FResizingWindow := FALSE; // EXPERIMENTAL
+  end;
 end;
 
 destructor TVM.Destroy;
@@ -416,7 +423,12 @@ begin
   case bConfirm of TRUE:
   mmp.cmd(mmpShowConfirmDelete(vFolder, vDeletionObject, CF.asDeleteMethod[CONF_DELETE_METHOD], CF[CONF_DELETE_METHOD], CF.asInteger[CONF_SCALE_FACTOR], FALSE) = mryes, procedure  begin
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup in progress');
-                                                                                                                      newCleanup.cleanup(vFolder, vCurrentItem);
+                                                                                                                      FResizingWindow := TRUE; // EXPERIMENTAL
+                                                                                                                      try
+                                                                                                                        newCleanup.cleanup(vFolder, vCurrentItem);
+                                                                                                                      finally
+                                                                                                                        FResizingWindow := FALSE;
+                                                                                                                      end;
                                                                                                                       mmp.cmd(evSTOpInfo, 'Cleanup complete');
                                                                                                                     end);
 
@@ -1129,7 +1141,7 @@ begin
     rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
 
-  case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;
+  // case vWasPlaying of TRUE: mmp.cmd(evMPResume); end; // EXPERIMENTAL - I think this was causing the run-on through the remaining files after a Ctrl-Move
   mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's a spurious keyUp for 'R' coming
   case vNewName = vOldName of TRUE: EXIT; end;
 
