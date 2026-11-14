@@ -1141,7 +1141,7 @@ begin
     rtKeepSave:   vNewName := mmpUserDstFolder('Saved') + extractFileName(vOldName);
   end;
 
-  case vWasPlaying of TRUE: mmp.cmd(evMPResume); end;
+  // case vWasPlaying of TRUE: mmp.cmd(evMPResume); end; // EXPERIMENTAL - I think this was causing the run-on through the remaining files after a Ctrl-Move
   mmp.cmd(evGSRenameFile, aRenameType = rtUser); // notify the Timeline that there's a spurious keyUp for 'R' coming
   case vNewName = vOldName of TRUE: EXIT; end;
 
