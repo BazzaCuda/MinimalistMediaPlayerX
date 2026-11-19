@@ -87,6 +87,7 @@ begin
     result := showModal;
     free;
   end;
+  mmpDelay(500);
   mmp.cmd(evGSUserInput, FALSE);
 end;
 

@@ -63,6 +63,7 @@ var SR: TSearchRec;
   var vFN: string;
   begin
     var vSL := TStringList.create;
+    vSL.defaultEncoding := TEncoding.UTF8;
     vSL.loadFromFile(aFolderPath + SR.name);
                                                                     // file 'B:\\Movies\\Kelly'\''s Heroes (1970).seg02.mp4'
     for var i := 0 to vSL.count - 1 do begin

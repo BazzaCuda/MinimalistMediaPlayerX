@@ -290,6 +290,8 @@ begin
 
   var vSL := TStringList.create;
   try
+    vSL.defaultEncoding := TEncoding.UTF8;
+    vSL.writeBOM        := FALSE;
     vSL.add(';FFMETADATA1');
 
     var vTimeStamp := 0;
@@ -367,6 +369,8 @@ begin
 
   var vSL := TStringList.create;
   try
+    vSL.defaultEncoding := TEncoding.UTF8;
+    vSL.writeBOM        := FALSE;
     vSL.saveToFile(filePathSEG); // clear previous contents
     for var vSegment in segments do begin
       case vSegment.deleted of TRUE: CONTINUE; end;

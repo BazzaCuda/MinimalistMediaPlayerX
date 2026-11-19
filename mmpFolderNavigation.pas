@@ -72,6 +72,7 @@ var
   begin
     folderList := TStringList.Create;
     try
+      folderList.defaultEncoding := TEncoding.UTF8;
       findSubFolders(folderList, aFolderPath, bAllowIntoWindows);
       case folderList.count > 0 of
         TRUE: result := deepestSubFolder(folderList[folderList.count - 1]);
@@ -86,7 +87,7 @@ begin
 
   folderList := TStringList.Create;
   try
-
+    folderList.defaultEncoding := TEncoding.UTF8;
     case aDirection = nfForwards of
       TRUE: begin
 
