@@ -170,18 +170,22 @@ function KBProcessKeyStroke(const SS: TSnapshot): TKeyOp;
     case keyUp and keyIs(W) and NOT ctrl                                                                            of TRUE: result := koPlayNext; end;
     case keyUp and keyIs(X)                                                                                         of TRUE: result := koCloseApp; end;
     case keyUp and keyIs(Y)                                                                                         of TRUE: result := koThumbnails; end;
+//    case keyDn and keyIs(Y)              and NOT shift                                                              of TRUE: result := koSkipForwards; end;
+//    case keyDn and keyIs(Y)              and     shift                                                              of TRUE: result := koSkipBackwards; end;
     case keyUp and keyIs(Z)                                                                                         of TRUE: result := koPlayLast; end;
 
     case keyUp and keyIs(BACKSLASH) and NOT ctrl     and     shift                                                  of TRUE: result := koConfig; end;
     case keyDn and keyIs(BACKSLASH) and     ctrl     and NOT shift  and     (GS.mediaType = mtVideo)                of TRUE: result := koSyncAudioUp; end;
     case keyDn and keyIs(BACKSLASH) and NOT ctrl     and NOT shift                                                  of TRUE: result := koSpeedDn; end;
     case keyUp and keyIs(BACKSPACE)                                                                                 of TRUE: result := koResetAll; end;
-    case keyDn and keyIs(CLOSE_BRACKET)              and     shift                                                  of TRUE: result := koSaturationUp; end; // close curly brace
-    case keyDn and keyIs(CLOSE_BRACKET)              and NOT shift                                                  of TRUE: result := koGammaUp; end;      // close square bracket
+    case keyDn and keyIs(CLOSE_BRACKET) and NOT ctrl and     shift                                                  of TRUE: result := koSaturationUp; end; // close curly brace
+    case keyDn and keyIs(CLOSE_BRACKET) and NOT ctrl and NOT shift                                                  of TRUE: result := koGammaUp; end;      // close square bracket
+    case keyDn and keyIs(CLOSE_BRACKET) and     ctrl and NOT shift                                                  of TRUE: result := koSkipForwards; end; // close square bracket
     case keyUp and keyIs(HASH)                                                                                      of TRUE: result := koShowCaption; end;
     case keyDn and keyIs(HYPHEN)                                                                                    of TRUE: result := koBrightnessDn; end;
-    case keyDn and keyIs(OPEN_BRACKET)               and     shift                                                  of TRUE: result := koSaturationDn; end; // open curly brace
-    case keyDn and keyIs(OPEN_BRACKET)               and NOT shift                                                  of TRUE: result := koGammaDn; end;      // open square bracket
+    case keyDn and keyIs(OPEN_BRACKET) and NOT ctrl  and     shift                                                  of TRUE: result := koSaturationDn; end;  // open curly brace
+    case keyDn and keyIs(OPEN_BRACKET) and NOT ctrl  and NOT shift                                                  of TRUE: result := koGammaDn; end;       // open square bracket
+    case keyDn and keyIs(OPEN_BRACKET) and     ctrl  and NOT shift                                                  of TRUE: result := koSkipBackwards; end; // open square bracket
     case keyUp and keyIs(SEMICOLON)                                                                                 of TRUE: result := koSaturationReset; end;
     case keyUp and keyIs(SINGLE_QUOTE)                                                                              of TRUE: result := koGammaReset; end;
     case keyDn and keyIs(SLASH)     and     ctrl     and NOT shift  and     (GS.mediaType = mtVideo)                of TRUE: result := koSyncAudioDn; end;

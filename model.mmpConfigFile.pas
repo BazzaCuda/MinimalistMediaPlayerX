@@ -127,8 +127,9 @@ constructor TConfigFile.Create;
 begin
   inherited;
   FFileContents                 := TStringList.create;
-  FFileContents.DefaultEncoding := TEncoding.UTF8;
-  FFileContents.CaseSensitive   := FALSE;
+  FFileContents.defaultEncoding := TEncoding.UTF8;
+  FFileContents.writeBOM        := FALSE;
+  FFileContents.caseSensitive   := FALSE;
 end;
 
 function TConfigFile.checkForManualEdits: boolean;

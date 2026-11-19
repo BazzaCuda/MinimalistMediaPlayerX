@@ -89,6 +89,8 @@ begin
   inherited Create;
   FMinutes    := TDictionary<integer, TKeyMinute>.Create;
   FMasterKey  := TStringList.create;
+  FMasterKey.defaultEncoding := TEncoding.UTF8;
+  FMasterKey.writeBOM        := FALSE;
 end;
 
 destructor TKeyFrameManager.Destroy;

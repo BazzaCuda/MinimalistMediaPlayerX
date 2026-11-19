@@ -4886,7 +4886,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Top = 378
     Width = 129
     Height = 57
-    Caption = 'YES'
+    Caption = '&YES'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -29
@@ -4901,7 +4901,7 @@ object ConfirmDeleteForm: TConfirmDeleteForm
     Top = 378
     Width = 129
     Height = 57
-    Caption = 'NO'
+    Caption = '&NO'
     Default = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

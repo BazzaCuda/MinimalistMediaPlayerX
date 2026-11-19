@@ -184,6 +184,8 @@ begin
   case fileExists(mmpReleaseNotesFilePath(aReleaseTag)) of FALSE: EXIT; end;
   var vNotes := TStringList.create;
   try
+    vNotes.defaultEncoding  := TEncoding.UTF8;
+    vNotes.writeBOM         := FALSE;
     vNotes.loadFromFile(mmpReleaseNotesFilePath(aReleaseTag));
     for var i := 0 to vNotes.count - 1 do begin
 
@@ -273,6 +275,7 @@ var
   function getDevJson(const aTag: string): string;
   begin
     with TStringList.create do begin
+      defaultEncoding := TEncoding.UTF8;
       loadFromFile(mmpReleaseNotesFilePath(aTag)); // you need to create this file manually
       result := text;
       free;
@@ -347,6 +350,8 @@ begin
   case FReleaseNotes = EMPTY of TRUE: EXIT; end;
 
   with TStringList.create do begin
+    defaultEncoding := TEncoding.UTF8;
+    writeBOM        := FALSE;
     text := FReleaseNotes;
     saveToFile(mmpReleaseNotesFilePath(aReleaseTag));
     free;

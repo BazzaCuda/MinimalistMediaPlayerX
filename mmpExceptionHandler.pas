@@ -95,6 +95,8 @@ class procedure TMMPExceptionHandler.clearLogFile;
 begin
   case fileExists(logFileName) of TRUE: begin
                                           var vSL := TStringList.create;
+                                          vSL.defaultEncoding := TEncoding.UTF8;
+                                          vSL.writeBOM        := FALSE;
                                           try
                                             vSL.saveToFile(logFileName);
                                           finally

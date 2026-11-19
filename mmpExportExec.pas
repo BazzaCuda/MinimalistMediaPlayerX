@@ -89,6 +89,7 @@ begin
                                                   var vLogFile          := aLogFilePath;
                                                   var vLog              := TStringList.create;
                                                   vLog.defaultEncoding  := TEncoding.UTF8;
+                                                  vLog.writeBOM         := FALSE;
                                                   try
                                                     TAction.pick(fileExists(vLogFile), vLog.LoadFromFile).perform(vLogFile);
                                                     // case fileExists(vLogFile) of TRUE: vLog.loadFromFile(vLogFile); end;
